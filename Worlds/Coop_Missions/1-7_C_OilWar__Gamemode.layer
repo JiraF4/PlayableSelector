@@ -2,52 +2,6 @@ SCR_AIWorld : "{E0A05C76552E7F58}Prefabs/AI/SCR_AIWorld.et" {
 }
 PerceptionManager PerceptionManager1 : "{028DAEAD63E056BE}Prefabs/World/Game/PerceptionManager.et" {
 }
-SCR_GameModeCoop GameModeCoop_Full : "{16D2DEADCFDC8B73}Prefabs/SCR_GameModeCoop.et" {
- components {
-  SCR_ArsenalManagerComponent "{5D4CE249D697011C}" {
-  }
-  SCR_CallsignManagerComponent "{5D4CE249DD6CC947}" {
-  }
-  SCR_CompositionSlotManagerComponent "{5D4CE2499E2E4B37}" {
-  }
-  SCR_DestructionManagerComponent "{5D4CE2490FDAD2A4}" {
-  }
-  SCR_GameModeHealthSettings "{5D4CE249A542C073}" {
-  }
-  SCR_GameOverScreenManagerComponent "{5D4CE249AF602312}" {
-  }
-  SCR_GroupsManagerComponent "{5D4CE24A617E1E02}" {
-  }
-  SCR_HintManagerComponent "{5D4CE24A6A97B86A}" {
-  }
-  SCR_InitWeatherComponent "{5D4CE24A7F6EB0D7}" {
-  }
-  SCR_NametagConfigComponent "{5D4CE249A91A4C44}" {
-  }
-  SCR_NotificationSenderComponent "{5D4CE24A746FD14A}" {
-  }
-  SCR_PossessingManagerComponent "{5D4CE249B174F34A}" {
-  }
-  SCR_RadialMenuComponent "{5D4CE249BD6295CA}" {
-  }
-  SCR_ScoringSystemComponent "{5D4CE2498274717A}" {
-  }
-  SCR_VotingManagerComponent "{5D4CE2498FF322CB}" {
-  }
-  SerializerInventoryStorageManagerComponent "{5D4CE24996A49424}" {
-  }
-  RplComponent "{5D4CE249422E8900}" {
-  }
- }
- {
-  SCR_FactionManager FactionManager_Editor1 : "{4A188E44289B9A50}Prefabs/MP/Managers/Factions/FactionManager_Editor.et" {
-  }
-  RadioManagerEntity : "{B8E09FAB91C4ECCD}Prefabs/Radio/RadioManager.et" {
-  }
-  ScriptedChatEntity : "{F69BC912AC8236F9}Prefabs/MP/ScriptedChatEntity.et" {
-   coords -318.967 54.514 1.838
-  }
-  SCR_LoadoutManager : "{B54D08AEA74A5354}Prefabs/MP/Managers/Loadouts/LoadoutManager_Editor.et" {
-  }
- }
+SCR_GameModeCoop GameModeCoop_Full : "{02A9D220962FEFC3}Prefabs/GameModeCoop_Full.et" {
+ coords 1.205 -0 -0.033
 }

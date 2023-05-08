@@ -1,5 +1,5 @@
 MetaFileClass {
- Name "{02A9D220962FEFC3}Prefabs/GameModeCoop_Full1.et"
+ Name "{547BA14003A67C04}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Medic_p.et"
  Configurations {
   EntityTemplateResourceClass PC {
   }

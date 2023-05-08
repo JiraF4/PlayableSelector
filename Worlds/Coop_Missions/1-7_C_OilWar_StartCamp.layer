@@ -1,3 +1,9 @@
+GenericEntity : "{2F2BBFDA3A2C73D4}Prefabs/Props/Civilian/RadioSmall_01_black.et" {
+ coords 8579.089 178.038 4686.225
+ angleX 8.912
+ angleY -161.894
+ angleZ -12.704
+}
 $grp StaticModelEntity : "{48A04E0A139BB167}Prefabs/Structures/Military/Camps/TentSmallFIA_01/TentSmallFIA_01.et" {
  {
   coords 8576.344 179.117 4680.457
@@ -25,7 +31,7 @@ StaticModelEntity : "{75A7C06222E6218B}Prefabs/Structures/Military/Camps/TentSma
  angleZ -9.712
 }
 SCR_AIGroup : "{B20D25B73A29E254}Prefabs/Groups/INDFOR/Group_FIA_RifleSquad_playabe.et" {
- coords 8572.91 0 4685.263
+ coords 8572.91 179.773 4685.263
  angleY -77.539
 }
 GameEntity : "{D9842C11742C00CF}Prefabs/Props/Civilian/Fireplace_01.et" {

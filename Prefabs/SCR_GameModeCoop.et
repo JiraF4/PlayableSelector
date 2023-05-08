@@ -1,5 +1,42 @@
 SCR_GameModeCoop {
  ID "5D4CDA0160C87274"
+ components {
+  SCR_ArsenalManagerComponent "{5D4CE249D697011C}" {
+  }
+  SCR_CallsignManagerComponent "{5D4CE249DD6CC947}" {
+  }
+  SCR_CompositionSlotManagerComponent "{5D4CE2499E2E4B37}" {
+  }
+  SCR_DestructionManagerComponent "{5D4CE2490FDAD2A4}" {
+  }
+  SCR_GameModeHealthSettings "{5D4CE249A542C073}" {
+  }
+  SCR_GameOverScreenManagerComponent "{5D4CE249AF602312}" {
+  }
+  SCR_GroupsManagerComponent "{5D4CE24A617E1E02}" {
+  }
+  SCR_HintManagerComponent "{5D4CE24A6A97B86A}" {
+  }
+  SCR_InitWeatherComponent "{5D4CE24A7F6EB0D7}" {
+  }
+  SCR_NametagConfigComponent "{5D4CE249A91A4C44}" {
+  }
+  SCR_NotificationSenderComponent "{5D4CE24A746FD14A}" {
+  }
+  SCR_PossessingManagerComponent "{5D4CE249B174F34A}" {
+  }
+  SCR_RadialMenuComponent "{5D4CE249BD6295CA}" {
+  }
+  SCR_ScoringSystemComponent "{5D4CE2498274717A}" {
+  }
+  SCR_VotingManagerComponent "{5D4CE2498FF322CB}" {
+  }
+  SerializerInventoryStorageManagerComponent "{5D4CE24996A49424}" {
+  }
+  RplComponent "{5D4CE249422E8900}" {
+  }
+ }
+ PlayerControllerPrefab "{4E5DAC62A374950F}Prefabs/Characters/Core/DefaultPlayerControllerMP_Coop.et"
  {
   ItemPreviewManagerEntity ItemPreviewManagerEntity1 {
    ID "5D4CDA0121F12235"

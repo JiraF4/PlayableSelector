@@ -71,9 +71,8 @@ ButtonWidgetClass {
            Name "ImageFlag"
            Slot OverlayWidgetSlot "{596CEC6E442A1B9E}" {
            }
-           Texture "{50824EB9F2C215AB}UI/Textures/Flags/USSR-flag-base-3it.edds"
-           Image ""
-           Size 800 400
+           Texture "{BD2E2F871E6A3EBF}UI/Textures/Flags/Flag_Faction_Base.edds"
+           Size 512 256
           }
          }
         }
@@ -105,7 +104,7 @@ ButtonWidgetClass {
        }
        {
         OverlayWidgetClass "{596B05AA0E127D9E}" {
-         Name "Overlay0"
+         Name "PlayerOverlay"
          Slot LayoutSlot "{5588C2B1D059DB2F}" {
           Padding 20 20 20 20
           SizeMode Fill
@@ -113,12 +112,13 @@ ButtonWidgetClass {
          }
          {
           ImageWidgetClass "{596B05AA0E127D91}" {
-           Name "FactionBckg"
+           Name "PFactionBckg"
            Slot OverlayWidgetSlot "{5588C2BF8C37F8F6}" {
             HorizontalAlign 3
             VerticalAlign 3
             Padding -20 -20 -20 -20
            }
+           Color 0.553 1 0.836 1
           }
           ImageWidgetClass "{596B05AA0E127D90}" {
            Name "Image0"
@@ -158,6 +158,81 @@ ButtonWidgetClass {
                  Size 240 240
                 }
                 TextWidgetClass "{596B05AA0E13D501}" {
+                 Name "PlayerText"
+                 Slot LayoutSlot "{558E4CB38BCEA6C1}" {
+                  HorizontalAlign 1
+                  VerticalAlign 1
+                  SizeMode Fill
+                 }
+                 Text "Player name"
+                 "Font Size" 25
+                 "Min Font Size" 25
+                 FontProperties FontProperties "{558E4CA24F4EE5E7}" {
+                  Font "{EABA4FE9D014CCEF}UI/Fonts/RobotoCondensed/RobotoCondensed_Bold.fnt"
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+        OverlayWidgetClass "{5D514EE7F0A40484}" {
+         Name "Overlay1"
+         Slot LayoutSlot "{5588C2B1D059DB2F}" {
+          Padding 20 20 20 20
+          SizeMode Fill
+          FillWeight 0.4
+         }
+         {
+          ImageWidgetClass "{5D514EE7F0A40486}" {
+           Name "FactionBckg"
+           Slot OverlayWidgetSlot "{5588C2BF8C37F8F6}" {
+            HorizontalAlign 3
+            VerticalAlign 3
+            Padding -20 -20 -20 -20
+           }
+          }
+          ImageWidgetClass "{5D514EE7F0A40480}" {
+           Name "Image0"
+           Slot OverlayWidgetSlot "{585A990495B9F313}" {
+            HorizontalAlign 3
+            VerticalAlign 3
+            Padding -20 -20 -20 -20
+           }
+           Color 0 0 0 0.973
+          }
+          VerticalLayoutWidgetClass "{5D514EE7F0A40483}" {
+           Name "VerticalLayout0"
+           Slot OverlayWidgetSlot "{5588C2B1D14F4B11}" {
+            HorizontalAlign 3
+            VerticalAlign 3
+           }
+           {
+            OverlayWidgetClass "{5D514EE7F0A4049D}" {
+             Name "Overlay0"
+             Slot LayoutSlot "{558E4CB3AF147085}" {
+             }
+             {
+              HorizontalLayoutWidgetClass "{5D514EE7F0A4049C}" {
+               Name "HorizontalLayout0"
+               Slot OverlayWidgetSlot "{558E4CB38AB5D991}" {
+                HorizontalAlign 3
+                VerticalAlign 3
+               }
+               {
+                ImageWidgetClass "{5D514EE7F0A4049F}" {
+                 Name "Icon"
+                 Slot LayoutSlot "{558E4CB599B10A10}" {
+                  HorizontalAlign 0
+                 }
+                 "Is Visible" 0
+                 Image ""
+                 Size 240 240
+                }
+                TextWidgetClass "{5D514EE7F0A4049E}" {
                  Name "Text"
                  Slot LayoutSlot "{558E4CB38BCEA6C1}" {
                   HorizontalAlign 0
