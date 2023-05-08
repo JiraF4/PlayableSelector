@@ -62,6 +62,36 @@ class SCR_PlayableSelectorMenu: MenuBase
 		#endif
 	}
 	
+	void UpdateList() 
+	{
+		Widget gallery = GetRootWidget().FindAnyWidget("Tiles");
+		SCR_GalleryComponent gallery_component = SCR_GalleryComponent.Cast(gallery.GetHandler(0));
+		array<SCR_PlayableComponent> playables = SCR_PlayableComponent.GetPlayables();
+		
+		array<Widget> widgets = new array<Widget>();
+		int count = gallery_component.GetWidgets(widgets);
+		
+		
+		for (int i = 0; i < count; i++) {
+			
+			SCR_PlayableMenuTile handler = SCR_PlayableMenuTile.Cast(widgets[i].FindHandler(SCR_PlayableMenuTile));
+			SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(playables[handler.GetPlayableId()].GetOwner());
+			
+			
+			if (character.GetDamageManager().IsDestroyed()) 
+				gallery_component.RemoveItem(i);
+			else 
+			{
+				int playerId = SCR_PossessingManagerComponent.GetInstance().GetPlayerIdFromControlledEntity(character);
+				if (playerId == 0) {
+					handler.SetText(playables[i].GetName());
+				} else {
+					handler.SetText(GetGame().GetPlayerManager().GetPlayerName(playerId));
+				}
+			}
+		}
+	}
+	
 	override void OnMenuClose()
 	{
 		array<SCR_PlayableComponent> playables = SCR_PlayableComponent.GetPlayables();
@@ -78,8 +108,9 @@ class SCR_PlayableSelectorMenu: MenuBase
 		PlayerController playerController = GetGame().GetPlayerController();
 		
 		SCR_PlayableComponent playable = SCR_PlayableComponent.Cast(playerController.FindComponent(SCR_PlayableComponent));
-		playable.TakePossession(playerController.GetPlayerId(), handler.GetPlayableId());
 		
 		Close();
+	
+		playable.TakePossession(playerController.GetPlayerId(), handler.GetPlayableId());
 	}
 };

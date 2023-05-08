@@ -64,10 +64,10 @@ class SCR_PlayableComponent : ScriptComponent
 		
 		SCR_PlayerController.Cast(GetGame().GetPlayerManager().GetPlayerController(playerId)).SetPossessedEntity(playable);
 		
-		
-			
 		IEntity entity = GetGame().GetPlayerController().GetControlledEntity();
 		if (entity) Print(entity.Type().ToString());
+		
+		SCR_GameModeCoop.Cast(GetGame().GetGameMode()).UpdateMenu();
 	}
 	
 	
