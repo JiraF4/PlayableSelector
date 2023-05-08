@@ -57,8 +57,15 @@ class SCR_PlayableComponent : ScriptComponent
 	void RPC_TakePossession(int playerId, int playableId) 
 	{
 		array<SCR_PlayableComponent> playables = SCR_PlayableComponent.GetPlayables();
-		SCR_PlayerController.Cast(GetGame().GetPlayerManager().GetPlayerController(playerId)).SetPossessedEntity(playables[playableId].GetOwner());
+		SCR_ChimeraCharacter playable = SCR_ChimeraCharacter.Cast(playables[playableId].GetOwner());
+		if (playable.GetDamageManager().IsDestroyed() 
+				|| SCR_PossessingManagerComponent.GetInstance().GetPlayerIdFromControlledEntity(playable) != 0)
+			return;
 		
+		SCR_PlayerController.Cast(GetGame().GetPlayerManager().GetPlayerController(playerId)).SetPossessedEntity(playable);
+		
+		
+			
 		IEntity entity = GetGame().GetPlayerController().GetControlledEntity();
 		if (entity) Print(entity.Type().ToString());
 	}
