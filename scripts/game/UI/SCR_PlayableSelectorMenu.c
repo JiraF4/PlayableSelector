@@ -39,8 +39,7 @@ class SCR_PlayableSelectorMenu: MenuBase
 				if (playerId == 0) {
 					handler.SetText(playables[i].GetName());
 				} else {
-					PlayerController playerController = GetGame().GetPlayerManager().GetPlayerController(playerId);
-					handler.SetText(playerController.GetName());
+					handler.SetText(GetGame().GetPlayerManager().GetPlayerName(playerId));
 				}
 				handler.SetFaction(faction);
 				handler.SetPlayableId(i);
