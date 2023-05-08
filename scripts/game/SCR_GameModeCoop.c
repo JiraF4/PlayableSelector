@@ -70,17 +70,16 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	
 	override void OnPlayerKilled(int playerId, IEntity player, IEntity killer)
 	{
-		//OpenPlayableMenu();
-		Print("Bitch-Ass killed!",LogLevel.WARNING);
-		SCR_PlayerController playerController = SCR_PlayerController.Cast(GetGame().GetPlayerController());
-		SCR_EditorManagerEntity.OpenInstance();
+		EntitySpawnParams params();
+		vector mat[4];
+		player.GetTransform(mat);
+		params.Transform = mat;
+		GetGame().SpawnEntityPrefab(Resource.Load("{C8FDE42491F955CB}Prefabs/ManualCameraInitialPlayer.et"), GetGame().GetWorld(), params);
 	}
 	
 	override void OnPlayerDisconnected(int playerId, KickCauseCode cause, int timeout)
 	{
-		//super.OnPlayerDisconnected(playerId, cause, timeout);
-		//Event_OnPlayerDisconnected.Invoke(playerId, cause);
-		Print("Bitch-Ass disconnected!",LogLevel.WARNING);
+		
 	}
 	
 };

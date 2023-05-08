@@ -61,8 +61,6 @@ class SCR_PlayableComponent : ScriptComponent
 		
 		IEntity entity = GetGame().GetPlayerController().GetControlledEntity();
 		if (entity) Print(entity.Type().ToString());
-		
-		//Print("Possesed");
 	}
 	
 	
