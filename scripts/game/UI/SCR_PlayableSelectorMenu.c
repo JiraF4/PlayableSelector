@@ -61,11 +61,8 @@ class SCR_PlayableSelectorMenu: MenuBase
 		
 		PlayerController playerController = GetGame().GetPlayerController();
 		
-		IEntity entity = playerController.GetControlledEntity();
-		SCR_PlayableComponent playable = SCR_PlayableComponent.Cast(playerController.GetControlledEntity().FindComponent(SCR_PlayableComponent));
+		SCR_PlayableComponent playable = SCR_PlayableComponent.Cast(playerController.FindComponent(SCR_PlayableComponent));
 		playable.TakePossession(playerController.GetPlayerId(), handler.GetPlayableId());
-		
-		
 		
 		//SCR_HintManagerComponent.ShowCustomHint(GetGame().GetPlayerController().GetPlayerId().ToString(), "!!!", 1000, true);
 		//playables[handler.GetPlayableId()].TakePossession(GetGame().GetPlayerController().GetPlayerId());
