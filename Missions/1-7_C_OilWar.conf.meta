@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{B889D389288FD7A6}Worlds/MissionConfigs/1-7_C_OilWar.conf"
+ Configurations {
+  CONFResourceClass PC {
+  }
+  CONFResourceClass XBOX_ONE : PC {
+  }
+  CONFResourceClass XBOX_SERIES : PC {
+  }
+  CONFResourceClass PS4 : PC {
+  }
+  CONFResourceClass HEADLESS : PC {
+  }
+ }
+}

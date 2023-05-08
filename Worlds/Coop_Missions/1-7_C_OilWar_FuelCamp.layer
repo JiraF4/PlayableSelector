@@ -1,0 +1,211 @@
+GenericEntity : "{04E378640D28B236}Prefabs/Compositions/Misc/SubCompositions/PalletFuel_Cluttered_01.et" {
+ coords 8794.483 196.632 3900.561
+ angleY -53.418
+}
+StaticModelEntity : "{21ECEC46B5AB9978}PrefabsEditable/Auto/Compositions/Misc/SubCompositions/E_Tent_Barrack_Cluttered_USSR_02.et" {
+ coords 8771.183 199.545 3964.698
+ angleY 75.345
+ angleZ 0.156
+}
+$grp Vehicle : "{4C81D7ED8F8C0D87}Prefabs/Vehicles/Wheeled/Ural4320/Ural4320_tanker.et" {
+ Ural4320_tanker1 {
+  components {
+   SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+    m_fVehicleDestroyDamage 17524
+   }
+  }
+  coords 8791.387 196.654 3896.121
+  angleY 57.056
+ }
+ Ural4320_tanker2 {
+  components {
+   SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+    m_fVehicleDestroyDamage 17524
+   }
+  }
+  coords 8795.176 196.638 3892.798
+  angleY 67.628
+ }
+}
+GenericEntity : "{69F179CCDA5BE533}PrefabsEditable/Auto/Compositions/Slotted/SlotFlatSmall/E_SupplyStorage_S_USSR_01.et" {
+ coords 8772.017 196.89 3901.973
+ angleX -2
+ angleY 106.282
+ angleZ -0.645
+ {
+  GenericEntity {
+   ID "56FCD4F02E612387"
+   coords 3.622 -0.086 -2.74
+   angleY 14.389
+  }
+  GenericEntity {
+   ID "5704E2005D7BC792"
+   coords 4.709 -0.206 -4.489
+   angleY 25.109
+  }
+  GenericEntity {
+   ID "5704E2008722B618"
+   coords -5.788 0.04 -2.982
+   angleX 89.972
+   angleY 178.846
+   angleZ -95.742
+  }
+  GenericEntity {
+   ID "5704E2008722B6B3"
+   coords -5.803 0.035 -3.119
+   {
+    DecalEntity {
+     ID "56E0B29F4975B6A9"
+     coords 0 -0 -0.001
+     angleX -89.972
+     angleY -179.139
+     angleZ -179.178
+    }
+   }
+  }
+  GenericEntity {
+   ID "5704E2008722B6FC"
+   coords -5.639 0.036 -3.044
+  }
+  GenericEntity {
+   ID "5704E2011511D39E"
+   coords 6.16 -0.271 0.968
+   angleY -17.793
+   {
+    GenericEntity {
+     ID "56B6871A4F48B395"
+     coords 0 -0 -0.001
+    }
+   }
+  }
+  GenericEntity {
+   ID "5704E201AB779D9A"
+   coords 3.09 -0.157 -5.767
+   angleY -2.531
+  }
+  GenericEntity {
+   ID "5704E201AB779DEB"
+   coords 3.611 -0.154 -5.407
+   angleY 119.065
+  }
+  GenericEntity {
+   ID "570705C23F45830A"
+   coords 5.63 -0.242 2.858
+   angleY 75
+  }
+  GenericEntity {
+   ID "570705C23F45832C"
+   coords 4.491 -0.193 2.984
+   angleY 42.373
+  }
+  GenericEntity {
+   ID "570705C23F4583B2"
+   coords 4.391 -0.176 2.545
+   angleY 75
+  }
+  GenericEntity {
+   ID "570705C23F4583E7"
+   coords 3.676 -0.132 1.735
+   angleY -37.174
+  }
+  GenericEntity {
+   ID "58B8CD48DC445440"
+   coords 4.827 -0.163 1.014
+   angleY 162.032
+   {
+    GenericEntity {
+     ID "56B6871A4F48B395"
+     coords -0 0 0.001
+    }
+   }
+  }
+  SCR_DestructibleEntity {
+   ID "5618D5407402B75C"
+   coords -4.14 0.088 -0.951
+   angleY -35.39
+  }
+  SCR_DestructibleEntity {
+   ID "5618D5407402B79A"
+   coords -3.462 0.083 0.214
+   angleY -133.439
+  }
+  SCR_DestructibleEntity {
+   ID "5618D5407402B7BA"
+   coords -4.897 0.061 -2.09
+   angleY -133.221
+  }
+  SCR_DestructibleEntity {
+   ID "5618D542F96E9EFD"
+   coords 1.753 -0.13 -5.41
+   angleY 40.266
+  }
+  SCR_DestructibleEntity {
+   ID "5704E200DDB2DA36"
+   coords -5.541 0.018 -3.544
+   angleY 4.676
+  }
+  StaticModelEntity {
+   ID "5618D542B42525E3"
+   coords -6.154 0.103 -1.438
+   angleY 34.954
+  }
+  StaticModelEntity {
+   ID "5618D542F96E9EED"
+   coords -4.169 -0.033 -4.551
+   angleY -107.872
+  }
+  StaticModelEntity {
+   ID "5704E200A0D2FE7E"
+   coords -5.288 0.121 -0.269
+   angleY 121.794
+  }
+  StaticModelEntity {
+   ID "5704E200E96B1F5A"
+   coords -6.47 0.058 -2.695
+   angleY -140.325
+  }
+ }
+}
+$grp GenericEntity : "{82DDDA574CB4F0D9}Prefabs/Props/Industrial/BarrelFuel_01_Base.et" {
+ {
+  coords 8791.805 196.589 3901.658
+  angleX 0.313
+  angleY -66.475
+  angleZ 0.071
+ }
+ {
+  coords 8790.719 196.596 3901.62
+  angleX 0.06
+  angleY 0
+  angleZ 0.315
+ }
+ {
+  coords 8791.31 196.59 3901.159
+  angleX -0.317
+  angleY 91.443
+  angleZ 0.052
+ }
+}
+GenericEntity : "{92BE346D5E0BD792}Prefabs/Props/Military/WaterTanks/MobileFuelTank_USSR_01.et" {
+ coords 8788.328 196.595 3903.554
+ angleY 147.558
+}
+StaticModelEntity : "{C1F853B69BEB164F}PrefabsEditable/Auto/Compositions/Misc/SubCompositions/E_Tent_BarrackHQ_Cluttered_USSR_01.et" {
+ coords 8788.981 200.18 3981.736
+ angleY -102.862
+ angleZ -2.034
+}
+StaticModelEntity : "{C470A0BFB94E0E13}PrefabsEditable/Auto/Compositions/Misc/SubCompositions/E_Tent_Barrack_Cluttered_USSR_03.et" {
+ coords 8769.154 199.485 3975.078
+ angleY 97.497
+ angleZ 1.368
+}
+$grp GenericEntity : "{DB4F61D5F37432F7}Prefabs/Props/Military/Camps/PalletFuel_01.et" {
+ {
+  coords 8792.41 196.596 3904.548
+  angleY -10
+ }
+ {
+  coords 8790.822 196.596 3904.285
+ }
+}

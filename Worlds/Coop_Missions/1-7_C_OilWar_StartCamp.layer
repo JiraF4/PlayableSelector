@@ -1,0 +1,36 @@
+$grp StaticModelEntity : "{48A04E0A139BB167}Prefabs/Structures/Military/Camps/TentSmallFIA_01/TentSmallFIA_01.et" {
+ {
+  coords 8576.344 179.117 4680.457
+  angleX -7.042
+  angleY 19.81
+  angleZ 11.479
+ }
+ {
+  coords 8582.559 177.252 4683.472
+  angleX 14.991
+  angleY -93.133
+  angleZ 1.786
+ }
+ {
+  coords 8578.625 178.111 4687.405
+  angleX 4.823
+  angleY -175.5
+  angleZ -15.35
+ }
+}
+StaticModelEntity : "{75A7C06222E6218B}Prefabs/Structures/Military/Camps/TentSmallUSSR_01/TentSmallUSSR_01.et" {
+ coords 8576.617 178.893 4683.581
+ angleX -11.832
+ angleY 116.611
+ angleZ -9.712
+}
+SCR_AIGroup : "{B20D25B73A29E254}Prefabs/Groups/INDFOR/Group_FIA_RifleSquad_playabe.et" {
+ coords 8572.91 0 4685.263
+ angleY -77.539
+}
+GameEntity : "{D9842C11742C00CF}Prefabs/Props/Civilian/Fireplace_01.et" {
+ coords 8579.523 178.108 4682.908
+ angleX -3.625
+ angleY 0.173
+ angleZ 15.669
+}

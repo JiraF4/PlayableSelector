@@ -1,0 +1,25 @@
+SCR_PlayerController : "{6E2BB64764E3BE9B}Prefabs/Characters/Core/DefaultPlayerController.et" {
+ ID "1A9BA6BEFA06E3B1"
+ components {
+  RadioHandlerComponent "{5D50F641B0525AAD}" {
+  }
+  SCR_ChatComponent "{5D50F641B0525AB3}" {
+  }
+  SCR_DataCollectorCommunicationComponent "{5D50F641B0525AB5}" {
+  }
+  SCR_PlayableComponent "{5D50F641BEA76499}" {
+  }
+  SCR_RadialMenuComponent "{56289B0048E95E96}" {
+  }
+  SCR_RespawnComponent "{5D50F641B0525AB9}" {
+  }
+  SCR_TaskNetworkComponent "{5D50F641B0525ABB}" {
+  }
+  RplComponent "{5D50F641B0525ABE}" {
+   "Self Insert" 0
+   Streamable Disabled
+  }
+ }
+ coords 0 0 0
+ SelfRegister 0
+}

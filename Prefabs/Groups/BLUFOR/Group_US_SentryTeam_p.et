@@ -1,0 +1,71 @@
+SCR_AIGroup : "{EACD97CF4A702FAE}Prefabs/Groups/BLUFOR/Group_US_Base.et" {
+ ID "0000000000000001"
+ components {
+  SCR_EditableGroupComponent "{50D291F6C83FA532}" {
+   m_UIInfo SCR_EditableGroupUIInfo "{5298E609432D192D}" {
+    Name "(Group_US_SentryTeam)"
+    m_Image "{090653AF2A3B3E89}UI/Textures/EditorPreviews/Groups/BLUFOR/Group_US_SentryTeam.edds"
+    m_aAutoLabels {
+     70
+    }
+    m_EntityChildrenBudgetCost {
+     SCR_EntityBudgetValue "{5D4F1561ADBA9588}" {
+      m_BudgetType AI
+      m_Value 2
+     }
+    }
+    m_MilitarySymbol SCR_MilitarySymbol "{5D4F1561ADBA95B2}" {
+     m_Identity BLUFOR
+     m_Dimension LAND
+     m_Icons 32769
+     m_Amplifier TEAM
+    }
+   }
+  }
+  SCR_GroupIdentityComponent "{56366C5C50AD3CF2}" {
+   m_MilitarySymbol SCR_MilitarySymbol "{56366C5C4E32A359}" {
+    m_Icons 32769
+    m_Amplifier TEAM
+   }
+  }
+  SCR_PreviewEntityComponent "{5636898C1FC4A5E7}" : "{6CADA7A88A6265FD}Prefabs/Editor/Components/PreviewEntityComponentClass.ct" {
+   m_bRuntime 0
+   m_aEntries {
+    SCR_BasePreviewEntry "{5D4F1561ADBA95B4}" {
+     m_iParentID -1
+     m_Mesh ""
+     m_Flags 3
+     m_Shape MESH
+     m_iPivotID ""
+     m_fScale 1
+     m_vPosition 0 0 0
+     m_vAngles 0 0 0
+    }
+    SCR_BasePreviewEntry "{5D4F1561ADBA95BB}" {
+     m_iParentID 0
+     m_Mesh "{7B2420C8BC72373A}Prefabs/Characters/Core/Character_Base_Preview.et"
+     m_Flags 0
+     m_Shape PREFAB
+     m_iPivotID ""
+     m_fScale 1
+     m_vPosition 0 0 0
+     m_vAngles 0 0 0
+    }
+    SCR_BasePreviewEntry "{5D4F1561ADBA95B9}" {
+     m_iParentID 0
+     m_Mesh "{7B2420C8BC72373A}Prefabs/Characters/Core/Character_Base_Preview.et"
+     m_Flags 0
+     m_Shape PREFAB
+     m_iPivotID ""
+     m_fScale 1
+     m_vPosition 3 0 -3
+     m_vAngles 0 0 0
+    }
+   }
+  }
+ }
+ coords 320.253 -0.015 197.956
+ m_aUnitPrefabSlots {
+  "{F44F87222B67E26A}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Rifleman_p.et" "{F44F87222B67E26A}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Rifleman_p.et"
+ }
+}

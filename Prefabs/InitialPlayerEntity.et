@@ -1,0 +1,10 @@
+GenericEntity {
+ ID "5D4B13AB74842F5B"
+ components {
+  SCR_PlayableComponent "{5D4B13AB553574FF}" {
+  }
+  RplComponent "{5D4B13A836FE8C9E}" {
+  }
+ }
+ coords 113.016 2.953 81.671
+}

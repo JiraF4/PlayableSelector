@@ -1,0 +1,28 @@
+SCR_AIWorld : "{E0A05C76552E7F58}Prefabs/AI/SCR_AIWorld.et" {
+ components {
+  NavmeshWorldComponent "{5584F30E67F617AD}" {
+   NavmeshSettings NavmeshWorld "{50FC63BEBE3973C5}" {
+   }
+  }
+ }
+ coords 96.485 1.001 106.352
+}
+SCR_GameModeCoop SCR_GameModeCoop1 {
+}
+PerceptionManager PerceptionManager1 : "{028DAEAD63E056BE}Prefabs/World/Game/PerceptionManager.et" {
+ coords 93.149 1.001 99.44
+}
+SCR_FactionManager FactionManager_Editor1 : "{4A188E44289B9A50}Prefabs/MP/Managers/Factions/FactionManager_Editor.et" {
+}
+ItemPreviewManagerEntity ItemPreviewManagerEntity1 {
+ coords 116.3 1.001 71.434
+}
+SCR_PopUpNotification {
+ coords 102.725 1.001 70.281
+}
+SCR_EditorManagerEntity : "{788933FFDC706A68}Prefabs/Editor/EditorManager.et" {
+ components {
+  SCR_MapEditorComponent "{58FC83844CF48999}" {
+  }
+ }
+}

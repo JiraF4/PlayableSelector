@@ -1,0 +1,89 @@
+HorizontalLayoutWidgetClass {
+ Name "TileSelection"
+ Slot FrameWidgetSlot "{558462025A51042F}" {
+  Anchor 0 0 1 1
+  PositionX 0
+  OffsetLeft 0
+  PositionY 0
+  OffsetTop 0
+  SizeX 0
+  OffsetRight 0
+  SizeY 0
+  OffsetBottom 0
+  SizeToContent 1
+ }
+ {
+  VerticalLayoutWidgetClass "{596B05A248558217}" {
+   Name "Left"
+   Slot LayoutSlot "{5584621E221DB5BB}" {
+    SizeMode Fill
+    FillWeight 0.1
+   }
+  }
+  VerticalLayoutWidgetClass "{596B05A248558216}" {
+   Name "Center"
+   Slot LayoutSlot "{5584621E1C59DE19}" {
+    SizeMode Fill
+   }
+   "Fill Origin" Center
+   {
+    VerticalLayoutWidgetClass "{596B05A248558209}" {
+     Name "VerticalLayout"
+     Slot LayoutSlot "{5584621936E29363}" {
+      SizeMode Fill
+     }
+     {
+      OverlayWidgetClass "{596B05A248558208}" {
+       Name "GalleryOverlay"
+       Slot LayoutSlot "{56DEAE8C0A5B55E6}" {
+        SizeMode Fill
+       }
+       {
+        VerticalLayoutWidgetClass "{596B05A24855820B}" : "{147CEB5DC7FA020D}UI/layouts/WidgetLibrary/GalleryView/WLib_Gallery.layout" {
+         Name "Tiles"
+         Slot OverlayWidgetSlot "{56DEAE87B41C4CB4}" {
+          HorizontalAlign 3
+         }
+         components {
+          SCR_GalleryComponent "{56D4A49D514555C0}" {
+           m_iInitialItemCount 33
+           m_iCountShownItems 4
+           m_sItemLayout "{CFA71C83A7ECC9CE}UI/PlayableMenuTile.layout"
+          }
+         }
+         "Fill Origin" Center
+         {
+          OverlayWidgetClass "{56D2F4A2995E5816}" {
+           Prefab "{56D2F4A2995E5816}"
+           Slot LayoutSlot "{56D2F4A2995E582B}" {
+            HorizontalAlign 3
+            VerticalAlign 1
+           }
+           {
+            SizeLayoutWidgetClass "{56D53BC9E729F347}" {
+             Prefab "{56D53BC9E729F347}"
+             Slot OverlayWidgetSlot "{56D53BC9E729F306}" {
+             }
+             {
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+  VerticalLayoutWidgetClass "{596B05A24855820D}" {
+   Name "Right"
+   Slot LayoutSlot "{5584621E1E6D9959}" {
+    Padding 0 20 0 0
+    SizeMode Fill
+    FillWeight 0.1
+   }
+  }
+ }
+}

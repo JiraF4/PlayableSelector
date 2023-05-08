@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{CFA71C83A7ECC9CE}UI/layouts/Menus/RoleSelection/LoadoutMenuTile.layout"
+ Configurations {
+  LayoutResourceClass PC {
+  }
+  LayoutResourceClass XBOX_ONE : PC {
+  }
+  LayoutResourceClass XBOX_SERIES : PC {
+  }
+  LayoutResourceClass PS4 : PC {
+  }
+  LayoutResourceClass HEADLESS : PC {
+  }
+ }
+}

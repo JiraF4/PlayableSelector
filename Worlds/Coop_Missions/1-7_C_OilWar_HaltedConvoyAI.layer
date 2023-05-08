@@ -1,0 +1,23 @@
+SCR_AIGroup : "{1A5F0D93609DA5DA}Prefabs/Groups/OPFOR/Group_USSR_ManeuverGroup.et" {
+ coords 8340.556 0 4681.634
+ m_aStaticWaypoints {
+  "UralDef"
+ }
+}
+SCR_AIGroup : "{657590C1EC9E27D3}Prefabs/Groups/OPFOR/Group_USSR_LightFireTeam.et" {
+ coords 8347.133 238.701 4724.026
+ angleY 26.743
+ m_aStaticWaypoints {
+  "UAZDef"
+ }
+}
+$grp SCR_DefendWaypoint : "{93291E72AC23930F}Prefabs/AI/Waypoints/AIWaypoint_Defend.et" {
+ UAZDef {
+  coords 8346.976 238.754 4722.736
+  CompletionRadius 10
+ }
+ UralDef {
+  coords 8339.847 240.59 4682.73
+  CompletionRadius 5
+ }
+}

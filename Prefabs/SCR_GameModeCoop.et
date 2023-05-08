@@ -1,0 +1,9 @@
+SCR_GameModeCoop {
+ ID "5D4CDA0160C87274"
+ {
+  ItemPreviewManagerEntity ItemPreviewManagerEntity1 {
+   ID "5D4CDA0121F12235"
+   coords 8578.919 177.848 4689.416
+  }
+ }
+}

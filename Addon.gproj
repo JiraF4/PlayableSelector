@@ -1,0 +1,33 @@
+GameProject {
+ ID "PlayableSelector"
+ GUID "596523840114E2D3"
+ TITLE "Playable selector"
+ Dependencies {
+  "5614BBCCBB55ED1C" "58D0FB3206B6F859"
+ }
+ Configurations {
+  GameProjectConfig PC {
+   WidgetManagerSettings WidgetManagerSettings "{AC4BE58770485E02}" {
+    StringTables {
+     StringTableDefinition "{596CCAA5251C9026}" {
+      StringTableSource "{91E0F6253032266E}Language/localization.st"
+      Languages {
+       LanguageDefinition "{596CCAA521485222}" {
+        Code "en_us"
+        StringTableRuntime "{FFABF1A438694BFC}Language/localization.en_us.conf"
+       }
+      }
+     }
+    }
+   }
+  }
+  GameProjectConfig HEADLESS {
+  }
+  GameProjectConfig XBOX_ONE {
+  }
+  GameProjectConfig XBOX_SERIES {
+  }
+  GameProjectConfig PS4 {
+  }
+ }
+}
