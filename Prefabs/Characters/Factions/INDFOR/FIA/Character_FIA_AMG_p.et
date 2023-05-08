@@ -22,6 +22,7 @@ SCR_ChimeraCharacter : "{7A9EE19AB67B298B}Prefabs/Characters/Factions/INDFOR/FIA
   SCR_GadgetManagerComponent "{520EA1D2DB118DF3}" {
   }
   SCR_PlayableComponent "{5D4D1BD39635C64C}" {
+   m_name "MG Assistant"
   }
   CharacterGrenadeSlotComponent "{520EA1D2F659CE6E}" {
    WeaponTemplate "{645C73791ECA1698}Prefabs/Weapons/Grenades/Grenade_RGD5.et"

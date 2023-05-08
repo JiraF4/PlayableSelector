@@ -181,14 +181,6 @@ ButtonWidgetClass {
         }
        }
       }
-      ImageWidgetClass "{596B05AA0E134501}" {
-       Name "Foreground"
-       Slot OverlayWidgetSlot "{585A66156F10E2F0}" {
-        HorizontalAlign 3
-        VerticalAlign 3
-       }
-       "Is Visible" 0
-      }
      }
     }
    }

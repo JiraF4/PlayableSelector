@@ -21,6 +21,7 @@ SCR_ChimeraCharacter : "{5346CF7E39A65A6B}Prefabs/Characters/Factions/OPFOR/USSR
   SCR_GadgetManagerComponent "{520EA1D2DB118DF3}" {
   }
   SCR_PlayableComponent "{5D4F39D3607C3A59}" {
+   m_name "Rifleman"
   }
   CharacterGrenadeSlotComponent "{520EA1D2F659CE6E}" {
    WeaponTemplate "{645C73791ECA1698}Prefabs/Weapons/Grenades/Grenade_RGD5.et"

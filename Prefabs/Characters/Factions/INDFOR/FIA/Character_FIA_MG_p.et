@@ -22,6 +22,7 @@ SCR_ChimeraCharacter : "{7A9EE19AB67B298B}Prefabs/Characters/Factions/INDFOR/FIA
   SCR_GadgetManagerComponent "{520EA1D2DB118DF3}" {
   }
   SCR_PlayableComponent "{5D4D1BDC2C6F608D}" {
+   m_name "Machinegunner"
   }
   CharacterGrenadeSlotComponent "{5A6CDA0CCF43068E}" {
    WeaponTemplate "{77EAE5E07DC4678A}Prefabs/Weapons/Grenades/Smoke_RDG2.et"

@@ -1,9 +1,5 @@
 $grp SCR_DestructibleEntity : "{A00A15B03B48A2AF}Prefabs/Structures/Walls/Brick/BrickWall_01/BrickWall_01_8m.et" {
  {
-  coords 103.512 0 98.533
-  angleY 35
- }
- {
   coords 127.743 0.003 91.344
   angleY 124.239
  }

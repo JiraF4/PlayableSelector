@@ -21,6 +21,7 @@ SCR_ChimeraCharacter : "{836E7E39AAC5888B}Prefabs/Characters/Factions/BLUFOR/US_
   SCR_GadgetManagerComponent "{520EA1D2DB118DF3}" {
   }
   SCR_PlayableComponent "{5D4F15626775E61D}" {
+   m_name "Rifleman"
   }
   CharacterGrenadeSlotComponent "{520EA1D2F659CE6E}" {
    WeaponTemplate "{E8F00BF730225B00}Prefabs/Weapons/Grenades/Grenade_M67.et"
