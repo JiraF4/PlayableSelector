@@ -49,6 +49,13 @@ class SCR_PlayableSelectorMenu: MenuBase
 		
 		//if (itemsCount == 0)
 		//	GameStateTransitions.RequestGameplayEndTransition();
+		
+		GetGame().GetInputManager().ResetAction("MenuBack");
+		#ifdef WORKBENCH
+		        GetGame().GetInputManager().AddActionListener("MenuBackWB", EActionTrigger.DOWN, Close);
+		#else
+		        GetGame().GetInputManager().AddActionListener("MenuBack", EActionTrigger.DOWN, Close);
+		#endif
 	}
 	
 	override void OnMenuClose()
@@ -66,11 +73,5 @@ class SCR_PlayableSelectorMenu: MenuBase
 		playable.TakePossession(playerController.GetPlayerId(), handler.GetPlayableId());
 		
 		Close();
-	}
-	
-	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
-	static void test(string test)
-	{
-		Print(test)
 	}
 };
