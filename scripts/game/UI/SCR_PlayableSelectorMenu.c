@@ -49,11 +49,22 @@ class SCR_PlayableSelectorMenu: MenuBase
 		
 		//if (itemsCount == 0)
 		//	GameStateTransitions.RequestGameplayEndTransition();
+		
+		GetGame().GetInputManager().ResetAction("MenuBack");
+		#ifdef WORKBENCH
+		        GetGame().GetInputManager().AddActionListener("MenuBackWB", EActionTrigger.DOWN, Close);
+		#else
+		        GetGame().GetInputManager().AddActionListener("MenuBack", EActionTrigger.DOWN, Close);
+		#endif
 	}
 	
 	override void OnMenuClose()
 	{
-		
+		array<SCR_PlayableComponent> playables = SCR_PlayableComponent.GetPlayables();
+		for (int i = 0; i < playables.Count(); i++) {
+			IEntity entity = playables[i].GetOwner();
+			entity.SetFixedLOD(-1);
+		}
 	}
 	
 	protected void TileClick(SCR_ButtonBaseComponent button)
@@ -66,11 +77,5 @@ class SCR_PlayableSelectorMenu: MenuBase
 		playable.TakePossession(playerController.GetPlayerId(), handler.GetPlayableId());
 		
 		Close();
-	}
-	
-	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
-	static void test(string test)
-	{
-		Print(test)
 	}
 };
