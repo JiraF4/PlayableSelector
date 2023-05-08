@@ -20,8 +20,7 @@ class SCR_PlayableSelectorMenu: MenuBase
 		for (int i = 0; i < playables.Count(); i++) {
 			SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(playables[i].GetOwner());
 			
-			if (!character.GetDamageManager().IsDestroyed() 
-				&& SCR_PossessingManagerComponent.GetInstance().GetPlayerIdFromControlledEntity(character) == 0) {
+			if (!character.GetDamageManager().IsDestroyed()) {
 				itemsCount++;
 				
 				Widget tile = GetGame().GetWorkspace().CreateWidgets(m_sTilePrefab);
@@ -36,7 +35,13 @@ class SCR_PlayableSelectorMenu: MenuBase
 				
 				handler.m_OnClicked.Insert(TileClick);
 				
-				handler.SetText(playables[i].GetName());
+				int playerId = SCR_PossessingManagerComponent.GetInstance().GetPlayerIdFromControlledEntity(character);
+				if (playerId == 0) {
+					handler.SetText(playables[i].GetName());
+				} else {
+					PlayerController playerController = GetGame().GetPlayerManager().GetPlayerController(playerId);
+					handler.SetText(playerController.GetName());
+				}
 				handler.SetFaction(faction);
 				handler.SetPlayableId(i);
 				
