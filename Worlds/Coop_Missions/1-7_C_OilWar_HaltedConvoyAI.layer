@@ -4,12 +4,20 @@ SCR_AIGroup : "{1A5F0D93609DA5DA}Prefabs/Groups/OPFOR/Group_USSR_ManeuverGroup.e
   "UralDef"
  }
 }
+SCR_AIWaypoint BTRWait : "{22A875E30470BD4F}Prefabs/AI/Waypoints/AIWaypoint_Patrol.et" {
+ coords 8335.811 241.17 4675.949
+ CompletionRadius 2.6
+}
 SCR_AIGroup : "{657590C1EC9E27D3}Prefabs/Groups/OPFOR/Group_USSR_LightFireTeam.et" {
  coords 8347.133 238.701 4724.026
  angleY 26.743
  m_aStaticWaypoints {
   "UAZDef"
  }
+}
+SCR_EntityWaypoint BTRGetIn : "{712F4795CF8B91C7}Prefabs/AI/Waypoints/AIWaypoint_GetIn.et" {
+ coords 8342.319 241.278 4674.226
+ CompletionRadius 5.2
 }
 $grp SCR_DefendWaypoint : "{93291E72AC23930F}Prefabs/AI/Waypoints/AIWaypoint_Defend.et" {
  UAZDef {
@@ -19,5 +27,11 @@ $grp SCR_DefendWaypoint : "{93291E72AC23930F}Prefabs/AI/Waypoints/AIWaypoint_Def
  UralDef {
   coords 8339.847 240.59 4682.73
   CompletionRadius 5
+ }
+}
+SCR_AIGroup USSR_BTR_Crew : "{CB58D90EA14430AD}Prefabs/Groups/OPFOR/Group_USSR_SentryTeam.et" {
+ coords 8335.379 241.383 4671.032
+ m_aStaticWaypoints {
+  "BTRWait" "BTRGetIn"
  }
 }
