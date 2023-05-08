@@ -8,6 +8,10 @@ SCR_AIWorld : "{E0A05C76552E7F58}Prefabs/AI/SCR_AIWorld.et" {
  coords 96.485 1.001 106.352
 }
 SCR_GameModeCoop SCR_GameModeCoop1 {
+ components {
+  RplComponent "{5D512836188B838B}" {
+  }
+ }
  PlayerControllerPrefab "{4E5DAC62A374950F}Prefabs/Characters/Core/DefaultPlayerControllerMP_Coop.et"
 }
 PerceptionManager PerceptionManager1 : "{028DAEAD63E056BE}Prefabs/World/Game/PerceptionManager.et" {

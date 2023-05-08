@@ -20,7 +20,8 @@ class SCR_PlayableSelectorMenu: MenuBase
 		for (int i = 0; i < playables.Count(); i++) {
 			SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(playables[i].GetOwner());
 			
-			if (!character.GetDamageManager().IsDestroyed()) {
+			if (!character.GetDamageManager().IsDestroyed() 
+				&& SCR_PossessingManagerComponent.GetInstance().GetPlayerIdFromControlledEntity(character) == 0) {
 				itemsCount++;
 				
 				Widget tile = GetGame().GetWorkspace().CreateWidgets(m_sTilePrefab);
@@ -46,8 +47,8 @@ class SCR_PlayableSelectorMenu: MenuBase
 		gallery_component.SetCurrentItem(3);
 		gallery_component.SetFocusedItem(3);
 		
-		if (itemsCount == 0)
-			GameStateTransitions.RequestGameplayEndTransition();
+		//if (itemsCount == 0)
+		//	GameStateTransitions.RequestGameplayEndTransition();
 	}
 	
 	override void OnMenuClose()
@@ -63,17 +64,6 @@ class SCR_PlayableSelectorMenu: MenuBase
 		
 		SCR_PlayableComponent playable = SCR_PlayableComponent.Cast(playerController.FindComponent(SCR_PlayableComponent));
 		playable.TakePossession(playerController.GetPlayerId(), handler.GetPlayableId());
-		
-		//SCR_HintManagerComponent.ShowCustomHint(GetGame().GetPlayerController().GetPlayerId().ToString(), "!!!", 1000, true);
-		//playables[handler.GetPlayableId()].TakePossession(GetGame().GetPlayerController().GetPlayerId());
-		
-		
-		
-		
-		//SCR_PlayerController.Cast(GetGame().GetPlayerController()).SetPossessedEntity(playables[handler.GetPlayableId()].GetOwner());
-		//SCR_PlayerController.Cast(GetGame().GetPlayerController()).SetControlledEntity(playables[handler.GetPlayableId()].GetOwner());
-		
-		//GetGame().GetPlayerController().Rpc(SCR_PlayableSelectorMenu.test, "Suck");
 		
 		Close();
 	}
