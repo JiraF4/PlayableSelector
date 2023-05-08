@@ -21,6 +21,15 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	override void HandleOnCharacterDeath(notnull CharacterControllerComponent characterController, IEntity instigator)
 	{
 		super.HandleOnCharacterDeath(characterController, instigator);
+		
+		if (!instigator.FindComponent(SCR_PlayableComponent)) return;
+		UpdateMenu()
+	}
+	
+	void UpdateMenu()
+	{
+		Rpc(RPC_ReOpenPlayableMenu);
+		RPC_ReOpenPlayableMenu();
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -35,6 +44,19 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 		params.Transform = mat;
 		GetGame().SpawnEntityPrefab(Resource.Load("{C8FDE42491F955CB}Prefabs/ManualCameraInitialPlayer.et"), GetGame().GetWorld(), params);
 		//OpenPlayableMenu();
+	}
+	
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RPC_ReOpenPlayableMenu()
+	{
+		GetGame().GetCallqueue().CallLater(ReOpenPlayableMenu, 1);
+	}
+	
+	void ReOpenPlayableMenu()
+	{
+		MenuManager menuManager = GetGame().GetMenuManager();
+		SCR_PlayableSelectorMenu menu = SCR_PlayableSelectorMenu.Cast(menuManager.FindMenuByPreset(ChimeraMenuPreset.PlayableSelector));
+		if (menu) menu.UpdateList();
 	}
 	
 	void OpenPlayableMenu()
