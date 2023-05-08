@@ -60,7 +60,11 @@ class SCR_PlayableSelectorMenu: MenuBase
 	
 	override void OnMenuClose()
 	{
-		
+		array<SCR_PlayableComponent> playables = SCR_PlayableComponent.GetPlayables();
+		for (int i = 0; i < playables.Count(); i++) {
+			IEntity entity = playables[i].GetOwner();
+			entity.SetFixedLOD(-1);
+		}
 	}
 	
 	protected void TileClick(SCR_ButtonBaseComponent button)

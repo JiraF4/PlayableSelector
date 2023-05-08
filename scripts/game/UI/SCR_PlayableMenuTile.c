@@ -31,6 +31,7 @@ class SCR_PlayableMenuTile : SCR_DeployMenuTile
 	void SetPreviewedLoadout(SCR_BasePlayerLoadout loadout)
 	{
 		IEntity ent = m_Preview.SetPreviewedLoadout(loadout);
+		ent.SetFixedLOD(0);
 	}
 	
 	void SetFaction(SCR_Faction faction)
