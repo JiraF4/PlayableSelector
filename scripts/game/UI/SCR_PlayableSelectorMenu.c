@@ -20,6 +20,8 @@ class SCR_PlayableSelectorMenu: MenuBase
 		for (int i = 0; i < playables.Count(); i++) {
 			SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(playables[i].GetOwner());
 			
+			playables[i].GetOwner().SetFixedLOD(0);
+			
 			if (!character.GetDamageManager().IsDestroyed()) {
 				itemsCount++;
 				
@@ -35,18 +37,14 @@ class SCR_PlayableSelectorMenu: MenuBase
 				
 				handler.m_OnClicked.Insert(TileClick);
 				
-				int playerId = SCR_PossessingManagerComponent.GetInstance().GetPlayerIdFromControlledEntity(character);
-				if (playerId == 0) {
-					handler.SetText(playables[i].GetName());
-				} else {
-					handler.SetText(GetGame().GetPlayerManager().GetPlayerName(playerId));
-				}
 				handler.SetFaction(faction);
 				handler.SetPlayableId(i);
 				
 				gallery_component.AddItem(tile);
 			}
 		}
+		
+		UpdateList();
 		
 		gallery_component.SetCurrentItem(3);
 		gallery_component.SetFocusedItem(3);
@@ -79,15 +77,14 @@ class SCR_PlayableSelectorMenu: MenuBase
 			
 			
 			if (character.GetDamageManager().IsDestroyed()) 
-				gallery_component.RemoveItem(i);
+			{
+				handler.SetDead();
+			}
 			else 
 			{
+				handler.SetText(playables[i].GetName());
 				int playerId = SCR_PossessingManagerComponent.GetInstance().GetPlayerIdFromControlledEntity(character);
-				if (playerId == 0) {
-					handler.SetText(playables[i].GetName());
-				} else {
-					handler.SetText(GetGame().GetPlayerManager().GetPlayerName(playerId));
-				}
+				handler.SetPlayer(playerId);
 			}
 		}
 	}
