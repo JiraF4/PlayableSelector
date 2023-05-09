@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{B896DD9BCCA7484E}Worlds/TvT_Test/unnamed.ent"
+ Configurations {
+  ENTResourceClass PC {
+  }
+  ENTResourceClass XBOX_ONE : PC {
+  }
+  ENTResourceClass XBOX_SERIES : PC {
+  }
+  ENTResourceClass PS4 : PC {
+  }
+  ENTResourceClass HEADLESS : PC {
+  }
+ }
+}
