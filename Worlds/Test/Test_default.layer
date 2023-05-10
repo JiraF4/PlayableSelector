@@ -22,6 +22,10 @@ SCR_FactionManager FactionManager_Editor1 : "{4A188E44289B9A50}Prefabs/MP/Manage
 ItemPreviewManagerEntity ItemPreviewManagerEntity1 {
  coords 116.3 1.001 71.434
 }
+SCR_EditorSettingsEntity {
+ coords 110.251 1.001 89.038
+ m_bDisableEditor 1
+}
 SCR_PopUpNotification {
  coords 102.725 1.001 70.281
 }

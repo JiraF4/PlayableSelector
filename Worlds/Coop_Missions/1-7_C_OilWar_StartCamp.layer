@@ -1,3 +1,31 @@
+GenericEntity : "{10F9EE0FB9EC0E4E}Prefabs/Systems/Arsenal/AmmoBoxes/FIA/AmmoBoxArsenal_Ammunition_FIA.et" {
+ components {
+  SCR_ArsenalComponent "{589F01C9C8D4A475}" {
+   Enabled 0
+  }
+  SCR_UniversalInventoryStorageComponent "{5476A2F100DF4EFF}" {
+   Enabled 1
+   MultiSlots {
+    MultiSlotConfiguration "{5D5523FEA9255FD7}" {
+     SlotTemplate InventoryStorageSlot M21 {
+      Prefab "{627255315038152A}Prefabs/Weapons/Magazines/Magazine_762x51_M14_20rnd_SpecialBall.et"
+     }
+     NumSlots 4
+    }
+    MultiSlotConfiguration "{5D5523FF74DC9CBF}" {
+     SlotTemplate SCR_EquipmentStorageSlot m21w {
+      Prefab "{81EB948E6414BD6F}Prefabs/Weapons/Rifles/M14/Rifle_M21_ARTII.et"
+     }
+     NumSlots 1
+    }
+   }
+  }
+ }
+ coords 8578.637 178.564 4680.341
+ angleX -4.205
+ angleY -1.053
+ angleZ 14.075
+}
 GenericEntity : "{2F2BBFDA3A2C73D4}Prefabs/Props/Civilian/RadioSmall_01_black.et" {
  coords 8579.089 178.038 4686.225
  angleX 8.912
@@ -31,7 +59,7 @@ StaticModelEntity : "{75A7C06222E6218B}Prefabs/Structures/Military/Camps/TentSma
  angleZ -9.712
 }
 SCR_AIGroup : "{B20D25B73A29E254}Prefabs/Groups/INDFOR/Group_FIA_RifleSquad_playabe.et" {
- coords 8572.91 179.773 4685.263
+ coords 8572.91 0 4685.263
  angleY -77.539
 }
 GameEntity : "{D9842C11742C00CF}Prefabs/Props/Civilian/Fireplace_01.et" {
