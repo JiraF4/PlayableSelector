@@ -62,7 +62,6 @@ class SCR_PlayableComponent : ScriptComponent
 				|| SCR_PossessingManagerComponent.GetInstance().GetPlayerIdFromControlledEntity(playable) != 0)
 			return;
 		
-		GetGame().GetPlayerController().SetControlledEntity(GetGame().GetGameMode()); // It's okay
 		SCR_PlayerController.Cast(GetGame().GetPlayerManager().GetPlayerController(playerId)).SetPossessedEntity(playable);
 		
 		SCR_GameModeCoop.Cast(GetGame().GetGameMode()).UpdateMenu();

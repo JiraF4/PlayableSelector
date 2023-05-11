@@ -14,7 +14,8 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	
 	override void OnPlayerConnected(int playerId)
 	{
-		
+		SCR_PlayerController playerController = SCR_PlayerController.Cast(GetGame().GetPlayerManager().GetPlayerController(playerId));
+		playerController.SetInitialMainEntity(playerController);
 	}
 	
 	//------------------------------------------------------------------------------------------------
