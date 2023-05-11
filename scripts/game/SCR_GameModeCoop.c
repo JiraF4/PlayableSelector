@@ -42,7 +42,7 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 		vector mat[4];
 		GetTransform(mat);
 		params.Transform = mat;
-		GetGame().SpawnEntityPrefab(Resource.Load("{C8FDE42491F955CB}Prefabs/ManualCameraInitialPlayer.et"), GetGame().GetWorld(), params);
+		//GetGame().SpawnEntityPrefab(Resource.Load("{C8FDE42491F955CB}Prefabs/ManualCameraInitialPlayer.et"), GetGame().GetWorld(), params);
 		//OpenPlayableMenu();
 	}
 	
