@@ -12,6 +12,8 @@ SCR_GameModeCoop SCR_GameModeCoop1 {
   RplComponent "{5D512836188B838B}" {
   }
  }
+ coords 104.087 7.642 84.116
+ angleY 83.932
  PlayerControllerPrefab "{4E5DAC62A374950F}Prefabs/Characters/Core/DefaultPlayerControllerMP_Coop.et"
 }
 PerceptionManager PerceptionManager1 : "{028DAEAD63E056BE}Prefabs/World/Game/PerceptionManager.et" {
@@ -21,6 +23,10 @@ SCR_FactionManager FactionManager_Editor1 : "{4A188E44289B9A50}Prefabs/MP/Manage
 }
 ItemPreviewManagerEntity ItemPreviewManagerEntity1 {
  coords 116.3 1.001 71.434
+}
+SCR_EditorSettingsEntity {
+ coords 110.251 1.001 89.038
+ m_bDisableEditor 1
 }
 SCR_PopUpNotification {
  coords 102.725 1.001 70.281

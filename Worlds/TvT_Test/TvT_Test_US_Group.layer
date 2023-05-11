@@ -1,0 +1,23 @@
+Vehicle M151A2_transport1 : "{47D94E1193A88497}Prefabs/Vehicles/Wheeled/M151A2/M151A2_transport.et" {
+ components {
+  SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+   m_fVehicleDestroyDamage 8980.1
+  }
+ }
+ coords 9081.997 79.833 2308.31
+ angleY -41.659
+}
+SCR_AIGroup : "{BC357974A560F678}Prefabs/Groups/BLUFOR/Group_US_RifleSquad_p.et" {
+ coords 9105.514 79.202 2324.136
+}
+Vehicle M923A1_transport1 : "{F1FBD0972FA5FE09}Prefabs/Vehicles/Wheeled/M923A1/M923A1_transport.et" {
+ components {
+  SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+   m_fVehicleDestroyDamage 17524
+  }
+ }
+ coords 9088.313 79.327 2299.643
+ angleX 3.214
+ angleY -38.424
+ angleZ -0.266
+}
