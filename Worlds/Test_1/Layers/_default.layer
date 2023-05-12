@@ -72,6 +72,9 @@ Vehicle BTR70_FIA1 : "{B47110AA1A806556}Prefabs/Vehicles/Wheeled/BTR70/BTR70_FIA
    }
   }
   SCR_VehicleAi "{5D59015E2C65A054}" {
+   m_aStaticWaypoints {
+    "WP1" "WP2" "WP3"
+   }
   }
   SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
    m_fVehicleDestroyDamage 16909
@@ -92,7 +95,4 @@ $grp GenericEntity : "{C8FA3A3C79289902}Prefabs/Props/Furniture/CurtainsWindow_0
 }
 GenericEntity : "{D6EF54367CECE1D9}Prefabs/Weapons/Explosives/Mine_TM62M/Mine_TM62M.et" {
  coords 137.806 1.001 88.516
-}
-SCR_AIGroup : "{E3545CFEDD312D54}Prefabs/Groups/OPFOR/Group_USSR_RifleSquad_p.et" {
- coords 115.534 1.001 103.203
 }
