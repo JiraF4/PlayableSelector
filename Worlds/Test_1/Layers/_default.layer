@@ -37,3 +37,15 @@ SCR_EditorManagerEntity : "{788933FFDC706A68}Prefabs/Editor/EditorManager.et" {
   }
  }
 }
+Vehicle BTR70_FIA1 : "{B47110AA1A806556}Prefabs/Vehicles/Wheeled/BTR70/BTR70_FIA.et" {
+ components {
+  RigidBody "{51DAA09FECF52BBF}" {
+  }
+  SCR_BestVechicleAi "{5D5877B0321E10CD}" {
+  }
+  SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+   m_fVehicleDestroyDamage 16909
+  }
+ }
+ coords 133.929 1.001 79.959
+}
