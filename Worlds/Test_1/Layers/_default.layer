@@ -61,5 +61,17 @@ Vehicle BTR70_FIA1 : "{B47110AA1A806556}Prefabs/Vehicles/Wheeled/BTR70/BTR70_FIA
    m_fVehicleDestroyDamage 16909
   }
  }
- coords 133.929 1.001 79.959
+ coords 141.988 1.001 69.702
+ angleY 177.904
+}
+$grp GenericEntity : "{C8FA3A3C79289902}Prefabs/Props/Furniture/CurtainsWindow_01/CurtainsWindow_01_big_straight_V2.et" {
+ {
+  coords 137.265 4.763 92.05
+ }
+ {
+  coords 160.902 5.475 85.529
+ }
+ {
+  coords 160.368 5.801 54.075
+ }
 }
