@@ -17,6 +17,8 @@ class SCR_PlayableComponent : ScriptComponent
 	{
 		if(owner.Type().ToString() == "SCR_ChimeraCharacter")
 			addPlayable(this);
+		RplComponent rpl = RplComponent.Cast(owner.FindComponent(RplComponent));
+		if (rpl) rpl.EnableStreaming(false);
 	}
 	
 	static array<SCR_PlayableComponent> GetPlayables() 
