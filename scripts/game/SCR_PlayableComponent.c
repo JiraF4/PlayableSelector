@@ -68,8 +68,11 @@ class SCR_PlayableComponent : ScriptComponent
 			
 			return;
 		}
-		
-		SCR_PlayerController.Cast(GetGame().GetPlayerManager().GetPlayerController(playerId)).SetPossessedEntity(playable);
+		SCR_PlayerController playerController = SCR_PlayerController.Cast(GetGame().GetPlayerManager().GetPlayerController(playerId));
+		IEntity currentEntity = playerController.GetControlledEntity();
+		if (currentEntity)
+			playerController.SetInitialMainEntity(currentEntity); // Fix controlls and don't break camera
+		playerController.SetPossessedEntity(playable); // reset ai? but still broken...
 		RPC_PossesionResult(playerId, true);
 		Rpc(RPC_PossesionResult, playerId, true);
 		
