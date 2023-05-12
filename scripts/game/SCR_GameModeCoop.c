@@ -24,8 +24,8 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	override void HandleOnCharacterDeath(notnull CharacterControllerComponent characterController, IEntity instigator)
 	{
 		super.HandleOnCharacterDeath(characterController, instigator);
-		
-		if (!instigator.FindComponent(SCR_PlayableComponent)) return;
+		if (!instigator) return;
+			
 		UpdateMenu()
 	}
 	
