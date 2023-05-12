@@ -17,7 +17,7 @@ SCR_ChimeraCharacter : "{26A9756790131354}Prefabs/Characters/Factions/BLUFOR/US_
    }
   }
   SCR_PlayableComponent "{5D58D9580BFFC278}" {
-   m_name "LAW Rifleman"
+   m_name "AT Rifleman"
   }
   CharacterWeaponSlotComponent "{520EA1D2F659CFAB}" {
    WeaponSlotIndex 0

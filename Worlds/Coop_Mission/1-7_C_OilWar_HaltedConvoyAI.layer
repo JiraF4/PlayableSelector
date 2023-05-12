@@ -18,6 +18,7 @@ SCR_AIGroup : "{657590C1EC9E27D3}Prefabs/Groups/OPFOR/Group_USSR_LightFireTeam.e
 SCR_EntityWaypoint BTRGetIn : "{712F4795CF8B91C7}Prefabs/AI/Waypoints/AIWaypoint_GetIn.et" {
  coords 8342.319 241.278 4674.226
  CompletionRadius 5.2
+ m_sEntityName "BTR1"
 }
 $grp SCR_DefendWaypoint : "{93291E72AC23930F}Prefabs/AI/Waypoints/AIWaypoint_Defend.et" {
  UAZDef {
