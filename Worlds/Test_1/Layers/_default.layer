@@ -21,9 +21,6 @@ PerceptionManager PerceptionManager1 : "{028DAEAD63E056BE}Prefabs/World/Game/Per
 }
 SCR_FactionManager FactionManager_Editor1 : "{4A188E44289B9A50}Prefabs/MP/Managers/Factions/FactionManager_Editor.et" {
 }
-ItemPreviewManagerEntity ItemPreviewManagerEntity1 {
- coords 116.3 1.001 71.434
-}
 $grp SCR_AIWaypoint {
  WP1 {
   coords 137.284 1.001 91.943
@@ -48,21 +45,39 @@ SCR_EditorManagerEntity : "{788933FFDC706A68}Prefabs/Editor/EditorManager.et" {
   }
  }
 }
+SCR_BoardingWaypoint WPIS : "{8AD8C82346156494}Prefabs/AI/Waypoints/AIWaypoint_GetInSelected.et" {
+ components {
+  RplComponent "{5D59015A2CB99060}" {
+  }
+ }
+ coords 135.365 1.001 78.562
+ CompletionRadius 20
+ m_holdingTime 30
+ m_bDriverAllowed 1
+ m_bCargoAllowed 0
+}
+ItemPreviewManagerEntity ItemPreviewManager1 : "{9F18C476AB860F3B}Prefabs/World/Game/ItemPreviewManager.et" {
+ coords 116.928 1.001 98.019
+}
 Vehicle BTR70_FIA1 : "{B47110AA1A806556}Prefabs/Vehicles/Wheeled/BTR70/BTR70_FIA.et" {
  components {
   AICarMovementComponent "{5A3EFB66475D9F87}" {
    Enabled 1
   }
-  RigidBody "{51DAA09FECF52BBF}" {
+  BaseVehicleNodeComponent "{20FB66C5B2237133}" {
+   components {
+    SCR_CarControllerComponent "{20FB66C5BC92275B}" {
+     ApplyControls 0
+    }
+   }
   }
-  SCR_BestVechicleAi "{5D5877B0321E10CD}" {
+  SCR_VehicleAi "{5D59015E2C65A054}" {
   }
   SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
    m_fVehicleDestroyDamage 16909
   }
  }
- coords 141.988 1.001 69.702
- angleY 177.904
+ coords 137.309 1.001 79.214
 }
 $grp GenericEntity : "{C8FA3A3C79289902}Prefabs/Props/Furniture/CurtainsWindow_01/CurtainsWindow_01_big_straight_V2.et" {
  {
@@ -74,4 +89,10 @@ $grp GenericEntity : "{C8FA3A3C79289902}Prefabs/Props/Furniture/CurtainsWindow_0
  {
   coords 160.368 5.801 54.075
  }
+}
+GenericEntity : "{D6EF54367CECE1D9}Prefabs/Weapons/Explosives/Mine_TM62M/Mine_TM62M.et" {
+ coords 137.806 1.001 88.516
+}
+SCR_AIGroup : "{E3545CFEDD312D54}Prefabs/Groups/OPFOR/Group_USSR_RifleSquad_p.et" {
+ coords 115.534 1.001 103.203
 }

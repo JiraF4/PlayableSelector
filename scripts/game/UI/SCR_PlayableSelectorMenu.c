@@ -33,6 +33,13 @@ class SCR_PlayableSelectorMenu: MenuBase
 				
 				SCR_Faction faction = SCR_Faction.Cast(character.GetFaction());
 				
+				if (!GetGame().GetItemPreviewManager())
+				{
+					Resource rsc = Resource.Load(m_ItemPreviewManagerPrefab);
+					if (rsc.IsValid())
+						GetGame().SpawnEntityPrefabLocal(rsc);
+				}
+				
 				auto m_PreviewManager = GetGame().GetItemPreviewManager();
 				auto m_wPreview = ItemPreviewWidget.Cast(tile.FindAnyWidget("Preview"));
 				
