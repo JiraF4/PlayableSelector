@@ -39,20 +39,15 @@ class SCR_VehicleAi : ScriptComponent
 		EventHandlerManagerComponent ev = EventHandlerManagerComponent.Cast(owner.FindComponent(EventHandlerManagerComponent));
 		if (ev)
 		{
-			//ev.RegisterScriptHandler("OnDestroyed", this, OnDestroyed);
 			ev.RegisterScriptHandler("OnCompartmentEntered", this, OnCompartmentEntered);
 			ev.RegisterScriptHandler("OnCompartmentLeft", this, OnCompartmentLeft);
-		}	
-		
-		
-		
+		}		
 	}
 	protected override void OnDelete(IEntity owner)
 	{
 		EventHandlerManagerComponent ev = EventHandlerManagerComponent.Cast(owner.FindComponent(EventHandlerManagerComponent));
 		if (ev)
 		{
-			//ev.RemoveScriptHandler("OnDestroyed", this, OnDestroyed);
 			ev.RemoveScriptHandler("OnCompartmentEntered", this, OnCompartmentEntered);
 			ev.RemoveScriptHandler("OnCompartmentLeft", this, OnCompartmentLeft);
 		}	
@@ -66,8 +61,6 @@ class SCR_VehicleAi : ScriptComponent
 		positions.Insert(wp.GetOrigin());
 		wp = GetGame().GetWorld().FindEntityByName("WP3");
 		positions.Insert(wp.GetOrigin());
-		
-		
 	}
 	
 	protected void OnCompartmentEntered(IEntity vehicle, BaseCompartmentManagerComponent mgr, IEntity occupant, int managerId, int slotID)
@@ -87,24 +80,6 @@ class SCR_VehicleAi : ScriptComponent
 			vehicleWheeledSimulation.SetClutch(1);
 			carControllerComponent.SetPersistentHandBrake(false);
 			vehicleWheeledSimulation.EngineStart();
-			//aiControl.DeactivateAI();
-		}
-		
-		if (compartmentSlot.Type() == CargoCompartmentSlot)
-		{
-			ref array<BaseCompartmentSlot> outCompartments = new array<BaseCompartmentSlot>();
-			mgr.GetCompartments(outCompartments);
-			foreach (BaseCompartmentSlot outCompartment: outCompartments)
-			{
-				if (outCompartment.Type() == TurretCompartmentSlot)
-				{
-					if (!outCompartment.IsOccupied()) {
-						//aiControl.ActivateAI();
-						CompartmentAccessComponent compartmentAccess = CompartmentAccessComponent.Cast(occupant.FindComponent(CompartmentAccessComponent));
-						compartmentAccess.MoveInVehicle(vehicle, outCompartment);
-					}
-				}
-			}
 		}
 	}
 	
