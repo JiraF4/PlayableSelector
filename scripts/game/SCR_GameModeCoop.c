@@ -12,10 +12,12 @@ class SCR_GameModeCoopClass: SCR_BaseGameModeClass
 class SCR_GameModeCoop : SCR_BaseGameMode
 {
 	
+	IEntity CameraEntity;
+	
 	override void OnPlayerConnected(int playerId)
 	{
-		SCR_PlayerController playerController = SCR_PlayerController.Cast(GetGame().GetPlayerManager().GetPlayerController(playerId));
-		playerController.SetInitialMainEntity(playerController);
+		//SCR_PlayerController playerController = SCR_PlayerController.Cast(GetGame().GetPlayerManager().GetPlayerController(playerId));
+		//playerController.SetInitialMainEntity(playerController);
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -43,7 +45,9 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 		vector mat[4];
 		GetTransform(mat);
 		params.Transform = mat;
-		//GetGame().SpawnEntityPrefab(Resource.Load("{C8FDE42491F955CB}Prefabs/ManualCameraInitialPlayer.et"), GetGame().GetWorld(), params);
+		if (CameraEntity == null)
+			CameraEntity = GetGame().SpawnEntityPrefab(Resource.Load("{C8FDE42491F955CB}Prefabs/ManualCameraInitialPlayer.et"), GetGame().GetWorld(), params);
+		
 		//OpenPlayableMenu();
 	}
 	
@@ -81,12 +85,12 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	{	
 		vector mat[4];
 		player.GetTransform(mat);
-		Rpc(RPC_ForceOpenEditor, playerId, mat[0], mat[1], mat[2], mat[3]);
-		RPC_ForceOpenEditor(playerId, mat[0], mat[1], mat[2], mat[3])
+		Rpc(RPC_ForceCamera, playerId, mat[0], mat[1], mat[2], mat[3]);
+		RPC_ForceCamera(playerId, mat[0], mat[1], mat[2], mat[3])
 	}
 	
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	void RPC_ForceOpenEditor(int playerId, vector m0, vector m1, vector m2, vector m3) // Literally garbage
+	void RPC_ForceCamera(int playerId, vector m0, vector m1, vector m2, vector m3) // Literally garbage
 	{
 		PlayerController playerController = GetGame().GetPlayerController();
 		if (playerController.GetPlayerId() == playerId) 
@@ -98,7 +102,16 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 			mat[2] = m2;
 			mat[3] = m3;
 			params.Transform = mat;
-			GetGame().SpawnEntityPrefab(Resource.Load("{C8FDE42491F955CB}Prefabs/ManualCameraInitialPlayer.et"), GetGame().GetWorld(), params);
+			if (CameraEntity == null)
+				CameraEntity = GetGame().SpawnEntityPrefab(Resource.Load("{C8FDE42491F955CB}Prefabs/ManualCameraInitialPlayer.et"), GetGame().GetWorld(), params);
+		}
+	}
+	
+	void RemoveCamera() 
+	{
+		if (CameraEntity) {
+			RplComponent.DeleteRplEntity(CameraEntity, false);
+			CameraEntity = null;
 		}
 	}
 	

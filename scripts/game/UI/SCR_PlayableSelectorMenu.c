@@ -5,9 +5,12 @@
 class SCR_PlayableSelectorMenu: MenuBase
 {
 	protected ResourceName m_sTilePrefab = "{CFA71C83A7ECC9CE}UI/PlayableMenuTile.layout";
+	protected bool locked;
 	
 	override void OnMenuOpen()
 	{
+		locked = false;
+		
 		Widget gallery = GetRootWidget().FindAnyWidget("Tiles");
 		SCR_GalleryComponent gallery_component = SCR_GalleryComponent.Cast(gallery.GetHandler(0));
 		
@@ -89,6 +92,11 @@ class SCR_PlayableSelectorMenu: MenuBase
 		}
 	}
 	
+	void Unlock() 
+	{
+		locked = false;
+	}
+	
 	override void OnMenuClose()
 	{
 		array<SCR_PlayableComponent> playables = SCR_PlayableComponent.GetPlayables();
@@ -100,13 +108,15 @@ class SCR_PlayableSelectorMenu: MenuBase
 	
 	protected void TileClick(SCR_ButtonBaseComponent button)
 	{
+		if (locked) return;
+		
 		SCR_PlayableMenuTile handler = SCR_PlayableMenuTile.Cast(button.GetRootWidget().FindHandler(SCR_PlayableMenuTile));
 		
 		PlayerController playerController = GetGame().GetPlayerController();
 		
 		SCR_PlayableComponent playable = SCR_PlayableComponent.Cast(playerController.FindComponent(SCR_PlayableComponent));
 		
-		Close();
+		locked = true;
 	
 		playable.TakePossession(playerController.GetPlayerId(), handler.GetPlayableId());
 	}
