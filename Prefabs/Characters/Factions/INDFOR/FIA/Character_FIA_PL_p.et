@@ -32,7 +32,7 @@ SCR_ChimeraCharacter : "{7A9EE19AB67B298B}Prefabs/Characters/Factions/INDFOR/FIA
   }
   SCR_GadgetManagerComponent "{520EA1D2DB118DF3}" {
   }
-  SCR_PlayableComponent "{5D514EEC4429BFAD}" {
+  SCR_PlayableComponent "{5D58D956CD267214}" {
    m_name "Platoon Leader"
   }
   CharacterGrenadeSlotComponent "{520EA1D2F659CE6E}" {
@@ -53,13 +53,13 @@ SCR_ChimeraCharacter : "{7A9EE19AB67B298B}Prefabs/Characters/Factions/INDFOR/FIA
   }
   SCR_InventoryStorageManagerComponent "{520EA1D2DB118DE5}" {
    InitialInventoryItems {
-    ItemsInitConfigurationItem "{5D514EEF0A1C8659}" {
+    ItemsInitConfigurationItem "{5D58D95A61785411}" {
      TargetStorage "Prefabs/Characters/Vests/Vest_Type56/Vest_Type56.et"
      PrefabsToSpawn {
       "{A827B610B7CD4158}Prefabs/Weapons/Magazines/Vz58/Magazine_762x39_Vz58_30rnd_Last_5Tracer.et" "{A827B610B7CD4158}Prefabs/Weapons/Magazines/Vz58/Magazine_762x39_Vz58_30rnd_Last_5Tracer.et" "{A827B610B7CD4158}Prefabs/Weapons/Magazines/Vz58/Magazine_762x39_Vz58_30rnd_Last_5Tracer.et" "{77EAE5E07DC4678A}Prefabs/Weapons/Grenades/Smoke_RDG2.et"
      }
     }
-    ItemsInitConfigurationItem "{5D514EEF0A1C8656}" {
+    ItemsInitConfigurationItem "{5D58D95A6178541F}" {
      TargetStorage "Prefabs/Characters/Uniforms/Jacket_M70.et"
      PrefabsToSpawn {
       "{A827B610B7CD4158}Prefabs/Weapons/Magazines/Vz58/Magazine_762x39_Vz58_30rnd_Last_5Tracer.et" "{A827B610B7CD4158}Prefabs/Weapons/Magazines/Vz58/Magazine_762x39_Vz58_30rnd_Last_5Tracer.et"

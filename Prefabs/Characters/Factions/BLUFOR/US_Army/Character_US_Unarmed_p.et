@@ -16,6 +16,9 @@ SCR_ChimeraCharacter : "{836E7E39AAC5888B}Prefabs/Characters/Factions/BLUFOR/US_
     }
    }
   }
+  SCR_PlayableComponent "{5D58D95BF1F28D14}" {
+   m_name "Unarmed"
+  }
   SCR_InventoryStorageManagerComponent "{520EA1D2DB118DE5}" {
   }
  }

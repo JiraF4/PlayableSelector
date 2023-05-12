@@ -21,8 +21,11 @@ SCR_ChimeraCharacter : "{836E7E39AAC5888B}Prefabs/Characters/Factions/BLUFOR/US_
   }
   SCR_GadgetManagerComponent "{520EA1D2DB118DF3}" {
   }
-  SCR_PlayableComponent "{5D514EED763FC807}" {
-   m_name "Marksman"
+  SCR_PlayableComponent "{5D58D95B8C0659D9}" {
+   m_name "Sniper"
+  }
+  CharacterGrenadeSlotComponent "{520EA1D2F659CE6E}" {
+   WeaponTemplate "{E8F00BF730225B00}Prefabs/Weapons/Grenades/Grenade_M67.et"
   }
   CharacterGrenadeSlotComponent "{5A6CDA0CCF43068E}" {
    WeaponTemplate "{9DB69176CEF0EE97}Prefabs/Weapons/Grenades/Smoke_ANM8HC.et"
@@ -53,16 +56,16 @@ SCR_ChimeraCharacter : "{836E7E39AAC5888B}Prefabs/Characters/Factions/BLUFOR/US_
     ItemsInitConfigurationItem "{5A24B6035F7619E7}" {
      TargetStorage "Prefabs/Characters/Vests/Vest_ALICE/Vest_ALICE_suspenders_2.et"
     }
-    ItemsInitConfigurationItem "{5D514EEE664E09C4}" {
+    ItemsInitConfigurationItem "{5D58D95CADA04CA0}" {
      TargetStorage "Prefabs/Items/Equipment/Accessories/Pouch_ALICE_20rnd_M14/Pouch_ALICE_20rnd_M14.et"
      PrefabsToSpawn {
       "{627255315038152A}Prefabs/Weapons/Magazines/Magazine_762x51_M14_20rnd_SpecialBall.et" "{627255315038152A}Prefabs/Weapons/Magazines/Magazine_762x51_M14_20rnd_SpecialBall.et"
      }
     }
-    ItemsInitConfigurationItem "{5D514EEE664E09C6}" {
+    ItemsInitConfigurationItem "{5D58D95CADA04CA6}" {
      TargetStorage "Prefabs/Characters/Vests/Vest_ALICE/Vest_ALICE_buttpack.et"
      PrefabsToSpawn {
-      "{9DB69176CEF0EE97}Prefabs/Weapons/Grenades/Smoke_ANM8HC.et" "{9C05543A503DB80E}Prefabs/Weapons/Magazines/Magazine_9x19_M9_15rnd_Ball.et" "{9C05543A503DB80E}Prefabs/Weapons/Magazines/Magazine_9x19_M9_15rnd_Ball.et"
+      "{9DB69176CEF0EE97}Prefabs/Weapons/Grenades/Smoke_ANM8HC.et" "{9C05543A503DB80E}Prefabs/Weapons/Magazines/Magazine_9x19_M9_15rnd_Ball.et" "{9C05543A503DB80E}Prefabs/Weapons/Magazines/Magazine_9x19_M9_15rnd_Ball.et" "{E8F00BF730225B00}Prefabs/Weapons/Grenades/Grenade_M67.et"
      }
     }
    }

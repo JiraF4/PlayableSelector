@@ -21,7 +21,7 @@ SCR_ChimeraCharacter : "{7A9EE19AB67B298B}Prefabs/Characters/Factions/INDFOR/FIA
   }
   SCR_GadgetManagerComponent "{520EA1D2DB118DF3}" {
   }
-  SCR_PlayableComponent "{5D514EEC50F178BE}" {
+  SCR_PlayableComponent "{5D58D9563B77A99D}" {
    m_name "Radio Operator"
   }
   CharacterGrenadeSlotComponent "{520EA1D2F659CE6E}" {
@@ -45,13 +45,13 @@ SCR_ChimeraCharacter : "{7A9EE19AB67B298B}Prefabs/Characters/Factions/INDFOR/FIA
   }
   SCR_InventoryStorageManagerComponent "{520EA1D2DB118DE5}" {
    InitialInventoryItems {
-    ItemsInitConfigurationItem "{5D514EEF16092C38}" {
+    ItemsInitConfigurationItem "{5D58D95DBCDFFEC7}" {
      TargetStorage "Prefabs/Characters/Vests/Vest_Type56/Vest_Type56.et"
      PrefabsToSpawn {
       "{A827B610B7CD4158}Prefabs/Weapons/Magazines/Vz58/Magazine_762x39_Vz58_30rnd_Last_5Tracer.et" "{A827B610B7CD4158}Prefabs/Weapons/Magazines/Vz58/Magazine_762x39_Vz58_30rnd_Last_5Tracer.et" "{A827B610B7CD4158}Prefabs/Weapons/Magazines/Vz58/Magazine_762x39_Vz58_30rnd_Last_5Tracer.et" "{77EAE5E07DC4678A}Prefabs/Weapons/Grenades/Smoke_RDG2.et"
      }
     }
-    ItemsInitConfigurationItem "{5D514EEF16092C3A}" {
+    ItemsInitConfigurationItem "{5D58D95DBCDFFEC9}" {
      TargetStorage "Prefabs/Characters/Uniforms/Jacket_M70.et"
      PrefabsToSpawn {
       "{A827B610B7CD4158}Prefabs/Weapons/Magazines/Vz58/Magazine_762x39_Vz58_30rnd_Last_5Tracer.et" "{A827B610B7CD4158}Prefabs/Weapons/Magazines/Vz58/Magazine_762x39_Vz58_30rnd_Last_5Tracer.et"

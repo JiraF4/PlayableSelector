@@ -19,7 +19,7 @@ SCR_ChimeraCharacter : "{7A9EE19AB67B298B}Prefabs/Characters/Factions/INDFOR/FIA
     }
    }
   }
-  SCR_PlayableComponent "{5D514EEFD4606B63}" {
+  SCR_PlayableComponent "{5D58D95689CDA2D1}" {
    m_name "AT Assistant"
   }
   CharacterGrenadeSlotComponent "{520EA1D2F659CE6E}" {
@@ -43,19 +43,19 @@ SCR_ChimeraCharacter : "{7A9EE19AB67B298B}Prefabs/Characters/Factions/INDFOR/FIA
   }
   SCR_InventoryStorageManagerComponent "{520EA1D2DB118DE5}" {
    InitialInventoryItems {
-    ItemsInitConfigurationItem "{5D514EEF039E6617}" {
+    ItemsInitConfigurationItem "{5D58D95A4552E4D0}" {
      TargetStorage "Prefabs/Characters/Vests/Vest_Type56/Vest_Type56.et"
      PrefabsToSpawn {
       "{A827B610B7CD4158}Prefabs/Weapons/Magazines/Vz58/Magazine_762x39_Vz58_30rnd_Last_5Tracer.et" "{A827B610B7CD4158}Prefabs/Weapons/Magazines/Vz58/Magazine_762x39_Vz58_30rnd_Last_5Tracer.et" "{A827B610B7CD4158}Prefabs/Weapons/Magazines/Vz58/Magazine_762x39_Vz58_30rnd_Last_5Tracer.et" "{77EAE5E07DC4678A}Prefabs/Weapons/Grenades/Smoke_RDG2.et"
      }
     }
-    ItemsInitConfigurationItem "{5D514EEF039E6610}" {
+    ItemsInitConfigurationItem "{5D58D95A4552E4DE}" {
      TargetStorage "Prefabs/Items/Equipment/Backpacks/Backpack_RPG_Assistant.et"
      PrefabsToSpawn {
       "{32E12D322E107F1C}Prefabs/Weapons/Ammo/Ammo_Rocket_PG7VM.et" "{32E12D322E107F1C}Prefabs/Weapons/Ammo/Ammo_Rocket_PG7VM.et" "{32E12D322E107F1C}Prefabs/Weapons/Ammo/Ammo_Rocket_PG7VM.et"
      }
     }
-    ItemsInitConfigurationItem "{5D514EEF039E6612}" {
+    ItemsInitConfigurationItem "{5D58D95A4552E4DD}" {
      TargetStorage "Prefabs/Characters/Uniforms/Jacket_M70.et"
      PrefabsToSpawn {
       "{A827B610B7CD4158}Prefabs/Weapons/Magazines/Vz58/Magazine_762x39_Vz58_30rnd_Last_5Tracer.et" "{A827B610B7CD4158}Prefabs/Weapons/Magazines/Vz58/Magazine_762x39_Vz58_30rnd_Last_5Tracer.et"

@@ -21,7 +21,7 @@ SCR_ChimeraCharacter : "{7A9EE19AB67B298B}Prefabs/Characters/Factions/INDFOR/FIA
   }
   SCR_GadgetManagerComponent "{520EA1D2DB118DF3}" {
   }
-  SCR_PlayableComponent "{5D4D1BDC2C6F608D}" {
+  SCR_PlayableComponent "{5D58D956D1FF8928}" {
    m_name "Machinegunner"
   }
   CharacterGrenadeSlotComponent "{5A6CDA0CCF43068E}" {
@@ -39,7 +39,7 @@ SCR_ChimeraCharacter : "{7A9EE19AB67B298B}Prefabs/Characters/Factions/INDFOR/FIA
   }
   SCR_InventoryStorageManagerComponent "{520EA1D2DB118DE5}" {
    InitialInventoryItems {
-    ItemsInitConfigurationItem "{5D4D1BD3691F12FA}" {
+    ItemsInitConfigurationItem "{5D58D95A6D8CF07F}" {
      TargetStorage "Prefabs/Characters/Vests/Vest_SovietHarness/Variants/Vest_SovietHarness_MG.et"
      PrefabsToSpawn {
       "{E5E9C5897CF47F44}Prefabs/Weapons/Magazines/Box_762x54_PK_100rnd_4Ball_1Tracer.et"

@@ -16,7 +16,7 @@ SCR_ChimeraCharacter : "{5346CF7E39A65A6B}Prefabs/Characters/Factions/OPFOR/USSR
     }
    }
   }
-  SCR_PlayableComponent "{5D514EED1B09FE90}" {
+  SCR_PlayableComponent "{5D58D95948956D22}" {
    m_name "Unarmed"
   }
   SCR_InventoryStorageManagerComponent "{520EA1D2DB118DE5}" {
