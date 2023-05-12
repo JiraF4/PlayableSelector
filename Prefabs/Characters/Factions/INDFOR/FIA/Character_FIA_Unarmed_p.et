@@ -16,7 +16,7 @@ SCR_ChimeraCharacter : "{7A9EE19AB67B298B}Prefabs/Characters/Factions/INDFOR/FIA
     }
    }
   }
-  SCR_PlayableComponent "{5D514EEC9C1E3546}" {
+  SCR_PlayableComponent "{5D58D9564A65CBB5}" {
    m_name "Unarmed"
   }
   SCR_InventoryStorageManagerComponent "{520EA1D2DB118DE5}" {

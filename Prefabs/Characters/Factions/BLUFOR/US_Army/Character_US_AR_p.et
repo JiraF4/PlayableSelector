@@ -21,7 +21,7 @@ SCR_ChimeraCharacter : "{836E7E39AAC5888B}Prefabs/Characters/Factions/BLUFOR/US_
   }
   SCR_GadgetManagerComponent "{520EA1D2DB118DF3}" {
   }
-  SCR_PlayableComponent "{5D514EE889BE75A4}" {
+  SCR_PlayableComponent "{5D58D958C0634829}" {
    m_name "Automatic Rifleman"
   }
   CharacterGrenadeSlotComponent "{5A6CDA0CCF43068E}" {
@@ -47,19 +47,19 @@ SCR_ChimeraCharacter : "{836E7E39AAC5888B}Prefabs/Characters/Factions/BLUFOR/US_
     ItemsInitConfigurationItem "{5A24B6035F7619E7}" {
      TargetStorage "Prefabs/Characters/Vests/Vest_ALICE/Vest_ALICE_suspenders_2.et"
     }
-    ItemsInitConfigurationItem "{5D514EE2D283CDA8}" {
+    ItemsInitConfigurationItem "{5D58D95CD433963D}" {
      TargetStorage "Prefabs/Items/Equipment/Accessories/Pouch_ALICE_200rnd_M249/Pouch_ALICE_200rnd_M249.et"
      PrefabsToSpawn {
       "{06D722FC2666EB83}Prefabs/Weapons/Magazines/Box_556x45_M249_200rnd_4Ball_1Tracer.et"
      }
     }
-    ItemsInitConfigurationItem "{5D514EE2D283CDAF}" {
+    ItemsInitConfigurationItem "{5D58D95CD4339630}" {
      TargetStorage "Prefabs/Items/Equipment/Accessories/Pouch_ALICE_200rnd_M249/Pouch_ALICE_200rnd_M249.et"
      PrefabsToSpawn {
       "{06D722FC2666EB83}Prefabs/Weapons/Magazines/Box_556x45_M249_200rnd_4Ball_1Tracer.et"
      }
     }
-    ItemsInitConfigurationItem "{5D514EE2D283CDAE}" {
+    ItemsInitConfigurationItem "{5D58D95CD4339631}" {
      TargetStorage "Prefabs/Characters/Vests/Vest_ALICE/Vest_ALICE_buttpack.et"
      PrefabsToSpawn {
       "{9DB69176CEF0EE97}Prefabs/Weapons/Grenades/Smoke_ANM8HC.et"
