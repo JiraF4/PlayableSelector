@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{A9FFE4C916FF06FB}Worlds/PrefabWorld/PrefabWorld.ent"
+ Configurations {
+  ENTResourceClass PC {
+  }
+  ENTResourceClass XBOX_ONE : PC {
+  }
+  ENTResourceClass XBOX_SERIES : PC {
+  }
+  ENTResourceClass PS4 : PC {
+  }
+  ENTResourceClass HEADLESS : PC {
+  }
+ }
+}
