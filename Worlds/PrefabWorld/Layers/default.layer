@@ -1,0 +1,21 @@
+SCR_AIWorld : "{E0A05C76552E7F58}Prefabs/AI/SCR_AIWorld.et" {
+ coords 124.919 1.001 119.232
+}
+SCR_GameModeCoop SCR_GameModeCoop1 {
+ components {
+  RplComponent "{5D5B17A212285638}" {
+  }
+ }
+ coords 137.275 8.191 120.451
+ {
+  ItemPreviewManagerEntity ItemPreviewManager1 : "{9F18C476AB860F3B}Prefabs/World/Game/ItemPreviewManager.et" {
+   coords -8.346 -7.19 15.776
+  }
+ }
+}
+SCR_FactionManager FactionManager_Editor1 : "{4A188E44289B9A50}Prefabs/MP/Managers/Factions/FactionManager_Editor.et" {
+ coords 121.516 1.001 137.611
+}
+SCR_EditorSettingsEntity {
+ coords 119.983 1.001 124.305
+}
