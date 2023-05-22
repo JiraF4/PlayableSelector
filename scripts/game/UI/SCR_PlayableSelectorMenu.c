@@ -7,11 +7,12 @@ class SCR_PlayableSelectorMenu: MenuBase
 	protected ResourceName m_sTilePrefab = "{CFA71C83A7ECC9CE}UI/PlayableMenuTile.layout";
 	protected bool locked;
 	
-	override void OnMenuOpen()
+	override void OnMenuOpened()
 	{
 		locked = false;
 		
 		Widget gallery = GetRootWidget().FindAnyWidget("Tiles");
+		if (gallery == null) return;
 		SCR_GalleryComponent gallery_component = SCR_GalleryComponent.Cast(gallery.GetHandler(0));
 		
 		gallery_component.ClearAll();

@@ -1,5 +1,6 @@
 modded enum ChimeraMenuPreset : ScriptMenuPresetEnum
 {
+	CoopLobby,
 	PlayableSelector
 }
 
@@ -47,6 +48,8 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 		params.Transform = mat;
 		if (CameraEntity == null)
 			CameraEntity = GetGame().SpawnEntityPrefab(Resource.Load("{C8FDE42491F955CB}Prefabs/ManualCameraInitialPlayer.et"), GetGame().GetWorld(), params);
+		
+		GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.CoopLobby);
 	}
 	
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
