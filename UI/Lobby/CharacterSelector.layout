@@ -1,0 +1,63 @@
+FrameWidgetClass {
+ Name "CharacterSelector"
+ Slot LayoutSlot "{5D6D1B9A78448AA5}" {
+  Padding 5 5 5 5
+ }
+ {
+  ImageWidgetClass "{5D6D1B9A2749B71D}" {
+   Name "CharacterFactionColor"
+   Slot FrameWidgetSlot "{5D6D1B9A2749B73B}" {
+    OffsetLeft 0
+    OffsetTop 0
+    SizeX 6
+    OffsetRight -6
+    SizeY 40
+    OffsetBottom -40
+   }
+   Color 0.376 0.749 0.749 1
+  }
+  TextWidgetClass "{5D6D1B99A45E5176}" {
+   Name "CharacterClassName"
+   Slot FrameWidgetSlot "{5D6D1B99A45E509C}" {
+    PositionX 12
+    OffsetLeft 12
+    OffsetTop 0
+    SizeX 248
+    OffsetRight -260
+    SizeY 40
+    OffsetBottom -40
+   }
+   Text "Rifleman"
+   "Vertical Alignment" Center
+  }
+  ImageWidgetClass "{5D6D1B995C4BBFB9}" {
+   Name "CharacterStatusIcon"
+   Slot FrameWidgetSlot "{5D6D1B99A45E509C}" {
+    PositionX 260
+    OffsetLeft 260
+    PositionY 0
+    OffsetTop 0
+    SizeX 40
+    OffsetRight -300
+    SizeY 40
+    OffsetBottom -40
+   }
+   Texture "{DB2E20B0E888AAA7}UI/Textures/Conflict/no-radio--range-icon-outline_UI.edds"
+   Size 64 64
+  }
+  TextWidgetClass "{5D6D1B99172B8829}" {
+   Name "CharacterStatus"
+   Slot FrameWidgetSlot "{5D6D1B99A45E509C}" {
+    PositionX 300
+    OffsetLeft 300
+    OffsetTop 0
+    SizeX 256
+    OffsetRight -556
+    SizeY 40
+    OffsetBottom -40
+   }
+   Text "Player"
+   "Vertical Alignment" Center
+  }
+ }
+}

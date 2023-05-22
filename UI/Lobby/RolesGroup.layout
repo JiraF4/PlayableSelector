@@ -1,0 +1,34 @@
+VerticalLayoutWidgetClass "{5D6D1B9ADEF28AB7}" {
+ Name "RolesGroup"
+ Slot LayoutSlot "{5D6D1B9ADEF28AD1}" {
+ }
+ {
+  FrameWidgetClass "{5D6D1B9A9C46FE7F}" {
+   Name "RolesGroupNameFrame"
+   Slot LayoutSlot "{5D6D1B9A9C46FD9A}" {
+    Padding 5 5 5 5
+   }
+   {
+    TextWidgetClass "{5D6D1B9AE656F765}" {
+     Name "RolesGroupName"
+     Slot FrameWidgetSlot "{5D6D1B9AA160592D}" {
+      OffsetLeft 0
+      OffsetTop 0
+      SizeX 620
+      OffsetRight -620
+      SizeY 48
+      OffsetBottom -48
+     }
+     Text "Alpha 1-1"
+     "Font Size" 48
+     "Min Font Size" 48
+    }
+   }
+  }
+  VerticalLayoutWidgetClass "{5D6D1B9A91E996ED}" {
+   Name "CharactersList"
+   Slot LayoutSlot "{5D6D1B9A91E9960E}" {
+   }
+  }
+ }
+}

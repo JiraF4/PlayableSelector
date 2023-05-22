@@ -1,0 +1,559 @@
+FrameWidgetClass {
+ Name "PlayMenu"
+ {
+  OverlayWidgetClass "{5D6D00D8FBAAF79D}" : "{01FD644AD2B6317D}UI/layouts/Menus/Common/MenuBackground.layout" {
+   Name "MenuBackground0"
+   Slot FrameWidgetSlot "{552C9A0A8526D2AD}" {
+   }
+  }
+  OverlayWidgetClass "{5D6D11E7CBA51223}" {
+   Name "Lobby"
+   Slot FrameWidgetSlot "{5D6D11E7CBA5123A}" {
+    Anchor 0.5 0.5 0.5 0.5
+    PositionX -960
+    OffsetLeft -960
+    PositionY -540
+    OffsetTop -540
+    SizeX 1920
+    OffsetRight -960
+    SizeY 1080
+    OffsetBottom -540
+   }
+   {
+    VerticalLayoutWidgetClass "{5D6D00D805E13F99}" {
+     Name "VerticalLayout1"
+     Slot OverlayWidgetSlot "{5D6D1414C4DF4DF2}" {
+     }
+     {
+      FrameWidgetClass "{5D6D1414CC52BBCE}" {
+       Name "Body"
+       Slot LayoutSlot "{5D6D1B9FC3AE045F}" {
+       }
+       {
+        HorizontalLayoutWidgetClass "{5D6D00D78BA644A5}" {
+         Name "HLWBody"
+         Slot FrameWidgetSlot "{5D6D1414D5FE836E}" {
+          OffsetLeft 0
+          OffsetTop 0
+          SizeX 1920
+          OffsetRight -1920
+          SizeY 952
+          OffsetBottom -952
+         }
+         {
+          FrameWidgetClass "{5D6D1414942EE2E9}" {
+           Name "Faction"
+           Slot LayoutSlot "{5D6D1414942EE2C7}" {
+           }
+           {
+            TextWidgetClass "{5D6D11E79537AE9A}" {
+             Name "FactionHeader"
+             Slot FrameWidgetSlot "{5D6D14149B94CBD1}" {
+              Anchor 0 0 0 0
+              PositionX 0
+              OffsetLeft 0
+              PositionY 0
+              OffsetTop 0
+              SizeX 320
+              OffsetRight -320
+              SizeY 128
+              OffsetBottom -128
+             }
+             Text "Faction"
+             "Horizontal Alignment" Center
+             "Vertical Alignment" Center
+            }
+            OverlayWidgetClass "{5D6D141612AB1323}" {
+             Name "FactionBody"
+             Slot FrameWidgetSlot "{5D6D141612AB133D}" {
+              PositionX 0
+              OffsetLeft 0
+              PositionY 128
+              OffsetTop 128
+              SizeX 320
+              OffsetRight -320
+              SizeY 824
+              OffsetBottom -952
+             }
+             {
+              ScrollLayoutWidgetClass "{5D6D1410CC72B925}" {
+               Name "FactionScroll"
+               Slot OverlayWidgetSlot "{5D6D1410CC72B906}" {
+               }
+               {
+                VerticalLayoutWidgetClass "{5D6D1B9F18B0805E}" {
+                 Name "FactionList"
+                 Slot AlignableSlot "{5D6D1B9F18B081B9}" {
+                 }
+                 {
+                  VerticalLayoutWidgetClass "{5D6D1B9B77F11C6A}" : "{DA22ED7112FA8028}UI/Lobby/FactionSelector.layout" {
+                   Name "FactionSelector1"
+                   Slot LayoutSlot "{5D6D1B9BBB04C664}" {
+                   }
+                  }
+                  VerticalLayoutWidgetClass "{5D6D1B9B75C99DFB}" : "{DA22ED7112FA8028}UI/Lobby/FactionSelector.layout" {
+                   Name "FactionSelector0"
+                   Slot LayoutSlot "{5D6D1B9BBB04C664}" {
+                   }
+                  }
+                  VerticalLayoutWidgetClass "{5D6D1B9B7B49B6A1}" : "{DA22ED7112FA8028}UI/Lobby/FactionSelector.layout" {
+                   Name "FactionSelector2"
+                   Slot LayoutSlot "{5D6D1B9BBB04C664}" {
+                   }
+                  }
+                  VerticalLayoutWidgetClass "{5D6D1B9B7CC1FD08}" : "{DA22ED7112FA8028}UI/Lobby/FactionSelector.layout" {
+                   Name "FactionSelector3"
+                   Slot LayoutSlot "{5D6D1B9BBB04C664}" {
+                   }
+                  }
+                  VerticalLayoutWidgetClass "{5D6D1B9B7C795599}" : "{DA22ED7112FA8028}UI/Lobby/FactionSelector.layout" {
+                   Name "FactionSelector4"
+                   Slot LayoutSlot "{5D6D1B9BBB04C664}" {
+                   }
+                  }
+                  VerticalLayoutWidgetClass "{5D6D1B9B7DAF6270}" : "{DA22ED7112FA8028}UI/Lobby/FactionSelector.layout" {
+                   Name "FactionSelector5"
+                   Slot LayoutSlot "{5D6D1B9BBB04C664}" {
+                   }
+                  }
+                  VerticalLayoutWidgetClass "{5D6D1B9B7DC8EE08}" : "{DA22ED7112FA8028}UI/Lobby/FactionSelector.layout" {
+                   Name "FactionSelector6"
+                   Slot LayoutSlot "{5D6D1B9BBB04C664}" {
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+          FrameWidgetClass "{5D6D14143A70F0FE}" {
+           Name "Roles"
+           Slot LayoutSlot "{5D6D1414942EE2C7}" {
+           }
+           {
+            TextWidgetClass "{5D6D14143A70F0FF}" {
+             Name "RolesHeader"
+             Slot FrameWidgetSlot "{5D6D14149B94CBD1}" {
+              Anchor 0 0 0 0
+              PositionX 0
+              OffsetLeft 0
+              PositionY 0
+              OffsetTop 0
+              SizeX 640
+              OffsetRight -640
+              SizeY 128
+              OffsetBottom -128
+             }
+             Text "Roles"
+             "Horizontal Alignment" Center
+             "Vertical Alignment" Center
+            }
+            OverlayWidgetClass "{5D6D14162BB22EAB}" {
+             Name "RolesBody"
+             Slot FrameWidgetSlot "{5D6D141612AB133D}" {
+              PositionX 0
+              OffsetLeft 0
+              PositionY 128
+              OffsetTop 128
+              SizeX 640
+              OffsetRight -640
+              SizeY 824
+              OffsetBottom -952
+             }
+             {
+              ScrollLayoutWidgetClass "{5D6D1B9B238445DF}" {
+               Name "RolesScroll"
+               Slot OverlayWidgetSlot "{5D6D1B9B238445FB}" {
+               }
+               {
+                VerticalLayoutWidgetClass "{5D6D1B9B2EB68480}" {
+                 Name "RolesList"
+                 Slot AlignableSlot "{5D6D1B9B2EB684B4}" {
+                 }
+                 {
+                  VerticalLayoutWidgetClass "{5D6D1B9A6A65C77D}" : "{B45A0FA6883A7A0E}UI/Lobby/RolesGroup.layout" {
+                   Name "RolesGroup0"
+                   Slot LayoutSlot "{5D6D1B9ADEF28AD1}" {
+                   }
+                   {
+                    VerticalLayoutWidgetClass "{5D6D1B9A91E996ED}" {
+                     Prefab "{5D6D1B9A91E996ED}"
+                     Slot LayoutSlot "{5D6D1B9A91E9960E}" {
+                      Padding 5 5 5 5
+                     }
+                     {
+                      FrameWidgetClass "{5D6D1B98D24F0DB1}" : "{3F761F63F1DF29D1}UI/Lobby/CharacterSelector.layout" {
+                       Name "CharacterSelector0"
+                       Slot LayoutSlot "{5D6D1B9A78448AA5}" {
+                       }
+                      }
+                      FrameWidgetClass "{5D6D1B98D4020A4E}" : "{3F761F63F1DF29D1}UI/Lobby/CharacterSelector.layout" {
+                       Name "CharacterSelector1"
+                       Slot LayoutSlot "{5D6D1B9A78448AA5}" {
+                       }
+                      }
+                      FrameWidgetClass "{5D6D1B98D6B00747}" : "{3F761F63F1DF29D1}UI/Lobby/CharacterSelector.layout" {
+                       Name "CharacterSelector2"
+                       Slot LayoutSlot "{5D6D1B9A78448AA5}" {
+                       }
+                      }
+                      FrameWidgetClass "{5D6D1B98D8DD572D}" : "{3F761F63F1DF29D1}UI/Lobby/CharacterSelector.layout" {
+                       Name "CharacterSelector3"
+                       Slot LayoutSlot "{5D6D1B9A78448AA5}" {
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                  VerticalLayoutWidgetClass "{5D6D1B98DB10CF2E}" : "{B45A0FA6883A7A0E}UI/Lobby/RolesGroup.layout" {
+                   Name "RolesGroup1"
+                   Slot LayoutSlot "{5D6D1B9ADEF28AD1}" {
+                   }
+                   {
+                    VerticalLayoutWidgetClass "{5D6D1B9A91E996ED}" {
+                     Prefab "{5D6D1B9A91E996ED}"
+                     Slot LayoutSlot "{5D6D1B9A91E9960E}" {
+                      Padding 5 5 5 5
+                     }
+                     {
+                      FrameWidgetClass "{5D6D1B98DB10CF2C}" : "{3F761F63F1DF29D1}UI/Lobby/CharacterSelector.layout" {
+                       Name "CharacterSelector0"
+                       Slot LayoutSlot "{5D6D1B9A78448AA5}" {
+                       }
+                      }
+                      FrameWidgetClass "{5D6D1B98DB10CF22}" : "{3F761F63F1DF29D1}UI/Lobby/CharacterSelector.layout" {
+                       Name "CharacterSelector1"
+                       Slot LayoutSlot "{5D6D1B9A78448AA5}" {
+                       }
+                      }
+                      FrameWidgetClass "{5D6D1B98DB10CF23}" : "{3F761F63F1DF29D1}UI/Lobby/CharacterSelector.layout" {
+                       Name "CharacterSelector2"
+                       Slot LayoutSlot "{5D6D1B9A78448AA5}" {
+                       }
+                      }
+                      FrameWidgetClass "{5D6D1B98DB10CF20}" : "{3F761F63F1DF29D1}UI/Lobby/CharacterSelector.layout" {
+                       Name "CharacterSelector3"
+                       Slot LayoutSlot "{5D6D1B9A78448AA5}" {
+                       }
+                      }
+                      FrameWidgetClass "{5D6D1B98EBE4C2DC}" : "{3F761F63F1DF29D1}UI/Lobby/CharacterSelector.layout" {
+                       Name "CharacterSelector4"
+                       Slot LayoutSlot "{5D6D1B9A78448AA5}" {
+                       }
+                      }
+                      FrameWidgetClass "{5D6D1B98ECDDD333}" : "{3F761F63F1DF29D1}UI/Lobby/CharacterSelector.layout" {
+                       Name "CharacterSelector5"
+                       Slot LayoutSlot "{5D6D1B9A78448AA5}" {
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                  VerticalLayoutWidgetClass "{5D6D1B98DE1B4E1B}" : "{B45A0FA6883A7A0E}UI/Lobby/RolesGroup.layout" {
+                   Name "RolesGroup2"
+                   Slot LayoutSlot "{5D6D1B9ADEF28AD1}" {
+                   }
+                   {
+                    VerticalLayoutWidgetClass "{5D6D1B9A91E996ED}" {
+                     Prefab "{5D6D1B9A91E996ED}"
+                     Slot LayoutSlot "{5D6D1B9A91E9960E}" {
+                      Padding 5 5 5 5
+                     }
+                     {
+                      FrameWidgetClass "{5D6D1B98DE1B4E19}" : "{3F761F63F1DF29D1}UI/Lobby/CharacterSelector.layout" {
+                       Name "CharacterSelector0"
+                       Slot LayoutSlot "{5D6D1B9A78448AA5}" {
+                       }
+                      }
+                      FrameWidgetClass "{5D6D1B98DE1B4E1F}" : "{3F761F63F1DF29D1}UI/Lobby/CharacterSelector.layout" {
+                       Name "CharacterSelector1"
+                       Slot LayoutSlot "{5D6D1B9A78448AA5}" {
+                       }
+                      }
+                      FrameWidgetClass "{5D6D1B98DE1B4E1C}" : "{3F761F63F1DF29D1}UI/Lobby/CharacterSelector.layout" {
+                       Name "CharacterSelector2"
+                       Slot LayoutSlot "{5D6D1B9A78448AA5}" {
+                       }
+                      }
+                      FrameWidgetClass "{5D6D1B98DE1B4E1D}" : "{3F761F63F1DF29D1}UI/Lobby/CharacterSelector.layout" {
+                       Name "CharacterSelector3"
+                       Slot LayoutSlot "{5D6D1B9A78448AA5}" {
+                       }
+                      }
+                      FrameWidgetClass "{5D6D1B98E7395363}" : "{3F761F63F1DF29D1}UI/Lobby/CharacterSelector.layout" {
+                       Name "CharacterSelector4"
+                       Slot LayoutSlot "{5D6D1B9A78448AA5}" {
+                       }
+                      }
+                      FrameWidgetClass "{5D6D1B98E81D7F02}" : "{3F761F63F1DF29D1}UI/Lobby/CharacterSelector.layout" {
+                       Name "CharacterSelector5"
+                       Slot LayoutSlot "{5D6D1B9A78448AA5}" {
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+          FrameWidgetClass "{5D6D14143EA39FC8}" {
+           Name "LoadoutPreview"
+           Slot LayoutSlot "{5D6D1414942EE2C7}" {
+           }
+           {
+            TextWidgetClass "{5D6D14143EA39FC9}" {
+             Name "LoadoutPreviewHeader"
+             Slot FrameWidgetSlot "{5D6D14149B94CBD1}" {
+              Anchor 0 0 0 0
+              PositionX 0
+              OffsetLeft 0
+              PositionY 0
+              OffsetTop 0
+              SizeX 480
+              OffsetRight -480
+              SizeY 128
+              OffsetBottom -128
+             }
+             Text "Loadout preview"
+             "Horizontal Alignment" Center
+             "Vertical Alignment" Center
+            }
+            OverlayWidgetClass "{5D6D141636047EF6}" {
+             Name "LoadoutPreviewBody"
+             Slot FrameWidgetSlot "{5D6D141612AB133D}" {
+              PositionX 0
+              OffsetLeft 0
+              PositionY 128
+              OffsetTop 128
+              SizeX 480
+              OffsetRight -480
+              SizeY 824
+              OffsetBottom -952
+             }
+             {
+              VerticalLayoutWidgetClass "{5D6D1B985B1E524D}" {
+               Name "VLWoadoutPreview"
+               Slot OverlayWidgetSlot "{5D6D1B985B1E5269}" {
+               }
+               {
+                FrameWidgetClass "{5D6D1B9826675364}" {
+                 Name "LoadoutPreviewTile"
+                 Slot LayoutSlot "{5D6D1B9826675284}" {
+                 }
+                 {
+                  ButtonWidgetClass "{5D6D1B981403E379}" : "{CFA71C83A7ECC9CE}UI/PlayableMenuTile.layout" {
+                   Name "Tile0"
+                   Slot FrameWidgetSlot "{5D6D1B98326A9B24}" {
+                    OffsetLeft 0
+                    OffsetTop 0
+                    SizeX 480
+                    OffsetRight -480
+                    SizeY 640
+                    OffsetBottom -640
+                   }
+                  }
+                 }
+                }
+                FrameWidgetClass "{5D6D1B978889C476}" {
+                 Name "LoadoutPreviewDescription"
+                 Slot LayoutSlot "{5D6D1B978889CB92}" {
+                 }
+                 {
+                  TextWidgetClass "{5D6D1B97948FB00B}" {
+                   Name "Text0"
+                   Slot FrameWidgetSlot "{5D6D1B97948FB03F}" {
+                    PositionX 40
+                    OffsetLeft 40
+                    OffsetTop 0
+                    SizeX 400
+                    OffsetRight -440
+                    SizeY 164
+                    OffsetBottom -164
+                   }
+                   Text ""
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+          FrameWidgetClass "{5D6D1415C09A4316}" {
+           Name "Players"
+           Slot LayoutSlot "{5D6D1414942EE2C7}" {
+           }
+           {
+            TextWidgetClass "{5D6D1415C09A4317}" {
+             Name "PlayersHeader"
+             Slot FrameWidgetSlot "{5D6D14149B94CBD1}" {
+              Anchor 0 0 0 0
+              PositionX 0
+              OffsetLeft 0
+              PositionY 0
+              OffsetTop 0
+              SizeX 480
+              OffsetRight -480
+              SizeY 128
+              OffsetBottom -128
+             }
+             Text "Players"
+             "Horizontal Alignment" Center
+             "Vertical Alignment" Center
+            }
+            OverlayWidgetClass "{5D6D14163B852F5F}" {
+             Name "PlayersBody"
+             Slot FrameWidgetSlot "{5D6D141612AB133D}" {
+              PositionX 0
+              OffsetLeft 0
+              PositionY 128
+              OffsetTop 128
+              SizeX 480
+              OffsetRight -480
+              SizeY 824
+              OffsetBottom -952
+             }
+             {
+              ScrollLayoutWidgetClass "{5D6D1B97707D8F2D}" {
+               Name "PlayersScroll"
+               Slot OverlayWidgetSlot "{5D6D1B9B238445FB}" {
+               }
+               {
+                VerticalLayoutWidgetClass "{5D6D1B97707D8F23}" {
+                 Name "PlayersList"
+                 Slot AlignableSlot "{5D6D1B9B2EB684B4}" {
+                 }
+                 {
+                  FrameWidgetClass "{5D6D1B9655AC3A6A}" : "{B55DD7054C5892AE}UI/Lobby/PlayerSelector.layout" {
+                   Name "PlayerSelector0"
+                   Slot LayoutSlot "{5D6D1B9730A31B17}" {
+                   }
+                  }
+                  FrameWidgetClass "{5D6D1B9656D5E319}" : "{B55DD7054C5892AE}UI/Lobby/PlayerSelector.layout" {
+                   Name "PlayerSelector1"
+                   Slot LayoutSlot "{5D6D1B9730A31B17}" {
+                   }
+                  }
+                  FrameWidgetClass "{5D6D2DE2D925515E}" : "{B55DD7054C5892AE}UI/Lobby/PlayerSelector.layout" {
+                   Name "PlayerSelector2"
+                   Slot LayoutSlot "{5D6D1B9730A31B17}" {
+                   }
+                  }
+                  FrameWidgetClass "{5D6D2DE2D94B5C95}" : "{B55DD7054C5892AE}UI/Lobby/PlayerSelector.layout" {
+                   Name "PlayerSelector3"
+                   Slot LayoutSlot "{5D6D1B9730A31B17}" {
+                   }
+                  }
+                  FrameWidgetClass "{5D6D2DE2DA9E8647}" : "{B55DD7054C5892AE}UI/Lobby/PlayerSelector.layout" {
+                   Name "PlayerSelector4"
+                   Slot LayoutSlot "{5D6D1B9730A31B17}" {
+                   }
+                  }
+                  FrameWidgetClass "{5D6D2DE2DADE350A}" : "{B55DD7054C5892AE}UI/Lobby/PlayerSelector.layout" {
+                   Name "PlayerSelector5"
+                   Slot LayoutSlot "{5D6D1B9730A31B17}" {
+                   }
+                  }
+                  FrameWidgetClass "{5D6D2DE2DA189FF7}" : "{B55DD7054C5892AE}UI/Lobby/PlayerSelector.layout" {
+                   Name "PlayerSelector6"
+                   Slot LayoutSlot "{5D6D1B9730A31B17}" {
+                   }
+                  }
+                  FrameWidgetClass "{5D6D2DE2DE82D83C}" : "{B55DD7054C5892AE}UI/Lobby/PlayerSelector.layout" {
+                   Name "PlayerSelector7"
+                   Slot LayoutSlot "{5D6D1B9730A31B17}" {
+                   }
+                  }
+                  FrameWidgetClass "{5D6D2DE2DE3B2C46}" : "{B55DD7054C5892AE}UI/Lobby/PlayerSelector.layout" {
+                   Name "PlayerSelector8"
+                   Slot LayoutSlot "{5D6D1B9730A31B17}" {
+                   }
+                  }
+                  FrameWidgetClass "{5D6D2DE2DE46AE84}" : "{B55DD7054C5892AE}UI/Lobby/PlayerSelector.layout" {
+                   Name "PlayerSelector9"
+                   Slot LayoutSlot "{5D6D1B9730A31B17}" {
+                   }
+                  }
+                  FrameWidgetClass "{5D6D2DE2DF9CF825}" : "{B55DD7054C5892AE}UI/Lobby/PlayerSelector.layout" {
+                   Name "PlayerSelector10"
+                   Slot LayoutSlot "{5D6D1B9730A31B17}" {
+                   }
+                  }
+                  FrameWidgetClass "{5D6D2DE2E0B81EAC}" : "{B55DD7054C5892AE}UI/Lobby/PlayerSelector.layout" {
+                   Name "PlayerSelector11"
+                   Slot LayoutSlot "{5D6D1B9730A31B17}" {
+                   }
+                  }
+                  FrameWidgetClass "{5D6D2DE2E07F1F8C}" : "{B55DD7054C5892AE}UI/Lobby/PlayerSelector.layout" {
+                   Name "PlayerSelector12"
+                   Slot LayoutSlot "{5D6D1B9730A31B17}" {
+                   }
+                  }
+                  FrameWidgetClass "{5D6D2DE2E1DBC880}" : "{B55DD7054C5892AE}UI/Lobby/PlayerSelector.layout" {
+                   Name "PlayerSelector13"
+                   Slot LayoutSlot "{5D6D1B9730A31B17}" {
+                   }
+                  }
+                  FrameWidgetClass "{5D6D2DE2E2921685}" : "{B55DD7054C5892AE}UI/Lobby/PlayerSelector.layout" {
+                   Name "PlayerSelector14"
+                   Slot LayoutSlot "{5D6D1B9730A31B17}" {
+                   }
+                  }
+                  FrameWidgetClass "{5D6D2DE2E33BB3EC}" : "{B55DD7054C5892AE}UI/Lobby/PlayerSelector.layout" {
+                   Name "PlayerSelector15"
+                   Slot LayoutSlot "{5D6D1B9730A31B17}" {
+                   }
+                  }
+                  FrameWidgetClass "{5D6D2DE2E4C53AEB}" : "{B55DD7054C5892AE}UI/Lobby/PlayerSelector.layout" {
+                   Name "PlayerSelector16"
+                   Slot LayoutSlot "{5D6D1B9730A31B17}" {
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+      FrameWidgetClass "{5D6D1414E91EA48F}" {
+       Name "Footer"
+       Slot LayoutSlot "{5D6D1414E91EA4EE}" {
+       }
+       {
+        HorizontalLayoutWidgetClass "{5D6D141449CF5BF6}" {
+         Name "HLWBody"
+         Slot FrameWidgetSlot "{5D6D1414D5FE836E}" {
+          OffsetLeft 0
+          OffsetTop 0
+          SizeX 1920
+          OffsetRight -1920
+          SizeY 128
+          OffsetBottom -128
+         }
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}

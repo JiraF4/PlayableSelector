@@ -1,0 +1,25 @@
+VerticalLayoutWidgetClass {
+ Name "FactionSelector"
+ Slot LayoutSlot "{5D6D1B9BBB04C664}" {
+  Padding 15 15 15 15
+ }
+ {
+  ImageWidgetClass "{5D6D1B9F80FCA823}" {
+   Name "FactionFlag"
+   Slot LayoutSlot "{5D6D1B9F80FCA802}" {
+   }
+   Texture "{BD2E2F871E6A3EBF}UI/Textures/Flags/Flag_Faction_Base.edds"
+   Size 256 128
+  }
+  TextWidgetClass "{5D6D1B9F8B8E1358}" {
+   Name "FactionName"
+   Slot LayoutSlot "{5D6D1B9F8B8E1CB3}" {
+   }
+  }
+  TextWidgetClass "{5D6D1B9F9075B8F3}" {
+   Name "FactionCounter"
+   Slot LayoutSlot "{5D6D1B9F9075B8CD}" {
+   }
+  }
+ }
+}
