@@ -9,31 +9,35 @@ class SCR_PlayableComponent : ScriptComponent
 {
 	[Attribute()]
 	protected string m_name;
+	protected int m_id;
 	
 	// List of all Playables
-	private static ref array<SCR_PlayableComponent> m_aPlayables = new ref array<SCR_PlayableComponent>();
+	private static ref map<int, SCR_PlayableComponent> m_aPlayables = new ref map<int, SCR_PlayableComponent>();
 	
 	override void OnPostInit(IEntity owner)
 	{
-		if(owner.Type().ToString() == "SCR_ChimeraCharacter")
-			addPlayable(this);
-		RplComponent rpl = RplComponent.Cast(owner.FindComponent(RplComponent));
-		if (rpl) rpl.EnableStreaming(false);
+		GetGame().GetCallqueue().CallLater(AddToList, 0, false, owner) // Rpl init delay
 	}
 	
-	static array<SCR_PlayableComponent> GetPlayables() 
+	private void AddToList(IEntity owner)
+	{
+		RplComponent rpl = RplComponent.Cast(owner.FindComponent(RplComponent));
+		if(rpl && owner.Type().ToString() == "SCR_ChimeraCharacter")
+		{
+			m_id = rpl.Id();
+			m_aPlayables.Set(m_id, this);
+			rpl.EnableStreaming(false); // They need to be loaded for preview
+		}
+	}
+	
+	static map<int, SCR_PlayableComponent> GetPlayables() 
 	{
 		return m_aPlayables;
 	}
 	
-	static void addPlayable(SCR_PlayableComponent ent)
+	static void removePlayable(int playableId)
 	{
-		m_aPlayables.Insert(ent);
-	}
-	
-	static void removePlayable(SCR_PlayableComponent ent)
-	{
-		m_aPlayables.RemoveItem(ent);
+		m_aPlayables.Remove(playableId);
 	}
 	
 	static void ClearPlayables()
@@ -42,11 +46,16 @@ class SCR_PlayableComponent : ScriptComponent
 	}
 	
 	void ~SCR_PlayableComponent() {
-		removePlayable(this);
+		removePlayable(m_id);
 	}
 	
 	string GetName()
 	{
 		return m_name;
+	}	
+	
+	int GetId()
+	{
+		return m_id;
 	}	
 }
