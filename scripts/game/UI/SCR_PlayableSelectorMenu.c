@@ -111,7 +111,7 @@ class SCR_PlayableSelectorMenu: MenuBase
 		
 		PlayerController playerController = GetGame().GetPlayerController();
 		
-		SCR_PlayableComponent playable = SCR_PlayableComponent.Cast(playerController.FindComponent(SCR_PlayableComponent));
+		SCR_PlayableControllerComponent playable = SCR_PlayableControllerComponent.Cast(playerController.FindComponent(SCR_PlayableControllerComponent));
 		
 		locked = true;
 	

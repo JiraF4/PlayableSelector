@@ -47,8 +47,6 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 		params.Transform = mat;
 		if (CameraEntity == null)
 			CameraEntity = GetGame().SpawnEntityPrefab(Resource.Load("{C8FDE42491F955CB}Prefabs/ManualCameraInitialPlayer.et"), GetGame().GetWorld(), params);
-		
-		//OpenPlayableMenu();
 	}
 	
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
@@ -85,8 +83,8 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	{	
 		vector mat[4];
 		player.GetTransform(mat);
-		Rpc(RPC_ForceCamera, playerId, mat[0], mat[1], mat[2], mat[3]);
-		RPC_ForceCamera(playerId, mat[0], mat[1], mat[2], mat[3])
+		Rpc(RPC_ForceCamera, playerId, mat[0], mat[1], mat[2], mat[3]); 
+		RPC_ForceCamera(playerId, mat[0], mat[1], mat[2], mat[3]) 
 	}
 	
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
