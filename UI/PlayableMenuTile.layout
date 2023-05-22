@@ -11,7 +11,7 @@ ButtonWidgetClass {
   SCR_TileBaseComponent "{585A661505520CF6}" {
    m_ColorSelected 0 0 0 0
    m_ColorDeselected 0 0 0 0.784
-   m_sContentName "Foreground"
+   m_sContentName "Background"
   }
  }
  style blank

@@ -10,6 +10,7 @@ class SCR_PlayableComponent : ScriptComponent
 	[Attribute()]
 	protected string m_name;
 	protected int m_id;
+	protected string s_sGroupName; // dead has no group, soo cache name
 	
 	// List of all Playables
 	private static ref map<int, SCR_PlayableComponent> m_aPlayables = new ref map<int, SCR_PlayableComponent>();
@@ -24,6 +25,13 @@ class SCR_PlayableComponent : ScriptComponent
 		RplComponent rpl = RplComponent.Cast(owner.FindComponent(RplComponent));
 		if(rpl && owner.Type().ToString() == "SCR_ChimeraCharacter")
 		{
+			AIControlComponent ctrl = AIControlComponent.Cast(owner.FindComponent(AIControlComponent));
+			AIAgent agent = ctrl.GetAIAgent();
+			SCR_AIGroup group = SCR_AIGroup.Cast(agent.GetParentGroup());
+			string company, platoon, squad, sCharacter, format;
+			group.GetCallsigns(company, platoon, squad, sCharacter, format);
+			s_sGroupName = string.Format(format, company, platoon, squad, sCharacter);
+			
 			m_id = rpl.Id();
 			m_aPlayables.Set(m_id, this);
 			rpl.EnableStreaming(false); // They need to be loaded for preview
@@ -58,4 +66,9 @@ class SCR_PlayableComponent : ScriptComponent
 	{
 		return m_id;
 	}	
+	
+	string GetGroupName()
+	{
+		return s_sGroupName;
+	}
 }

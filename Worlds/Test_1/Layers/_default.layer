@@ -9,7 +9,7 @@ SCR_AIWorld : "{E0A05C76552E7F58}Prefabs/AI/SCR_AIWorld.et" {
 }
 SCR_GameModeCoop SCR_GameModeCoop1 {
  components {
-  SCR_PreGameGameModeStateComponent "{5D6D2DE35B61C5CB}" {
+  SCR_CallsignManagerComponent "{5D6D35394EA61DDC}" {
   }
   RplComponent "{5D512836188B838B}" {
   }

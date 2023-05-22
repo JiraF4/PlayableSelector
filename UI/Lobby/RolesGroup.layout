@@ -1,6 +1,10 @@
-VerticalLayoutWidgetClass "{5D6D1B9ADEF28AB7}" {
+VerticalLayoutWidgetClass {
  Name "RolesGroup"
  Slot LayoutSlot "{5D6D1B9ADEF28AD1}" {
+ }
+ components {
+  SCR_RolesGroup "{5D6D352B533A1B4A}" {
+  }
  }
  {
   FrameWidgetClass "{5D6D1B9A9C46FE7F}" {

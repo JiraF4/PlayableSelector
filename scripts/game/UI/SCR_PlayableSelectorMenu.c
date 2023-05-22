@@ -7,7 +7,7 @@ class SCR_PlayableSelectorMenu: MenuBase
 	protected ResourceName m_sTilePrefab = "{CFA71C83A7ECC9CE}UI/PlayableMenuTile.layout";
 	protected bool locked;
 	
-	override void OnMenuOpened()
+	override void OnMenuOpen()
 	{
 		locked = false;
 		
