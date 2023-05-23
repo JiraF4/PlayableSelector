@@ -19,6 +19,7 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	{
 		//SCR_PlayerController playerController = SCR_PlayerController.Cast(GetGame().GetPlayerManager().GetPlayerController(playerId));
 		//playerController.SetInitialMainEntity(playerController);
+		GetGame().GetCallqueue().CallLater(RPC_UpdateMenu, 300); // TODO: Fix delay
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -32,8 +33,8 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	
 	void UpdateMenu()
 	{
-		Rpc(RPC_ReOpenPlayableMenu);
-		RPC_ReOpenPlayableMenu();
+		Rpc(RPC_UpdateMenu);
+		RPC_UpdateMenu();
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -53,16 +54,18 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	}
 	
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	void RPC_ReOpenPlayableMenu()
+	void RPC_UpdateMenu()
 	{
-		GetGame().GetCallqueue().CallLater(ReOpenPlayableMenu, 1);
+		GetGame().GetCallqueue().CallLater(UpdateMenuClient, 1);
 	}
 	
-	void ReOpenPlayableMenu()
+	void UpdateMenuClient()
 	{
 		MenuManager menuManager = GetGame().GetMenuManager();
 		SCR_PlayableSelectorMenu menu = SCR_PlayableSelectorMenu.Cast(menuManager.FindMenuByPreset(ChimeraMenuPreset.PlayableSelector));
 		if (menu) menu.UpdateList();
+		SCR_CoopLobby lobby = SCR_CoopLobby.Cast(menuManager.FindMenuByPreset(ChimeraMenuPreset.CoopLobby));
+		if (lobby) lobby.UpdateMenu();
 	}
 	
 	void OpenPlayableMenu()

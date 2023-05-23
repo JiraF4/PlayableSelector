@@ -8,6 +8,7 @@ ButtonWidgetClass {
   SCR_PlayerSelector "{5D6D352BB118FC61}" {
   }
  }
+ "no focus" 1
  {
   FrameWidgetClass "{5D6D352BAC1362FE}" {
    Name "FPlayerSelector"
@@ -34,8 +35,8 @@ ButtonWidgetClass {
       PositionX 16
       OffsetLeft 16
       OffsetTop 0
-      SizeX 256
-      OffsetRight -272
+      SizeX 216
+      OffsetRight -232
       SizeY 40
       OffsetBottom -40
      }
@@ -46,17 +47,31 @@ ButtonWidgetClass {
      Prefab "{5D6D1B99172B8829}"
      Name "PlayerFactionName"
      Slot FrameWidgetSlot "{5D6D1B96C41F633A}" {
-      PositionX 272
-      OffsetLeft 272
+      PositionX 232
+      OffsetLeft 232
       OffsetTop 0
       SizeX 128
-      OffsetRight -400
+      OffsetRight -360
       SizeY 40
       OffsetBottom -40
      }
      Text "USA"
-     "Horizontal Alignment" Right
      "Vertical Alignment" Center
+    }
+    ImageWidgetClass "{5D6ECAA19D5888B1}" {
+     Name "ReadyImage"
+     Slot FrameWidgetSlot "{5D6ECAA19D588888}" {
+      PositionX 360
+      OffsetLeft 360
+      OffsetTop 0
+      SizeX 40
+      OffsetRight -400
+      SizeY 40
+      OffsetBottom -40
+     }
+     Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
+     Image "check"
+     Size 32 32
     }
    }
   }

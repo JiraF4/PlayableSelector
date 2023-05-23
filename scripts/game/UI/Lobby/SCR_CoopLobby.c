@@ -11,13 +11,38 @@ class SCR_CoopLobby: MenuBase
 	Widget m_wFactionList;
 	protected ref array<Widget> m_aFactionListWidgets = {};
 	Widget m_wRolesList;
+	protected ref array<Widget> m_aCharactersListWidgets = {};
 	protected ref array<Widget> m_aRolesListWidgets = {};
 	Widget m_wPlayersList;
 	protected ref array<Widget> m_aPlayersListWidgets = {};
-
+	SCR_LobbyLoadoutPreview m_preview;
+	
+	SCR_NavigationButtonComponent m_bNavigationButton;
+	
 	override void OnMenuOpen()
 	{
-		GetGame().GetCallqueue().CallLater(Fill, 210); // TODO: Fix delay
+		GetGame().GetInputManager().ActivateContext("MenuContext");
+		GetGame().GetCallqueue().CallLater(Fill, 300); // TODO: Fix delay
+		
+		m_bNavigationButton = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationStart").FindHandler(SCR_NavigationButtonComponent));
+		
+		m_bNavigationButton.m_OnClicked.Insert(Action_Ready);
+		GetGame().GetInputManager().AddActionListener("MenuSelect", EActionTrigger.DOWN, Action_Ready);
+	}
+	
+	void UpdateMenu()
+	{
+		foreach (Widget factionSelector: m_aFactionListWidgets)
+		{
+			SCR_FactionSelector handler = SCR_FactionSelector.Cast(factionSelector.FindHandler(SCR_FactionSelector));
+		}
+		foreach (Widget characterWidget: m_aCharactersListWidgets)
+		{
+			SCR_CharacterSelector characterHandler = SCR_CharacterSelector.Cast(characterWidget.FindHandler(SCR_CharacterSelector));
+			characterHandler.UpdatePlayableInfo();
+		}
+		UpdatePlayersList();
+		m_preview.UpdatePreviewInfo();
 	}
 	
 	void Fill()
@@ -25,6 +50,8 @@ class SCR_CoopLobby: MenuBase
 		m_wFactionList = GetRootWidget().FindAnyWidget("FactionList");
 		m_wRolesList = GetRootWidget().FindAnyWidget("RolesList");
 		m_wPlayersList = GetRootWidget().FindAnyWidget("PlayersList");
+		Widget widget = GetRootWidget().FindAnyWidget("LoadoutPreviewTileController");
+		m_preview = SCR_LobbyLoadoutPreview.Cast(widget.FindHandler(SCR_LobbyLoadoutPreview));
 		
 		map<int, SCR_PlayableComponent> playables = SCR_PlayableComponent.GetPlayables();
 		
@@ -55,13 +82,17 @@ class SCR_CoopLobby: MenuBase
 			m_aFactionListWidgets.Insert(factionSelector);
 			m_wFactionList.AddChild(factionSelector);
 		}
+		
+		UpdatePlayersList();
+		m_preview.SetPlayable(null);
 	}
 	
 	protected void FactionClick(SCR_ButtonBaseComponent factionSelector)
 	{
+		Widget factionSelectorWidget = factionSelector.GetRootWidget();
 		foreach (Widget widget: m_aFactionListWidgets)
 		{
-			if (widget != factionSelector)
+			if (widget != factionSelectorWidget)
 			{
 				SCR_FactionSelector otherHandler = SCR_FactionSelector.Cast(widget.FindHandler(SCR_FactionSelector));
 				otherHandler.SetToggled(false);
@@ -81,6 +112,7 @@ class SCR_CoopLobby: MenuBase
 			m_wRolesList.RemoveChild(widget);
 		}
 		m_aRolesListWidgets.Clear();
+		m_aCharactersListWidgets.Clear();
 		
 		Widget RolesGroup = GetGame().GetWorkspace().CreateWidgets(m_sRolesGroupPrefab);
 		SCR_RolesGroup handler = SCR_RolesGroup.Cast(RolesGroup.FindHandler(SCR_RolesGroup));
@@ -90,11 +122,85 @@ class SCR_CoopLobby: MenuBase
 		array<SCR_PlayableComponent> factionPlayablesList = m_sFactionPlayables[m_fCurrentFaction];
 		foreach (SCR_PlayableComponent playable: factionPlayablesList)
 		{
-			handler.AddPlayable(playable);
-		
+			Widget characterWidget = handler.AddPlayable(playable);
+			SCR_CharacterSelector characterHandler = SCR_CharacterSelector.Cast(characterWidget.FindHandler(SCR_CharacterSelector));
+			m_aCharactersListWidgets.Insert(characterWidget);
+			characterHandler.m_OnClicked.Insert(CharacterClick);
+			characterHandler.m_OnMouseEnter.Insert(CharacterMouseEnter);
+			characterHandler.m_OnMouseLeave.Insert(CharacterMouseLeave);
+			characterHandler.m_OnFocus.Insert(CharacterMouseEnter);
+			characterHandler.m_OnFocusLost.Insert(CharacterMouseLeave);
+			
 			handler.SetName(playable.GetGroupName());
 		}
 	}
+	
+	protected void CharacterMouseLeave(Widget characterWidget)
+	{
+		m_preview.SetPlayable(null);
+	}
+	
+	protected void CharacterMouseEnter(Widget characterWidget)
+	{
+		SCR_CharacterSelector handler = SCR_CharacterSelector.Cast(characterWidget.FindHandler(SCR_CharacterSelector));
+		map<int, SCR_PlayableComponent> playables = SCR_PlayableComponent.GetPlayables();
+		int playableId = handler.GetPlayableId();
+		m_preview.SetPlayable(playables[playableId]);
+	}
+	
+	protected void CharacterClick(SCR_ButtonBaseComponent characterSelector)
+	{
+		
+		Widget characterWidget = characterSelector.GetRootWidget();
+		foreach (Widget widget: m_aCharactersListWidgets)
+		{
+			if (widget != characterWidget)
+			{
+				SCR_CharacterSelector otherHandler = SCR_CharacterSelector.Cast(widget.FindHandler(SCR_CharacterSelector));
+				otherHandler.SetToggled(false);
+			}
+		}
+		
+		SCR_CharacterSelector handler = SCR_CharacterSelector.Cast(characterSelector);
+		PlayerController playerController = GetGame().GetPlayerController();
+		SCR_PlayableControllerComponent playableController = SCR_PlayableControllerComponent.Cast(playerController.FindComponent(SCR_PlayableControllerComponent));
+		
+		playableController.SetReady(false);
+		playableController.TakePossession(playerController.GetPlayerId(), handler.GetPlayableId());
+	}
+	
+	protected void UpdatePlayersList()
+	{
+		array<int> playerIds = new array<int>();
+		GetGame().GetPlayerManager().GetAllPlayers(playerIds);
+		
+		foreach (Widget widget: m_aPlayersListWidgets)
+		{
+			m_wPlayersList.RemoveChild(widget);
+		}
+		m_aPlayersListWidgets.Clear();
+		
+		foreach (int playerId: playerIds)
+		{
+			Widget playerSelector = GetGame().GetWorkspace().CreateWidgets(m_sPlayerSelectorPrefab);
+			SCR_PlayerSelector handler = SCR_PlayerSelector.Cast(playerSelector.FindHandler(SCR_PlayerSelector));
+			handler.SetPlayer(playerId);
+			m_aPlayersListWidgets.Insert(playerSelector);
+			m_wPlayersList.AddChild(playerSelector);
+		}
+	}
+	
+	void Action_Ready()
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(playerController.GetControlledEntity());
+		if (character != null) 
+		{
+			SCR_PlayableControllerComponent playableController = SCR_PlayableControllerComponent.Cast(playerController.FindComponent(SCR_PlayableControllerComponent));
+			playableController.SetReady(true);
+		}
+	}
+	
 	
 }
 

@@ -6,69 +6,104 @@ ButtonWidgetClass {
  Color 0 1 0.019 0
  components {
   SCR_CharacterSelector "{5D6D352B9E28A946}" {
+   m_bCanBeToggled 1
+   m_sTexture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
+   m_sImageName "player"
   }
  }
  {
-  FrameWidgetClass "{5D6D352B99AEE9BB}" {
-   Name "FCharacterSelector"
-   Slot ButtonWidgetSlot "{5D6D352B99AEE992}" {
+  OverlayWidgetClass "{5D6E8206FB6C118E}" {
+   Name "Overlay"
+   Slot ButtonWidgetSlot "{5D6E8206FB6C11F3}" {
     Padding 8 8 8 8
    }
    {
-    ImageWidgetClass "{5D6D1B9A2749B71D}" {
-     Name "CharacterFactionColor"
-     Slot FrameWidgetSlot "{5D6D1B9A2749B73B}" {
-      OffsetLeft 0
-      OffsetTop 0
-      SizeX 6
-      OffsetRight -6
-      SizeY 40
-      OffsetBottom -40
+    FrameWidgetClass "{5D6D352B99AEE9BB}" {
+     Name "FCharacterSelector"
+     Slot OverlayWidgetSlot "{5D6E820833F19127}" {
      }
-     Color 0.376 0.749 0.749 1
-    }
-    TextWidgetClass "{5D6D1B99A45E5176}" {
-     Name "CharacterClassName"
-     Slot FrameWidgetSlot "{5D6D1B99A45E509C}" {
-      PositionX 12
-      OffsetLeft 12
-      OffsetTop 0
-      SizeX 248
-      OffsetRight -260
-      SizeY 40
-      OffsetBottom -40
+     {
+      PanelWidgetClass "{5D6F14915F970C15}" {
+       Name "Border"
+       Slot FrameWidgetSlot "{5D6F1490EBB9691E}" {
+        PositionX 2
+        OffsetLeft 2
+        OffsetTop 0
+        SizeX 606
+        OffsetRight -608
+        SizeY 40
+        OffsetBottom -40
+       }
+       Color 0.761 0.392 0.078 1
+       style outline_2px
+      }
+      ImageWidgetClass "{5D6E820689F956E2}" {
+       Name "Background"
+       Slot FrameWidgetSlot "{5D6E8206B132EE77}" {
+        OffsetLeft 0
+        OffsetTop 0
+        SizeX 608
+        OffsetRight -608
+        SizeY 40
+        OffsetBottom -40
+       }
+      }
+      ImageWidgetClass "{5D6D1B9A2749B71D}" {
+       Name "CharacterFactionColor"
+       Slot FrameWidgetSlot "{5D6D1B9A2749B73B}" {
+        OffsetLeft 0
+        OffsetTop 0
+        SizeX 6
+        OffsetRight -6
+        SizeY 40
+        OffsetBottom -40
+       }
+       Color 0.376 0.749 0.749 1
+      }
+      TextWidgetClass "{5D6D1B99A45E5176}" {
+       Name "CharacterClassName"
+       Slot FrameWidgetSlot "{5D6D1B99A45E509C}" {
+        PositionX 12
+        OffsetLeft 12
+        OffsetTop 0
+        SizeX 248
+        OffsetRight -260
+        SizeY 40
+        OffsetBottom -40
+       }
+       Text "Rifleman"
+       "Vertical Alignment" Center
+      }
+      ImageWidgetClass "{5D6D1B995C4BBFB9}" {
+       Name "Image"
+       Slot FrameWidgetSlot "{5D6D1B99A45E509C}" {
+        PositionX 260
+        OffsetLeft 260
+        PositionY 0
+        OffsetTop 0
+        SizeX 40
+        OffsetRight -300
+        SizeY 40
+        OffsetBottom -40
+       }
+       Texture "{DB2E20B0E888AAA7}UI/Textures/Conflict/no-radio--range-icon-outline_UI.edds"
+       Size 64 64
+      }
+      TextWidgetClass "{5D6D1B99172B8829}" {
+       Name "CharacterStatus"
+       Slot FrameWidgetSlot "{5D6D1B99A45E509C}" {
+        PositionX 306
+        OffsetLeft 306
+        OffsetTop 0
+        SizeX 250
+        OffsetRight -556
+        SizeY 40
+        OffsetBottom -40
+       }
+       Text "Player"
+       "Vertical Alignment" Center
+      }
      }
-     Text "Rifleman"
-     "Vertical Alignment" Center
-    }
-    ImageWidgetClass "{5D6D1B995C4BBFB9}" {
-     Name "CharacterStatusIcon"
-     Slot FrameWidgetSlot "{5D6D1B99A45E509C}" {
-      PositionX 260
-      OffsetLeft 260
-      PositionY 0
-      OffsetTop 0
-      SizeX 40
-      OffsetRight -300
-      SizeY 40
-      OffsetBottom -40
-     }
-     Texture "{DB2E20B0E888AAA7}UI/Textures/Conflict/no-radio--range-icon-outline_UI.edds"
-     Size 64 64
-    }
-    TextWidgetClass "{5D6D1B99172B8829}" {
-     Name "CharacterStatus"
-     Slot FrameWidgetSlot "{5D6D1B99A45E509C}" {
-      PositionX 300
-      OffsetLeft 300
-      OffsetTop 0
-      SizeX 256
-      OffsetRight -556
-      SizeY 40
-      OffsetBottom -40
-     }
-     Text "Player"
-     "Vertical Alignment" Center
     }
    }
   }

@@ -7,6 +7,30 @@ class SCR_PlayableControllerComponentClass: ScriptComponentClass
 [ComponentEditorProps(icon: HYBRID_COMPONENT_ICON)]
 class SCR_PlayableControllerComponent : ScriptComponent
 {
+	[RplProp()]
+	bool m_bReady;
+	
+	
+	void SetReady(bool ready)
+	{
+		if (m_bReady != ready) {
+			Rpc(Rpc_SetReady, ready);
+			Rpc_SetReady(ready);
+		}
+	}
+	
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void Rpc_SetReady(bool ready)
+	{
+		m_bReady = ready;
+		SCR_GameModeCoop.Cast(GetGame().GetGameMode()).UpdateMenu();
+	}
+	
+	bool GetReady()
+	{
+		return m_bReady;
+	}
+	
 	void TakePossession(int playerId, int playableId) 
 	{
 		Rpc(RPC_TakePossession, playerId, playableId);
@@ -42,12 +66,15 @@ class SCR_PlayableControllerComponent : ScriptComponent
 		PlayerController playerController = GetGame().GetPlayerController();
 		if (playerId != playerController.GetPlayerId()) return;
 		MenuManager menuManager = GetGame().GetMenuManager();
+		
 		SCR_PlayableSelectorMenu menu = SCR_PlayableSelectorMenu.Cast(menuManager.FindMenuByPreset(ChimeraMenuPreset.PlayableSelector));
-		if (isPossesed) {
-			SCR_GameModeCoop.Cast(GetGame().GetGameMode()).RemoveCamera();
-			menu.Close();
-		} else {
-			menu.Unlock();
+		if (menu != null) {
+			if (isPossesed) {
+				SCR_GameModeCoop.Cast(GetGame().GetGameMode()).RemoveCamera();
+				menu.Close();
+			} else {
+				menu.Unlock();
+			}
 		}
 	}
 	
