@@ -43,6 +43,31 @@ class SCR_CoopLobby: MenuBase
 		}
 		UpdatePlayersList();
 		m_preview.UpdatePreviewInfo();
+		TryClose();
+	}
+	
+	void TryClose()
+	{
+		int allReady = 0;
+		
+		array<int> playerIds = new array<int>();
+		GetGame().GetPlayerManager().GetAllPlayers(playerIds);
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		foreach (int playerId: playerIds)
+		{
+			SCR_PlayerController controller = SCR_PlayerController.Cast(playerManager.GetPlayerController(playerId));
+			SCR_PlayableControllerComponent playableController = SCR_PlayableControllerComponent.Cast(controller.FindComponent(SCR_PlayableControllerComponent));
+			if (playableController.GetState(playerId) != PlayableControllerState.NotReady) allReady++;
+		}
+		//if (allReady == playerIds.Count()) Close();
+	}
+	
+	
+	override void OnMenuClose()
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		SCR_PlayableControllerComponent playableController = SCR_PlayableControllerComponent.Cast(playerController.FindComponent(SCR_PlayableControllerComponent));
+		playableController.SetState(PlayableControllerState.Playing);
 	}
 	
 	void Fill()
@@ -165,7 +190,7 @@ class SCR_CoopLobby: MenuBase
 		PlayerController playerController = GetGame().GetPlayerController();
 		SCR_PlayableControllerComponent playableController = SCR_PlayableControllerComponent.Cast(playerController.FindComponent(SCR_PlayableControllerComponent));
 		
-		playableController.SetReady(false);
+		playableController.SetState(PlayableControllerState.NotReady);
 		playableController.TakePossession(playerController.GetPlayerId(), handler.GetPlayableId());
 	}
 	
@@ -193,11 +218,14 @@ class SCR_CoopLobby: MenuBase
 	void Action_Ready()
 	{
 		PlayerController playerController = GetGame().GetPlayerController();
+		SCR_PlayableControllerComponent playableController = SCR_PlayableControllerComponent.Cast(playerController.FindComponent(SCR_PlayableControllerComponent));
+		if (playableController.GetState(playerController.GetPlayerId()) == PlayableControllerState.Ready) {
+			playableController.SetState(PlayableControllerState.NotReady);
+		}
 		SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(playerController.GetControlledEntity());
 		if (character != null) 
 		{
-			SCR_PlayableControllerComponent playableController = SCR_PlayableControllerComponent.Cast(playerController.FindComponent(SCR_PlayableControllerComponent));
-			playableController.SetReady(true);
+			playableController.SetState(PlayableControllerState.Ready);
 		}
 	}
 	

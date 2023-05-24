@@ -11,6 +11,8 @@ SCR_GameModeCoop SCR_GameModeCoop1 {
  components {
   SCR_CallsignManagerComponent "{5D6D35394EA61DDC}" {
   }
+  SCR_PossessingManagerComponent "{5D6F3D40F7D1B35E}" {
+  }
   RplComponent "{5D512836188B838B}" {
   }
  }

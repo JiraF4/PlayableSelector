@@ -2,33 +2,41 @@
 [ComponentEditorProps(category: "GameScripted/Character", description: "Set character playable", color: "0 0 255 255", icon: HYBRID_COMPONENT_ICON)]
 class SCR_PlayableControllerComponentClass: ScriptComponentClass
 {
-};
+}
+
+enum PlayableControllerState
+{
+	NotReady,
+	Ready,
+	Playing
+}
 
 [ComponentEditorProps(icon: HYBRID_COMPONENT_ICON)]
 class SCR_PlayableControllerComponent : ScriptComponent
 {
-	[RplProp()]
-	bool m_bReady;
+	PlayableControllerState m_bState;
 	
-	
-	void SetReady(bool ready)
+	void SetState(PlayableControllerState state)
 	{
-		if (m_bReady != ready) {
-			Rpc(Rpc_SetReady, ready);
-			Rpc_SetReady(ready);
-		}
+		Rpc_SetStateServer(SCR_PlayerController.Cast(GetOwner()).GetPlayerId(), state);
+		Rpc(Rpc_SetStateServer, SCR_PlayerController.Cast(GetOwner()).GetPlayerId(), state);
 	}
 	
-	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	void Rpc_SetReady(bool ready)
+	void SetState(PlayableControllerState state, int playerId)
 	{
-		m_bReady = ready;
-		SCR_GameModeCoop.Cast(GetGame().GetGameMode()).UpdateMenu();
+		Rpc_SetStateServer(playerId, state);
+		Rpc(Rpc_SetStateServer, playerId, state);
 	}
 	
-	bool GetReady()
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void Rpc_SetStateServer(int playerId, PlayableControllerState state)
 	{
-		return m_bReady;
+		SCR_GameModeCoop.Cast(GetGame().GetGameMode()).SetPlayerState(playerId, state);
+	}
+	
+	static PlayableControllerState GetState(int playerId)
+	{
+		return SCR_GameModeCoop.GetPlayerState(playerId);
 	}
 	
 	void TakePossession(int playerId, int playableId) 
@@ -54,6 +62,7 @@ class SCR_PlayableControllerComponent : ScriptComponent
 		if (currentEntity)
 			playerController.SetInitialMainEntity(currentEntity); // Fix controlls and don't break camera
 		playerController.SetPossessedEntity(playable); // reset ai? but still broken...
+		playerController.SetInitialMainEntity(playable);
 		RPC_PossesionResult(playerId, true);
 		Rpc(RPC_PossesionResult, playerId, true);
 		

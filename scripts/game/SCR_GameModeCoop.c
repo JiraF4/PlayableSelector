@@ -12,8 +12,30 @@ class SCR_GameModeCoopClass: SCR_BaseGameModeClass
 //------------------------------------------------------------------------------------------------
 class SCR_GameModeCoop : SCR_BaseGameMode
 {
-	
 	IEntity CameraEntity;
+	
+	
+	static ref map<int, PlayableControllerState> playersStates = new map<int, PlayableControllerState>; // Controllers server only. (╯°□°）╯︵ ┻━┻
+	
+	void SetPlayerState(int playerId, PlayableControllerState state)
+	{
+		Rpc_SetPlayerStateClient(playerId, state);
+		Rpc(Rpc_SetPlayerStateClient, playerId, state);
+	}
+	
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void Rpc_SetPlayerStateClient(int playerId, PlayableControllerState state)
+	{
+		playersStates.Set(playerId, state);
+		SCR_GameModeCoop.Cast(GetGame().GetGameMode()).UpdateMenu();
+	}
+	
+	static PlayableControllerState GetPlayerState(int playerId)
+	{
+		if (!playersStates.Contains(playerId)) return PlayableControllerState.NotReady;
+		return playersStates[playerId];
+	}
+	
 	
 	override void OnPlayerConnected(int playerId)
 	{

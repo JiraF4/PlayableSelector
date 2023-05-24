@@ -27,9 +27,7 @@ class SCR_PlayerSelector : SCR_WLibComponentBase
 	void UpdatePlayerInfo()
 	{
 		PlayerManager playerManager = GetGame().GetPlayerManager();
-		SCR_PlayerController controller = SCR_PlayerController.Cast(playerManager.GetPlayerController(m_iPlayer));
-		SCR_PlayableControllerComponent playableController = SCR_PlayableControllerComponent.Cast(controller.FindComponent(SCR_PlayableControllerComponent));
-		SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(controller.GetControlledEntity());
+		SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(SCR_PossessingManagerComponent.GetInstance().GetPossessedEntity(m_iPlayer));
 		if (character != null) 
 		{
 			SCR_Faction faction = SCR_Faction.Cast(character.GetFaction());
@@ -42,6 +40,8 @@ class SCR_PlayerSelector : SCR_WLibComponentBase
 		m_wPlayerName.SetText(playerManager.GetPlayerName(m_iPlayer));
 		
 		
-		m_wReadyImage.SetVisible(playableController.GetReady());
+		SCR_PlayerController controller = SCR_PlayerController.Cast(playerManager.GetPlayerController(m_iPlayer));
+		SCR_PlayableControllerComponent playableController = SCR_PlayableControllerComponent.Cast(controller.FindComponent(SCR_PlayableControllerComponent));
+		m_wReadyImage.SetVisible(playableController.GetState(m_iPlayer) == PlayableControllerState.Ready);
 	}
 }
