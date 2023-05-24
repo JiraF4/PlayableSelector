@@ -41,7 +41,7 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	{
 		//SCR_PlayerController playerController = SCR_PlayerController.Cast(GetGame().GetPlayerManager().GetPlayerController(playerId));
 		//playerController.SetInitialMainEntity(playerController);
-		GetGame().GetCallqueue().CallLater(RPC_UpdateMenu, 300); // TODO: Fix delay
+		GetGame().GetCallqueue().CallLater(RPC_UpdateMenu, 1000); // TODO: Fix delay
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -62,6 +62,8 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	//------------------------------------------------------------------------------------------------
 	override void OnGameStart()
 	{
+		playersStates = new map<int, PlayableControllerState>();
+		
 		super.OnGameStart();
 		GetGame().GetInputManager().AddActionListener("PlayableSelector", EActionTrigger.DOWN, OpenPlayableMenu);
 		
@@ -69,8 +71,8 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 		vector mat[4];
 		GetTransform(mat);
 		params.Transform = mat;
-		if (CameraEntity == null)
-			CameraEntity = GetGame().SpawnEntityPrefab(Resource.Load("{C8FDE42491F955CB}Prefabs/ManualCameraInitialPlayer.et"), GetGame().GetWorld(), params);
+		//if (CameraEntity == null)
+		//	CameraEntity = GetGame().SpawnEntityPrefab(Resource.Load("{C8FDE42491F955CB}Prefabs/ManualCameraInitialPlayer.et"), GetGame().GetWorld(), params);
 		
 		GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.CoopLobby);
 	}

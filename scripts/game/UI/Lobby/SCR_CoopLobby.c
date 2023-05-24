@@ -17,16 +17,17 @@ class SCR_CoopLobby: MenuBase
 	protected ref array<Widget> m_aPlayersListWidgets = {};
 	SCR_LobbyLoadoutPreview m_preview;
 	
-	SCR_NavigationButtonComponent m_bNavigationButton;
+	SCR_NavigationButtonComponent m_bNavigationButtonReady;
+	SCR_NavigationButtonComponent m_bNavigationButtonChat;
 	
 	override void OnMenuOpen()
 	{
-		GetGame().GetInputManager().ActivateContext("MenuContext");
-		GetGame().GetCallqueue().CallLater(Fill, 300); // TODO: Fix delay
+		//GetGame().GetInputManager().ActivateContext("MenuContext");
+		GetGame().GetCallqueue().CallLater(Fill, 1000); // TODO: Fix delay
 		
-		m_bNavigationButton = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationStart").FindHandler(SCR_NavigationButtonComponent));
+		m_bNavigationButtonReady = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationStart").FindHandler(SCR_NavigationButtonComponent));
 		
-		m_bNavigationButton.m_OnClicked.Insert(Action_Ready);
+		m_bNavigationButtonReady.m_OnClicked.Insert(Action_Ready);
 		GetGame().GetInputManager().AddActionListener("MenuSelect", EActionTrigger.DOWN, Action_Ready);
 	}
 	
@@ -59,7 +60,9 @@ class SCR_CoopLobby: MenuBase
 			SCR_PlayableControllerComponent playableController = SCR_PlayableControllerComponent.Cast(controller.FindComponent(SCR_PlayableControllerComponent));
 			if (playableController.GetState(playerId) != PlayableControllerState.NotReady) allReady++;
 		}
-		//if (allReady == playerIds.Count()) Close();
+		
+		if (allReady == 0) return;
+		if (allReady == playerIds.Count()) Close();
 	}
 	
 	
@@ -227,6 +230,11 @@ class SCR_CoopLobby: MenuBase
 		{
 			playableController.SetState(PlayableControllerState.Ready);
 		}
+	}
+	
+	void Action_ChatOpen()
+	{
+		
 	}
 	
 	

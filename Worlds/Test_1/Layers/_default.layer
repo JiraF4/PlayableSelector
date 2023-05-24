@@ -25,6 +25,9 @@ PerceptionManager PerceptionManager1 : "{028DAEAD63E056BE}Prefabs/World/Game/Per
 }
 SCR_FactionManager FactionManager_Editor1 : "{4A188E44289B9A50}Prefabs/MP/Managers/Factions/FactionManager_Editor.et" {
 }
+ScriptedChatEntity : "{F69BC912AC8236F9}Prefabs/MP/ScriptedChatEntity.et" {
+ coords 124.16 1.001 100.253
+}
 $grp SCR_AIWaypoint {
  WP1 {
   coords 137.284 1.001 91.943

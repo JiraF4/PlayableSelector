@@ -1,6 +1,6 @@
 FrameWidgetClass {
  Name "PlayMenu"
- "Z Order" 100
+ "Z Order" 9
  {
   OverlayWidgetClass "{5D6D00D8FBAAF79D}" : "{01FD644AD2B6317D}UI/layouts/Menus/Common/MenuBackground.layout" {
    Name "MenuBackground0"
@@ -308,6 +308,7 @@ FrameWidgetClass {
                        Slot OverlayWidgetSlot "{596CEC696FEC3DFF}" {
                         VerticalAlign 0
                        }
+                       "Is Visible" 0
                        Opacity 0.5
                        {
                         ScaleWidgetClass "{5D6E820286BE9FB6}" {
@@ -368,6 +369,7 @@ FrameWidgetClass {
                             VerticalAlign 0
                             Padding 0 0 0 0
                            }
+                           "Is Visible" 0
                            Color 0.552 1 0.839 1
                            {
                             ScaleWidgetClass "{5D6E82170DB95FEE}" {
@@ -414,6 +416,7 @@ FrameWidgetClass {
                             VerticalAlign 0
                             Padding 0 0 0 0
                            }
+                           "Is Visible" 0
                            {
                             ScaleWidgetClass "{5D6E82171F4310C4}" {
                              Name "ScaleLoadout"
@@ -636,6 +639,7 @@ FrameWidgetClass {
               VerticalAlign 3
               Padding 15 15 15 15
              }
+             "Is Visible" 0
              components {
               SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
                m_sLabel "Navigation left"
@@ -650,6 +654,7 @@ FrameWidgetClass {
               VerticalAlign 3
               Padding 15 15 15 15
              }
+             "Is Visible" 0
              components {
               SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
                m_sLabel "Navigation Right"
@@ -663,6 +668,7 @@ FrameWidgetClass {
               VerticalAlign 3
               Padding 15 15 15 15
              }
+             "Is Visible" 0
              components {
               SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
                m_sLabel "Close lobby menu"
@@ -677,6 +683,7 @@ FrameWidgetClass {
               VerticalAlign 3
               Padding 15 15 15 15
              }
+             "Is Visible" 0
              components {
               SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
                m_sLabel "Chat"
@@ -692,34 +699,6 @@ FrameWidgetClass {
             HorizontalAlign 2
            }
            {
-            ButtonWidgetClass "{5D6F149D0CEA1C10}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
-             Name "NavigationBeginConfirmRole"
-             Slot LayoutSlot "{5D6F1498C9949A58}" {
-              HorizontalAlign 3
-              VerticalAlign 3
-              Padding 15 15 15 15
-             }
-             components {
-              SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
-               m_sLabel "Confirm role"
-               m_sActionName "MenuDownload"
-              }
-             }
-            }
-            ButtonWidgetClass "{5D6F149DB5323A3C}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
-             Name "NavigationBeginDeployment"
-             Slot LayoutSlot "{5D6F1498C9949A58}" {
-              HorizontalAlign 3
-              VerticalAlign 3
-              Padding 15 15 15 15
-             }
-             components {
-              SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
-               m_sLabel "Begin deployment"
-               m_sActionName "MenuFilter"
-              }
-             }
-            }
             ButtonWidgetClass "{5D6F149AEF5FAFB4}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
              Name "NavigationStart"
              Slot LayoutSlot "{5D6F1498C9949A58}" {
@@ -729,7 +708,7 @@ FrameWidgetClass {
              }
              components {
               SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
-               m_sLabel "Start game"
+               m_sLabel "Ready"
                m_sActionName "MenuSelect"
               }
              }
