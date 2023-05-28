@@ -1,13 +1,11 @@
 SCR_AIWorld : "{E0A05C76552E7F58}Prefabs/AI/SCR_AIWorld.et" {
- coords 8882.445 94.606 2485.18
+ coords 0 0 0
 }
 PerceptionManager PerceptionManager1 : "{028DAEAD63E056BE}Prefabs/World/Game/PerceptionManager.et" {
- coords 8819.041 95.511 2777.898
+ coords 0 0 0
 }
 SCR_GameModeCoop GameModeCoop_Full1 : "{02A9D220962FEFC3}Prefabs/GameModeCoop_Full.et" {
- coords 8942.816 152.47 2436.672
+ coords 5771.427 240.169 7064.689
 }
 SCR_EditorSettingsEntity {
- coords 8745.931 105.629 2764.405
- m_bDisableEditor 1
 }

@@ -1,18 +1,3 @@
 SubScene {
  Parent "worlds/Eden/Eden.ent"
 }
-Layer HaltedConvoy {
- Index 0
-}
-Layer FuelCamp {
- Index 1
-}
-Layer StartCamp {
- Index 2
-}
-Layer _Gamemode {
- Index 4
-}
-Layer HaltedConvoyAI {
- Index 3
-}

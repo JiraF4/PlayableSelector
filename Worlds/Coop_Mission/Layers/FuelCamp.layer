@@ -56,7 +56,7 @@ GenericEntity : "{69F179CCDA5BE533}PrefabsEditable/Auto/Compositions/Slotted/Slo
    {
     DecalEntity {
      ID "56E0B29F4975B6A9"
-     coords 0 -0 -0.001
+     coords 0 0 -0.001
      angleX -89.972
      angleY -179.139
      angleZ -179.178
@@ -74,7 +74,7 @@ GenericEntity : "{69F179CCDA5BE533}PrefabsEditable/Auto/Compositions/Slotted/Slo
    {
     GenericEntity {
      ID "56B6871A4F48B395"
-     coords 0 -0 -0.001
+     coords 0 0 -0.001
     }
    }
   }
@@ -115,7 +115,7 @@ GenericEntity : "{69F179CCDA5BE533}PrefabsEditable/Auto/Compositions/Slotted/Slo
    {
     GenericEntity {
      ID "56B6871A4F48B395"
-     coords -0 0 0.001
+     coords 0 0 0.001
     }
    }
   }
@@ -176,7 +176,6 @@ $grp GenericEntity : "{82DDDA574CB4F0D9}Prefabs/Props/Industrial/BarrelFuel_01_B
  {
   coords 8790.719 196.596 3901.62
   angleX 0.06
-  angleY 0
   angleZ 0.315
  }
  {
@@ -186,7 +185,7 @@ $grp GenericEntity : "{82DDDA574CB4F0D9}Prefabs/Props/Industrial/BarrelFuel_01_B
   angleZ 0.052
  }
 }
-GenericEntity : "{92BE346D5E0BD792}Prefabs/Props/Military/WaterTanks/MobileFuelTank_USSR_01.et" {
+GenericEntity : "{92BE346D5E0BD792}Prefabs/Props/Military/Fuel/MobileWaterTank_USSR_01_fuel.et" {
  coords 8788.328 196.595 3903.554
  angleY 147.558
 }

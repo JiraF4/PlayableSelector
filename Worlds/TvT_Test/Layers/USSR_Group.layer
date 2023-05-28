@@ -1,0 +1,13 @@
+Vehicle UAZ469_uncovered1 : "{16A674FE31B0921C}Prefabs/Vehicles/Wheeled/UAZ469/UAZ469_uncovered.et" {
+ components {
+  SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+   m_fVehicleDestroyDamage 8582.14
+  }
+ }
+ coords 5740.325 218.301 7063.396
+ angleY -36
+}
+SCR_AIGroup : "{E3545CFEDD312D54}Prefabs/Groups/OPFOR/Group_USSR_RifleSquad_p.et" {
+ coords 5744.116 218.443 7070.073
+ angleY -63.598
+}
