@@ -59,6 +59,9 @@ class SCR_PlayableControllerComponent : ScriptComponent
 		}
 		SCR_PlayerController playerController = SCR_PlayerController.Cast(GetGame().GetPlayerManager().GetPlayerController(playerId));
 		IEntity currentEntity = playerController.GetControlledEntity();
+		SCR_PlayerFactionAffiliationComponent playerFactionAffiliation = SCR_PlayerFactionAffiliationComponent.Cast(playerController.FindComponent(SCR_PlayerFactionAffiliationComponent));
+		SCR_Faction faction = SCR_Faction.Cast(playable.GetFaction());
+		playerFactionAffiliation.SetFaction(currentEntity, faction);
 		if (currentEntity)
 			playerController.SetInitialMainEntity(currentEntity); // Fix controlls and don't break camera
 		playerController.SetPossessedEntity(playable); // reset ai? but still broken...

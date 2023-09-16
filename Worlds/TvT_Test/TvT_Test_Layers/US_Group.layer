@@ -1,0 +1,27 @@
+Vehicle M151A2_transport1 : "{47D94E1193A88497}Prefabs/Vehicles/Wheeled/M151A2/M151A2_transport.et" {
+ components {
+  SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+   m_fVehicleDestroyDamage 8980.1
+  }
+ }
+ coords 5116.366 174.615 7124.766
+ angleY 29.341
+}
+SCR_AIGroup : "{BC357974A560F678}Prefabs/Groups/BLUFOR/Group_US_RifleSquad_p.et" {
+ coords 5106.262 175.035 7121.123
+ angleY 88
+ m_aUnitPrefabSlots {
+  "{98B0EB63C7119F3D}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Rifleman_Playble.et" "{98B0EB63C7119F3D}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Rifleman_Playble.et" "{98B0EB63C7119F3D}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Rifleman_Playble.et" "{98B0EB63C7119F3D}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Rifleman_Playble.et" "{98B0EB63C7119F3D}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Rifleman_Playble.et" "{98B0EB63C7119F3D}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Rifleman_Playble.et" "{98B0EB63C7119F3D}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Rifleman_Playble.et" "{98B0EB63C7119F3D}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Rifleman_Playble.et" "{98B0EB63C7119F3D}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Rifleman_Playble.et"
+ }
+}
+Vehicle M923A1_transport1 : "{F1FBD0972FA5FE09}Prefabs/Vehicles/Wheeled/M923A1/M923A1_transport.et" {
+ components {
+  SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+   m_fVehicleDestroyDamage 17524
+  }
+ }
+ coords 5110.375 174.863 7113.51
+ angleX 3.214
+ angleY 25.576
+ angleZ -0.266
+}

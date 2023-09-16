@@ -11,7 +11,14 @@ SCR_GameModeCoop SCR_GameModeCoop1 {
  components {
   SCR_CallsignManagerComponent "{5D6D35394EA61DDC}" {
   }
+  SCR_GroupsManagerComponent "{5E60C42E78240D96}" {
+   m_sDefaultGroupPrefab "{8B4D49A9F324E7D5}Prefabs/Groups/PlayableGroup.et"
+   m_aGroupFlags {
+   }
+  }
   SCR_PossessingManagerComponent "{5D6F3D40F7D1B35E}" {
+  }
+  SCR_VotingManagerComponent "{5E60C4282E412E26}" {
   }
   RplComponent "{5D512836188B838B}" {
   }
@@ -24,6 +31,15 @@ PerceptionManager PerceptionManager1 : "{028DAEAD63E056BE}Prefabs/World/Game/Per
  coords 93.149 1.001 99.44
 }
 SCR_FactionManager FactionManager_Editor1 : "{4A188E44289B9A50}Prefabs/MP/Managers/Factions/FactionManager_Editor.et" {
+ Factions {
+  SCR_Faction "{56DEAC40D2DBC8B1}" {
+  }
+  SCR_Faction "{56DEAC40D3C2E623}" {
+   m_bIsPlayable 1
+  }
+  SCR_Faction "{56DEAC40D132400B}" {
+  }
+ }
 }
 ScriptedChatEntity : "{F69BC912AC8236F9}Prefabs/MP/ScriptedChatEntity.et" {
  coords 124.16 1.001 100.253
@@ -47,10 +63,6 @@ SCR_PopUpNotification {
  coords 102.725 1.001 70.281
 }
 SCR_EditorManagerEntity : "{788933FFDC706A68}Prefabs/Editor/EditorManager.et" {
- components {
-  SCR_MapEditorComponent "{58FC83844CF48999}" {
-  }
- }
 }
 SCR_BoardingWaypoint WPIS : "{8AD8C82346156494}Prefabs/AI/Waypoints/AIWaypoint_GetInSelected.et" {
  components {
