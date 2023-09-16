@@ -1,5 +1,5 @@
 MetaFileClass {
- Name "{B20D25B73A29E254}Prefabs/Groups/INDFOR/Group_FIA_RifleSquad_playabe.et"
+ Name "{F93D2B11566D65A9}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_Medic_P.et"
  Configurations {
   EntityTemplateResourceClass PC {
   }

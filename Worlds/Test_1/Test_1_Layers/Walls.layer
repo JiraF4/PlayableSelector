@@ -4,7 +4,7 @@ $grp SCR_DestructibleEntity : "{A00A15B03B48A2AF}Prefabs/Structures/Walls/Brick/
   angleY 124.239
  }
  {
-  coords 116.57 -0.001 89.371
+  coords 116.57 0.052 89.371
   angleY 35
  }
  {
@@ -14,5 +14,13 @@ $grp SCR_DestructibleEntity : "{A00A15B03B48A2AF}Prefabs/Structures/Walls/Brick/
  {
   coords 123.251 0.003 84.744
   angleY 125.887
+ }
+ {
+  coords 118.683 0.019 78.416
+  angleY 125.887
+ }
+ {
+  coords 132.161 0.025 97.908
+  angleY 124.239
  }
 }

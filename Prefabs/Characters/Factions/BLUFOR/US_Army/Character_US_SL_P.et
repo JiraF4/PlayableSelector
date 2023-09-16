@@ -1,0 +1,8 @@
+SCR_ChimeraCharacter : "{E45F1E163F5CA080}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_SL.et" {
+ ID "51FA90A59C87A851"
+ components {
+  SCR_PlayableComponent "{5E61249FA37809F5}" {
+   m_name "#AR-Role_SquadLeader"
+  }
+ }
+}

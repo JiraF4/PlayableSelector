@@ -1,0 +1,8 @@
+SCR_ChimeraCharacter : "{58E47E5A4D599432}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_MG.et" {
+ ID "520EC961A090B1EE"
+ components {
+  SCR_PlayableComponent "{5E61249E54E9D6AD}" {
+   m_name "#AR-Role_MachineGunner"
+  }
+ }
+}

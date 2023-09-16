@@ -1,0 +1,8 @@
+SCR_ChimeraCharacter : "{C9E4FEAF5AAC8D8C}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Medic.et" {
+ ID "51FA8A5F10E81780"
+ components {
+  SCR_PlayableComponent "{5E61249F2A1D563C}" {
+   m_name "#AR-Role_Medic"
+  }
+ }
+}

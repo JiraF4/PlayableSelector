@@ -1,0 +1,8 @@
+SCR_ChimeraCharacter : "{2F912ED6E399FF47}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Unarmed.et" {
+ ID "520EC961A090BBD5"
+ components {
+  SCR_PlayableComponent "{5E61249F8ADD8DC1}" {
+   m_name "#AR-Role_Unarmed"
+  }
+ }
+}
