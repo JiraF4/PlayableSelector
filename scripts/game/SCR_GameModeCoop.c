@@ -23,6 +23,17 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 		Rpc(Rpc_SetPlayerStateClient, playerId, state, false);
 	}
 	
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void Rpc_SyncPlayerStateServer()
+	{
+		array<int> playerIds = new array<int>();
+		GetGame().GetPlayerManager().GetAllPlayers(playerIds);
+		foreach (int playerId: playerIds)
+		{
+			Rpc(Rpc_SetPlayerStateClient, playerId, GetPlayerState(playerId), true);
+		}
+	}
+	
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void Rpc_SetPlayerStateClient(int playerId, PlayableControllerState state, bool skipUpdate)
 	{
@@ -37,18 +48,14 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	}
 	
 	
+	
 	override void OnPlayerConnected(int playerId)
 	{
 		//SCR_PlayerController playerController = SCR_PlayerController.Cast(GetGame().GetPlayerManager().GetPlayerController(playerId));
 		//playerController.SetInitialMainEntity(playerController);
 		
 		// TODO: more elegant pls
-		array<int> playerIds = new array<int>();
-		GetGame().GetPlayerManager().GetAllPlayers(playerIds);
-		foreach (int remotePlayerId: playerIds)
-		{
-			Rpc(Rpc_SetPlayerStateClient, remotePlayerId, GetPlayerState(remotePlayerId), true);
-		}
+		Rpc(Rpc_SyncPlayerStateServer);
 		
 		GetGame().GetCallqueue().CallLater(RPC_UpdateMenu, 1000); // TODO: Fix delay
 	}
