@@ -19,15 +19,15 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	
 	void SetPlayerState(int playerId, PlayableControllerState state)
 	{
-		Rpc_SetPlayerStateClient(playerId, state);
-		Rpc(Rpc_SetPlayerStateClient, playerId, state);
+		Rpc_SetPlayerStateClient(playerId, state, false);
+		Rpc(Rpc_SetPlayerStateClient, playerId, state, false);
 	}
 	
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	void Rpc_SetPlayerStateClient(int playerId, PlayableControllerState state)
+	void Rpc_SetPlayerStateClient(int playerId, PlayableControllerState state, bool skipUpdate)
 	{
 		playersStates.Set(playerId, state);
-		SCR_GameModeCoop.Cast(GetGame().GetGameMode()).UpdateMenu();
+		if (!skipUpdate) SCR_GameModeCoop.Cast(GetGame().GetGameMode()).UpdateMenu();
 	}
 	
 	static PlayableControllerState GetPlayerState(int playerId)
@@ -41,6 +41,15 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	{
 		//SCR_PlayerController playerController = SCR_PlayerController.Cast(GetGame().GetPlayerManager().GetPlayerController(playerId));
 		//playerController.SetInitialMainEntity(playerController);
+		
+		// TODO: more elegant pls
+		array<int> playerIds = new array<int>();
+		GetGame().GetPlayerManager().GetAllPlayers(playerIds);
+		foreach (int remotePlayerId: playerIds)
+		{
+			Rpc(Rpc_SetPlayerStateClient, remotePlayerId, GetPlayerState(remotePlayerId), true);
+		}
+		
 		GetGame().GetCallqueue().CallLater(RPC_UpdateMenu, 1000); // TODO: Fix delay
 	}
 	
