@@ -1,39 +1,23 @@
-SCR_ChimeraCharacter : "{7A9EE19AB67B298B}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_base.et" {
+SCR_ChimeraCharacter : "{DE3786C0C6C978D4}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_BaseLoadout.et" {
  ID "520EC961A090B1EE"
  components {
-  SCR_CharacterInventoryStorageComponent "{520EA1D2DB118DAC}" {
-   components {
-    SCR_EquipmentStorageComponent "{56B49DA9722B635D}" {
-     InitialStorageSlots {
-      SCR_EquipmentStorageSlot BinocularSlot {
-       Prefab "{F2539FA5706E51E4}Prefabs/Items/Equipment/Binoculars/Binoculars_B12.et"
-      }
-     }
-    }
-   }
-  }
-  BaseWeaponManagerComponent "{520EA1D2F659CE5D}" {
+  CharacterWeaponManagerComponent "{5C9CA676383262FD}" {
    DefaultWeaponIndex 0
   }
   SCR_EditableCharacterComponent "{520EA1D2F659C85C}" {
    m_UIInfo SCR_EditableEntityUIInfo "{5298E609432D192D}" {
-    Name "#AR-Role_SquadLeader"
-    Icon "{A26C465A6AE2AA17}UI/Textures/Editor/EditableEntities/Characters/EditableEntity_Character_Leader.edds"
+    Name "#AR-Role_Rifleman"
+    Icon "{AE53796BC5D21A08}UI/Textures/Editor/EditableEntities/Characters/EditableEntity_Character_Rifleman.edds"
     IconSetName ""
-    m_Image "{C098D091AAC624A6}UI/Textures/EditorPreviews/Characters/INDFOR/FIA/Character_FIA_SL.edds"
+    m_Image "{6601A3AE17EA976D}UI/Textures/EditorPreviews/Characters/INDFOR/FIA/Character_FIA_Rifleman.edds"
     m_sFaction "FIA"
-    m_aAuthoredLabels + {
-     42
-    }
     m_aAutoLabels {
-     122
+     122 46
     }
    }
   }
-  SCR_GadgetManagerComponent "{520EA1D2DB118DF3}" {
-  }
-  SCR_PlayableComponent "{5D58D9565F7DE3A1}" {
-   m_name "Squad Leader"
+  SCR_PlayableComponent "{5E60B26523408FFC}" {
+   m_name "#AR-Role_Rifleman"
   }
   CharacterGrenadeSlotComponent "{520EA1D2F659CE6E}" {
    WeaponTemplate "{645C73791ECA1698}Prefabs/Weapons/Grenades/Grenade_RGD5.et"
@@ -43,6 +27,9 @@ SCR_ChimeraCharacter : "{7A9EE19AB67B298B}Prefabs/Characters/Factions/INDFOR/FIA
   }
   BaseLoadoutManagerComponent "{520EA1D2DB11821E}" {
    Slots {
+    LoadoutSlotInfo Hat {
+     Prefab "{BE19A15F1073E7BD}Prefabs/Characters/HeadGear/Hat_Knitted_01/Hat_Knitted_01_black.et"
+    }
     LoadoutSlotInfo Vest {
      Prefab "{ED5574EA7F63B457}Prefabs/Characters/Vests/Vest_Type56/Vest_Type56.et"
     }
@@ -50,23 +37,22 @@ SCR_ChimeraCharacter : "{7A9EE19AB67B298B}Prefabs/Characters/Factions/INDFOR/FIA
   }
   SCR_InventoryStorageManagerComponent "{520EA1D2DB118DE5}" {
    InitialInventoryItems {
-    ItemsInitConfigurationItem "{5A24CC1119A46C9F}" {
-     PrefabsToSpawn +{
-     }
+    ItemsInitConfigurationItem "{5D7CC173FAA7C00C}" {
+     TargetStorage "Prefabs/Characters/Vests/Vest_Type56/Vest_Type56.et"
     }
-    ItemsInitConfigurationItem "{5D58D95DFE076C03}" {
+    ItemsInitConfigurationItem "{5E60B2655426C027}" {
      TargetStorage "Prefabs/Characters/Vests/Vest_Type56/Vest_Type56.et"
      PrefabsToSpawn {
       "{A827B610B7CD4158}Prefabs/Weapons/Magazines/Vz58/Magazine_762x39_Vz58_30rnd_Last_5Tracer.et" "{A827B610B7CD4158}Prefabs/Weapons/Magazines/Vz58/Magazine_762x39_Vz58_30rnd_Last_5Tracer.et" "{A827B610B7CD4158}Prefabs/Weapons/Magazines/Vz58/Magazine_762x39_Vz58_30rnd_Last_5Tracer.et" "{77EAE5E07DC4678A}Prefabs/Weapons/Grenades/Smoke_RDG2.et"
      }
     }
-    ItemsInitConfigurationItem "{5D58D95DFE076C0D}" {
+    ItemsInitConfigurationItem "{5E60B2655426C029}" {
      TargetStorage "Prefabs/Characters/Uniforms/Jacket_M70.et"
      PrefabsToSpawn {
       "{A827B610B7CD4158}Prefabs/Weapons/Magazines/Vz58/Magazine_762x39_Vz58_30rnd_Last_5Tracer.et" "{A827B610B7CD4158}Prefabs/Weapons/Magazines/Vz58/Magazine_762x39_Vz58_30rnd_Last_5Tracer.et"
      }
     }
-    ItemsInitConfigurationItem "{5A24CC1119C7787F}" {
+    ItemsInitConfigurationItem "{5E60B2655426C028}" {
      TargetStorage "Prefabs/Characters/Vests/Vest_Type56/Vest_Type56.et"
     }
    }

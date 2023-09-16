@@ -1,7 +1,7 @@
-SCR_ChimeraCharacter : "{5346CF7E39A65A6B}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Base.et" {
- ID "520EC961A090BE1E"
+SCR_ChimeraCharacter : "{3ECA3A935BC069B9}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_BaseLoadout.et" {
+ ID "520EC961A090B1EE"
  components {
-  BaseWeaponManagerComponent "{520EA1D2F659CE5D}" {
+  CharacterWeaponManagerComponent "{5C9CA676383262FD}" {
    DefaultWeaponIndex 0
   }
   SCR_EditableCharacterComponent "{520EA1D2F659C85C}" {
@@ -18,11 +18,6 @@ SCR_ChimeraCharacter : "{5346CF7E39A65A6B}Prefabs/Characters/Factions/OPFOR/USSR
     }
    }
   }
-  SCR_GadgetManagerComponent "{520EA1D2DB118DF3}" {
-  }
-  SCR_PlayableComponent "{5D58D959E84E02ED}" {
-   m_name "Rifleman"
-  }
   CharacterGrenadeSlotComponent "{520EA1D2F659CE6E}" {
    WeaponTemplate "{645C73791ECA1698}Prefabs/Weapons/Grenades/Grenade_RGD5.et"
   }
@@ -35,6 +30,9 @@ SCR_ChimeraCharacter : "{5346CF7E39A65A6B}Prefabs/Characters/Factions/OPFOR/USSR
   }
   BaseLoadoutManagerComponent "{520EA1D2DB11821E}" {
    Slots {
+    LoadoutSlotInfo ArmoredVest {
+     Prefab "{ADE19B33DCBB9005}Prefabs/Characters/Vests/Vest_6B2/Vest_6B2.et"
+    }
     LoadoutSlotInfo Back {
      Prefab ""
     }
@@ -45,17 +43,23 @@ SCR_ChimeraCharacter : "{5346CF7E39A65A6B}Prefabs/Characters/Factions/OPFOR/USSR
   }
   SCR_InventoryStorageManagerComponent "{520EA1D2DB118DE5}" {
    InitialInventoryItems {
-    ItemsInitConfigurationItem "{5D58D95C9D4585C6}" {
+    ItemsInitConfigurationItem "{5D7CC173E6675BF5}" {
+     TargetStorage "Prefabs/Characters/Vests/Vest_Lifchik/Vest_Lifchik.et"
+    }
+    ItemsInitConfigurationItem "{5E60B26542FD5552}" {
      TargetStorage "Prefabs/Characters/Vests/Vest_Lifchik/Vest_Lifchik.et"
      PrefabsToSpawn {
       "{77EAE5E07DC4678A}Prefabs/Weapons/Grenades/Smoke_RDG2.et" "{77EAE5E07DC4678A}Prefabs/Weapons/Grenades/Smoke_RDG2.et" "{645C73791ECA1698}Prefabs/Weapons/Grenades/Grenade_RGD5.et" "{0A84AA5A3884176F}Prefabs/Weapons/Magazines/Magazine_545x39_AK_30rnd_Last_5Tracer.et" "{0A84AA5A3884176F}Prefabs/Weapons/Magazines/Magazine_545x39_AK_30rnd_Last_5Tracer.et" "{0A84AA5A3884176F}Prefabs/Weapons/Magazines/Magazine_545x39_AK_30rnd_Last_5Tracer.et" "{0A84AA5A3884176F}Prefabs/Weapons/Magazines/Magazine_545x39_AK_30rnd_Last_5Tracer.et" "{0A84AA5A3884176F}Prefabs/Weapons/Magazines/Magazine_545x39_AK_30rnd_Last_5Tracer.et" "{0A84AA5A3884176F}Prefabs/Weapons/Magazines/Magazine_545x39_AK_30rnd_Last_5Tracer.et"
      }
     }
-    ItemsInitConfigurationItem "{5A24CC173897B74F}" {
+    ItemsInitConfigurationItem "{5E60B26542FD555B}" {
      TargetStorage "Prefabs/Characters/Vests/Vest_Lifchik/Vest_Lifchik.et"
     }
    }
   }
+  SCR_PlayableComponent "{5E60B265CFBDE043}" {
+   m_name "#AR-Role_Rifleman"
+  }
  }
- coords 0 0 0
+ coords 117.868 1 91.706
 }

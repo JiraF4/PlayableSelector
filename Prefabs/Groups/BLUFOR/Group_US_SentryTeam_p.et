@@ -37,7 +37,6 @@ SCR_AIGroup : "{EACD97CF4A702FAE}Prefabs/Groups/BLUFOR/Group_US_Base.et" {
      m_Flags 3
      m_Shape MESH
      m_iPivotID ""
-     m_fScale 1
      m_vPosition 0 0 0
      m_vAngles 0 0 0
     }
@@ -47,7 +46,6 @@ SCR_AIGroup : "{EACD97CF4A702FAE}Prefabs/Groups/BLUFOR/Group_US_Base.et" {
      m_Flags 0
      m_Shape PREFAB
      m_iPivotID ""
-     m_fScale 1
      m_vPosition 0 0 0
      m_vAngles 0 0 0
     }
@@ -57,15 +55,15 @@ SCR_AIGroup : "{EACD97CF4A702FAE}Prefabs/Groups/BLUFOR/Group_US_Base.et" {
      m_Flags 0
      m_Shape PREFAB
      m_iPivotID ""
-     m_fScale 1
      m_vPosition 3 0 -3
      m_vAngles 0 0 0
     }
    }
   }
  }
- coords 320.253 -0.015 197.956
+ coords 115.583 1.002 86.182
+ angleY 28.916
  m_aUnitPrefabSlots {
-  "{F44F87222B67E26A}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Rifleman_p.et" "{F44F87222B67E26A}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Rifleman_p.et"
+  "{98B0EB63C7119F3D}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Rifleman_Playble.et" "{98B0EB63C7119F3D}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Rifleman_Playble.et"
  }
 }

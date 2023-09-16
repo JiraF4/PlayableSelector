@@ -83,7 +83,7 @@ class SCR_PlayableSelectorMenu: MenuBase
 			}
 			else 
 			{
-				handler.SetText(playable.GetName());
+				handler.SetNameText(playable.GetName());
 				int playerId = SCR_PossessingManagerComponent.GetInstance().GetPlayerIdFromControlledEntity(character);
 				handler.SetPlayer(playerId);
 			}

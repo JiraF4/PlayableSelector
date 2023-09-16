@@ -1,5 +1,5 @@
 MetaFileClass {
- Name "{F93D2B11566D65A9}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_Medic_p.et"
+ Name "{98B0EB63C7119F3D}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Rifleman_Playble.et"
  Configurations {
   EntityTemplateResourceClass PC {
   }

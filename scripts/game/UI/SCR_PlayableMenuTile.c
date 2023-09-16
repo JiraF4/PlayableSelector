@@ -1,10 +1,11 @@
-class SCR_PlayableMenuTile : SCR_DeployMenuTile
+class SCR_PlayableMenuTile : SCR_ButtonBaseComponent
 {
 	[Attribute("LoadoutMessage", desc: "Widget name of simple message component")]
 	protected string m_sSimpleMessageName;
 		
 	protected OverlayWidget m_wPlayerOverlay;
 	protected TextWidget m_wPlayerText;
+	protected TextWidget m_wNameText;
 	protected ImageWidget m_wPlayerBackground;
 	
 	protected ImageWidget m_wFactionBackground;
@@ -16,8 +17,8 @@ class SCR_PlayableMenuTile : SCR_DeployMenuTile
 	{
 		super.OnFocus(w, x, y);
 		
-		if (m_Parent)
-			m_Parent.FocusTile(this);
+// 		if (m_Parent)
+//			m_Parent.FocusTile(this);
 		
 		return false;
 	}
@@ -31,10 +32,16 @@ class SCR_PlayableMenuTile : SCR_DeployMenuTile
 		
 		m_wPlayerOverlay = OverlayWidget.Cast(w.FindAnyWidget("PlayerOverlay"));
 		m_wPlayerText = TextWidget.Cast(w.FindAnyWidget("PlayerText"));
+		m_wNameText = TextWidget.Cast(w.FindAnyWidget("NameText"));
 		m_wPlayerBackground = ImageWidget.Cast(w.FindAnyWidget("PFactionBckg"));
 		
 		Widget widget = w.FindAnyWidget("LoadoutPreview");
 		m_Preview = SCR_LoadoutPreviewComponent.Cast(widget.FindHandler(SCR_LoadoutPreviewComponent));
+	}
+	
+	void SetNameText(string strName)
+	{
+		m_wNameText.SetText(strName);
 	}
 
 	void SetPreviewedLoadout(SCR_BasePlayerLoadout loadout)

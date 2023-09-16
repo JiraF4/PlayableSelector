@@ -233,7 +233,7 @@ ButtonWidgetClass {
                  Size 240 240
                 }
                 TextWidgetClass "{5D514EE7F0A4049E}" {
-                 Name "Text"
+                 Name "NameText"
                  Slot LayoutSlot "{558E4CB38BCEA6C1}" {
                   HorizontalAlign 0
                   VerticalAlign 1
