@@ -11,7 +11,7 @@ SCR_PlayerController : "{6E2BB64764E3BE9B}Prefabs/Characters/Core/DefaultPlayerC
   }
   SCR_PlayableControllerComponent "{5D6D00DFDED0AAC2}" {
   }
-  SCR_RadialMenuComponent "{56289B0048E95E96}" {
+  SCR_PlayerFactionAffiliationComponent "{5E60EBD85AB35135}" {
   }
   SCR_RespawnComponent "{5D50F641B0525AB9}" {
   }

@@ -11,10 +11,16 @@ SCR_GameModeCoop SCR_GameModeCoop1 {
  components {
   SCR_CallsignManagerComponent "{5D6D35394EA61DDC}" {
   }
+  SCR_CommandingManagerComponent "{5E60EBD69032624B}" {
+   m_sCommandsConfigPath "{54764D4E706F348C}Configs/Commanding/Commands.conf"
+  }
   SCR_GroupsManagerComponent "{5E60C42E78240D96}" {
    m_sDefaultGroupPrefab "{8B4D49A9F324E7D5}Prefabs/Groups/PlayableGroup.et"
    m_aGroupFlags {
    }
+  }
+  SCR_NametagConfigComponent "{5E60EBDEB15F1622}" {
+   m_sConfigPath "{DB53C99497C2DDBA}Configs/NameTags/NametagSingle.conf"
   }
   SCR_PossessingManagerComponent "{5D6F3D40F7D1B35E}" {
   }
@@ -27,17 +33,22 @@ SCR_GameModeCoop SCR_GameModeCoop1 {
  angleY 83.932
  PlayerControllerPrefab "{4E5DAC62A374950F}Prefabs/Characters/Core/DefaultPlayerControllerMP_Coop.et"
 }
+TagManager {
+ coords 111.102 1 83.977
+}
 PerceptionManager PerceptionManager1 : "{028DAEAD63E056BE}Prefabs/World/Game/PerceptionManager.et" {
  coords 93.149 1.001 99.44
 }
 SCR_FactionManager FactionManager_Editor1 : "{4A188E44289B9A50}Prefabs/MP/Managers/Factions/FactionManager_Editor.et" {
  Factions {
   SCR_Faction "{56DEAC40D2DBC8B1}" {
+   m_bIsPlayable 1
   }
   SCR_Faction "{56DEAC40D3C2E623}" {
    m_bIsPlayable 1
   }
   SCR_Faction "{56DEAC40D132400B}" {
+   m_bIsPlayable 1
   }
  }
 }

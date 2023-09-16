@@ -59,13 +59,33 @@ class SCR_PlayableControllerComponent : ScriptComponent
 		}
 		SCR_PlayerController playerController = SCR_PlayerController.Cast(GetGame().GetPlayerManager().GetPlayerController(playerId));
 		IEntity currentEntity = playerController.GetControlledEntity();
-		SCR_PlayerFactionAffiliationComponent playerFactionAffiliation = SCR_PlayerFactionAffiliationComponent.Cast(playerController.FindComponent(SCR_PlayerFactionAffiliationComponent));
-		SCR_Faction faction = SCR_Faction.Cast(playable.GetFaction());
-		playerFactionAffiliation.SetFaction(currentEntity, faction);
 		if (currentEntity)
 			playerController.SetInitialMainEntity(currentEntity); // Fix controlls and don't break camera
 		playerController.SetPossessedEntity(playable); // reset ai? but still broken...
 		playerController.SetInitialMainEntity(playable);
+		
+		SCR_PlayerFactionAffiliationComponent playerFactionAffiliation = SCR_PlayerFactionAffiliationComponent.Cast(playerController.FindComponent(SCR_PlayerFactionAffiliationComponent));
+		SCR_Faction faction = SCR_Faction.Cast(playable.GetFaction());
+		playerFactionAffiliation.SetAffiliatedFaction(faction);
+		
+		SCR_FactionManager factionManager = SCR_FactionManager.Cast(GetGame().GetFactionManager());
+		factionManager.UpdatePlayerFaction_S(playerFactionAffiliation);
+		
+		/*
+		SCR_GroupsManagerComponent groupsManagerComponent = SCR_GroupsManagerComponent.GetInstance();
+		AIControlComponent aiControl = AIControlComponent.Cast(playable.FindComponent(AIControlComponent));
+		SCR_AIGroup groupPlayable =  SCR_AIGroup.Cast(aiControl.GetControlAIAgent().GetParentGroup());
+		SCR_AIGroup group = groupsManagerComponent.CreateNewPlayableGroup(faction);
+		group.SetSlave(groupPlayable);
+		SCR_PlayerControllerGroupComponent playerControllerGroupComponent = SCR_PlayerControllerGroupComponent.Cast(playerController.FindComponent(SCR_PlayerControllerGroupComponent));
+		playerControllerGroupComponent.RPC_AskJoinGroup(group.GetGroupID());
+		
+		group.SetGroupID(-2);
+		group.SetMaxMembers(10);
+		groupsManagerComponent.RegisterGroup(group);
+		playerControllerGroupComponent.RPC_AskJoinGroup(group.GetGroupID());
+		*/
+		
 		RPC_PossesionResult(playerId, true);
 		Rpc(RPC_PossesionResult, playerId, true);
 		

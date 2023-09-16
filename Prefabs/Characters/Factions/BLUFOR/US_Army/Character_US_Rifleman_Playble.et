@@ -41,6 +41,8 @@ SCR_ChimeraCharacter : "{284E735C6C70DAD2}Prefabs/Characters/Factions/BLUFOR/US_
     }
    }
   }
+  SCR_FactionAffiliationComponent "{520EC961FB0A2E90}" {
+  }
   SCR_PlayableComponent "{5E60B263EF12D5EB}" {
    m_name "#AR-Role_Rifleman"
   }
