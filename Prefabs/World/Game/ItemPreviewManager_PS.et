@@ -1,0 +1,9 @@
+ItemPreviewManagerEntity {
+ ID "5E6ED2171EBB89C9"
+ coords -12.245 1 -7.529
+ Flags 0
+ PreviewWorld "{4391FE7994EE6FE2}Prefabs/World/Game/InventoryPreviewWorld.et"
+ DefaultRenderAttributes PreviewRenderAttributes "{5E6ED2171EBB89F3}" {
+  CameraDistanceToItem 0.2
+ }
+}

@@ -36,9 +36,20 @@ SCR_GameModeCoop SCR_GameModeCoop1 {
   }
  }
  PlayerControllerPrefab "{4E5DAC62A374950F}Prefabs/Characters/Core/DefaultPlayerControllerMP_Coop.et"
-}
-TagManager {
- coords 111.102 1 83.977
+ {
+  TagManager {
+  }
+  ScriptedChatEntity : "{F69BC912AC8236F9}Prefabs/MP/ScriptedChatEntity.et" {
+   coords 0 0 0
+  }
+  SCR_EditorSettingsEntity {
+   m_bDisableEditor 1
+  }
+  SCR_PopUpNotification {
+  }
+  SCR_EditorManagerEntity : "{788933FFDC706A68}Prefabs/Editor/EditorManager.et" {
+  }
+ }
 }
 PerceptionManager PerceptionManager1 : "{028DAEAD63E056BE}Prefabs/World/Game/PerceptionManager.et" {
  coords 93.149 1.001 99.44
@@ -56,77 +67,6 @@ SCR_FactionManager FactionManager_Editor1 : "{4A188E44289B9A50}Prefabs/MP/Manage
   }
  }
 }
-ScriptedChatEntity : "{F69BC912AC8236F9}Prefabs/MP/ScriptedChatEntity.et" {
- coords 124.16 1.001 100.253
-}
-$grp SCR_AIWaypoint {
- WP1 {
-  coords 137.284 1.001 91.943
- }
- WP2 {
-  coords 161.302 1.001 85.42
- }
- WP3 {
-  coords 160.36 1.001 53.748
- }
-}
-SCR_EditorSettingsEntity {
- coords 110.251 1.001 89.038
- m_bDisableEditor 1
-}
-SCR_PopUpNotification {
- coords 102.725 1.001 70.281
-}
-SCR_EditorManagerEntity : "{788933FFDC706A68}Prefabs/Editor/EditorManager.et" {
-}
-SCR_BoardingWaypoint WPIS : "{8AD8C82346156494}Prefabs/AI/Waypoints/AIWaypoint_GetInSelected.et" {
- components {
-  RplComponent "{5D59015A2CB99060}" {
-  }
- }
- coords 135.365 1.001 78.562
- CompletionRadius 20
- m_holdingTime 30
- m_bDriverAllowed 1
- m_bCargoAllowed 0
-}
 ItemPreviewManagerEntity ItemPreviewManager1 : "{9F18C476AB860F3B}Prefabs/World/Game/ItemPreviewManager.et" {
  coords 116.928 1.001 98.019
-}
-Vehicle BTR70_FIA1 : "{B47110AA1A806556}Prefabs/Vehicles/Wheeled/BTR70/BTR70_FIA.et" {
- components {
-  AICarMovementComponent "{5A3EFB66475D9F87}" {
-   Enabled 1
-  }
-  BaseVehicleNodeComponent "{20FB66C5B2237133}" {
-   components {
-    SCR_CarControllerComponent "{20FB66C5BC92275B}" {
-     ApplyControls 0
-    }
-   }
-  }
-  SCR_VehicleAi "{5D59015E2C65A054}" {
-   m_aStaticWaypoints {
-    "WP1" "WP2" "WP3"
-   }
-  }
-  SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
-   m_fVehicleDestroyDamage 16909
-  }
- }
- coords 137.309 1.001 79.214
-}
-$grp GenericEntity : "{C8FA3A3C79289902}Prefabs/Props/Furniture/CurtainsWindow_01/CurtainsWindow_01_big_straight_V2.et" {
- {
-  coords 137.265 4.763 92.05
- }
- {
-  coords 160.902 5.475 85.529
- }
- {
-  coords 160.368 5.801 54.075
- }
-}
-GenericEntity : "{D6EF54367CECE1D9}Prefabs/Weapons/Explosives/Mine_TM62M/Mine_TM62M.et" {
- coords 137.806 1.001 88.516
 }

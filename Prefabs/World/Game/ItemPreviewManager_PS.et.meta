@@ -1,5 +1,5 @@
 MetaFileClass {
- Name "{02A9D220962FEFC3}Prefabs/GameModeCoop_Full1.et"
+ Name "{AB5D049A3AB43FC0}Prefabs/World/Game/ItemPreviewManager_PS.et"
  Configurations {
   EntityTemplateResourceClass PC {
   }
