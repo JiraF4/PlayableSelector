@@ -16,12 +16,17 @@ class SCR_CoopLobby: MenuBase
 	Widget m_wPlayersList;
 	protected ref array<Widget> m_aPlayersListWidgets = {};
 	SCR_LobbyLoadoutPreview m_preview;
+	TextWidget m_wCounterText;
 	
 	SCR_NavigationButtonComponent m_bNavigationButtonReady;
 	SCR_NavigationButtonComponent m_bNavigationButtonChat;
 	
+	int startTime = 0;
+	
 	override void OnMenuOpen()
 	{
+		m_wCounterText = TextWidget.Cast(GetRootWidget().FindAnyWidget("TextCounter"));
+		m_wCounterText.SetText("");
 		//GetGame().GetInputManager().ActivateContext("MenuContext");
 		GetGame().GetCallqueue().CallLater(Fill, 0); // TODO: Fix delay
 		
@@ -68,18 +73,46 @@ class SCR_CoopLobby: MenuBase
 	
 	void TryClose()
 	{
-		int allReady = 0;
+		if (startTime != 0) return;
+		if (!IsAllReady()) return;
+		startTime = System.GetTickCount();
+		CloseTimer();
+	}
+	
+	void CloseTimer()
+	{
+		if (!IsAllReady()) {
+			m_wCounterText.SetText("");
+			startTime = 0;
+			return;
+		}
 		
+		int currentTime = System.GetTickCount();
+		int seconds = (currentTime - startTime)/1000;
+		string secondsStr = (seconds + 1).ToString();
+		if (m_wCounterText.GetText() != secondsStr) {
+			m_wCounterText.SetText(secondsStr);
+			AudioSystem.PlaySound("{3119327F3EFCA9C6}Sounds/UI/Samples/Gadgets/UI_Radio_Frequency_Cycle.wav");
+		}
+		
+		if (seconds == 3) Close();
+		else GetGame().GetCallqueue().CallLater(CloseTimer, 100);
+	}
+			
+	
+	bool IsAllReady()
+	{
+		int allReady = 0;
 		array<int> playerIds = new array<int>();
 		GetGame().GetPlayerManager().GetAllPlayers(playerIds);
+		if (playerIds.Count() == 0) return false;
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		foreach (int playerId: playerIds)
 		{
 			if (SCR_GameModeCoop.GetPlayerState(playerId) != PlayableControllerState.NotReady) allReady++;
 		}
 		
-		if (allReady == 0) return;
-		if (allReady == playerIds.Count()) Close();
+		return allReady == playerIds.Count();
 	}
 	
 	

@@ -723,5 +723,38 @@ FrameWidgetClass {
     }
    }
   }
+  OverlayWidgetClass "{5E6EACEFEB2DB125}" {
+   Name "OverlayCounter"
+   Slot FrameWidgetSlot "{5E6EACEFEB2DB13C}" {
+    Anchor 0.5 0.5 0.5 0.5
+    PositionX -960
+    OffsetLeft -960
+    PositionY -540
+    OffsetTop -540
+    SizeX 1920
+    OffsetRight -960
+    SizeY 1080
+    OffsetBottom -540
+   }
+   {
+    TextWidgetClass "{5E6EACEF815E96D4}" {
+     Name "TextCounter"
+     Slot OverlayWidgetSlot "{5E6EACEA679DE9B3}" {
+      HorizontalAlign 1
+      VerticalAlign 1
+     }
+     Opacity 0.9
+     Color 0.054 0.231 0.085 1
+     Text "3"
+     "Font Size" 256
+     "Min Font Size" 256
+     "Horizontal Alignment" Center
+     "Vertical Alignment" Center
+     FontProperties FontProperties "{5E6EACEA2ABBED61}" {
+      OutlineSize 1
+     }
+    }
+   }
+  }
  }
 }
