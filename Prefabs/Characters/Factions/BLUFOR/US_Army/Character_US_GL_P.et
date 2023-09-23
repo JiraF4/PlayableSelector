@@ -1,0 +1,8 @@
+SCR_ChimeraCharacter : "{84029128FA6F6BB9}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_GL.et" {
+ ID "51FA8A5FA6C2005C"
+ components {
+  SCR_PlayableComponent "{5E61249F5F335549}" {
+   m_name "#AR-Role_Grenadier"
+  }
+ }
+}

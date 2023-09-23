@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{9833E2B0922376A7}Prefabs/Groups/OPFOR/Group_USSR_LightFireTeam_P.et"
+ Configurations {
+  EntityTemplateResourceClass PC {
+  }
+  EntityTemplateResourceClass XBOX_ONE : PC {
+  }
+  EntityTemplateResourceClass XBOX_SERIES : PC {
+  }
+  EntityTemplateResourceClass PS4 : PC {
+  }
+  EntityTemplateResourceClass HEADLESS : PC {
+  }
+ }
+}

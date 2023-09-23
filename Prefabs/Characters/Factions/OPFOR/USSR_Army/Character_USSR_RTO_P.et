@@ -1,0 +1,8 @@
+SCR_ChimeraCharacter : "{612F43A4D5AE765F}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_RTO.et" {
+ ID "520EC961A090BE1E"
+ components {
+  SCR_PlayableComponent "{5E61249EBFA71384}" {
+   m_name "#AR-Role_RadioOperator"
+  }
+ }
+}

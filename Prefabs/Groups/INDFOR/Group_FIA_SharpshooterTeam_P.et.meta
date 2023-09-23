@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{8298E4105B5A10C0}Prefabs/Groups/INDFOR/Group_FIA_SharpshooterTeam_P.et"
+ Configurations {
+  EntityTemplateResourceClass PC {
+  }
+  EntityTemplateResourceClass XBOX_ONE : PC {
+  }
+  EntityTemplateResourceClass XBOX_SERIES : PC {
+  }
+  EntityTemplateResourceClass PS4 : PC {
+  }
+  EntityTemplateResourceClass HEADLESS : PC {
+  }
+ }
+}

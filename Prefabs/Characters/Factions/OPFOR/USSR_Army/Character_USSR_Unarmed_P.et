@@ -1,0 +1,8 @@
+SCR_ChimeraCharacter : "{98EB9CDD85B8C92C}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Unarmed.et" {
+ ID "528AED06AB0ECD29"
+ components {
+  SCR_PlayableComponent "{5E61249E88F983EC}" {
+   m_name "#AR-Role_Unarmed"
+  }
+ }
+}

@@ -1,0 +1,8 @@
+SCR_ChimeraCharacter : "{D25BC9815A9F9E8D}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_AT.et" {
+ ID "520EC961A090B1EE"
+ components {
+  SCR_PlayableComponent "{5E61249E4768FE7C}" {
+   m_name "#AR-Role_AntiTank"
+  }
+ }
+}

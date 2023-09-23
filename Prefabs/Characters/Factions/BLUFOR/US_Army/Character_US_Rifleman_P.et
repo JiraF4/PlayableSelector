@@ -1,0 +1,8 @@
+SCR_ChimeraCharacter : "{26A9756790131354}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Rifleman.et" {
+ ID "52092032B0E62200"
+ components {
+  SCR_PlayableComponent "{5E61249FCAF5204F}" {
+   m_name "#AR-Role_Rifleman"
+  }
+ }
+}
