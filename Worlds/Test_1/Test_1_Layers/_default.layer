@@ -24,6 +24,11 @@ SCR_GameModeCoop SCR_GameModeCoop1 {
   }
   SCR_PossessingManagerComponent "{5D6F3D40F7D1B35E}" {
   }
+  SCR_RespawnSystemComponent "{5E6ECE50A0152079}" {
+   m_SpawnLogic SCR_SpawnLogic "{5E6ED0CF803F377F}" {
+   }
+   m_bEnableRespawn 0
+  }
   SCR_VotingManagerComponent "{5E60C4282E412E26}" {
   }
   RplComponent "{5D512836188B838B}" {

@@ -25,6 +25,8 @@ class SCR_CoopLobby: MenuBase
 	
 	override void OnMenuOpen()
 	{
+		Widget widget = GetRootWidget().FindAnyWidget("LoadoutPreviewTileController");
+		m_preview = SCR_LobbyLoadoutPreview.Cast(widget.FindHandler(SCR_LobbyLoadoutPreview));
 		m_wCounterText = TextWidget.Cast(GetRootWidget().FindAnyWidget("TextCounter"));
 		m_wCounterText.SetText("");
 		//GetGame().GetInputManager().ActivateContext("MenuContext");
@@ -128,8 +130,6 @@ class SCR_CoopLobby: MenuBase
 		m_wFactionList = GetRootWidget().FindAnyWidget("FactionList");
 		m_wRolesList = GetRootWidget().FindAnyWidget("RolesList");
 		m_wPlayersList = GetRootWidget().FindAnyWidget("PlayersList");
-		Widget widget = GetRootWidget().FindAnyWidget("LoadoutPreviewTileController");
-		m_preview = SCR_LobbyLoadoutPreview.Cast(widget.FindHandler(SCR_LobbyLoadoutPreview));
 		
 		map<int, SCR_PlayableComponent> playables = SCR_PlayableComponent.GetPlayables();
 		
