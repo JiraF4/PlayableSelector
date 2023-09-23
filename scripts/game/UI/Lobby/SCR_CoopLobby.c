@@ -23,21 +23,40 @@ class SCR_CoopLobby: MenuBase
 	override void OnMenuOpen()
 	{
 		//GetGame().GetInputManager().ActivateContext("MenuContext");
-		GetGame().GetCallqueue().CallLater(Fill, 1000); // TODO: Fix delay
+		GetGame().GetCallqueue().CallLater(Fill, 0); // TODO: Fix delay
 		
 		m_bNavigationButtonReady = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationStart").FindHandler(SCR_NavigationButtonComponent));
 		
 		m_bNavigationButtonReady.m_OnClicked.Insert(Action_Ready);
 		GetGame().GetInputManager().AddActionListener("MenuSelect", EActionTrigger.DOWN, Action_Ready);
+		
+		GetGame().GetCallqueue().CallLater(UpdateCycle, 100);
+		m_preview.SetPlayable(null);
+	}
+	
+	void UpdateCycle() // Soo many staff need to bee init, i can't track all of it...
+	{
+		Fill();
+		GetGame().GetCallqueue().CallLater(UpdateCycle, 100);
 	}
 	
 	void UpdateMenu()
 	{
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		SCR_PossessingManagerComponent possessingManagerComponent = SCR_PossessingManagerComponent.GetInstance();
 		foreach (Widget factionSelector: m_aFactionListWidgets)
 		{
 			SCR_FactionSelector handler = SCR_FactionSelector.Cast(factionSelector.FindHandler(SCR_FactionSelector));
+			array<SCR_PlayableComponent> factionPlayablesList = m_sFactionPlayables[handler.GetFaction()];
+			int i = 0;
+			foreach (SCR_PlayableComponent playable : factionPlayablesList) {
+				SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(playable.GetOwner());
+				int playerId = possessingManagerComponent.GetPlayerIdFromControlledEntity(character);
+				if (playerId != 0)  i++;
+			}
+			handler.SetCount(i, factionPlayablesList.Count());
 		}
-		foreach (Widget characterWidget: m_aCharactersListWidgets)
+		foreach (Widget characterWidget : m_aCharactersListWidgets)
 		{
 			SCR_CharacterSelector characterHandler = SCR_CharacterSelector.Cast(characterWidget.FindHandler(SCR_CharacterSelector));
 			characterHandler.UpdatePlayableInfo();
@@ -56,9 +75,7 @@ class SCR_CoopLobby: MenuBase
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		foreach (int playerId: playerIds)
 		{
-			SCR_PlayerController controller = SCR_PlayerController.Cast(playerManager.GetPlayerController(playerId));
-			SCR_PlayableControllerComponent playableController = SCR_PlayableControllerComponent.Cast(controller.FindComponent(SCR_PlayableControllerComponent));
-			if (playableController.GetState(playerId) != PlayableControllerState.NotReady) allReady++;
+			if (SCR_GameModeCoop.GetPlayerState(playerId) != PlayableControllerState.NotReady) allReady++;
 		}
 		
 		if (allReady == 0) return;
@@ -88,31 +105,26 @@ class SCR_CoopLobby: MenuBase
 			if (playable == null) continue;
 			SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(playable.GetOwner());
 			SCR_Faction faction = SCR_Faction.Cast(character.GetFaction());
-			if (!m_sFactionPlayables.Contains(faction)) 
+			if (!m_sFactionPlayables.Contains(faction)) {
 				m_sFactionPlayables.Insert(faction, new array<SCR_PlayableComponent>);
+				
+				Widget factionSelector = GetGame().GetWorkspace().CreateWidgets(m_sFactionSelectorPrefab);
+				SCR_FactionSelector handler = SCR_FactionSelector.Cast(factionSelector.FindHandler(SCR_FactionSelector));
+				
+				handler.SetFaction(faction);
+				handler.m_OnClicked.Insert(FactionClick);
+				
+				m_aFactionListWidgets.Insert(factionSelector);
+				m_wFactionList.AddChild(factionSelector);
+			}
 			
 			array<SCR_PlayableComponent> factionPlayablesList = m_sFactionPlayables[faction];
-			factionPlayablesList.Insert(playable);
-		}
-		
-		for (int i = 0; i < m_sFactionPlayables.Count(); i++) {
-			Faction faction = m_sFactionPlayables.GetKey(i);
-			array<SCR_PlayableComponent> factionPlayablesList = m_sFactionPlayables.GetElement(i);
-			
-			Widget factionSelector = GetGame().GetWorkspace().CreateWidgets(m_sFactionSelectorPrefab);
-			SCR_FactionSelector handler = SCR_FactionSelector.Cast(factionSelector.FindHandler(SCR_FactionSelector));
-			
-			handler.SetFaction(faction);
-			handler.SetCount(0, factionPlayablesList.Count());
-			
-			handler.m_OnClicked.Insert(FactionClick);
-			
-			m_aFactionListWidgets.Insert(factionSelector);
-			m_wFactionList.AddChild(factionSelector);
+			if (!factionPlayablesList.Contains(playable))
+				factionPlayablesList.Insert(playable);
 		}
 		
 		UpdatePlayersList();
-		m_preview.SetPlayable(null);
+		UpdateMenu();
 	}
 	
 	protected void FactionClick(SCR_ButtonBaseComponent factionSelector)

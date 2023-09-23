@@ -18,6 +18,9 @@ SCR_ChimeraCharacter : "{3ECA3A935BC069B9}Prefabs/Characters/Factions/OPFOR/USSR
     }
    }
   }
+  SCR_PlayableComponent "{5E60B265CFBDE043}" {
+   m_name "#AR-Role_Rifleman"
+  }
   CharacterGrenadeSlotComponent "{520EA1D2F659CE6E}" {
    WeaponTemplate "{645C73791ECA1698}Prefabs/Weapons/Grenades/Grenade_RGD5.et"
   }
@@ -57,8 +60,8 @@ SCR_ChimeraCharacter : "{3ECA3A935BC069B9}Prefabs/Characters/Factions/OPFOR/USSR
     }
    }
   }
-  SCR_PlayableComponent "{5E60B265CFBDE043}" {
-   m_name "#AR-Role_Rifleman"
+  RplComponent "{5238B6A9F3442EE7}" {
+   Streamable Disabled
   }
  }
  coords 117.868 1 91.706

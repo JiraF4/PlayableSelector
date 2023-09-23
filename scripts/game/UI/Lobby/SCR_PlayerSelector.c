@@ -40,8 +40,6 @@ class SCR_PlayerSelector : SCR_WLibComponentBase
 		m_wPlayerName.SetText(playerManager.GetPlayerName(m_iPlayer));
 		
 		
-		SCR_PlayerController controller = SCR_PlayerController.Cast(playerManager.GetPlayerController(m_iPlayer));
-		SCR_PlayableControllerComponent playableController = SCR_PlayableControllerComponent.Cast(controller.FindComponent(SCR_PlayableControllerComponent));
-		m_wReadyImage.SetVisible(playableController.GetState(m_iPlayer) == PlayableControllerState.Ready);
+		m_wReadyImage.SetVisible(SCR_GameModeCoop.GetPlayerState(m_iPlayer) != PlayableControllerState.NotReady);
 	}
 }

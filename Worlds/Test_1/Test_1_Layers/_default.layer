@@ -27,10 +27,9 @@ SCR_GameModeCoop SCR_GameModeCoop1 {
   SCR_VotingManagerComponent "{5E60C4282E412E26}" {
   }
   RplComponent "{5D512836188B838B}" {
+   Streamable Disabled
   }
  }
- coords 104.087 7.642 84.116
- angleY 83.932
  PlayerControllerPrefab "{4E5DAC62A374950F}Prefabs/Characters/Core/DefaultPlayerControllerMP_Coop.et"
 }
 TagManager {
