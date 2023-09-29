@@ -126,18 +126,6 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 		return playersStates[playerId];
 	}
 	
-	
-	
-	
-	override void OnPlayerConnected(int playerId)
-	{
-		Rpc(Rpc_SyncPlayerStateServer, playerId);
-		Rpc(Rpc_SyncPlayableGroupNameServer);
-		Rpc(Rpc_TryReconnectServer, playerId);
-		GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.CoopLobby);
-	}
-	
-	
 	//------------------------------------------------------------------------------------------------
 	override void HandleOnCharacterDeath(notnull CharacterControllerComponent characterController, IEntity instigator)
 	{
@@ -168,6 +156,18 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 		//if (CameraEntity == null)
 		//	CameraEntity = GetGame().SpawnEntityPrefab(Resource.Load("{C8FDE42491F955CB}Prefabs/ManualCameraInitialPlayer.et"), GetGame().GetWorld(), params);
 		
+		GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.CoopLobby);
+		
+		GetGame().GetCallqueue().CallLater(SyncState, 0, false);
+	}
+	
+	void SyncState()
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		int playerId = playerController.GetPlayerId();
+		Rpc(Rpc_SyncPlayerStateServer, playerId);
+		Rpc(Rpc_SyncPlayableGroupNameServer);
+		Rpc(Rpc_TryReconnectServer, playerId);
 	}
 	
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
