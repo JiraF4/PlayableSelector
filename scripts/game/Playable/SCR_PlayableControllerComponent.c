@@ -47,12 +47,12 @@ class SCR_PlayableControllerComponent : ScriptComponent
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void RPC_TakePossession(int playerId, int playableId) 
 	{
-		
+		Print("RPC_TakePossession 1: " + playerId.ToString() + " - " + playableId);
 		map<int, SCR_PlayableComponent> playables = SCR_PlayableComponent.GetPlayables();
 		SCR_ChimeraCharacter playable = SCR_ChimeraCharacter.Cast(playables[playableId].GetOwner());
-		int curretPLayerId = SCR_PossessingManagerComponent.GetInstance().GetPlayerIdFromControlledEntity(playable);
+		int curretPlayerId = SCR_PossessingManagerComponent.GetInstance().GetPlayerIdFromControlledEntity(playable);
 		if (playable.GetDamageManager().IsDestroyed() 
-				|| (curretPLayerId != 0 && curretPLayerId != playerId)) {
+				|| (curretPlayerId != 0 && curretPlayerId != playerId)) {
 			
 			RPC_PossesionResult(playerId, false);
 			Rpc(RPC_PossesionResult, playerId, false);
@@ -61,6 +61,9 @@ class SCR_PlayableControllerComponent : ScriptComponent
 		}
 		SCR_PlayerController playerController = SCR_PlayerController.Cast(GetGame().GetPlayerManager().GetPlayerController(playerId));
 		IEntity currentEntity = playerController.GetControlledEntity();
+		if (playerId == curretPlayerId) {
+			playerController.SetPossessedEntity(null);
+		}
 		if (currentEntity)
 			playerController.SetInitialMainEntity(currentEntity); // Fix controlls and don't break camera
 		playerController.SetPossessedEntity(playable); // reset ai? but still broken...
@@ -73,6 +76,7 @@ class SCR_PlayableControllerComponent : ScriptComponent
 		SCR_FactionManager factionManager = SCR_FactionManager.Cast(GetGame().GetFactionManager());
 		factionManager.UpdatePlayerFaction_S(playerFactionAffiliation);
 		
+		Print("RPC_TakePossession 2: " + playerId.ToString() + " - " + playableId);
 		/*
 		SCR_GroupsManagerComponent groupsManagerComponent = SCR_GroupsManagerComponent.GetInstance();
 		AIControlComponent aiControl = AIControlComponent.Cast(playable.FindComponent(AIControlComponent));
