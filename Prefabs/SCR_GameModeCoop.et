@@ -14,8 +14,55 @@ SCR_GameModeCoop {
   SCR_GameModeHealthSettings "{5D4CE249A542C073}" {
   }
   SCR_GameOverScreenManagerComponent "{5D4CE249AF602312}" {
+   m_GameOverScreenConfig SCR_GameOverScreenConfig "{5E7B765687E8CFFF}" {
+    m_aGameOverScreens {
+     SCR_BaseGameOverScreenInfo "{56D68C4268C953C8}" {
+     }
+     SCR_FactionGameOverScreenInfo "{568E79DBC553CECC}" {
+     }
+     SCR_FactionVictoryGameOverScreenInfo "{568E79DB918A8E56}" {
+     }
+     SCR_FactionGameOverScreenInfo "{568E79DBAC19013D}" {
+     }
+     SCR_FactionVictoryGameOverScreenInfo "{56D6AA9BDC7D83DE}" {
+     }
+     SCR_FactionGameOverScreenInfo "{56D6AA9BE2D70B6E}" {
+     }
+     SCR_BaseGameOverScreenInfo "{568E79DB4253B914}" {
+     }
+     SCR_DeathMatchGameOverScreenInfo "{568E810D44CBC66B}" {
+     }
+     SCR_DeathMatchGameOverScreenInfo "{568E810D4E943600}" {
+     }
+     SCR_DeathMatchGameOverScreenInfo "{56D6AA9BEFDDEC08}" {
+     }
+     SCR_DeathMatchGameOverScreenInfo "{56D6AA9BF1F0219F}" {
+     }
+     SCR_BaseGameOverScreenInfo "{568E810D7C96FEF0}" {
+     }
+     SCR_BaseGameOverScreenInfo "{58F0C76C9A071EE3}" {
+     }
+     SCR_FactionGameOverScreenInfo "{568EB6DFDCD175BD}" {
+     }
+     SCR_FactionVictoryGameOverScreenInfo "{568EB6DFEF507060}" {
+     }
+     SCR_EditorFactionGameOverScreenInfo "{56EED1ED0A9954E6}" {
+     }
+     SCR_FactionGameOverScreenInfo "{568EB6DFB0180025}" {
+     }
+     SCR_BaseGameOverScreenInfo "{59EC75B80DEAA612}" {
+     }
+     SCR_BaseGameOverScreenInfo "{5ADC782E70D51AD4}" {
+     }
+     SCR_BaseGameOverScreenInfo "{5ADC782ED5D1236A}" {
+     }
+     SCR_BaseGameOverScreenInfo "{59EC75B80C1DD0D2}" {
+     }
+    }
+   }
   }
   SCR_GroupsManagerComponent "{5D4CE24A617E1E02}" {
+   m_sDefaultGroupPrefab "{8B4D49A9F324E7D5}Prefabs/Groups/PlayableGroup.et"
   }
   SCR_HintManagerComponent "{5D4CE24A6A97B86A}" {
   }
@@ -25,8 +72,85 @@ SCR_GameModeCoop {
    m_sConfigPath "{09F7AAA14A642683}Configs/NameTags/NametagFriendlies.conf"
   }
   SCR_NotificationSenderComponent "{5D4CE24A746FD14A}" {
+   m_PlayerKickReasonsConfig SCR_ConfigurableDialogUiPresets "{5E7B7656CFE44B6F}" {
+    m_aPresets {
+     SCR_KickDialogUiPreset "{56DEF1BAD5167DF7}" {
+     }
+     SCR_KickDialogUiPreset "{597C9D972FF49EDA}" {
+     }
+     SCR_KickDialogUiPreset "{56DEF1BAF93C11DF}" {
+     }
+     SCR_KickDialogUiPreset "{56DE953BB942381C}" {
+     }
+     SCR_KickDialogUiPreset "{56DE953B91C8600B}" {
+     }
+     SCR_KickDialogUiPreset "{56DE953B92E15F2C}" {
+     }
+     SCR_KickDialogUiPreset "{59707DAC34A4A685}" {
+     }
+     SCR_KickDialogUiPreset "{5A8AC3601F5A4B05}" {
+     }
+     SCR_KickDialogUiPreset "{5A8AC3601E5CD5F6}" {
+     }
+     SCR_KickDialogUiPreset "{5A8AC3601DE5D141}" {
+     }
+     SCR_KickDialogUiPreset "{597C9D94B919CA7E}" {
+     }
+     SCR_KickDialogUiPreset "{56DE953B76340473}" {
+     }
+     SCR_KickDialogUiPreset "{56DE953B76D4B0B7}" {
+     }
+     SCR_KickDialogUiPreset "{597C9D9467DB792B}" {
+     }
+     SCR_KickDialogUiPreset "{56DE953B77CCD6AA}" {
+     }
+     SCR_KickDialogUiPreset "{56DEF1BA0F57B659}" {
+     }
+     SCR_KickDialogUiPreset "{56DE953B7098CCD7}" {
+     }
+     SCR_KickDialogUiPreset "{56DE953B7144FD46}" {
+     }
+     SCR_KickDialogUiPreset "{597C9D94070D131C}" {
+     }
+     SCR_KickDialogUiPreset "{56DE953B728AF39E}" {
+     }
+     SCR_KickDialogUiPreset "{597C9D941D13C33F}" {
+     }
+     SCR_KickDialogUiPreset "{5D82CB1770BDCAD4}" {
+     }
+     SCR_KickDialogUiPreset "{56DE95384B9E4373}" {
+     }
+     SCR_KickDialogUiPreset "{5946C798DEE1A307}" {
+     }
+     SCR_KickDialogUiPreset "{58EAF9E497C9F7B8}" {
+     }
+     SCR_KickDialogUiPreset "{58EAF9E4B8C84876}" {
+     }
+     SCR_KickDialogUiPreset "{596EE8CE3361CD60}" {
+     }
+     SCR_KickDialogUiPreset "{596EE8CE32E554C8}" {
+     }
+     SCR_KickDialogUiPreset "{5D82CB17AACEDB98}" {
+     }
+     SCR_KickDialogUiPreset "{5D82CB17B71E453A}" {
+     }
+    }
+   }
   }
   SCR_PossessingManagerComponent "{5D4CE249B174F34A}" {
+  }
+  SCR_RespawnSystemComponent "{5E7AE0AF16A4B6CE}" {
+   components {
+    SCR_FreeSpawnHandlerComponent "{5E7B7656A25AABAF}" {
+    }
+    SCR_PossessSpawnHandlerComponent "{5E7B7656AD9B0198}" {
+    }
+    SCR_SpawnPointSpawnHandlerComponent "{5E7B7656A9DC9762}" {
+    }
+   }
+   m_SpawnLogic SCR_SpawnLogic "{5E7AE0AFA1140B71}" {
+   }
+   m_bEnableRespawn 0
   }
   SCR_ScoringSystemComponent "{5D4CE2498274717A}" {
   }
@@ -36,11 +160,6 @@ SCR_GameModeCoop {
   }
   RplComponent "{5D4CE249422E8900}" {
    Streamable Disabled
-  }
-  SCR_RespawnSystemComponent "{5E7AE0AF16A4B6CE}" {
-   m_SpawnLogic SCR_SpawnLogic "{5E7AE0AFA1140B71}" {
-   }
-   m_bEnableRespawn 0
   }
  }
  PlayerControllerPrefab "{4E5DAC62A374950F}Prefabs/Characters/Core/DefaultPlayerControllerMP_Coop.et"
