@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{9579A9E1CF1851D9}Configs/Server.json"
+ Configurations {
+  JSONResourceClass PC {
+  }
+  JSONResourceClass XBOX_ONE : PC {
+  }
+  JSONResourceClass XBOX_SERIES : PC {
+  }
+  JSONResourceClass PS4 : PC {
+  }
+  JSONResourceClass HEADLESS : PC {
+  }
+ }
+}

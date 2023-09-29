@@ -92,6 +92,8 @@ class SCR_PlayableControllerComponent : ScriptComponent
 		playerControllerGroupComponent.RPC_AskJoinGroup(group.GetGroupID());
 		*/
 		
+		SCR_GameModeCoop.Cast(GetGame().GetGameMode()).SetPlayerPlayableServer(playerId, playableId);
+		
 		RPC_PossesionResult(playerId, true);
 		Rpc(RPC_PossesionResult, playerId, true);
 		

@@ -19,15 +19,16 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	static ref map<int, string> playableGroups = new map<int, string>;
 	static ref map<int, int> playersPlayable = new map<int, int>;
 	
-	void SetPlayerPlayableClient(int playerId, int playableId)
+	void SetPlayerPlayableServer(int playerId, int playableId)
 	{
-		Print("SetPlayerPlayableClient: playerId " + playerId.ToString() + " playableId " + playableId.ToString());
-		Rpc(Rpc_SetPlayerPlayableServer, playerId, playableId);
+		Print("SetPlayerPlayableServer: playerId " + playerId.ToString() + " playableId " + playableId.ToString());
+		Rpc_SetPlayerPlayableClient(playerId, playableId);
+		Rpc(Rpc_SetPlayerPlayableClient, playerId, playableId);
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
-	void Rpc_SetPlayerPlayableServer(int playerId, int playableId)
+	void Rpc_SetPlayerPlayableClient(int playerId, int playableId)
 	{
-		Print("Rpc_SetPlayerPlayableServer: playerId " + playerId.ToString() + " playableId " + playableId.ToString());
+		Print("Rpc_SetPlayerPlayableClient: playerId " + playerId.ToString() + " playableId " + playableId.ToString());
 		playersPlayable[playerId] = playableId;
 	}
 	int GetPlayerPlayable(int playerId)
@@ -57,18 +58,10 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 		Print("ReconnectForcePossess: playableId " + playableId.ToString());
 		PlayerController playerController = GetGame().GetPlayerController();
 		SCR_PlayableControllerComponent playableController = SCR_PlayableControllerComponent.Cast(playerController.FindComponent(SCR_PlayableControllerComponent));
+		playableController.TakePossession(playerController.GetPlayerId(), playableId);
 		MenuManager menuManager = GetGame().GetMenuManager();
 		SCR_CoopLobby lobby = SCR_CoopLobby.Cast(menuManager.FindMenuByPreset(ChimeraMenuPreset.CoopLobby));
-		if (!lobby) return;
-		map<int, SCR_PlayableComponent> playables = SCR_PlayableComponent.GetPlayables();
-		if (playables[playableId] != null) 
-		{
-			Print("!!! ReconnectForcePossess: playableId " + playableId.ToString());
-			playableController.SetState(PlayableControllerState.Playing);
-			playableController.TakePossession(playerController.GetPlayerId(), playableId);
-			return;
-		}
-		GetGame().GetCallqueue().CallLater(ReconnectForcePossess, 100, false, playableId);
+		if (lobby) lobby.Close();
 	}
 	
 	string GetPlayableGroupName(int playableId)
