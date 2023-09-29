@@ -236,5 +236,10 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 			CameraEntity = null;
 		}
 	}
+	
+	protected override void OnPlayerDisconnected(int playerId, KickCauseCode cause, int timeout)
+	{
+		
+	}
 };
 
