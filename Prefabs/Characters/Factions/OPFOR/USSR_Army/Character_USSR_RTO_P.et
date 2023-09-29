@@ -4,8 +4,5 @@ SCR_ChimeraCharacter : "{612F43A4D5AE765F}Prefabs/Characters/Factions/OPFOR/USSR
   SCR_PlayableComponent "{5E61249EBFA71384}" {
    m_name "#AR-Role_RadioOperator"
   }
-  RplComponent "{5238B6A9F3442EE7}" {
-   Streamable Disabled
-  }
  }
 }
