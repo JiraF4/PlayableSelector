@@ -21,15 +21,18 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	
 	void SetPlayerPlayableClient(int playerId, int playableId)
 	{
+		Print("SetPlayerPlayableClient: playerId " + playerId.ToString() + " playableId " + playableId.ToString());
 		Rpc(Rpc_SetPlayerPlayableServer, playerId, playableId);
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void Rpc_SetPlayerPlayableServer(int playerId, int playableId)
 	{
+		Print("Rpc_SetPlayerPlayableServer: playerId " + playerId.ToString() + " playableId " + playableId.ToString());
 		playersPlayable[playerId] = playableId;
 	}
 	int GetPlayerPlayable(int playerId)
 	{
+		Print("GetPlayerPlayable: playerId " + playerId.ToString() + " playableId " + playersPlayable[playerId].ToString());
 		return playersPlayable[playerId];
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
@@ -142,6 +145,7 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	/*
 	override void HandleOnCharacterDeath(notnull CharacterControllerComponent characterController, IEntity instigator)
 	{
 		super.HandleOnCharacterDeath(characterController, instigator);
@@ -149,6 +153,7 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 			
 		UpdateMenu()
 	}
+	*/
 	
 	void UpdateMenu()
 	{
@@ -159,19 +164,19 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	//------------------------------------------------------------------------------------------------
 	override void OnGameStart()
 	{
-		playersStates = new map<int, PlayableControllerState>();
-		
 		super.OnGameStart();
 		GetGame().GetInputManager().AddActionListener("PlayableSelector", EActionTrigger.DOWN, OpenPlayableMenu);
 		
+		/*
 		EntitySpawnParams params();
 		vector mat[4];
 		GetTransform(mat);
 		params.Transform = mat;
 		//if (CameraEntity == null)
 		//	CameraEntity = GetGame().SpawnEntityPrefab(Resource.Load("{C8FDE42491F955CB}Prefabs/ManualCameraInitialPlayer.et"), GetGame().GetWorld(), params);
+		*/
 		
-		if (!Replication.IsServer()) {
+		if (Replication.IsClient()) {
 			GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.CoopLobby);
 		}
 	}
@@ -180,7 +185,7 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void RPC_UpdateMenu()
 	{
-		if (Replication.IsServer()) return;
+		if (!Replication.IsClient()) return;
 		GetGame().GetCallqueue().CallLater(UpdateMenuClient, 1);
 	}
 	
@@ -196,11 +201,6 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	void OpenPlayableMenu()
 	{
 		GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.PlayableSelector);
-	}
-	
-	override bool CanPlayerRespawn(int playerID)
-	{
-		return true;
 	}
 	
 	//------------------------------------------------------------------------------------------------

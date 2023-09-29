@@ -101,7 +101,7 @@ class SCR_PlayableControllerComponent : ScriptComponent
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void RPC_PossesionResult(int playerId, bool isPossesed)
 	{
-		if (Replication.IsServer())
+		if (!Replication.IsClient())
 			return;
 		
 		PlayerController playerController = GetGame().GetPlayerController();
