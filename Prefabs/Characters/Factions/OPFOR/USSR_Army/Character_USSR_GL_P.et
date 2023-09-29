@@ -4,8 +4,5 @@ SCR_ChimeraCharacter : "{8E0FE664CE7D1CA9}Prefabs/Characters/Factions/OPFOR/USSR
   SCR_PlayableComponent "{5E61249ED6A8ECC4}" {
    m_name "#AR-Role_Grenadier"
   }
-  RplComponent "{5238B6A9F3442EE7}" {
-   Streamable Disabled
-  }
  }
 }
