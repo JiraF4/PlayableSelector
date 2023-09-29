@@ -59,7 +59,6 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 		{
 			playableController.SetState(PlayableControllerState.Playing);
 			playableController.TakePossession(playerController.GetPlayerId(), playableId);
-			lobby.Close();
 		}
 		GetGame().GetCallqueue().CallLater(ReconnectForcePossess, 100, false, playableId);
 	}
@@ -126,6 +125,13 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 		return playersStates[playerId];
 	}
 	
+	override void OnPlayerConnected(int playerId)
+	{
+		Rpc(Rpc_SyncPlayerStateServer, playerId);
+		Rpc(Rpc_SyncPlayableGroupNameServer);
+	}
+	
+	
 	//------------------------------------------------------------------------------------------------
 	override void HandleOnCharacterDeath(notnull CharacterControllerComponent characterController, IEntity instigator)
 	{
@@ -157,7 +163,6 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 		//	CameraEntity = GetGame().SpawnEntityPrefab(Resource.Load("{C8FDE42491F955CB}Prefabs/ManualCameraInitialPlayer.et"), GetGame().GetWorld(), params);
 		
 		GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.CoopLobby);
-		
 		GetGame().GetCallqueue().CallLater(SyncState, 0, false);
 	}
 	
@@ -165,8 +170,6 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	{
 		PlayerController playerController = GetGame().GetPlayerController();
 		int playerId = playerController.GetPlayerId();
-		Rpc(Rpc_SyncPlayerStateServer, playerId);
-		Rpc(Rpc_SyncPlayableGroupNameServer);
 		Rpc(Rpc_TryReconnectServer, playerId);
 	}
 	
