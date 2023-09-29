@@ -174,6 +174,7 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void RPC_UpdateMenu()
 	{
+		if (Replication.IsServer()) return;
 		GetGame().GetCallqueue().CallLater(UpdateMenuClient, 1);
 	}
 	
