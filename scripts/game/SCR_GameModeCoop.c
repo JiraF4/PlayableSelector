@@ -16,6 +16,36 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	
 	
 	static ref map<int, PlayableControllerState> playersStates = new map<int, PlayableControllerState>; // Controllers server only. (╯°□°）╯︵ ┻━┻
+	static ref map<int, string> playableGroups = new map<int, string>;
+	
+	string GetPlayableGroupName(int playableId)
+	{
+		return playableGroups[playableId];
+	}
+	void SetPlayableGroupName(int playableId, string groupName)
+	{
+		Rpc_SetPlayableGroupNameClient(playableId, groupName);
+		Rpc(Rpc_SetPlayableGroupNameClient, playableId, groupName);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void Rpc_SetPlayableGroupNameClient(int playableId, string groupName)
+	{
+		playableGroups.Set(playableId, groupName);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void Rpc_SyncPlayableGroupNameServer()
+	{
+		
+		
+		for (int i = 0; i < playableGroups.Count(); i++)
+		{
+			int playableId = playableGroups.GetKey(i);
+			string groupName = playableGroups.GetElement(i);
+			SetPlayableGroupName(playableId, groupName);
+		}
+		
+		
+	}
 	
 	void SetPlayerState(int playerId, PlayableControllerState state)
 	{
@@ -27,7 +57,7 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void Rpc_SyncPlayerStateServer(int SyncPlayerId)
 	{
-		GetGame().GetCallqueue().CallLater(SyncPlayerState, 0, false, SyncPlayerId); // TODO: Fix delay
+		GetGame().GetCallqueue().CallLater(SyncPlayerState, 0, false, SyncPlayerId);
 	}
 	
 	void SyncPlayerState(int SyncPlayerId)
@@ -57,11 +87,8 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	
 	override void OnPlayerConnected(int playerId)
 	{
-		//SCR_PlayerController playerController = SCR_PlayerController.Cast(GetGame().GetPlayerManager().GetPlayerController(playerId));
-		//playerController.SetInitialMainEntity(playerController);
-		
-		// TODO: more elegant pls
 		Rpc(Rpc_SyncPlayerStateServer, playerId);
+		Rpc(Rpc_SyncPlayableGroupNameServer);
 	}
 	
 	

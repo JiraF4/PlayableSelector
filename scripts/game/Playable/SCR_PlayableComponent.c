@@ -25,16 +25,23 @@ class SCR_PlayableComponent : ScriptComponent
 		RplComponent rpl = RplComponent.Cast(owner.FindComponent(RplComponent));
 		if(rpl && owner.Type().ToString() == "SCR_ChimeraCharacter")
 		{
-			AIControlComponent ctrl = AIControlComponent.Cast(owner.FindComponent(AIControlComponent));
-			AIAgent agent = ctrl.GetAIAgent();
-			SCR_AIGroup group = SCR_AIGroup.Cast(agent.GetParentGroup());
-			string company, platoon, squad, sCharacter, format;
-			group.GetCallsigns(company, platoon, squad, sCharacter, format);
-			s_sGroupName = string.Format(format, company, platoon, squad, sCharacter);
-			
 			m_id = rpl.Id();
 			m_aPlayables.Set(m_id, this);
 			rpl.EnableStreaming(false); // They need to be loaded for preview
+			
+			if (Replication.IsServer()) {
+				AIControlComponent ctrl = AIControlComponent.Cast(owner.FindComponent(AIControlComponent));
+				AIAgent agent = ctrl.GetAIAgent();
+				SCR_AIGroup group = SCR_AIGroup.Cast(agent.GetParentGroup());
+				string company, platoon, squad, sCharacter, format;
+				group.GetCallsigns(company, platoon, squad, sCharacter, format);
+				company = WidgetManager.Translate(company);
+				platoon = WidgetManager.Translate(platoon);
+				squad = WidgetManager.Translate(squad);
+				s_sGroupName =  string.Format(format,  company, platoon, squad, sCharacter);
+				
+				SCR_GameModeCoop.Cast(GetGame().GetGameMode()).SetPlayableGroupName(m_id, s_sGroupName);
+			}
 		}
 	}
 	
@@ -69,6 +76,6 @@ class SCR_PlayableComponent : ScriptComponent
 	
 	string GetGroupName()
 	{
-		return s_sGroupName;
+		return SCR_GameModeCoop.Cast(GetGame().GetGameMode()).GetPlayableGroupName(m_id);
 	}
 }
