@@ -4,5 +4,8 @@ SCR_ChimeraCharacter : "{631158F6898738A4}Prefabs/Characters/Factions/OPFOR/USSR
   SCR_PlayableComponent "{5E61249EE8C60BD6}" {
    m_name "#AR-Role_AntiTankAssistant"
   }
+  RplComponent "{5238B6A9F3442EE7}" {
+   Streamable Disabled
+  }
  }
 }

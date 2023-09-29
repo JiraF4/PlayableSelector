@@ -4,5 +4,8 @@ SCR_ChimeraCharacter : "{976AC400219898FA}Prefabs/Characters/Factions/OPFOR/USSR
   SCR_PlayableComponent "{5E61249EB85DA8EF}" {
    m_name "#AR-Role_Sharpshooter"
   }
+  RplComponent "{5238B6A9F3442EE7}" {
+   Streamable Disabled
+  }
  }
 }
