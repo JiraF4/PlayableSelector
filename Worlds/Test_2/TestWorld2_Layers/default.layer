@@ -5,16 +5,6 @@ PerceptionManager PerceptionManager1 : "{028DAEAD63E056BE}Prefabs/World/Game/Per
  coords 113.126 1 124.397
 }
 SCR_GameModeCoop SCR_GameModeCoop1 : "{16D2DEADCFDC8B73}Prefabs/SCR_GameModeCoop.et" {
- components {
-  SCR_RespawnSystemComponent "{5E7AE0AF16A4B6CE}" {
-   m_SpawnLogic SCR_SpawnLogic "{5E7AE0AFA1140B71}" {
-   }
-   m_bEnableRespawn 0
-  }
-  RplComponent "{5D4CE249422E8900}" {
-   Streamable Disabled
-  }
- }
 }
 TagManager : "{2FA9E172CAB1857A}Prefabs/MP/Managers/TagManager.et" {
  coords 115.4 1 122.834

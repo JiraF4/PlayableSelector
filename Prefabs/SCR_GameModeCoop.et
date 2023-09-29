@@ -9,6 +9,8 @@ SCR_GameModeCoop {
   }
   SCR_DestructionManagerComponent "{5D4CE2490FDAD2A4}" {
   }
+  SCR_EntityCatalogManagerComponent "{5E6ED210A0426A46}" {
+  }
   SCR_GameModeHealthSettings "{5D4CE249A542C073}" {
   }
   SCR_GameOverScreenManagerComponent "{5D4CE249AF602312}" {
@@ -33,8 +35,12 @@ SCR_GameModeCoop {
   SerializerInventoryStorageManagerComponent "{5D4CE24996A49424}" {
   }
   RplComponent "{5D4CE249422E8900}" {
+   Streamable Disabled
   }
-  SCR_EntityCatalogManagerComponent "{5E6ED210A0426A46}" {
+  SCR_RespawnSystemComponent "{5E7AE0AF16A4B6CE}" {
+   m_SpawnLogic SCR_SpawnLogic "{5E7AE0AFA1140B71}" {
+   }
+   m_bEnableRespawn 0
   }
  }
  PlayerControllerPrefab "{4E5DAC62A374950F}Prefabs/Characters/Core/DefaultPlayerControllerMP_Coop.et"
@@ -47,7 +53,7 @@ SCR_GameModeCoop {
    ID "5E6ED2179BF62C96"
    coords 0 0 0
   }
-  ItemPreviewManagerEntity : "{AB5D049A3AB43FC0}Prefabs/World/Game/ItemPreviewManager_PS.et" {
+  ItemPreviewManagerEntity "5E7AE0AB2109F297" : "{AB5D049A3AB43FC0}Prefabs/World/Game/ItemPreviewManager_PS.et" {
    ID "5E6ED217876F212E"
    coords 0 0 0
   }
