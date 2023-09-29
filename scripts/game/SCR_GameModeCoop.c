@@ -35,12 +35,14 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void Rpc_TryReconnectServer(int playerId)
 	{
+		Print("Rpc_TryReconnectServer: playerId " + playerId.ToString());
 		if (playersPlayable.Contains(playerId))
 			Rpc(Rpc_TryReconnectClient, playerId, playersPlayable[playerId])
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void Rpc_TryReconnectClient(int playerId, int playableId)
 	{
+		Print("Rpc_TryReconnectClient: playerId " + playerId.ToString() + " playableId " + playableId.ToString());
 		PlayerController playerController = GetGame().GetPlayerController();
 		if (playerController.GetPlayerId() == playerId) 
 		{
@@ -49,6 +51,7 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	}
 	void ReconnectForcePossess(int playableId)
 	{
+		Print("ReconnectForcePossess: playableId " + playableId.ToString());
 		PlayerController playerController = GetGame().GetPlayerController();
 		SCR_PlayableControllerComponent playableController = SCR_PlayableControllerComponent.Cast(playerController.FindComponent(SCR_PlayableControllerComponent));
 		MenuManager menuManager = GetGame().GetMenuManager();
@@ -57,8 +60,10 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 		map<int, SCR_PlayableComponent> playables = SCR_PlayableComponent.GetPlayables();
 		if (playables[playableId] != null) 
 		{
+			Print("!!! ReconnectForcePossess: playableId " + playableId.ToString());
 			playableController.SetState(PlayableControllerState.Playing);
 			playableController.TakePossession(playerController.GetPlayerId(), playableId);
+			return;
 		}
 		GetGame().GetCallqueue().CallLater(ReconnectForcePossess, 100, false, playableId);
 	}
@@ -160,8 +165,10 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 		//if (CameraEntity == null)
 		//	CameraEntity = GetGame().SpawnEntityPrefab(Resource.Load("{C8FDE42491F955CB}Prefabs/ManualCameraInitialPlayer.et"), GetGame().GetWorld(), params);
 		
-		GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.CoopLobby);
-		GetGame().GetCallqueue().CallLater(SyncState, 0, false);
+		if (!Replication.IsServer()) {
+			GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.CoopLobby);
+			GetGame().GetCallqueue().CallLater(SyncState, 0, false);
+		}
 	}
 	
 	void SyncState()
