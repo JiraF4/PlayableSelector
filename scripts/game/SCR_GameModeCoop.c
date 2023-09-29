@@ -63,7 +63,6 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 		GetGame().GetCallqueue().CallLater(ReconnectForcePossess, 100, false, playableId);
 	}
 	
-	
 	string GetPlayableGroupName(int playableId)
 	{
 		return playableGroups[playableId];
@@ -125,12 +124,19 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 		return playersStates[playerId];
 	}
 	
-	override void OnPlayerConnected(int playerId)
+	protected override void OnPlayerConnected(int playerId)
 	{
 		Rpc(Rpc_SyncPlayerStateServer, playerId);
 		Rpc(Rpc_SyncPlayableGroupNameServer);
 	}
 	
+	protected override void OnPlayerDisconnected(int playerId, KickCauseCode cause, int timeout)
+	{
+		super.OnPlayerDisconnected(playerId, cause, timeout);
+		SCR_PlayerController playerController = SCR_PlayerController.Cast(GetGame().GetPlayerManager().GetPlayerController(playerId));
+		IEntity currentEntity = playerController.GetControlledEntity();
+		playerController.SetPossessedEntity(null);
+	}
 	
 	//------------------------------------------------------------------------------------------------
 	override void HandleOnCharacterDeath(notnull CharacterControllerComponent characterController, IEntity instigator)
@@ -238,11 +244,5 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 			CameraEntity = null;
 		}
 	}
-	
-	override void OnPlayerDisconnected(int playerId, KickCauseCode cause, int timeout)
-	{
-		
-	}
-	
 };
 
