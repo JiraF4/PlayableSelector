@@ -131,8 +131,14 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	
 	protected override void OnPlayerConnected(int playerId)
 	{
+		GetGame().GetCallqueue().CallLater(SyncState, 0, false, playerId);
+	}
+	
+	void SyncState(int playerId)
+	{
 		Rpc(Rpc_SyncPlayerStateServer, playerId);
 		Rpc(Rpc_SyncPlayableGroupNameServer);
+		Rpc(Rpc_TryReconnectServer, playerId);
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -167,16 +173,9 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 		
 		if (!Replication.IsServer()) {
 			GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.CoopLobby);
-			GetGame().GetCallqueue().CallLater(SyncState, 0, false);
 		}
 	}
 	
-	void SyncState()
-	{
-		PlayerController playerController = GetGame().GetPlayerController();
-		int playerId = playerController.GetPlayerId();
-		Rpc(Rpc_TryReconnectServer, playerId);
-	}
 	
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void RPC_UpdateMenu()
