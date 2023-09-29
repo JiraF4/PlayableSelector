@@ -130,14 +130,6 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 		Rpc(Rpc_SyncPlayableGroupNameServer);
 	}
 	
-	protected override void OnPlayerDisconnected(int playerId, KickCauseCode cause, int timeout)
-	{
-		super.OnPlayerDisconnected(playerId, cause, timeout);
-		SCR_PlayerController playerController = SCR_PlayerController.Cast(GetGame().GetPlayerManager().GetPlayerController(playerId));
-		IEntity currentEntity = playerController.GetControlledEntity();
-		playerController.SetPossessedEntity(null);
-	}
-	
 	//------------------------------------------------------------------------------------------------
 	override void HandleOnCharacterDeath(notnull CharacterControllerComponent characterController, IEntity instigator)
 	{

@@ -47,10 +47,12 @@ class SCR_PlayableControllerComponent : ScriptComponent
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void RPC_TakePossession(int playerId, int playableId) 
 	{
+		
 		map<int, SCR_PlayableComponent> playables = SCR_PlayableComponent.GetPlayables();
 		SCR_ChimeraCharacter playable = SCR_ChimeraCharacter.Cast(playables[playableId].GetOwner());
+		int curretPLayerId = SCR_PossessingManagerComponent.GetInstance().GetPlayerIdFromControlledEntity(playable);
 		if (playable.GetDamageManager().IsDestroyed() 
-				|| SCR_PossessingManagerComponent.GetInstance().GetPlayerIdFromControlledEntity(playable) != 0) {
+				|| (curretPLayerId != 0 && curretPLayerId != playerId)) {
 			
 			RPC_PossesionResult(playerId, false);
 			Rpc(RPC_PossesionResult, playerId, false);
