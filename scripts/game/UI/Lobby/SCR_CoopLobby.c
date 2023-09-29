@@ -121,6 +121,9 @@ class SCR_CoopLobby: MenuBase
 	override void OnMenuClose()
 	{
 		PlayerController playerController = GetGame().GetPlayerController();
+		SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(SCR_PossessingManagerComponent.GetInstance().GetPossessedEntity(playerController.GetPlayerId()));
+		SCR_PlayableComponent PlayableComponent = SCR_PlayableComponent.Cast(character.FindComponent(SCR_PlayableComponent));
+		SCR_GameModeCoop.Cast(GetGame().GetGameMode()).SetPlayerPlayableClient(playerController.GetPlayerId(), PlayableComponent.GetId());
 		SCR_PlayableControllerComponent playableController = SCR_PlayableControllerComponent.Cast(playerController.FindComponent(SCR_PlayableControllerComponent));
 		playableController.SetState(PlayableControllerState.Playing);
 	}

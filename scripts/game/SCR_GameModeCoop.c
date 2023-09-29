@@ -17,6 +17,53 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	
 	static ref map<int, PlayableControllerState> playersStates = new map<int, PlayableControllerState>; // Controllers server only. (╯°□°）╯︵ ┻━┻
 	static ref map<int, string> playableGroups = new map<int, string>;
+	static ref map<int, int> playersPlayable = new map<int, int>;
+	
+	void SetPlayerPlayableClient(int playerId, int playableId)
+	{
+		Rpc(Rpc_SetPlayerPlayableServer, playerId, playableId);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void Rpc_SetPlayerPlayableServer(int playerId, int playableId)
+	{
+		playersPlayable[playerId] = playableId;
+	}
+	int GetPlayerPlayable(int playerId)
+	{
+		return playersPlayable[playerId];
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void Rpc_TryReconnectServer(int playerId)
+	{
+		if (playersPlayable.Contains(playerId))
+			Rpc(Rpc_TryReconnectClient, playerId, playersPlayable[playerId])
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void Rpc_TryReconnectClient(int playerId, int playableId)
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		if (playerController.GetPlayerId() == playerId) 
+		{
+			GetGame().GetCallqueue().CallLater(ReconnectForcePossess, 0, false, playableId);
+		}
+	}
+	void ReconnectForcePossess(int playableId)
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		SCR_PlayableControllerComponent playableController = SCR_PlayableControllerComponent.Cast(playerController.FindComponent(SCR_PlayableControllerComponent));
+		MenuManager menuManager = GetGame().GetMenuManager();
+		SCR_CoopLobby lobby = SCR_CoopLobby.Cast(menuManager.FindMenuByPreset(ChimeraMenuPreset.CoopLobby));
+		if (!lobby) return;
+		map<int, SCR_PlayableComponent> playables = SCR_PlayableComponent.GetPlayables();
+		if (playables[playableId] != null) 
+		{
+			playableController.SetState(PlayableControllerState.Playing);
+			playableController.TakePossession(playerController.GetPlayerId(), playableId);
+			lobby.Close();
+		}
+		GetGame().GetCallqueue().CallLater(ReconnectForcePossess, 100, false, playableId);
+	}
+	
 	
 	string GetPlayableGroupName(int playableId)
 	{
@@ -35,16 +82,12 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void Rpc_SyncPlayableGroupNameServer()
 	{
-		
-		
 		for (int i = 0; i < playableGroups.Count(); i++)
 		{
 			int playableId = playableGroups.GetKey(i);
 			string groupName = playableGroups.GetElement(i);
 			SetPlayableGroupName(playableId, groupName);
 		}
-		
-		
 	}
 	
 	void SetPlayerState(int playerId, PlayableControllerState state)
@@ -85,10 +128,13 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	
 	
 	
+	
 	override void OnPlayerConnected(int playerId)
 	{
 		Rpc(Rpc_SyncPlayerStateServer, playerId);
 		Rpc(Rpc_SyncPlayableGroupNameServer);
+		Rpc(Rpc_TryReconnectServer, playerId);
+		GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.CoopLobby);
 	}
 	
 	
@@ -122,7 +168,6 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 		//if (CameraEntity == null)
 		//	CameraEntity = GetGame().SpawnEntityPrefab(Resource.Load("{C8FDE42491F955CB}Prefabs/ManualCameraInitialPlayer.et"), GetGame().GetWorld(), params);
 		
-		GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.CoopLobby);
 	}
 	
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
