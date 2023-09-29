@@ -35,10 +35,7 @@ class SCR_PlayableComponent : ScriptComponent
 				SCR_AIGroup group = SCR_AIGroup.Cast(agent.GetParentGroup());
 				string company, platoon, squad, sCharacter, format;
 				group.GetCallsigns(company, platoon, squad, sCharacter, format);
-				company = WidgetManager.Translate(company);
-				platoon = WidgetManager.Translate(platoon);
-				squad = WidgetManager.Translate(squad);
-				s_sGroupName =  string.Format(format,  company, platoon, squad, sCharacter);
+				s_sGroupName = WidgetManager.Translate(format, company, platoon, squad, sCharacter);
 				
 				SCR_GameModeCoop.Cast(GetGame().GetGameMode()).SetPlayableGroupName(m_id, s_sGroupName);
 			}
