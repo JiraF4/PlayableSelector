@@ -33,6 +33,8 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 			playablePlayers[playersPlayable[playerId]] = -1;
 		playersPlayable[playerId] = playableId;
 		playablePlayers[playableId] = playerId;
+		
+		UpdateMenu();
 	}
 	static int GetPlayerPlayable(int playerId)
 	{
@@ -138,6 +140,7 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	{
 		playersStates.Set(playerId, state);
 		SCR_GameModeCoop.Cast(GetGame().GetGameMode()).UpdateMenu();
+		UpdateMenu();
 	}
 	
 	static PlayableControllerState GetPlayerState(int playerId)

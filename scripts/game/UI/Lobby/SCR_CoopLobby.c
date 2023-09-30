@@ -355,6 +355,11 @@ class SCR_CoopLobby: MenuBase
 	
 	void Action_ChatOpen()
 	{
+		GetGame().GetCallqueue().CallLater(ChatWrap, 0);
+	}
+	
+	void ChatWrap()
+	{
 		SCR_ChatPanelManager.GetInstance().OpenChatPanel(m_ChatPanel);
 	}
 	
