@@ -25,6 +25,7 @@ class SCR_CoopLobby: MenuBase
 	SCR_NavigationButtonComponent m_bNavigationButtonClose;
 	
 	int startTime = 0;
+	int oldPlayablesCount = 0;
 	
 	override void OnMenuOpen()
 	{
@@ -141,11 +142,37 @@ class SCR_CoopLobby: MenuBase
 	
 	void Fill()
 	{
-		
 		map<int, SCR_PlayableComponent> playables = SCR_PlayableComponent.GetPlayables();
+		array<SCR_PlayableComponent> playablesSorted = new array<SCR_PlayableComponent>;
+		if (oldPlayablesCount != playables.Count())
+		{
+			foreach (Widget widget: m_aFactionListWidgets)
+			{
+				m_wFactionList.RemoveChild(widget);
+			}
+			m_aFactionListWidgets.Clear();
+			
+			m_sFactionPlayables.Clear();
+			for (int i = 0; i < playables.Count(); i++) {
+				SCR_PlayableComponent playable = playables.GetElement(i);
+				bool inserted = false;
+				for (int s = 0; s < playablesSorted.Count(); s++) {
+					SCR_PlayableComponent playableS = playablesSorted[s];
+					if (playableS.GetId() > playable.GetId()) {
+						playablesSorted.InsertAt(playable, s);
+						inserted = true;
+						break;
+					}
+				}
+				if (!inserted) {
+					playablesSorted.Insert(playable);
+				}
+			}
+		}
+		oldPlayablesCount = playables.Count();
 		
-		for (int i = 0; i < playables.Count(); i++) {
-			SCR_PlayableComponent playable = playables.GetElement(i);
+		for (int i = 0; i < playablesSorted.Count(); i++) {
+			SCR_PlayableComponent playable = playablesSorted[i];
 			if (playable == null) continue;
 			SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(playable.GetOwner());
 			SCR_Faction faction = SCR_Faction.Cast(character.GetFaction());
