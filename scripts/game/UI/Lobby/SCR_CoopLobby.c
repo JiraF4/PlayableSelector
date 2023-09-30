@@ -27,7 +27,7 @@ class SCR_CoopLobby: MenuBase
 	
 	override void OnMenuOpen()
 	{
-		Widget widget = GetRootWidget().FindAnyWidget("LoadoutPreviewTileController");
+		Widget widget = GetRootWidget().FindAnyWidget("VLWoadoutPreview");
 		m_preview = SCR_LobbyLoadoutPreview.Cast(widget.FindHandler(SCR_LobbyLoadoutPreview));
 		m_wCounterText = TextWidget.Cast(GetRootWidget().FindAnyWidget("TextCounter"));
 		m_wCounterText.SetText("");
@@ -321,8 +321,7 @@ class SCR_CoopLobby: MenuBase
 	
 	void Action_ChatOpen()
 	{
-		if (!m_ChatPanel.IsOpen())
-			SCR_ChatPanelManager.GetInstance().OpenChatPanel(m_ChatPanel);
+		SCR_ChatPanelManager.GetInstance().OpenChatPanel(m_ChatPanel);
 	}
 	
 	void Action_Exit()

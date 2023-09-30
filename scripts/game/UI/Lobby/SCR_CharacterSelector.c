@@ -4,6 +4,7 @@ class SCR_CharacterSelector : SCR_ButtonImageComponent
 	
 	ImageWidget m_wCharacterFactionColor;
 	ImageWidget m_wCharacterStatusIcon;
+	ImageWidget m_wUnitIcon;
 	TextWidget m_wCharacterClassName;
 	TextWidget m_wCharacterStatus;
 	
@@ -14,6 +15,7 @@ class SCR_CharacterSelector : SCR_ButtonImageComponent
 		super.HandlerAttached(w);
 		m_wCharacterFactionColor = ImageWidget.Cast(w.FindAnyWidget("CharacterFactionColor"));
 		m_wCharacterStatusIcon = ImageWidget.Cast(w.FindAnyWidget("CharacterStatusIcon"));
+		m_wUnitIcon = ImageWidget.Cast(w.FindAnyWidget("UnitIcon"));
 		m_wCharacterClassName = TextWidget.Cast(w.FindAnyWidget("CharacterClassName"));
 		m_wCharacterStatus = TextWidget.Cast(w.FindAnyWidget("CharacterStatus"));
 	}
@@ -28,6 +30,10 @@ class SCR_CharacterSelector : SCR_ButtonImageComponent
 	{
 		SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(m_playable.GetOwner());
 		SCR_Faction faction = SCR_Faction.Cast(character.GetFaction());
+		SCR_EditableCharacterComponent editableCharacterComponent = SCR_EditableCharacterComponent.Cast(character.FindComponent(SCR_EditableCharacterComponent));
+		SCR_UIInfo uiInfo = editableCharacterComponent.GetInfo();
+		
+		m_wUnitIcon.LoadImageTexture(0, uiInfo.GetIconPath());
 		
 		m_wCharacterFactionColor.SetColor(faction.GetFactionColor());
 		m_wCharacterClassName.SetText(m_playable.GetName());
