@@ -266,6 +266,10 @@ FrameWidgetClass {
                Name "VLWoadoutPreview"
                Slot OverlayWidgetSlot "{5D6D1B985B1E5269}" {
                }
+               components {
+                SCR_LobbyLoadoutPreview "{5E7CF0523DB1F00A}" {
+                }
+               }
                {
                 FrameWidgetClass "{5D6D1B9826675364}" {
                  Name "LoadoutPreviewTile"
@@ -282,10 +286,6 @@ FrameWidgetClass {
                     OffsetRight -470
                     SizeY 600
                     OffsetBottom -600
-                   }
-                   components {
-                    SCR_LobbyLoadoutPreview "{5D6E8216554AFE86}" {
-                    }
                    }
                    style blank
                    "no focus" 1
@@ -497,11 +497,43 @@ FrameWidgetClass {
                       }
                      }
                     }
-                    TextWidgetClass "{5D6D1B97948FB00B}" {
-                     Name "Description"
-                     Slot OverlayWidgetSlot "{5D6E8214EEAC4AF2}" {
+                    FrameWidgetClass "{5E7CF06E95D77B65}" {
+                     Name "HorizontalLayout0"
+                     Slot OverlayWidgetSlot "{5E7CF06E95D77B4D}" {
+                      HorizontalAlign 0
+                      Padding 15 15 15 15
                      }
-                     Text ""
+                     {
+                      TextWidgetClass "{5D6D1B97948FB00B}" {
+                       Name "DescriptionText"
+                       Slot FrameWidgetSlot "{5E7CF06EA00C5735}" {
+                        Anchor 0 0 0 0
+                        PositionX 0
+                        OffsetLeft 0
+                        PositionY 0
+                        OffsetTop 0
+                        SizeX 200
+                        OffsetRight -200
+                        SizeY 130
+                        OffsetBottom -130
+                       }
+                       Text ""
+                      }
+                      TextWidgetClass "{5E7CF06E96B4DE8F}" {
+                       Name "DescriptionMagazinesText"
+                       Slot FrameWidgetSlot "{5E7CF06EA00C5707}" {
+                        PositionX 200
+                        OffsetLeft 200
+                        PositionY 0
+                        OffsetTop 0
+                        SizeX 200
+                        OffsetRight -400
+                        SizeY 130
+                        OffsetBottom -130
+                       }
+                       Text ""
+                      }
+                     }
                     }
                    }
                   }
@@ -635,7 +667,7 @@ FrameWidgetClass {
            Name "HLWBodyLeft"
            Slot OverlayWidgetSlot "{5D6F149C5D94FF4E}" {
             HorizontalAlign 0
-            Padding 20 0 0 0
+            Padding 15 0 0 0
            }
            {
             ButtonWidgetClass "{5D6F1498C9949A75}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {

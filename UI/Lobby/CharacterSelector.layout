@@ -62,14 +62,52 @@ ButtonWidgetClass {
        }
        Color 0.376 0.749 0.749 1
       }
+      ScaleWidgetClass "{5E7CF0582185DC16}" {
+       Name "Scale0"
+       Slot FrameWidgetSlot "{5E7CF0582185DC43}" {
+        PositionX 6
+        OffsetLeft 6
+        PositionY 0
+        OffsetTop 0
+        SizeX 40
+        OffsetRight -46
+        SizeY 40
+        OffsetBottom -40
+       }
+       "Scale Mode" "Scale to fill"
+       {
+        FrameWidgetClass "{5E7CF059F21E70B6}" {
+         Name "Frame0"
+         Slot AlignableSlot "{5E7CF059F21E7098}" {
+         }
+         {
+          ImageWidgetClass "{5E7CF0476D8FEDDF}" {
+           Name "UnitIcon"
+           Slot FrameWidgetSlot "{5E7CF059F272107C}" {
+            PositionX -28
+            OffsetLeft -28
+            PositionY -28
+            OffsetTop -28
+            SizeX 96
+            OffsetRight -68
+            SizeY 96
+            OffsetBottom -68
+           }
+           Texture "{00B30C29FAF85E1C}UI/Textures/Editor/EditableEntities/Characters/EditableEntity_Character_AntiTank.edds"
+           Size 64 64
+          }
+         }
+        }
+       }
+      }
       TextWidgetClass "{5D6D1B99A45E5176}" {
        Name "CharacterClassName"
        Slot FrameWidgetSlot "{5D6D1B99A45E509C}" {
-        PositionX 12
-        OffsetLeft 12
+        PositionX 46
+        OffsetLeft 46
         OffsetTop 0
-        SizeX 248
-        OffsetRight -260
+        SizeX 238
+        OffsetRight -284
         SizeY 40
         OffsetBottom -40
        }
@@ -81,12 +119,12 @@ ButtonWidgetClass {
       ImageWidgetClass "{5D6D1B995C4BBFB9}" {
        Name "Image"
        Slot FrameWidgetSlot "{5D6D1B99A45E509C}" {
-        PositionX 260
-        OffsetLeft 260
+        PositionX 290
+        OffsetLeft 290
         PositionY 0
         OffsetTop 0
         SizeX 40
-        OffsetRight -300
+        OffsetRight -330
         SizeY 40
         OffsetBottom -40
        }
@@ -96,10 +134,10 @@ ButtonWidgetClass {
       TextWidgetClass "{5D6D1B99172B8829}" {
        Name "CharacterStatus"
        Slot FrameWidgetSlot "{5D6D1B99A45E509C}" {
-        PositionX 306
-        OffsetLeft 306
+        PositionX 336
+        OffsetLeft 336
         OffsetTop 0
-        SizeX 250
+        SizeX 220
         OffsetRight -556
         SizeY 40
         OffsetBottom -40
