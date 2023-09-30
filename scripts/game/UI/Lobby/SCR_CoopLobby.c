@@ -17,6 +17,7 @@ class SCR_CoopLobby: MenuBase
 	protected ref array<Widget> m_aPlayersListWidgets = {};
 	SCR_LobbyLoadoutPreview m_preview;
 	TextWidget m_wCounterText;
+	protected Widget m_wChatPanelWidget;
 	protected SCR_ChatPanel m_ChatPanel;
 	
 	SCR_NavigationButtonComponent m_bNavigationButtonReady;
@@ -27,13 +28,17 @@ class SCR_CoopLobby: MenuBase
 	
 	override void OnMenuOpen()
 	{
+		m_wFactionList = GetRootWidget().FindAnyWidget("FactionList");
+		m_wRolesList = GetRootWidget().FindAnyWidget("RolesList");
+		m_wPlayersList = GetRootWidget().FindAnyWidget("PlayersList");
+		
 		Widget widget = GetRootWidget().FindAnyWidget("VLWoadoutPreview");
 		m_preview = SCR_LobbyLoadoutPreview.Cast(widget.FindHandler(SCR_LobbyLoadoutPreview));
 		m_wCounterText = TextWidget.Cast(GetRootWidget().FindAnyWidget("TextCounter"));
 		m_wCounterText.SetText("");
 		
-		Widget wChatPanel = GetRootWidget().FindAnyWidget("ChatPanel");
-		m_ChatPanel = SCR_ChatPanel.Cast(wChatPanel.FindHandler(SCR_ChatPanel));
+		m_wChatPanelWidget = GetRootWidget().FindAnyWidget("ChatPanel");
+		m_ChatPanel = SCR_ChatPanel.Cast(m_wChatPanelWidget.FindHandler(SCR_ChatPanel));
 		
 		m_bNavigationButtonReady = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationStart").FindHandler(SCR_NavigationButtonComponent));
 		m_bNavigationButtonChat = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationChat").FindHandler(SCR_NavigationButtonComponent));
@@ -132,14 +137,10 @@ class SCR_CoopLobby: MenuBase
 		
 		GetGame().GetInputManager().RemoveActionListener("MenuSelect", EActionTrigger.DOWN, Action_Ready);
 		GetGame().GetInputManager().RemoveActionListener("ChatToggle", EActionTrigger.DOWN, Action_ChatOpen);
-		GetGame().GetInputManager().ResetContext("LobbyContext");
 	}
 	
 	void Fill()
 	{
-		m_wFactionList = GetRootWidget().FindAnyWidget("FactionList");
-		m_wRolesList = GetRootWidget().FindAnyWidget("RolesList");
-		m_wPlayersList = GetRootWidget().FindAnyWidget("PlayersList");
 		
 		map<int, SCR_PlayableComponent> playables = SCR_PlayableComponent.GetPlayables();
 		
@@ -202,15 +203,23 @@ class SCR_CoopLobby: MenuBase
 		m_aRolesListWidgets.Clear();
 		m_aCharactersListWidgets.Clear();
 		
-		Widget RolesGroup = GetGame().GetWorkspace().CreateWidgets(m_sRolesGroupPrefab);
-		SCR_RolesGroup handler = SCR_RolesGroup.Cast(RolesGroup.FindHandler(SCR_RolesGroup));
-		m_aRolesListWidgets.Insert(RolesGroup);
-		m_wRolesList.AddChild(RolesGroup);
 		
+		map<string, SCR_RolesGroup> RolesGroups = new map<string, SCR_RolesGroup>();
 		array<SCR_PlayableComponent> factionPlayablesList = m_sFactionPlayables[m_fCurrentFaction];
 		foreach (SCR_PlayableComponent playable: factionPlayablesList)
 		{
-			Widget characterWidget = handler.AddPlayable(playable);
+			string groupName = playable.GetGroupName();
+			if (!RolesGroups.Contains(groupName))	{
+				Widget RolesGroup = GetGame().GetWorkspace().CreateWidgets(m_sRolesGroupPrefab);
+				SCR_RolesGroup rolesGroupHandler = SCR_RolesGroup.Cast(RolesGroup.FindHandler(SCR_RolesGroup));
+				m_aRolesListWidgets.Insert(RolesGroup);
+				m_wRolesList.AddChild(RolesGroup);
+				RolesGroups[groupName] = rolesGroupHandler;
+				rolesGroupHandler.SetName(groupName);
+			}
+			SCR_RolesGroup rolesGroupHandler = RolesGroups[groupName];
+			
+			Widget characterWidget = rolesGroupHandler.AddPlayable(playable);
 			SCR_CharacterSelector characterHandler = SCR_CharacterSelector.Cast(characterWidget.FindHandler(SCR_CharacterSelector));
 			m_aCharactersListWidgets.Insert(characterWidget);
 			characterHandler.m_OnClicked.Insert(CharacterClick);
@@ -218,8 +227,6 @@ class SCR_CoopLobby: MenuBase
 			characterHandler.m_OnMouseLeave.Insert(CharacterMouseLeave);
 			characterHandler.m_OnFocus.Insert(CharacterMouseEnter);
 			characterHandler.m_OnFocusLost.Insert(CharacterMouseLeave);
-			
-			handler.SetName(playable.GetGroupName());
 		}
 	}
 	protected void CharacterMouseLeave(Widget characterWidget)
@@ -313,10 +320,10 @@ class SCR_CoopLobby: MenuBase
 	
 	override void OnMenuUpdate(float tDelta)
 	{
-		GetGame().GetInputManager().ActivateContext("LobbyContext");
 		if (m_ChatPanel)
 			m_ChatPanel.OnUpdateChat(tDelta);
-	}
+		GetGame().GetInputManager().ActivateContext("LobbyContext", 1);
+	};
 	
 	
 	void Action_ChatOpen()
