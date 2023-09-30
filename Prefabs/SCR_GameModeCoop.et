@@ -277,6 +277,10 @@ SCR_GameModeCoop {
   }
   SCR_InitWeatherComponent "{5D4CE24A7F6EB0D7}" {
   }
+  SCR_MapConfigComponent "{5E7B7652780C62BE}" {
+  }
+  SCR_MapMarkerManagerComponent "{5E7B76527E052FF3}" {
+  }
   SCR_NametagConfigComponent "{5D4CE249A91A4C44}" {
    m_sConfigPath "{09F7AAA14A642683}Configs/NameTags/NametagFriendlies.conf"
   }
@@ -370,9 +374,7 @@ SCR_GameModeCoop {
   RplComponent "{5D4CE249422E8900}" {
    Streamable Disabled
   }
-  SCR_MapConfigComponent "{5E7B7652780C62BE}" {
-  }
-  SCR_MapMarkerManagerComponent "{5E7B76527E052FF3}" {
+  SCR_TimeAndWeatherHandlerComponent "{5E7D773A4347DB9E}" {
   }
  }
  PlayerControllerPrefab "{4E5DAC62A374950F}Prefabs/Characters/Core/DefaultPlayerControllerMP_Coop.et"
