@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{147DDF5E60C09FC5}Worlds/Coop_Missions/ArlandMission/ArlandMission_0_Layers"
+ Configurations {
+  FolderResourceClass PC {
+  }
+  FolderResourceClass XBOX_ONE : PC {
+  }
+  FolderResourceClass XBOX_SERIES : PC {
+  }
+  FolderResourceClass PS4 : PC {
+  }
+  FolderResourceClass HEADLESS : PC {
+  }
+ }
+}

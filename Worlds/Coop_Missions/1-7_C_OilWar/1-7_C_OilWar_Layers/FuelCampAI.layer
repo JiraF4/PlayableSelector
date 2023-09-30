@@ -1,0 +1,10 @@
+SCR_DefendWaypoint TentDef : "{93291E72AC23930F}Prefabs/AI/Waypoints/AIWaypoint_Defend.et" {
+ coords 8777.465 199.886 3973.848
+ CompletionRadius 20
+}
+SCR_AIGroup : "{E552DABF3636C2AD}Prefabs/Groups/OPFOR/Group_USSR_RifleSquad.et" {
+ coords 8779.063 197.065 3908.816
+ m_aStaticWaypoints {
+  "TentDef"
+ }
+}

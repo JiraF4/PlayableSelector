@@ -26,8 +26,12 @@ GenericEntity : "{10F9EE0FB9EC0E4E}Prefabs/Systems/Arsenal/AmmoBoxes/FIA/AmmoBox
  angleY -1.053
  angleZ 14.075
 }
+SCR_AIGroup : "{17C7309FFE4775B0}Prefabs/Groups/INDFOR/Group_FIA_RifleSquad_P.et" {
+ coords 8569.979 180.818 4682.018
+ angleY -90
+}
 GenericEntity : "{2F2BBFDA3A2C73D4}Prefabs/Props/Civilian/RadioSmall_01_black.et" {
- coords 8579.089 178.038 4686.225
+ coords 8579.012 178.057 4686.243
  angleX 8.912
  angleY -161.894
  angleZ -12.704
@@ -57,10 +61,6 @@ StaticModelEntity : "{75A7C06222E6218B}Prefabs/Structures/Military/Camps/TentSma
  angleX -11.832
  angleY 116.611
  angleZ -9.712
-}
-SCR_AIGroup : "{B20D25B73A29E254}Prefabs/Groups/INDFOR/Group_FIA_RifleSquad_playabe.et" {
- coords 8572.91 0 4685.263
- angleY -77.539
 }
 GameEntity : "{D9842C11742C00CF}Prefabs/Props/Civilian/Fireplace_01.et" {
  coords 8579.523 178.108 4682.908
