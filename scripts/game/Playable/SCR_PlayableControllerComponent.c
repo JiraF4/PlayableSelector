@@ -8,7 +8,8 @@ enum PlayableControllerState
 {
 	NotReady,
 	Ready,
-	Playing
+	Playing,
+	Disconected
 }
 
 [ComponentEditorProps(icon: HYBRID_COMPONENT_ICON)]
@@ -39,20 +40,36 @@ class SCR_PlayableControllerComponent : ScriptComponent
 		return SCR_GameModeCoop.GetPlayerState(playerId);
 	}
 	
+	void TakePossessionReconnect(int playerId, int playableId) 
+	{
+		Rpc(RPC_TakePossessionReconnect, playerId, playableId);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void RPC_TakePossessionReconnect(int playerId, int playableId) 
+	{
+		SCR_PlayerController playerController = SCR_PlayerController.Cast(GetGame().GetPlayerManager().GetPlayerController(playerId));
+		map<int, SCR_PlayableComponent> playables = SCR_PlayableComponent.GetPlayables();
+		SCR_ChimeraCharacter playable = SCR_ChimeraCharacter.Cast(playables[playableId].GetOwner());
+		playerController.SetPossessedEntity(playable); // reset ai? but still broken...
+		playerController.SetInitialMainEntity(playable);
+	}
+	
 	void TakePossession(int playerId, int playableId) 
 	{
 		Rpc(RPC_TakePossession, playerId, playableId);
-	}
+	}	
 	
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void RPC_TakePossession(int playerId, int playableId) 
 	{
-		Print("RPC_TakePossession 1: " + playerId.ToString() + " - " + playableId);
+		//Print("RPC_TakePossession 1: " + playerId.ToString() + " - " + playableId);
 		map<int, SCR_PlayableComponent> playables = SCR_PlayableComponent.GetPlayables();
 		SCR_ChimeraCharacter playable = SCR_ChimeraCharacter.Cast(playables[playableId].GetOwner());
+		
 		int curretPlayerId = SCR_PossessingManagerComponent.GetInstance().GetPlayerIdFromControlledEntity(playable);
 		if (playable.GetDamageManager().IsDestroyed() 
-				|| (curretPlayerId != 0 && curretPlayerId != playerId)) {
+				|| (curretPlayerId != 0 && curretPlayerId != playerId)
+				|| SCR_GameModeCoop.Cast(GetGame().GetGameMode()).GetPlayablePlayer(playableId) != -1) {
 			
 			RPC_PossesionResult(playerId, false);
 			Rpc(RPC_PossesionResult, playerId, false);
@@ -76,7 +93,7 @@ class SCR_PlayableControllerComponent : ScriptComponent
 		SCR_FactionManager factionManager = SCR_FactionManager.Cast(GetGame().GetFactionManager());
 		factionManager.UpdatePlayerFaction_S(playerFactionAffiliation);
 		
-		Print("RPC_TakePossession 2: " + playerId.ToString() + " - " + playableId);
+		//Print("RPC_TakePossession 2: " + playerId.ToString() + " - " + playableId);
 		/*
 		SCR_GroupsManagerComponent groupsManagerComponent = SCR_GroupsManagerComponent.GetInstance();
 		AIControlComponent aiControl = AIControlComponent.Cast(playable.FindComponent(AIControlComponent));

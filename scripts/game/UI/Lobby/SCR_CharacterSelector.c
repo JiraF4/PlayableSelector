@@ -31,16 +31,25 @@ class SCR_CharacterSelector : SCR_ButtonImageComponent
 		
 		m_wCharacterFactionColor.SetColor(faction.GetFactionColor());
 		m_wCharacterClassName.SetText(m_playable.GetName());
+		
+		int playerId = SCR_PossessingManagerComponent.GetInstance().GetPlayerIdFromControlledEntity(character);
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		string playerName = playerManager.GetPlayerName(playerId);
+		
+		int disconnectedPlayerId = SCR_GameModeCoop.Cast(GetGame().GetGameMode()).GetPlayablePlayer(m_playable.GetId());
+		
 		if (character.GetDamageManager().IsDestroyed()) 
 		{
 			m_wCharacterStatus.SetText("Dead");
 			SetImage(m_sUIWrapper, "death");
-		}else{
-			PlayerManager playerManager = GetGame().GetPlayerManager();
-			int playerId = SCR_PossessingManagerComponent.GetInstance().GetPlayerIdFromControlledEntity(character);
+		} else if (disconnectedPlayerId != -1 && playerName == "")
+		{
+			m_wCharacterStatus.SetText("Disconnected");
+			SetImage(m_sUIWrapper, "disconnection");
+		} else {
 			if (playerId != 0) 
 			{
-				m_wCharacterStatus.SetText(playerManager.GetPlayerName(playerId));
+				m_wCharacterStatus.SetText(playerName);
 				SetImage(m_sUIWrapper, "player");
 			}else{
 				m_wCharacterStatus.SetText("-");

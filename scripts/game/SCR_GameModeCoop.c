@@ -18,35 +18,56 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	static ref map<int, PlayableControllerState> playersStates = new map<int, PlayableControllerState>; // Controllers server only. (╯°□°）╯︵ ┻━┻
 	static ref map<int, string> playableGroups = new map<int, string>;
 	static ref map<int, int> playersPlayable = new map<int, int>;
+	static ref map<int, int> playablePlayers = new map<int, int>;
 	
 	void SetPlayerPlayableServer(int playerId, int playableId)
 	{
-		Print("SetPlayerPlayableServer: playerId " + playerId.ToString() + " playableId " + playableId.ToString());
 		Rpc_SetPlayerPlayableClient(playerId, playableId);
 		Rpc(Rpc_SetPlayerPlayableClient, playerId, playableId);
 	}
-	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void Rpc_SetPlayerPlayableClient(int playerId, int playableId)
 	{
-		Print("Rpc_SetPlayerPlayableClient: playerId " + playerId.ToString() + " playableId " + playableId.ToString());
+		//Print("Rpc_SetPlayerPlayableClient: playerId " + playerId.ToString() + " playableId " + playableId.ToString());
+		if (playersPlayable.Contains(playerId))
+			playablePlayers[playersPlayable[playerId]] = -1;
 		playersPlayable[playerId] = playableId;
+		playablePlayers[playableId] = playerId;
 	}
 	int GetPlayerPlayable(int playerId)
 	{
-		Print("GetPlayerPlayable: playerId " + playerId.ToString() + " playableId " + playersPlayable[playerId].ToString());
+		if (!playersPlayable.Contains(playerId))
+			return -1;
 		return playersPlayable[playerId];
+	}
+	int GetPlayablePlayer(int playableId)
+	{
+		if (!playablePlayers.Contains(playableId))
+			return -1;
+		return playablePlayers[playableId];
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void Rpc_SyncPlayerPlayableServer()
+	{
+		for (int i = 0; i < playersPlayable.Count(); i++)
+		{
+			int playerId = playersPlayable.GetKey(i);
+			int playableId = playersPlayable.GetElement(i);
+			//Print("Rpc_SyncPlayerPlayableServer: playerId " + playerId.ToString() + " playableId " + playableId.ToString());
+			SetPlayerPlayableServer(playerId, playableId);
+		}
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void Rpc_TryReconnectServer(int playerId)
 	{
-		Print("Rpc_TryReconnectServer: playerId " + playerId.ToString());
+		//Print("Rpc_TryReconnectServer: playerId " + playerId.ToString());
 		if (playersPlayable.Contains(playerId))
 			Rpc(Rpc_TryReconnectClient, playerId, playersPlayable[playerId])
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void Rpc_TryReconnectClient(int playerId, int playableId)
 	{
-		Print("Rpc_TryReconnectClient: playerId " + playerId.ToString() + " playableId " + playableId.ToString());
+		//Print("Rpc_TryReconnectClient: playerId " + playerId.ToString() + " playableId " + playableId.ToString());
 		PlayerController playerController = GetGame().GetPlayerController();
 		if (playerController.GetPlayerId() == playerId) 
 		{
@@ -55,10 +76,10 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	}
 	void ReconnectForcePossess(int playableId)
 	{
-		Print("ReconnectForcePossess: playableId " + playableId.ToString());
+		//Print("ReconnectForcePossess: playableId " + playableId.ToString());
 		PlayerController playerController = GetGame().GetPlayerController();
 		SCR_PlayableControllerComponent playableController = SCR_PlayableControllerComponent.Cast(playerController.FindComponent(SCR_PlayableControllerComponent));
-		playableController.TakePossession(playerController.GetPlayerId(), playableId);
+		playableController.TakePossessionReconnect(playerController.GetPlayerId(), playableId);
 		MenuManager menuManager = GetGame().GetMenuManager();
 		SCR_CoopLobby lobby = SCR_CoopLobby.Cast(menuManager.FindMenuByPreset(ChimeraMenuPreset.CoopLobby));
 		if (lobby) lobby.Close();
@@ -134,6 +155,7 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	{
 		Rpc(Rpc_SyncPlayerStateServer, playerId);
 		Rpc(Rpc_SyncPlayableGroupNameServer);
+		Rpc(Rpc_SyncPlayerPlayableServer);
 		Rpc(Rpc_TryReconnectServer, playerId);
 	}
 	
@@ -239,7 +261,7 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	
 	protected override void OnPlayerDisconnected(int playerId, KickCauseCode cause, int timeout)
 	{
-		
+		SetPlayerState(playerId, PlayableControllerState.Disconected);
 	}
 };
 

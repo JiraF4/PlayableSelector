@@ -38,7 +38,6 @@ class SCR_CoopLobby: MenuBase
 		GetGame().GetInputManager().AddActionListener("MenuSelect", EActionTrigger.DOWN, Action_Ready);
 		
 		GetGame().GetCallqueue().CallLater(UpdateCycle, 100);
-		m_preview.SetPlayable(null);
 	}
 	
 	void UpdateCycle() // Soo many staff need to bee init, i can't track all of it...
@@ -57,9 +56,8 @@ class SCR_CoopLobby: MenuBase
 			array<SCR_PlayableComponent> factionPlayablesList = m_sFactionPlayables[handler.GetFaction()];
 			int i = 0;
 			foreach (SCR_PlayableComponent playable : factionPlayablesList) {
-				SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(playable.GetOwner());
-				int playerId = possessingManagerComponent.GetPlayerIdFromControlledEntity(character);
-				if (playerId != 0)  i++;
+				int disconnectedPlayerId = SCR_GameModeCoop.Cast(GetGame().GetGameMode()).GetPlayablePlayer(playable.GetId());
+				if (disconnectedPlayerId != -1)  i++;
 			}
 			handler.SetCount(i, factionPlayablesList.Count());
 		}
@@ -96,7 +94,6 @@ class SCR_CoopLobby: MenuBase
 			m_wCounterText.SetText(secondsStr);
 			AudioSystem.PlaySound("{3119327F3EFCA9C6}Sounds/UI/Samples/Gadgets/UI_Radio_Frequency_Cycle.wav");
 		}
-		
 		if (seconds == 3) Close();
 		else GetGame().GetCallqueue().CallLater(CloseTimer, 100);
 	}
@@ -210,7 +207,15 @@ class SCR_CoopLobby: MenuBase
 	
 	protected void CharacterMouseLeave(Widget characterWidget)
 	{
-		m_preview.SetPlayable(null);
+		int playerId = GetGame().GetPlayerController().GetPlayerId();
+		int playableId = SCR_GameModeCoop.Cast(GetGame().GetGameMode()).GetPlayerPlayable(playerId);
+		
+		if (playableId == -1) {
+			m_preview.SetPlayable(null);
+		} else {
+			map<int, SCR_PlayableComponent> playables = SCR_PlayableComponent.GetPlayables();
+			m_preview.SetPlayable(playables[playableId]);
+		}
 	}
 	
 	protected void CharacterMouseEnter(Widget characterWidget)
@@ -245,7 +250,7 @@ class SCR_CoopLobby: MenuBase
 	protected void UpdatePlayersList()
 	{
 		array<int> playerIds = new array<int>();
-		GetGame().GetPlayerManager().GetAllPlayers(playerIds);
+		GetGame().GetPlayerManager().GetPlayers(playerIds);
 		
 		foreach (Widget widget: m_aPlayersListWidgets)
 		{

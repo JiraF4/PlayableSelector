@@ -47,7 +47,8 @@ class SCR_LobbyLoadoutPreview : SCR_WLibComponentBase
 		
 		SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(m_playable.GetOwner());
 		SCR_Faction faction = SCR_Faction.Cast(character.GetFaction());
-				
+		
+		character.SetFixedLOD(0);
 		m_PreviewManager.SetPreviewItem(m_Preview.GetItemPreviewWidget(), character);
 		
 		m_wLoadoutBackgroundImage.SetColor(faction.GetFactionColor());
