@@ -23,6 +23,31 @@ SCR_FactionManager FactionManager_Editor1 : "{4A188E44289B9A50}Prefabs/MP/Manage
   }
  }
 }
+TimeAndWeatherManagerEntity : "{A3BAF78F6F03315B}Prefabs/World/Game/TimeAndWeatherManager.et" {
+ coords 2096.162 56.996 2097.88
+ "Initial Day Time" 1
+ "Internal variant transition" 0
+ "Internal subvariant 0" 0
+ "Internal subvariant 1" 0
+ "Initial Wetness" 0
+}
+SCR_FactionControlTriggerEntity EndTrigger {
+ coords 2081.196 58.816 2120.12
+ TriggerShapeType Sphere
+ SphereRadius 50
+ DrawShape 1
+ TriggerActivationType "First change"
+ PeriodicQueries 1
+ UpdatePeriod 3
+ OnActivate ""\
+ "		SCR_BaseGameMode gameMode = SCR_BaseGameMode.Cast(GetGame().GetGameMode()); // Get the game mode for the end script"\
+ "		Faction faction = GetGame().GetFactionManager().GetFactionByKey(\"USSR\"); // Get the winning faction Key"\
+ "		int usIndex = GetGame().GetFactionManager().GetFactionIndex(faction); // Get the winning faction key's index"\
+ "		gameMode.EndGameMode(SCR_GameModeEndData.CreateSimple(EGameOverTypes.EDITOR_FACTION_VICTORY, -1, usIndex)); // End the mission!"\
+ "	"
+ m_sOwnerFactionKey "USSR"
+ m_fFriendlyRatioLimit 1
+}
 HitRegistrationManager HitRegManager1 : "{0EDA3D48791120DD}Prefabs/MP/HitRegManager.et" {
  coords 1499.895 39.01 2795.019
 }

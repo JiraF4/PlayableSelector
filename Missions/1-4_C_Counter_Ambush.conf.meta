@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{0685D34367B88EEA}Missions/1-4_C_Counter_Ambush.conf"
+ Configurations {
+  CONFResourceClass PC {
+  }
+  CONFResourceClass XBOX_ONE : PC {
+  }
+  CONFResourceClass XBOX_SERIES : PC {
+  }
+  CONFResourceClass PS4 : PC {
+  }
+  CONFResourceClass HEADLESS : PC {
+  }
+ }
+}
