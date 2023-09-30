@@ -1,9 +1,27 @@
+SCR_AIGroup : "{0B03E232E343D3F4}Prefabs/Groups/BLUFOR/Group_US_Team_LAT_P.et" {
+ coords 82.261 1 153.616
+}
 SCR_AIGroup : "{17C7309FFE4775B0}Prefabs/Groups/INDFOR/Group_FIA_RifleSquad_P.et" {
  coords 125.838 0 146.749
+}
+SCR_AIGroup : "{70323274E7899BD1}Prefabs/Groups/INDFOR/Group_FIA_MedicalSection_p.et" {
+ coords 120.97 1 155.637
+}
+SCR_AIGroup : "{73F1EA286A84C07C}Prefabs/Groups/OPFOR/Group_USSR_Team_AT_P.et" {
+ coords 140.968 1 113.588
+}
+SCR_AIGroup : "{8298E4105B5A10C0}Prefabs/Groups/INDFOR/Group_FIA_SharpshooterTeam_P.et" {
+ coords 131.757 1 150.467
+}
+SCR_AIGroup : "{93ECE153940F4451}Prefabs/Groups/BLUFOR/Group_US_MedicalSection_P.et" {
+ coords 104.137 1 152.532
 }
 SCR_AIGroup : "{BC357974A560F678}Prefabs/Groups/BLUFOR/Group_US_RifleSquad_p.et" {
  coords 96.346 0 149.862
 }
 SCR_AIGroup : "{E3545CFEDD312D54}Prefabs/Groups/OPFOR/Group_USSR_RifleSquad_p.et" {
  coords 116.699 0 118.649
+}
+SCR_AIGroup : "{EAF551923DF4E024}Prefabs/Groups/OPFOR/Group_USSR_MedicalSection_P.et" {
+ coords 103.97 1 110.511
 }
