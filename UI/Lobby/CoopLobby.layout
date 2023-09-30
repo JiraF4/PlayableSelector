@@ -2,6 +2,11 @@ FrameWidgetClass {
  Name "PlayMenu"
  "Z Order" 9
  {
+  FrameWidgetClass "{5E7B5C5AA84246F8}" : "{D89BBA18F99053D6}UI/layouts/HUD/Chat/ChatHud.layout" {
+   Name "Chat0"
+   Slot FrameWidgetSlot "{5D4881250D202DF3}" {
+   }
+  }
   OverlayWidgetClass "{5D6D00D8FBAAF79D}" : "{01FD644AD2B6317D}UI/layouts/Menus/Common/MenuBackground.layout" {
    Name "MenuBackground0"
    Slot FrameWidgetSlot "{552C9A0A8526D2AD}" {
@@ -639,7 +644,6 @@ FrameWidgetClass {
               VerticalAlign 3
               Padding 15 15 15 15
              }
-             "Is Visible" 0
              components {
               SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
                m_sLabel "Navigation left"
@@ -654,7 +658,6 @@ FrameWidgetClass {
               VerticalAlign 3
               Padding 15 15 15 15
              }
-             "Is Visible" 0
              components {
               SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
                m_sLabel "Navigation Right"
@@ -668,7 +671,6 @@ FrameWidgetClass {
               VerticalAlign 3
               Padding 15 15 15 15
              }
-             "Is Visible" 0
              components {
               SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
                m_sLabel "Close lobby menu"
@@ -683,7 +685,6 @@ FrameWidgetClass {
               VerticalAlign 3
               Padding 15 15 15 15
              }
-             "Is Visible" 0
              components {
               SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
                m_sLabel "Chat"

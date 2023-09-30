@@ -197,6 +197,7 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	}
 	
 	
+	
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void RPC_UpdateMenu()
 	{

@@ -5,6 +5,42 @@ PerceptionManager PerceptionManager1 : "{028DAEAD63E056BE}Prefabs/World/Game/Per
  coords 113.126 1 124.397
 }
 SCR_GameModeCoop SCR_GameModeCoop1 : "{16D2DEADCFDC8B73}Prefabs/SCR_GameModeCoop.et" {
+ {
+  ScriptedChatEntity {
+   ID "5E6ED2179BF62C96"
+   "Base style" BaseChatChannelStyle "{5E7B5C67B5FB6751}" {
+   }
+   Channels {
+    BaseChatChannel "{559077E72C7027BC}" {
+     Style BaseChatChannelStyle "{5E7B5C67B8B88596}" {
+     }
+    }
+    FactionChatChannel "{559077E76537C0B4}" {
+     Style BaseChatChannelStyle "{5E7B5C67BA5C09CC}" {
+     }
+    }
+    GroupChatChannel "{58729124A5B6D815}" {
+     Style BaseChatChannelStyle "{5E7B5C67BB421A3A}" {
+     }
+    }
+    SCR_VehicleChatChannel "{559077E68D10F660}" {
+     Style BaseChatChannelStyle "{5E7B5C67BC4CE6BD}" {
+     }
+    }
+    LocalChatChannel "{559077E6A85B7EEE}" {
+     Style BaseChatChannelStyle "{5E7B5C67BEB08FB6}" {
+     }
+    }
+   }
+  }
+  SCR_LoadoutManager {
+   coords 84.732 1 108.656
+   m_aPlayerLoadouts {
+    SCR_BasePlayerLoadout "{5E7B5C62268099EF}" {
+    }
+   }
+  }
+ }
 }
 TagManager : "{2FA9E172CAB1857A}Prefabs/MP/Managers/TagManager.et" {
  coords 115.4 1 122.834

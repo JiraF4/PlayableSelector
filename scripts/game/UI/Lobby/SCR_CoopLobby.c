@@ -17,6 +17,7 @@ class SCR_CoopLobby: MenuBase
 	protected ref array<Widget> m_aPlayersListWidgets = {};
 	SCR_LobbyLoadoutPreview m_preview;
 	TextWidget m_wCounterText;
+	protected SCR_ChatPanel m_ChatPanel;
 	
 	SCR_NavigationButtonComponent m_bNavigationButtonReady;
 	SCR_NavigationButtonComponent m_bNavigationButtonChat;
@@ -30,14 +31,20 @@ class SCR_CoopLobby: MenuBase
 		m_wCounterText = TextWidget.Cast(GetRootWidget().FindAnyWidget("TextCounter"));
 		m_wCounterText.SetText("");
 		//GetGame().GetInputManager().ActivateContext("MenuContext");
-		GetGame().GetCallqueue().CallLater(Fill, 0); // TODO: Fix delay
+		
+		Widget wChatPanel = GetRootWidget().FindAnyWidget("ChatPanel");
+		m_ChatPanel = SCR_ChatPanel.Cast(wChatPanel.FindHandler(SCR_ChatPanel));
 		
 		m_bNavigationButtonReady = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationStart").FindHandler(SCR_NavigationButtonComponent));
+		m_bNavigationButtonChat = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationChat").FindHandler(SCR_NavigationButtonComponent));
 		
 		m_bNavigationButtonReady.m_OnClicked.Insert(Action_Ready);
 		GetGame().GetInputManager().AddActionListener("MenuSelect", EActionTrigger.DOWN, Action_Ready);
+		m_bNavigationButtonChat.m_OnClicked.Insert(Action_ChatOpen);
+		GetGame().GetInputManager().AddActionListener("ChatToggle", EActionTrigger.DOWN, Action_ChatOpen);
 		
 		GetGame().GetCallqueue().CallLater(UpdateCycle, 100);
+		GetGame().GetCallqueue().CallLater(Fill, 0); // TODO: Fix delay
 	}
 	
 	void UpdateCycle() // Soo many staff need to bee init, i can't track all of it...
@@ -120,6 +127,9 @@ class SCR_CoopLobby: MenuBase
 		PlayerController playerController = GetGame().GetPlayerController();
 		SCR_PlayableControllerComponent playableController = SCR_PlayableControllerComponent.Cast(playerController.FindComponent(SCR_PlayableControllerComponent));
 		playableController.SetState(PlayableControllerState.Playing);
+		
+		GetGame().GetInputManager().RemoveActionListener("MenuSelect", EActionTrigger.DOWN, Action_Ready);
+		GetGame().GetInputManager().RemoveActionListener("ChatToggle", EActionTrigger.DOWN, Action_ChatOpen);
 	}
 	
 	void Fill()
@@ -282,9 +292,17 @@ class SCR_CoopLobby: MenuBase
 		}
 	}
 	
+	override void OnMenuUpdate(float tDelta)
+	{
+		if (m_ChatPanel)
+			m_ChatPanel.OnUpdateChat(tDelta);
+	}
+	
+	
 	void Action_ChatOpen()
 	{
-		
+		if (!m_ChatPanel.IsOpen())
+			SCR_ChatPanelManager.GetInstance().OpenChatPanel(m_ChatPanel);
 	}
 	
 	
