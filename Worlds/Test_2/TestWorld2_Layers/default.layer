@@ -4,6 +4,8 @@ SCR_AIWorld : "{E0A05C76552E7F58}Prefabs/AI/SCR_AIWorld.et" {
 PerceptionManager PerceptionManager1 : "{028DAEAD63E056BE}Prefabs/World/Game/PerceptionManager.et" {
  coords 113.126 1 124.397
 }
+SCR_GameModeCoop SCR_GameModeCoop1 : "{16D2DEADCFDC8B73}Prefabs/SCR_GameModeCoop.et" {
+}
 TagManager : "{2FA9E172CAB1857A}Prefabs/MP/Managers/TagManager.et" {
  coords 115.4 1 122.834
 }

@@ -14,6 +14,10 @@ SCR_PlayerController : "{6E2BB64764E3BE9B}Prefabs/Characters/Core/DefaultPlayerC
   SCR_PlayerFactionAffiliationComponent "{5E60EBD85AB35135}" {
   }
   SCR_RespawnComponent "{5D50F641B0525AB9}" {
+   components {
+    SCR_SpawnLockComponent "{5E7B7653693A9263}" {
+    }
+   }
   }
   SCR_TaskNetworkComponent "{5D50F641B0525ABB}" {
   }
@@ -22,6 +26,6 @@ SCR_PlayerController : "{6E2BB64764E3BE9B}Prefabs/Characters/Core/DefaultPlayerC
    Streamable Disabled
   }
  }
- coords 0 0 0
+ coords 132.656 1 149.255
  SelfRegister 0
 }
