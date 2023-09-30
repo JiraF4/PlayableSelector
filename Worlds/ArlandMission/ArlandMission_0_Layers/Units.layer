@@ -1,0 +1,7 @@
+SCR_AIGroup : "{9833E2B0922376A7}Prefabs/Groups/OPFOR/Group_USSR_LightFireTeam_P.et" {
+ coords 2508.764 148.338 2259.561
+}
+SCR_AIGroup : "{CB31D258850A3EFC}Prefabs/Groups/BLUFOR/Group_US_LightFireTeam_P.et" {
+ coords 2666.423 101.186 2158.933
+ angleY -60
+}
