@@ -1,7 +1,15 @@
-SCR_AIGroup : "{9833E2B0922376A7}Prefabs/Groups/OPFOR/Group_USSR_LightFireTeam_P.et" {
- coords 2508.764 148.338 2259.561
+Vehicle UAZ469_uncovered1 : "{16A674FE31B0921C}Prefabs/Vehicles/Wheeled/UAZ469/UAZ469_uncovered.et" {
+ components {
+  SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+   m_fVehicleDestroyDamage 8582.14
+  }
+ }
+ coords 2445.485 89.56 1925.859
+ angleX -10.951
+ angleY -70.157
+ angleZ 1.678
 }
-SCR_AIGroup : "{CB31D258850A3EFC}Prefabs/Groups/BLUFOR/Group_US_LightFireTeam_P.et" {
- coords 2666.423 101.186 2158.933
- angleY -60
+SCR_AIGroup : "{9C7902A055DDA271}Prefabs/Groups/OPFOR/Group_USSR_FireGroup_P.et" {
+ coords 2446.466 89.383 1929.234
+ angleY -120
 }

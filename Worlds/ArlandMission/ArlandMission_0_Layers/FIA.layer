@@ -1,0 +1,7 @@
+SCR_AIGroup : "{2CC26054775FBA2C}Prefabs/Groups/INDFOR/Group_FIA_Team_AT.et" {
+ coords 2079.741 59.706 2128.195
+ angleY 90
+}
+SCR_AIGroup : "{5BEA04939D148B1D}Prefabs/Groups/INDFOR/Group_FIA_FireTeam.et" {
+ coords 2109.249 58.031 2112.24
+}
