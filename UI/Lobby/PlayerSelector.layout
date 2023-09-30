@@ -41,6 +41,8 @@ ButtonWidgetClass {
       OffsetBottom -40
      }
      Text "Player"
+     "Font Size" 20
+     "Min Font Size" 20
      "Vertical Alignment" Center
     }
     TextWidgetClass "{5D6D1B96C41F6387}" {
@@ -56,6 +58,9 @@ ButtonWidgetClass {
       OffsetBottom -40
      }
      Text "USA"
+     "Font Size" 20
+     "Min Font Size" 20
+     "Horizontal Alignment" Right
      "Vertical Alignment" Center
     }
     ImageWidgetClass "{5D6ECAA19D5888B1}" {

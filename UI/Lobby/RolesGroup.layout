@@ -10,7 +10,7 @@ VerticalLayoutWidgetClass {
   FrameWidgetClass "{5D6D1B9A9C46FE7F}" {
    Name "RolesGroupNameFrame"
    Slot LayoutSlot "{5D6D1B9A9C46FD9A}" {
-    Padding 5 5 5 5
+    Padding 15 15 15 15
    }
    {
     TextWidgetClass "{5D6D1B9AE656F765}" {
@@ -26,6 +26,9 @@ VerticalLayoutWidgetClass {
      Text "Alpha 1-1"
      "Font Size" 48
      "Min Font Size" 48
+     FontProperties FontProperties "{5E7CF04D9FE8FF4E}" {
+      Bold 1
+     }
     }
    }
   }
