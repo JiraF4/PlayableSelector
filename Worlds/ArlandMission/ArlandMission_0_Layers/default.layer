@@ -12,13 +12,7 @@ TagManager : "{2FA9E172CAB1857A}Prefabs/MP/Managers/TagManager.et" {
 }
 SCR_FactionManager FactionManager_Editor1 : "{4A188E44289B9A50}Prefabs/MP/Managers/Factions/FactionManager_Editor.et" {
  Factions {
-  SCR_Faction "{56DEAC40D2DBC8B1}" {
-   m_bIsPlayable 1
-  }
   SCR_Faction "{56DEAC40D3C2E623}" {
-   m_bIsPlayable 1
-  }
-  SCR_Faction "{56DEAC40D132400B}" {
    m_bIsPlayable 1
   }
  }

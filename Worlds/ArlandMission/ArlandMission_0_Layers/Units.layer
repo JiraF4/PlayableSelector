@@ -12,4 +12,7 @@ Vehicle UAZ469_uncovered1 : "{16A674FE31B0921C}Prefabs/Vehicles/Wheeled/UAZ469/U
 SCR_AIGroup : "{9C7902A055DDA271}Prefabs/Groups/OPFOR/Group_USSR_FireGroup_P.et" {
  coords 2446.466 89.383 1929.234
  angleY -120
+ m_aUnitPrefabSlots {
+  "{A5F4D7FEBDB57182}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_SL_P.et" "{A8A47F001DA13B73}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Sharpshooter_P.et" "{951CA4F244097071}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_MG_P.et" "{D1786D7659BC2E7C}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_AMG_P.et"
+ }
 }
