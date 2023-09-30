@@ -644,6 +644,7 @@ FrameWidgetClass {
               VerticalAlign 3
               Padding 15 15 15 15
              }
+             "Is Visible" 0
              components {
               SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
                m_sLabel "Navigation left"
@@ -658,6 +659,7 @@ FrameWidgetClass {
               VerticalAlign 3
               Padding 15 15 15 15
              }
+             "Is Visible" 0
              components {
               SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
                m_sLabel "Navigation Right"

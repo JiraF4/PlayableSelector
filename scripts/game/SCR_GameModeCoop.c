@@ -34,13 +34,13 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 		playersPlayable[playerId] = playableId;
 		playablePlayers[playableId] = playerId;
 	}
-	int GetPlayerPlayable(int playerId)
+	static int GetPlayerPlayable(int playerId)
 	{
 		if (!playersPlayable.Contains(playerId))
 			return -1;
 		return playersPlayable[playerId];
 	}
-	int GetPlayablePlayer(int playableId)
+	static int GetPlayablePlayer(int playableId)
 	{
 		if (!playablePlayers.Contains(playableId))
 			return -1;

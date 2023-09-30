@@ -21,6 +21,7 @@ class SCR_CoopLobby: MenuBase
 	
 	SCR_NavigationButtonComponent m_bNavigationButtonReady;
 	SCR_NavigationButtonComponent m_bNavigationButtonChat;
+	SCR_NavigationButtonComponent m_bNavigationButtonClose;
 	
 	int startTime = 0;
 	
@@ -30,18 +31,19 @@ class SCR_CoopLobby: MenuBase
 		m_preview = SCR_LobbyLoadoutPreview.Cast(widget.FindHandler(SCR_LobbyLoadoutPreview));
 		m_wCounterText = TextWidget.Cast(GetRootWidget().FindAnyWidget("TextCounter"));
 		m_wCounterText.SetText("");
-		//GetGame().GetInputManager().ActivateContext("MenuContext");
 		
 		Widget wChatPanel = GetRootWidget().FindAnyWidget("ChatPanel");
 		m_ChatPanel = SCR_ChatPanel.Cast(wChatPanel.FindHandler(SCR_ChatPanel));
 		
 		m_bNavigationButtonReady = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationStart").FindHandler(SCR_NavigationButtonComponent));
 		m_bNavigationButtonChat = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationChat").FindHandler(SCR_NavigationButtonComponent));
+		m_bNavigationButtonClose = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationClose").FindHandler(SCR_NavigationButtonComponent));
 		
 		m_bNavigationButtonReady.m_OnClicked.Insert(Action_Ready);
-		GetGame().GetInputManager().AddActionListener("MenuSelect", EActionTrigger.DOWN, Action_Ready);
 		m_bNavigationButtonChat.m_OnClicked.Insert(Action_ChatOpen);
 		GetGame().GetInputManager().AddActionListener("ChatToggle", EActionTrigger.DOWN, Action_ChatOpen);
+		m_bNavigationButtonClose.m_OnClicked.Insert(Action_Exit);
+		GetGame().GetInputManager().AddActionListener("MenuBack", EActionTrigger.DOWN, Action_Exit);
 		
 		GetGame().GetCallqueue().CallLater(UpdateCycle, 100);
 		GetGame().GetCallqueue().CallLater(Fill, 0); // TODO: Fix delay
@@ -130,6 +132,7 @@ class SCR_CoopLobby: MenuBase
 		
 		GetGame().GetInputManager().RemoveActionListener("MenuSelect", EActionTrigger.DOWN, Action_Ready);
 		GetGame().GetInputManager().RemoveActionListener("ChatToggle", EActionTrigger.DOWN, Action_ChatOpen);
+		GetGame().GetInputManager().ResetContext("LobbyContext");
 	}
 	
 	void Fill()
@@ -169,6 +172,11 @@ class SCR_CoopLobby: MenuBase
 	
 	protected void FactionClick(SCR_ButtonBaseComponent factionSelector)
 	{
+		if (!factionSelector.IsToggled())
+		{
+			factionSelector.SetToggled(true);			
+		}
+		
 		Widget factionSelectorWidget = factionSelector.GetRootWidget();
 		foreach (Widget widget: m_aFactionListWidgets)
 		{
@@ -214,7 +222,6 @@ class SCR_CoopLobby: MenuBase
 			handler.SetName(playable.GetGroupName());
 		}
 	}
-	
 	protected void CharacterMouseLeave(Widget characterWidget)
 	{
 		int playerId = GetGame().GetPlayerController().GetPlayerId();
@@ -238,6 +245,11 @@ class SCR_CoopLobby: MenuBase
 	
 	protected void CharacterClick(SCR_ButtonBaseComponent characterSelector)
 	{
+		if (!characterSelector.IsToggled())
+		{
+			characterSelector.SetToggled(true);			
+		}
+			
 		
 		Widget characterWidget = characterSelector.GetRootWidget();
 		foreach (Widget widget: m_aCharactersListWidgets)
@@ -252,6 +264,12 @@ class SCR_CoopLobby: MenuBase
 		SCR_CharacterSelector handler = SCR_CharacterSelector.Cast(characterSelector);
 		PlayerController playerController = GetGame().GetPlayerController();
 		SCR_PlayableControllerComponent playableController = SCR_PlayableControllerComponent.Cast(playerController.FindComponent(SCR_PlayableControllerComponent));
+		
+		if (handler.GetPlayableId() == SCR_GameModeCoop.GetPlayerPlayable(playerController.GetPlayerId())
+		&& playableController.GetState(playerController.GetPlayerId()) == PlayableControllerState.NotReady) {
+			playableController.SetState(PlayableControllerState.Ready);
+			return;
+		}
 		
 		playableController.SetState(PlayableControllerState.NotReady);
 		playableController.TakePossession(playerController.GetPlayerId(), handler.GetPlayableId());
@@ -284,6 +302,7 @@ class SCR_CoopLobby: MenuBase
 		SCR_PlayableControllerComponent playableController = SCR_PlayableControllerComponent.Cast(playerController.FindComponent(SCR_PlayableControllerComponent));
 		if (playableController.GetState(playerController.GetPlayerId()) == PlayableControllerState.Ready) {
 			playableController.SetState(PlayableControllerState.NotReady);
+			return;
 		}
 		SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(playerController.GetControlledEntity());
 		if (character != null) 
@@ -305,7 +324,11 @@ class SCR_CoopLobby: MenuBase
 			SCR_ChatPanelManager.GetInstance().OpenChatPanel(m_ChatPanel);
 	}
 	
-	
+	void Action_Exit()
+	{
+		GameStateTransitions.RequestGameplayEndTransition();
+		Close();
+	}
 }
 
 
