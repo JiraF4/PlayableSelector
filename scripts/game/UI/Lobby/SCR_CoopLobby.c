@@ -313,6 +313,7 @@ class SCR_CoopLobby: MenuBase
 	
 	override void OnMenuUpdate(float tDelta)
 	{
+		GetGame().GetInputManager().ActivateContext("LobbyContext");
 		if (m_ChatPanel)
 			m_ChatPanel.OnUpdateChat(tDelta);
 	}

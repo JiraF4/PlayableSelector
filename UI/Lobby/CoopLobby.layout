@@ -635,6 +635,7 @@ FrameWidgetClass {
            Name "HLWBodyLeft"
            Slot OverlayWidgetSlot "{5D6F149C5D94FF4E}" {
             HorizontalAlign 0
+            Padding 20 0 0 0
            }
            {
             ButtonWidgetClass "{5D6F1498C9949A75}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
@@ -700,6 +701,7 @@ FrameWidgetClass {
            Name "HLWBodyRight"
            Slot OverlayWidgetSlot "{5D6F149C5D94F80F}" {
             HorizontalAlign 2
+            Padding 15 0 0 0
            }
            {
             ButtonWidgetClass "{5D6F149AEF5FAFB4}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
