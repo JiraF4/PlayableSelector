@@ -6,6 +6,7 @@ class SCR_FactionSelector : SCR_ButtonBaseComponent
 	
 	ImageWidget m_wFactionFlag;
 	TextWidget m_wFactionName;
+	ImageWidget m_wFactionColor;
 	TextWidget m_wFactionCounter;
 	
 	override void HandlerAttached(Widget w)
@@ -13,6 +14,7 @@ class SCR_FactionSelector : SCR_ButtonBaseComponent
 		super.HandlerAttached(w);
 		m_wFactionFlag = ImageWidget.Cast(w.FindAnyWidget("FactionFlag"));
 		m_wFactionName = TextWidget.Cast(w.FindAnyWidget("FactionName"));
+		m_wFactionColor = ImageWidget.Cast(w.FindAnyWidget("FactionColor"));
 		m_wFactionCounter = TextWidget.Cast(w.FindAnyWidget("FactionCounter"));
 	}
 	
@@ -20,8 +22,11 @@ class SCR_FactionSelector : SCR_ButtonBaseComponent
 	{
 		m_faction = faction;
 		
+		UIInfo uiInfo = faction.GetUIInfo();
+		
 		m_wFactionName.SetText(m_faction.GetFactionName());
-		m_wFactionFlag.LoadImageTexture(0, SCR_Faction.Cast(m_faction).GetFactionFlag());
+		m_wFactionColor.SetColor(SCR_Faction.Cast(m_faction).GetOutlineFactionColor());
+		m_wFactionFlag.LoadImageTexture(0, uiInfo.GetIconPath());
 	}
 	
 	void SetCount(int current, int max)

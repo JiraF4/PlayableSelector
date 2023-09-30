@@ -8,6 +8,11 @@ ButtonWidgetClass {
   SCR_FactionSelector "{5D6D352BA8393E5E}" {
    m_bMouseOverToFocus 1
    m_bCanBeToggled 1
+   m_BackgroundDefault 0.038 0.038 0.038 0.825
+   m_BackgroundHovered 0.038 0.038 0.038 0.825
+   m_BackgroundSelected 0.014 0.014 0.014 0
+   m_BackgroundSelectedHovered 0.014 0.014 0.014 0
+   m_BackgroundClicked 0.014 0.014 0.014 0
    m_bShowBorderOnHover 1
   }
   SCR_EventHandlerComponent "{5D6D3524328955AF}" {
@@ -18,7 +23,7 @@ ButtonWidgetClass {
   OverlayWidgetClass "{5D6D35256657210E}" {
    Name "OverlayBorder"
    Slot ButtonWidgetSlot "{5D6D352566572175}" {
-    Padding 16 16 16 16
+    Padding 8 8 8 8
    }
    {
     PanelWidgetClass "{5D6D3525670D0E47}" {
@@ -37,51 +42,134 @@ ButtonWidgetClass {
       Padding 8 8 8 8
      }
      {
-      ImageWidgetClass "{5D6D35250D3B3AAB}" {
-       Name "Background"
-       Slot OverlayWidgetSlot "{5548E6E7DF4EE313}" {
-        HorizontalAlign 3
-        VerticalAlign 3
-       }
-       Color 0 0 0 1
-       Size 4 4
-      }
       VerticalLayoutWidgetClass "{5D6D352BA243A0C5}" {
        Name "WLVFactionSelector"
-       Slot OverlayWidgetSlot "{5D6D3526D936D10E}" {
+       Slot OverlayWidgetSlot {
        }
        {
-        ImageWidgetClass "{5D6D1B9F80FCA823}" {
-         Name "FactionFlag"
-         Slot LayoutSlot "{5D6D1B9F80FCA802}" {
+        FrameWidgetClass "{5E7CF043984CDDE0}" {
+         Name "Frame1"
+         Slot LayoutSlot "{5E7CF043984CDDC1}" {
          }
-         Texture "{BD2E2F871E6A3EBF}UI/Textures/Flags/Flag_Faction_Base.edds"
-         Size 256 128
+         {
+          ScaleWidgetClass "{5E7CF04386A3BCC0}" {
+           Name "Scale0"
+           Slot FrameWidgetSlot "{5E7CF04399A4C6DE}" {
+            OffsetLeft 0
+            OffsetTop 0
+            SizeX 224
+            OffsetRight -224
+            SizeY 144
+            OffsetBottom -144
+           }
+           "Scale Mode" "Scale to fill"
+           {
+            ImageWidgetClass "{5D6D1B9F80FCA823}" {
+             Name "FactionFlag"
+             Slot AlignableSlot "{5E7CF04386947750}" {
+             }
+             Texture "{FB266CDD4502D60B}UI/Textures/Editor/EditableEntities/Factions/EditableEntity_Faction_Fia.edds"
+             Size 256 256
+            }
+           }
+          }
+         }
         }
-        TextWidgetClass "{5D6D1B9F8B8E1358}" {
-         Name "FactionName"
-         Slot LayoutSlot "{5D6D1B9F8B8E1CB3}" {
-          Padding 4 4 4 4
+        FrameWidgetClass "{5E7CF04171C4A762}" {
+         Name "FactionFrame"
+         Slot LayoutSlot {
          }
-         Text "US Army"
-         "Font Size" 45
-         "Min Font Size" 45
-         "Horizontal Alignment" Center
-         "Vertical Alignment" Center
+         {
+          ImageWidgetClass "{5E7CF04E06885321}" {
+           Name "FactionColor"
+           Slot FrameWidgetSlot "{5E7CF041119B47ED}" {
+            PositionX 0
+            OffsetLeft 0
+            PositionY 0
+            OffsetTop 0
+            SizeX 224
+            OffsetRight -224
+            SizeY 40
+            OffsetBottom -40
+           }
+           Color 0.001 0.082 0.023 1
+          }
+          TextWidgetClass "{5D6D1B9F8B8E1358}" {
+           Name "FactionName"
+           Slot FrameWidgetSlot "{5E7CF041119B479A}" {
+            OffsetLeft 0
+            OffsetTop 0
+            SizeX 224
+            OffsetRight -224
+            SizeY 40
+            OffsetBottom -40
+           }
+           Text "FIA"
+           "Font Size" 28
+           "Min Font Size" 28
+           "Horizontal Alignment" Center
+           "Vertical Alignment" Center
+           FontProperties FontProperties "{5E7CF04E69A9FC94}" {
+            Bold 1
+           }
+          }
+         }
         }
-        TextWidgetClass "{5D6D1B9F9075B8F3}" {
-         Name "FactionCounter"
-         Slot LayoutSlot "{5D6D1B9F9075B8CD}" {
+        FrameWidgetClass "{5E7CF04135CB24E6}" {
+         Name "FrameCounter"
+         Slot LayoutSlot "{5E7CF04135CB24CC}" {
          }
-         Text "0 / 42"
-         "Font Size" 40
-         "Min Font Size" 40
-         "Horizontal Alignment" Center
-         "Vertical Alignment" Center
+         {
+          ImageWidgetClass "{5E7CF04FF0D03E7F}" {
+           Name "FactionCounterBackground"
+           Slot FrameWidgetSlot "{5E7CF04135227B0B}" {
+            OffsetLeft 0
+            OffsetTop 0
+            SizeX 224
+            OffsetRight -224
+            SizeY 40
+            OffsetBottom -40
+           }
+           Color 0.002 0.002 0.002 1
+          }
+          TextWidgetClass "{5D6D1B9F9075B8F3}" {
+           Name "FactionCounter"
+           Slot FrameWidgetSlot "{5E7CF04137EA34B4}" {
+            OffsetLeft 0
+            OffsetTop 0
+            SizeX 224
+            OffsetRight -224
+            SizeY 40
+            OffsetBottom -40
+           }
+           Text "0 / 42"
+           "Font Size" 26
+           "Min Font Size" 26
+           "Horizontal Alignment" Center
+           "Vertical Alignment" Center
+          }
+         }
         }
        }
       }
      }
+    }
+    ImageWidgetClass "{5D6D35250D3B3AAB}" {
+     Name "Background"
+     Slot OverlayWidgetSlot "{5548E6E7DF4EE313}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+      Padding 8 8 8 8
+     }
+     Color 0 0 0 1
+     Size 4 4
+    }
+    PanelWidgetClass "{5E7CF044571C656D}" {
+     Name "Border0"
+     Slot OverlayWidgetSlot {
+     }
+     Color 0.761 0.392 0.078 1
+     style outline_2px
     }
    }
   }

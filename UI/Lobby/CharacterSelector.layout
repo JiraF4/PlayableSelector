@@ -7,6 +7,8 @@ ButtonWidgetClass {
  components {
   SCR_CharacterSelector "{5D6D352B9E28A946}" {
    m_bCanBeToggled 1
+   m_BackgroundSelectedHovered 0.76 0.392 0.08 0.3
+   m_BackgroundClicked 0.76 0.392 0.08 0.3
    m_sTexture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
    m_sImageName "player"
   }
@@ -72,6 +74,8 @@ ButtonWidgetClass {
         OffsetBottom -40
        }
        Text "Rifleman"
+       "Font Size" 20
+       "Min Font Size" 20
        "Vertical Alignment" Center
       }
       ImageWidgetClass "{5D6D1B995C4BBFB9}" {
@@ -101,6 +105,8 @@ ButtonWidgetClass {
         OffsetBottom -40
        }
        Text "Player"
+       "Font Size" 20
+       "Min Font Size" 20
        "Vertical Alignment" Center
       }
      }
