@@ -182,6 +182,11 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	//------------------------------------------------------------------------------------------------
 	override void OnGameStart()
 	{
+		playersStates = new map<int, PlayableControllerState>; // Controllers server only. (╯°□°）╯︵ ┻━┻
+		playableGroups = new map<int, string>;
+		playersPlayable = new map<int, int>;
+		playablePlayers = new map<int, int>;
+		
 		super.OnGameStart();
 		GetGame().GetInputManager().AddActionListener("PlayableSelector", EActionTrigger.DOWN, OpenPlayableMenu);
 		
@@ -241,7 +246,7 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	void RPC_ForceCamera(int playerId, vector m0, vector m1, vector m2, vector m3) // Literally garbage
 	{
 		PlayerController playerController = GetGame().GetPlayerController();
-		if (playerController.GetPlayerId() == playerId) 
+		if (playerController.GetPlayerId() == playerId)
 		{
 			EntitySpawnParams params();
 			vector mat[4];
