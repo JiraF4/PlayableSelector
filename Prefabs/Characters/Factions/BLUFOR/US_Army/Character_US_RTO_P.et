@@ -1,7 +1,7 @@
-SCR_ChimeraCharacter : "{3726077BE60962FF}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_RTO.et" {
+PS_PlayableComponent : "{3726077BE60962FF}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_RTO.et" {
  ID "520EC961A090BBD5"
  components {
-  SCR_PlayableComponent "{5E61249FD025C849}" {
+  PS_PlayableComponent "{5E61249FD025C849}" {
    m_name "#AR-Role_RadioOperator"
   }
  }

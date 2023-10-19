@@ -1,7 +1,7 @@
-SCR_ChimeraCharacter : "{FF43925D26526B95}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_AAT.et" {
+PS_PlayableComponent : "{FF43925D26526B95}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_AAT.et" {
  ID "520EC961A090B1EE"
  components {
-  SCR_PlayableComponent "{5E61249E6076C60C}" {
+  PS_PlayableComponent "{5E61249E6076C60C}" {
    m_name "#AR-Role_AntiTankAssistant"
   }
  }

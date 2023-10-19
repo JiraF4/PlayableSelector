@@ -1,7 +1,7 @@
-SCR_ChimeraCharacter : "{976AC400219898FA}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Sharpshooter.et" {
+PS_PlayableComponent : "{976AC400219898FA}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Sharpshooter.et" {
  ID "520EC961A090BE1E"
  components {
-  SCR_PlayableComponent "{5E61249EB85DA8EF}" {
+  PS_PlayableComponent "{5E61249EB85DA8EF}" {
    m_name "#AR-Role_Sharpshooter"
   }
  }
