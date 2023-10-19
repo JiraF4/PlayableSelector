@@ -1,4 +1,4 @@
-class SCR_PlayableMenuTile : SCR_ButtonBaseComponent
+class PS_PlayableMenuTile : SCR_ButtonBaseComponent
 {
 	[Attribute("LoadoutMessage", desc: "Widget name of simple message component")]
 	protected string m_sSimpleMessageName;

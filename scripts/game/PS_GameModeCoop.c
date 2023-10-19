@@ -5,12 +5,12 @@ modded enum ChimeraMenuPreset : ScriptMenuPresetEnum
 }
 
 //------------------------------------------------------------------------------------------------
-class SCR_GameModeCoopClass: SCR_BaseGameModeClass
+class PS_GameModeCoopClass: SCR_BaseGameModeClass
 {
 };
 
 //------------------------------------------------------------------------------------------------
-class SCR_GameModeCoop : SCR_BaseGameMode
+class PS_GameModeCoop : SCR_BaseGameMode
 {
 	IEntity CameraEntity;
 	
@@ -80,10 +80,10 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	{
 		//Print("ReconnectForcePossess: playableId " + playableId.ToString());
 		PlayerController playerController = GetGame().GetPlayerController();
-		SCR_PlayableControllerComponent playableController = SCR_PlayableControllerComponent.Cast(playerController.FindComponent(SCR_PlayableControllerComponent));
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		playableController.TakePossessionReconnect(playerController.GetPlayerId(), playableId);
 		MenuManager menuManager = GetGame().GetMenuManager();
-		SCR_CoopLobby lobby = SCR_CoopLobby.Cast(menuManager.FindMenuByPreset(ChimeraMenuPreset.CoopLobby));
+		PS_CoopLobby lobby = PS_CoopLobby.Cast(menuManager.FindMenuByPreset(ChimeraMenuPreset.CoopLobby));
 		if (lobby) lobby.Close();
 	}
 	
@@ -139,7 +139,7 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	void Rpc_SetPlayerStateClient(int playerId, PlayableControllerState state)
 	{
 		playersStates.Set(playerId, state);
-		SCR_GameModeCoop.Cast(GetGame().GetGameMode()).UpdateMenu();
+		PS_GameModeCoop.Cast(GetGame().GetGameMode()).UpdateMenu();
 		UpdateMenu();
 	}
 	
@@ -199,9 +199,9 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 		//	CameraEntity = GetGame().SpawnEntityPrefab(Resource.Load("{C8FDE42491F955CB}Prefabs/ManualCameraInitialPlayer.et"), GetGame().GetWorld(), params);
 		*/
 		
-		if (Replication.IsClient()) {
+		//if (Replication.IsClient()) {
 			GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.CoopLobby);
-		}
+		//}
 	}
 	
 	
@@ -216,9 +216,9 @@ class SCR_GameModeCoop : SCR_BaseGameMode
 	void UpdateMenuClient()
 	{
 		MenuManager menuManager = GetGame().GetMenuManager();
-		SCR_PlayableSelectorMenu menu = SCR_PlayableSelectorMenu.Cast(menuManager.FindMenuByPreset(ChimeraMenuPreset.PlayableSelector));
+		PS_PlayableSelectorMenu menu = PS_PlayableSelectorMenu.Cast(menuManager.FindMenuByPreset(ChimeraMenuPreset.PlayableSelector));
 		if (menu) menu.UpdateList();
-		SCR_CoopLobby lobby = SCR_CoopLobby.Cast(menuManager.FindMenuByPreset(ChimeraMenuPreset.CoopLobby));
+		PS_CoopLobby lobby = PS_CoopLobby.Cast(menuManager.FindMenuByPreset(ChimeraMenuPreset.CoopLobby));
 		if (lobby) lobby.UpdateMenu();
 	}
 	

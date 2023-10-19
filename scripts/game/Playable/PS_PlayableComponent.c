@@ -1,11 +1,11 @@
 //------------------------------------------------------------------------------------------------
 [ComponentEditorProps(category: "GameScripted/Character", description: "Set character playable", color: "0 0 255 255", icon: HYBRID_COMPONENT_ICON)]
-class SCR_PlayableComponentClass: ScriptComponentClass
+class PS_PlayableComponentClass: ScriptComponentClass
 {
 };
 
 [ComponentEditorProps(icon: HYBRID_COMPONENT_ICON)]
-class SCR_PlayableComponent : ScriptComponent
+class PS_PlayableComponent : ScriptComponent
 {
 	[Attribute()]
 	protected string m_name;
@@ -13,7 +13,7 @@ class SCR_PlayableComponent : ScriptComponent
 	protected string s_sGroupName; // dead has no group, soo cache name
 	
 	// List of all Playables
-	private static ref map<int, SCR_PlayableComponent> m_aPlayables = new ref map<int, SCR_PlayableComponent>();
+	private static ref map<int, PS_PlayableComponent> m_aPlayables = new ref map<int, PS_PlayableComponent>();
 	
 	override void OnPostInit(IEntity owner)
 	{
@@ -37,12 +37,12 @@ class SCR_PlayableComponent : ScriptComponent
 				group.GetCallsigns(company, platoon, squad, sCharacter, format);
 				s_sGroupName = WidgetManager.Translate(format, company, platoon, squad, sCharacter);
 				
-				SCR_GameModeCoop.Cast(GetGame().GetGameMode()).SetPlayableGroupName(m_id, s_sGroupName);
+				PS_GameModeCoop.Cast(GetGame().GetGameMode()).SetPlayableGroupName(m_id, s_sGroupName);
 			}
 		}
 	}
 	
-	static map<int, SCR_PlayableComponent> GetPlayables() 
+	static map<int, PS_PlayableComponent> GetPlayables() 
 	{
 		return m_aPlayables;
 	}
@@ -57,7 +57,7 @@ class SCR_PlayableComponent : ScriptComponent
 		m_aPlayables.Clear();
 	}
 	
-	void ~SCR_PlayableComponent() {
+	void ~PS_PlayableComponent() {
 		removePlayable(m_id);
 	}
 	
@@ -73,6 +73,6 @@ class SCR_PlayableComponent : ScriptComponent
 	
 	string GetGroupName()
 	{
-		return SCR_GameModeCoop.Cast(GetGame().GetGameMode()).GetPlayableGroupName(m_id);
+		return PS_GameModeCoop.Cast(GetGame().GetGameMode()).GetPlayableGroupName(m_id);
 	}
 }

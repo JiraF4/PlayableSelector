@@ -5,7 +5,7 @@ ButtonWidgetClass {
  }
  Color 0 1 0.019 0
  components {
-  SCR_PlayerSelector "{5D6D352BB118FC61}" {
+  PS_PlayerSelector "{5EA716117F78313D}" {
   }
  }
  "no focus" 1
@@ -56,6 +56,10 @@ ButtonWidgetClass {
       OffsetRight -360
       SizeY 40
       OffsetBottom -40
+     }
+     components {
+      PS_PlayerSelector "{5EA716101B291235}" {
+      }
      }
      Text "USA"
      "Font Size" 20

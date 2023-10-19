@@ -1,7 +1,7 @@
 GenericEntity {
  ID "5D4B13AB74842F5B"
  components {
-  SCR_PlayableComponent "{5D4B13AB553574FF}" {
+  PS_PlayableControllerComponent "{5EA7206179C43294}" {
   }
   RplComponent "{5D4B13A836FE8C9E}" {
   }

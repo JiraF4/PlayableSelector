@@ -2,7 +2,7 @@
 
 
 
-class SCR_PlayableSelectorMenu: MenuBase
+class PS_PlayableSelectorMenu: MenuBase
 {
 	protected ResourceName m_sTilePrefab = "{CFA71C83A7ECC9CE}UI/PlayableMenuTile.layout";
 	protected bool locked;
@@ -20,9 +20,9 @@ class SCR_PlayableSelectorMenu: MenuBase
 		
 		int itemsCount = 0;
 		
-		map<int, SCR_PlayableComponent> playables = SCR_PlayableComponent.GetPlayables();
+		map<int, PS_PlayableComponent> playables = PS_PlayableComponent.GetPlayables();
 		for (int i = 0; i < playables.Count(); i++) {
-			SCR_PlayableComponent playable = playables.GetElement(i);
+			PS_PlayableComponent playable = playables.GetElement(i);
 			SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(playable.GetOwner());
 			character.SetFixedLOD(0);
 			
@@ -30,7 +30,7 @@ class SCR_PlayableSelectorMenu: MenuBase
 				itemsCount++;
 				
 				Widget tile = GetGame().GetWorkspace().CreateWidgets(m_sTilePrefab);
-				SCR_PlayableMenuTile handler = SCR_PlayableMenuTile.Cast(tile.FindHandler(SCR_PlayableMenuTile));
+				PS_PlayableMenuTile handler = PS_PlayableMenuTile.Cast(tile.FindHandler(PS_PlayableMenuTile));
 				
 				SCR_Faction faction = SCR_Faction.Cast(character.GetFaction());
 				
@@ -65,15 +65,15 @@ class SCR_PlayableSelectorMenu: MenuBase
 	{
 		Widget gallery = GetRootWidget().FindAnyWidget("Tiles");
 		SCR_GalleryComponent gallery_component = SCR_GalleryComponent.Cast(gallery.GetHandler(0));
-		map<int, SCR_PlayableComponent> playables = SCR_PlayableComponent.GetPlayables();
+		map<int, PS_PlayableComponent> playables = PS_PlayableComponent.GetPlayables();
 		
 		array<Widget> widgets = new array<Widget>();
 		int count = gallery_component.GetWidgets(widgets);
 		
 		
 		for (int i = 0; i < count; i++) {
-			SCR_PlayableMenuTile handler = SCR_PlayableMenuTile.Cast(widgets[i].FindHandler(SCR_PlayableMenuTile));
-			SCR_PlayableComponent playable = playables.Get(handler.GetPlayableId());
+			PS_PlayableMenuTile handler = PS_PlayableMenuTile.Cast(widgets[i].FindHandler(PS_PlayableMenuTile));
+			PS_PlayableComponent playable = playables.Get(handler.GetPlayableId());
 			SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(playable.GetOwner());
 			
 			
@@ -97,7 +97,7 @@ class SCR_PlayableSelectorMenu: MenuBase
 	
 	override void OnMenuClose()
 	{
-		map<int, SCR_PlayableComponent> playables = SCR_PlayableComponent.GetPlayables();
+		map<int, PS_PlayableComponent> playables = PS_PlayableComponent.GetPlayables();
 		for (int i = 0; i < playables.Count(); i++) {
 			IEntity entity = playables.GetElement(i).GetOwner();
 			entity.SetFixedLOD(-1);
@@ -108,11 +108,11 @@ class SCR_PlayableSelectorMenu: MenuBase
 	{
 		if (locked) return;
 		
-		SCR_PlayableMenuTile handler = SCR_PlayableMenuTile.Cast(button.GetRootWidget().FindHandler(SCR_PlayableMenuTile));
+		PS_PlayableMenuTile handler = PS_PlayableMenuTile.Cast(button.GetRootWidget().FindHandler(PS_PlayableMenuTile));
 		
 		PlayerController playerController = GetGame().GetPlayerController();
 		
-		SCR_PlayableControllerComponent playable = SCR_PlayableControllerComponent.Cast(playerController.FindComponent(SCR_PlayableControllerComponent));
+		PS_PlayableControllerComponent playable = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		
 		locked = true;
 	

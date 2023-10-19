@@ -5,17 +5,9 @@ ButtonWidgetClass {
  }
  Color 0 1 0.019 0
  components {
-  SCR_FactionSelector "{5D6D352BA8393E5E}" {
-   m_bMouseOverToFocus 1
-   m_bCanBeToggled 1
-   m_BackgroundDefault 0.038 0.038 0.038 0.825
-   m_BackgroundHovered 0.038 0.038 0.038 0.825
-   m_BackgroundSelected 0.014 0.014 0.014 0
-   m_BackgroundSelectedHovered 0.014 0.014 0.014 0
-   m_BackgroundClicked 0.014 0.014 0.014 0
-   m_bShowBorderOnHover 1
-  }
   SCR_EventHandlerComponent "{5D6D3524328955AF}" {
+  }
+  PS_FactionSelector "{5EA716101558EC35}" {
   }
  }
  style blank
@@ -44,7 +36,7 @@ ButtonWidgetClass {
      {
       VerticalLayoutWidgetClass "{5D6D352BA243A0C5}" {
        Name "WLVFactionSelector"
-       Slot OverlayWidgetSlot {
+       Slot OverlayWidgetSlot "{5EA716100E3AD707}" {
        }
        {
         FrameWidgetClass "{5E7CF043984CDDE0}" {
@@ -77,7 +69,7 @@ ButtonWidgetClass {
         }
         FrameWidgetClass "{5E7CF04171C4A762}" {
          Name "FactionFrame"
-         Slot LayoutSlot {
+         Slot LayoutSlot "{5EA716100E3AD080}" {
          }
          {
           ImageWidgetClass "{5E7CF04E06885321}" {
@@ -166,7 +158,7 @@ ButtonWidgetClass {
     }
     PanelWidgetClass "{5E7CF044571C656D}" {
      Name "Border0"
-     Slot OverlayWidgetSlot {
+     Slot OverlayWidgetSlot "{5EA716100E3AD07F}" {
      }
      Color 0.761 0.392 0.078 1
      style outline_2px

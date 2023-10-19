@@ -1,15 +1,13 @@
 SCR_PlayerController : "{6E2BB64764E3BE9B}Prefabs/Characters/Core/DefaultPlayerController.et" {
  ID "1A9BA6BEFA06E3B1"
  components {
+  PS_PlayableControllerComponent "{5EA7206115A83E71}" {
+  }
   RadioHandlerComponent "{5D50F641B0525AAD}" {
   }
   SCR_ChatComponent "{5D50F641B0525AB3}" {
   }
   SCR_DataCollectorCommunicationComponent "{5D50F641B0525AB5}" {
-  }
-  SCR_PlayableComponent "{5D50F641BEA76499}" {
-  }
-  SCR_PlayableControllerComponent "{5D6D00DFDED0AAC2}" {
   }
   SCR_PlayerFactionAffiliationComponent "{5E60EBD85AB35135}" {
   }

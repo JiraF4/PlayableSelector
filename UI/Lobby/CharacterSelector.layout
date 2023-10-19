@@ -5,12 +5,7 @@ ButtonWidgetClass {
  }
  Color 0 1 0.019 0
  components {
-  SCR_CharacterSelector "{5D6D352B9E28A946}" {
-   m_bCanBeToggled 1
-   m_BackgroundSelectedHovered 0.76 0.392 0.08 0.3
-   m_BackgroundClicked 0.76 0.392 0.08 0.3
-   m_sTexture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
-   m_sImageName "player"
+  PS_CharacterSelector "{5EA716114A6558BF}" {
   }
  }
  {

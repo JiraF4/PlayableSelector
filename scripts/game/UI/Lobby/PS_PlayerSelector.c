@@ -1,4 +1,4 @@
-class SCR_PlayerSelector : SCR_WLibComponentBase
+class PS_PlayerSelector : SCR_WLibComponentBase
 {
 	protected int m_iPlayer;
 	
@@ -40,6 +40,6 @@ class SCR_PlayerSelector : SCR_WLibComponentBase
 		m_wPlayerName.SetText(playerManager.GetPlayerName(m_iPlayer));
 		
 		
-		m_wReadyImage.SetVisible(SCR_GameModeCoop.GetPlayerState(m_iPlayer) != PlayableControllerState.NotReady);
+		m_wReadyImage.SetVisible(PS_GameModeCoop.GetPlayerState(m_iPlayer) != PlayableControllerState.NotReady);
 	}
 }

@@ -1,4 +1,4 @@
-class SCR_LobbyLoadoutPreview : SCR_WLibComponentBase
+class PS_LobbyLoadoutPreview : SCR_WLibComponentBase
 {
 	protected ImageWidget m_wFlagImage;
 	protected ImageWidget m_wStateBackgroundImage;
@@ -11,7 +11,7 @@ class SCR_LobbyLoadoutPreview : SCR_WLibComponentBase
 	protected TextWidget m_wDescriptionMagazinesText;
 	protected SCR_LoadoutPreviewComponent m_Preview;
 	
-	protected SCR_PlayableComponent m_playable;
+	protected PS_PlayableComponent m_playable;
 	
 	override void HandlerAttached(Widget w)
 	{
@@ -30,7 +30,7 @@ class SCR_LobbyLoadoutPreview : SCR_WLibComponentBase
 		m_Preview = SCR_LoadoutPreviewComponent.Cast(widget.FindHandler(SCR_LoadoutPreviewComponent));
 	}
 	
-	void SetPlayable(SCR_PlayableComponent playable)
+	void SetPlayable(PS_PlayableComponent playable)
 	{
 		m_playable = playable;
 		UpdatePreviewInfo();

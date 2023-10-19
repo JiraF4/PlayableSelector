@@ -1,4 +1,4 @@
-class SCR_FactionSelector : SCR_ButtonBaseComponent
+class PS_FactionSelector : SCR_ButtonBaseComponent
 {
 	protected int m_maxCount;
 	protected int m_currentCount;

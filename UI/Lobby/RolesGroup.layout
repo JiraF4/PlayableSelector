@@ -3,7 +3,7 @@ VerticalLayoutWidgetClass {
  Slot LayoutSlot "{5D6D1B9ADEF28AD1}" {
  }
  components {
-  SCR_RolesGroup "{5D6D352B533A1B4A}" {
+  PS_RolesGroup "{5EA716101FDA15F1}" {
   }
  }
  {

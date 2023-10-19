@@ -1,6 +1,6 @@
-class SCR_CharacterSelector : SCR_ButtonImageComponent
+class PS_CharacterSelector : SCR_ButtonImageComponent
 {
-	protected SCR_PlayableComponent m_playable;
+	protected PS_PlayableComponent m_playable;
 	
 	ImageWidget m_wCharacterFactionColor;
 	ImageWidget m_wCharacterStatusIcon;
@@ -20,7 +20,7 @@ class SCR_CharacterSelector : SCR_ButtonImageComponent
 		m_wCharacterStatus = TextWidget.Cast(w.FindAnyWidget("CharacterStatus"));
 	}
 	
-	void SetPlayable(SCR_PlayableComponent playable)
+	void SetPlayable(PS_PlayableComponent playable)
 	{
 		m_playable = playable;
 		UpdatePlayableInfo();
@@ -42,7 +42,7 @@ class SCR_CharacterSelector : SCR_ButtonImageComponent
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		string playerName = playerManager.GetPlayerName(playerId);
 		
-		int disconnectedPlayerId = SCR_GameModeCoop.Cast(GetGame().GetGameMode()).GetPlayablePlayer(m_playable.GetId());
+		int disconnectedPlayerId = PS_GameModeCoop.Cast(GetGame().GetGameMode()).GetPlayablePlayer(m_playable.GetId());
 		
 		if (character.GetDamageManager().IsDestroyed()) 
 		{

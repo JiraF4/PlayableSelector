@@ -69,3 +69,6 @@ $grp SCR_DestructibleEntity : "{2FBF5DEDFA25D947}Prefabs/Structures/Walls/Concre
   coords 66.726 -0.4 129
  }
 }
+SCR_ChimeraCharacter : "{A47EB499090D69B9}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_GL_P.et" {
+ coords 78.639 1 154.35
+}

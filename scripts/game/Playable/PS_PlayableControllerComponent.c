@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------------------------
 [ComponentEditorProps(category: "GameScripted/Character", description: "Set character playable", color: "0 0 255 255", icon: HYBRID_COMPONENT_ICON)]
-class SCR_PlayableControllerComponentClass: ScriptComponentClass
+class PS_PlayableControllerComponentClass: ScriptComponentClass
 {
 }
 
@@ -13,7 +13,7 @@ enum PlayableControllerState
 }
 
 [ComponentEditorProps(icon: HYBRID_COMPONENT_ICON)]
-class SCR_PlayableControllerComponent : ScriptComponent
+class PS_PlayableControllerComponent : ScriptComponent
 {
 	PlayableControllerState m_bState;
 	
@@ -32,12 +32,12 @@ class SCR_PlayableControllerComponent : ScriptComponent
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void Rpc_SetStateServer(int playerId, PlayableControllerState state)
 	{
-		SCR_GameModeCoop.Cast(GetGame().GetGameMode()).SetPlayerState(playerId, state);
+		PS_GameModeCoop.Cast(GetGame().GetGameMode()).SetPlayerState(playerId, state);
 	}
 	
 	static PlayableControllerState GetState(int playerId)
 	{
-		return SCR_GameModeCoop.GetPlayerState(playerId);
+		return PS_GameModeCoop.GetPlayerState(playerId);
 	}
 	
 	void TakePossessionReconnect(int playerId, int playableId) 
@@ -48,7 +48,7 @@ class SCR_PlayableControllerComponent : ScriptComponent
 	void RPC_TakePossessionReconnect(int playerId, int playableId) 
 	{
 		SCR_PlayerController playerController = SCR_PlayerController.Cast(GetGame().GetPlayerManager().GetPlayerController(playerId));
-		map<int, SCR_PlayableComponent> playables = SCR_PlayableComponent.GetPlayables();
+		map<int, PS_PlayableComponent> playables = PS_PlayableComponent.GetPlayables();
 		SCR_ChimeraCharacter playable = SCR_ChimeraCharacter.Cast(playables[playableId].GetOwner());
 		playerController.SetPossessedEntity(playable); // reset ai? but still broken...
 		playerController.SetInitialMainEntity(playable);
@@ -63,13 +63,13 @@ class SCR_PlayableControllerComponent : ScriptComponent
 	void RPC_TakePossession(int playerId, int playableId) 
 	{
 		//Print("RPC_TakePossession 1: " + playerId.ToString() + " - " + playableId);
-		map<int, SCR_PlayableComponent> playables = SCR_PlayableComponent.GetPlayables();
+		map<int, PS_PlayableComponent> playables = PS_PlayableComponent.GetPlayables();
 		SCR_ChimeraCharacter playable = SCR_ChimeraCharacter.Cast(playables[playableId].GetOwner());
 		
 		int curretPlayerId = SCR_PossessingManagerComponent.GetInstance().GetPlayerIdFromControlledEntity(playable);
 		if (playable.GetDamageManager().IsDestroyed() 
 				|| (curretPlayerId != 0 && curretPlayerId != playerId)
-				|| SCR_GameModeCoop.Cast(GetGame().GetGameMode()).GetPlayablePlayer(playableId) != -1) {
+				|| PS_GameModeCoop.Cast(GetGame().GetGameMode()).GetPlayablePlayer(playableId) != -1) {
 			
 			RPC_PossesionResult(playerId, false);
 			Rpc(RPC_PossesionResult, playerId, false);
@@ -109,12 +109,12 @@ class SCR_PlayableControllerComponent : ScriptComponent
 		playerControllerGroupComponent.RPC_AskJoinGroup(group.GetGroupID());
 		*/
 		
-		SCR_GameModeCoop.Cast(GetGame().GetGameMode()).SetPlayerPlayableServer(playerId, playableId);
+		PS_GameModeCoop.Cast(GetGame().GetGameMode()).SetPlayerPlayableServer(playerId, playableId);
 		
 		RPC_PossesionResult(playerId, true);
 		Rpc(RPC_PossesionResult, playerId, true);
 		
-		SCR_GameModeCoop.Cast(GetGame().GetGameMode()).UpdateMenu();
+		PS_GameModeCoop.Cast(GetGame().GetGameMode()).UpdateMenu();
 	}
 	
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
@@ -127,10 +127,10 @@ class SCR_PlayableControllerComponent : ScriptComponent
 		if (playerId != playerController.GetPlayerId()) return;
 		MenuManager menuManager = GetGame().GetMenuManager();
 		
-		SCR_PlayableSelectorMenu menu = SCR_PlayableSelectorMenu.Cast(menuManager.FindMenuByPreset(ChimeraMenuPreset.PlayableSelector));
+		PS_PlayableSelectorMenu menu = PS_PlayableSelectorMenu.Cast(menuManager.FindMenuByPreset(ChimeraMenuPreset.PlayableSelector));
 		if (menu != null) {
 			if (isPossesed) {
-				SCR_GameModeCoop.Cast(GetGame().GetGameMode()).RemoveCamera();
+				PS_GameModeCoop.Cast(GetGame().GetGameMode()).RemoveCamera();
 				menu.Close();
 			} else {
 				menu.Unlock();

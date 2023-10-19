@@ -4,8 +4,6 @@ ButtonWidgetClass {
   Padding 4 4 4 4
  }
  components {
-  SCR_PlayableMenuTile "{596CE0ABCC0E783C}" {
-  }
   SCR_EventHandlerComponent "{5588D78956B78241}" {
   }
   SCR_TileBaseComponent "{585A661505520CF6}" {

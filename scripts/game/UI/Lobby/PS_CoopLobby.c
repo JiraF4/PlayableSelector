@@ -1,11 +1,11 @@
-class SCR_CoopLobby: MenuBase
+class PS_CoopLobby: MenuBase
 {
 	protected ResourceName m_sRolesGroupPrefab = "{B45A0FA6883A7A0E}UI/Lobby/RolesGroup.layout";
 	protected ResourceName m_sCharacterSelectorPrefab = "{3F761F63F1DF29D1}UI/Lobby/CharacterSelector.layout";
 	protected ResourceName m_sFactionSelectorPrefab = "{DA22ED7112FA8028}UI/Lobby/FactionSelector.layout";
 	protected ResourceName m_sPlayerSelectorPrefab = "{B55DD7054C5892AE}UI/Lobby/PlayerSelector.layout";
 	
-	protected ref map<Faction,ref array<SCR_PlayableComponent>> m_sFactionPlayables = new map<Faction,ref array<SCR_PlayableComponent>>();
+	protected ref map<Faction,ref array<PS_PlayableComponent>> m_sFactionPlayables = new map<Faction,ref array<PS_PlayableComponent>>();
 	protected Faction m_fCurrentFaction;
 	
 	Widget m_wFactionList;
@@ -15,7 +15,7 @@ class SCR_CoopLobby: MenuBase
 	protected ref array<Widget> m_aRolesListWidgets = {};
 	Widget m_wPlayersList;
 	protected ref array<Widget> m_aPlayersListWidgets = {};
-	SCR_LobbyLoadoutPreview m_preview;
+	PS_LobbyLoadoutPreview m_preview;
 	TextWidget m_wCounterText;
 	protected Widget m_wChatPanelWidget;
 	protected SCR_ChatPanel m_ChatPanel;
@@ -34,7 +34,7 @@ class SCR_CoopLobby: MenuBase
 		m_wPlayersList = GetRootWidget().FindAnyWidget("PlayersList");
 		
 		Widget widget = GetRootWidget().FindAnyWidget("VLWoadoutPreview");
-		m_preview = SCR_LobbyLoadoutPreview.Cast(widget.FindHandler(SCR_LobbyLoadoutPreview));
+		m_preview = PS_LobbyLoadoutPreview.Cast(widget.FindHandler(PS_LobbyLoadoutPreview));
 		m_wCounterText = TextWidget.Cast(GetRootWidget().FindAnyWidget("TextCounter"));
 		m_wCounterText.SetText("");
 		
@@ -67,18 +67,18 @@ class SCR_CoopLobby: MenuBase
 		SCR_PossessingManagerComponent possessingManagerComponent = SCR_PossessingManagerComponent.GetInstance();
 		foreach (Widget factionSelector: m_aFactionListWidgets)
 		{
-			SCR_FactionSelector handler = SCR_FactionSelector.Cast(factionSelector.FindHandler(SCR_FactionSelector));
-			array<SCR_PlayableComponent> factionPlayablesList = m_sFactionPlayables[handler.GetFaction()];
+			PS_FactionSelector handler = PS_FactionSelector.Cast(factionSelector.FindHandler(PS_FactionSelector));
+			array<PS_PlayableComponent> factionPlayablesList = m_sFactionPlayables[handler.GetFaction()];
 			int i = 0;
-			foreach (SCR_PlayableComponent playable : factionPlayablesList) {
-				int disconnectedPlayerId = SCR_GameModeCoop.Cast(GetGame().GetGameMode()).GetPlayablePlayer(playable.GetId());
+			foreach (PS_PlayableComponent playable : factionPlayablesList) {
+				int disconnectedPlayerId = PS_GameModeCoop.Cast(GetGame().GetGameMode()).GetPlayablePlayer(playable.GetId());
 				if (disconnectedPlayerId != -1)  i++;
 			}
 			handler.SetCount(i, factionPlayablesList.Count());
 		}
 		foreach (Widget characterWidget : m_aCharactersListWidgets)
 		{
-			SCR_CharacterSelector characterHandler = SCR_CharacterSelector.Cast(characterWidget.FindHandler(SCR_CharacterSelector));
+			PS_CharacterSelector characterHandler = PS_CharacterSelector.Cast(characterWidget.FindHandler(PS_CharacterSelector));
 			characterHandler.UpdatePlayableInfo();
 		}
 		UpdatePlayersList();
@@ -123,7 +123,7 @@ class SCR_CoopLobby: MenuBase
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		foreach (int playerId: playerIds)
 		{
-			if (SCR_GameModeCoop.GetPlayerState(playerId) != PlayableControllerState.NotReady) allReady++;
+			if (PS_GameModeCoop.GetPlayerState(playerId) != PlayableControllerState.NotReady) allReady++;
 		}
 		
 		return allReady == playerIds.Count();
@@ -133,7 +133,7 @@ class SCR_CoopLobby: MenuBase
 	override void OnMenuClose()
 	{
 		PlayerController playerController = GetGame().GetPlayerController();
-		SCR_PlayableControllerComponent playableController = SCR_PlayableControllerComponent.Cast(playerController.FindComponent(SCR_PlayableControllerComponent));
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		playableController.SetState(PlayableControllerState.Playing);
 		
 		GetGame().GetInputManager().RemoveActionListener("MenuSelect", EActionTrigger.DOWN, Action_Ready);
@@ -142,8 +142,8 @@ class SCR_CoopLobby: MenuBase
 	
 	void Fill()
 	{
-		map<int, SCR_PlayableComponent> playables = SCR_PlayableComponent.GetPlayables();
-		array<SCR_PlayableComponent> playablesSorted = new array<SCR_PlayableComponent>;
+		map<int, PS_PlayableComponent> playables = PS_PlayableComponent.GetPlayables();
+		array<PS_PlayableComponent> playablesSorted = new array<PS_PlayableComponent>;
 		if (oldPlayablesCount != playables.Count())
 		{
 			foreach (Widget widget: m_aFactionListWidgets)
@@ -154,10 +154,10 @@ class SCR_CoopLobby: MenuBase
 			
 			m_sFactionPlayables.Clear();
 			for (int i = 0; i < playables.Count(); i++) {
-				SCR_PlayableComponent playable = playables.GetElement(i);
+				PS_PlayableComponent playable = playables.GetElement(i);
 				bool inserted = false;
 				for (int s = 0; s < playablesSorted.Count(); s++) {
-					SCR_PlayableComponent playableS = playablesSorted[s];
+					PS_PlayableComponent playableS = playablesSorted[s];
 					if (playableS.GetId() > playable.GetId()) {
 						playablesSorted.InsertAt(playable, s);
 						inserted = true;
@@ -172,15 +172,15 @@ class SCR_CoopLobby: MenuBase
 		oldPlayablesCount = playables.Count();
 		
 		for (int i = 0; i < playablesSorted.Count(); i++) {
-			SCR_PlayableComponent playable = playablesSorted[i];
+			PS_PlayableComponent playable = playablesSorted[i];
 			if (playable == null) continue;
 			SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(playable.GetOwner());
 			SCR_Faction faction = SCR_Faction.Cast(character.GetFaction());
 			if (!m_sFactionPlayables.Contains(faction)) {
-				m_sFactionPlayables.Insert(faction, new array<SCR_PlayableComponent>);
+				m_sFactionPlayables.Insert(faction, new array<PS_PlayableComponent>);
 				
 				Widget factionSelector = GetGame().GetWorkspace().CreateWidgets(m_sFactionSelectorPrefab);
-				SCR_FactionSelector handler = SCR_FactionSelector.Cast(factionSelector.FindHandler(SCR_FactionSelector));
+				PS_FactionSelector handler = PS_FactionSelector.Cast(factionSelector.FindHandler(PS_FactionSelector));
 				
 				handler.SetFaction(faction);
 				handler.m_OnClicked.Insert(FactionClick);
@@ -189,7 +189,7 @@ class SCR_CoopLobby: MenuBase
 				m_wFactionList.AddChild(factionSelector);
 			}
 			
-			array<SCR_PlayableComponent> factionPlayablesList = m_sFactionPlayables[faction];
+			array<PS_PlayableComponent> factionPlayablesList = m_sFactionPlayables[faction];
 			if (!factionPlayablesList.Contains(playable))
 				factionPlayablesList.Insert(playable);
 		}
@@ -210,12 +210,12 @@ class SCR_CoopLobby: MenuBase
 		{
 			if (widget != factionSelectorWidget)
 			{
-				SCR_FactionSelector otherHandler = SCR_FactionSelector.Cast(widget.FindHandler(SCR_FactionSelector));
+				PS_FactionSelector otherHandler = PS_FactionSelector.Cast(widget.FindHandler(PS_FactionSelector));
 				otherHandler.SetToggled(false);
 			}
 		}
 		
-		SCR_FactionSelector handler = SCR_FactionSelector.Cast(factionSelector.GetRootWidget().FindHandler(SCR_FactionSelector));
+		PS_FactionSelector handler = PS_FactionSelector.Cast(factionSelector.GetRootWidget().FindHandler(PS_FactionSelector));
 		m_fCurrentFaction = handler.GetFaction();
 		
 		UpdateCharacterList();
@@ -231,23 +231,23 @@ class SCR_CoopLobby: MenuBase
 		m_aCharactersListWidgets.Clear();
 		
 		
-		map<string, SCR_RolesGroup> RolesGroups = new map<string, SCR_RolesGroup>();
-		array<SCR_PlayableComponent> factionPlayablesList = m_sFactionPlayables[m_fCurrentFaction];
-		foreach (SCR_PlayableComponent playable: factionPlayablesList)
+		map<string, PS_RolesGroup> RolesGroups = new map<string, PS_RolesGroup>();
+		array<PS_PlayableComponent> factionPlayablesList = m_sFactionPlayables[m_fCurrentFaction];
+		foreach (PS_PlayableComponent playable: factionPlayablesList)
 		{
 			string groupName = playable.GetGroupName();
 			if (!RolesGroups.Contains(groupName))	{
 				Widget RolesGroup = GetGame().GetWorkspace().CreateWidgets(m_sRolesGroupPrefab);
-				SCR_RolesGroup rolesGroupHandler = SCR_RolesGroup.Cast(RolesGroup.FindHandler(SCR_RolesGroup));
+				PS_RolesGroup rolesGroupHandler = PS_RolesGroup.Cast(RolesGroup.FindHandler(PS_RolesGroup));
 				m_aRolesListWidgets.Insert(RolesGroup);
 				m_wRolesList.AddChild(RolesGroup);
 				RolesGroups[groupName] = rolesGroupHandler;
 				rolesGroupHandler.SetName(groupName);
 			}
-			SCR_RolesGroup rolesGroupHandler = RolesGroups[groupName];
+			PS_RolesGroup rolesGroupHandler = RolesGroups[groupName];
 			
 			Widget characterWidget = rolesGroupHandler.AddPlayable(playable);
-			SCR_CharacterSelector characterHandler = SCR_CharacterSelector.Cast(characterWidget.FindHandler(SCR_CharacterSelector));
+			PS_CharacterSelector characterHandler = PS_CharacterSelector.Cast(characterWidget.FindHandler(PS_CharacterSelector));
 			m_aCharactersListWidgets.Insert(characterWidget);
 			characterHandler.m_OnClicked.Insert(CharacterClick);
 			characterHandler.m_OnMouseEnter.Insert(CharacterMouseEnter);
@@ -259,20 +259,20 @@ class SCR_CoopLobby: MenuBase
 	protected void CharacterMouseLeave(Widget characterWidget)
 	{
 		int playerId = GetGame().GetPlayerController().GetPlayerId();
-		int playableId = SCR_GameModeCoop.Cast(GetGame().GetGameMode()).GetPlayerPlayable(playerId);
+		int playableId = PS_GameModeCoop.Cast(GetGame().GetGameMode()).GetPlayerPlayable(playerId);
 		
 		if (playableId == -1) {
 			m_preview.SetPlayable(null);
 		} else {
-			map<int, SCR_PlayableComponent> playables = SCR_PlayableComponent.GetPlayables();
+			map<int, PS_PlayableComponent> playables = PS_PlayableComponent.GetPlayables();
 			m_preview.SetPlayable(playables[playableId]);
 		}
 	}
 	
 	protected void CharacterMouseEnter(Widget characterWidget)
 	{
-		SCR_CharacterSelector handler = SCR_CharacterSelector.Cast(characterWidget.FindHandler(SCR_CharacterSelector));
-		map<int, SCR_PlayableComponent> playables = SCR_PlayableComponent.GetPlayables();
+		PS_CharacterSelector handler = PS_CharacterSelector.Cast(characterWidget.FindHandler(PS_CharacterSelector));
+		map<int, PS_PlayableComponent> playables = PS_PlayableComponent.GetPlayables();
 		int playableId = handler.GetPlayableId();
 		m_preview.SetPlayable(playables[playableId]);
 	}
@@ -290,16 +290,16 @@ class SCR_CoopLobby: MenuBase
 		{
 			if (widget != characterWidget)
 			{
-				SCR_CharacterSelector otherHandler = SCR_CharacterSelector.Cast(widget.FindHandler(SCR_CharacterSelector));
+				PS_CharacterSelector otherHandler = PS_CharacterSelector.Cast(widget.FindHandler(PS_CharacterSelector));
 				otherHandler.SetToggled(false);
 			}
 		}
 		
-		SCR_CharacterSelector handler = SCR_CharacterSelector.Cast(characterSelector);
+		PS_CharacterSelector handler = PS_CharacterSelector.Cast(characterSelector);
 		PlayerController playerController = GetGame().GetPlayerController();
-		SCR_PlayableControllerComponent playableController = SCR_PlayableControllerComponent.Cast(playerController.FindComponent(SCR_PlayableControllerComponent));
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		
-		if (handler.GetPlayableId() == SCR_GameModeCoop.GetPlayerPlayable(playerController.GetPlayerId())
+		if (handler.GetPlayableId() == PS_GameModeCoop.GetPlayerPlayable(playerController.GetPlayerId())
 		&& playableController.GetState(playerController.GetPlayerId()) == PlayableControllerState.NotReady) {
 			playableController.SetState(PlayableControllerState.Ready);
 			return;
@@ -323,7 +323,7 @@ class SCR_CoopLobby: MenuBase
 		foreach (int playerId: playerIds)
 		{
 			Widget playerSelector = GetGame().GetWorkspace().CreateWidgets(m_sPlayerSelectorPrefab);
-			SCR_PlayerSelector handler = SCR_PlayerSelector.Cast(playerSelector.FindHandler(SCR_PlayerSelector));
+			PS_PlayerSelector handler = PS_PlayerSelector.Cast(playerSelector.FindHandler(PS_PlayerSelector));
 			handler.SetPlayer(playerId);
 			m_aPlayersListWidgets.Insert(playerSelector);
 			m_wPlayersList.AddChild(playerSelector);
@@ -333,7 +333,7 @@ class SCR_CoopLobby: MenuBase
 	void Action_Ready()
 	{
 		PlayerController playerController = GetGame().GetPlayerController();
-		SCR_PlayableControllerComponent playableController = SCR_PlayableControllerComponent.Cast(playerController.FindComponent(SCR_PlayableControllerComponent));
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		if (playableController.GetState(playerController.GetPlayerId()) == PlayableControllerState.Ready) {
 			playableController.SetState(PlayableControllerState.NotReady);
 			return;

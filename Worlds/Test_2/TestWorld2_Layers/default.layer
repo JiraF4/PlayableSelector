@@ -1,64 +1,43 @@
 SCR_AIWorld : "{E0A05C76552E7F58}Prefabs/AI/SCR_AIWorld.et" {
  coords 111.676 1 127.135
 }
+PS_GameModeCoop PS_GameModeCoop1 {
+ components {
+  SCR_BaseFactionManagerComponent "{5EA716164D099B76}" {
+  }
+  SCR_CallsignGroupComponent "{5EA716163E0AE006}" {
+  }
+  SCR_CallsignManagerComponent "{5EA72061D0379F23}" {
+  }
+  SCR_FreeSpawnHandlerComponent "{5EA71612593B1E72}" {
+  }
+  SCR_GroupsManagerComponent "{5EA716161046DC24}" {
+  }
+  SCR_PossessSpawnHandlerComponent "{5EA716125FF8CB0E}" {
+  }
+  SCR_PossessingManagerComponent "{5EA71616E6C12DF0}" {
+  }
+  SCR_RespawnSystemComponent "{5EA71612F9CF77CB}" {
+   m_SpawnLogic SCR_SpawnLogic "{5EA71612BDD72662}" {
+   }
+  }
+  SCR_SpawnPointSpawnHandlerComponent "{5EA7161267F6FB18}" {
+  }
+  RplComponent "{5EA71612E84025F1}" {
+  }
+ }
+ coords 114.38 1 140.303
+ PlayerControllerPrefab "{4E5DAC62A374950F}Prefabs/Characters/Core/DefaultPlayerControllerMP_Coop.et"
+ {
+  SCR_FactionManager SCR_FactionManager1 {
+   coords -30.649 0 12.529
+  }
+  ItemPreviewManagerEntity ItemPreviewManagerEntity1 {
+   coords -29.733 0 14.069
+   PreviewWorld "{4391FE7994EE6FE2}Prefabs/World/Game/InventoryPreviewWorld.et"
+  }
+ }
+}
 PerceptionManager PerceptionManager1 : "{028DAEAD63E056BE}Prefabs/World/Game/PerceptionManager.et" {
  coords 113.126 1 124.397
-}
-SCR_GameModeCoop SCR_GameModeCoop1 : "{16D2DEADCFDC8B73}Prefabs/SCR_GameModeCoop.et" {
- {
-  ScriptedChatEntity {
-   ID "5E6ED2179BF62C96"
-   "Base style" BaseChatChannelStyle "{5E7B5C67B5FB6751}" {
-   }
-   Channels {
-    BaseChatChannel "{559077E72C7027BC}" {
-     Style BaseChatChannelStyle "{5E7B5C67B8B88596}" {
-     }
-    }
-    FactionChatChannel "{559077E76537C0B4}" {
-     Style BaseChatChannelStyle "{5E7B5C67BA5C09CC}" {
-     }
-    }
-    GroupChatChannel "{58729124A5B6D815}" {
-     Style BaseChatChannelStyle "{5E7B5C67BB421A3A}" {
-     }
-    }
-    SCR_VehicleChatChannel "{559077E68D10F660}" {
-     Style BaseChatChannelStyle "{5E7B5C67BC4CE6BD}" {
-     }
-    }
-    LocalChatChannel "{559077E6A85B7EEE}" {
-     Style BaseChatChannelStyle "{5E7B5C67BEB08FB6}" {
-     }
-    }
-   }
-  }
-  SCR_LoadoutManager {
-   coords 84.732 1 108.656
-   m_aPlayerLoadouts {
-    SCR_BasePlayerLoadout "{5E7B5C62268099EF}" {
-    }
-   }
-  }
- }
-}
-TagManager : "{2FA9E172CAB1857A}Prefabs/MP/Managers/TagManager.et" {
- coords 115.4 1 122.834
-}
-SCR_FactionManager FactionManager_Editor1 : "{4A188E44289B9A50}Prefabs/MP/Managers/Factions/FactionManager_Editor.et" {
- coords 105.797 1 108.773
- Factions {
-  SCR_Faction "{56DEAC40D2DBC8B1}" {
-   m_bIsPlayable 1
-  }
-  SCR_Faction "{56DEAC40D3C2E623}" {
-   m_bIsPlayable 1
-  }
-  SCR_Faction "{56DEAC40D132400B}" {
-   m_bIsPlayable 1
-  }
- }
-}
-HitRegistrationManager HitRegManager1 : "{0EDA3D48791120DD}Prefabs/MP/HitRegManager.et" {
- coords 115.456 1 121.771
 }

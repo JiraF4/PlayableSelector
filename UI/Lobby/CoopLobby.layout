@@ -267,7 +267,7 @@ FrameWidgetClass {
                Slot OverlayWidgetSlot "{5D6D1B985B1E5269}" {
                }
                components {
-                SCR_LobbyLoadoutPreview "{5E7CF0523DB1F00A}" {
+                PS_LobbyLoadoutPreview "{5EA71616A67268D8}" {
                 }
                }
                {
