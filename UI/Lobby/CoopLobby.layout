@@ -609,6 +609,9 @@ FrameWidgetClass {
               ScrollLayoutWidgetClass "{5D6D1B97707D8F2D}" {
                Name "PlayersScroll"
                Slot OverlayWidgetSlot "{5D6D1B9B238445FB}" {
+                HorizontalAlign 3
+                VerticalAlign 0
+                Padding 0 34.12 0 0
                }
                {
                 VerticalLayoutWidgetClass "{5D6D1B97707D8F23}" {

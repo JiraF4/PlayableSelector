@@ -1,5 +1,5 @@
 SCR_AIGroup : "{2CC26054775FBA2C}Prefabs/Groups/INDFOR/Group_FIA_Team_AT.et" {
- coords 2079.741 59.706 2128.195
+ coords 2102.06 59.706 2117.818
  angleY 90
  m_aStaticWaypoints {
   "ATDef"
@@ -8,18 +8,6 @@ SCR_AIGroup : "{2CC26054775FBA2C}Prefabs/Groups/INDFOR/Group_FIA_Team_AT.et" {
   SCR_DefendWaypoint ATDef : "{93291E72AC23930F}Prefabs/AI/Waypoints/AIWaypoint_Defend.et" {
    coords 1.973 -0.162 4.877
    angleY -90
-  }
- }
-}
-SCR_AIGroup : "{5BEA04939D148B1D}Prefabs/Groups/INDFOR/Group_FIA_FireTeam.et" {
- coords 2109.249 58.031 2112.24
- m_aStaticWaypoints {
-  "FTDef"
- }
- {
-  SCR_DefendWaypoint FTDef : "{93291E72AC23930F}Prefabs/AI/Waypoints/AIWaypoint_Defend.et" {
-   coords -0.703 2.014 17.241
-   CompletionRadius 20
   }
  }
 }

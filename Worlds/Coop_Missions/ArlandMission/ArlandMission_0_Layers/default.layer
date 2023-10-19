@@ -7,7 +7,6 @@ PerceptionManager PerceptionManager1 : "{028DAEAD63E056BE}Prefabs/World/Game/Per
 SCR_GameModeCoop SCR_GameModeCoop1 : "{16D2DEADCFDC8B73}Prefabs/SCR_GameModeCoop.et" {
  components {
   SCR_TimeAndWeatherHandlerComponent "{5E7D773A4347DB9E}" {
-   m_bRandomStartingDaytime 1
    m_bRandomStartingWeather 1
   }
  }
