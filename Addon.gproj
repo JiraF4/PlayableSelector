@@ -10,11 +10,15 @@ GameProject {
    WidgetManagerSettings WidgetManagerSettings "{AC4BE58770485E02}" {
     StringTables {
      StringTableDefinition "{596CCAA5251C9026}" {
-      StringTableSource "{91E0F6253032266E}Language/localization.st"
+      StringTableSource "{91E0F6253032266F}Language/localization.st"
       Languages {
        LanguageDefinition "{596CCAA521485222}" {
         Code "en_us"
         StringTableRuntime "{FFABF1A438694BFC}Language/localization.en_us.conf"
+       }
+       LanguageDefinition "{5EA73DB481CC2178}" {
+        Code "ru_ru"
+        StringTableRuntime "{6DB17B8E28FE403C}Language/localization.ru_ru.conf"
        }
       }
      }
