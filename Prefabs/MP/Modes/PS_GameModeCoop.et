@@ -1,6 +1,8 @@
 PS_GameModeCoop {
  ID "5D4CDA0160C87274"
  components {
+  PS_PlayableManager "{5EA8C9329726C920}" {
+  }
   SCR_ArsenalManagerComponent "{5D4CE249D697011C}" {
   }
   SCR_CallsignManagerComponent "{5D4CE249DD6CC947}" {
@@ -350,7 +352,7 @@ PS_GameModeCoop {
     }
    }
   }
-  SCR_PossessingManagerComponent "{5D4CE249B174F34A}" {
+  SCR_PreGameGameModeStateComponent "{5EA8C9324DF2DCC1}" {
   }
   SCR_RespawnSystemComponent "{5E7AE0AF16A4B6CE}" {
    components {
@@ -381,7 +383,7 @@ PS_GameModeCoop {
  m_bAutoPlayerRespawn 0
  m_fAutoReloadTime 3
  {
-  SCR_FactionManager : "{4A188E44289B9A50}Prefabs/MP/Managers/Factions/FactionManager_Editor.et" {
+  SCR_FactionManager "5EA8C932C68D400F" : "{4A188E44289B9A50}Prefabs/MP/Managers/Factions/FactionManager_Editor.et" {
    ID "5EA73DB136618AD9"
    coords 0 0 0
   }
