@@ -12,9 +12,6 @@ class PS_PlayableComponent : ScriptComponent
 	protected int m_id;
 	protected string s_sGroupName; // dead has no group, soo cache name
 	
-	// List of all Playables
-	private static ref map<int, PS_PlayableComponent> m_aPlayables = new ref map<int, PS_PlayableComponent>();
-	
 	override void OnPostInit(IEntity owner)
 	{
 		GetGame().GetCallqueue().CallLater(AddToList, 0, false, owner) // Rpl init delay
@@ -22,14 +19,15 @@ class PS_PlayableComponent : ScriptComponent
 	
 	private void AddToList(IEntity owner)
 	{
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		RplComponent rpl = RplComponent.Cast(owner.FindComponent(RplComponent));
 		if(rpl && owner.Type().ToString() == "SCR_ChimeraCharacter")
 		{
 			m_id = rpl.Id();
-			m_aPlayables.Set(m_id, this);
+			playableManager.RegisterPlayable(this);
 			rpl.EnableStreaming(false); // They need to be loaded for preview
 			
-			if (Replication.IsServer()) {
+			if (Replication.IsServer() && !Replication.IsClient()) {
 				AIControlComponent ctrl = AIControlComponent.Cast(owner.FindComponent(AIControlComponent));
 				AIAgent agent = ctrl.GetAIAgent();
 				SCR_AIGroup group = SCR_AIGroup.Cast(agent.GetParentGroup());
@@ -37,42 +35,18 @@ class PS_PlayableComponent : ScriptComponent
 				group.GetCallsigns(company, platoon, squad, sCharacter, format);
 				s_sGroupName = WidgetManager.Translate(format, company, platoon, squad, sCharacter);
 				
-				PS_GameModeCoop.Cast(GetGame().GetGameMode()).SetPlayableGroupName(m_id, s_sGroupName);
+				playableManager.SetPlayableGroupName(m_id, s_sGroupName);
 			}
 		}
-	}
-	
-	static map<int, PS_PlayableComponent> GetPlayables() 
-	{
-		return m_aPlayables;
-	}
-	
-	static void removePlayable(int playableId)
-	{
-		m_aPlayables.Remove(playableId);
-	}
-	
-	static void ClearPlayables()
-	{
-		m_aPlayables.Clear();
-	}
-	
-	void ~PS_PlayableComponent() {
-		removePlayable(m_id);
 	}
 	
 	string GetName()
 	{
 		return m_name;
-	}	
+	}
 	
-	int GetId()
+	RplId GetId()
 	{
 		return m_id;
-	}	
-	
-	string GetGroupName()
-	{
-		return PS_GameModeCoop.Cast(GetGame().GetGameMode()).GetPlayableGroupName(m_id);
 	}
 }

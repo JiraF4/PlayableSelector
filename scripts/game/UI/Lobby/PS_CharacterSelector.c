@@ -1,3 +1,8 @@
+// Widget displays info about playable character.
+// Path: {3F761F63F1DF29D1}UI/Lobby/CharacterSelector.layout
+// Part of Lobby menu PS_CoopLobby ({9DECCA625D345B35}UI/Lobby/CoopLobby.layout)
+// Lobby insert it into PS_RolesGroup widget
+
 class PS_CharacterSelector : SCR_ButtonImageComponent
 {
 	protected PS_PlayableComponent m_playable;
@@ -28,27 +33,28 @@ class PS_CharacterSelector : SCR_ButtonImageComponent
 	
 	void UpdatePlayableInfo()
 	{
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		
 		SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(m_playable.GetOwner());
 		SCR_Faction faction = SCR_Faction.Cast(character.GetFaction());
 		SCR_EditableCharacterComponent editableCharacterComponent = SCR_EditableCharacterComponent.Cast(character.FindComponent(SCR_EditableCharacterComponent));
 		SCR_UIInfo uiInfo = editableCharacterComponent.GetInfo();
 		
+		// Set base playable info role icon, faction color, custome/role name
 		m_wUnitIcon.LoadImageTexture(0, uiInfo.GetIconPath());
-		
 		m_wCharacterFactionColor.SetColor(faction.GetFactionColor());
 		m_wCharacterClassName.SetText(m_playable.GetName());
 		
-		int playerId = SCR_PossessingManagerComponent.GetInstance().GetPlayerIdFromControlledEntity(character);
+		int playerId = playableManager.GetPlayerByPlayable(m_playable.GetId());
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		string playerName = playerManager.GetPlayerName(playerId);
 		
-		int disconnectedPlayerId = PS_GameModeCoop.Cast(GetGame().GetGameMode()).GetPlayablePlayer(m_playable.GetId());
-		
+		// Set current state Dead, Selected by player, Selected by disconnected player
 		if (character.GetDamageManager().IsDestroyed()) 
 		{
 			m_wCharacterStatus.SetText("Dead");
 			SetImage(m_sUIWrapper, "death");
-		} else if (disconnectedPlayerId != -1 && playerName == "")
+		} else if (playerId != -1 && playerName == "")
 		{
 			m_wCharacterStatus.SetText("Disconnected");
 			SetImage(m_sUIWrapper, "disconnection");

@@ -1,3 +1,8 @@
+// Widget displays info about faction witch contains any playable character.
+// Path: {DA22ED7112FA8028}UI/Lobby/FactionSelector.layout
+// Part of Lobby menu PS_CoopLobby ({9DECCA625D345B35}UI/Lobby/CoopLobby.layout)
+
+
 class PS_FactionSelector : SCR_ButtonBaseComponent
 {
 	protected int m_maxCount;

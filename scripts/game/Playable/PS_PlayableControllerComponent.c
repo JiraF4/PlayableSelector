@@ -4,96 +4,74 @@ class PS_PlayableControllerComponentClass: ScriptComponentClass
 {
 }
 
-enum PlayableControllerState
-{
-	NotReady,
-	Ready,
-	Playing,
-	Disconected
-}
 
+// We can send rpc only from authority
+// And here we are, modifying player controller since it's only what we have on client.
 [ComponentEditorProps(icon: HYBRID_COMPONENT_ICON)]
 class PS_PlayableControllerComponent : ScriptComponent
 {
-	PlayableControllerState m_bState;
-	
-	void SetState(PlayableControllerState state)
+	// Get controll on selected playable entity
+	void ApplyPlayable()
 	{
-		Rpc_SetStateServer(SCR_PlayerController.Cast(GetOwner()).GetPlayerId(), state);
-		Rpc(Rpc_SetStateServer, SCR_PlayerController.Cast(GetOwner()).GetPlayerId(), state);
+		Rpc(RPC_ApplyPlayable)
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	protected void RPC_ApplyPlayable()
+	{
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		PlayerController playerController = PlayerController.Cast(GetOwner());
+		playableManager.ApplyPlayable(playerController.GetPlayerId());
 	}
 	
-	void SetState(PlayableControllerState state, int playerId)
+	// -------------------- Set ---------------------
+	void SetPlayerState(PS_EPlayableControllerState state)
 	{
-		Rpc_SetStateServer(playerId, state);
-		Rpc(Rpc_SetStateServer, playerId, state);
+		Rpc(RPC_SetPlayerState, state)
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	protected void RPC_SetPlayerState(PS_EPlayableControllerState state)
+	{
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		PlayerController playerController = PlayerController.Cast(GetOwner());
+		playableManager.SetPlayerState(playerController.GetPlayerId(), state);
+	}
+	
+	void SetPlayerPlayable(int playableId) 
+	{
+		Rpc(RPC_SetPlayerPlayable, playableId);
 	}
 	
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
-	void Rpc_SetStateServer(int playerId, PlayableControllerState state)
+	protected void RPC_SetPlayerPlayable(RplId playableId) 
 	{
-		PS_GameModeCoop.Cast(GetGame().GetGameMode()).SetPlayerState(playerId, state);
-	}
-	
-	static PlayableControllerState GetState(int playerId)
-	{
-		return PS_GameModeCoop.GetPlayerState(playerId);
-	}
-	
-	void TakePossessionReconnect(int playerId, int playableId) 
-	{
-		Rpc(RPC_TakePossessionReconnect, playerId, playableId);
-	}
-	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
-	void RPC_TakePossessionReconnect(int playerId, int playableId) 
-	{
-		SCR_PlayerController playerController = SCR_PlayerController.Cast(GetGame().GetPlayerManager().GetPlayerController(playerId));
-		map<int, PS_PlayableComponent> playables = PS_PlayableComponent.GetPlayables();
-		SCR_ChimeraCharacter playable = SCR_ChimeraCharacter.Cast(playables[playableId].GetOwner());
-		playerController.SetPossessedEntity(playable); // reset ai? but still broken...
-		playerController.SetInitialMainEntity(playable);
-	}
-	
-	void TakePossession(int playerId, int playableId) 
-	{
-		Rpc(RPC_TakePossession, playerId, playableId);
-	}	
-	
-	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
-	void RPC_TakePossession(int playerId, int playableId) 
-	{
-		//Print("RPC_TakePossession 1: " + playerId.ToString() + " - " + playableId);
-		map<int, PS_PlayableComponent> playables = PS_PlayableComponent.GetPlayables();
-		SCR_ChimeraCharacter playable = SCR_ChimeraCharacter.Cast(playables[playableId].GetOwner());
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		PlayerController playerController = PlayerController.Cast(GetOwner());
+		int playerId = playerController.GetPlayerId();
 		
-		int curretPlayerId = SCR_PossessingManagerComponent.GetInstance().GetPlayerIdFromControlledEntity(playable);
-		if (playable.GetDamageManager().IsDestroyed() 
-				|| (curretPlayerId != 0 && curretPlayerId != playerId)
-				|| PS_GameModeCoop.Cast(GetGame().GetGameMode()).GetPlayablePlayer(playableId) != -1) {
-			
-			RPC_PossesionResult(playerId, false);
-			Rpc(RPC_PossesionResult, playerId, false);
-			
+		PS_PlayableComponent playableComponent = playableManager.GetPlayableById(playableId);
+		SCR_ChimeraCharacter playableCharacter = SCR_ChimeraCharacter.Cast(playableComponent.GetOwner());
+		
+		// Check is playable already selected or dead
+		int curretPlayerId = playableManager.GetPlayerByPlayable(playableId);
+		if (playableCharacter.GetDamageManager().IsDestroyed() || (curretPlayerId != -1 && curretPlayerId != playerId)) {
 			return;
 		}
-		SCR_PlayerController playerController = SCR_PlayerController.Cast(GetGame().GetPlayerManager().GetPlayerController(playerId));
-		IEntity currentEntity = playerController.GetControlledEntity();
-		if (playerId == curretPlayerId) {
-			playerController.SetPossessedEntity(null);
-		}
-		if (currentEntity)
-			playerController.SetInitialMainEntity(currentEntity); // Fix controlls and don't break camera
-		playerController.SetPossessedEntity(playable); // reset ai? but still broken...
-		playerController.SetInitialMainEntity(playable);
 		
+		playableManager.SetPlayerPlayable(playerId, playableId);
+		
+		/*
+		SCR_PlayerController playerController = SCR_PlayerController.Cast(GetOwner());
 		SCR_PlayerFactionAffiliationComponent playerFactionAffiliation = SCR_PlayerFactionAffiliationComponent.Cast(playerController.FindComponent(SCR_PlayerFactionAffiliationComponent));
-		SCR_Faction faction = SCR_Faction.Cast(playable.GetFaction());
+		SCR_Faction faction = SCR_Faction.Cast(playableCharacter.GetFaction());
 		playerFactionAffiliation.SetAffiliatedFaction(faction);
+		
 		
 		SCR_FactionManager factionManager = SCR_FactionManager.Cast(GetGame().GetFactionManager());
 		factionManager.UpdatePlayerFaction_S(playerFactionAffiliation);
 		
-		//Print("RPC_TakePossession 2: " + playerId.ToString() + " - " + playableId);
+		*/
+		
+		//Print("RPC_SetPlayerPlayable 2: " + playerId.ToString() + " - " + playableId);
 		/*
 		SCR_GroupsManagerComponent groupsManagerComponent = SCR_GroupsManagerComponent.GetInstance();
 		AIControlComponent aiControl = AIControlComponent.Cast(playable.FindComponent(AIControlComponent));
@@ -108,34 +86,24 @@ class PS_PlayableControllerComponent : ScriptComponent
 		groupsManagerComponent.RegisterGroup(group);
 		playerControllerGroupComponent.RPC_AskJoinGroup(group.GetGroupID());
 		*/
-		
-		PS_GameModeCoop.Cast(GetGame().GetGameMode()).SetPlayerPlayableServer(playerId, playableId);
-		
-		RPC_PossesionResult(playerId, true);
-		Rpc(RPC_PossesionResult, playerId, true);
-		
-		PS_GameModeCoop.Cast(GetGame().GetGameMode()).UpdateMenu();
 	}
 	
-	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	void RPC_PossesionResult(int playerId, bool isPossesed)
+	
+	// olds here
+	void SetPlayerPlayableReconnect(int playerId, int playableId) 
 	{
-		if (!Replication.IsClient())
-			return;
-		
-		PlayerController playerController = GetGame().GetPlayerController();
-		if (playerId != playerController.GetPlayerId()) return;
-		MenuManager menuManager = GetGame().GetMenuManager();
-		
-		PS_PlayableSelectorMenu menu = PS_PlayableSelectorMenu.Cast(menuManager.FindMenuByPreset(ChimeraMenuPreset.PlayableSelector));
-		if (menu != null) {
-			if (isPossesed) {
-				PS_GameModeCoop.Cast(GetGame().GetGameMode()).RemoveCamera();
-				menu.Close();
-			} else {
-				menu.Unlock();
-			}
-		}
+		Rpc(RPC_SetPlayerPlayableReconnect, playerId, playableId);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	protected void RPC_SetPlayerPlayableReconnect(int playerId, int playableId) 
+	{
+		/*
+		SCR_PlayerController playerController = SCR_PlayerController.Cast(GetGame().GetPlayerManager().GetPlayerController(playerId));
+		map<int, PS_PlayableComponent> playables = PS_PlayableComponent.GetPlayables();
+		SCR_ChimeraCharacter playable = SCR_ChimeraCharacter.Cast(playables[playableId].GetOwner());
+		playerController.SetPossessedEntity(playable); // reset ai? but still broken...
+		playerController.SetInitialMainEntity(playable);
+		*/
 	}
 	
 	

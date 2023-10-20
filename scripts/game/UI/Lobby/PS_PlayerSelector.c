@@ -1,3 +1,7 @@
+// Widget displays info about connected player.
+// Path: {B55DD7054C5892AE}UI/Lobby/PlayerSelector.layout
+// Part of Lobby menu PS_CoopLobby ({9DECCA625D345B35}UI/Lobby/CoopLobby.layout)
+
 class PS_PlayerSelector : SCR_WLibComponentBase
 {
 	protected int m_iPlayer;
@@ -27,7 +31,10 @@ class PS_PlayerSelector : SCR_WLibComponentBase
 	void UpdatePlayerInfo()
 	{
 		PlayerManager playerManager = GetGame().GetPlayerManager();
-		SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(SCR_PossessingManagerComponent.GetInstance().GetPossessedEntity(m_iPlayer));
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		int playableId = playableManager.GetPlayableByPlayer(m_iPlayer);
+		SCR_ChimeraCharacter character;
+		if (playableId != RplId.Invalid()) character = SCR_ChimeraCharacter.Cast(playableManager.GetPlayableById(playableId).GetOwner());
 		if (character != null) 
 		{
 			SCR_Faction faction = SCR_Faction.Cast(character.GetFaction());
@@ -40,6 +47,6 @@ class PS_PlayerSelector : SCR_WLibComponentBase
 		m_wPlayerName.SetText(playerManager.GetPlayerName(m_iPlayer));
 		
 		
-		m_wReadyImage.SetVisible(PS_GameModeCoop.GetPlayerState(m_iPlayer) != PlayableControllerState.NotReady);
+		m_wReadyImage.SetVisible(PS_PlayableManager.GetInstance().GetPlayerState(m_iPlayer) != PS_EPlayableControllerState.NotReady);
 	}
 }
