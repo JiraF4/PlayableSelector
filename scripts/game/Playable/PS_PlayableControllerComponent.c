@@ -114,19 +114,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		
 		// Pin player if setted by admin
 		if (playerId != thisPlayerController.GetPlayerId()) playableManager.SetPlayerPin(playerId, true);
-		
-		/*
-		SCR_PlayerController playerController = SCR_PlayerController.Cast(GetOwner());
-		SCR_PlayerFactionAffiliationComponent playerFactionAffiliation = SCR_PlayerFactionAffiliationComponent.Cast(playerController.FindComponent(SCR_PlayerFactionAffiliationComponent));
-		SCR_Faction faction = SCR_Faction.Cast(playableCharacter.GetFaction());
-		playerFactionAffiliation.SetAffiliatedFaction(faction);
-		
-		
-		SCR_FactionManager factionManager = SCR_FactionManager.Cast(GetGame().GetFactionManager());
-		factionManager.UpdatePlayerFaction_S(playerFactionAffiliation);
-		
-		*/
-		
+				
 		//Print("RPC_SetPlayerPlayable 2: " + playerId.ToString() + " - " + playableId);
 		/*
 		SCR_GroupsManagerComponent groupsManagerComponent = SCR_GroupsManagerComponent.GetInstance();
