@@ -129,7 +129,6 @@ class PS_CoopLobby: MenuBase
 		GetGame().GetCallqueue().CallLater(UpdateCycle, 100);
 	}
 	
-	
 	// -------------------- Update content functions --------------------
 	
 	// "Hard" update, insert new widgets and call updateMenu
@@ -506,6 +505,9 @@ class PS_CoopLobby: MenuBase
 		if (!playerController) return false; // it may not exist befory synk completed
 		if (playableManager.GetPlayerState(playerController.GetPlayerId()) == PS_EPlayableControllerState.NotReady) return false;
 		
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if (gameMode.GetState() == SCR_EGameModeState.GAME) return true;
+		
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		int allReady = 0;
 		array<int> playerIds = new array<int>();
@@ -520,7 +522,6 @@ class PS_CoopLobby: MenuBase
 		}
 		
 		// Check for admin existance if need.
-		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		if (!adminExist && gameMode.IsAdminMode()) return false;
 		
 		return allReady == playerIds.Count();

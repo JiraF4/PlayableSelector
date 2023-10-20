@@ -175,6 +175,7 @@ ButtonWidgetClass {
        m_BackgroundSelectedHovered 1 1 1 0.162
        m_BackgroundClicked 1 1 1 0
        m_bShowBorderOnFocus 0
+       m_bNoBorderAnimation 1
       }
      }
      "no focus" 1
@@ -196,6 +197,7 @@ ButtonWidgetClass {
           SizeY 40
           OffsetBottom -40
          }
+         Color 1 1 1 0
         }
         ImageWidgetClass "{5EA8C925DF3CAF1B}" {
          Name "PinImage"
@@ -239,6 +241,7 @@ ButtonWidgetClass {
        m_BackgroundSelectedHovered 1 1 1 0.162
        m_BackgroundClicked 1 1 1 0
        m_bShowBorderOnFocus 0
+       m_bNoBorderAnimation 1
       }
      }
      "no focus" 1

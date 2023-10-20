@@ -71,7 +71,7 @@ class PS_CharacterSelector : SCR_ButtonImageComponent
 			m_wCharacterStatus.SetText("Disconnected");
 			m_wStateIcon.LoadImageFromSet(0, m_sUIWrapper, "disconnection");
 		} else {
-			if (playerId != 0) 
+			if (playerId != -1) 
 			{
 				m_wCharacterStatus.SetText(playerName);
 				m_wStateIcon.LoadImageFromSet(0, m_sUIWrapper, "player");

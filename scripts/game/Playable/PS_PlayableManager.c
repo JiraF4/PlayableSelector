@@ -43,6 +43,15 @@ class PS_PlayableManager : ScriptComponent
 		SCR_PlayerController playerController = SCR_PlayerController.Cast(playerManager.GetPlayerController(playerId));
 		playerController.SetInitialMainEntity(entity);
 		
+		// Set new player faction
+		PS_PlayableComponent playableComponent = GetPlayableById(playableId);
+		SCR_ChimeraCharacter playableCharacter = SCR_ChimeraCharacter.Cast(playableComponent.GetOwner());
+		SCR_PlayerFactionAffiliationComponent playerFactionAffiliation = SCR_PlayerFactionAffiliationComponent.Cast(playerController.FindComponent(SCR_PlayerFactionAffiliationComponent));
+		SCR_Faction faction = SCR_Faction.Cast(playableCharacter.GetFaction());
+		playerFactionAffiliation.SetAffiliatedFaction(faction);
+		SCR_FactionManager factionManager = SCR_FactionManager.Cast(GetGame().GetFactionManager());
+		factionManager.UpdatePlayerFaction_S(playerFactionAffiliation);
+		
 		// Someone leave lobby start game
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		if (gameMode.GetState() == SCR_EGameModeState.PREGAME)
