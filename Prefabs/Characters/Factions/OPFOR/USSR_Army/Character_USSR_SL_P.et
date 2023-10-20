@@ -1,7 +1,7 @@
-SCR_ChimeraCharacter : "{5436629450D8387A}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_SL.et" {
+PS_PlayableComponent : "{5436629450D8387A}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_SL.et" {
  ID "200D264F0EEA1A28"
  components {
-  SCR_PlayableComponent "{5E61249E802F3DC3}" {
+  PS_PlayableComponent "{5E61249E802F3DC3}" {
    m_name "#AR-Role_SquadLeader"
   }
  }

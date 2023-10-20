@@ -101,7 +101,7 @@ FrameWidgetClass {
                 Padding 48 15 48 25
                }
                Color 0.761 0.392 0.078 1
-               Text "Faction"
+               Text "#PS-Lobby_Factions"
                "Font Size" 48
                "Min Font Size" 48
                "Horizontal Alignment" Center
@@ -164,7 +164,7 @@ FrameWidgetClass {
                 VerticalAlign 2
                 Padding 48 15 48 25
                }
-               Text "Roles"
+               Text "#PS-Lobby_Roles"
                "Font Size" 48
                "Min Font Size" 48
                "Horizontal Alignment" Center
@@ -241,7 +241,7 @@ FrameWidgetClass {
                 VerticalAlign 2
                 Padding 48 15 48 25
                }
-               Text "Loadout preview"
+               Text "#PS-Lobby_LoadoutPreview"
                "Font Size" 48
                "Min Font Size" 48
                "Horizontal Alignment" Center
@@ -585,7 +585,7 @@ FrameWidgetClass {
                 VerticalAlign 2
                 Padding 48 15 48 25
                }
-               Text "Players"
+               Text "#PS-Lobby_Players"
                "Font Size" 48
                "Min Font Size" 48
                "Horizontal Alignment" Center
@@ -711,7 +711,7 @@ FrameWidgetClass {
              }
              components {
               SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
-               m_sLabel "Close lobby menu"
+               m_sLabel "#PS-Lobby_CloseLobby"
                m_sActionName "MenuBack"
               }
              }
@@ -725,7 +725,7 @@ FrameWidgetClass {
              }
              components {
               SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
-               m_sLabel "Chat"
+               m_sLabel "#PS-Lobby_Chat"
                m_sActionName "ChatToggle"
               }
              }
@@ -748,7 +748,7 @@ FrameWidgetClass {
              }
              components {
               SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
-               m_sLabel "Ready"
+               m_sLabel "#PS-Lobby_Ready"
                m_sActionName "MenuSelect"
               }
              }

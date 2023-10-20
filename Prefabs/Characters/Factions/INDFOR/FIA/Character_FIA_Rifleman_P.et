@@ -1,7 +1,7 @@
-SCR_ChimeraCharacter : "{84B40583F4D1B7A3}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_Rifleman.et" {
+PS_PlayableComponent : "{84B40583F4D1B7A3}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_Rifleman.et" {
  ID "520EC961A090B1EE"
  components {
-  SCR_PlayableComponent "{5E61249E2BF1588A}" {
+  PS_PlayableComponent "{5E61249E2BF1588A}" {
    m_name "#AR-Role_Rifleman"
   }
  }

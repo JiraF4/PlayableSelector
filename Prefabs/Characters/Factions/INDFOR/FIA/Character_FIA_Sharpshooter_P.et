@@ -1,7 +1,7 @@
-SCR_ChimeraCharacter : "{CE33AB22F61F3365}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_Sharpshooter.et" {
+PS_PlayableComponent : "{CE33AB22F61F3365}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_Sharpshooter.et" {
  ID "520EC961A090B1EE"
  components {
-  SCR_PlayableComponent "{5E820D1D0D17DCB7}" {
+  PS_PlayableComponent "{5E820D1D0D17DCB7}" {
    m_name "#AR-Role_Sharpshooter"
   }
  }

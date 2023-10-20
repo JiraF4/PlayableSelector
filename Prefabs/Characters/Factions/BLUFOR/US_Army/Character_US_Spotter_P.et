@@ -1,7 +1,7 @@
-SCR_ChimeraCharacter : "{1CA3D30464EE4674}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Spotter.et" {
+PS_PlayableComponent : "{1CA3D30464EE4674}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Spotter.et" {
  ID "520EC961A090BBD5"
  components {
-  SCR_PlayableComponent "{5E61249FB0B53C9E}" {
+  PS_PlayableComponent "{5E61249FB0B53C9E}" {
    m_name "#AR-Role_Spotter"
   }
  }

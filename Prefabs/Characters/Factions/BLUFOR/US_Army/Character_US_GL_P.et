@@ -1,8 +1,8 @@
-SCR_ChimeraCharacter : "{84029128FA6F6BB9}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_GL.et" {
+PS_PlayableComponent : "{84029128FA6F6BB9}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_GL.et" {
  ID "51FA8A5FA6C2005C"
  components {
   PS_PlayableComponent "{5EA716137933159E}" {
-   m_name "Gena"
+   m_name "#AR-Role_Grenadier"
   }
  }
 }

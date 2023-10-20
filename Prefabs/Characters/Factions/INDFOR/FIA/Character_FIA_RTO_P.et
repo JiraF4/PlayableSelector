@@ -1,7 +1,7 @@
-SCR_ChimeraCharacter : "{23D81C023DBF85AC}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_RTO.et" {
+PS_PlayableComponent : "{23D81C023DBF85AC}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_RTO.et" {
  ID "520EC961A090B1EE"
  components {
-  SCR_PlayableComponent "{5E61249E3351F4F4}" {
+  PS_PlayableComponent "{5E61249E3351F4F4}" {
    m_name "#AR-Role_RadioOperator"
   }
  }

@@ -1,5 +1,5 @@
 MetaFileClass {
- Name "{16D2DEADCFDC8B73}Prefabs/SCR_GameModeCoop.et"
+ Name "{F64CCAF87CCCF567}Prefabs/MP/Modes/PS_GameModeCoop.et"
  Configurations {
   EntityTemplateResourceClass PC {
   }

@@ -1,48 +1,11 @@
 SCR_AIWorld : "{E0A05C76552E7F58}Prefabs/AI/SCR_AIWorld.et" {
  coords 111.676 1 127.135
 }
-PS_GameModeCoop PS_GameModeCoop1 {
- components {
-  PS_PlayableManager "{5EA7207A63692FF0}" {
-  }
-  SCR_BaseFactionManagerComponent "{5EA716164D099B76}" {
-  }
-  SCR_CallsignGroupComponent "{5EA716163E0AE006}" {
-  }
-  SCR_CallsignManagerComponent "{5EA72061D0379F23}" {
-  }
-  SCR_FreeSpawnHandlerComponent "{5EA71612593B1E72}" {
-  }
-  SCR_GroupsManagerComponent "{5EA716161046DC24}" {
-  }
-  SCR_PossessSpawnHandlerComponent "{5EA716125FF8CB0E}" {
-  }
-  SCR_PossessingManagerComponent "{5EA72043140CAD67}" {
-  }
-  SCR_PreGameGameModeStateComponent "{5EA763867AFD54D8}" {
-   m_fDuration 0
-  }
-  SCR_RespawnSystemComponent "{5EA71612F9CF77CB}" {
-   m_SpawnLogic SCR_SpawnLogic "{5EA71612BDD72662}" {
-   }
-  }
-  SCR_SpawnPointSpawnHandlerComponent "{5EA7161267F6FB18}" {
-  }
-  RplComponent "{5EA71612E84025F1}" {
-   Streamable Disabled
-  }
- }
- PlayerControllerPrefab "{4E5DAC62A374950F}Prefabs/Characters/Core/DefaultPlayerControllerMP_Coop.et"
- {
-  ItemPreviewManagerEntity ItemPreviewManagerEntity1 {
-   coords -29.733 0 14.069
-   PreviewWorld "{4391FE7994EE6FE2}Prefabs/World/Game/InventoryPreviewWorld.et"
-  }
- }
-}
 PerceptionManager PerceptionManager1 : "{028DAEAD63E056BE}Prefabs/World/Game/PerceptionManager.et" {
  coords 113.126 1 124.397
 }
 SCR_FactionManager FactionManager_Editor1 : "{4A188E44289B9A50}Prefabs/MP/Managers/Factions/FactionManager_Editor.et" {
- coords 83.696 1 152.948
+ coords 115.591 1 155.429
+}
+PS_GameModeCoop PS_GameModeCoop1 : "{F64CCAF87CCCF567}Prefabs/MP/Modes/PS_GameModeCoop.et" {
 }

@@ -1,7 +1,7 @@
-SCR_ChimeraCharacter : "{0F6689B491641155}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Sniper.et" {
+PS_PlayableComponent : "{0F6689B491641155}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Sniper.et" {
  ID "520EC961A090BBD5"
  components {
-  SCR_PlayableComponent "{5E61249FA959BDF5}" {
+  PS_PlayableComponent "{5E61249FA959BDF5}" {
    m_name "#AR-Role_Sniper"
   }
  }
