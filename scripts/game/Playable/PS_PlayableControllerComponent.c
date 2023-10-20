@@ -23,30 +23,83 @@ class PS_PlayableControllerComponent : ScriptComponent
 		playableManager.ApplyPlayable(playerController.GetPlayerId());
 	}
 	
+	void UnpinPlayer(int playerId)
+	{
+		Rpc(RPC_UnpinPlayer, playerId)
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	protected void RPC_UnpinPlayer(int playerId)
+	{
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		
+		// If not admin you can change only herself
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
+		if (playerRole != EPlayerRole.ADMINISTRATOR) return;
+		
+		playableManager.SetPlayerPin(playerId, false);
+	}
+	
+	void KickPlayer(int playerId)
+	{
+		Rpc(RPC_KickPlayer, playerId)
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	protected void RPC_KickPlayer(int playerId)
+	{
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		
+		// If not admin you can change only herself
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
+		if (playerRole != EPlayerRole.ADMINISTRATOR) return;
+		
+		playerManager.KickPlayer(playerId, PlayerManagerKickReason.KICK, 0);
+	}
+	
 	// -------------------- Set ---------------------
-	void SetPlayerState(PS_EPlayableControllerState state)
+	void SetPlayerState(int playerId, PS_EPlayableControllerState state)
 	{
-		Rpc(RPC_SetPlayerState, state)
+		Rpc(RPC_SetPlayerState, playerId, state)
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
-	protected void RPC_SetPlayerState(PS_EPlayableControllerState state)
+	protected void RPC_SetPlayerState(int playerId, PS_EPlayableControllerState state)
 	{
+		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		PlayerController playerController = PlayerController.Cast(GetOwner());
-		playableManager.SetPlayerState(playerController.GetPlayerId(), state);
+		
+		// If not admin you can change only herself
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
+		if (thisPlayerController.GetPlayerId() != playerId && playerRole != EPlayerRole.ADMINISTRATOR) return;
+		
+		playableManager.SetPlayerState(playerId, state);
 	}
 	
-	void SetPlayerPlayable(int playableId) 
+	void SetPlayerPlayable(int playerId, RplId playableId) 
 	{
-		Rpc(RPC_SetPlayerPlayable, playableId);
+		Rpc(RPC_SetPlayerPlayable, playerId, playableId);
 	}
-	
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
-	protected void RPC_SetPlayerPlayable(RplId playableId) 
+	protected void RPC_SetPlayerPlayable(int playerId, RplId playableId) 
 	{
+		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		PlayerController playerController = PlayerController.Cast(GetOwner());
-		int playerId = playerController.GetPlayerId();
+		
+		// If not admin you can change only herself
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
+		if (thisPlayerController.GetPlayerId() != playerId && playerRole != EPlayerRole.ADMINISTRATOR) return;
+		
+		// You can't change playable if pinned and not admin
+		if (playableManager.GetPlayerPin(playerId) && playerRole != EPlayerRole.ADMINISTRATOR) return;
+		
+		// don't check other staff if empty playable
+		if (playableId == RplId.Invalid()) {
+			playableManager.SetPlayerPlayable(playerId, playableId);
+			return;
+		}
 		
 		PS_PlayableComponent playableComponent = playableManager.GetPlayableById(playableId);
 		SCR_ChimeraCharacter playableCharacter = SCR_ChimeraCharacter.Cast(playableComponent.GetOwner());
@@ -58,6 +111,9 @@ class PS_PlayableControllerComponent : ScriptComponent
 		}
 		
 		playableManager.SetPlayerPlayable(playerId, playableId);
+		
+		// Pin player if setted by admin
+		if (playerId != thisPlayerController.GetPlayerId()) playableManager.SetPlayerPin(playerId, true);
 		
 		/*
 		SCR_PlayerController playerController = SCR_PlayerController.Cast(GetOwner());
@@ -86,25 +142,6 @@ class PS_PlayableControllerComponent : ScriptComponent
 		groupsManagerComponent.RegisterGroup(group);
 		playerControllerGroupComponent.RPC_AskJoinGroup(group.GetGroupID());
 		*/
-	}
-	
-	
-	// olds here
-	void SetPlayerPlayableReconnect(int playerId, int playableId) 
-	{
-		Rpc(RPC_SetPlayerPlayableReconnect, playerId, playableId);
-	}
-	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
-	protected void RPC_SetPlayerPlayableReconnect(int playerId, int playableId) 
-	{
-		/*
-		SCR_PlayerController playerController = SCR_PlayerController.Cast(GetGame().GetPlayerManager().GetPlayerController(playerId));
-		map<int, PS_PlayableComponent> playables = PS_PlayableComponent.GetPlayables();
-		SCR_ChimeraCharacter playable = SCR_ChimeraCharacter.Cast(playables[playableId].GetOwner());
-		playerController.SetPossessedEntity(playable); // reset ai? but still broken...
-		playerController.SetInitialMainEntity(playable);
-		*/
-	}
-	
+	}	
 	
 }

@@ -10,8 +10,10 @@ class PS_CharacterSelector : SCR_ButtonImageComponent
 	ImageWidget m_wCharacterFactionColor;
 	ImageWidget m_wCharacterStatusIcon;
 	ImageWidget m_wUnitIcon;
+	ImageWidget m_wStateIcon;
 	TextWidget m_wCharacterClassName;
 	TextWidget m_wCharacterStatus;
+	ButtonWidget m_wDisconnectionButton;
 	
 	protected ResourceName m_sUIWrapper = "{2EFEA2AF1F38E7F0}UI/Textures/Icons/icons_wrapperUI-64.imageset";
 	
@@ -23,6 +25,16 @@ class PS_CharacterSelector : SCR_ButtonImageComponent
 		m_wUnitIcon = ImageWidget.Cast(w.FindAnyWidget("UnitIcon"));
 		m_wCharacterClassName = TextWidget.Cast(w.FindAnyWidget("CharacterClassName"));
 		m_wCharacterStatus = TextWidget.Cast(w.FindAnyWidget("CharacterStatus"));
+		m_wStateIcon = ImageWidget.Cast(w.FindAnyWidget("StateIcon"));
+		m_wDisconnectionButton = ButtonWidget.Cast(w.FindAnyWidget("DisconnectionButton"));
+		
+		GetGame().GetCallqueue().CallLater(AddOnClick, 0);
+	}
+	
+	void AddOnClick()
+	{
+		SCR_ButtonComponent disconnectionButtonHandler = SCR_ButtonComponent.Cast(m_wDisconnectionButton.FindHandler(SCR_ButtonComponent));
+		disconnectionButtonHandler.m_OnClicked.Insert(DisconnectionButtonClicked);
 	}
 	
 	void SetPlayable(PS_PlayableComponent playable)
@@ -53,25 +65,47 @@ class PS_CharacterSelector : SCR_ButtonImageComponent
 		if (character.GetDamageManager().IsDestroyed()) 
 		{
 			m_wCharacterStatus.SetText("Dead");
-			SetImage(m_sUIWrapper, "death");
+			m_wStateIcon.LoadImageFromSet(0, m_sUIWrapper, "death");
 		} else if (playerId != -1 && playerName == "")
 		{
 			m_wCharacterStatus.SetText("Disconnected");
-			SetImage(m_sUIWrapper, "disconnection");
+			m_wStateIcon.LoadImageFromSet(0, m_sUIWrapper, "disconnection");
 		} else {
 			if (playerId != 0) 
 			{
 				m_wCharacterStatus.SetText(playerName);
-				SetImage(m_sUIWrapper, "player");
+				m_wStateIcon.LoadImageFromSet(0, m_sUIWrapper, "player");
 			}else{
 				m_wCharacterStatus.SetText("-");
-				SetImage(m_sUIWrapper, "careerCircleOutline");
+				m_wStateIcon.LoadImageFromSet(0, m_sUIWrapper, "careerCircleOutline");
 			}
+		}
+		
+		// If admin show kick button for non admins
+		PlayerController currentPlayerController = GetGame().GetPlayerController();
+		EPlayerRole currentPlayerRole = playerManager.GetPlayerRoles(currentPlayerController.GetPlayerId());
+		if (currentPlayerRole == EPlayerRole.ADMINISTRATOR && (playerId != -1 && playerName == "")) {
+			m_wStateIcon.SetVisible(false);
+			m_wDisconnectionButton.SetVisible(true);
+		} else {
+			m_wStateIcon.SetVisible(true);
+			m_wDisconnectionButton.SetVisible(false);
 		}
 	}
 	
 	int GetPlayableId()
 	{
 		return m_playable.GetId();
+	}
+	
+	
+	// -------------------- Buttons events --------------------
+	// Admin may force release reconnecting playable
+	void DisconnectionButtonClicked(SCR_ButtonBaseComponent disconnectionButton)
+	{
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		playableController.SetPlayerPlayable(playableManager.GetPlayerByPlayable(m_playable.GetId()), -1);
 	}
 }

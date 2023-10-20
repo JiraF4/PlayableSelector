@@ -10,13 +10,15 @@ class PS_GameModeCoopClass: SCR_BaseGameModeClass
 //------------------------------------------------------------------------------------------------
 class PS_GameModeCoop : SCR_BaseGameMode
 {
-	// Time during which disconnected players reserver playable for reconnection in ms, -1 for infinity time
-	int m_iAvalibleReconnectTime = 2 * 1000 * 60;
-		
+	[Attribute("120000", UIWidgets.EditBox, "Time during which disconnected players reserve playable for reconnection in ms, -1 for infinity time", "", category: WB_GAME_MODE_CATEGORY)]
+	int m_iAvailableReconnectTime = ;
+	
+	[Attribute("1", uiwidget: UIWidgets.CheckBox, "Game may be started only if admin exists on server.", category: WB_GAME_MODE_CATEGORY)]
+	protected bool m_bAdminMode;
+	
 	override void OnGameStart()
 	{		
 		super.OnGameStart();
-		
 		if (Replication.IsClient()) {
 			GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.CoopLobby);
 		}
@@ -37,10 +39,10 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	{
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		playableManager.SetPlayerState(playerId, PS_EPlayableControllerState.Disconected); 
-		if (m_iAvalibleReconnectTime > 0) GetGame().GetCallqueue().CallLater(RemoveDisconnectedPlayer, m_iAvalibleReconnectTime, false, playerId);
+		if (m_iAvailableReconnectTime > 0) GetGame().GetCallqueue().CallLater(RemoveDisconnectedPlayer, m_iAvailableReconnectTime, false, playerId);
 	}
 	
-	// If after m_iAvalibleReconnectTime player still disconnected release playable
+	// If after m_iAvailableReconnectTime player still disconnected release playable
 	void RemoveDisconnectedPlayer(int playerId)
 	{
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
@@ -49,6 +51,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		{
 			playableManager.SetPlayerPlayable(playerId, RplId.Invalid());
 		}
+	}
+	
+	bool IsAdminMode()
+	{
+		return m_bAdminMode;
 	}
 };
 

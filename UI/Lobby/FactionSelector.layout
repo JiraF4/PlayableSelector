@@ -8,6 +8,14 @@ ButtonWidgetClass {
   SCR_EventHandlerComponent "{5D6D3524328955AF}" {
   }
   PS_FactionSelector "{5EA716101558EC35}" {
+   m_bMouseOverToFocus 1
+   m_bCanBeToggled 1
+   m_BackgroundDefault 0.038 0.038 0.038 0.825
+   m_BackgroundHovered 0.038 0.038 0.038 0.825
+   m_BackgroundSelected 0.014 0.014 0.014 0
+   m_BackgroundSelectedHovered 0.014 0.014 0.014 0
+   m_BackgroundClicked 0.014 0.014 0.014 0
+   m_bShowBorderOnHover 1
   }
  }
  style blank

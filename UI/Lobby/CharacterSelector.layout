@@ -6,6 +6,12 @@ ButtonWidgetClass {
  Color 0 1 0.019 0
  components {
   PS_CharacterSelector "{5EA716114A6558BF}" {
+   m_sSoundClicked ""
+   m_bCanBeToggled 1
+   m_BackgroundSelectedHovered 0.76 0.392 0.08 0.3
+   m_BackgroundClicked 0.76 0.392 0.08 0.3
+   m_sTexture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
+   m_sImageName "player"
   }
  }
  {
@@ -112,7 +118,7 @@ ButtonWidgetClass {
        "Vertical Alignment" Center
       }
       ImageWidgetClass "{5D6D1B995C4BBFB9}" {
-       Name "Image"
+       Name "StateIcon"
        Slot FrameWidgetSlot "{5D6D1B99A45E509C}" {
         PositionX 290
         OffsetLeft 290
@@ -123,8 +129,9 @@ ButtonWidgetClass {
         SizeY 40
         OffsetBottom -40
        }
-       Texture "{DB2E20B0E888AAA7}UI/Textures/Conflict/no-radio--range-icon-outline_UI.edds"
-       Size 64 64
+       Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
+       Image "careerCircleOutline"
+       Size 32 32
       }
       TextWidgetClass "{5D6D1B99172B8829}" {
        Name "CharacterStatus"
@@ -141,6 +148,70 @@ ButtonWidgetClass {
        "Font Size" 20
        "Min Font Size" 20
        "Vertical Alignment" Center
+      }
+      ButtonWidgetClass "{5EA90318AA804736}" {
+       Name "DisconnectionButton"
+       Slot FrameWidgetSlot "{5EA8C93F5E685F59}" {
+        Anchor 0 0 0 0
+        PositionX 290
+        OffsetLeft 290
+        PositionY 0
+        OffsetTop 0
+        SizeX 40
+        OffsetRight -330
+        SizeY 40
+        OffsetBottom -40
+       }
+       Color 0 1 0.019 0
+       components {
+        SCR_ButtonComponent "{5EA8C93F0C257FF7}" {
+         m_sSoundHovered ""
+         m_sSoundClicked ""
+         m_BackgroundDefault 1 1 1 0
+         m_BackgroundHovered 1 1 1 0.162
+         m_BackgroundSelected 1 1 1 0
+         m_BackgroundSelectedHovered 1 1 1 0.162
+         m_BackgroundClicked 1 1 1 0
+         m_bShowBorderOnFocus 0
+        }
+       }
+       "no focus" 1
+       {
+        FrameWidgetClass "{5EA90318AA804738}" {
+         Name "DisconnectionButtonFrame"
+         Slot ButtonWidgetSlot "{5EA8C93CB4241314}" {
+         }
+         {
+          ImageWidgetClass "{5EA90318AA804739}" {
+           Name "Background"
+           Slot FrameWidgetSlot "{5D6E8206B132EE77}" {
+            PositionX 0
+            OffsetLeft 0
+            PositionY 0
+            OffsetTop 0
+            SizeX 40
+            OffsetRight -40
+            SizeY 40
+            OffsetBottom -40
+           }
+          }
+          ImageWidgetClass "{5EA90318AA80473A}" {
+           Name "DisconnectionImage"
+           Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
+            OffsetLeft 0
+            OffsetTop 0
+            SizeX 40
+            OffsetRight -40
+            SizeY 40
+            OffsetBottom -40
+           }
+           Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
+           Image "disconnection"
+           Size 32 32
+          }
+         }
+        }
+       }
       }
      }
     }

@@ -34,6 +34,9 @@ class PS_CoopLobby: MenuBase
 	// Current selected from widget faction
 	protected Faction m_fCurrentFaction;
 	
+	// Admins can move other players, save selectted player id
+	protected int m_iCurrentPlayer = 0;
+		
 	// Factions collection widget
 	Widget m_wFactionList;
 	protected ref array<Widget> m_aFactionListWidgets = {};
@@ -64,6 +67,7 @@ class PS_CoopLobby: MenuBase
 	
 	// playables count on revious update, for exclude redunant widget recreation
 	int m_iOldPlayablesCount = 0;
+	int m_iOldPlayersCount = 0;
 	
 	
 	// -------------------- Menu events --------------------
@@ -90,6 +94,9 @@ class PS_CoopLobby: MenuBase
 		GetGame().GetInputManager().AddActionListener("ChatToggle", EActionTrigger.DOWN, Action_ChatOpen);
 		m_bNavigationButtonClose.m_OnClicked.Insert(Action_Exit);
 		GetGame().GetInputManager().AddActionListener("MenuBack", EActionTrigger.DOWN, Action_Exit);
+		
+		// by default select herself
+		PlayerController playerController = GetGame().GetPlayerController();
 		
 		// Start update cycle
 		GetGame().GetCallqueue().CallLater(UpdateCycle, 100);
@@ -129,6 +136,12 @@ class PS_CoopLobby: MenuBase
 	void Fill()
 	{		
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		// await player initialization
+		PlayerController playerController = GetGame().GetPlayerController();
+		if (!playerController) return;
+		if (m_iCurrentPlayer == 0) m_iCurrentPlayer = playerController.GetPlayerId();
+		if (playableManager.GetPlayerState(m_iCurrentPlayer) == PS_EPlayableControllerState.Disconected) m_iCurrentPlayer = playerController.GetPlayerId();
+		
 		map<RplId, PS_PlayableComponent> playables = playableManager.GetPlayables();
 		
 		array<PS_PlayableComponent> playablesSorted = new array<PS_PlayableComponent>;
@@ -189,8 +202,12 @@ class PS_CoopLobby: MenuBase
 				factionPlayablesList.Insert(playable);
 		}
 		
-		// Update 
-		ReFillPlayersList(); // ReFill players TODO: add soft update
+		// ReFill players if need
+		array<int> playerIds = new array<int>();
+		GetGame().GetPlayerManager().GetPlayers(playerIds);
+		if (m_iOldPlayersCount != playerIds.Count()) ReFillPlayersList();
+		m_iOldPlayersCount = playerIds.Count();
+		
 		UpdateMenu();
 	}
 	
@@ -217,7 +234,20 @@ class PS_CoopLobby: MenuBase
 		foreach (Widget characterWidget : m_aCharactersListWidgets)
 		{
 			PS_CharacterSelector characterHandler = PS_CharacterSelector.Cast(characterWidget.FindHandler(PS_CharacterSelector));
+			if (playableManager.GetPlayerByPlayable(characterHandler.GetPlayableId()) == m_iCurrentPlayer) {
+				if (!characterHandler.IsToggled()) characterHandler.SetToggled(true);
+			} else if (characterHandler.IsToggled()) characterHandler.SetToggled(false);
 			characterHandler.UpdatePlayableInfo();
+		}
+		
+		// update every player widget
+		foreach (Widget playerWidget : m_aPlayersListWidgets)
+		{
+			PS_PlayerSelector playerHandler = PS_PlayerSelector.Cast(playerWidget.FindHandler(PS_PlayerSelector));
+			if (playerHandler.GetPlayerId() == m_iCurrentPlayer) {
+				if (!playerHandler.IsToggled()) playerHandler.SetToggled(true);
+			} else if (playerHandler.IsToggled()) playerHandler.SetToggled(false);
+			playerHandler.UpdatePlayerInfo();
 		}
 		
 		m_preview.UpdatePreviewInfo();
@@ -283,6 +313,7 @@ class PS_CoopLobby: MenuBase
 			Widget playerSelector = GetGame().GetWorkspace().CreateWidgets(m_sPlayerSelectorPrefab);
 			PS_PlayerSelector handler = PS_PlayerSelector.Cast(playerSelector.FindHandler(PS_PlayerSelector));
 			handler.SetPlayer(playerId);
+			handler.m_OnClicked.Insert(PlayerClick);
 			m_aPlayersListWidgets.Insert(playerSelector);
 			m_wPlayersList.AddChild(playerSelector);
 		}
@@ -298,12 +329,12 @@ class PS_CoopLobby: MenuBase
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		if (playableManager.GetPlayerState(playerController.GetPlayerId()) == PS_EPlayableControllerState.Ready) {
-			playableController.SetPlayerState(PS_EPlayableControllerState.NotReady);
+			playableController.SetPlayerState(playerController.GetPlayerId(), PS_EPlayableControllerState.NotReady);
 			return;
 		}
 		if (playableManager.GetPlayableByPlayer(playerController.GetPlayerId()) != RplId.Invalid()) 
 		{
-			playableController.SetPlayerState(PS_EPlayableControllerState.Ready);
+			playableController.SetPlayerState(playerController.GetPlayerId(), PS_EPlayableControllerState.Ready);
 		}
 	}
 	
@@ -349,6 +380,23 @@ class PS_CoopLobby: MenuBase
 		ReFillCharacterList();
 	}
 	
+	// ----- Players -----
+	protected void PlayerClick(SCR_ButtonBaseComponent playerSelector)
+	{	
+		// If not admin you can change only herself
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		PlayerController playerController = GetGame().GetPlayerController();
+		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
+		if (playerRole != EPlayerRole.ADMINISTRATOR) return;
+		
+		SCR_UISoundEntity.SoundEvent(SCR_SoundEvent.CLICK);
+		
+		PS_PlayerSelector handler = PS_PlayerSelector.Cast(playerSelector);
+		m_iCurrentPlayer = handler.GetPlayerId();
+		
+		UpdateMenu();
+	}
+	
 
 	// ----- Character -----
 	// Reset preview character to selected playable or null
@@ -380,35 +428,31 @@ class PS_CoopLobby: MenuBase
 	// Select playable from widget for player, or change player state if current playable already selected
 	protected void CharacterClick(SCR_ButtonBaseComponent characterSelector)
 	{
+		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		if (!characterSelector.IsToggled())
-		{
-			characterSelector.SetToggled(true);			
-		}
-			
-		
-		Widget characterWidget = characterSelector.GetRootWidget();
-		foreach (Widget widget: m_aCharactersListWidgets)
-		{
-			if (widget != characterWidget)
-			{
-				PS_CharacterSelector otherHandler = PS_CharacterSelector.Cast(widget.FindHandler(PS_CharacterSelector));
-				otherHandler.SetToggled(false);
-			}
-		}
-		
 		PS_CharacterSelector handler = PS_CharacterSelector.Cast(characterSelector);
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		
-		if (handler.GetPlayableId() == playableManager.GetPlayableByPlayer(playerController.GetPlayerId())
-		&& playableManager.GetPlayerState(playerController.GetPlayerId()) == PS_EPlayableControllerState.NotReady) {
-			playableController.SetPlayerState(PS_EPlayableControllerState.Ready);
+		if (   handler.GetPlayableId() == playableManager.GetPlayableByPlayer(playerController.GetPlayerId())
+			&& playableManager.GetPlayerState(playerController.GetPlayerId()) == PS_EPlayableControllerState.NotReady
+			&& m_iCurrentPlayer == playerController.GetPlayerId()
+		) {
+			playableController.SetPlayerState(playerController.GetPlayerId(), PS_EPlayableControllerState.Ready);
 			return;
+		} else {
+			playableController.SetPlayerState(playerController.GetPlayerId(), PS_EPlayableControllerState.NotReady);
 		}
 		
-		playableController.SetPlayerState(PS_EPlayableControllerState.NotReady);
-		playableController.SetPlayerPlayable(handler.GetPlayableId());
+		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
+		if (playerRole != EPlayerRole.ADMINISTRATOR && playableManager.GetPlayerPin(m_iCurrentPlayer)) return;
+		
+		if (playableManager.GetPlayerByPlayable(handler.GetPlayableId()) != -1) return;
+		SCR_UISoundEntity.SoundEvent(SCR_SoundEvent.CLICK);
+		
+		// apply changes to SELECTED player
+		playableController.SetPlayerState(m_iCurrentPlayer, PS_EPlayableControllerState.NotReady);
+		playableController.SetPlayerPlayable(m_iCurrentPlayer, handler.GetPlayableId());
 	}	
 	
 	// -------------------- Extra lobby functions --------------------
@@ -459,6 +503,7 @@ class PS_CoopLobby: MenuBase
 		
 		// PlayerManager sync take some time sooo check herself separeted before
 		PlayerController playerController = GetGame().GetPlayerController();
+		if (!playerController) return false; // it may not exist befory synk completed
 		if (playableManager.GetPlayerState(playerController.GetPlayerId()) == PS_EPlayableControllerState.NotReady) return false;
 		
 		PlayerManager playerManager = GetGame().GetPlayerManager();
@@ -466,10 +511,17 @@ class PS_CoopLobby: MenuBase
 		array<int> playerIds = new array<int>();
 		GetGame().GetPlayerManager().GetAllPlayers(playerIds);
 		if (playerIds.Count() == 0) return false;
+		bool adminExist = false;
 		foreach (int playerId: playerIds)
 		{
+			EPlayerRole playerRole = playerManager.GetPlayerRoles(playerId);
+			if (playerRole == EPlayerRole.ADMINISTRATOR) adminExist = true;
 			if (playableManager.GetPlayerState(playerId) != PS_EPlayableControllerState.NotReady) allReady++;
 		}
+		
+		// Check for admin existance if need.
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if (!adminExist && gameMode.IsAdminMode()) return false;
 		
 		return allReady == playerIds.Count();
 	}

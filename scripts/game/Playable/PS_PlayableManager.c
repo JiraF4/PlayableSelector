@@ -15,6 +15,7 @@ class PS_PlayableManager : ScriptComponent
 	ref map<int, PS_EPlayableControllerState> m_playersStates = new map<int, PS_EPlayableControllerState>;
 	ref map<int, RplId> m_playersPlayable = new map<int, RplId>;
 	ref map<RplId, int> m_playablePlayers = new map<RplId, int>; // reversed m_playersPlayable for fast search
+	ref map<int, bool> m_playersPin = new map<int, bool>; // is player pined
 		
 	// Clients also don't give a shit about groups, soo we save staff here
 	// TODO: move to playable 
@@ -87,6 +88,12 @@ class PS_PlayableManager : ScriptComponent
 		return groupName;
 	}
 	
+	bool GetPlayerPin(int playerId)
+	{
+		if (!m_playersPin.Contains(playerId)) return false;
+		return m_playersPin[playerId];
+	}
+	
 	// -------------------------- Set local ----------------------------
 	// Execute on every client and server
 	void RegisterPlayable(PS_PlayableComponent playableComponent)
@@ -105,7 +112,7 @@ class PS_PlayableManager : ScriptComponent
 	void RPC_SetPlayerPlayable(int playerId, RplId PlayableId)
 	{
 		RplId oldPlayable = GetPlayableByPlayer(playerId);
-		if (oldPlayable != 0) m_playablePlayers[oldPlayable] = -1;
+		if (oldPlayable != RplId.Invalid()) m_playablePlayers[oldPlayable] = -1;
 		
 		m_playersPlayable[playerId] = PlayableId;
 		m_playablePlayers[PlayableId] = playerId;
@@ -131,6 +138,17 @@ class PS_PlayableManager : ScriptComponent
 	void RPC_SetPlayableGroupName(RplId PlayableId, string groupName)
 	{
 		m_playableGroups[PlayableId] = groupName;
+	}
+	
+	void SetPlayerPin(int playerId, bool pined)
+	{
+		RPC_SetPlayerPin(playerId, pined);
+		Rpc(RPC_SetPlayerPin, playerId, pined);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RPC_SetPlayerPin(int playerId, bool pined)
+	{
+		m_playersPin[playerId] = pined;
 	}
 	
 	// Send our precision data, we need it on clients
@@ -169,6 +187,15 @@ class PS_PlayableManager : ScriptComponent
 			writer.WriteInt(m_playablePlayers.GetKey(i));
 			writer.WriteInt(m_playablePlayers.GetElement(i));
 		}
+		
+		int playersPinCount = m_playersPin.Count();
+		writer.WriteInt(playersPinCount);
+		for (int i = 0; i < playersPinCount; i++)
+		{
+			writer.WriteInt(m_playersPin.GetKey(i));
+			writer.WriteBool(m_playersPin.GetElement(i));
+		}
+		
 		
 		return true;
 	}
@@ -221,6 +248,18 @@ class PS_PlayableManager : ScriptComponent
 			reader.ReadInt(value);
 			
 			m_playablePlayers.Insert(key, value);
+		}
+		
+		int playersPinCount;
+		reader.ReadInt(playersPinCount);
+		for (int i = 0; i < playersPinCount; i++)
+		{
+			int key;
+			bool value;
+			reader.ReadInt(key);
+			reader.ReadBool(value);
+			
+			m_playersPin.Insert(key, value);
 		}
 		
 		return true;

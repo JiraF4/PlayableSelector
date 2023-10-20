@@ -39,7 +39,7 @@ class PS_PlayableComponent : ScriptComponent
 			}
 		}
 	}
-	
+		
 	string GetName()
 	{
 		return m_name;

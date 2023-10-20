@@ -4,6 +4,8 @@ VerticalLayoutWidgetClass {
  }
  components {
   PS_RolesGroup "{5EA716101FDA15F1}" {
+   m_sSoundHovered ""
+   m_sSoundClicked ""
   }
  }
  {

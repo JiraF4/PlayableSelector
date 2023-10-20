@@ -6,6 +6,15 @@ ButtonWidgetClass {
  Color 0 1 0.019 0
  components {
   PS_PlayerSelector "{5EA716117F78313D}" {
+   m_sSoundClicked ""
+   m_bCanBeToggled 1
+   m_BackgroundDefault 1 1 1 0
+   m_BackgroundHovered 1 1 1 0.162
+   m_BackgroundSelected 1 1 1 0
+   m_BackgroundSelectedHovered 1 1 1 0.162
+   m_BackgroundClicked 1 1 1 0
+   m_bShowBorderOnFocus 0
+   m_bNoBorderAnimation 1
   }
  }
  "no focus" 1
@@ -19,14 +28,32 @@ ButtonWidgetClass {
      Prefab "{5D6D1B9A2749B71D}"
      Name "PlayerFactionColor"
      Slot FrameWidgetSlot "{5D6D1B96C41F631C}" {
+      PositionX 6
+      OffsetLeft 6
+      PositionY 0
+      OffsetTop 0
+      SizeX 6
+      OffsetRight -12
+      SizeY 40
+      OffsetBottom -40
+     }
+     Color 0.376 0.749 0.749 1
+    }
+    ImageWidgetClass "{5EA8C92131464825}" {
+     Prefab "{5D6D1B9A2749B71D}"
+     Name "PlayerSelectionColor"
+     Slot FrameWidgetSlot "{5D6D1B96C41F631C}" {
+      Anchor 0 0 0 0
+      PositionX 0
       OffsetLeft 0
+      PositionY 0
       OffsetTop 0
       SizeX 6
       OffsetRight -6
       SizeY 40
       OffsetBottom -40
      }
-     Color 0.376 0.749 0.749 1
+     Color 0.561 0.439 0.071 1
     }
     TextWidgetClass "{5D6D1B96C41F639B}" {
      Prefab "{5D6D1B99A45E5176}"
@@ -34,6 +61,7 @@ ButtonWidgetClass {
      Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
       PositionX 16
       OffsetLeft 16
+      PositionY 0
       OffsetTop 0
       SizeX 216
       OffsetRight -232
@@ -57,10 +85,6 @@ ButtonWidgetClass {
       SizeY 40
       OffsetBottom -40
      }
-     components {
-      PS_PlayerSelector "{5EA716101B291235}" {
-      }
-     }
      Text "USA"
      "Font Size" 20
      "Min Font Size" 20
@@ -72,6 +96,7 @@ ButtonWidgetClass {
      Slot FrameWidgetSlot "{5D6ECAA19D588888}" {
       PositionX 360
       OffsetLeft 360
+      PositionY 0
       OffsetTop 0
       SizeX 40
       OffsetRight -400
@@ -81,6 +106,178 @@ ButtonWidgetClass {
      Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
      Image "check"
      Size 32 32
+    }
+    ImageWidgetClass "{5EA8C93C82EFEDBC}" {
+     Name "Background"
+     Slot FrameWidgetSlot "{5D6E8206B132EE77}" {
+      PositionX 0
+      OffsetLeft 0
+      PositionY 0
+      OffsetTop 0
+      SizeX 400
+      OffsetRight -400
+      SizeY 40
+      OffsetBottom -40
+     }
+    }
+    PanelWidgetClass "{5EA8C92152DB446E}" {
+     Name "Border"
+     Slot FrameWidgetSlot "{5D6F1490EBB9691E}" {
+      PositionX 2
+      OffsetLeft 2
+      PositionY 0
+      OffsetTop 0
+      SizeX 400
+      OffsetRight -402
+      SizeY 40
+      OffsetBottom -40
+     }
+     Color 0.761 0.392 0.078 1
+     style outline_2px
+    }
+    ImageWidgetClass "{5EA8C93C2D1DC41F}" {
+     Name "PinImage"
+     Slot FrameWidgetSlot "{5D6ECAA19D588888}" {
+      PositionX 192
+      OffsetLeft 192
+      PositionY 0
+      OffsetTop 0
+      SizeX 40
+      OffsetRight -232
+      SizeY 40
+      OffsetBottom -40
+     }
+     Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
+     Image "pinPlay"
+     Size 32 32
+    }
+    ButtonWidgetClass "{5EA8C925DF3CAF16}" {
+     Name "PinButton"
+     Slot FrameWidgetSlot "{5EA8C93F5E685F59}" {
+      Anchor 0 0 0 0
+      PositionX 192
+      OffsetLeft 192
+      PositionY 0
+      OffsetTop 0
+      SizeX 40
+      OffsetRight -232
+      SizeY 40
+      OffsetBottom -40
+     }
+     Color 0 1 0.019 0
+     components {
+      SCR_ButtonComponent "{5EA8C93F0C257FF7}" {
+       m_sSoundHovered ""
+       m_sSoundClicked ""
+       m_BackgroundDefault 1 1 1 0
+       m_BackgroundHovered 1 1 1 0.162
+       m_BackgroundSelected 1 1 1 0
+       m_BackgroundSelectedHovered 1 1 1 0.162
+       m_BackgroundClicked 1 1 1 0
+       m_bShowBorderOnFocus 0
+      }
+     }
+     "no focus" 1
+     {
+      FrameWidgetClass "{5EA8C925DF3CAF18}" {
+       Name "PinButtonFrame"
+       Slot ButtonWidgetSlot "{5EA8C93CB4241314}" {
+       }
+       {
+        ImageWidgetClass "{5EA8C925DF3CAF1A}" {
+         Name "Background"
+         Slot FrameWidgetSlot "{5D6E8206B132EE77}" {
+          PositionX 0
+          OffsetLeft 0
+          PositionY 0
+          OffsetTop 0
+          SizeX 40
+          OffsetRight -40
+          SizeY 40
+          OffsetBottom -40
+         }
+        }
+        ImageWidgetClass "{5EA8C925DF3CAF1B}" {
+         Name "PinImage"
+         Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
+          OffsetLeft 0
+          OffsetTop 0
+          SizeX 40
+          OffsetRight -40
+          SizeY 40
+          OffsetBottom -40
+         }
+         Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
+         Image "pinPlay"
+         Size 32 32
+        }
+       }
+      }
+     }
+    }
+    ButtonWidgetClass "{5EA8C93F5E685F27}" {
+     Name "KickButton"
+     Slot FrameWidgetSlot "{5EA8C93F5E685F59}" {
+      Anchor 0 0 0 0
+      PositionX 232
+      OffsetLeft 232
+      PositionY 0
+      OffsetTop 0
+      SizeX 40
+      OffsetRight -272
+      SizeY 40
+      OffsetBottom -40
+     }
+     Color 0 1 0.019 0
+     components {
+      SCR_ButtonComponent "{5EA8C93F0C257FF7}" {
+       m_sSoundHovered ""
+       m_sSoundClicked ""
+       m_BackgroundDefault 1 1 1 0
+       m_BackgroundHovered 1 1 1 0.162
+       m_BackgroundSelected 1 1 1 0
+       m_BackgroundSelectedHovered 1 1 1 0.162
+       m_BackgroundClicked 1 1 1 0
+       m_bShowBorderOnFocus 0
+      }
+     }
+     "no focus" 1
+     {
+      FrameWidgetClass "{5EA8C93CB4241331}" {
+       Name "KickButtonFrame"
+       Slot ButtonWidgetSlot "{5EA8C93CB4241314}" {
+       }
+       {
+        ImageWidgetClass "{5EA8C93CA962DB07}" {
+         Name "Background"
+         Slot FrameWidgetSlot "{5D6E8206B132EE77}" {
+          PositionX 0
+          OffsetLeft 0
+          PositionY 0
+          OffsetTop 0
+          SizeX 40
+          OffsetRight -40
+          SizeY 40
+          OffsetBottom -40
+         }
+        }
+        ImageWidgetClass "{5EA8C93CC41CCBA0}" {
+         Name "KickImage"
+         Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
+          OffsetLeft 0
+          OffsetTop 0
+          SizeX 40
+          OffsetRight -40
+          SizeY 40
+          OffsetBottom -40
+         }
+         Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
+         Image "kickCommandAlt"
+         Size 32 32
+        }
+       }
+      }
+     }
     }
    }
   }
