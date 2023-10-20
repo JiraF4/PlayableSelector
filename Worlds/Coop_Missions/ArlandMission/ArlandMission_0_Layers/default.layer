@@ -4,41 +4,5 @@ SCR_AIWorld : "{01DC74137CFDDB6A}Prefabs/AI/SCR_AIWorld_Arland.et" {
 PerceptionManager PerceptionManager1 : "{028DAEAD63E056BE}Prefabs/World/Game/PerceptionManager.et" {
  coords 1495.718 39.01 2788.926
 }
-SCR_GameModeCoop SCR_GameModeCoop1 : "{16D2DEADCFDC8B73}Prefabs/SCR_GameModeCoop.et" {
- components {
-  SCR_TimeAndWeatherHandlerComponent "{5E7D773A4347DB9E}" {
-   m_bRandomStartingWeather 1
-  }
- }
- coords 1505.939 39.01 2807.32
-}
-TagManager : "{2FA9E172CAB1857A}Prefabs/MP/Managers/TagManager.et" {
- coords 1506.247 39.01 2792.097
-}
-SCR_FactionManager FactionManager_Editor1 : "{4A188E44289B9A50}Prefabs/MP/Managers/Factions/FactionManager_Editor.et" {
- Factions {
-  SCR_Faction "{56DEAC40D3C2E623}" {
-   m_bIsPlayable 1
-  }
- }
-}
-SCR_FactionControlTriggerEntity EndTrigger {
- coords 2081.196 58.816 2120.12
- TriggerShapeType Sphere
- SphereRadius 50
- DrawShape 1
- TriggerActivationType "First change"
- PeriodicQueries 1
- UpdatePeriod 3
- OnActivate ""\
- "		SCR_BaseGameMode gameMode = SCR_BaseGameMode.Cast(GetGame().GetGameMode()); // Get the game mode for the end script"\
- "		Faction faction = GetGame().GetFactionManager().GetFactionByKey(\"USSR\"); // Get the winning faction Key"\
- "		int usIndex = GetGame().GetFactionManager().GetFactionIndex(faction); // Get the winning faction key's index"\
- "		gameMode.EndGameMode(SCR_GameModeEndData.CreateSimple(EGameOverTypes.EDITOR_FACTION_VICTORY, -1, usIndex)); // End the mission!"\
- "	"
- m_sOwnerFactionKey "USSR"
- m_fFriendlyRatioLimit 1
-}
-HitRegistrationManager HitRegManager1 : "{0EDA3D48791120DD}Prefabs/MP/HitRegManager.et" {
- coords 1499.895 39.01 2795.019
+PS_GameModeCoop PS_GameModeCoop1 : "{F64CCAF87CCCF567}Prefabs/MP/Modes/PS_GameModeCoop.et" {
 }

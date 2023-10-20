@@ -33,6 +33,30 @@ StringTable {
    Author "SeskPC"
    LastChanged "SeskPC"
   }
+  CustomStringTableItem "{5EA932EC5F220341}" {
+   Id "PS-Lobby_Force_start"
+   Target_en_us "Start game!"
+   Target_ru_ru "Начать игру!"
+   Modified 1588148727
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
+  CustomStringTableItem "{5EA932EA0659A8C5}" {
+   Id "PS-Lobby_Join"
+   Target_en_us "Join game"
+   Target_ru_ru "Вступить в игру"
+   Modified 1588149476
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
+  CustomStringTableItem "{5EA932E9950F27EF}" {
+   Id "PS-Lobby_JoinAsObserver"
+   Target_en_us "Spectate"
+   Target_ru_ru "Наблюдать"
+   Modified 1588150413
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
   CustomStringTableItem "{5EA73DBF46DC78AF}" {
    Id "PS-Lobby_LoadoutPreview"
    Target_en_us "Loadout Preview"
