@@ -60,6 +60,7 @@ class PS_CoopLobby: MenuBase
 	SCR_NavigationButtonComponent m_bNavigationButtonReady;
 	SCR_NavigationButtonComponent m_bNavigationButtonChat;
 	SCR_NavigationButtonComponent m_bNavigationButtonClose;
+	SCR_NavigationButtonComponent m_bNavigationButtonForceStart;
 	
 	// Timer start time, for game launch delay and counter animation
 	int m_iStartTime = 0;
@@ -88,12 +89,15 @@ class PS_CoopLobby: MenuBase
 		m_bNavigationButtonReady = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationStart").FindHandler(SCR_NavigationButtonComponent));
 		m_bNavigationButtonChat = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationChat").FindHandler(SCR_NavigationButtonComponent));
 		m_bNavigationButtonClose = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationClose").FindHandler(SCR_NavigationButtonComponent));
+		m_bNavigationButtonForceStart = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationForceStart").FindHandler(SCR_NavigationButtonComponent));
 		
 		m_bNavigationButtonReady.m_OnClicked.Insert(Action_Ready);
 		m_bNavigationButtonChat.m_OnClicked.Insert(Action_ChatOpen);
 		GetGame().GetInputManager().AddActionListener("ChatToggle", EActionTrigger.DOWN, Action_ChatOpen);
 		m_bNavigationButtonClose.m_OnClicked.Insert(Action_Exit);
 		GetGame().GetInputManager().AddActionListener("MenuBack", EActionTrigger.DOWN, Action_Exit);
+		m_bNavigationButtonForceStart.m_OnClicked.Insert(Action_ForceStart);
+		GetGame().GetInputManager().AddActionListener("MenuRestart", EActionTrigger.DOWN, Action_ForceStart);
 		
 		// by default select herself
 		PlayerController playerController = GetGame().GetPlayerController();
@@ -215,6 +219,11 @@ class PS_CoopLobby: MenuBase
 	{
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		PlayerManager playerManager = GetGame().GetPlayerManager();
+		
+		PlayerController thisPlayerController = GetGame().GetPlayerController();
+		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		m_bNavigationButtonForceStart.SetVisible(playerRole == EPlayerRole.ADMINISTRATOR && gameMode.GetState() == SCR_EGameModeState.PREGAME);
 		
 		// calculate players count for every faction
 		foreach (Widget factionSelector: m_aFactionListWidgets)
@@ -353,6 +362,13 @@ class PS_CoopLobby: MenuBase
 		Close();
 	}
 	
+	void Action_ForceStart()
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		playableController.ForceGameStart();
+	}
+	
 	// -------------------- Widgets events --------------------
 	// If faction clicked, switch focus from previous faction and update characters list to selected faction
 	// ----- Faction -----
@@ -433,15 +449,10 @@ class PS_CoopLobby: MenuBase
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		
-		if (   handler.GetPlayableId() == playableManager.GetPlayableByPlayer(playerController.GetPlayerId())
-			&& playableManager.GetPlayerState(playerController.GetPlayerId()) == PS_EPlayableControllerState.NotReady
-			&& m_iCurrentPlayer == playerController.GetPlayerId()
-		) {
-			playableController.SetPlayerState(playerController.GetPlayerId(), PS_EPlayableControllerState.Ready);
-			return;
-		} else {
-			playableController.SetPlayerState(playerController.GetPlayerId(), PS_EPlayableControllerState.NotReady);
-		}
+		playableController.SetPlayerState(playerController.GetPlayerId(), PS_EPlayableControllerState.NotReady);
+		if ( handler.GetPlayableId() == playableManager.GetPlayableByPlayer(playerController.GetPlayerId())
+		  && m_iCurrentPlayer == playerController.GetPlayerId()
+		) playableController.SetPlayerPlayable(playerController.GetPlayerId(), RplId.Invalid());
 		
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
 		if (playerRole != EPlayerRole.ADMINISTRATOR && playableManager.GetPlayerPin(m_iCurrentPlayer)) return;
@@ -476,11 +487,6 @@ class PS_CoopLobby: MenuBase
 		
 		int currentTime = System.GetTickCount();
 		int seconds = (currentTime - m_iStartTime)/1000;
-		string secondsStr = (seconds + 1).ToString();
-		if (m_wCounterText.GetText() != secondsStr) {
-			m_wCounterText.SetText(secondsStr);
-			AudioSystem.PlaySound("{3119327F3EFCA9C6}Sounds/UI/Samples/Gadgets/UI_Radio_Frequency_Cycle.wav");
-		}
 		
 		// If game already started, close lobby immediately
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
@@ -488,11 +494,18 @@ class PS_CoopLobby: MenuBase
 			PlayerController playerController = GetGame().GetPlayerController();
 			PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 			playableController.ApplyPlayable();
+			m_wCounterText.SetText("");
 			// Getting controll take some time, this prevent zero coord blinking. Not the best way though...
 			GetGame().GetCallqueue().CallLater(Close, 100); 
 			return;
 		}
 		else GetGame().GetCallqueue().CallLater(CloseTimer, 100);
+		
+		string secondsStr = (seconds + 1).ToString();
+		if (m_wCounterText.GetText() != secondsStr) {
+			m_wCounterText.SetText(secondsStr);
+			AudioSystem.PlaySound("{3119327F3EFCA9C6}Sounds/UI/Samples/Gadgets/UI_Radio_Frequency_Cycle.wav");
+		}
 	}
 			
 	// check all player for ready state
@@ -526,6 +539,8 @@ class PS_CoopLobby: MenuBase
 		
 		return allReady == playerIds.Count();
 	}
+	
+	
 }
 
 

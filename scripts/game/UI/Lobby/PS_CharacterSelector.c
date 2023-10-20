@@ -14,6 +14,7 @@ class PS_CharacterSelector : SCR_ButtonImageComponent
 	TextWidget m_wCharacterClassName;
 	TextWidget m_wCharacterStatus;
 	ButtonWidget m_wDisconnectionButton;
+	ButtonWidget m_wKickButton;
 	
 	protected ResourceName m_sUIWrapper = "{2EFEA2AF1F38E7F0}UI/Textures/Icons/icons_wrapperUI-64.imageset";
 	
@@ -27,12 +28,15 @@ class PS_CharacterSelector : SCR_ButtonImageComponent
 		m_wCharacterStatus = TextWidget.Cast(w.FindAnyWidget("CharacterStatus"));
 		m_wStateIcon = ImageWidget.Cast(w.FindAnyWidget("StateIcon"));
 		m_wDisconnectionButton = ButtonWidget.Cast(w.FindAnyWidget("DisconnectionButton"));
+		m_wKickButton = ButtonWidget.Cast(w.FindAnyWidget("KickButton"));
 		
 		GetGame().GetCallqueue().CallLater(AddOnClick, 0);
 	}
 	
 	void AddOnClick()
 	{
+		SCR_ButtonComponent kickButtonHandler = SCR_ButtonComponent.Cast(m_wKickButton.FindHandler(SCR_ButtonComponent));
+		kickButtonHandler.m_OnClicked.Insert(KickButtonClicked);
 		SCR_ButtonComponent disconnectionButtonHandler = SCR_ButtonComponent.Cast(m_wDisconnectionButton.FindHandler(SCR_ButtonComponent));
 		disconnectionButtonHandler.m_OnClicked.Insert(DisconnectionButtonClicked);
 	}
@@ -77,9 +81,10 @@ class PS_CharacterSelector : SCR_ButtonImageComponent
 				m_wStateIcon.LoadImageFromSet(0, m_sUIWrapper, "player");
 			}else{
 				m_wCharacterStatus.SetText("-");
-				m_wStateIcon.LoadImageFromSet(0, m_sUIWrapper, "careerCircleOutline");
+				m_wStateIcon.LoadImageFromSet(0, m_sUIWrapper, "dotsMenu");
 			}
 		}
+		
 		
 		// If admin show kick button for non admins
 		PlayerController currentPlayerController = GetGame().GetPlayerController();
@@ -91,6 +96,7 @@ class PS_CharacterSelector : SCR_ButtonImageComponent
 			m_wStateIcon.SetVisible(true);
 			m_wDisconnectionButton.SetVisible(false);
 		}
+		m_wKickButton.SetVisible(currentPlayerRole == EPlayerRole.ADMINISTRATOR && playerId != -1);
 	}
 	
 	int GetPlayableId()
@@ -102,6 +108,15 @@ class PS_CharacterSelector : SCR_ButtonImageComponent
 	// -------------------- Buttons events --------------------
 	// Admin may force release reconnecting playable
 	void DisconnectionButtonClicked(SCR_ButtonBaseComponent disconnectionButton)
+	{
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		playableController.SetPlayerPlayable(playableManager.GetPlayerByPlayable(m_playable.GetId()), -1);
+	}
+	
+	// Admin may force release occupated slot
+	void KickButtonClicked()
 	{
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		PlayerController playerController = GetGame().GetPlayerController();

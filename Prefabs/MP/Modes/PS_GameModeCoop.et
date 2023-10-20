@@ -353,6 +353,7 @@ PS_GameModeCoop {
    }
   }
   SCR_PreGameGameModeStateComponent "{5EA8C9324DF2DCC1}" {
+   m_fDuration 0
   }
   SCR_RespawnSystemComponent "{5E7AE0AF16A4B6CE}" {
    components {

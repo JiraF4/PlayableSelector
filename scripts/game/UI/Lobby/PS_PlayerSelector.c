@@ -82,8 +82,11 @@ class PS_PlayerSelector : SCR_ButtonImageComponent
 		m_wKickButton.SetVisible(currentPlayerRole == EPlayerRole.ADMINISTRATOR && playerRole != EPlayerRole.ADMINISTRATOR);
 		
 		PS_EPlayableControllerState state = PS_PlayableManager.GetInstance().GetPlayerState(m_iPlayer);
-		if (state != PS_EPlayableControllerState.NotReady) m_wReadyImage.LoadImageFromSet(0, m_sImageSet, "check");
-		else m_wReadyImage.LoadImageFromSet(0, m_sImageSet, "update");
+		
+		if (state == PS_EPlayableControllerState.NotReady) m_wReadyImage.LoadImageFromSet(0, m_sImageSet, "dotsMenu");
+		if (state == PS_EPlayableControllerState.Ready) m_wReadyImage.LoadImageFromSet(0, m_sImageSet, "check");
+		if (state == PS_EPlayableControllerState.Disconected) m_wReadyImage.LoadImageFromSet(0, m_sImageSet, "disconnection");
+		if (state == PS_EPlayableControllerState.Playing) m_wReadyImage.LoadImageFromSet(0, m_sImageSet, "characters");
 		
 		// If pinned show pinImage or pinButton for admins
 		if (playableManager.GetPlayerPin(m_iPlayer))

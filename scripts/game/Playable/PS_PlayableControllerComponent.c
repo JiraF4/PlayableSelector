@@ -10,6 +10,25 @@ class PS_PlayableControllerComponentClass: ScriptComponentClass
 [ComponentEditorProps(icon: HYBRID_COMPONENT_ICON)]
 class PS_PlayableControllerComponent : ScriptComponent
 {
+	// Force change game state
+	void ForceGameStart()
+	{
+		Rpc(RPC_ForceGameStart)
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	protected void RPC_ForceGameStart()
+	{
+		// only admins can force start
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
+		if (playerRole != EPlayerRole.ADMINISTRATOR) return;
+		
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if (gameMode.GetState() == SCR_EGameModeState.PREGAME)
+			gameMode.StartGameMode();
+	}
+	
 	// Get controll on selected playable entity
 	void ApplyPlayable()
 	{
