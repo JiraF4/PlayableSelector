@@ -109,26 +109,26 @@ AnimSetInstanceSource {
   AnimSetInstanceSource_Line "Death.Pne.BodyRight" {
    Resource "{F175B6A9A37FE45B}anims/anm/player/death/unarmed/p_unarmed_pne_ras_death01_F.anm"
   }
-  AnimSetInstanceSource_Line "Falling.ErcRas.Forward" {
-   Resource "{30F1618DB845B40F}anims/anm/player/locomotion/unarmed/falling/p_unarmed_fall.anm"
+  AnimSetInstanceSource_Line "Ladder.LeftFootCro.ExitRoofFlat" {
+   Resource "{81B86DF79A70B1B2}anims/anm/player/ladder/p_ladder_crouch_flat_exitF_roof_LFoot.anm"
   }
-  AnimSetInstanceSource_Line "Falling.ErcRas.LandHeavy" {
-   Resource "{2F3FF3F7FD9C1A7E}anims/anm/player/locomotion/unarmed/falling/p_unarmed_land_heavy.anm"
+  AnimSetInstanceSource_Line "Ladder.RightFootCro.ExitRoof" {
+   Resource "{C56F66AA4E2B5D92}anims/anm/player/ladder/p_ladder_crouch_exitF_roof_RFoot.anm"
   }
-  AnimSetInstanceSource_Line "Falling.ErcRas.LandLight" {
-   Resource "{3AFF027F11E3F1B8}anims/anm/player/locomotion/unarmed/falling/p_unarmed_land_light.anm"
+  AnimSetInstanceSource_Line "Ladder.LeftFootCro.ExitRoof" {
+   Resource "{A9A1CC7BDA7D3CF6}anims/anm/player/ladder/p_ladder_crouch_exitF_roof_LFoot.anm"
   }
-  AnimSetInstanceSource_Line "Falling.ErcRas.LandMedium" {
-   Resource "{4E36978AAFB10DC3}anims/anm/player/locomotion/unarmed/falling/p_unarmed_land_medium.anm"
+  AnimSetInstanceSource_Line "Gestures.LeanR.Out Erc" {
+   Resource "{E649C0410718673C}anims/anm/NPC/male/leaning/p_leaning_una_R_out.anm"
   }
-  AnimSetInstanceSource_Line "Falling.PneRas.Forward" {
-   Resource "{FB42D36D29004349}anims/anm/player/locomotion/unarmed/falling/p_unarmed_pne_fall.anm"
+  AnimSetInstanceSource_Line "Gestures.LeanL.Loop Var4" {
+   Resource "{185DE263EDD489DC}anims/anm/NPC/male/leaning/p_leaning_una_L_idlevar_04.anm"
   }
-  AnimSetInstanceSource_Line "Falling.PneRas.LandHeavy" {
-   Resource "{4446A268FBCE8568}anims/anm/player/locomotion/unarmed/falling/p_unarmed_pne_land_heavy.anm"
+  AnimSetInstanceSource_Line "Gestures.LeanR.Loop" {
+   Resource "{64E5E0F3B0320D0E}anims/anm/NPC/male/leaning/p_leaning_una_R_idle.anm"
   }
-  AnimSetInstanceSource_Line "Falling.PneRas.LandMedium" {
-   Resource "{746F15D0D03AB339}anims/anm/player/locomotion/unarmed/falling/p_unarmed_pne_land_medium.anm"
+  AnimSetInstanceSource_Line "Gestures.LeanR.In Erc" {
+   Resource "{C04EE64FCEEE1F0D}anims/anm/NPC/male/leaning/p_leaning_una_R_in.anm"
   }
   AnimSetInstanceSource_Line "Jumping.IdleLow.JumpSpotIn" {
    Resource "{B72BAF5586D46FEE}anims/anm/player/locomotion/unarmed/jump/p_unarmed_erc_jump_idle_in.anm"
@@ -508,32 +508,32 @@ AnimSetInstanceSource {
   AnimSetInstanceSource_Line "Locomotion.PneRas.WalkR" {
    Resource "{B6F5604C80308BA9}anims/anm/player/locomotion/unarmed/p_pne_walkR.anm"
   }
-  AnimSetInstanceSource_Line "Swim.Normal.Fast" {
-   Resource "{EBDB9331DA2C2298}anims/anm/player/locomotion/unarmed/Swimming/p_swim_sprint.anm"
+  AnimSetInstanceSource_Line "Gestures.LeanL.Loop Var3" {
+   Resource "{1F9A18328B52331F}anims/anm/NPC/male/leaning/p_leaning_una_L_idlevar_03.anm"
   }
-  AnimSetInstanceSource_Line "Swim.Normal.Idle" {
-   Resource "{316467D7FA9D74FC}anims/anm/player/locomotion/unarmed/Swimming/p_swim_idle.anm"
+  AnimSetInstanceSource_Line "Gestures.LeanL.Loop Var2" {
+   Resource "{689070BA7FF0DC6F}anims/anm/NPC/male/leaning/p_leaning_una_L_idlevar_02.anm"
   }
-  AnimSetInstanceSource_Line "Swim.Normal.IdleDeath" {
-   Resource "{38CDB5E221E3C389}anims/anm/player/locomotion/unarmed/Swimming/p_swim_death.anm"
+  AnimSetInstanceSource_Line "Gestures.LeanL.Loop Var1" {
+   Resource "{F18EC9236217EDFF}anims/anm/NPC/male/leaning/p_leaning_una_L_idlevar_01.anm"
   }
-  AnimSetInstanceSource_Line "Swim.Normal.Slow" {
-   Resource "{CE92EDAA6561D348}anims/anm/player/locomotion/unarmed/Swimming/p_swim_run.anm"
+  AnimSetInstanceSource_Line "Gestures.LeanL.Out Erc" {
+   Resource "{8A876A90934E0658}anims/anm/NPC/male/leaning/p_leaning_una_L_out.anm"
   }
-  AnimSetInstanceSource_Line "Swim.Normal.StrafeB" {
-   Resource "{8D6C9B69E3AFC766}anims/anm/player/locomotion/unarmed/Swimming/p_swim_strafeB.anm"
+  AnimSetInstanceSource_Line "Gestures.LeanL.In Erc" {
+   Resource "{7A69128682F90822}anims/anm/NPC/male/leaning/p_leaning_una_L_in.anm"
   }
-  AnimSetInstanceSource_Line "Swim.Normal.StrafeF" {
-   Resource "{13B5D8A198CE4C35}anims/anm/player/locomotion/unarmed/Swimming/p_swim_strafeF.anm"
+  AnimSetInstanceSource_Line "Gestures.LeanL.Loop" {
+   Resource "{676568423F3B769E}anims/anm/NPC/male/leaning/p_leaning_una_L_idle.anm"
   }
-  AnimSetInstanceSource_Line "Swim.Normal.StrafeL" {
-   Resource "{82E36FCB2EA2B2E0}anims/anm/player/locomotion/unarmed/Swimming/p_swim_strafeL.anm"
+  AnimSetInstanceSource_Line "Gestures.Sitting.Out Erc" {
+   Resource "{94E110566B26C5E6}anims/anm/NPC/male/sitting/p_sitting_ground_unm_out.anm"
   }
-  AnimSetInstanceSource_Line "Swim.Normal.StrafeR" {
-   Resource "{73E8579F5DFD870C}anims/anm/player/locomotion/unarmed/Swimming/p_swim_strafeR.anm"
+  AnimSetInstanceSource_Line "Gestures.Sitting.In Erc" {
+   Resource "{72E51230CE1DE538}anims/anm/NPC/male/sitting/p_sitting_ground_unm_in.anm"
   }
-  AnimSetInstanceSource_Line "Swim.Normal.UnconDeath" {
-   Resource "{86C38C07117E8125}anims/anm/player/locomotion/unarmed/Swimming/p_swim_unconscious_death.anm"
+  AnimSetInstanceSource_Line "Gestures.Sitting.Loop Var7" {
+   Resource "{7C561173BE021857}anims/anm/NPC/male/sitting/p_sitting_ground_unm_idlevar_07.anm"
   }
   AnimSetInstanceSource_Line "ThrowOverhand.Cro.Aimspace" {
    Resource "{67C01B95E0A871F0}anims/anm/player/throwing/1handed/p_1hd_erc_throw_aimspace.anm"
@@ -2752,11 +2752,11 @@ AnimSetInstanceSource {
   AnimSetInstanceSource_Line "IdleTurn.CroAdjLow.Slope IKTargets" {
    Resource "{67A7D1531D2DC40D}anims/anm/player/locomotion/unarmed/IdleTurns/p_cro_slopes_IKTargets.anm"
   }
-  AnimSetInstanceSource_Line "Falling.ErcRas.ForwardLoop" {
-   Resource "{6687072677C03A95}anims/anm/player/locomotion/unarmed/falling/p_una_fall_loop.anm"
+  AnimSetInstanceSource_Line "Ladder.RightFootCro.ExitRoofFlat" {
+   Resource "{ED76C7260E26D0D6}anims/anm/player/ladder/p_ladder_crouch_flat_exitF_roof_RFoot.anm"
   }
-  AnimSetInstanceSource_Line "Falling.PneRas.ForwardLoop" {
-   Resource "{B22E450B5B777430}anims/anm/player/locomotion/unarmed/falling/p_una_pne_fall_loop.anm"
+  AnimSetInstanceSource_Line "Gestures.LeanL.Loop Var5" {
+   Resource "{185DE263EDD489DC}anims/anm/NPC/male/leaning/p_leaning_una_L_idlevar_04.anm"
   }
   AnimSetInstanceSource_Line "Unconscious.Default.UnconsciousFront" {
    Resource "{BB4EF72D6C40B10C}anims/anm/player/injury/p_unconscious_front_down.anm"
@@ -2811,60 +2811,6 @@ AnimSetInstanceSource {
   }
   AnimSetInstanceSource_Line "Gestures.Sitting.Loop Var6" {
    Resource "{0B5C79FB4AA0F727}anims/anm/NPC/male/sitting/p_sitting_ground_unm_idlevar_06.anm"
-  }
-  AnimSetInstanceSource_Line "Gestures.Sitting.Loop Var7" {
-   Resource "{7C561173BE021857}anims/anm/NPC/male/sitting/p_sitting_ground_unm_idlevar_07.anm"
-  }
-  AnimSetInstanceSource_Line "Gestures.Sitting.In Erc" {
-   Resource "{72E51230CE1DE538}anims/anm/NPC/male/sitting/p_sitting_ground_unm_in.anm"
-  }
-  AnimSetInstanceSource_Line "Gestures.Sitting.Out Erc" {
-   Resource "{94E110566B26C5E6}anims/anm/NPC/male/sitting/p_sitting_ground_unm_out.anm"
-  }
-  AnimSetInstanceSource_Line "Gestures.LeanL.Loop" {
-   Resource "{676568423F3B769E}anims/anm/NPC/male/leaning/p_leaning_una_L_idle.anm"
-  }
-  AnimSetInstanceSource_Line "Gestures.LeanL.In Erc" {
-   Resource "{7A69128682F90822}anims/anm/NPC/male/leaning/p_leaning_una_L_in.anm"
-  }
-  AnimSetInstanceSource_Line "Gestures.LeanL.Out Erc" {
-   Resource "{8A876A90934E0658}anims/anm/NPC/male/leaning/p_leaning_una_L_out.anm"
-  }
-  AnimSetInstanceSource_Line "Gestures.LeanL.Loop Var1" {
-   Resource "{F18EC9236217EDFF}anims/anm/NPC/male/leaning/p_leaning_una_L_idlevar_01.anm"
-  }
-  AnimSetInstanceSource_Line "Gestures.LeanL.Loop Var2" {
-   Resource "{689070BA7FF0DC6F}anims/anm/NPC/male/leaning/p_leaning_una_L_idlevar_02.anm"
-  }
-  AnimSetInstanceSource_Line "Gestures.LeanL.Loop Var3" {
-   Resource "{1F9A18328B52331F}anims/anm/NPC/male/leaning/p_leaning_una_L_idlevar_03.anm"
-  }
-  AnimSetInstanceSource_Line "Gestures.LeanL.Loop Var4" {
-   Resource "{185DE263EDD489DC}anims/anm/NPC/male/leaning/p_leaning_una_L_idlevar_04.anm"
-  }
-  AnimSetInstanceSource_Line "Gestures.LeanL.Loop Var5" {
-   Resource "{185DE263EDD489DC}anims/anm/NPC/male/leaning/p_leaning_una_L_idlevar_04.anm"
-  }
-  AnimSetInstanceSource_Line "Gestures.LeanR.Loop" {
-   Resource "{64E5E0F3B0320D0E}anims/anm/NPC/male/leaning/p_leaning_una_R_idle.anm"
-  }
-  AnimSetInstanceSource_Line "Gestures.LeanR.In Erc" {
-   Resource "{C04EE64FCEEE1F0D}anims/anm/NPC/male/leaning/p_leaning_una_R_in.anm"
-  }
-  AnimSetInstanceSource_Line "Gestures.LeanR.Out Erc" {
-   Resource "{E649C0410718673C}anims/anm/NPC/male/leaning/p_leaning_una_R_out.anm"
-  }
-  AnimSetInstanceSource_Line "Ladder.LeftFootCro.ExitRoof" {
-   Resource "{A9A1CC7BDA7D3CF6}anims/anm/player/ladder/p_ladder_crouch_exitF_roof_LFoot.anm"
-  }
-  AnimSetInstanceSource_Line "Ladder.RightFootCro.ExitRoof" {
-   Resource "{C56F66AA4E2B5D92}anims/anm/player/ladder/p_ladder_crouch_exitF_roof_RFoot.anm"
-  }
-  AnimSetInstanceSource_Line "Ladder.RightFootCro.ExitRoofFlat" {
-   Resource "{ED76C7260E26D0D6}anims/anm/player/ladder/p_ladder_crouch_flat_exitF_roof_RFoot.anm"
-  }
-  AnimSetInstanceSource_Line "Ladder.LeftFootCro.ExitRoofFlat" {
-   Resource "{81B86DF79A70B1B2}anims/anm/player/ladder/p_ladder_crouch_flat_exitF_roof_LFoot.anm"
   }
  }
  RBF AnimSetInstanceSourceRBFArray "{59A8C1A9135415C0}" {
