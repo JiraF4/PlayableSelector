@@ -42,10 +42,10 @@ StringTable {
    LastChanged "SeskPC"
   }
   CustomStringTableItem "{5EA932EC5F220341}" {
-   Id "PS-Lobby_Force_start"
+   Id "PS-Lobby_ForceStart"
    Target_en_us "Start game!"
    Target_ru_ru "Начать игру!"
-   Modified 1588148727
+   Modified 1588294134
    Author "SeskPC"
    LastChanged "SeskPC"
   }
