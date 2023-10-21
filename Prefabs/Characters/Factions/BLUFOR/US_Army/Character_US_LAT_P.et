@@ -1,4 +1,4 @@
-PS_PlayableComponent : "{27BF1FF235DD6036}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_LAT.et" {
+SCR_ChimeraCharacter : "{27BF1FF235DD6036}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_LAT.et" {
  ID "51FA8A5F28FD04BA"
  components {
   PS_PlayableComponent "{5E61249F24C40B33}" {

@@ -1,4 +1,4 @@
-PS_PlayableComponent : "{75FC25863194612A}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_AMG.et" {
+SCR_ChimeraCharacter : "{75FC25863194612A}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_AMG.et" {
  ID "520EC961A090B1EE"
  components {
   PS_PlayableComponent "{5E61249E74F26F00}" {

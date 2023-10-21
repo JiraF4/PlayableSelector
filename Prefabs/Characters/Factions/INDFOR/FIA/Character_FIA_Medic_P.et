@@ -1,4 +1,4 @@
-PS_PlayableComponent : "{45A02CA25CBA9443}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_Medic.et" {
+SCR_ChimeraCharacter : "{45A02CA25CBA9443}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_Medic.et" {
  ID "520EC961A090B1EE"
  components {
   PS_PlayableComponent "{5E61249E4E28EA5D}" {

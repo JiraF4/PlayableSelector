@@ -1,4 +1,4 @@
-PS_PlayableComponent : "{854C04F0EA2129CC}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_Unarmed.et" {
+SCR_ChimeraCharacter : "{854C04F0EA2129CC}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_Unarmed.et" {
  ID "520EC961A090B1EE"
  components {
   PS_PlayableComponent "{5E61249E1F79002A}" {
