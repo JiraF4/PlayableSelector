@@ -67,7 +67,7 @@ SCR_ChimeraCharacter {
    Object "{9F3AF591CD6DFE1A}Assets/Characters/Basebody/Basebody_Male_01.xob"
   }
   PS_LobbyVoNComponent "{5EAA222EF50425C5}" {
-   "Speaking Range" 50
+   "Speaking Range" 0.001
    Filename "{B4C3941EC8B2AD20}Sounds/VON/von.acp"
   }
   SCR_CharacterDamageManagerComponent "{5EAA482D76C79C7F}" {
@@ -131,8 +131,6 @@ SCR_ChimeraCharacter {
     SCR_CharacterCommandHandlerComponent "{5EAA222FEE1AE811}" {
      "Static Layer" 2
      "Vehicles Layers" 64
-     "Ladders Layers" 65536
-     LadderDetectMaxDist 1.7
      "Body Offset Reference Point" PointInfo "{5EAA222FEE1AE83D}" {
       PivotID "RightShoulder"
       Offset 0 -0.144 -0.04
@@ -175,13 +173,14 @@ SCR_ChimeraCharacter {
     }
    }
    AnimGraph "{DFFC0A34A77ADCB4}anims/workspaces/player/player_main.agr"
-   AnimInstance "{32965FEFBB738E5A}anims/workspaces/player/player_main.asi"
+   AnimInstance "{B086D0CD3B9E3AB0}anims/workspaces/player/player_PS_VON.asi"
    StartNode "MasterControl"
    "Collision bone" "collision"
    "Server LOD" 1
    "LOD camera distances" {
     5 20
    }
+   Layers 0
    DefaultShapeLayer 524288
    FreshwaterLayer 4194304
    LayerPreset "Character"
@@ -191,8 +190,7 @@ SCR_ChimeraCharacter {
    UnarmedIkPose "{A1A073C1B48F9AEC}anims/anm/player/death/unarmed/p_hands_death.anm"
    ColliderStand PhysAgentCollisionShapeItem "{5EAA222FEE1AE86B}" {
     Shape Capsule
-    Size 0.75 1.8 0
-    Offset 0.05 0 0.05
+    Size 0 0 0
     StepHeight 0.55
    }
    ColliderCrouch PhysAgentCollisionShapeItem "{5EAA222FEE1AE860}" {
@@ -254,6 +252,6 @@ SCR_ChimeraCharacter {
    "Rpl State Override" Runtime
   }
  }
- coords 2.767 1 2.46
+ coords 0 0 0
  Flags 1024
 }
