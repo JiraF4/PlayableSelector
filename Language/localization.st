@@ -9,6 +9,14 @@ StringTable {
    Author "SeskPC"
    LastChanged "SeskPC"
   }
+  CustomStringTableItem "{5EA932C446D469ED}" {
+   Id "PS-Keybind_CommsOpenLobby"
+   Target_en_us "Open lobby"
+   Target_ru_ru "Открыть лобби"
+   Modified 1588200867
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
   CustomStringTableItem "{5EA75941A166E74B}" {
    Id "PS-Lobby_Chat"
    Target_en_us "Chat"

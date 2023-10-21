@@ -1,4 +1,4 @@
-PS_PlayableComponent : "{26A9756790131354}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Rifleman.et" {
+SCR_ChimeraCharacter : "{26A9756790131354}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Rifleman.et" {
  ID "52092032B0E62200"
  components {
   PS_PlayableComponent "{5E61249FCAF5204F}" {

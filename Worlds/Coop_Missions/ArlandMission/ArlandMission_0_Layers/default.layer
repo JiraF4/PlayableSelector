@@ -6,3 +6,20 @@ PerceptionManager PerceptionManager1 : "{028DAEAD63E056BE}Prefabs/World/Game/Per
 }
 PS_GameModeCoop PS_GameModeCoop1 : "{F64CCAF87CCCF567}Prefabs/MP/Modes/PS_GameModeCoop.et" {
 }
+SCR_FactionControlTriggerEntity WinTrigger {
+ coords 2101.412 58.311 2114.656
+ TriggerShapeType Sphere
+ SphereRadius 100
+ DrawShape 1
+ TriggerActivationType "First change"
+ PeriodicQueries 1
+ UpdatePeriod 2
+ OnActivate ""\
+ "		SCR_BaseGameMode gameMode = SCR_BaseGameMode.Cast(GetGame().GetGameMode()); // Get the game mode for the end script\""\
+ "		Faction faction = GetGame().GetFactionManager().GetFactionByKey(\"USSR\"); // Get the winning faction Key\""\
+ "		int usIndex = GetGame().GetFactionManager().GetFactionIndex(faction); // Get the winning faction key's index\""\
+ "		gameMode.EndGameMode(SCR_GameModeEndData.CreateSimple(EGameOverTypes.EDITOR_FACTION_VICTORY, -1, usIndex)); // End the mission!\""\
+ "	"
+ m_sOwnerFactionKey "USSR"
+ m_fFriendlyRatioLimit 1
+}

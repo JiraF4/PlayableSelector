@@ -1,4 +1,4 @@
-PS_PlayableComponent : "{DCB41B3746FDD1BE}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Rifleman.et" {
+SCR_ChimeraCharacter : "{DCB41B3746FDD1BE}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Rifleman.et" {
  ID "200D264F0EEA1A28"
  components {
   PS_PlayableComponent "{5E61249EB7286716}" {

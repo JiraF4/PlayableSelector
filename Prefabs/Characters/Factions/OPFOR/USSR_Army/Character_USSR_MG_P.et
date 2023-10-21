@@ -1,4 +1,4 @@
-PS_PlayableComponent : "{96C784C502AC37DA}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_MG.et" {
+SCR_ChimeraCharacter : "{96C784C502AC37DA}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_MG.et" {
  ID "200D264F0EEA1A28"
  components {
   PS_PlayableComponent "{5E61249EA6F29FA9}" {
