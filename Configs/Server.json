@@ -1,6 +1,0 @@
-{
-    "bindAddress": "127.0.0.1",
-    "bindPort": 2010,
-    "publicAddress": "127.0.0.1",
-    "publicPort": 2010
-}

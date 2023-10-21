@@ -15,23 +15,67 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	
 	[Attribute("1", uiwidget: UIWidgets.CheckBox, "Game may be started only if admin exists on server.", category: WB_GAME_MODE_CATEGORY)]
 	protected bool m_bAdminMode;
-	
+		
 	override void OnGameStart()
-	{		
+	{	
 		super.OnGameStart();
-		if (Replication.IsClient()) {
-			GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.CoopLobby);
+		
+		if (RplSession.Mode() != RplMode.Dedicated) {
+			OpenLobby();
+			GetGame().GetInputManager().AddActionListener("OpenLobby", EActionTrigger.DOWN, OpenLobby);
 		}
+		
+	}
+	
+	void OpenLobby()
+	{
+		GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.CoopLobby);
 	}
 	
 	protected override void OnPlayerConnected(int playerId)
 	{
+		GetGame().GetCallqueue().CallLater(SpawnInitialEntity, 100, false, playerId)
+	}
+	
+	void SpawnInitialEntity(int playerId)
+	{
+        Resource resource = Resource.Load("{EF9F633DDC485F1F}Prefabs/InitialPlayer.et");
+		EntitySpawnParams params = new EntitySpawnParams();
+        IEntity initialEntity = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		SCR_PlayerController playerController = SCR_PlayerController.Cast(playerManager.GetPlayerController(playerId));
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		playableController.SetInitialEntity(initialEntity);
+		playerController.SetInitialMainEntity(initialEntity);
 		
+		
+		Rpc(StartVoN)
+	}
+	
+	
+	
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void StartVoN()
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		IEntity entity = playerController.GetControlledEntity();
+		SCR_VoNComponent von = SCR_VoNComponent.Cast(entity.FindComponent(SCR_VoNComponent));
+		von.SetCommMethod(ECommMethod.DIRECT);
+		von.SetCapture(true);
 	}
 	
 	override void OnPlayerKilled(int playerId, IEntity player, IEntity killer)
+	{
+		Rpc(RPC_OnPlayerKilled, playerId)
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RPC_OnPlayerKilled(int playerId)
 	{	
-		
+		PlayerController playerController = GetGame().GetPlayerController();
+		if (playerController.GetPlayerId() == playerId) {
+			PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+			playableController.SwitchToObserver();
+		}
 	}
 	
 	// Update state for disconnected and start timer if need

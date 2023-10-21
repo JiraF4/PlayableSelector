@@ -739,21 +739,6 @@ FrameWidgetClass {
             Padding 15 0 0 0
            }
            {
-            ButtonWidgetClass "{5EA9030BE662DAC3}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
-             Name "NavigationForceStart"
-             Slot LayoutSlot "{5D6F1498C9949A58}" {
-              HorizontalAlign 3
-              VerticalAlign 3
-              Padding 15 15 15 15
-             }
-             "Is Visible" 0
-             components {
-              SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
-               m_sLabel "#PS-Lobby_Force_start"
-               m_sActionName "MenuRestart"
-              }
-             }
-            }
             ButtonWidgetClass "{5D6F149AEF5FAFB4}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
              Name "NavigationStart"
              Slot LayoutSlot "{5D6F1498C9949A58}" {
@@ -765,6 +750,22 @@ FrameWidgetClass {
               SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
                m_sLabel "#PS-Lobby_Ready"
                m_sActionName "MenuSelect"
+              }
+             }
+            }
+            ButtonWidgetClass "{5EA9030BE662DAC3}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
+             Name "NavigationForceStart"
+             Slot LayoutSlot "{5D6F1498C9949A58}" {
+              HorizontalAlign 3
+              VerticalAlign 3
+              Padding 15 15 15 15
+             }
+             "Is Visible" 0
+             components {
+              SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
+               m_sLabel "#PS-Lobby_ForceStart"
+               m_sActionName "MenuRestart"
+               m_bFadeAction 1
               }
              }
             }

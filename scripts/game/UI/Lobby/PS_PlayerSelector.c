@@ -15,6 +15,8 @@ class PS_PlayerSelector : SCR_ButtonImageComponent
 	ImageWidget m_wReadyImage;
 	ButtonWidget m_wKickButton;
 	ButtonWidget m_wPinButton;
+	ButtonWidget m_wVoiceButton;
+	ImageWidget m_wVoiceImage;
 	ImageWidget m_wPinImage;
 	
 	override void HandlerAttached(Widget w)
@@ -27,6 +29,8 @@ class PS_PlayerSelector : SCR_ButtonImageComponent
 		m_wReadyImage = ImageWidget.Cast(w.FindAnyWidget("ReadyImage"));
 		m_wKickButton = ButtonWidget.Cast(w.FindAnyWidget("KickButton"));
 		m_wPinButton = ButtonWidget.Cast(w.FindAnyWidget("PinButton"));
+		m_wVoiceButton = ButtonWidget.Cast(w.FindAnyWidget("VoiceButton"));
+		m_wVoiceImage = ImageWidget.Cast(w.FindAnyWidget("VoiceImage"));
 		m_wPinImage = ImageWidget.Cast(w.FindAnyWidget("PinImage"));
 		
 		GetGame().GetCallqueue().CallLater(AddOnClick, 0);
@@ -87,6 +91,16 @@ class PS_PlayerSelector : SCR_ButtonImageComponent
 		if (state == PS_EPlayableControllerState.Ready) m_wReadyImage.LoadImageFromSet(0, m_sImageSet, "check");
 		if (state == PS_EPlayableControllerState.Disconected) m_wReadyImage.LoadImageFromSet(0, m_sImageSet, "disconnection");
 		if (state == PS_EPlayableControllerState.Playing) m_wReadyImage.LoadImageFromSet(0, m_sImageSet, "characters");
+		
+		// Check OUR VoN is WE listen this player?
+		IEntity entity = GetGame().GetPlayerController().GetControlledEntity();
+		PS_LobbyVoNComponent von;
+		if (entity) von = PS_LobbyVoNComponent.Cast(entity.FindComponent(PS_LobbyVoNComponent));
+		if (von)
+		{
+			if (von.IsPlayerSpeech(m_iPlayer)) m_wVoiceImage.LoadImageFromSet(0, m_sImageSet, "sound-on");
+			else m_wVoiceImage.LoadImageFromSet(0, m_sImageSet, "VON_directspeech");
+		} else m_wVoiceImage.LoadImageFromSet(0, m_sImageSet, "sound-off");
 		
 		// If pinned show pinImage or pinButton for admins
 		if (playableManager.GetPlayerPin(m_iPlayer))

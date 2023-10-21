@@ -1,5 +1,5 @@
 MetaFileClass {
- Name "{26257EBBA064EEDF}InitialPlayerEntity.et"
+ Name "{EF9F633DDC485F1F}Prefabs/InitialPlayer.et"
  Configurations {
   EntityTemplateResourceClass PC {
   }

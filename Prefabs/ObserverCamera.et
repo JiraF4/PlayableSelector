@@ -1,26 +1,24 @@
 SCR_ManualCamera : "{D6DE32D1C0FCC1C7}Prefabs/Editor/Camera/ManualCameraBase.et" {
  ID "52CC693B212FF1F9"
  components {
-  SCR_PlayableComponent "{5D4B1C458A13FDE9}" {
-  }
-  SCR_PostProcessCameraComponent "{5D4B1C45EAAC87A2}" {
+  SCR_PostProcessCameraComponent "{5EA9032860342ADC}" {
    m_Effects {
-    SCR_CameraPostProcessEffect "{5D4B1C45EAAC87AA}" {
+    SCR_CameraPostProcessEffect "{5EA9032860342ADF}" {
      m_Type DepthOfFieldBokeh
      m_iPriority 8
      m_MaterialPath "{F1D442085E8EF5F1}UI/Materials/Editor/DepthOfFieldBokeh.emat"
     }
-    SCR_CameraPostProcessEffect "{5D4B1C45EAAC87AD}" {
+    SCR_CameraPostProcessEffect "{5EA9032860342A20}" {
      m_Type FilmGrain
      m_iPriority 9
      m_MaterialPath "{2519F72D6E6C1DE9}UI/Materials/Editor/FilmGrain.emat"
     }
-    SCR_CameraPostProcessEffect "{5D4B1C45EAAC87AE}" {
+    SCR_CameraPostProcessEffect "{5EA9032860342A21}" {
      m_Type Colors
      m_iPriority 10
      m_MaterialPath "{B18D0050792C7B8C}UI/Materials/Editor/Colors.emat"
     }
-    SCR_CameraPostProcessEffect "{5D4B1C45EAAC87AF}" {
+    SCR_CameraPostProcessEffect "{5EA9032860342A22}" {
      m_Type ChromAber
      m_iPriority 11
      m_MaterialPath "{C5C20C70909CD69F}UI/Materials/Editor/ChromAber.emat"
@@ -28,18 +26,16 @@ SCR_ManualCamera : "{D6DE32D1C0FCC1C7}Prefabs/Editor/Camera/ManualCameraBase.et"
    }
   }
  }
+ cameraFlags 7
  m_aComponents {
-  SCR_EditorToggleUIManualCameraComponent "{5D4B1C45EAAC87B6}" {
-   m_iPriority 99
+  SCR_MapDescriptorManualCameraComponent "{5A453478C9B69293}" {
+   m_bEnabled 0
   }
-  SCR_EditorCursorManualCameraComponent "{5D4B1C45EAAC87B8}" {
-   m_iPriority 40
-  }
-  SCR_FocusManualCameraComponent "{5D4B1C45EAAC87B9}" {
+  SCR_FocusManualCameraComponent "{5EA9032860342A2A}" {
    m_Layout "{AF6ACBE36A5E0B2E}UI/layouts/Camera/ManualCameraFocus.layout"
    m_sSoundEvent "SOUND_E_CAMERA_FOCUS"
   }
-  SCR_LensFlareManualCameraComponent "{5D4B1C45EAAC87BB}" {
+  SCR_LensFlareManualCameraComponent "{5EA9032860342A2C}" {
   }
  }
 }

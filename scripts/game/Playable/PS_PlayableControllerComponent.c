@@ -10,6 +10,62 @@ class PS_PlayableControllerComponentClass: ScriptComponentClass
 [ComponentEditorProps(icon: HYBRID_COMPONENT_ICON)]
 class PS_PlayableControllerComponent : ScriptComponent
 {
+	IEntity m_eCamera;
+	IEntity m_eInitialEntity;
+		
+	IEntity GetInitialEntity()
+	{
+		return m_eInitialEntity;
+	}
+	void SetInitialEntity(IEntity initialEntity)
+	{
+		m_eInitialEntity = initialEntity;
+	}
+	
+	// ------------------ VoN controlls ------------------
+	PS_LobbyVoNComponent GetVoN()
+	{
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		IEntity entity = thisPlayerController.GetControlledEntity();
+		PS_LobbyVoNComponent von = PS_LobbyVoNComponent.Cast(entity.FindComponent(PS_LobbyVoNComponent));
+		return von;
+	}
+	void LobbyVoNEnable()
+	{
+		PS_LobbyVoNComponent von = GetVoN();
+		von.SetCommMethod(ECommMethod.DIRECT);
+		von.SetCapture(true);
+	}
+	void LobbyVoNDisable()
+	{
+		PS_LobbyVoNComponent von = GetVoN();
+		von.SetCommMethod(ECommMethod.DIRECT);
+		von.SetCapture(false);
+	}
+	
+	// ------------------ Observer camera controlls ------------------
+	void SwitchToObserver()
+	{
+		if (m_eCamera) return;
+		GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.SpectatorMenu);
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		IEntity entity = thisPlayerController.GetControlledEntity();
+		EntitySpawnParams params = new EntitySpawnParams();
+		if (entity) entity.GetTransform(params.Transform);
+        Resource resource = Resource.Load("{127C64F4E93A82BC}Prefabs/Editor/Camera/ManualCameraPhoto.et");
+        m_eCamera = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
+		GetGame().GetCameraManager().SetCamera(CameraBase.Cast(m_eCamera));
+	}
+	
+	void SwitchFromObserver()
+	{
+		if (!m_eCamera) return;
+		GetGame().GetMenuManager().CloseMenuByPreset(ChimeraMenuPreset.SpectatorMenu);
+		SCR_EntityHelper.DeleteEntityAndChildren(m_eCamera);
+		m_eCamera = null;
+	}
+	
+	
 	// Force change game state
 	void ForceGameStart()
 	{
@@ -32,6 +88,9 @@ class PS_PlayableControllerComponent : ScriptComponent
 	// Get controll on selected playable entity
 	void ApplyPlayable()
 	{
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		if (playableManager.GetPlayableByPlayer(thisPlayerController.GetPlayerId()) == RplId.Invalid()) SwitchToObserver();
 		Rpc(RPC_ApplyPlayable)
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]

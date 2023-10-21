@@ -74,6 +74,10 @@ class PS_CoopLobby: MenuBase
 	// -------------------- Menu events --------------------
 	override void OnMenuOpen()
 	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		playableController.SwitchFromObserver();
+		
 		m_wFactionList = GetRootWidget().FindAnyWidget("FactionList");
 		m_wRolesList = GetRootWidget().FindAnyWidget("RolesList");
 		m_wPlayersList = GetRootWidget().FindAnyWidget("PlayersList");
@@ -97,10 +101,10 @@ class PS_CoopLobby: MenuBase
 		m_bNavigationButtonClose.m_OnClicked.Insert(Action_Exit);
 		GetGame().GetInputManager().AddActionListener("MenuBack", EActionTrigger.DOWN, Action_Exit);
 		m_bNavigationButtonForceStart.m_OnClicked.Insert(Action_ForceStart);
-		GetGame().GetInputManager().AddActionListener("MenuRestart", EActionTrigger.DOWN, Action_ForceStart);
+		GetGame().GetInputManager().AddActionListener("LobbyGameForceStart", EActionTrigger.DOWN, Action_ForceStart);
 		
-		// by default select herself
-		PlayerController playerController = GetGame().GetPlayerController();
+		GetGame().GetInputManager().AddActionListener("LobbyVoN", EActionTrigger.DOWN, Action_LobbyVoNOn);
+		GetGame().GetInputManager().AddActionListener("LobbyVoN", EActionTrigger.UP, Action_LobbyVoNOff);
 		
 		// Start update cycle
 		GetGame().GetCallqueue().CallLater(UpdateCycle, 100);
@@ -111,7 +115,6 @@ class PS_CoopLobby: MenuBase
 	{
 		if (m_ChatPanel)
 			m_ChatPanel.OnUpdateChat(tDelta);
-		GetGame().GetInputManager().ActivateContext("LobbyContext", 1);
 	};
 	
 	override void OnMenuClose()
@@ -123,6 +126,9 @@ class PS_CoopLobby: MenuBase
 		
 		GetGame().GetInputManager().RemoveActionListener("MenuSelect", EActionTrigger.DOWN, Action_Ready);
 		GetGame().GetInputManager().RemoveActionListener("ChatToggle", EActionTrigger.DOWN, Action_ChatOpen);
+		GetGame().GetInputManager().RemoveActionListener("LobbyGameForceStart", EActionTrigger.DOWN, Action_ForceStart);
+		GetGame().GetInputManager().RemoveActionListener("LobbyVoN", EActionTrigger.DOWN, Action_LobbyVoNOn);
+		GetGame().GetInputManager().RemoveActionListener("LobbyVoN", EActionTrigger.UP, Action_LobbyVoNOff);
 	}
 	
 	// Soo many staff need to bee init, i can't track all of it...
@@ -223,7 +229,12 @@ class PS_CoopLobby: MenuBase
 		PlayerController thisPlayerController = GetGame().GetPlayerController();
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		m_bNavigationButtonForceStart.SetVisible(playerRole == EPlayerRole.ADMINISTRATOR && gameMode.GetState() == SCR_EGameModeState.PREGAME);
+		m_bNavigationButtonForceStart.SetVisible(playerRole == EPlayerRole.ADMINISTRATOR && gameMode.GetState() == SCR_EGameModeState.PREGAME, false);
+		if (gameMode.GetState() == SCR_EGameModeState.PREGAME) m_bNavigationButtonReady.SetLabel("#PS-Lobby_Ready");
+		else {
+			if (playableManager.GetPlayableByPlayer(thisPlayerController.GetPlayerId()) != RplId.Invalid()) m_bNavigationButtonReady.SetLabel("#PS-Lobby_Join");
+			else m_bNavigationButtonReady.SetLabel("#PS-Lobby_JoinAsObserver");
+		}
 		
 		// calculate players count for every faction
 		foreach (Widget factionSelector: m_aFactionListWidgets)
@@ -340,7 +351,8 @@ class PS_CoopLobby: MenuBase
 			playableController.SetPlayerState(playerController.GetPlayerId(), PS_EPlayableControllerState.NotReady);
 			return;
 		}
-		if (playableManager.GetPlayableByPlayer(playerController.GetPlayerId()) != RplId.Invalid()) 
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if (playableManager.GetPlayableByPlayer(playerController.GetPlayerId()) != RplId.Invalid() || gameMode.GetState() == SCR_EGameModeState.GAME) 
 		{
 			playableController.SetPlayerState(playerController.GetPlayerId(), PS_EPlayableControllerState.Ready);
 		}
@@ -348,6 +360,8 @@ class PS_CoopLobby: MenuBase
 	
 	void Action_ChatOpen()
 	{
+		// WAT? for some reason default chane do not appply, use this... thing for fix
+		m_ChatPanel.PS_CycleChannels(true);
 		// Delay is esential, if any character already controlled
 		GetGame().GetCallqueue().CallLater(ChatWrap, 0);
 	}
@@ -367,6 +381,20 @@ class PS_CoopLobby: MenuBase
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		playableController.ForceGameStart();
+	}
+	
+	void Action_LobbyVoNOn()
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		playableController.LobbyVoNEnable();
+	}
+	
+	void Action_LobbyVoNOff()
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		playableController.LobbyVoNDisable();
 	}
 	
 	// -------------------- Widgets events --------------------
@@ -435,6 +463,7 @@ class PS_CoopLobby: MenuBase
 	{
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		PS_CharacterSelector handler = PS_CharacterSelector.Cast(characterWidget.FindHandler(PS_CharacterSelector));
+		if (!handler) return;
 		map<RplId, PS_PlayableComponent> playables = playableManager.GetPlayables();
 		int playableId = handler.GetPlayableId();
 		m_preview.SetPlayable(playables[playableId]);
@@ -449,13 +478,17 @@ class PS_CoopLobby: MenuBase
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		
+		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
+		if (playerRole != EPlayerRole.ADMINISTRATOR && playableManager.GetPlayerPin(m_iCurrentPlayer)) return;
+		
 		playableController.SetPlayerState(playerController.GetPlayerId(), PS_EPlayableControllerState.NotReady);
 		if ( handler.GetPlayableId() == playableManager.GetPlayableByPlayer(playerController.GetPlayerId())
 		  && m_iCurrentPlayer == playerController.GetPlayerId()
-		) playableController.SetPlayerPlayable(playerController.GetPlayerId(), RplId.Invalid());
+		) {
+			playableController.SetPlayerPlayable(playerController.GetPlayerId(), RplId.Invalid());
+			return;
+		}
 		
-		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
-		if (playerRole != EPlayerRole.ADMINISTRATOR && playableManager.GetPlayerPin(m_iCurrentPlayer)) return;
 		
 		if (playableManager.GetPlayerByPlayable(handler.GetPlayableId()) != -1) return;
 		SCR_UISoundEntity.SoundEvent(SCR_SoundEvent.CLICK);
@@ -517,6 +550,7 @@ class PS_CoopLobby: MenuBase
 		PlayerController playerController = GetGame().GetPlayerController();
 		if (!playerController) return false; // it may not exist befory synk completed
 		if (playableManager.GetPlayerState(playerController.GetPlayerId()) == PS_EPlayableControllerState.NotReady) return false;
+		if (playableManager.GetPlayerState(playerController.GetPlayerId()) == PS_EPlayableControllerState.Playing) return false;
 		
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		if (gameMode.GetState() == SCR_EGameModeState.GAME) return true;

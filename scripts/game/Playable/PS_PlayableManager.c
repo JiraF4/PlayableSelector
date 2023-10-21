@@ -35,17 +35,22 @@ class PS_PlayableManager : ScriptComponent
 	// Executed only on server
 	void ApplyPlayable(int playerId)
 	{
-		RplId playableId = GetPlayableByPlayer(playerId);
-		if (playableId == 0) return;
-		IEntity entity = GetPlayableById(playableId).GetOwner();
-		
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		SCR_PlayerController playerController = SCR_PlayerController.Cast(playerManager.GetPlayerController(playerId));
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		
+		RplId playableId = GetPlayableByPlayer(playerId);
+		IEntity entity;
+		if (playableId == RplId.Invalid() || playableId == -1) {
+			entity = playableController.GetInitialEntity();
+			playerController.SetInitialMainEntity(entity);
+			return;
+		} else entity = GetPlayableById(playableId).GetOwner();		 
+		
 		playerController.SetInitialMainEntity(entity);
 		
 		// Set new player faction
-		PS_PlayableComponent playableComponent = GetPlayableById(playableId);
-		SCR_ChimeraCharacter playableCharacter = SCR_ChimeraCharacter.Cast(playableComponent.GetOwner());
+		SCR_ChimeraCharacter playableCharacter = SCR_ChimeraCharacter.Cast(entity);
 		SCR_PlayerFactionAffiliationComponent playerFactionAffiliation = SCR_PlayerFactionAffiliationComponent.Cast(playerController.FindComponent(SCR_PlayerFactionAffiliationComponent));
 		SCR_Faction faction = SCR_Faction.Cast(playableCharacter.GetFaction());
 		playerFactionAffiliation.SetAffiliatedFaction(faction);

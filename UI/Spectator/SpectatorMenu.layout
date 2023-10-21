@@ -1,0 +1,10 @@
+FrameWidgetClass {
+ Name "SpectatorMenu"
+ {
+  FrameWidgetClass "{5EA90320D67E1881}" : "{D89BBA18F99053D6}UI/layouts/HUD/Chat/ChatHud.layout" {
+   Name "Chat0"
+   Slot FrameWidgetSlot "{5D4881250D202DF3}" {
+   }
+  }
+ }
+}
