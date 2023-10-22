@@ -118,7 +118,13 @@ class PS_CoopLobby: MenuBase
 		
 		GetGame().GetInputManager().AddActionListener("VONDirect", EActionTrigger.DOWN, Action_LobbyVoNOn);
 		GetGame().GetInputManager().AddActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
-		
+				
+		GetGame().GetCallqueue().CallLater(OnMenuOpenDelay, 500);
+	}
+	
+	void OnMenuOpenDelay()
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
 		
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		if (playableManager.GetPlayableByPlayer(playerController.GetPlayerId()) != RplId.Invalid() && playableManager.GetPlayerState(playerController.GetPlayerId()) == PS_EPlayableControllerState.Disconected)
