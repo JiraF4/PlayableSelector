@@ -8,6 +8,8 @@ ButtonWidgetClass {
   PS_CharacterSelector "{5EA716114A6558BF}" {
    m_sSoundClicked ""
    m_bCanBeToggled 1
+   m_BackgroundDefault 0 0 0 0.314
+   m_BackgroundHovered 0.051 0.051 0.051 0.314
    m_BackgroundSelectedHovered 0.76 0.392 0.08 0.3
    m_BackgroundClicked 0.76 0.392 0.08 0.3
    m_sTexture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
@@ -164,7 +166,7 @@ ButtonWidgetClass {
        }
        Color 0 1 0.019 0
        components {
-        SCR_ButtonComponent "{5EA8C93F0C257FF7}" {
+        SCR_ButtonBaseComponent "{5EAB23942F4C5DCF}" {
          m_sSoundHovered ""
          m_sSoundClicked ""
          m_BackgroundDefault 1 1 1 0
@@ -173,6 +175,7 @@ ButtonWidgetClass {
          m_BackgroundSelectedHovered 1 1 1 0.162
          m_BackgroundClicked 1 1 1 0
          m_bShowBorderOnFocus 0
+         m_bNoBorderAnimation 1
         }
        }
        "no focus" 1
@@ -228,7 +231,7 @@ ButtonWidgetClass {
        }
        Color 0 1 0.019 0
        components {
-        SCR_ButtonComponent "{5EA8C93F0C257FF7}" {
+        SCR_ButtonBaseComponent "{5EAB23941F97EA9D}" {
          m_sSoundHovered ""
          m_sSoundClicked ""
          m_BackgroundDefault 1 1 1 0

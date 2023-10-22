@@ -1,5 +1,5 @@
 // Widget displays detailed info about playable character with 3D model and inventory info.
-// Part of lobby menu. (VLWoadoutPreview widget)
+// Path: {FE42694A25ACA734}UI/Lobby/LoadoutPreview.layout
 // Part of Lobby menu PS_CoopLobby ({9DECCA625D345B35}UI/Lobby/CoopLobby.layout)
 
 class PS_LobbyLoadoutPreview : SCR_WLibComponentBase
@@ -159,7 +159,7 @@ class PS_LobbyLoadoutPreview : SCR_WLibComponentBase
 		m_wLoadoutText.SetText(m_playable.GetName());
 		
 		// Faction data
-		m_wLoadoutBackgroundImage.SetColor(faction.GetFactionColor());
+		m_wLoadoutBackgroundImage.SetColor(faction.GetOutlineFactionColor());
 		m_wFlagImage.LoadImageTexture(0, faction.GetFactionFlag());	
 		
 		// Current playable player, or dead if playable already dead.
@@ -169,16 +169,16 @@ class PS_LobbyLoadoutPreview : SCR_WLibComponentBase
 		{
 			m_WStateOverlay.SetVisible(true);
 			m_wStateText.SetText("Dead");
-			m_wStateBackgroundImage.SetColor(Color.FromInt(Color.BLACK));
+			m_wStateBackgroundImage.SetColor(Color.FromInt(0xFF303031));
 		}
 		else 
 		{
-			if (playerId != 0) 
+			if (playerId != -1) 
 			{
 				PlayerManager playerManager = GetGame().GetPlayerManager();
 				m_WStateOverlay.SetVisible(true);
 				m_wStateText.SetText(playerManager.GetPlayerName(playerId));
-				m_wStateBackgroundImage.SetColor(Color.FromInt(0xFF688869));
+				m_wStateBackgroundImage.SetColor(Color.FromInt(0xFF19322e));
 			}else{
 				m_WStateOverlay.SetVisible(false);
 			}

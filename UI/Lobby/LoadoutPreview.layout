@@ -1,0 +1,301 @@
+VerticalLayoutWidgetClass {
+ Name "MainLoadoutPreview"
+ Slot OverlayWidgetSlot "{5D6D1B985B1E5269}" {
+ }
+ components {
+  PS_LobbyLoadoutPreview "{5EA71616A67268D8}" {
+   m_sSoundHovered ""
+   m_sSoundClicked ""
+  }
+ }
+ {
+  FrameWidgetClass "{5D6D1B9826675364}" {
+   Name "LoadoutPreviewTile"
+   Slot LayoutSlot "{5D6D1B9826675284}" {
+   }
+   {
+    ButtonWidgetClass "{5D6E820114D3BC73}" {
+     Name "LoadoutPreviewTileController"
+     Slot FrameWidgetSlot "{5D6E820114D380FC}" {
+      PositionX 20
+      OffsetLeft 20
+      OffsetTop 0
+      SizeX 450
+      OffsetRight -470
+      SizeY 600
+      OffsetBottom -600
+     }
+     style blank
+     "no focus" 1
+     {
+      OverlayWidgetClass "{5D6E820286BE9FB3}" {
+       Name "Overlay"
+       Slot ButtonWidgetSlot "{5548E6E7F213FB11}" {
+        HorizontalAlign 3
+        VerticalAlign 3
+        Padding 4 4 4 4
+       }
+       {
+        ImageWidgetClass "{5D6E820286BE9FB0}" {
+         Name "Background"
+         Slot OverlayWidgetSlot "{5548E6E7DF4EE313}" {
+          HorizontalAlign 3
+          VerticalAlign 3
+         }
+         Opacity 0.5
+         Color 0 0 0 1
+         Size 4 4
+        }
+        OverlayWidgetClass "{5D6E820286BE9FB1}" {
+         Name "OverlayFlag"
+         Slot OverlayWidgetSlot "{596CEC696FEC3DFF}" {
+          VerticalAlign 0
+         }
+         "Is Visible" 0
+         Opacity 0.5
+         {
+          ScaleWidgetClass "{5D6E820286BE9FB6}" {
+           Name "ScaleFlag"
+           Slot OverlayWidgetSlot "{558EB3BB5D1B10FC}" {
+            VerticalAlign 0
+            Padding 1 35 1 1
+           }
+           Clipping True
+           {
+            ImageWidgetClass "{5D6E820286BE9FB7}" {
+             Name "FlagImage"
+             Slot OverlayWidgetSlot "{596CEC6E442A1B9E}" {
+             }
+             Texture "{BD2E2F871E6A3EBF}UI/Textures/Flags/Flag_Faction_Base.edds"
+             Size 512 256
+            }
+           }
+          }
+         }
+        }
+        FrameWidgetClass "{5D6E820286BE9FB5}" : "{55E4F7C989878CF8}UI/layouts/Menus/RoleSelection/LoadoutPreview.layout" {
+         Name "LoadoutPreview"
+         Slot OverlayWidgetSlot "{585A630E539EE3A5}" {
+          HorizontalAlign 3
+          VerticalAlign 3
+         }
+         components {
+          SCR_LoadoutPreviewComponent "{55206867B9D464AE}" {
+           m_sPreviewManager "{EA7534CE40130E02}Prefabs/World/Game/CharacterPreviewManager.et"
+          }
+         }
+         {
+          OverlayWidgetClass "{552068607D1612DA}" {
+           Prefab "{552068607D1612DA}"
+           {
+            ItemPreviewWidgetClass "{552068601B16C353}" {
+             Prefab "{552068601B16C353}"
+             Opacity 1
+             "Use Engine Scale" 0
+             xscale 4
+             yscale 4
+             Format "HDR High"
+             "Use clear color" 0
+            }
+           }
+          }
+         }
+        }
+        VerticalLayoutWidgetClass "{5D6E821750628966}" {
+         Name "VerticalLayout"
+         Slot OverlayWidgetSlot "{5D6E82175062898B}" {
+          VerticalAlign 2
+         }
+         {
+          SizeLayoutWidgetClass "{5D6E82175E7F59B5}" {
+           Name "SizeLayoutState"
+           Slot LayoutSlot "{5D6E82175E7F59D3}" {
+           }
+           AllowWidthOverride 1
+           WidthOverride 400
+           AllowHeightOverride 1
+           HeightOverride 64
+           {
+            OverlayWidgetClass "{5D6E821C7EB7DBA4}" {
+             Name "StateOverlay"
+             Slot AlignableSlot "{5D6E821C7EB7DBF8}" {
+              VerticalAlign 0
+              Padding 0 0 0 0
+             }
+             "Is Visible" 0
+             Color 0.01 0.032 0.027 1
+             {
+              ScaleWidgetClass "{5D6E82170DB95FEE}" {
+               Name "StateBackground"
+               Slot OverlayWidgetSlot "{5D6E821B1EE2305C}" {
+               }
+               Clipping True
+               Color 0.141 0.141 0.141 1
+               "Scale Mode" "Scale to fill"
+               {
+                ImageWidgetClass "{5D6E82170DB95FEF}" {
+                 Name "StateBackgroundImage"
+                 Slot OverlayWidgetSlot "{596CEC6E442A1B9E}" {
+                 }
+                 Color 0.01 0.032 0.027 1
+                 Size 512 256
+                }
+               }
+              }
+              TextWidgetClass "{5D6E821C6E4A278A}" {
+               Name "StateText"
+               Slot OverlayWidgetSlot "{5D6E821B1EE23066}" {
+               }
+               Text "StateText"
+               "Font Size" 32
+               "Min Font Size" 32
+              }
+             }
+            }
+           }
+          }
+          SizeLayoutWidgetClass "{5D6E821774BCCC5F}" {
+           Name "SizeLayoutLoadout"
+           Slot LayoutSlot "{5D6E82175E7F59D3}" {
+           }
+           AllowWidthOverride 1
+           WidthOverride 450
+           AllowHeightOverride 1
+           HeightOverride 64
+           {
+            OverlayWidgetClass "{5D6E821C2B5FF7E2}" {
+             Name "LoadoutOverlay"
+             Slot AlignableSlot "{5D6E821C2B5FF604}" {
+              VerticalAlign 0
+              Padding 0 0 0 0
+             }
+             "Is Visible" 0
+             {
+              ScaleWidgetClass "{5D6E82171F4310C4}" {
+               Name "ScaleLoadout"
+               Slot OverlayWidgetSlot "{5D6E821B1EE230BD}" {
+               }
+               Clipping True
+               "Scale Mode" "Scale to fill"
+               {
+                ImageWidgetClass "{5D6E82171F4310C5}" {
+                 Name "LoadoutBackgroundImage"
+                 Slot OverlayWidgetSlot "{596CEC6E442A1B9E}" {
+                 }
+                 Color 0 1 1 1
+                 Size 512 256
+                }
+               }
+              }
+              TextWidgetClass "{5D6E821C2EFCE773}" {
+               Name "LoadoutText"
+               Slot OverlayWidgetSlot "{5D6E821C2EFCE729}" {
+               }
+               Text "LoadoutText"
+               "Font Size" 32
+               "Min Font Size" 32
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+        ImageWidgetClass "{5EAB239BC3F16AE8}" {
+         Name "Foreground"
+         Slot OverlayWidgetSlot "{5548E6E7DF4EE313}" {
+          HorizontalAlign 3
+          VerticalAlign 3
+         }
+         Opacity 0.4
+         Color 0 0 0 1
+         Size 4 4
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+  FrameWidgetClass "{5D6D1B978889C476}" {
+   Name "LoadoutPreviewDescription"
+   Slot LayoutSlot "{5D6D1B978889CB92}" {
+   }
+   {
+    OverlayWidgetClass "{5D6E8202A8F66E08}" {
+     Name "Overlay"
+     Slot FrameWidgetSlot "{5D6E8202A8F66E50}" {
+      PositionX 25
+      OffsetLeft 25
+      PositionY 5
+      OffsetTop 5
+      SizeX 435
+      OffsetRight -460
+      SizeY 159
+      OffsetBottom -164
+     }
+     Tooltip TextWidgetTooltip "{5D6E820266432737}" {
+     }
+     {
+      ScaleWidgetClass "{5D6E82024BCEF7FE}" {
+       Name "ScaleBackground"
+       Slot OverlayWidgetSlot "{5D6E82024BCEF618}" {
+        Padding 0 0 0 0
+       }
+       "Scale Mode" "User defined"
+       Scale 20
+       {
+        ImageWidgetClass "{5D6E8202B31F0DAE}" {
+         Name "Background"
+         Slot AlignableSlot "{5D6E82024B39730D}" {
+         }
+         Opacity 0.3
+         Color 0 0 0 1
+         Size 1280 1280
+        }
+       }
+      }
+      FrameWidgetClass "{5E7CF06E95D77B65}" {
+       Name "HorizontalLayout0"
+       Slot OverlayWidgetSlot "{5E7CF06E95D77B4D}" {
+        HorizontalAlign 0
+        Padding 15 15 15 15
+       }
+       {
+        TextWidgetClass "{5D6D1B97948FB00B}" {
+         Name "DescriptionText"
+         Slot FrameWidgetSlot "{5E7CF06EA00C5735}" {
+          Anchor 0 0 0 0
+          PositionX 0
+          OffsetLeft 0
+          PositionY 0
+          OffsetTop 0
+          SizeX 200
+          OffsetRight -200
+          SizeY 130
+          OffsetBottom -130
+         }
+         Text ""
+        }
+        TextWidgetClass "{5E7CF06E96B4DE8F}" {
+         Name "DescriptionMagazinesText"
+         Slot FrameWidgetSlot "{5E7CF06EA00C5707}" {
+          PositionX 200
+          OffsetLeft 200
+          PositionY 0
+          OffsetTop 0
+          SizeX 200
+          OffsetRight -400
+          SizeY 130
+          OffsetBottom -130
+         }
+         Text ""
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}

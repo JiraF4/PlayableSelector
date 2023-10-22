@@ -44,6 +44,8 @@ class PS_SpectatorMenu: MenuBase
 			inputManager.AddActionListener("InstantVote", EActionTrigger.DOWN, GetGame().OnInstantVote);
 			inputManager.AddActionListener("MenuOpen", EActionTrigger.DOWN, OpenPauseMenu);
 			inputManager.AddActionListener("ChatToggle", EActionTrigger.DOWN, ChatToggle);
+			inputManager.AddActionListener("LobbyVoN", EActionTrigger.DOWN, Action_LobbyVoNOn);
+			inputManager.AddActionListener("LobbyVoN", EActionTrigger.UP, Action_LobbyVoNOff);
 #ifdef WORKBENCH
 			inputManager.AddActionListener("MenuOpenWB", EActionTrigger.DOWN, OpenPauseMenu);
 #endif
@@ -61,6 +63,8 @@ class PS_SpectatorMenu: MenuBase
 			inputManager.RemoveActionListener("InstantVote", EActionTrigger.DOWN, GetGame().OnInstantVote);
 			inputManager.RemoveActionListener("MenuOpen", EActionTrigger.DOWN, OpenPauseMenu);
 			inputManager.RemoveActionListener("ChatToggle", EActionTrigger.DOWN, ChatToggle);
+			inputManager.RemoveActionListener("LobbyVoN", EActionTrigger.DOWN, Action_LobbyVoNOn);
+			inputManager.RemoveActionListener("LobbyVoN", EActionTrigger.UP, Action_LobbyVoNOff);
 #ifdef WORKBENCH
 			inputManager.RemoveActionListener("MenuOpenWB", EActionTrigger.DOWN, OpenPauseMenu);
 #endif
@@ -89,4 +93,17 @@ class PS_SpectatorMenu: MenuBase
 		SCR_ChatPanelManager.GetInstance().OpenChatPanel(m_ChatPanel);
 	}
 	
+	void Action_LobbyVoNOn()
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		playableController.LobbyVoNEnable();
+	}
+	
+	void Action_LobbyVoNOff()
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		playableController.LobbyVoNDisable();
+	}
 }

@@ -29,11 +29,8 @@ class PS_CoopLobby: MenuBase
 	
 	
 	// faction sorted playables, for fast search, also they sorted by RplId for consistent order
-	protected ref map<Faction,ref array<PS_PlayableComponent>> m_sFactionPlayables = new map<Faction,ref array<PS_PlayableComponent>>();
-	
-	// Current selected from widget faction
-	protected Faction m_fCurrentFaction;
-	
+	protected ref map<FactionKey,ref array<PS_PlayableComponent>> m_sFactionPlayables = new map<FactionKey,ref array<PS_PlayableComponent>>();
+		
 	// Admins can move other players, save selectted player id
 	protected int m_iCurrentPlayer = 0;
 		
@@ -69,20 +66,23 @@ class PS_CoopLobby: MenuBase
 	// playables count on revious update, for exclude redunant widget recreation
 	int m_iOldPlayablesCount = 0;
 	int m_iOldPlayersCount = 0;
+	FactionKey m_sOldPlayerFactionKey = "";
 	
 	
 	// -------------------- Menu events --------------------
 	override void OnMenuOpen()
 	{
 		PlayerController playerController = GetGame().GetPlayerController();
-		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-		playableController.SwitchFromObserver();
+		if (playerController) { // Menu open faster than player creation
+			PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+			playableController.SwitchFromObserver();
+		}
 		
 		m_wFactionList = GetRootWidget().FindAnyWidget("FactionList");
 		m_wRolesList = GetRootWidget().FindAnyWidget("RolesList");
 		m_wPlayersList = GetRootWidget().FindAnyWidget("PlayersList");
 		
-		Widget widget = GetRootWidget().FindAnyWidget("VLWoadoutPreview");
+		Widget widget = GetRootWidget().FindAnyWidget("MainLoadoutPreview");
 		m_preview = PS_LobbyLoadoutPreview.Cast(widget.FindHandler(PS_LobbyLoadoutPreview));
 		m_wCounterText = TextWidget.Cast(GetRootWidget().FindAnyWidget("TextCounter"));
 		m_wCounterText.SetText("");
@@ -183,17 +183,17 @@ class PS_CoopLobby: MenuBase
 			// clear faction playable map
 			m_sFactionPlayables.Clear();
 		}
-		m_iOldPlayablesCount = playables.Count();
 		
 		// Add playables if need
 		for (int i = 0; i < playablesSorted.Count(); i++) {
 			PS_PlayableComponent playable = playablesSorted[i];
 			SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(playable.GetOwner());
 			SCR_Faction faction = SCR_Faction.Cast(character.GetFaction());
+			FactionKey factionKey = faction.GetFactionKey();
 			
 			// insert faction if not currently exist
-			if (!m_sFactionPlayables.Contains(faction)) {
-				m_sFactionPlayables.Insert(faction, new array<PS_PlayableComponent>);
+			if (!m_sFactionPlayables.Contains(factionKey)) {
+				m_sFactionPlayables.Insert(factionKey, new array<PS_PlayableComponent>);
 				
 				Widget factionSelector = GetGame().GetWorkspace().CreateWidgets(m_sFactionSelectorPrefab);
 				PS_FactionSelector handler = PS_FactionSelector.Cast(factionSelector.FindHandler(PS_FactionSelector));
@@ -206,7 +206,7 @@ class PS_CoopLobby: MenuBase
 			}
 			
 			// insert playable to faction
-			array<PS_PlayableComponent> factionPlayablesList = m_sFactionPlayables[faction];
+			array<PS_PlayableComponent> factionPlayablesList = m_sFactionPlayables[factionKey];
 			if (!factionPlayablesList.Contains(playable))
 				factionPlayablesList.Insert(playable);
 		}
@@ -214,8 +214,14 @@ class PS_CoopLobby: MenuBase
 		// ReFill players if need
 		array<int> playerIds = new array<int>();
 		GetGame().GetPlayerManager().GetPlayers(playerIds);
+		FactionKey curentFactionKey = playableManager.GetPlayerFactionKey(playerController.GetPlayerId());
+		
 		if (m_iOldPlayersCount != playerIds.Count()) ReFillPlayersList();
+		if (m_iOldPlayablesCount != playables.Count() || m_sOldPlayerFactionKey != curentFactionKey) ReFillCharacterList();
+				
 		m_iOldPlayersCount = playerIds.Count();
+		m_iOldPlayablesCount = playables.Count();
+		m_sOldPlayerFactionKey = curentFactionKey;
 		
 		UpdateMenu();
 	}
@@ -240,7 +246,12 @@ class PS_CoopLobby: MenuBase
 		foreach (Widget factionSelector: m_aFactionListWidgets)
 		{
 			PS_FactionSelector handler = PS_FactionSelector.Cast(factionSelector.FindHandler(PS_FactionSelector));
-			array<PS_PlayableComponent> factionPlayablesList = m_sFactionPlayables[handler.GetFaction()];
+			
+			if (playableManager.GetPlayerFactionKey(thisPlayerController.GetPlayerId()) == handler.GetFaction().GetFactionKey()) {
+				if (!handler.IsToggled()) handler.SetToggled(true);
+			} else if (handler.IsToggled()) handler.SetToggled(false);
+			
+			array<PS_PlayableComponent> factionPlayablesList = m_sFactionPlayables[handler.GetFaction().GetFactionKey()];
 			int i = 0;
 			foreach (PS_PlayableComponent playable : factionPlayablesList) {
 				int playerId = playableManager.GetPlayerByPlayable(playable.GetId());
@@ -288,7 +299,11 @@ class PS_CoopLobby: MenuBase
 		
 		// Add new widgets
 		map<string, PS_RolesGroup> RolesGroups = new map<string, PS_RolesGroup>();
-		array<PS_PlayableComponent> factionPlayablesList = m_sFactionPlayables[m_fCurrentFaction];
+		PlayerController playerController = GetGame().GetPlayerController();
+		FactionKey currentFactionKey = "";
+		if (playerController) currentFactionKey = playableManager.GetPlayerFactionKey(playerController.GetPlayerId());
+		if (!m_sFactionPlayables.Contains(currentFactionKey)) return;
+		array<PS_PlayableComponent> factionPlayablesList = m_sFactionPlayables[currentFactionKey];
 		foreach (PS_PlayableComponent playable: factionPlayablesList)
 		{
 			string groupName = playableManager.GetGroupNameByPlayable(playable.GetId());
@@ -361,6 +376,7 @@ class PS_CoopLobby: MenuBase
 	void Action_ChatOpen()
 	{
 		// WAT? for some reason default chane do not appply, use this... thing for fix
+		// OK it's init time, but still sucks
 		m_ChatPanel.PS_CycleChannels(true);
 		// Delay is esential, if any character already controlled
 		GetGame().GetCallqueue().CallLater(ChatWrap, 0);
@@ -402,25 +418,20 @@ class PS_CoopLobby: MenuBase
 	// ----- Faction -----
 	protected void FactionClick(SCR_ButtonBaseComponent factionSelector)
 	{
-		if (!factionSelector.IsToggled())
-		{
-			factionSelector.SetToggled(true);			
-		}
-		
-		Widget factionSelectorWidget = factionSelector.GetRootWidget();
-		foreach (Widget widget: m_aFactionListWidgets)
-		{
-			if (widget != factionSelectorWidget)
-			{
-				PS_FactionSelector otherHandler = PS_FactionSelector.Cast(widget.FindHandler(PS_FactionSelector));
-				otherHandler.SetToggled(false);
-			}
-		}
-		
 		PS_FactionSelector handler = PS_FactionSelector.Cast(factionSelector.GetRootWidget().FindHandler(PS_FactionSelector));
-		m_fCurrentFaction = handler.GetFaction();
 		
-		ReFillCharacterList();
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		if (playableManager.GetPlayerFactionKey(playerController.GetPlayerId()) == handler.GetFaction().GetFactionKey()) return;
+		
+		SCR_UISoundEntity.SoundEvent(SCR_SoundEvent.CLICK);
+		
+		// Change player faction
+		FactionKey factionKey = handler.GetFaction().GetFactionKey();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		playableController.ChangeFactionKey(playerController.GetPlayerId(), factionKey);
+		playableController.SetPlayerPlayable(playerController.GetPlayerId(), RplId.Invalid()); // Reset character
+		playableController.MoveToVoNRoom(playerController.GetPlayerId(), factionKey, "");
 	}
 	
 	// ----- Players -----
@@ -486,6 +497,7 @@ class PS_CoopLobby: MenuBase
 		  && m_iCurrentPlayer == playerController.GetPlayerId()
 		) {
 			playableController.SetPlayerPlayable(playerController.GetPlayerId(), RplId.Invalid());
+			playableController.MoveToVoNRoom(playerController.GetPlayerId(), playableManager.GetPlayerFactionKey(playerController.GetPlayerId()), "");
 			return;
 		}
 		
@@ -494,8 +506,13 @@ class PS_CoopLobby: MenuBase
 		SCR_UISoundEntity.SoundEvent(SCR_SoundEvent.CLICK);
 		
 		// apply changes to SELECTED player
+		
+		PS_PlayableComponent playable = playableManager.GetPlayableById(handler.GetPlayableId());
+		SCR_ChimeraCharacter playableCharacter = SCR_ChimeraCharacter.Cast(playable.GetOwner());
+		playableController.ChangeFactionKey(m_iCurrentPlayer, playableCharacter.GetFaction().GetFactionKey());
 		playableController.SetPlayerState(m_iCurrentPlayer, PS_EPlayableControllerState.NotReady);
 		playableController.SetPlayerPlayable(m_iCurrentPlayer, handler.GetPlayableId());
+		playableController.MoveToVoNRoom(playerController.GetPlayerId(), playableManager.GetPlayerFactionKey(playerController.GetPlayerId()), playableManager.GetGroupNameByPlayable(handler.GetPlayableId()));
 	}	
 	
 	// -------------------- Extra lobby functions --------------------

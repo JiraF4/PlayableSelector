@@ -16,6 +16,7 @@ class PS_PlayableManager : ScriptComponent
 	ref map<int, RplId> m_playersPlayable = new map<int, RplId>;
 	ref map<RplId, int> m_playablePlayers = new map<RplId, int>; // reversed m_playersPlayable for fast search
 	ref map<int, bool> m_playersPin = new map<int, bool>; // is player pined
+	ref map<int, FactionKey> m_playersFaction = new map<int, FactionKey>; // player factions
 		
 	// Clients also don't give a shit about groups, soo we save staff here
 	// TODO: move to playable 
@@ -51,11 +52,7 @@ class PS_PlayableManager : ScriptComponent
 		
 		// Set new player faction
 		SCR_ChimeraCharacter playableCharacter = SCR_ChimeraCharacter.Cast(entity);
-		SCR_PlayerFactionAffiliationComponent playerFactionAffiliation = SCR_PlayerFactionAffiliationComponent.Cast(playerController.FindComponent(SCR_PlayerFactionAffiliationComponent));
 		SCR_Faction faction = SCR_Faction.Cast(playableCharacter.GetFaction());
-		playerFactionAffiliation.SetAffiliatedFaction(faction);
-		SCR_FactionManager factionManager = SCR_FactionManager.Cast(GetGame().GetFactionManager());
-		factionManager.UpdatePlayerFaction_S(playerFactionAffiliation);
 		
 		// Someone leave lobby start game
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
@@ -75,6 +72,11 @@ class PS_PlayableManager : ScriptComponent
 	ref map<RplId, PS_PlayableComponent> GetPlayables()
 	{
 		return m_aPlayables;
+	}
+	FactionKey GetPlayerFactionKey(int playerId)
+	{
+		if (!m_playersFaction.Contains(playerId)) return "";
+		return m_playersFaction[playerId];
 	}
 	PS_EPlayableControllerState GetPlayerState(int playerId)
 	{
@@ -117,6 +119,24 @@ class PS_PlayableManager : ScriptComponent
 	
 	// -------------------------- Set broadcast ----------------------------
 	// For modify from client side use PS_PlayableControllerComponent insted
+	void SetPlayerFactionKey(int playerId, FactionKey factionKey)
+	{
+		RPC_SetPlayerFactionKey(playerId, factionKey);
+		Rpc(RPC_SetPlayerFactionKey, playerId, factionKey);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RPC_SetPlayerFactionKey(int playerId, FactionKey factionKey)
+	{
+		m_playersFaction[playerId] = factionKey;
+		
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		PlayerController playerController = playerManager.GetPlayerController(playerId);
+		SCR_FactionManager factionManager = SCR_FactionManager.Cast(GetGame().GetFactionManager());
+		SCR_PlayerFactionAffiliationComponent playerFactionAffiliation = SCR_PlayerFactionAffiliationComponent.Cast(playerController.FindComponent(SCR_PlayerFactionAffiliationComponent));
+		playerFactionAffiliation.SetAffiliatedFactionByKey(factionKey);
+		factionManager.UpdatePlayerFaction_S(playerFactionAffiliation);
+	}
+	
 	void SetPlayerPlayable(int playerId, RplId PlayableId)
 	{
 		RPC_SetPlayerPlayable(playerId, PlayableId);
@@ -210,6 +230,13 @@ class PS_PlayableManager : ScriptComponent
 			writer.WriteBool(m_playersPin.GetElement(i));
 		}
 		
+		int playersFactionCount = m_playersFaction.Count();
+		writer.WriteInt(playersFactionCount);
+		for (int i = 0; i < playersFactionCount; i++)
+		{
+			writer.WriteInt(m_playersFaction.GetKey(i));
+			writer.WriteString(m_playersFaction.GetElement(i));
+		}
 		
 		return true;
 	}
@@ -274,6 +301,18 @@ class PS_PlayableManager : ScriptComponent
 			reader.ReadBool(value);
 			
 			m_playersPin.Insert(key, value);
+		}
+		
+		int playersFactionCount;
+		reader.ReadInt(playersFactionCount);
+		for (int i = 0; i < playersFactionCount; i++)
+		{
+			int key;
+			string value;
+			reader.ReadInt(key);
+			reader.ReadString(value);
+			
+			m_playersFaction.Insert(key, value);
 		}
 		
 		return true;

@@ -8,10 +8,6 @@ SCR_FactionManager FactionManager_Editor1 : "{4A188E44289B9A50}Prefabs/MP/Manage
  coords 115.591 1 155.429
 }
 PS_GameModeCoop PS_GameModeCoop1 : "{F64CCAF87CCCF567}Prefabs/MP/Modes/PS_GameModeCoop.et" {
- components {
-  PS_LobbyVoNManager "{5EAB23B1D57CE592}" {
-  }
- }
  coords 3.45 1.663 3.493
  {
   SCR_FactionManager "5EA9035682A007CB" {

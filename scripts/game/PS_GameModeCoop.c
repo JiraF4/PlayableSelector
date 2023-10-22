@@ -24,7 +24,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			OpenLobby();
 			GetGame().GetInputManager().AddActionListener("OpenLobby", EActionTrigger.DOWN, OpenLobby);
 		}
-		
 	}
 	
 	void OpenLobby()
@@ -41,41 +40,22 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	{
         Resource resource = Resource.Load("{EF9F633DDC485F1F}Prefabs/InitialPlayer.et");
 		EntitySpawnParams params = new EntitySpawnParams();
+		GetTransform(params.Transform);		
         IEntity initialEntity = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		SCR_PlayerController playerController = SCR_PlayerController.Cast(playerManager.GetPlayerController(playerId));
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		playableController.SetInitialEntity(initialEntity);
 		playerController.SetInitialMainEntity(initialEntity);
-		
-		
-		Rpc(StartVoN)
-	}
-	
-	
-	
-	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	void StartVoN()
-	{
-		PlayerController playerController = GetGame().GetPlayerController();
-		IEntity entity = playerController.GetControlledEntity();
-		SCR_VoNComponent von = SCR_VoNComponent.Cast(entity.FindComponent(SCR_VoNComponent));
-		von.SetCommMethod(ECommMethod.DIRECT);
-		von.SetCapture(true);
 	}
 	
 	override void OnPlayerKilled(int playerId, IEntity player, IEntity killer)
 	{
-		Rpc(RPC_OnPlayerKilled, playerId)
-	}
-	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	void RPC_OnPlayerKilled(int playerId)
-	{	
-		PlayerController playerController = GetGame().GetPlayerController();
-		if (playerController.GetPlayerId() == playerId) {
-			PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-			playableController.SwitchToObserver();
-		}
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		SCR_PlayerController playerController = SCR_PlayerController.Cast(playerManager.GetPlayerController(playerId));
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		playerController.SetInitialMainEntity(playableController.GetInitialEntity());
+		PS_LobbyVoNManager.GetInstance().MoveToRoom(playerId, "dead", "dead");
 	}
 	
 	// Update state for disconnected and start timer if need

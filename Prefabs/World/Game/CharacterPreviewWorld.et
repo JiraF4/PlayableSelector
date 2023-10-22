@@ -1,0 +1,31 @@
+GenericWorldEntity {
+ ID "5EAB78254F6441E8"
+ coords 0 0 0
+ boundMins 0 0 0
+ boundMaxs 0 0 0
+ blockSize 200 1500 200
+ SkyPreset "{4DADE4751B107945}UI/Materials/HDRi_inventory.emat"
+ PixelSizeLimit 1
+ MaterialTest {
+  FXAAEffect "{5EAB7824A11382A5}" {
+  }
+ }
+ {
+  GenericWorldLightEntity {
+   ID "5EAB78254F6441E9"
+   coords 3.974 4.836 1.45
+   angleX -4.725
+   angleY 36.243
+   angleZ -100.059
+   SunAngularSize 1
+   DirectLightLV 3.5
+   IndirectLightLV 1
+   ProbeReflectionEV 2
+   ProbeDiffuseEV 2
+   "GlobalAOPower " 0.609
+   TargetEV 0
+   ManualHDRBrightness always
+   ManualHDRBrightnessLV 1
+  }
+ }
+}

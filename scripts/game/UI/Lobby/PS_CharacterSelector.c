@@ -35,9 +35,9 @@ class PS_CharacterSelector : SCR_ButtonImageComponent
 	
 	void AddOnClick()
 	{
-		SCR_ButtonComponent kickButtonHandler = SCR_ButtonComponent.Cast(m_wKickButton.FindHandler(SCR_ButtonComponent));
+		SCR_ButtonBaseComponent kickButtonHandler = SCR_ButtonBaseComponent.Cast(m_wKickButton.FindHandler(SCR_ButtonBaseComponent));
 		kickButtonHandler.m_OnClicked.Insert(KickButtonClicked);
-		SCR_ButtonComponent disconnectionButtonHandler = SCR_ButtonComponent.Cast(m_wDisconnectionButton.FindHandler(SCR_ButtonComponent));
+		SCR_ButtonBaseComponent disconnectionButtonHandler = SCR_ButtonBaseComponent.Cast(m_wDisconnectionButton.FindHandler(SCR_ButtonBaseComponent));
 		disconnectionButtonHandler.m_OnClicked.Insert(DisconnectionButtonClicked);
 	}
 	

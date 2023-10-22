@@ -67,7 +67,7 @@ SCR_ChimeraCharacter {
    Object "{9F3AF591CD6DFE1A}Assets/Characters/Basebody/Basebody_Male_01.xob"
   }
   PS_LobbyVoNComponent "{5EAA222EF50425C5}" {
-   "Speaking Range" 0.001
+   "Speaking Range" 10
    Filename "{B4C3941EC8B2AD20}Sounds/VON/von.acp"
   }
   SCR_CharacterDamageManagerComponent "{5EAA482D76C79C7F}" {
@@ -175,7 +175,6 @@ SCR_ChimeraCharacter {
    AnimGraph "{DFFC0A34A77ADCB4}anims/workspaces/player/player_main.agr"
    AnimInstance "{B086D0CD3B9E3AB0}anims/workspaces/player/player_PS_VON.asi"
    StartNode "MasterControl"
-   "Collision bone" "collision"
    "Server LOD" 1
    "LOD camera distances" {
     5 20
@@ -195,50 +194,49 @@ SCR_ChimeraCharacter {
    }
    ColliderCrouch PhysAgentCollisionShapeItem "{5EAA222FEE1AE860}" {
     Shape Capsule
-    Size 0.75 1.4 0
-    Offset 0.175 0 0.175
-    DynamicOffset 0 0 0.25
+    Size 0 0 0
+    DynamicOffset 0 0 0
     StepHeight 0.4
    }
    ColliderProne PhysAgentCollisionShapeItem "{5EAA222FEE1AE864}" {
-    Size 0.6 0.4 1.8
+    Size 0 0 0
     StepHeight 0.25
    }
    ColliderJump PhysAgentCollisionShapeItem "{5EAA222FEE1AE878}" {
     Shape Capsule
-    Size 0.9 1.8 0
-    Offset 0.05 0 0.15
-    DynamicOffset 0 0 0.35
+    Size 0 0 0
+    Offset 0 0 0
+    DynamicOffset 0 0 0
     StepHeight 0.65
    }
    ColliderSwim PhysAgentCollisionShapeItem "{5EAA222FEE1AE87B}" {
-    Size 1 1.35 2
+    Size 0 0 0
     StepHeight 1
    }
    ColliderLadder PhysAgentCollisionShapeItem "{5EAA222FEE1AE87F}" {
     Shape Capsule
-    Size 0.4 2 0.4
+    Size 0 0 0
     StepHeight 1
    }
    ColliderVehicle PhysAgentCollisionShapeItem "{5EAA222FEE1AE872}" {
-    Size 0.4 0.85 0.4
+    Size 0 0 0
     StepHeight 0.25
    }
    ColliderWeaponDeploymentStand PhysAgentCollisionShapeItem "{5EAA222FEE1AE876}" {
     Shape Capsule
-    Size 0.75 1.8 0
-    Offset 0.05 0 0.05
+    Size 0 0 0
+    Offset 0 0 0
     StepHeight 0.55
    }
    ColliderWeaponDeploymentCrouch PhysAgentCollisionShapeItem "{5EAA222FEE1AE849}" {
     Shape Capsule
-    Size 0.75 1.4 0
-    Offset 0.05 0 0.05
+    Size 0 0 0
+    Offset 0 0 0
     StepHeight 0.4
    }
    ColliderWeaponDeploymentProne PhysAgentCollisionShapeItem "{5EAA222FEE1AE84E}" {
     Shape Box
-    Size 0.6 0.4 1.8
+    Size 0 0 0
     StepHeight 0.25
    }
    RagdollLayer 1024
@@ -250,6 +248,7 @@ SCR_ChimeraCharacter {
   }
   RplComponent "{5EAA222FEE1AE85C}" {
    "Rpl State Override" Runtime
+   Streamable Disabled
   }
  }
  coords 0 0 0

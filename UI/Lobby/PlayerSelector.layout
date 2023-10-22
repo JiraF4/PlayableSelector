@@ -17,7 +17,6 @@ ButtonWidgetClass {
    m_bNoBorderAnimation 1
   }
  }
- "no focus" 1
  {
   FrameWidgetClass "{5D6D352BAC1362FE}" {
    Name "FPlayerSelector"
@@ -164,9 +163,9 @@ ButtonWidgetClass {
       SizeY 40
       OffsetBottom -40
      }
-     Color 0 1 0.019 0
+     Color 1 1 1 0
      components {
-      SCR_ButtonComponent "{5EA8C93F0C257FF7}" {
+      SCR_ButtonBaseComponent "{5EAB239484FEDB57}" {
        m_sSoundHovered ""
        m_sSoundClicked ""
        m_BackgroundDefault 1 1 1 0
@@ -184,6 +183,7 @@ ButtonWidgetClass {
        Name "VoiceButtonFrame"
        Slot ButtonWidgetSlot "{5EA8C93CB4241314}" {
        }
+       Color 0 0 0 1
        {
         ImageWidgetClass "{5EAA2EA293D54231}" {
          Name "Background"
@@ -198,6 +198,7 @@ ButtonWidgetClass {
           OffsetBottom -40
          }
          Color 1 1 1 0
+         "Inherit Color" 1
         }
         ImageWidgetClass "{5EAA2EA293D54232}" {
          Name "VoiceImage"
@@ -234,7 +235,7 @@ ButtonWidgetClass {
      }
      Color 0 1 0.019 0
      components {
-      SCR_ButtonComponent "{5EA8C93F0C257FF7}" {
+      SCR_ButtonBaseComponent "{5EAB2394A927C221}" {
        m_sSoundHovered ""
        m_sSoundClicked ""
        m_BackgroundDefault 1 1 1 0
@@ -300,7 +301,7 @@ ButtonWidgetClass {
      }
      Color 0 1 0.019 0
      components {
-      SCR_ButtonComponent "{5EA8C93F0C257FF7}" {
+      SCR_ButtonBaseComponent "{5EAB239441B528D5}" {
        m_sSoundHovered ""
        m_sSoundClicked ""
        m_BackgroundDefault 1 1 1 0

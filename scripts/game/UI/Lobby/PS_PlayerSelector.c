@@ -38,10 +38,12 @@ class PS_PlayerSelector : SCR_ButtonImageComponent
 	
 	void AddOnClick()
 	{
-		SCR_ButtonComponent kickButtonHandler = SCR_ButtonComponent.Cast(m_wKickButton.FindHandler(SCR_ButtonComponent));
-		kickButtonHandler.m_OnClicked.Insert(kickButtonClicked);
-		SCR_ButtonComponent pinButtonHandler = SCR_ButtonComponent.Cast(m_wPinButton.FindHandler(SCR_ButtonComponent));
-		pinButtonHandler.m_OnClicked.Insert(pinButtonClicked);
+		SCR_ButtonBaseComponent kickButtonHandler = SCR_ButtonBaseComponent.Cast(m_wKickButton.FindHandler(SCR_ButtonBaseComponent));
+		kickButtonHandler.m_OnClicked.Insert(KickButtonClicked);
+		SCR_ButtonBaseComponent pinButtonHandler = SCR_ButtonBaseComponent.Cast(m_wPinButton.FindHandler(SCR_ButtonBaseComponent));
+		pinButtonHandler.m_OnClicked.Insert(PinButtonClicked);
+		SCR_ButtonBaseComponent voiceButtonHandler = SCR_ButtonBaseComponent.Cast(m_wVoiceButton.FindHandler(SCR_ButtonBaseComponent));
+		voiceButtonHandler.m_OnClicked.Insert(VoiceButtonClicked);
 	}
 	
 	void SetPlayer(int playerId)
@@ -59,13 +61,12 @@ class PS_PlayerSelector : SCR_ButtonImageComponent
 	{
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		int playableId = playableManager.GetPlayableByPlayer(m_iPlayer);
-		SCR_ChimeraCharacter character;
-		if (playableId != RplId.Invalid()) character = SCR_ChimeraCharacter.Cast(playableManager.GetPlayableById(playableId).GetOwner());
-		if (character != null) 
+		FactionKey factionKey = playableManager.GetPlayerFactionKey(m_iPlayer);
+		if (factionKey != "") 
 		{
-			SCR_Faction faction = SCR_Faction.Cast(character.GetFaction());
-			m_wPlayerFactionColor.SetColor(faction.GetFactionColor());
+			FactionManager factionManager = GetGame().GetFactionManager();
+			SCR_Faction faction = SCR_Faction.Cast(factionManager.GetFactionByKey(factionKey));
+			m_wPlayerFactionColor.SetColor(faction.GetOutlineFactionColor());
 			m_wPlayerFactionName.SetText(faction.GetFactionName());
 		}else{
 			m_wPlayerFactionColor.SetColor(Color.FromRGBA(0, 0, 0, 0));
@@ -77,7 +78,7 @@ class PS_PlayerSelector : SCR_ButtonImageComponent
 		// if admin set player color
 		m_wPlayerName.SetText(playerManager.GetPlayerName(m_iPlayer));
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(m_iPlayer);
-		if (playerRole == EPlayerRole.ADMINISTRATOR) m_wPlayerName.SetColor(Color.FromInt(0xffe9c543));
+		if (playerRole == EPlayerRole.ADMINISTRATOR) m_wPlayerName.SetColor(Color.FromInt(0xfff2a34b));
 		else m_wPlayerName.SetColor(Color.FromInt(0xffffffff));
 		
 		// If admin show kick button for non admins
@@ -92,15 +93,41 @@ class PS_PlayerSelector : SCR_ButtonImageComponent
 		if (state == PS_EPlayableControllerState.Disconected) m_wReadyImage.LoadImageFromSet(0, m_sImageSet, "disconnection");
 		if (state == PS_EPlayableControllerState.Playing) m_wReadyImage.LoadImageFromSet(0, m_sImageSet, "characters");
 		
+		
+		PlayerController playerController = GetGame().GetPlayerController();
+		
+		
 		// Check OUR VoN is WE listen this player?
 		IEntity entity = GetGame().GetPlayerController().GetControlledEntity();
+		PermissionState mute = playerController.GetPlayerMutedState(m_iPlayer);
 		PS_LobbyVoNComponent von;
 		if (entity) von = PS_LobbyVoNComponent.Cast(entity.FindComponent(PS_LobbyVoNComponent));
-		if (von)
+		if (von && mute != PermissionState.DISALLOWED)
 		{
 			if (von.IsPlayerSpeech(m_iPlayer)) m_wVoiceImage.LoadImageFromSet(0, m_sImageSet, "sound-on");
 			else m_wVoiceImage.LoadImageFromSet(0, m_sImageSet, "VON_directspeech");
 		} else m_wVoiceImage.LoadImageFromSet(0, m_sImageSet, "sound-off");
+		
+		
+		// Check is VoN the same.
+		// faction
+		FactionKey currentFactionKey = playableManager.GetPlayerFactionKey(playerController.GetPlayerId());
+		
+		// group
+		string groupName = "";
+		RplId playableId = playableManager.GetPlayableByPlayer(m_iPlayer);
+		if (playableId != RplId.Invalid()) groupName = playableManager.GetGroupNameByPlayable(playableId);
+		string currentGroupName = "";
+		playableId = playableManager.GetPlayableByPlayer(playerController.GetPlayerId());
+		if (playableId != RplId.Invalid()) currentGroupName = playableManager.GetGroupNameByPlayable(playableId);
+		
+		string VoNRoom = factionKey + groupName;
+		string currentVoNRoom = currentFactionKey + currentGroupName;
+		
+		if (VoNRoom != currentVoNRoom) m_wVoiceImage.SetColor(Color.FromInt(0xff595959));
+		else {
+			m_wVoiceImage.SetColor(Color.FromInt(0xffffffff));
+		}
 		
 		// If pinned show pinImage or pinButton for admins
 		if (playableManager.GetPlayerPin(m_iPlayer))
@@ -117,7 +144,7 @@ class PS_PlayerSelector : SCR_ButtonImageComponent
 	
 	// -------------------- Buttons events --------------------
 	// Admin may kick player
-	void kickButtonClicked(SCR_ButtonBaseComponent kickButton)
+	void KickButtonClicked(SCR_ButtonBaseComponent kickButton)
 	{
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
@@ -125,11 +152,20 @@ class PS_PlayerSelector : SCR_ButtonImageComponent
 	}
 	
 	// Admin may unpin player
-	void pinButtonClicked(SCR_ButtonBaseComponent pinButton)
+	void PinButtonClicked(SCR_ButtonBaseComponent pinButton)
 	{
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		playableController.UnpinPlayer(m_iPlayer);
+	}
+	
+	void VoiceButtonClicked(SCR_ButtonBaseComponent pinButton)
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		if (playerController.GetPlayerId() == m_iPlayer) return;
+		PermissionState mute = playerController.GetPlayerMutedState(m_iPlayer);
+		if (mute == PermissionState.ALLOWED) playerController.SetPlayerMutedState(m_iPlayer, PermissionState.DISALLOWED);
+		else playerController.SetPlayerMutedState(m_iPlayer, PermissionState.ALLOWED);
 	}
 	
 }

@@ -12,7 +12,47 @@ class PS_PlayableControllerComponent : ScriptComponent
 {
 	IEntity m_eCamera;
 	IEntity m_eInitialEntity;
-		
+	vector VoNPosition = PS_LobbyVoNManager.roomInitialPosition;
+	
+	// Just don't look at it.
+	override protected void OnPostInit(IEntity owner)
+	{
+		SetEventMask(GetOwner(), EntityEvent.POSTFIXEDFRAME);
+		SCR_PlayerController playerController = SCR_PlayerController.Cast(PlayerController.Cast(GetOwner()));
+		playerController.m_OnControlledEntityChanged.Insert(OnControlledEntityChanged);
+	}
+	
+	// We change to VoN boi lets enable camera
+	private void OnControlledEntityChanged(IEntity from, IEntity to)
+	{
+		if (!from) return;
+		PS_LobbyVoNComponent vonFrom = PS_LobbyVoNComponent.Cast(from.FindComponent(PS_LobbyVoNComponent));
+		PS_LobbyVoNComponent vonTo = PS_LobbyVoNComponent.Cast(to.FindComponent(PS_LobbyVoNComponent));
+		if (vonTo && !vonFrom)
+		{
+			SwitchToObserver(from);
+		}
+	}
+	
+	// Yes every frame, just don't look at it.
+	override protected void EOnPostFixedFrame(IEntity owner, float timeSlice)
+	{
+		// Lets fight with phisyc engine
+		if (m_eInitialEntity)
+		{
+			m_eInitialEntity.SetOrigin(VoNPosition);
+			Physics physics = m_eInitialEntity.GetPhysics();
+			physics.SetVelocity("0 0 0");
+			physics.SetAngularVelocity("0 0 0");
+			physics.SetMass(0);
+			physics.SetDamping(1, 1);
+		} else {
+			PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+			IEntity entity = thisPlayerController.GetControlledEntity();
+			m_eInitialEntity = entity;
+		}
+	}
+	
 	IEntity GetInitialEntity()
 	{
 		return m_eInitialEntity;
@@ -22,7 +62,43 @@ class PS_PlayableControllerComponent : ScriptComponent
 		m_eInitialEntity = initialEntity;
 	}
 	
+	void ChangeFactionKey(int playerId, FactionKey factionKey)
+	{
+		Rpc(RPC_ChangeFactionKey, playerId, factionKey)
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void RPC_ChangeFactionKey(int playerId, FactionKey factionKey)
+	{
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		
+		// If not admin you can change only herself
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
+		if (thisPlayerController.GetPlayerId() != playerId && playerRole != EPlayerRole.ADMINISTRATOR) return;
+		
+		playableManager.SetPlayerFactionKey(playerId, factionKey);
+	}
+	
 	// ------------------ VoN controlls ------------------
+	void MoveToVoNRoom(int playerId, FactionKey factionKey, string groupName)
+	{
+		Rpc(RPC_MoveVoNToRoom, playerId, factionKey, groupName);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void RPC_MoveVoNToRoom(int playerId, FactionKey factionKey, string groupName)
+	{
+		// If not admin you can change only herself
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
+		if (thisPlayerController.GetPlayerId() != playerId && playerRole != EPlayerRole.ADMINISTRATOR) return;
+		
+		PS_LobbyVoNManager lobbyVoNManager = PS_LobbyVoNManager.GetInstance();
+		lobbyVoNManager.MoveToRoom(playerId, factionKey, groupName);
+	}
+	
+	
 	PS_LobbyVoNComponent GetVoN()
 	{
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
@@ -44,14 +120,14 @@ class PS_PlayableControllerComponent : ScriptComponent
 	}
 	
 	// ------------------ Observer camera controlls ------------------
-	void SwitchToObserver()
+	void SwitchToObserver(IEntity from)
 	{
 		if (m_eCamera) return;
 		GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.SpectatorMenu);
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
 		IEntity entity = thisPlayerController.GetControlledEntity();
 		EntitySpawnParams params = new EntitySpawnParams();
-		if (entity) entity.GetTransform(params.Transform);
+		if (from) from.GetTransform(params.Transform);
         Resource resource = Resource.Load("{127C64F4E93A82BC}Prefabs/Editor/Camera/ManualCameraPhoto.et");
         m_eCamera = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
 		GetGame().GetCameraManager().SetCamera(CameraBase.Cast(m_eCamera));
@@ -90,7 +166,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 	{
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		if (playableManager.GetPlayableByPlayer(thisPlayerController.GetPlayerId()) == RplId.Invalid()) SwitchToObserver();
+		if (playableManager.GetPlayableByPlayer(thisPlayerController.GetPlayerId()) == RplId.Invalid()) SwitchToObserver(null);
 		Rpc(RPC_ApplyPlayable)
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
@@ -112,9 +188,6 @@ class PS_PlayableControllerComponent : ScriptComponent
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		
 		// If not admin you can change only herself
-		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
-		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
-		if (playerRole != EPlayerRole.ADMINISTRATOR) return;
 		
 		playableManager.SetPlayerPin(playerId, false);
 	}
@@ -135,7 +208,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		
 		playerManager.KickPlayer(playerId, PlayerManagerKickReason.KICK, 0);
 	}
-	
+		
 	// -------------------- Set ---------------------
 	void SetPlayerState(int playerId, PS_EPlayableControllerState state)
 	{
@@ -208,6 +281,6 @@ class PS_PlayableControllerComponent : ScriptComponent
 		groupsManagerComponent.RegisterGroup(group);
 		playerControllerGroupComponent.RPC_AskJoinGroup(group.GetGroupID());
 		*/
-	}	
+	}
 	
 }
