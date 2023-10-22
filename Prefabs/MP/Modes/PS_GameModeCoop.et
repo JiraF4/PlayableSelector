@@ -1,6 +1,8 @@
 PS_GameModeCoop {
  ID "5D4CDA0160C87274"
  components {
+  PS_LobbyVoNManager "{5EAB23A5E439D527}" {
+  }
   PS_PlayableManager "{5EA8C9329726C920}" {
   }
   SCR_ArsenalManagerComponent "{5D4CE249D697011C}" {
@@ -378,8 +380,6 @@ PS_GameModeCoop {
   }
   RplComponent "{5D4CE249422E8900}" {
    Streamable Disabled
-  }
-  PS_LobbyVoNManager "{5EAB23A5E439D527}" {
   }
  }
  PlayerControllerPrefab "{4E5DAC62A374950F}Prefabs/Characters/Core/DefaultPlayerControllerMP_Coop.et"

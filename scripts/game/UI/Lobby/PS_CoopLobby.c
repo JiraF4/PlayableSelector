@@ -119,7 +119,14 @@ class PS_CoopLobby: MenuBase
 		GetGame().GetInputManager().AddActionListener("VONDirect", EActionTrigger.DOWN, Action_LobbyVoNOn);
 		GetGame().GetInputManager().AddActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
 				
-		GetGame().GetCallqueue().CallLater(OnMenuOpenDelay, 500);
+		GetGame().GetCallqueue().CallLater(AwaitPLayerController, 100);
+	}
+	
+	void AwaitPLayerController()
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		if (playerController) OnMenuOpenDelay();
+		else GetGame().GetCallqueue().CallLater(AwaitPLayerController, 100);
 	}
 	
 	void OnMenuOpenDelay()
