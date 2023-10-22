@@ -60,17 +60,13 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		SCR_PlayerController playerController = SCR_PlayerController.Cast(playerManager.GetPlayerController(playerId));
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-		playerController.SetInitialMainEntity(playableController.GetInitialEntity());
+		playerController.SetPossessedEntity(null);
 		PS_LobbyVoNManager.GetInstance().MoveToRoom(playerId, "dead", "dead");
 	}
 	
 	// Update state for disconnected and start timer if need
 	protected override void OnPlayerDisconnected(int playerId, KickCauseCode cause, int timeout)
 	{
-		PlayerManager playerManager = GetGame().GetPlayerManager();
-		SCR_PlayerController playerController = SCR_PlayerController.Cast(playerManager.GetPlayerController(playerId));
-		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-		playerController.SetInitialMainEntity(playableController.GetInitialEntity());
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		playableManager.SetPlayerState(playerId, PS_EPlayableControllerState.Disconected); 
 		if (m_iAvailableReconnectTime > 0) GetGame().GetCallqueue().CallLater(RemoveDisconnectedPlayer, m_iAvailableReconnectTime, false, playerId);
