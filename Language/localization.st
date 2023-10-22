@@ -43,9 +43,9 @@ StringTable {
   }
   CustomStringTableItem "{5EA932EC5F220341}" {
    Id "PS-Lobby_ForceStart"
-   Target_en_us "Start game!"
-   Target_ru_ru "Начать игру!"
-   Modified 1588294134
+   Target_en_us "Start game"
+   Target_ru_ru "Начать игру"
+   Modified 1588355597
    Author "SeskPC"
    LastChanged "SeskPC"
   }
