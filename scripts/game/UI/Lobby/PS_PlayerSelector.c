@@ -15,9 +15,9 @@ class PS_PlayerSelector : SCR_ButtonImageComponent
 	ImageWidget m_wReadyImage;
 	ButtonWidget m_wKickButton;
 	ButtonWidget m_wPinButton;
+	ImageWidget m_wPinImage;
 	ButtonWidget m_wVoiceButton;
 	ImageWidget m_wVoiceImage;
-	ImageWidget m_wPinImage;
 	
 	override void HandlerAttached(Widget w)
 	{
@@ -108,6 +108,8 @@ class PS_PlayerSelector : SCR_ButtonImageComponent
 			else m_wVoiceImage.LoadImageFromSet(0, m_sImageSet, "VON_directspeech");
 		} else m_wVoiceImage.LoadImageFromSet(0, m_sImageSet, "sound-off");
 		
+		// Show mute button only for other players
+		m_wVoiceButton.SetVisible(m_iPlayer != playerController.GetPlayerId());
 		
 		// Check is VoN the same.
 		// faction

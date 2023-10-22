@@ -13,6 +13,8 @@ class PS_FactionSelector : SCR_ButtonBaseComponent
 	TextWidget m_wFactionName;
 	ImageWidget m_wFactionColor;
 	TextWidget m_wFactionCounter;
+	ImageWidget m_wLockImage;
+	
 	
 	override void HandlerAttached(Widget w)
 	{
@@ -21,6 +23,7 @@ class PS_FactionSelector : SCR_ButtonBaseComponent
 		m_wFactionName = TextWidget.Cast(w.FindAnyWidget("FactionName"));
 		m_wFactionColor = ImageWidget.Cast(w.FindAnyWidget("FactionColor"));
 		m_wFactionCounter = TextWidget.Cast(w.FindAnyWidget("FactionCounter"));
+		m_wLockImage = ImageWidget.Cast(w.FindAnyWidget("LockImage"));
 	}
 	
 	void SetFaction(Faction faction)
@@ -34,9 +37,24 @@ class PS_FactionSelector : SCR_ButtonBaseComponent
 		m_wFactionFlag.LoadImageTexture(0, uiInfo.GetIconPath());
 	}
 	
-	void SetCount(int current, int max)
+	void SetCount(int playersCurrent, int current, int max)
 	{
-		m_wFactionCounter.SetText(current.ToString() + " / " + max.ToString());
+		m_wFactionCounter.SetText(playersCurrent.ToString() + " / " + current.ToString() + " / " + max.ToString());
+		
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		m_wLockImage.SetVisible(false);
+		if (gameMode.IsFactionLockMode())
+		{
+			PlayerManager playerManager = GetGame().GetPlayerManager();
+			PlayerController currentPlayerController = GetGame().GetPlayerController();
+			EPlayerRole currentPlayerRole = playerManager.GetPlayerRoles(currentPlayerController.GetPlayerId());
+			if (currentPlayerRole != EPlayerRole.ADMINISTRATOR)
+			{
+				PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+				FactionKey factionKey = playableManager.GetPlayerFactionKey(currentPlayerController.GetPlayerId());
+				if (factionKey != "") m_wLockImage.SetVisible(true);
+			}
+		}
 	}
 	
 	Faction GetFaction()

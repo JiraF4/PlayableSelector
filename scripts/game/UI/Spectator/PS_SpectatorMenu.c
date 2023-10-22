@@ -44,8 +44,8 @@ class PS_SpectatorMenu: MenuBase
 			inputManager.AddActionListener("InstantVote", EActionTrigger.DOWN, GetGame().OnInstantVote);
 			inputManager.AddActionListener("MenuOpen", EActionTrigger.DOWN, OpenPauseMenu);
 			inputManager.AddActionListener("ChatToggle", EActionTrigger.DOWN, ChatToggle);
-			inputManager.AddActionListener("LobbyVoN", EActionTrigger.DOWN, Action_LobbyVoNOn);
-			inputManager.AddActionListener("LobbyVoN", EActionTrigger.UP, Action_LobbyVoNOff);
+			inputManager.AddActionListener("VONDirect", EActionTrigger.DOWN, Action_LobbyVoNOn);
+			inputManager.AddActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
 #ifdef WORKBENCH
 			inputManager.AddActionListener("MenuOpenWB", EActionTrigger.DOWN, OpenPauseMenu);
 #endif

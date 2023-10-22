@@ -14,6 +14,23 @@ class PS_PlayableControllerComponent : ScriptComponent
 	IEntity m_eInitialEntity;
 	vector VoNPosition = PS_LobbyVoNManager.roomInitialPosition;
 	
+	void FactionLockSwitch()
+	{
+		Rpc(RPC_FactionLockSwitch);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void RPC_FactionLockSwitch()
+	{
+		// only admins can change faction lock
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
+		if (playerRole != EPlayerRole.ADMINISTRATOR) return;
+		
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		gameMode.FactionLockSwitch();
+	}
+	
 	// Just don't look at it.
 	override protected void OnPostInit(IEntity owner)
 	{
@@ -266,21 +283,6 @@ class PS_PlayableControllerComponent : ScriptComponent
 		// Pin player if setted by admin
 		if (playerId != thisPlayerController.GetPlayerId()) playableManager.SetPlayerPin(playerId, true);
 				
-		//Print("RPC_SetPlayerPlayable 2: " + playerId.ToString() + " - " + playableId);
-		/*
-		SCR_GroupsManagerComponent groupsManagerComponent = SCR_GroupsManagerComponent.GetInstance();
-		AIControlComponent aiControl = AIControlComponent.Cast(playable.FindComponent(AIControlComponent));
-		SCR_AIGroup groupPlayable =  SCR_AIGroup.Cast(aiControl.GetControlAIAgent().GetParentGroup());
-		SCR_AIGroup group = groupsManagerComponent.CreateNewPlayableGroup(faction);
-		group.SetSlave(groupPlayable);
-		SCR_PlayerControllerGroupComponent playerControllerGroupComponent = SCR_PlayerControllerGroupComponent.Cast(playerController.FindComponent(SCR_PlayerControllerGroupComponent));
-		playerControllerGroupComponent.RPC_AskJoinGroup(group.GetGroupID());
-		
-		group.SetGroupID(-2);
-		group.SetMaxMembers(10);
-		groupsManagerComponent.RegisterGroup(group);
-		playerControllerGroupComponent.RPC_AskJoinGroup(group.GetGroupID());
-		*/
 	}
 	
 }

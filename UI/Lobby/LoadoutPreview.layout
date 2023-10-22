@@ -95,7 +95,6 @@ VerticalLayoutWidgetClass {
              xscale 4
              yscale 4
              Format "HDR High"
-             "Use clear color" 0
             }
            }
           }

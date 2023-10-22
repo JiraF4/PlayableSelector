@@ -14,7 +14,7 @@ class PS_CoopLobby: MenuBase
 	protected ResourceName m_sCharacterSelectorPrefab = "{3F761F63F1DF29D1}UI/Lobby/CharacterSelector.layout"; // Handler: PS_CharacterSelector
 	protected ResourceName m_sFactionSelectorPrefab = "{DA22ED7112FA8028}UI/Lobby/FactionSelector.layout"; // Handler: PS_FactionSelector
 	protected ResourceName m_sPlayerSelectorPrefab = "{B55DD7054C5892AE}UI/Lobby/PlayerSelector.layout"; // Handler: PS_PlayerSelector
-	
+		
 	/*
 		Script generate widgets tree:
 		Lobby 							- Our lobby widget
@@ -68,6 +68,11 @@ class PS_CoopLobby: MenuBase
 	int m_iOldPlayersCount = 0;
 	FactionKey m_sOldPlayerFactionKey = "";
 	
+	// Global options
+	ButtonWidget m_wFactionLockButton;
+	ImageWidget m_wFactionLockImage;
+	
+	protected ResourceName m_sImageSet = "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset";
 	
 	// -------------------- Menu events --------------------
 	override void OnMenuOpen()
@@ -103,8 +108,14 @@ class PS_CoopLobby: MenuBase
 		m_bNavigationButtonForceStart.m_OnClicked.Insert(Action_ForceStart);
 		GetGame().GetInputManager().AddActionListener("LobbyGameForceStart", EActionTrigger.DOWN, Action_ForceStart);
 		
-		GetGame().GetInputManager().AddActionListener("LobbyVoN", EActionTrigger.DOWN, Action_LobbyVoNOn);
-		GetGame().GetInputManager().AddActionListener("LobbyVoN", EActionTrigger.UP, Action_LobbyVoNOff);
+		// Faction lock
+		m_wFactionLockButton = ButtonWidget.Cast(GetRootWidget().FindAnyWidget("FactionLockButton"));
+		m_wFactionLockImage = ImageWidget.Cast(GetRootWidget().FindAnyWidget("FactionLockImage"));
+		SCR_ButtonBaseComponent factionLockButtonHandler = SCR_ButtonBaseComponent.Cast(m_wFactionLockButton.FindHandler(SCR_ButtonBaseComponent));
+		factionLockButtonHandler.m_OnClicked.Insert(Action_FactionLock);
+		
+		GetGame().GetInputManager().AddActionListener("VONDirect", EActionTrigger.DOWN, Action_LobbyVoNOn);
+		GetGame().GetInputManager().AddActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
 		
 		// Start update cycle
 		GetGame().GetCallqueue().CallLater(UpdateCycle, 100);
@@ -127,8 +138,8 @@ class PS_CoopLobby: MenuBase
 		GetGame().GetInputManager().RemoveActionListener("MenuSelect", EActionTrigger.DOWN, Action_Ready);
 		GetGame().GetInputManager().RemoveActionListener("ChatToggle", EActionTrigger.DOWN, Action_ChatOpen);
 		GetGame().GetInputManager().RemoveActionListener("LobbyGameForceStart", EActionTrigger.DOWN, Action_ForceStart);
-		GetGame().GetInputManager().RemoveActionListener("LobbyVoN", EActionTrigger.DOWN, Action_LobbyVoNOn);
-		GetGame().GetInputManager().RemoveActionListener("LobbyVoN", EActionTrigger.UP, Action_LobbyVoNOff);
+		GetGame().GetInputManager().RemoveActionListener("VONDirect", EActionTrigger.DOWN, Action_LobbyVoNOn);
+		GetGame().GetInputManager().RemoveActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
 	}
 	
 	// Soo many staff need to bee init, i can't track all of it...
@@ -232,6 +243,7 @@ class PS_CoopLobby: MenuBase
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		
+		// Join button rename
 		PlayerController thisPlayerController = GetGame().GetPlayerController();
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
@@ -242,10 +254,24 @@ class PS_CoopLobby: MenuBase
 			else m_bNavigationButtonReady.SetLabel("#PS-Lobby_JoinAsObserver");
 		}
 		
+		// Faction lock state
+		if (!gameMode.IsFactionLockMode()) m_wFactionLockImage.LoadImageFromSet(0, m_sImageSet, "server-unlocked");
+		else m_wFactionLockImage.LoadImageFromSet(0, m_sImageSet, "server-locked");
+		m_wFactionLockButton.SetVisible(playerRole == EPlayerRole.ADMINISTRATOR);
+		
 		// calculate players count for every faction
 		foreach (Widget factionSelector: m_aFactionListWidgets)
 		{
 			PS_FactionSelector handler = PS_FactionSelector.Cast(factionSelector.FindHandler(PS_FactionSelector));
+			
+			int factionPLayersCount = 0;
+			array<int> playerIds = new array<int>();
+			GetGame().GetPlayerManager().GetPlayers(playerIds);
+			foreach (int playerId: playerIds)
+			{
+				if (playableManager.GetPlayerFactionKey(playerId) == handler.GetFaction().GetFactionKey())
+					factionPLayersCount = factionPLayersCount + 1;
+			}
 			
 			if (playableManager.GetPlayerFactionKey(thisPlayerController.GetPlayerId()) == handler.GetFaction().GetFactionKey()) {
 				if (!handler.IsToggled()) handler.SetToggled(true);
@@ -257,7 +283,7 @@ class PS_CoopLobby: MenuBase
 				int playerId = playableManager.GetPlayerByPlayable(playable.GetId());
 				if (playerId != -1)  i++;
 			}
-			handler.SetCount(i, factionPlayablesList.Count());
+			handler.SetCount(factionPLayersCount, i, factionPlayablesList.Count());
 		}
 		
 		// update every character widget
@@ -375,9 +401,6 @@ class PS_CoopLobby: MenuBase
 	
 	void Action_ChatOpen()
 	{
-		// WAT? for some reason default chane do not appply, use this... thing for fix
-		// OK it's init time, but still sucks
-		m_ChatPanel.PS_CycleChannels(true);
 		// Delay is esential, if any character already controlled
 		GetGame().GetCallqueue().CallLater(ChatWrap, 0);
 	}
@@ -413,6 +436,13 @@ class PS_CoopLobby: MenuBase
 		playableController.LobbyVoNDisable();
 	}
 	
+	void Action_FactionLock()
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		playableController.FactionLockSwitch();
+	}
+	
 	// -------------------- Widgets events --------------------
 	// If faction clicked, switch focus from previous faction and update characters list to selected faction
 	// ----- Faction -----
@@ -422,12 +452,20 @@ class PS_CoopLobby: MenuBase
 		
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		if (playableManager.GetPlayerFactionKey(playerController.GetPlayerId()) == handler.GetFaction().GetFactionKey()) return;
+		
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		PlayerController currentPlayerController = GetGame().GetPlayerController();
+		EPlayerRole currentPlayerRole = playerManager.GetPlayerRoles(currentPlayerController.GetPlayerId());
+		FactionKey currentFactionKey = playableManager.GetPlayerFactionKey(currentPlayerController.GetPlayerId());
+		if (gameMode.IsFactionLockMode() && currentPlayerRole != EPlayerRole.ADMINISTRATOR && currentFactionKey != "") return;	
 		
 		SCR_UISoundEntity.SoundEvent(SCR_SoundEvent.CLICK);
 		
-		// Change player faction
 		FactionKey factionKey = handler.GetFaction().GetFactionKey();
+		if (playableManager.GetPlayerFactionKey(playerController.GetPlayerId()) == handler.GetFaction().GetFactionKey()) factionKey = "";
+		
+		// Change player faction
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		playableController.ChangeFactionKey(playerController.GetPlayerId(), factionKey);
 		playableController.SetPlayerPlayable(playerController.GetPlayerId(), RplId.Invalid()); // Reset character

@@ -49,14 +49,6 @@ modded class SCR_ManualCamera
 	}
 };
 
-modded class SCR_ChatPanel : ScriptedWidgetComponent
-{
-	void PS_CycleChannels(bool next)
-	{
-		CycleChannels(next);
-	}
-}
-
 
 
 

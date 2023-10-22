@@ -19,8 +19,13 @@ class PS_PlayableManager : ScriptComponent
 	ref map<int, FactionKey> m_playersFaction = new map<int, FactionKey>; // player factions
 		
 	// Clients also don't give a shit about groups, soo we save staff here
-	// TODO: move to playable 
 	ref map<RplId, string> m_playableGroups = new map<RplId, string>;
+	
+	// Server only!
+	ref map<SCR_AIGroup, SCR_AIGroup> m_playableToPlayerGroups = new map<SCR_AIGroup, SCR_AIGroup>; // Groups for players, not the same with ai
+	ref map<RplId, SCR_AIGroup> m_playerGroups = new map<RplId, SCR_AIGroup>; // Groups for players, not the same with ai
+	
+	
 		
 	// more singletons for singletons god, make our spagetie kingdom great
 	static PS_PlayableManager GetInstance() 
@@ -58,6 +63,19 @@ class PS_PlayableManager : ScriptComponent
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		if (gameMode.GetState() == SCR_EGameModeState.PREGAME)
 			gameMode.StartGameMode();
+		
+		// Set player group
+		SCR_GroupsManagerComponent groupsManagerComponent = SCR_GroupsManagerComponent.GetInstance();
+		
+		SCR_AIGroup playerGroup = m_playerGroups[playableId];
+		IEntity leaderEntity = playerGroup.GetLeaderEntity();
+		PS_PlayableComponent playableComponentLeader; 
+		if (leaderEntity) playableComponentLeader = PS_PlayableComponent.Cast(leaderEntity.FindComponent(PS_PlayableComponent));
+		
+		SCR_PlayerControllerGroupComponent playerControllerGroupComponent = SCR_PlayerControllerGroupComponent.Cast(playerController.FindComponent(SCR_PlayerControllerGroupComponent));
+		
+		playerControllerGroupComponent.RPC_AskJoinGroup(playerGroup.GetGroupID());
+		if (playableComponentLeader.GetId() > playableId) groupsManagerComponent.SetGroupLeader(playerGroup.GetGroupID(), playerId);
 		
 		SetPlayerState(playerId, PS_EPlayableControllerState.Playing);
 	}
@@ -114,7 +132,38 @@ class PS_PlayableManager : ScriptComponent
 	// Execute on every client and server
 	void RegisterPlayable(PS_PlayableComponent playableComponent)
 	{
-		m_aPlayables[playableComponent.GetId()] = playableComponent;
+		RplId playableId = playableComponent.GetId();
+		m_aPlayables[playableId] = playableComponent;
+		
+		// Create player groups for join
+		if (Replication.IsServer())
+		{
+			SCR_ChimeraCharacter playableCharacter = SCR_ChimeraCharacter.Cast(playableComponent.GetOwner());
+			AIControlComponent aiControl = AIControlComponent.Cast(playableCharacter.FindComponent(AIControlComponent));
+			SCR_AIGroup playableGroup =  SCR_AIGroup.Cast(aiControl.GetControlAIAgent().GetParentGroup());
+			SCR_AIGroup playerGroup;
+			if (!m_playableToPlayerGroups.Contains(playableGroup))
+			{
+				SCR_GroupsManagerComponent groupsManagerComponent = SCR_GroupsManagerComponent.GetInstance();
+				playerGroup = groupsManagerComponent.CreateNewPlayableGroup(playableGroup.GetFaction());
+				playerGroup.SetSlave(playableGroup);
+				playerGroup.SetMaxMembers(12);
+				groupsManagerComponent.RegisterGroup(playerGroup);
+				m_playableToPlayerGroups[playableGroup] = playerGroup;
+			} else {
+				playerGroup = m_playableToPlayerGroups[playableGroup];
+			}
+			m_playerGroups[playableId] = playerGroup;
+			GetGame().GetCallqueue().CallLater(RegisterGroupName, 0, false, playableId, playerGroup)
+		}
+	}
+	
+	void RegisterGroupName(RplId playableId, SCR_AIGroup playerGroup)
+	{
+		string company, platoon, squad, sCharacter, format;
+		playerGroup.GetCallsigns(company, platoon, squad, sCharacter, format);
+		string groupName = WidgetManager.Translate(format, company, platoon, squad, sCharacter);
+		SetPlayableGroupName(playableId, groupName);
 	}
 	
 	// -------------------------- Set broadcast ----------------------------

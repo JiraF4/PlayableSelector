@@ -15,6 +15,12 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	
 	[Attribute("1", uiwidget: UIWidgets.CheckBox, "Game may be started only if admin exists on server.", category: WB_GAME_MODE_CATEGORY)]
 	protected bool m_bAdminMode;
+	
+	[Attribute("1", uiwidget: UIWidgets.CheckBox, "Lobby can be open after game start.", category: WB_GAME_MODE_CATEGORY)]
+	protected bool m_bCanOpenLobbyInGame;
+	
+	[Attribute("0", uiwidget: UIWidgets.CheckBox, "Faction locked after selection.", category: WB_GAME_MODE_CATEGORY)]
+	protected bool m_bFactionLock;
 		
 	override void OnGameStart()
 	{	
@@ -22,7 +28,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		
 		if (RplSession.Mode() != RplMode.Dedicated) {
 			OpenLobby();
-			GetGame().GetInputManager().AddActionListener("OpenLobby", EActionTrigger.DOWN, OpenLobby);
+			if (m_bCanOpenLobbyInGame) GetGame().GetInputManager().AddActionListener("OpenLobby", EActionTrigger.DOWN, OpenLobby);
 		}
 	}
 	
@@ -80,6 +86,39 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	bool IsAdminMode()
 	{
 		return m_bAdminMode;
+	}
+	
+	void FactionLockSwitch()
+	{
+		m_bFactionLock = !m_bFactionLock;
+		Rpc(RPC_SetFactionLock, !m_bFactionLock);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RPC_SetFactionLock()
+	{
+		m_bFactionLock = !m_bFactionLock;
+	}
+	
+	
+	bool IsFactionLockMode()
+	{
+		return m_bFactionLock;
+	}
+	
+	override bool RplSave(ScriptBitWriter writer)
+	{
+		
+		writer.WriteBool(m_bFactionLock);
+		
+		return true;
+	}
+	
+	override bool RplLoad(ScriptBitReader reader)
+	{
+	
+		reader.ReadBool(m_bFactionLock);
+		
+		return true;
 	}
 };
 

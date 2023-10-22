@@ -79,6 +79,74 @@ FrameWidgetClass {
              Opacity 0.5
              Color 0 0 0 1
             }
+            ImageWidgetClass "{5EAB7806B0034CF4}" {
+             Name "FactionLockImage"
+             Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
+              PositionX 8
+              OffsetLeft 8
+              PositionY 59
+              OffsetTop 59
+              SizeX 40
+              OffsetRight -48
+              SizeY 40
+              OffsetBottom -99
+             }
+             Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
+             Image "server-unlocked"
+             Size 32 32
+            }
+            ButtonWidgetClass "{5EAB7806B0034CEF}" {
+             Name "FactionLockButton"
+             Slot FrameWidgetSlot "{5EA8C93F5E685F59}" {
+              Anchor 0 0 0 0
+              PositionX 8
+              OffsetLeft 8
+              PositionY 59
+              OffsetTop 59
+              SizeX 40
+              OffsetRight -48
+              SizeY 40
+              OffsetBottom -99
+             }
+             Color 0 1 0.019 0
+             components {
+              SCR_ButtonBaseComponent "{5EAB2394A927C221}" {
+               m_sSoundHovered ""
+               m_sSoundClicked ""
+               m_BackgroundDefault 1 1 1 0
+               m_BackgroundHovered 1 1 1 0.162
+               m_BackgroundSelected 1 1 1 0
+               m_BackgroundSelectedHovered 1 1 1 0.162
+               m_BackgroundClicked 1 1 1 0
+               m_bShowBorderOnFocus 0
+               m_bNoBorderAnimation 1
+              }
+             }
+             "no focus" 1
+             {
+              FrameWidgetClass "{5EAB7806B0034CF2}" {
+               Name "FactionLockButtonFrame"
+               Slot ButtonWidgetSlot "{5EA8C93CB4241314}" {
+               }
+               {
+                ImageWidgetClass "{5EAB7806B0034CF3}" {
+                 Name "Background"
+                 Slot FrameWidgetSlot "{5D6E8206B132EE77}" {
+                  PositionX 0
+                  OffsetLeft 0
+                  PositionY 0
+                  OffsetTop 0
+                  SizeX 40
+                  OffsetRight -40
+                  SizeY 40
+                  OffsetBottom -40
+                 }
+                 Color 1 1 1 0
+                }
+               }
+              }
+             }
+            }
             OverlayWidgetClass "{5D6F149C227B92BF}" {
              Name "FactionHeaderOverlay"
              Slot FrameWidgetSlot "{5D6F149C227B929F}" {

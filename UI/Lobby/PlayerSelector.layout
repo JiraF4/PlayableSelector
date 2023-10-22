@@ -150,6 +150,22 @@ ButtonWidgetClass {
      Image "pinPlay"
      Size 32 32
     }
+    ImageWidgetClass "{5EAA2EA293D54232}" {
+     Name "VoiceImage"
+     Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
+      PositionX 152
+      OffsetLeft 152
+      PositionY 0
+      OffsetTop 0
+      SizeX 40
+      OffsetRight -192
+      SizeY 40
+      OffsetBottom -40
+     }
+     Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
+     Image "sound-off"
+     Size 32 32
+    }
     ButtonWidgetClass "{5EAA2EA293D5422B}" {
      Name "VoiceButton"
      Slot FrameWidgetSlot "{5EA8C93F5E685F59}" {
@@ -199,22 +215,6 @@ ButtonWidgetClass {
          }
          Color 1 1 1 0
          "Inherit Color" 1
-        }
-        ImageWidgetClass "{5EAA2EA293D54232}" {
-         Name "VoiceImage"
-         Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
-          PositionX 0
-          OffsetLeft 0
-          PositionY 0
-          OffsetTop 0
-          SizeX 40
-          OffsetRight -40
-          SizeY 40
-          OffsetBottom -40
-         }
-         Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
-         Image "sound-off"
-         Size 32 32
         }
        }
       }
