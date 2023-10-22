@@ -118,8 +118,7 @@ class PS_CoopLobby: MenuBase
 		GetGame().GetInputManager().AddActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
 		
 		// Start update cycle
-		GetGame().GetCallqueue().CallLater(UpdateCycle, 100);
-		GetGame().GetCallqueue().CallLater(Fill, 0);
+		GetGame().GetCallqueue().CallLater(UpdateCycle, 3000);
 	}
 	
 	override void OnMenuUpdate(float tDelta)
