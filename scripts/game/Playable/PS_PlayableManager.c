@@ -68,14 +68,7 @@ class PS_PlayableManager : ScriptComponent
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		if (gameMode.GetState() == SCR_EGameModeState.PREGAME)
 			gameMode.StartGameMode();
-		
-		
-		// Set player group
-		AIControlComponent aiControl = AIControlComponent.Cast(playableCharacter.FindComponent(AIControlComponent));
-		SCR_AIGroup playableGroup =  SCR_AIGroup.Cast(aiControl.GetControlAIAgent().GetParentGroup());
-		SCR_PlayerControllerGroupComponent playerControllerGroupComponent = SCR_PlayerControllerGroupComponent.Cast(playerController.FindComponent(SCR_PlayerControllerGroupComponent));
-		playerControllerGroupComponent.RPC_AskJoinGroup(playableGroup.GetGroupID());
-		
+				
 		GetGame().GetCallqueue().CallLater(ChangeGroup, 0, false, playerId, playableId);
 		
 		SetPlayerState(playerId, PS_EPlayableControllerState.Playing);
@@ -94,7 +87,7 @@ class PS_PlayableManager : ScriptComponent
 		
 		SCR_PlayerControllerGroupComponent playerControllerGroupComponent = SCR_PlayerControllerGroupComponent.Cast(playerController.FindComponent(SCR_PlayerControllerGroupComponent));
 		SCR_GroupsManagerComponent groupsManagerComponent = SCR_GroupsManagerComponent.GetInstance();
-		playerControllerGroupComponent.RPC_AskJoinGroup(playerGroup.GetGroupID());
+		playerControllerGroupComponent.PS_AskJoinGroup(playerGroup.GetGroupID());
 		if (playableComponentLeader)
 			if (playableComponentLeader.GetId() > playableId) groupsManagerComponent.SetGroupLeader(playerGroup.GetGroupID(), playerId);
 	}

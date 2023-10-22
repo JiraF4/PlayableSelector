@@ -49,6 +49,28 @@ modded class SCR_ManualCamera
 	}
 };
 
+modded class SCR_PlayerControllerGroupComponent
+{
+	void PS_AskJoinGroup(int groupID)
+	{
+		SCR_GroupsManagerComponent groupsManager = SCR_GroupsManagerComponent.GetInstance();
+		if (!groupsManager)
+			return;
+		
+		int groupIDAfter;
+		if (m_iGroupID != -1)
+			groupIDAfter = groupsManager.MovePlayerToGroup(GetPlayerID(), m_iGroupID, groupID);
+		else
+			groupIDAfter = groupsManager.AddPlayerToGroup(groupID, GetPlayerID());
+		
+		if (groupIDAfter != m_iGroupID)
+		{
+			m_iGroupID = groupIDAfter;
+			Rpc(RPC_DoChangeGroupID, groupIDAfter);
+		}
+	}
+}
+
 
 
 
