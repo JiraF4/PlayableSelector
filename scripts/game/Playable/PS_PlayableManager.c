@@ -391,6 +391,22 @@ class PS_PlayableManager : ScriptComponent
 		
 		m_bRplLoaded = true;
 		
+		for (int i = 0; i < playersStatesCount; i++)
+		{
+			Print("m_playersStates");
+			Print(m_playersStates.GetKey(i).ToString() + " -> " + m_playersStates.GetElement(i).ToString());
+		}
+		for (int i = 0; i < playersPlayableCount; i++)
+		{
+			Print("playersPlayableCount");
+			Print(m_playersPlayable.GetKey(i).ToString() + " -> " + m_playersPlayable.GetElement(i).ToString());
+		}
+		for (int i = 0; i < playersFactionCount; i++)
+		{
+			Print("m_playersFaction");
+			Print(m_playersFaction.GetKey(i).ToString() + " -> " + m_playersFaction.GetElement(i));
+		}
+		
 		return true;
 	}
 };
