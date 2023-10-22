@@ -459,6 +459,7 @@ class PS_CoopLobby: MenuBase
 		EPlayerRole currentPlayerRole = playerManager.GetPlayerRoles(currentPlayerController.GetPlayerId());
 		FactionKey currentFactionKey = playableManager.GetPlayerFactionKey(currentPlayerController.GetPlayerId());
 		if (gameMode.IsFactionLockMode() && currentPlayerRole != EPlayerRole.ADMINISTRATOR && currentFactionKey != "") return;	
+		if (playableManager.GetPlayerPin(playerController.GetPlayerId()) && currentPlayerRole != EPlayerRole.ADMINISTRATOR) return;
 		
 		SCR_UISoundEntity.SoundEvent(SCR_SoundEvent.CLICK);
 		

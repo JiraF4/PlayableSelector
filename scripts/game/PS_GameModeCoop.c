@@ -83,6 +83,16 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		}
 	}
 	
+	protected override void OnControllableDeleted(IEntity entity)
+	{
+		
+	}
+	
+	protected override void OnPlayerDeleted(int playerId, IEntity player)
+	{
+		
+	}
+	
 	bool IsAdminMode()
 	{
 		return m_bAdminMode;

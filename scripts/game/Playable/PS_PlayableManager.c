@@ -66,6 +66,23 @@ class PS_PlayableManager : ScriptComponent
 		
 		// Set player group
 		SCR_GroupsManagerComponent groupsManagerComponent = SCR_GroupsManagerComponent.GetInstance();
+		SCR_AIGroup currentGroup = groupsManagerComponent.GetPlayerGroup(playableId);
+		
+		AIControlComponent aiControl = AIControlComponent.Cast(playableCharacter.FindComponent(AIControlComponent));
+		SCR_AIGroup playableGroup =  SCR_AIGroup.Cast(aiControl.GetControlAIAgent().GetParentGroup());
+		SCR_PlayerControllerGroupComponent playerControllerGroupComponent = SCR_PlayerControllerGroupComponent.Cast(playerController.FindComponent(SCR_PlayerControllerGroupComponent));
+		playerControllerGroupComponent.RPC_AskJoinGroup(playableGroup.GetGroupID());
+		
+		GetGame().GetCallqueue().CallLater(ChangeGroup, 0, false, playerId, playableId);
+		
+		SetPlayerState(playerId, PS_EPlayableControllerState.Playing);
+	}
+	
+	void ChangeGroup(int playerId, RplId playableId)
+	{
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		SCR_PlayerController playerController = SCR_PlayerController.Cast(playerManager.GetPlayerController(playerId));
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		
 		SCR_AIGroup playerGroup = m_playerGroups[playableId];
 		IEntity leaderEntity = playerGroup.GetLeaderEntity();
@@ -73,11 +90,10 @@ class PS_PlayableManager : ScriptComponent
 		if (leaderEntity) playableComponentLeader = PS_PlayableComponent.Cast(leaderEntity.FindComponent(PS_PlayableComponent));
 		
 		SCR_PlayerControllerGroupComponent playerControllerGroupComponent = SCR_PlayerControllerGroupComponent.Cast(playerController.FindComponent(SCR_PlayerControllerGroupComponent));
-		
+		SCR_GroupsManagerComponent groupsManagerComponent = SCR_GroupsManagerComponent.GetInstance();
 		playerControllerGroupComponent.RPC_AskJoinGroup(playerGroup.GetGroupID());
-		if (playableComponentLeader.GetId() > playableId) groupsManagerComponent.SetGroupLeader(playerGroup.GetGroupID(), playerId);
-		
-		SetPlayerState(playerId, PS_EPlayableControllerState.Playing);
+		if (playableComponentLeader)
+			if (playableComponentLeader.GetId() > playableId) groupsManagerComponent.SetGroupLeader(playerGroup.GetGroupID(), playerId);
 	}
 	
 	// -------------------------- Get ----------------------------
@@ -150,6 +166,9 @@ class PS_PlayableManager : ScriptComponent
 				playerGroup.SetMaxMembers(12);
 				groupsManagerComponent.RegisterGroup(playerGroup);
 				m_playableToPlayerGroups[playableGroup] = playerGroup;
+				
+				playableGroup.SetCanDeleteIfNoPlayer(false);
+				playerGroup.SetCanDeleteIfNoPlayer(false);
 			} else {
 				playerGroup = m_playableToPlayerGroups[playableGroup];
 			}
