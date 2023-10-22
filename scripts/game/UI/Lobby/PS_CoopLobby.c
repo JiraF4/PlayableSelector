@@ -127,8 +127,14 @@ class PS_CoopLobby: MenuBase
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		
-		if (playerController && playableManager.IsReplicated()) OnMenuOpenDelay();
-		else GetGame().GetCallqueue().CallLater(AwaitPLayerController, 100);
+		if (playerController && playableManager.IsReplicated()) {
+			if (playerController.GetPlayerId() != 0) {
+				OnMenuOpenDelay();
+				return;
+			}
+		}
+		
+		GetGame().GetCallqueue().CallLater(AwaitPLayerController, 100);
 	}
 	
 	void OnMenuOpenDelay()
@@ -137,7 +143,7 @@ class PS_CoopLobby: MenuBase
 		
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		if (playableManager.GetPlayableByPlayer(playerController.GetPlayerId()) != RplId.Invalid() && playableManager.GetPlayerState(playerController.GetPlayerId()) == PS_EPlayableControllerState.Disconected)
-			m_fRecconnectTime = GetGame().GetWorld().GetWorldTime() + 10000;
+			m_fRecconnectTime = GetGame().GetWorld().GetWorldTime() + 5000;
 		
 		Print("GetPlayerId: " + playerController.GetPlayerId());
 		Print("m_fRecconnectTime: " + m_fRecconnectTime.ToString());
