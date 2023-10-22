@@ -26,8 +26,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	{	
 		super.OnGameStart();
 		
+		OpenLobby();
 		if (RplSession.Mode() != RplMode.Dedicated) {
-			OpenLobby();
 			if (m_bCanOpenLobbyInGame) GetGame().GetInputManager().AddActionListener("OpenLobby", EActionTrigger.DOWN, OpenLobby);
 		}
 	}
@@ -36,6 +36,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	{
 		GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.CoopLobby);
 	}
+	
+	
 	
 	protected override void OnPlayerConnected(int playerId)
 	{

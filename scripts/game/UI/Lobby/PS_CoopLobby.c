@@ -125,7 +125,9 @@ class PS_CoopLobby: MenuBase
 	void AwaitPLayerController()
 	{
 		PlayerController playerController = GetGame().GetPlayerController();
-		if (playerController) OnMenuOpenDelay();
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		
+		if (playerController && playableManager.IsReplicated()) OnMenuOpenDelay();
 		else GetGame().GetCallqueue().CallLater(AwaitPLayerController, 100);
 	}
 	

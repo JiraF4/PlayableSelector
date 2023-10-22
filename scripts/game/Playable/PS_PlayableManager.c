@@ -25,8 +25,18 @@ class PS_PlayableManager : ScriptComponent
 	ref map<SCR_AIGroup, SCR_AIGroup> m_playableToPlayerGroups = new map<SCR_AIGroup, SCR_AIGroup>; // Groups for players, not the same with ai
 	ref map<RplId, SCR_AIGroup> m_playerGroups = new map<RplId, SCR_AIGroup>; // Groups for players, not the same with ai
 	
+	bool m_bRplLoaded = false;
+	bool IsReplicated()
+	{
+		return m_bRplLoaded;
+	}
 	
-		
+	override protected void OnPostInit(IEntity owner)
+	{
+		if (Replication.IsServer()) m_bRplLoaded = true;
+	}
+	
+	
 	// more singletons for singletons god, make our spagetie kingdom great
 	static PS_PlayableManager GetInstance() 
 	{
@@ -378,6 +388,8 @@ class PS_PlayableManager : ScriptComponent
 			
 			m_playersFaction.Insert(key, value);
 		}
+		
+		m_bRplLoaded = true;
 		
 		return true;
 	}
