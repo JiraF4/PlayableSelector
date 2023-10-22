@@ -1,4 +1,17 @@
 PS_GameModeCoop PS_GameModeCoop1 : "{F64CCAF87CCCF567}Prefabs/MP/Modes/PS_GameModeCoop.et" {
+ {
+  SCR_FactionManager {
+   ID "5EA73DB136618AD9"
+   Factions {
+    SCR_Faction "{56DEAC40D2DBC8B1}" {
+     m_bIsPlayable 1
+    }
+    SCR_Faction "{56DEAC40D3C2E623}" {
+     m_bIsPlayable 1
+    }
+   }
+  }
+ }
 }
 $grp SCR_FactionControlTriggerEntity {
  TriggerCapture {
