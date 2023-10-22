@@ -1,3 +1,5 @@
+PS_GameModeCoop PS_GameModeCoop1 : "{F64CCAF87CCCF567}Prefabs/MP/Modes/PS_GameModeCoop.et" {
+}
 $grp SCR_FactionControlTriggerEntity {
  TriggerCapture {
   coords 2774.581 77.378 1654.03

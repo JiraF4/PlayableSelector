@@ -4,7 +4,5 @@ PerceptionManager PerceptionManager1 : "{028DAEAD63E056BE}Prefabs/World/Game/Per
 }
 TagManager : "{2FA9E172CAB1857A}Prefabs/MP/Managers/TagManager.et" {
 }
-PS_GameModeCoop PS_GameModeCoop1 : "{F64CCAF87CCCF567}Prefabs/MP/Modes/PS_GameModeCoop.et" {
-}
 HitRegistrationManager HitRegManager1 : "{0EDA3D48791120DD}Prefabs/MP/HitRegManager.et" {
 }

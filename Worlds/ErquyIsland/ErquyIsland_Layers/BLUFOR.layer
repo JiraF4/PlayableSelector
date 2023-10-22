@@ -1,0 +1,42 @@
+Vehicle M997_maxi_ambulance_MERDC1 : "{3B1EB924602C7A07}Prefabs/Vehicles/Wheeled/M998/M997_maxi_ambulance_MERDC.et" {
+ components {
+  SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+   m_fVehicleDestroyDamage 12910.7
+  }
+ }
+ coords 10654.646 2.845 11824.502
+ angleY -135
+}
+Vehicle M923A1_transport_MERDC1 : "{3F2AA823B6C65E1E}Prefabs/Vehicles/Wheeled/M923A1/M923A1_transport_MERDC.et" {
+ components {
+  SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+   m_fVehicleDestroyDamage 11360.7
+  }
+ }
+ coords 10652.274 2.343 11813.035
+ angleY 156.874
+}
+SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.et" {
+ coords 10659.114 2.344 11795.638
+}
+SCR_AIGroup : "{90955B4A4EAC6CD0}Prefabs/Groups/BLUFOR/Group_US_MachineGunTeam_P.et" {
+ coords 10632.267 2.844 11843.895
+ angleY 134.483
+}
+SCR_AIGroup : "{93ECE153940F4451}Prefabs/Groups/BLUFOR/Group_US_MedicalSection_P.et" {
+ coords 10652.078 2.787 11829.155
+ angleY -150
+}
+SCR_AIGroup : "{BC357974A560F678}Prefabs/Groups/BLUFOR/Group_US_RifleSquad_p.et" {
+ coords 10636.571 2.344 11834.737
+ angleY 157.889
+}
+Vehicle M1025_armed_M2HB_MERDC1 : "{DD774A8FD0989A78}Prefabs/Vehicles/Wheeled/M998/M1025_armed_M2HB_MERDC.et" {
+ components {
+  SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+   m_fVehicleDestroyDamage 12912.9
+  }
+ }
+ coords 10656.882 2.343 11805.731
+ angleY 135
+}

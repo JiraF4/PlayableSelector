@@ -1,0 +1,10 @@
+PS_GameModeCoop PS_GameModeCoop1 : "{F64CCAF87CCCF567}Prefabs/MP/Modes/PS_GameModeCoop.et" {
+}
+SCR_FactionControlTriggerEntity {
+ coords 11319.969 54.931 11345.864
+ TriggerActivationType "First change"
+ PeriodicQueries 1
+ UpdatePeriod 3
+ m_sOwnerFactionKey "US"
+ m_fFriendlyRatioLimit 0
+}
