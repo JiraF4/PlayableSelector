@@ -27,7 +27,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		super.OnGameStart();
 		
 		if (RplSession.Mode() != RplMode.Dedicated) {
-			OpenLobby();
+			GetGame().GetCallqueue().CallLater(OpenLobby, 10000);
 			if (m_bCanOpenLobbyInGame) GetGame().GetInputManager().AddActionListener("OpenLobby", EActionTrigger.DOWN, OpenLobby);
 		}
 	}
