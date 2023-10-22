@@ -121,8 +121,12 @@ class PS_CoopLobby: MenuBase
 		
 		
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		if (playableManager.GetPlayableByPlayer(playerController.GetPlayerId()) && playableManager.GetPlayerState(playerController.GetPlayerId()) == PS_EPlayableControllerState.Disconected)
+		if (playableManager.GetPlayableByPlayer(playerController.GetPlayerId()) != RplId.Invalid() && playableManager.GetPlayerState(playerController.GetPlayerId()) == PS_EPlayableControllerState.Disconected)
 			m_fRecconnectTime = GetGame().GetWorld().GetWorldTime() + 10000;
+		
+		Print("m_fRecconnectTime: " + m_fRecconnectTime.ToString());
+		Print("GetPlayerState: " + playableManager.GetPlayerState(playerController.GetPlayerId()).ToString());
+		Print("GetPlayableByPlayer: " + playableManager.GetPlayableByPlayer(playerController.GetPlayerId()).ToString());
 		
 		// Start update cycle
 		UpdateCycle();
