@@ -41,7 +41,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	
 	protected override void OnPlayerConnected(int playerId)
 	{
-		GetGame().GetCallqueue().CallLater(SpawnInitialEntity, 100, false, playerId)
+		//GetGame().GetCallqueue().CallLater(SpawnInitialEntity, 100, false, playerId)
 	}
 	
 	void SpawnInitialEntity(int playerId)

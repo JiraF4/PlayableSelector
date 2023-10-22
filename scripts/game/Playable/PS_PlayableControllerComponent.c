@@ -66,7 +66,11 @@ class PS_PlayableControllerComponent : ScriptComponent
 		} else {
 			PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
 			IEntity entity = thisPlayerController.GetControlledEntity();
-			m_eInitialEntity = entity;
+			if (entity)
+			{
+				PS_LobbyVoNComponent von = PS_LobbyVoNComponent.Cast(entity.FindComponent(PS_LobbyVoNComponent));
+				if (von) m_eInitialEntity = entity;
+			}
 		}
 	}
 	
