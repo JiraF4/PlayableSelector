@@ -224,12 +224,12 @@ VerticalLayoutWidgetClass {
     OverlayWidgetClass "{5D6E8202A8F66E08}" {
      Name "Overlay"
      Slot FrameWidgetSlot "{5D6E8202A8F66E50}" {
-      PositionX 25
-      OffsetLeft 25
+      PositionX 24
+      OffsetLeft 24
       PositionY 5
       OffsetTop 5
-      SizeX 435
-      OffsetRight -460
+      SizeX 442
+      OffsetRight -466
       SizeY 159
       OffsetBottom -164
      }
