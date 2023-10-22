@@ -407,6 +407,9 @@ class PS_PlayableManager : ScriptComponent
 			Print(m_playersFaction.GetKey(i).ToString() + " -> " + m_playersFaction.GetElement(i));
 		}
 		
+		PlayerController playerController = GetGame().GetPlayerController();
+		Print("RplLoad - GetPlayerId: " + playerController.GetPlayerId());
+		
 		return true;
 	}
 };
