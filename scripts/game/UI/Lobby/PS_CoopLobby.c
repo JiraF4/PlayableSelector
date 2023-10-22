@@ -607,6 +607,7 @@ class PS_CoopLobby: MenuBase
 		if (!playerController) return false; // it may not exist befory synk completed
 		if (playableManager.GetPlayerState(playerController.GetPlayerId()) == PS_EPlayableControllerState.NotReady) return false;
 		if (playableManager.GetPlayerState(playerController.GetPlayerId()) == PS_EPlayableControllerState.Playing) return false;
+		if (!playableManager.GetPlayableById(playableManager.GetPlayableByPlayer(playerController.GetPlayerId()))) return false;
 		
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		if (gameMode.GetState() == SCR_EGameModeState.GAME) return true;
