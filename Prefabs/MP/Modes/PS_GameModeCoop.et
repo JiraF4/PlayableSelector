@@ -1,8 +1,6 @@
 PS_GameModeCoop {
  ID "5D4CDA0160C87274"
  components {
-  PS_LobbyVoNManager "{5EAB23A5E439D527}" {
-  }
   PS_PlayableManager "{5EA8C9329726C920}" {
   }
   SCR_ArsenalManagerComponent "{5D4CE249D697011C}" {
@@ -381,11 +379,17 @@ PS_GameModeCoop {
   RplComponent "{5D4CE249422E8900}" {
    Streamable Disabled
   }
+  PS_LobbyVoNManager "{5EAB23A5E439D527}" {
+  }
  }
  PlayerControllerPrefab "{4E5DAC62A374950F}Prefabs/Characters/Core/DefaultPlayerControllerMP_Coop.et"
  m_bAutoPlayerRespawn 0
  m_fAutoReloadTime 5
  {
+  SCR_FactionManager "5EA8C932C68D400F" : "{4A188E44289B9A50}Prefabs/MP/Managers/Factions/FactionManager_Editor.et" {
+   ID "5EA73DB136618AD9"
+   coords 0 0 0
+  }
   RadioManagerEntity : "{B8E09FAB91C4ECCD}Prefabs/Radio/RadioManager.et" {
    ID "5E6ED21792EEA875"
    coords 0 0 0

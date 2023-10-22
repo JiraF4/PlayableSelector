@@ -6,18 +6,23 @@ PerceptionManager PerceptionManager1 : "{028DAEAD63E056BE}Prefabs/World/Game/Per
 }
 SCR_FactionManager FactionManager_Editor1 : "{4A188E44289B9A50}Prefabs/MP/Managers/Factions/FactionManager_Editor.et" {
  coords 115.591 1 155.429
- Factions {
-  SCR_Faction "{56DEAC40D132400B}" {
-   m_bCreateOnlyPredefinedGroups 1
-  }
- }
 }
 PS_GameModeCoop PS_GameModeCoop1 : "{F64CCAF87CCCF567}Prefabs/MP/Modes/PS_GameModeCoop.et" {
- components {
-  SCR_PossessingManagerComponent "{5EAB7819086EBCEB}" {
+ coords 3.45 1.663 3.493
+ {
+  SCR_FactionManager "5EA9035682A007CB" {
+   ID "5EA73DB136618AD9"
+   Factions {
+    SCR_Faction "{56DEAC40D2DBC8B1}" {
+     m_bIsPlayable 1
+    }
+    SCR_Faction "{56DEAC40D3C2E623}" {
+    }
+    SCR_Faction "{56DEAC40D132400B}" {
+    }
+   }
   }
  }
- coords 3.45 1.663 3.493
 }
 GenericEntity {
  coords 5.734 1 3.144

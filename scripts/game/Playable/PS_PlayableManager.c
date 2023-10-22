@@ -54,13 +54,11 @@ class PS_PlayableManager : ScriptComponent
 			if (currentGroup) currentGroup.RemovePlayer(playerId);
 			
 			entity = playableController.GetInitialEntity();
-			//playerController.SetInitialMainEntity(entity);
-			playerController.SetPossessedEntity(null);
+			playerController.SetInitialMainEntity(entity);
 			return;
 		} else entity = GetPlayableById(playableId).GetOwner();		 
 		
-		//playerController.SetInitialMainEntity(entity);
-		playerController.SetPossessedEntity(entity);
+		playerController.SetInitialMainEntity(entity);
 		
 		// Set new player faction
 		SCR_ChimeraCharacter playableCharacter = SCR_ChimeraCharacter.Cast(entity);
