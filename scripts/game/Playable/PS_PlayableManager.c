@@ -44,10 +44,15 @@ class PS_PlayableManager : ScriptComponent
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		SCR_PlayerController playerController = SCR_PlayerController.Cast(playerManager.GetPlayerController(playerId));
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		SCR_GroupsManagerComponent groupsManagerComponent = SCR_GroupsManagerComponent.GetInstance();
 		
 		RplId playableId = GetPlayableByPlayer(playerId);
 		IEntity entity;
 		if (playableId == RplId.Invalid() || playableId == -1) {
+			// Remove group
+			SCR_AIGroup currentGroup = groupsManagerComponent.GetPlayerGroup(playableId);
+			if (currentGroup) currentGroup.RemovePlayer(playerId);
+			
 			entity = playableController.GetInitialEntity();
 			playerController.SetInitialMainEntity(entity);
 			return;
@@ -64,10 +69,8 @@ class PS_PlayableManager : ScriptComponent
 		if (gameMode.GetState() == SCR_EGameModeState.PREGAME)
 			gameMode.StartGameMode();
 		
-		// Set player group
-		SCR_GroupsManagerComponent groupsManagerComponent = SCR_GroupsManagerComponent.GetInstance();
-		SCR_AIGroup currentGroup = groupsManagerComponent.GetPlayerGroup(playableId);
 		
+		// Set player group
 		AIControlComponent aiControl = AIControlComponent.Cast(playableCharacter.FindComponent(AIControlComponent));
 		SCR_AIGroup playableGroup =  SCR_AIGroup.Cast(aiControl.GetControlAIAgent().GetParentGroup());
 		SCR_PlayerControllerGroupComponent playerControllerGroupComponent = SCR_PlayerControllerGroupComponent.Cast(playerController.FindComponent(SCR_PlayerControllerGroupComponent));
