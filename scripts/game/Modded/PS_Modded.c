@@ -71,11 +71,76 @@ modded class SCR_PlayerControllerGroupComponent
 	}
 }
 
+modded class SCR_BaseGameMode
+{
+	protected override void OnPlayerDisconnected(int playerId, KickCauseCode cause, int timeout)
+	{
+		super.OnPlayerDisconnected(playerId, cause, timeout);
+		m_OnPlayerDisconnected.Invoke(playerId, cause, timeout);
+		
+		// RespawnSystemComponent is not a SCR_BaseGameModeComponent, so for now we have to
+		// propagate these events manually. 
+		if (IsMaster())
+			m_pRespawnSystemComponent.OnPlayerDisconnected_S(playerId, cause, timeout);
 
+		foreach (SCR_BaseGameModeComponent comp : m_aAdditionalGamemodeComponents)
+		{
+			comp.OnPlayerDisconnected(playerId, cause, timeout);
+		}
+		
+		m_OnPostCompPlayerDisconnected.Invoke(playerId, cause, timeout);
 
-
-
-
+		if (IsMaster())
+		{
+			IEntity controlledEntity = GetGame().GetPlayerManager().GetPlayerControlledEntity(playerId);
+			if (controlledEntity)
+			{
+				if (SCR_ReconnectComponent.GetInstance() && SCR_ReconnectComponent.GetInstance().IsReconnectEnabled())
+				{
+					if (SCR_ReconnectComponent.GetInstance().OnPlayerDC(playerId, cause))	// if conditions to allow reconnect pass, skip the entity delete  
+					{
+						CharacterControllerComponent charController = CharacterControllerComponent.Cast(controlledEntity.FindComponent(CharacterControllerComponent));
+						if (charController)
+						{
+							charController.SetMovement(0, vector.Forward);
+						}
+						
+						CompartmentAccessComponent compAccess = CompartmentAccessComponent.Cast(controlledEntity.FindComponent(CompartmentAccessComponent)); // TODO nullcheck
+						if (compAccess)
+						{
+							BaseCompartmentSlot compartment = compAccess.GetCompartment();
+							if (compartment)
+							{
+								if(GetGame().GetIsClientAuthority())
+								{
+									CarControllerComponent carController = CarControllerComponent.Cast(compartment.GetVehicle().FindComponent(CarControllerComponent));
+									if (carController)
+									{
+										carController.Shutdown();
+										carController.StopEngine(false);
+									}
+								}
+								else
+								{
+									CarControllerComponent_SA carController = CarControllerComponent_SA.Cast(compartment.GetVehicle().FindComponent(CarControllerComponent_SA));
+									if (carController)
+									{
+										carController.Shutdown();
+										carController.StopEngine(false);
+									}
+								}
+							}
+						}
+						
+						return;
+					}
+				}
+				
+				//RplComponent.DeleteRplEntity(controlledEntity, false);
+			}
+		}
+	}
+}
 
 
 

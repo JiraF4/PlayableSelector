@@ -74,6 +74,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		playableManager.SetPlayerState(playerId, PS_EPlayableControllerState.Disconected); 
 		if (m_iAvailableReconnectTime > 0) GetGame().GetCallqueue().CallLater(RemoveDisconnectedPlayer, m_iAvailableReconnectTime, false, playerId);
+		
+		super.OnPlayerDisconnected(playerId, cause, timeout);
 	}
 	
 	// If after m_iAvailableReconnectTime player still disconnected release playable
@@ -85,16 +87,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		{
 			playableManager.SetPlayerPlayable(playerId, RplId.Invalid());
 		}
-	}
-	
-	protected override void OnControllableDeleted(IEntity entity)
-	{
-		
-	}
-	
-	protected override void OnPlayerDeleted(int playerId, IEntity player)
-	{
-		
 	}
 	
 	bool IsAdminMode()
