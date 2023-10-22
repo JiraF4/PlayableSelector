@@ -93,6 +93,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
 		if (thisPlayerController.GetPlayerId() != playerId && playerRole != EPlayerRole.ADMINISTRATOR) return;
+		if (playableManager.GetPlayerPin(playerId) && playerRole != EPlayerRole.ADMINISTRATOR) return;
 		
 		playableManager.SetPlayerFactionKey(playerId, factionKey);
 	}
