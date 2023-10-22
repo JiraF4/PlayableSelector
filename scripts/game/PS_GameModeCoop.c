@@ -27,7 +27,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		super.OnGameStart();
 		
 		if (RplSession.Mode() != RplMode.Dedicated) {
-			GetGame().GetCallqueue().CallLater(OpenLobby, 1000);
+			OpenLobby();
 			if (m_bCanOpenLobbyInGame) GetGame().GetInputManager().AddActionListener("OpenLobby", EActionTrigger.DOWN, OpenLobby);
 		}
 	}
@@ -70,10 +70,17 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		SCR_PlayerController playerController = SCR_PlayerController.Cast(playerManager.GetPlayerController(playerId));
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-		playerController.SetInitialMainEntity(playableController.GetInitialEntity());
+		
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		playableManager.SetPlayerState(playerId, PS_EPlayableControllerState.Disconected); 
 		if (m_iAvailableReconnectTime > 0) GetGame().GetCallqueue().CallLater(RemoveDisconnectedPlayer, m_iAvailableReconnectTime, false, playerId);
+		
+		IEntity controlledEntity = playerController.GetControlledEntity();
+		if (controlledEntity) {
+			RplComponent rpl = RplComponent.Cast(controlledEntity.FindComponent(RplComponent));
+			rpl.GiveExt(RplIdentity.Local(), false);
+		}
+		playerController.SetInitialMainEntity(playableController.GetInitialEntity());
 		
 		super.OnPlayerDisconnected(playerId, cause, timeout);
 	}
