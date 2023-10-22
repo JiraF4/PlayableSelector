@@ -2,23 +2,5 @@ SCR_AIWorld : "{E0A05C76552E7F58}Prefabs/AI/SCR_AIWorld.et" {
 }
 PerceptionManager PerceptionManager1 : "{028DAEAD63E056BE}Prefabs/World/Game/PerceptionManager.et" {
 }
-SCR_GameModeCoop SCR_GameModeCoop1 : "{16D2DEADCFDC8B73}Prefabs/SCR_GameModeCoop.et" {
- coords 8568.196 181.646 4675.89
-}
-TagManager : "{2FA9E172CAB1857A}Prefabs/MP/Managers/TagManager.et" {
- coords 8567.539 181.645 4678.193
-}
-SCR_FactionManager FactionManager_Editor1 : "{4A188E44289B9A50}Prefabs/MP/Managers/Factions/FactionManager_Editor.et" {
- coords 8568.456 181.454 4677.352
- Factions {
-  SCR_Faction "{56DEAC40D132400B}" {
-   m_bIsPlayable 1
-  }
- }
-}
-SCR_EditorSettingsEntity {
- coords 8581.04 177.52 4686.012
-}
-HitRegistrationManager HitRegManager1 : "{0EDA3D48791120DD}Prefabs/MP/HitRegManager.et" {
- coords 8568.351 181.513 4676.974
+PS_GameModeCoop PS_GameModeCoop1 : "{F64CCAF87CCCF567}Prefabs/MP/Modes/PS_GameModeCoop.et" {
 }
