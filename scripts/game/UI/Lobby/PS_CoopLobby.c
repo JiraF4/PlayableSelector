@@ -74,6 +74,8 @@ class PS_CoopLobby: MenuBase
 	
 	protected ResourceName m_sImageSet = "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset";
 	
+	float m_fRecconnectTime = -1.0;
+	
 	// -------------------- Menu events --------------------
 	override void OnMenuOpen()
 	{
@@ -117,6 +119,11 @@ class PS_CoopLobby: MenuBase
 		GetGame().GetInputManager().AddActionListener("VONDirect", EActionTrigger.DOWN, Action_LobbyVoNOn);
 		GetGame().GetInputManager().AddActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
 		
+		
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		if (playableManager.GetPlayableByPlayer(playerController.GetPlayerId()) && playableManager.GetPlayerState(playerController.GetPlayerId()) == PS_EPlayableControllerState.Disconected)
+			m_fRecconnectTime = GetGame().GetWorld().GetWorldTime() + 10000;
+		
 		// Start update cycle
 		UpdateCycle();
 	}
@@ -145,7 +152,7 @@ class PS_CoopLobby: MenuBase
 	// Just update state every 100 ms
 	void UpdateCycle() 
 	{
-		Fill();
+		if (m_fRecconnectTime < GetGame().GetWorld().GetWorldTime()) Fill();
 		GetGame().GetCallqueue().CallLater(UpdateCycle, 100);
 	}
 	
@@ -606,7 +613,6 @@ class PS_CoopLobby: MenuBase
 		if (!playerController) return false; // it may not exist befory synk completed
 		if (playableManager.GetPlayerState(playerController.GetPlayerId()) == PS_EPlayableControllerState.NotReady) return false;
 		if (playableManager.GetPlayerState(playerController.GetPlayerId()) == PS_EPlayableControllerState.Playing) return false;
-		if (!playableManager.GetPlayableById(playableManager.GetPlayableByPlayer(playerController.GetPlayerId()))) return false;
 		
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		if (gameMode.GetState() == SCR_EGameModeState.GAME) return true;

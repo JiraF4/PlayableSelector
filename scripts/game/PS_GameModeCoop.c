@@ -75,6 +75,13 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		playableManager.SetPlayerState(playerId, PS_EPlayableControllerState.Disconected); 
 		if (m_iAvailableReconnectTime > 0) GetGame().GetCallqueue().CallLater(RemoveDisconnectedPlayer, m_iAvailableReconnectTime, false, playerId);
 		
+		IEntity controlledEntity = playerController.GetControlledEntity();
+		if (controlledEntity) {
+			RplComponent rpl = RplComponent.Cast(controlledEntity.FindComponent(RplComponent));
+			rpl.GiveExt(RplIdentity.Local(), false);
+		}
+		playerController.SetInitialMainEntity(playableController.GetInitialEntity());
+		
 		super.OnPlayerDisconnected(playerId, cause, timeout);
 	}
 	

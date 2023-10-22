@@ -155,7 +155,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 	{
 		if (!m_eCamera) return;
 		GetGame().GetMenuManager().CloseMenuByPreset(ChimeraMenuPreset.SpectatorMenu);
-		//SCR_EntityHelper.DeleteEntityAndChildren(m_eCamera);
+		SCR_EntityHelper.DeleteEntityAndChildren(m_eCamera);
 		m_eCamera = null;
 	}
 	
