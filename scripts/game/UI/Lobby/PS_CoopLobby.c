@@ -143,7 +143,7 @@ class PS_CoopLobby: MenuBase
 		
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		if (playableManager.GetPlayableByPlayer(playerController.GetPlayerId()) != RplId.Invalid() && playableManager.GetPlayerState(playerController.GetPlayerId()) == PS_EPlayableControllerState.Disconected)
-			m_fRecconnectTime = GetGame().GetWorld().GetWorldTime() + 5000;
+			m_fRecconnectTime = GetGame().GetWorld().GetWorldTime() + 500;
 		
 		Print("GetPlayerId: " + playerController.GetPlayerId());
 		Print("m_fRecconnectTime: " + m_fRecconnectTime.ToString());
