@@ -193,6 +193,7 @@ FrameWidgetClass {
               ScrollLayoutWidgetClass "{5D6D1410CC72B925}" {
                Name "FactionScroll"
                Slot OverlayWidgetSlot "{5D6D1410CC72B906}" {
+                VerticalAlign 0
                }
                {
                 VerticalLayoutWidgetClass "{5D6D1B9F18B0805E}" {

@@ -1,23 +1,4 @@
 PS_GameModeCoop PS_GameModeCoop1 : "{F64CCAF87CCCF567}Prefabs/MP/Modes/PS_GameModeCoop.et" {
- components {
-  SCR_GroupsManagerComponent "{5D4CE24A617E1E02}" {
-   m_aGroupFlags {
-   }
-  }
- }
- {
-  SCR_FactionManager {
-   ID "5EA73DB136618AD9"
-   Factions {
-    SCR_Faction "{56DEAC40D2DBC8B1}" {
-     m_bIsPlayable 1
-    }
-    SCR_Faction "{56DEAC40D3C2E623}" {
-     m_bIsPlayable 1
-    }
-   }
-  }
- }
 }
 $grp SCR_FactionControlTriggerEntity {
  USWin {
@@ -30,7 +11,7 @@ $grp SCR_FactionControlTriggerEntity {
   UpdatePeriod 3
   OnActivate ""\
   "		SCR_BaseGameMode gameMode = SCR_BaseGameMode.Cast(GetGame().GetGameMode()); // Get the game mode for the end script"\
-  "		Faction faction = GetGame().GetFactionManager().GetFactionByKey(\\"US\"); // Get the winning faction Key"\
+  "		Faction faction = GetGame().GetFactionManager().GetFactionByKey(\"US\"); // Get the winning faction Key"\
   "		int usIndex = GetGame().GetFactionManager().GetFactionIndex(faction); // Get the winning faction key's index"\
   "		gameMode.EndGameMode(SCR_GameModeEndData.CreateSimple(EGameOverTypes.EDITOR_FACTION_VICTORY, -1, usIndex)); // End the mission!"\
   "	"
@@ -47,7 +28,7 @@ $grp SCR_FactionControlTriggerEntity {
   UpdatePeriod 3
   OnActivate ""\
   "		SCR_BaseGameMode gameMode = SCR_BaseGameMode.Cast(GetGame().GetGameMode()); // Get the game mode for the end script"\
-  "		Faction faction = GetGame().GetFactionManager().GetFactionByKey(\\"USSR\"); // Get the winning faction Key"\
+  "		Faction faction = GetGame().GetFactionManager().GetFactionByKey(\"USSR\"); // Get the winning faction Key"\
   "		int usIndex = GetGame().GetFactionManager().GetFactionIndex(faction); // Get the winning faction key's index"\
   "		gameMode.EndGameMode(SCR_GameModeEndData.CreateSimple(EGameOverTypes.EDITOR_FACTION_VICTORY, -1, usIndex)); // End the mission!"\
   "	"
