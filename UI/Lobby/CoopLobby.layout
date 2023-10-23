@@ -505,7 +505,7 @@ FrameWidgetClass {
              }
              components {
               SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
-               m_sLabel "#PS-Lobby_CloseLobby"
+               m_sLabel "#PS-Lobby_OpenMenu"
                m_sActionName "MenuBack"
               }
              }
@@ -543,7 +543,7 @@ FrameWidgetClass {
              components {
               SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
                m_sLabel "#PS-Lobby_Ready"
-               m_sActionName "MenuSelect"
+               m_sActionName "LobbyReady"
               }
              }
             }

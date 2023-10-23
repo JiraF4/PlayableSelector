@@ -24,7 +24,7 @@ class PS_CoopLobby: MenuBase
 		│   └── GroupList 				- (m_sRolesGroupPrefab) Has no functional just group playable by group name
 		│       └── CharacterWidget		- (m_sCharacterSelectorPrefab) Select playable for player
 		└── PlayersList 				- Contains all CONNECTED players
-		    └── PlayerWidget			- (m_sPlayerSelectorPrefab) Right now do nothing just display. TODO: kick, mute
+		    └── PlayerWidget			- (m_sPlayerSelectorPrefab) Kick or mute players.
 	*/
 	
 	
@@ -103,6 +103,7 @@ class PS_CoopLobby: MenuBase
 		m_bNavigationButtonForceStart = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationForceStart").FindHandler(SCR_NavigationButtonComponent));
 		
 		m_bNavigationButtonReady.m_OnClicked.Insert(Action_Ready);
+		GetGame().GetInputManager().AddActionListener("LobbyReady", EActionTrigger.DOWN, Action_Ready);
 		m_bNavigationButtonChat.m_OnClicked.Insert(Action_ChatOpen);
 		GetGame().GetInputManager().AddActionListener("ChatToggle", EActionTrigger.DOWN, Action_ChatOpen);
 		m_bNavigationButtonClose.m_OnClicked.Insert(Action_Exit);
@@ -167,6 +168,7 @@ class PS_CoopLobby: MenuBase
 		GetGame().GetInputManager().RemoveActionListener("LobbyGameForceStart", EActionTrigger.DOWN, Action_ForceStart);
 		GetGame().GetInputManager().RemoveActionListener("VONDirect", EActionTrigger.DOWN, Action_LobbyVoNOn);
 		GetGame().GetInputManager().RemoveActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
+		GetGame().GetInputManager().RemoveActionListener("MenuBack", EActionTrigger.DOWN, Action_Exit);
 	}
 	
 	// Soo many staff need to bee init, i can't track all of it...
@@ -412,7 +414,6 @@ class PS_CoopLobby: MenuBase
 	void Action_Ready()
 	{
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		if (playableManager.GetPlayerState(playerController.GetPlayerId()) == PS_EPlayableControllerState.Ready) {
@@ -438,9 +439,17 @@ class PS_CoopLobby: MenuBase
 	
 	void Action_Exit()
 	{
-		GameStateTransitions.RequestGameplayEndTransition();
-		Close();
+		// For some strange reason players all the time accidentally exit game, maybe jus open pause menu
+		//GameStateTransitions.RequestGameplayEndTransition();  
+		//Close();
+		GetGame().GetCallqueue().CallLater(OpenPauseMenuWrap, 0); //  Else menu auto close itself
 	}
+	void OpenPauseMenuWrap()
+	{
+		ArmaReforgerScripted.OpenPauseMenu();
+	}
+	
+	
 	
 	void Action_ForceStart()
 	{
@@ -567,7 +576,6 @@ class PS_CoopLobby: MenuBase
 			return;
 		}
 		
-		
 		if (playableManager.GetPlayerByPlayable(handler.GetPlayableId()) != -1) return;
 		SCR_UISoundEntity.SoundEvent(SCR_SoundEvent.CLICK);
 		
@@ -578,7 +586,7 @@ class PS_CoopLobby: MenuBase
 		playableController.ChangeFactionKey(m_iCurrentPlayer, playableCharacter.GetFaction().GetFactionKey());
 		playableController.SetPlayerState(m_iCurrentPlayer, PS_EPlayableControllerState.NotReady);
 		playableController.SetPlayerPlayable(m_iCurrentPlayer, handler.GetPlayableId());
-		playableController.MoveToVoNRoom(playerController.GetPlayerId(), playableManager.GetPlayerFactionKey(playerController.GetPlayerId()), playableManager.GetGroupNameByPlayable(handler.GetPlayableId()));
+		playableController.MoveToVoNRoom(m_iCurrentPlayer, playableManager.GetPlayerFactionKey(playerController.GetPlayerId()), playableManager.GetGroupNameByPlayable(handler.GetPlayableId()));
 	}	
 	
 	// -------------------- Extra lobby functions --------------------
@@ -606,7 +614,7 @@ class PS_CoopLobby: MenuBase
 		
 		// If game already started, close lobby immediately
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		if (seconds >= m_iStartTimerSeconds || gameMode.GetState() == SCR_EGameModeState.GAME) {
+		if (seconds >= m_iStartTimerSeconds /*|| gameMode.GetState() == SCR_EGameModeState.GAME*/) {
 			PlayerController playerController = GetGame().GetPlayerController();
 			PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 			playableController.ApplyPlayable();

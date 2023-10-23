@@ -36,6 +36,7 @@ class PS_LobbyVoNManager : ScriptComponent
 	// Move speech boi to selectted place
 	void MoveToRoom(int playerId, FactionKey factionKey, string groupName)
 	{
+		groupName = ""; // Hardly confusing
 		string roomKey = factionKey + groupName;
 		vector roomPosition = GetOrCreateRoomPosition(roomKey);
 		RPC_MoveToRoom(playerId, roomPosition);

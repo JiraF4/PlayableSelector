@@ -37,8 +37,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.CoopLobby);
 	}
 	
-	
-	
 	protected override void OnPlayerConnected(int playerId)
 	{
 		GetGame().GetCallqueue().CallLater(SpawnInitialEntity, 100, false, playerId)

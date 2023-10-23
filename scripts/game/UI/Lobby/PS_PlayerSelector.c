@@ -123,6 +123,9 @@ class PS_PlayerSelector : SCR_ButtonImageComponent
 		playableId = playableManager.GetPlayableByPlayer(playerController.GetPlayerId());
 		if (playableId != RplId.Invalid()) currentGroupName = playableManager.GetGroupNameByPlayable(playableId);
 		
+		// Hardly confusing
+		groupName = "";
+		currentGroupName = "";
 		string VoNRoom = factionKey + groupName;
 		string currentVoNRoom = currentFactionKey + currentGroupName;
 		
