@@ -2,11 +2,6 @@ FrameWidgetClass {
  Name "PlayMenu"
  "Z Order" 9
  {
-  FrameWidgetClass "{5E7B5C5AA84246F8}" : "{D89BBA18F99053D6}UI/layouts/HUD/Chat/ChatHud.layout" {
-   Name "Chat0"
-   Slot FrameWidgetSlot "{5D4881250D202DF3}" {
-   }
-  }
   OverlayWidgetClass "{5D6D00D8FBAAF79D}" : "{01FD644AD2B6317D}UI/layouts/Menus/Common/MenuBackground.layout" {
    Name "MenuBackground0"
    Slot FrameWidgetSlot "{552C9A0A8526D2AD}" {
@@ -575,20 +570,68 @@ FrameWidgetClass {
     }
    }
   }
+  FrameWidgetClass "{5E7B5C5AA84246F8}" : "{D89BBA18F99053D6}UI/layouts/HUD/Chat/ChatHud.layout" {
+   Name "Chat0"
+   Slot FrameWidgetSlot "{5D4881250D202DF3}" {
+   }
+  }
   OverlayWidgetClass "{5E6EACEFEB2DB125}" {
    Name "OverlayCounter"
-   Slot FrameWidgetSlot "{5E6EACEFEB2DB13C}" {
+   Slot FrameWidgetSlot "{5EAE9BDAD5B4BA2F}" {
     Anchor 0.5 0.5 0.5 0.5
-    PositionX -960
-    OffsetLeft -960
-    PositionY -540
-    OffsetTop -540
-    SizeX 1920
-    OffsetRight -960
-    SizeY 1080
-    OffsetBottom -540
+    PositionX -9996.6
+    OffsetLeft -9996.6
+    PositionY -10002.8
+    OffsetTop -10002.8
+    SizeX 19997.9
+    OffsetRight -10001.3
+    SizeY 19998
+    OffsetBottom -9995.2
    }
+   "Is Visible" 0
    {
+    SizeLayoutWidgetClass "{5EAE9BD94D12A3CB}" {
+     Name "SizeLayout1"
+     Slot OverlayWidgetSlot "{5EAE9BD94D12A327}" {
+     }
+     AllowWidthOverride 1
+     WidthOverride 999999
+     AllowHeightOverride 1
+     HeightOverride 999999
+     {
+      FrameWidgetClass "{5EAE9BD9D12FDCF1}" {
+       Name "SizeLayout0"
+       Slot AlignableSlot "{5EAE9BD94D66ECFF}" {
+       }
+       {
+        ScaleWidgetClass "{5EAE9BD99FA39A61}" {
+         Name "Scale0"
+         Slot FrameWidgetSlot "{5EAE9BD962B3745E}" {
+          Anchor 0 0 0 0
+          PositionX -9996.6
+          OffsetLeft -9996.6
+          PositionY -10002.8
+          OffsetTop -10002.8
+          SizeX 19997.9
+          OffsetRight -10001.3
+          SizeY 19998
+          OffsetBottom -9995.18
+         }
+         "Scale Mode" "Scale to fill"
+         {
+          ImageWidgetClass "{5EAE9BD7F29E9720}" {
+           Name "BackgroundCounter"
+           Slot AlignableSlot "{5EAE9BD99FB7FC4B}" {
+           }
+           Opacity 0.7
+           Color 0 0 0 1
+          }
+         }
+        }
+       }
+      }
+     }
+    }
     TextWidgetClass "{5E6EACEF815E96D4}" {
      Name "TextCounter"
      Slot OverlayWidgetSlot "{5E6EACEA679DE9B3}" {
@@ -596,10 +639,10 @@ FrameWidgetClass {
       VerticalAlign 1
      }
      Opacity 0.9
-     Color 0.054 0.231 0.085 1
+     Color 0.888 0.366 0.07 1
      Text "3"
-     "Font Size" 256
-     "Min Font Size" 256
+     "Font Size" 900
+     "Min Font Size" 900
      "Horizontal Alignment" Center
      "Vertical Alignment" Center
      FontProperties FontProperties "{5E6EACEA2ABBED61}" {

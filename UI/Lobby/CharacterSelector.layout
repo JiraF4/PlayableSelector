@@ -119,8 +119,8 @@ ButtonWidgetClass {
        }
        Color 0.855 0.855 0.855 1
        Text "Rifleman"
-       "Font Size" 20
-       "Min Font Size" 20
+       "Font Size" 18
+       "Min Font Size" 16
        "Vertical Alignment" Center
       }
       ImageWidgetClass "{5D6D1B995C4BBFB9}" {
@@ -151,8 +151,8 @@ ButtonWidgetClass {
         OffsetBottom -40
        }
        Text "Player"
-       "Font Size" 20
-       "Min Font Size" 20
+       "Font Size" 18
+       "Min Font Size" 18
        "Vertical Alignment" Center
       }
       ButtonWidgetClass "{5EA90318AA804736}" {
