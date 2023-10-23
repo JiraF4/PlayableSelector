@@ -73,6 +73,14 @@ StringTable {
    Author "SeskPC"
    LastChanged "SeskPC"
   }
+  CustomStringTableItem "{5EAEBB2F34252729}" {
+   Id "PS-Lobby_OpenMenu"
+   Target_en_us "Open menu"
+   Target_ru_ru "Открыть меню"
+   Modified 1588510988
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
   CustomStringTableItem "{5EA73DBF798A6D5B}" {
    Id "PS-Lobby_Players"
    Target_en_us "Players"
