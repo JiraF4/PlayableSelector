@@ -25,14 +25,6 @@ StringTable {
    Author "SeskPC"
    LastChanged "SeskPC"
   }
-  CustomStringTableItem "{5EA75941A71E17E8}" {
-   Id "PS-Lobby_CloseLobby"
-   Target_en_us "Leave game"
-   Target_ru_ru "Покинуть игру"
-   Modified 1588026309
-   Author "SeskPC"
-   LastChanged "SeskPC"
-  }
   CustomStringTableItem "{5EA73DBF442B2167}" {
    Id "PS-Lobby_Factions"
    Target_en_us "Factions"
