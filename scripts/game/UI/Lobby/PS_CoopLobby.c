@@ -487,13 +487,21 @@ class PS_CoopLobby: MenuBase
 	
 	void Action_MapOpen()
 	{
+		Close();
+		GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.MapMenu);
+		
+		GetGame().GetCallqueue().CallLater(MapWrap, 0); //  Else menu auto close itself
+	}
+	void MapWrap()
+	{
 		SCR_MapEntity mapEntity = SCR_MapEntity.GetMapInstance();
 		BaseGameMode gameMode = GetGame().GetGameMode();
 		SCR_MapConfigComponent configComp = SCR_MapConfigComponent.Cast(gameMode.FindComponent(SCR_MapConfigComponent));
 		MapConfiguration mapConfigFullscreen = mapEntity.SetupMapConfig(EMapEntityMode.FULLSCREEN, configComp.GetGadgetMapConfig(), GetRootWidget());
-		Close();
 		mapEntity.OpenMap(mapConfigFullscreen);
 	}
+	
+	
 	
 	// -------------------- Widgets events --------------------
 	// If faction clicked, switch focus from previous faction and update characters list to selected faction
