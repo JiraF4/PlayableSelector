@@ -49,6 +49,7 @@ class PS_CoopLobby: MenuBase
 	
 	// Lobby widgets
 	PS_LobbyLoadoutPreview m_preview; // Display selected playable info
+	OverlayWidget m_wOverlayCounter; // Display selected playable info
 	TextWidget m_wCounterText; // Counter for start timer animation
 	protected Widget m_wChatPanelWidget; // Defaul SCR chat panel, initial chanel broken for some reason, but you still may select global chanel.
 	protected SCR_ChatPanel m_ChatPanel;
@@ -92,7 +93,9 @@ class PS_CoopLobby: MenuBase
 		Widget widget = GetRootWidget().FindAnyWidget("MainLoadoutPreview");
 		m_preview = PS_LobbyLoadoutPreview.Cast(widget.FindHandler(PS_LobbyLoadoutPreview));
 		m_wCounterText = TextWidget.Cast(GetRootWidget().FindAnyWidget("TextCounter"));
+		m_wOverlayCounter = OverlayWidget.Cast(GetRootWidget().FindAnyWidget("OverlayCounter"));
 		m_wCounterText.SetText("");
+		m_wOverlayCounter.SetVisible(false);
 		
 		m_wChatPanelWidget = GetRootWidget().FindAnyWidget("ChatPanel");
 		m_ChatPanel = SCR_ChatPanel.Cast(m_wChatPanelWidget.FindHandler(SCR_ChatPanel));
@@ -596,6 +599,7 @@ class PS_CoopLobby: MenuBase
 		if (m_iStartTime != 0) return;
 		if (!IsAllReady()) return;
 		m_iStartTime = System.GetTickCount();
+		m_wOverlayCounter.SetVisible(true);
 		CloseTimer();
 	}
 	
@@ -606,6 +610,7 @@ class PS_CoopLobby: MenuBase
 		if (!IsAllReady()) {
 			m_wCounterText.SetText("");
 			m_iStartTime = 0;
+			m_wOverlayCounter.SetVisible(false);
 			return;
 		}
 		

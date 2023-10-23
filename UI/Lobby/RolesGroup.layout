@@ -22,14 +22,14 @@ VerticalLayoutWidgetClass {
       OffsetTop 0
       SizeX 620
       OffsetRight -620
-      SizeY 48
-      OffsetBottom -48
+      SizeY 32
+      OffsetBottom -32
      }
      Text "Alpha 1-1"
-     "Font Size" 48
-     "Min Font Size" 48
+     "Font Size" 32
+     "Min Font Size" 2
      FontProperties FontProperties "{5E7CF04D9FE8FF4E}" {
-      Font "{E2CBA6F76AAA42AF}UI/Fonts/Roboto/Roboto_Regular.fnt"
+      Font "{3E7733BAC8C831F6}UI/Fonts/RobotoCondensed/RobotoCondensed_Regular.fnt"
       Bold 1
      }
     }
