@@ -257,6 +257,7 @@ FrameWidgetClass {
               ScrollLayoutWidgetClass "{5D6D1B9B238445DF}" {
                Name "RolesScroll"
                Slot OverlayWidgetSlot "{5D6D1B9B238445FB}" {
+                VerticalAlign 0
                }
                {
                 VerticalLayoutWidgetClass "{5D6D1B9B2EB68480}" {
