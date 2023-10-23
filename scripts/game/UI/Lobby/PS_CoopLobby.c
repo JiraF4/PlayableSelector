@@ -59,6 +59,7 @@ class PS_CoopLobby: MenuBase
 	SCR_NavigationButtonComponent m_bNavigationButtonChat;
 	SCR_NavigationButtonComponent m_bNavigationButtonClose;
 	SCR_NavigationButtonComponent m_bNavigationButtonForceStart;
+	SCR_NavigationButtonComponent m_bNavigationButtonMapOpen;
 	
 	// Timer start time, for game launch delay and counter animation
 	int m_iStartTime = 0;
@@ -72,7 +73,7 @@ class PS_CoopLobby: MenuBase
 	// Global options
 	ButtonWidget m_wFactionLockButton;
 	ImageWidget m_wFactionLockImage;
-	
+		
 	protected ResourceName m_sImageSet = "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset";
 	
 	float m_fRecconnectTime = -1.0;
@@ -104,8 +105,8 @@ class PS_CoopLobby: MenuBase
 		m_bNavigationButtonChat = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationChat").FindHandler(SCR_NavigationButtonComponent));
 		m_bNavigationButtonClose = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationClose").FindHandler(SCR_NavigationButtonComponent));
 		m_bNavigationButtonForceStart = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationForceStart").FindHandler(SCR_NavigationButtonComponent));
+		m_bNavigationButtonMapOpen = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationMapOpen").FindHandler(SCR_NavigationButtonComponent));
 		
-		m_bNavigationButtonReady.m_OnClicked.Insert(Action_Ready);
 		GetGame().GetInputManager().AddActionListener("LobbyReady", EActionTrigger.DOWN, Action_Ready);
 		m_bNavigationButtonChat.m_OnClicked.Insert(Action_ChatOpen);
 		GetGame().GetInputManager().AddActionListener("ChatToggle", EActionTrigger.DOWN, Action_ChatOpen);
@@ -113,6 +114,7 @@ class PS_CoopLobby: MenuBase
 		GetGame().GetInputManager().AddActionListener("MenuBack", EActionTrigger.DOWN, Action_Exit);
 		m_bNavigationButtonForceStart.m_OnClicked.Insert(Action_ForceStart);
 		GetGame().GetInputManager().AddActionListener("LobbyGameForceStart", EActionTrigger.DOWN, Action_ForceStart);
+		m_bNavigationButtonMapOpen.m_OnClicked.Insert(Action_MapOpen);
 		
 		// Faction lock
 		m_wFactionLockButton = ButtonWidget.Cast(GetRootWidget().FindAnyWidget("FactionLockButton"));
@@ -275,6 +277,7 @@ class PS_CoopLobby: MenuBase
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		
+			
 		// Join button rename
 		PlayerController thisPlayerController = GetGame().GetPlayerController();
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
@@ -480,6 +483,16 @@ class PS_CoopLobby: MenuBase
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		playableController.FactionLockSwitch();
+	}
+	
+	void Action_MapOpen()
+	{
+		SCR_MapEntity mapEntity = SCR_MapEntity.GetMapInstance();
+		BaseGameMode gameMode = GetGame().GetGameMode();
+		SCR_MapConfigComponent configComp = SCR_MapConfigComponent.Cast(gameMode.FindComponent(SCR_MapConfigComponent));
+		MapConfiguration mapConfigFullscreen = mapEntity.SetupMapConfig(EMapEntityMode.FULLSCREEN, configComp.GetGadgetMapConfig(), GetRootWidget());
+		Close();
+		mapEntity.OpenMap(mapConfigFullscreen);
 	}
 	
 	// -------------------- Widgets events --------------------

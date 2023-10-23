@@ -1,3 +1,6 @@
+SCR_MapEntity MapEntity_Arland1 : "{66FBC1063149819B}Prefabs/World/Game/Arland/MapEntity_Arland.et" {
+ coords 22.179 1 20.484
+}
 SCR_AIWorld : "{E0A05C76552E7F58}Prefabs/AI/SCR_AIWorld.et" {
  coords 111.676 1 127.135
 }

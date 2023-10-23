@@ -520,6 +520,20 @@ FrameWidgetClass {
               }
              }
             }
+            ButtonWidgetClass "{5EAE9BC8C44727B5}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
+             Name "NavigationMapOpen"
+             Slot LayoutSlot "{5D6F1498C9949A58}" {
+              HorizontalAlign 3
+              VerticalAlign 3
+              Padding 15 15 15 15
+             }
+             components {
+              SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
+               m_sLabel "#PS-Lobby_MapOpen"
+               m_sActionName "LobbyMapOpen"
+              }
+             }
+            }
            }
           }
           HorizontalLayoutWidgetClass "{5D6F149AEF5FAFB2}" {
