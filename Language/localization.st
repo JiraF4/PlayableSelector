@@ -1,6 +1,14 @@
 StringTable {
  ItemClassName "CustomStringTableItem"
  Items {
+  CustomStringTableItem "{5EB30CD4368261A7}" {
+   Id "PS-GameMaster_PlayableGroup"
+   Target_en_us "Playable Unit"
+   Target_ru_ru "Играбельный Чел"
+   Modified 1588796631
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
   CustomStringTableItem "{5EA73DBF40044FB3}" {
    Id "PS-Keybind_Comms_Playable_Selector"
    Target_en_us "Team switch"

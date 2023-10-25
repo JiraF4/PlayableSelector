@@ -1,0 +1,16 @@
+SCR_EditorModeEntity : "{E56F54E533ACE527}Prefabs/Editor/Modes/EditorModeBase.et" {
+ ID "54F0A77282A3AA3B"
+ components {
+  SCR_PlacingEditorComponent "{5145484399BAA2E7}" {
+   m_Registries {
+    SCR_PlaceableEntitiesRegistry "{5EB30CD92A0FEC1B}" {
+     m_sAddon "ReforgerLobby"
+     m_sSourceDirectory "{777229AAD1E0299B}Prefabs/Characters/Factions"
+     m_Prefabs {
+      "{FC7BAE5FCDCB70B2}Prefabs/Groups/BLUFOR/Group_US_PlayableMenForGMSpawn.et" "{9548AE02CF7D1580}Prefabs/Groups/INDFOR/Group_FIA_PlayableMenForGMSpawn.et" "{C24A5DE73116F074}Prefabs/Groups/OPFOR/Group_USSR_PlayableMenForGMSpawn.et"
+     }
+    }
+   }
+  }
+ }
+}
