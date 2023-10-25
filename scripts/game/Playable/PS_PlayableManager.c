@@ -200,6 +200,7 @@ class PS_PlayableManager : ScriptComponent
 		VoNRoomsManager.GetOrCreateRoomWithFaction(playerGroup.GetFaction().GetFactionKey(), "Faction");
 	}
 	
+	
 	// -------------------------- Set broadcast ----------------------------
 	// For modify from client side use PS_PlayableControllerComponent insted
 	void SetPlayerFactionKey(int playerId, FactionKey factionKey)
@@ -266,6 +267,33 @@ class PS_PlayableManager : ScriptComponent
 	void RPC_SetPlayerPin(int playerId, bool pined)
 	{
 		m_playersPin[playerId] = pined;
+	}
+	
+	// -------------------------- Util ----------------------------
+	bool IsPlayerGroupLeader(int thisPlayerId)
+	{
+		if (thisPlayerId == -1) return false;
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		
+		RplId thisPlayableId = GetPlayableByPlayer(thisPlayerId);
+		if (thisPlayableId == RplId.Invalid()) return false;
+		
+		string thisGroupName = GetGroupNameByPlayable(thisPlayableId);
+		
+		array<int> playerIds = new array<int>();
+		playerManager.GetPlayers(playerIds); 
+		foreach (int playerId: playerIds)
+		{
+			if (playerId == thisPlayerId) continue;
+			RplId playableId = GetPlayableByPlayer(playerId);
+			if (playableId == RplId.Invalid()) continue;
+			if (playableId > thisPlayableId) continue;
+			string groupName = GetGroupNameByPlayable(playableId);
+			if (thisGroupName != groupName) continue;
+			return false;
+		}
+		
+		return true;
 	}
 	
 	// Send our precision data, we need it on clients

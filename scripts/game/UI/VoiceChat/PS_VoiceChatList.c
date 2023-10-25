@@ -6,6 +6,8 @@ class PS_VoiceChatList : ScriptedWidgetComponent
 	// List of player voice selectors
 	protected VerticalLayoutWidget m_wPlayersList;
 	protected ref array<Widget> m_aPlayersListWidgets = {};
+	protected ref array<PS_PlayerVoiceSelector> m_aPlayersVoicesList = {};
+	protected ref array<PS_VoiceRoomHeader> m_aVoiceRoomHeadersList = {};
 	
 	// -------------------- Handler events --------------------
 	override void HandlerAttached(Widget w)
@@ -20,6 +22,9 @@ class PS_VoiceChatList : ScriptedWidgetComponent
 		
 		GetGame().GetCallqueue().CallLater(Refreshing, 100);
 	}
+	
+	private int m_iOldPlayersCount = 0;
+	private int m_iOldRoomsCount = 0;
 	
 	
 	// -------------------- Update content functions --------------------
@@ -37,54 +42,73 @@ class PS_VoiceChatList : ScriptedWidgetComponent
 		array<int> visibleRooms = new array<int>();
 		GetVisibleRooms(visibleRooms);
 		
-		// Clear old widgets
-		foreach (Widget widget: m_aPlayersListWidgets)
-		{
-			m_wPlayersList.RemoveChild(widget);
-		}
-		m_aPlayersListWidgets.Clear();
 		
-		// Add new widgets
-		foreach (int roomId: visibleRooms)
+		if (visiblePlayers.Count() != m_iOldPlayersCount
+		 || visibleRooms.Count() != m_iOldRoomsCount
+		 || VoNRoomsManager.GetChangesFlag())
 		{
-			// Add header
-			Widget roomHeader = GetGame().GetWorkspace().CreateWidgets(m_sVoiceRoomHeaderPrefab);
-			PS_VoiceRoomHeader roomHeaderHandler = PS_VoiceRoomHeader.Cast(roomHeader.FindHandler(PS_VoiceRoomHeader));
-			string roomName = VoNRoomsManager.GetRoomName(roomId);
-			if (roomName == "") roomName = "Global";
-			else {
-				array<string> outTokens = new array<string>();
-				roomName.Split("|", outTokens, false);
-				roomName = outTokens[1];
-			}
-			roomHeaderHandler.SetRoomName(roomName);
-			m_aPlayersListWidgets.Insert(roomHeader);
-			m_wPlayersList.AddChild(roomHeader);
-			
-			foreach (int playerId: visiblePlayers)
+			// Clear old widgets
+			foreach (Widget widget: m_aPlayersListWidgets)
 			{
-				if (VoNRoomsManager.GetPlayerRoom(playerId) != roomId) continue;
-				
-				Widget playerSelector = GetGame().GetWorkspace().CreateWidgets(m_sPlayerVoiceSelectorPrefab);
-				PS_PlayerVoiceSelector handler = PS_PlayerVoiceSelector.Cast(playerSelector.FindHandler(PS_PlayerVoiceSelector));
-				
-				handler.SetPlayer(playerId);
-				handler.m_OnClicked.Insert(Action_PlayerClick);
-				
-				m_aPlayersListWidgets.Insert(playerSelector);
-				m_wPlayersList.AddChild(playerSelector);
+				m_wPlayersList.RemoveChild(widget);
 			}
+			m_aVoiceRoomHeadersList.Clear();
+			m_aPlayersListWidgets.Clear();
+			m_aPlayersVoicesList.Clear();
+			
+			// Add new widgets
+			foreach (int roomId: visibleRooms)
+			{
+				// Add header
+				Widget roomHeader = GetGame().GetWorkspace().CreateWidgets(m_sVoiceRoomHeaderPrefab);
+				PS_VoiceRoomHeader roomHeaderHandler = PS_VoiceRoomHeader.Cast(roomHeader.FindHandler(PS_VoiceRoomHeader));
+				string roomName = VoNRoomsManager.GetRoomName(roomId);
+				if (roomName == "") roomName = "Global";
+				else {
+					array<string> outTokens = new array<string>();
+					roomName.Split("|", outTokens, false);
+					roomName = outTokens[1];
+				}
+				roomHeaderHandler.SetRoomName(roomName);
+				m_aVoiceRoomHeadersList.Insert(roomHeaderHandler);
+				m_aPlayersListWidgets.Insert(roomHeader);
+				m_wPlayersList.AddChild(roomHeader);
+				
+				foreach (int playerId: visiblePlayers)
+				{
+					if (VoNRoomsManager.GetPlayerRoom(playerId) != roomId) continue;
+					
+					Widget playerSelector = GetGame().GetWorkspace().CreateWidgets(m_sPlayerVoiceSelectorPrefab);
+					PS_PlayerVoiceSelector handler = PS_PlayerVoiceSelector.Cast(playerSelector.FindHandler(PS_PlayerVoiceSelector));
+					
+					handler.SetPlayer(playerId);
+					handler.m_OnClicked.Insert(Action_PlayerClick);
+					m_aPlayersVoicesList.Insert(handler);
+					
+					m_aPlayersListWidgets.Insert(playerSelector);
+					m_wPlayersList.AddChild(playerSelector);
+				}
+			}
+			VoNRoomsManager.ResetChangesFlag();
 		}
 		
+		m_iOldPlayersCount = visiblePlayers.Count();
+		m_iOldRoomsCount = visibleRooms.Count();
 		
 		SoftUpdate();
 	}
 	
 	void SoftUpdate()
 	{
-		
+		foreach (PS_VoiceRoomHeader voiceRoomHeader: m_aVoiceRoomHeadersList)
+		{
+			voiceRoomHeader.UpdateInfo();
+		}
+		foreach (PS_PlayerVoiceSelector playerVoiceSelector: m_aPlayersVoicesList)
+		{
+			playerVoiceSelector.UpdateInfo();
+		}
 	}
-	
 	
 	// ----- Actions -----
 	protected void Action_PlayerClick(SCR_ButtonBaseComponent playerSelector)

@@ -5,6 +5,7 @@ class PS_PlayerVoiceSelector : SCR_ButtonBaseComponent
 	protected ResourceName m_sImageSet = "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset";
 	
 	ImageWidget m_wUnitIcon;
+	ImageWidget m_wLeaderIcon;
 	TextWidget m_wPlayerName;
 	PS_VoiceButton m_wVoiceHideableButton;
 	TextWidget m_wGroupName;
@@ -13,6 +14,7 @@ class PS_PlayerVoiceSelector : SCR_ButtonBaseComponent
 	{
 		super.HandlerAttached(w);
 		m_wUnitIcon = ImageWidget.Cast(w.FindAnyWidget("UnitIcon"));
+		m_wLeaderIcon = ImageWidget.Cast(w.FindAnyWidget("LeaderIcon"));
 		m_wPlayerName = TextWidget.Cast(w.FindAnyWidget("PlayerName"));
 		m_wVoiceHideableButton = PS_VoiceButton.Cast(w.FindAnyWidget("VoiceHideableButton").FindHandler(PS_VoiceButton));
 		m_wGroupName = TextWidget.Cast(w.FindAnyWidget("GroupName"));
@@ -52,11 +54,12 @@ class PS_PlayerVoiceSelector : SCR_ButtonBaseComponent
 		PlayerController currentPlayerController = GetGame().GetPlayerController();
 		int currentPlayerId = currentPlayerController.GetPlayerId();
 		EPlayerRole currentPlayerRole = playerManager.GetPlayerRoles(currentPlayerController.GetPlayerId());
+		PS_PlayableControllerComponent currentPlayableController = PS_PlayableControllerComponent.Cast(currentPlayerController.FindComponent(PS_PlayableControllerComponent));
 		
 		// update
 		m_wPlayerName.SetText(playerName);
 		m_wVoiceHideableButton.Update();
-		
+		m_wLeaderIcon.SetVisible(playableManager.IsPlayerGroupLeader(m_iPlayer));
 		
 		if (playableId != RplId.Invalid()) {
 			PS_PlayableComponent playableComponent = playableManager.GetPlayableById(playableId);
@@ -78,7 +81,10 @@ class PS_PlayerVoiceSelector : SCR_ButtonBaseComponent
 	
 	// -------------------- Buttons events --------------------
 	
-	
+	void MoveToRoom(SCR_ButtonBaseComponent roomButton)
+	{
+		
+	}
 }
 
 

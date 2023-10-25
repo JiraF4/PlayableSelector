@@ -10,7 +10,7 @@ ButtonWidgetClass {
  {
   FrameWidgetClass "{5EB290655B7E7F5F}" {
    Name "VoiceRoomFrame"
-   Slot ButtonWidgetSlot {
+   Slot ButtonWidgetSlot "{5EB2907FBA3D4CE8}" {
    }
    {
     ImageWidgetClass "{5EB1458B279C077B}" {
@@ -27,7 +27,7 @@ ButtonWidgetClass {
      Color 0.001 0.001 0.001 1
     }
     ImageWidgetClass "{5EB2906439B72CD7}" {
-     Name "PinImage"
+     Name "JoinRoomImage"
      Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
       PositionX 319.149
       OffsetLeft 319.149

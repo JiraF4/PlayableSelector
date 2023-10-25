@@ -142,7 +142,23 @@ class PS_CharacterSelector : SCR_ButtonImageComponent
 			m_wStateIcon.SetVisible(true);
 			m_wDisconnectionButton.SetVisible(false);
 		}
-		if (playerId != currentPlayerController.GetPlayerId()) m_wKickButton.SetVisible(currentPlayerRole == EPlayerRole.ADMINISTRATOR && playerId != -1);
+		
+		// kick button
+		if (playerId != currentPlayerController.GetPlayerId()) {
+			bool showKick = false;
+			if (playerId != -1) {
+				showKick = currentPlayerRole == EPlayerRole.ADMINISTRATOR;
+				if (!showKick) {
+					if (playableManager.IsPlayerGroupLeader(currentPlayerController.GetPlayerId()))
+					{
+						RplId currentPlayableId = playableManager.GetPlayableByPlayer(currentPlayerController.GetPlayerId());
+						showKick = playableManager.GetGroupNameByPlayable(m_playable.GetId()) == playableManager.GetGroupNameByPlayable(currentPlayableId);
+					}
+				};
+			}
+			
+			m_wKickButton.SetVisible(showKick);
+		}
 	}
 	
 	int GetPlayableId()
