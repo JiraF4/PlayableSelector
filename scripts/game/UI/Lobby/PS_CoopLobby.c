@@ -59,7 +59,6 @@ class PS_CoopLobby: MenuBase
 	SCR_NavigationButtonComponent m_bNavigationButtonChat;
 	SCR_NavigationButtonComponent m_bNavigationButtonClose;
 	SCR_NavigationButtonComponent m_bNavigationButtonForceStart;
-	SCR_NavigationButtonComponent m_bNavigationButtonMapOpen;
 	
 	// Timer start time, for game launch delay and counter animation
 	int m_iStartTime = 0;
@@ -105,8 +104,8 @@ class PS_CoopLobby: MenuBase
 		m_bNavigationButtonChat = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationChat").FindHandler(SCR_NavigationButtonComponent));
 		m_bNavigationButtonClose = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationClose").FindHandler(SCR_NavigationButtonComponent));
 		m_bNavigationButtonForceStart = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationForceStart").FindHandler(SCR_NavigationButtonComponent));
-		m_bNavigationButtonMapOpen = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationMapOpen").FindHandler(SCR_NavigationButtonComponent));
 		
+		m_bNavigationButtonReady.m_OnClicked.Insert(Action_Ready);
 		GetGame().GetInputManager().AddActionListener("LobbyReady", EActionTrigger.DOWN, Action_Ready);
 		m_bNavigationButtonChat.m_OnClicked.Insert(Action_ChatOpen);
 		GetGame().GetInputManager().AddActionListener("ChatToggle", EActionTrigger.DOWN, Action_ChatOpen);
@@ -114,7 +113,6 @@ class PS_CoopLobby: MenuBase
 		GetGame().GetInputManager().AddActionListener("MenuBack", EActionTrigger.DOWN, Action_Exit);
 		m_bNavigationButtonForceStart.m_OnClicked.Insert(Action_ForceStart);
 		GetGame().GetInputManager().AddActionListener("LobbyGameForceStart", EActionTrigger.DOWN, Action_ForceStart);
-		m_bNavigationButtonMapOpen.m_OnClicked.Insert(Action_MapOpen);
 		
 		// Faction lock
 		m_wFactionLockButton = ButtonWidget.Cast(GetRootWidget().FindAnyWidget("FactionLockButton"));
@@ -299,13 +297,13 @@ class PS_CoopLobby: MenuBase
 		{
 			PS_FactionSelector handler = PS_FactionSelector.Cast(factionSelector.FindHandler(PS_FactionSelector));
 			
-			int factionPLayersCount = 0;
+			int factionPlayersCount = 0;
 			array<int> playerIds = new array<int>();
 			GetGame().GetPlayerManager().GetPlayers(playerIds);
 			foreach (int playerId: playerIds)
 			{
 				if (playableManager.GetPlayerFactionKey(playerId) == handler.GetFaction().GetFactionKey())
-					factionPLayersCount = factionPLayersCount + 1;
+					factionPlayersCount = factionPlayersCount + 1;
 			}
 			
 			if (playableManager.GetPlayerFactionKey(thisPlayerController.GetPlayerId()) == handler.GetFaction().GetFactionKey()) {
@@ -318,7 +316,14 @@ class PS_CoopLobby: MenuBase
 				int playerId = playableManager.GetPlayerByPlayable(playable.GetId());
 				if (playerId != -1)  i++;
 			}
-			handler.SetCount(factionPLayersCount, i, factionPlayablesList.Count());
+			handler.SetCount(factionPlayersCount, i, factionPlayablesList.Count());
+		}
+		
+		// update every group widget
+		foreach (Widget rolesWidget : m_aRolesListWidgets)
+		{
+			PS_RolesGroup rolesHandler = PS_RolesGroup.Cast(rolesWidget.FindHandler(PS_RolesGroup));
+			rolesHandler.Update();
 		}
 		
 		// update every character widget
@@ -485,24 +490,6 @@ class PS_CoopLobby: MenuBase
 		playableController.FactionLockSwitch();
 	}
 	
-	void Action_MapOpen()
-	{
-		Close();
-		GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.MapMenu);
-		
-		GetGame().GetCallqueue().CallLater(MapWrap, 0); //  Else menu auto close itself
-	}
-	void MapWrap()
-	{
-		SCR_MapEntity mapEntity = SCR_MapEntity.GetMapInstance();
-		BaseGameMode gameMode = GetGame().GetGameMode();
-		SCR_MapConfigComponent configComp = SCR_MapConfigComponent.Cast(gameMode.FindComponent(SCR_MapConfigComponent));
-		MapConfiguration mapConfigFullscreen = mapEntity.SetupMapConfig(EMapEntityMode.FULLSCREEN, configComp.GetGadgetMapConfig(), GetRootWidget());
-		mapEntity.OpenMap(mapConfigFullscreen);
-	}
-	
-	
-	
 	// -------------------- Widgets events --------------------
 	// If faction clicked, switch focus from previous faction and update characters list to selected faction
 	// ----- Faction -----
@@ -530,7 +517,7 @@ class PS_CoopLobby: MenuBase
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		playableController.ChangeFactionKey(playerController.GetPlayerId(), factionKey);
 		playableController.SetPlayerPlayable(playerController.GetPlayerId(), RplId.Invalid()); // Reset character
-		playableController.MoveToVoNRoom(playerController.GetPlayerId(), factionKey, "");
+		playableController.MoveToVoNRoom(playerController.GetPlayerId(), factionKey, "Faction");
 	}
 	
 	// ----- Players -----
@@ -596,7 +583,6 @@ class PS_CoopLobby: MenuBase
 		  && m_iCurrentPlayer == playerController.GetPlayerId()
 		) {
 			playableController.SetPlayerPlayable(playerController.GetPlayerId(), RplId.Invalid());
-			playableController.MoveToVoNRoom(playerController.GetPlayerId(), playableManager.GetPlayerFactionKey(playerController.GetPlayerId()), "");
 			return;
 		}
 		
@@ -610,7 +596,9 @@ class PS_CoopLobby: MenuBase
 		playableController.ChangeFactionKey(m_iCurrentPlayer, playableCharacter.GetFaction().GetFactionKey());
 		playableController.SetPlayerState(m_iCurrentPlayer, PS_EPlayableControllerState.NotReady);
 		playableController.SetPlayerPlayable(m_iCurrentPlayer, handler.GetPlayableId());
-		playableController.MoveToVoNRoom(m_iCurrentPlayer, playableManager.GetPlayerFactionKey(playerController.GetPlayerId()), playableManager.GetGroupNameByPlayable(handler.GetPlayableId()));
+		
+		// TODO: faction room change
+		//playableController.MoveToVoNRoom(m_iCurrentPlayer, playableManager.GetPlayerFactionKey(playerController.GetPlayerId()), playableManager.GetGroupNameByPlayable(handler.GetPlayableId()));
 	}	
 	
 	// -------------------- Extra lobby functions --------------------

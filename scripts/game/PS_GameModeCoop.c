@@ -26,24 +26,28 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	{	
 		super.OnGameStart();
 		
-		OpenLobby();
+		SetGameMode(SCR_EGameModeState.BRIEFING);
 		if (RplSession.Mode() != RplMode.Dedicated) {
-			if (m_bCanOpenLobbyInGame) GetGame().GetInputManager().AddActionListener("OpenLobby", EActionTrigger.DOWN, OpenLobby);
+			OpenCurrentMenu();
+			if (m_bCanOpenLobbyInGame) GetGame().GetInputManager().AddActionListener("OpenLobby", EActionTrigger.DOWN, OpenCurrentMenu);
 		}
 	}
 	
-	void OpenLobby()
+	void OpenCurrentMenu()
 	{
-		GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.CoopLobby);
+		GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.BriefingMapMenu);
 	}
 	
 	protected override void OnPlayerConnected(int playerId)
 	{
-		GetGame().GetCallqueue().CallLater(SpawnInitialEntity, 100, false, playerId)
+		GetGame().GetCallqueue().CallLater(SpawnInitialEntity, 100, false, playerId);
 	}
 	
 	void SpawnInitialEntity(int playerId)
 	{
+		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
+		VoNRoomsManager.MoveToRoom(playerId, "", "");
+		
         Resource resource = Resource.Load("{EF9F633DDC485F1F}Prefabs/InitialPlayer.et");
 		EntitySpawnParams params = new EntitySpawnParams();
 		GetTransform(params.Transform);		
@@ -61,7 +65,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		SCR_PlayerController playerController = SCR_PlayerController.Cast(playerManager.GetPlayerController(playerId));
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		playerController.SetInitialMainEntity(playableController.GetInitialEntity());
-		PS_LobbyVoNManager.GetInstance().MoveToRoom(playerId, "dead", "dead");
+		PS_VoNRoomsManager.GetInstance().MoveToRoom(playerId, "", "Dead");
 	}
 	
 	// Update state for disconnected and start timer if need

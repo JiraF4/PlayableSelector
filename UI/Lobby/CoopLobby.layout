@@ -521,20 +521,6 @@ FrameWidgetClass {
               }
              }
             }
-            ButtonWidgetClass "{5EAE9BC8C44727B5}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
-             Name "NavigationMapOpen"
-             Slot LayoutSlot "{5D6F1498C9949A58}" {
-              HorizontalAlign 3
-              VerticalAlign 3
-              Padding 15 15 15 15
-             }
-             components {
-              SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
-               m_sLabel "#PS-Lobby_MapOpen"
-               m_sActionName "LobbyMapOpen"
-              }
-             }
-            }
            }
           }
           HorizontalLayoutWidgetClass "{5D6F149AEF5FAFB2}" {
@@ -587,6 +573,126 @@ FrameWidgetClass {
   FrameWidgetClass "{5E7B5C5AA84246F8}" : "{D89BBA18F99053D6}UI/layouts/HUD/Chat/ChatHud.layout" {
    Name "Chat0"
    Slot FrameWidgetSlot "{5D4881250D202DF3}" {
+   }
+  }
+  FrameWidgetClass "{5EB1000713ADA290}" : "{F43237F55B38B45C}UI/layouts/GameModeHeader/GameModeHeader.layout" {
+   Name "GameModeHeaderFrame0"
+   Slot FrameWidgetSlot "{5EB10000F5F77EA0}" {
+    PositionX -960
+    OffsetLeft -960
+    PositionY 0
+    OffsetTop 0
+    SizeX 1920
+    OffsetRight -960
+    SizeY 93
+    OffsetBottom -93
+   }
+  }
+  FrameWidgetClass "{5EB2900030AFF43F}" {
+   Name "VoiceChatFrame"
+   Slot FrameWidgetSlot "{5EAF56867198CBEE}" {
+    Anchor 1 0.5 1 0.5
+    PositionX -422.025
+    OffsetLeft -422.025
+    PositionY -312.062
+    OffsetTop -312.062
+    SizeX 376
+    OffsetRight 46.025
+    SizeY 649
+    OffsetBottom -336.938
+   }
+   components {
+    PS_VoiceChatList "{5EB1176278105B6B}" {
+    }
+   }
+   {
+    ImageWidgetClass "{5EB2900030AFF403}" {
+     Name "VoiceChatBackground"
+     Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
+      PositionX 0
+      OffsetLeft 0
+      PositionY 0
+      OffsetTop 0
+      SizeX 376
+      OffsetRight -376
+      SizeY 649
+      OffsetBottom -649
+     }
+     Opacity 0.8
+     Color 0.001 0.001 0.001 1
+    }
+    FrameWidgetClass "{5EB2900030AFF404}" {
+     Name "VoiceChatHeaderFrame"
+     Slot FrameWidgetSlot "{5EAF568435415315}" {
+      PositionX 0
+      OffsetLeft 0
+      PositionY 0
+      OffsetTop 0
+      SizeX 376
+      OffsetRight -376
+      SizeY 39
+      OffsetBottom -39
+     }
+     {
+      ImageWidgetClass "{5EB2900030AFF405}" {
+       Name "VoiceChatHeaderBackground"
+       Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX 376
+        OffsetRight -376
+        SizeY 39
+        OffsetBottom -39
+       }
+       Color 0 0 0 1
+      }
+      OverlayWidgetClass "{5EB2900030AFF406}" {
+       Name "StepsHeaderTextOverlay"
+       Slot FrameWidgetSlot "{5EB0E9ED5655F81D}" {
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX 376
+        OffsetRight -376
+        SizeY 39
+        OffsetBottom -39
+       }
+       {
+        TextWidgetClass "{5EB2900030AFF407}" {
+         Name "VoiceChatHeaderText"
+         Slot OverlayWidgetSlot "{5EB0E9E7729FE3E7}" {
+          HorizontalAlign 0
+          Padding 8 0 0 0
+         }
+         Text "VOICE CHAT"
+        }
+       }
+      }
+     }
+    }
+    ScrollLayoutWidgetClass "{5EB2900030AFF408}" {
+     Name "PlayersListScroll"
+     Slot FrameWidgetSlot "{5EB1000AD8290B3B}" {
+      PositionX 0
+      OffsetLeft 0
+      PositionY 39
+      OffsetTop 39
+      SizeX 376
+      OffsetRight -376
+      SizeY 610
+      OffsetBottom -649
+     }
+     {
+      VerticalLayoutWidgetClass "{5EB2900030AFF409}" {
+       Name "PlayersList"
+       Slot AlignableSlot "{5EB11576E9D62E23}" {
+       }
+      }
+     }
+    }
    }
   }
   OverlayWidgetClass "{5E6EACEFEB2DB125}" {

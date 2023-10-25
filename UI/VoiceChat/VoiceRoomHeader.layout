@@ -1,0 +1,66 @@
+ButtonWidgetClass {
+ Name "VoiceRoomHeader"
+ Slot LayoutSlot "{5EB11767C21ECF59}" {
+ }
+ Color 0.001 0.001 0.001 1
+ components {
+  PS_VoiceRoomHeader "{5EB1458A4437EC6E}" {
+  }
+ }
+ {
+  FrameWidgetClass "{5EB290655B7E7F5F}" {
+   Name "VoiceRoomFrame"
+   Slot ButtonWidgetSlot {
+   }
+   {
+    ImageWidgetClass "{5EB1458B279C077B}" {
+     Name "Background"
+     Slot FrameWidgetSlot "{5EB11767D337F688}" {
+      OffsetLeft 0
+      OffsetTop 0
+      SizeX 376
+      OffsetRight -376
+      SizeY 44
+      OffsetBottom -44
+     }
+     Opacity 0.3
+     Color 0.001 0.001 0.001 1
+    }
+    ImageWidgetClass "{5EB2906439B72CD7}" {
+     Name "PinImage"
+     Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
+      PositionX 319.149
+      OffsetLeft 319.149
+      PositionY 2.251
+      OffsetTop 2.251
+      SizeX 40
+      OffsetRight -359.149
+      SizeY 40
+      OffsetBottom -42.251
+     }
+     Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
+     Image "VON_directspeech"
+     Size 32 32
+    }
+    TextWidgetClass "{5EB1458AF2F57E5D}" {
+     Prefab "{5D6D1B99A45E5176}"
+     Name "RoomName"
+     Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
+      PositionX 6
+      OffsetLeft 6
+      PositionY 0
+      OffsetTop 0
+      SizeX 164
+      OffsetRight -170
+      SizeY 44
+      OffsetBottom -44
+     }
+     Text "RoomName"
+     "Font Size" 20
+     "Min Font Size" 20
+     "Vertical Alignment" Center
+    }
+   }
+  }
+ }
+}

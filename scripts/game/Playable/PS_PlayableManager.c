@@ -173,6 +173,7 @@ class PS_PlayableManager : ScriptComponent
 				groupsManagerComponent.RegisterGroup(playerGroup);
 				m_playableToPlayerGroups[playableGroup] = playerGroup;
 				
+				
 				playableGroup.SetCanDeleteIfNoPlayer(false);
 				playerGroup.SetCanDeleteIfNoPlayer(false);
 			} else {
@@ -189,6 +190,14 @@ class PS_PlayableManager : ScriptComponent
 		playerGroup.GetCallsigns(company, platoon, squad, sCharacter, format);
 		string groupName = WidgetManager.Translate(format, company, platoon, squad, sCharacter);
 		SetPlayableGroupName(playableId, groupName);
+		
+		
+		
+		// Create VoN group chanel
+		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
+		VoNRoomsManager.GetOrCreateRoomWithFaction(playerGroup.GetFaction().GetFactionKey(), groupName);
+		VoNRoomsManager.GetOrCreateRoomWithFaction(playerGroup.GetFaction().GetFactionKey(), "Command");
+		VoNRoomsManager.GetOrCreateRoomWithFaction(playerGroup.GetFaction().GetFactionKey(), "Faction");
 	}
 	
 	// -------------------------- Set broadcast ----------------------------
