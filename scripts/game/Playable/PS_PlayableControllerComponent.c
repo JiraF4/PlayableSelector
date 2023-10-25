@@ -15,12 +15,6 @@ class PS_PlayableControllerComponent : ScriptComponent
 	vector VoNPosition = PS_VoNRoomsManager.roomInitialPosition;
 	SCR_EGameModeState m_eMenuState = SCR_EGameModeState.PREGAME;
 	
-	bool IsLeader()
-	{
-		// only admins can change faction lock
-		PlayerManager playerManager = GetGame().GetPlayerManager();
-	}
-	
 	// ------ MenuState ------
 	void SetMenuState(SCR_EGameModeState state)
 	{
