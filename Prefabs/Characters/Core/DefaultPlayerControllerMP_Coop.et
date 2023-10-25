@@ -9,6 +9,8 @@ SCR_PlayerController : "{6E2BB64764E3BE9B}Prefabs/Characters/Core/DefaultPlayerC
   }
   SCR_DataCollectorCommunicationComponent "{5D50F641B0525AB5}" {
   }
+  SCR_MapMarkerSyncComponent "{5EB2907A12B3BDE5}" {
+  }
   SCR_PlayerFactionAffiliationComponent "{5E60EBD85AB35135}" {
   }
   SCR_RespawnComponent "{5D50F641B0525AB9}" {
