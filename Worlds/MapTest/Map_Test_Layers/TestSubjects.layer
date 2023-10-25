@@ -5,5 +5,5 @@ SCR_AIGroup : "{CA73F9230999408B}Prefabs/Groups/INDFOR/Group_FIA_PlatoonHQ_P.et"
  coords 3154.46 13.124 2726.565
 }
 SCR_AIGroup : "{E98CEB8BE757C8A5}Prefabs/Groups/OPFOR/Group_USSR_MachineGunTeam_P.et" {
- coords 1040.284 54.48 2931.296
+ coords 1040.284 38.15 2931.296
 }

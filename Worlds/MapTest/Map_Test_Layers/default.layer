@@ -5,8 +5,12 @@ PerceptionManager PerceptionManager1 : "{028DAEAD63E056BE}Prefabs/World/Game/Per
 TagManager : "{2FA9E172CAB1857A}Prefabs/MP/Managers/TagManager.et" {
 }
 PS_GameModeCoop PS_GameModeCoop1 : "{F64CCAF87CCCF567}Prefabs/MP/Modes/PS_GameModeCoop.et" {
+ components {
+  SCR_GameModeSFManager "{5EB339E188A32C22}" {
+  }
+ }
  {
-  SCR_FactionManager {
+  SCR_FactionManager "5EB339E168B844E5" {
    ID "5EA73DB136618AD9"
    Factions {
     SCR_Faction "{56DEAC40D2DBC8B1}" {
