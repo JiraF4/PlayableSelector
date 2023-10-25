@@ -65,6 +65,24 @@ SCR_ChimeraCharacter {
   }
   MeshObject "{5EAA2EA8CEDFC0A9}" {
    Object "{9F3AF591CD6DFE1A}Assets/Characters/Basebody/Basebody_Male_01.xob"
+   Materials {
+    MaterialAssignClass "{5EB2D548D339DD76}" {
+     SourceMaterial "Basebody_01_Male_Arms"
+     AssignedMaterial "{9668A21511C6F791}Assets/_SharedData/Decals/Invisible_Material.emat"
+    }
+    MaterialAssignClass "{5EB2D548D339DD6A}" {
+     SourceMaterial "Basebody_01_Male_Arms_wound"
+     AssignedMaterial "{9668A21511C6F791}Assets/_SharedData/Decals/Invisible_Material.emat"
+    }
+    MaterialAssignClass "{5EB2D548D339DD6E}" {
+     SourceMaterial "Basebody_01_Male_Body"
+     AssignedMaterial "{9668A21511C6F791}Assets/_SharedData/Decals/Invisible_Material.emat"
+    }
+    MaterialAssignClass "{5EB2D548D339DC92}" {
+     SourceMaterial "Basebody_01_Male_Body_wound"
+     AssignedMaterial "{9668A21511C6F791}Assets/_SharedData/Decals/Invisible_Material.emat"
+    }
+   }
   }
   PS_LobbyVoNComponent "{5EAA222EF50425C5}" {
    "Speaking Range" 10
