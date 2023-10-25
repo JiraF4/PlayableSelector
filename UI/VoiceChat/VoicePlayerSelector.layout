@@ -1,0 +1,103 @@
+FrameWidgetClass {
+ Name "VoicePlayerSelector"
+ Slot LayoutSlot "{5EB11767C21ECF59}" {
+ }
+ components {
+  PS_PlayerVoiceSelector "{5EB11765575D4DCE}" {
+   m_sSoundClicked ""
+  }
+ }
+ {
+  ImageWidgetClass "{5EB11767D337F6AE}" {
+   Name "Background"
+   Slot FrameWidgetSlot "{5EB11767D337F688}" {
+    OffsetLeft 0
+    OffsetTop 0
+    SizeX 376
+    OffsetRight -376
+    SizeY 44
+    OffsetBottom -44
+   }
+   Opacity 0
+  }
+  FrameWidgetClass "{5EB1176F4695C767}" {
+   Name "UnitIconFrame"
+   Slot FrameWidgetSlot "{5EB1176F4695FD6B}" {
+    PositionX 0
+    OffsetLeft 0
+    PositionY 0
+    OffsetTop 0
+    SizeX 49.365
+    OffsetRight -49.365
+    SizeY 44.178
+    OffsetBottom -44.178
+   }
+   "Inherit Color" 1
+   {
+    ImageWidgetClass "{5EB1176F4695C768}" {
+     Name "UnitIcon"
+     Slot FrameWidgetSlot "{5E7CF059F272107C}" {
+      Anchor 0 0 0 0
+      PositionX -23.617
+      OffsetLeft -23.617
+      PositionY -25.808
+      OffsetTop -25.808
+      SizeX 96
+      OffsetRight -72.383
+      SizeY 96
+      OffsetBottom -70.192
+     }
+     "Inherit Color" 1
+     Texture "{00B30C29FAF85E1C}UI/Textures/Editor/EditableEntities/Characters/EditableEntity_Character_AntiTank.edds"
+     Size 64 64
+    }
+   }
+  }
+  TextWidgetClass "{5EB11767AA8586F0}" {
+   Prefab "{5D6D1B99A45E5176}"
+   Name "PlayerName"
+   Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
+    PositionX 60
+    OffsetLeft 60
+    PositionY 0
+    OffsetTop 0
+    SizeX 164
+    OffsetRight -224
+    SizeY 44
+    OffsetBottom -44
+   }
+   Text "Player"
+   "Font Size" 20
+   "Min Font Size" 20
+   "Vertical Alignment" Center
+  }
+  TextWidgetClass "{5EB1157657D3947D}" {
+   Prefab "{5D6D1B99A45E5176}"
+   Name "GroupName"
+   Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
+    PositionX 268
+    OffsetLeft 268
+    PositionY 0
+    OffsetTop 0
+    SizeX 89.403
+    OffsetRight -357.403
+    SizeY 44
+    OffsetBottom -44
+   }
+   Text "Player"
+   "Font Size" 20
+   "Min Font Size" 20
+   "Horizontal Alignment" Right
+   "Vertical Alignment" Center
+  }
+  OverlayWidgetClass "{5EB1176D2E673C6D}" : "{DAAA8D092128D446}UI/Util/HideableButton.layout" {
+   Name "VoiceHideableButton"
+   Slot FrameWidgetSlot "{5EB1176DC507EF2D}" {
+   }
+   components {
+    PS_VoiceButton "{5EB11770B0438906}" {
+    }
+   }
+  }
+ }
+}

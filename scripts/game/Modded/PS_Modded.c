@@ -140,11 +140,27 @@ modded class SCR_BaseGameMode
 			}
 		}
 	}
+	
+	void SetGameMode(SCR_EGameModeState state)
+	{
+		if (!IsMaster())
+			return;
+
+		m_eGameState = state;
+		Replication.BumpMe();
+
+		OnGameStateChanged();
+	}
 }
 
 
 
-
+modded enum SCR_EGameModeState
+{
+	SLOTSELECTION,
+	BRIEFING,
+	NULL,
+}
 
 
 

@@ -1,9 +1,9 @@
 PS_GameModeCoop {
  ID "5D4CDA0160C87274"
  components {
-  PS_LobbyVoNManager "{5EAB23A5E439D527}" {
-  }
   PS_PlayableManager "{5EA8C9329726C920}" {
+  }
+  PS_VoNRoomsManager "{5EB2902757964925}" {
   }
   SCR_ArsenalManagerComponent "{5D4CE249D697011C}" {
   }

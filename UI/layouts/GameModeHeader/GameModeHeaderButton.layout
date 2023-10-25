@@ -1,0 +1,74 @@
+ButtonWidgetClass {
+ Name "Button"
+ Slot LayoutSlot "{5EB2902EAC0B9AA0}" {
+  Padding 10 10 10 10
+ }
+ components {
+  SCR_ButtonBaseComponent "{5EB2902E13B6A880}" {
+   m_BackgroundDefault 0.028 0.028 0.028 1
+   m_BackgroundHovered 0.098 0.098 0.098 1
+   m_BackgroundSelected 0.761 0.386 0.078 1
+   m_BackgroundSelectedHovered 0.761 0.386 0.078 1
+   m_BackgroundClicked 0.761 0.386 0.078 1
+  }
+ }
+ {
+  SizeLayoutWidgetClass "{5EB2902E629DFD43}" {
+   Name "GameModeHeaderButton"
+   Slot ButtonWidgetSlot "{5EB2902E629DFEA1}" {
+   }
+   AllowWidthOverride 1
+   WidthOverride 220
+   AllowHeightOverride 1
+   HeightOverride 39
+   {
+    FrameWidgetClass "{5EB100017BC764F4}" {
+     Name "ButtonOverlay"
+     Slot AlignableSlot "{5EB1000108B829FA}" {
+     }
+     {
+      ImageWidgetClass "{5EB10001224C7F50}" {
+       Name "Background"
+       Slot FrameWidgetSlot "{5EB100028E787477}" {
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX 220
+        OffsetRight -220
+        SizeY 39
+        OffsetBottom -39
+       }
+       Color 0.028 0.028 0.028 1
+      }
+      OverlayWidgetClass "{5EB1000388A8E58A}" {
+       Name "Overlay"
+       Slot FrameWidgetSlot "{5EB1000388A8E5FE}" {
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX 220
+        OffsetRight -220
+        SizeY 39
+        OffsetBottom -39
+       }
+       {
+        TextWidgetClass "{5EB10003D5163631}" {
+         Name "Text"
+         Slot OverlayWidgetSlot "{5EB10008D4DC6DB3}" {
+          HorizontalAlign 0
+          Padding 16 8 16 8
+         }
+         Text "MISSION PREVIEW"
+         "Font Size" 20
+         "Min Font Size" 20
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}

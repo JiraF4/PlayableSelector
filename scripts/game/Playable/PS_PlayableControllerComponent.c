@@ -12,8 +12,51 @@ class PS_PlayableControllerComponent : ScriptComponent
 {
 	IEntity m_eCamera;
 	IEntity m_eInitialEntity;
-	vector VoNPosition = PS_LobbyVoNManager.roomInitialPosition;
+	vector VoNPosition = PS_VoNRoomsManager.roomInitialPosition;
+	SCR_EGameModeState m_eMenuState = SCR_EGameModeState.PREGAME;
 	
+	bool IsLeader()
+	{
+		// only admins can change faction lock
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+	}
+	
+	// ------ MenuState ------
+	void SetMenuState(SCR_EGameModeState state)
+	{
+		m_eMenuState = state;
+	}
+	
+	SCR_EGameModeState GetMenuState()
+	{
+		return m_eMenuState;
+	}
+	
+	void SwitchToMenu(SCR_EGameModeState state)
+	{
+		SetMenuState(state);
+		GetGame().GetMenuManager().GetTopMenu().Close();
+		switch (state) 
+		{
+			case SCR_EGameModeState.PREGAME:
+				GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.BriefingMapMenu);
+				break;
+			case SCR_EGameModeState.SLOTSELECTION:
+				GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.CoopLobby);
+				break;
+			case SCR_EGameModeState.BRIEFING:
+				GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.BriefingMapMenu);
+				break;
+			case SCR_EGameModeState.GAME:
+				break;
+			case SCR_EGameModeState.POSTGAME:
+				GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.BriefingMapMenu);
+				break;
+		}	
+		
+	}
+	
+	// ------ FactionLock ------
 	void FactionLockSwitch()
 	{
 		Rpc(RPC_FactionLockSwitch);
@@ -43,6 +86,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 	private void OnControlledEntityChanged(IEntity from, IEntity to)
 	{
 		if (!from) return;
+		if (!to) return;
 		PS_LobbyVoNComponent vonFrom = PS_LobbyVoNComponent.Cast(from.FindComponent(PS_LobbyVoNComponent));
 		PS_LobbyVoNComponent vonTo = PS_LobbyVoNComponent.Cast(to.FindComponent(PS_LobbyVoNComponent));
 		if (vonTo && !vonFrom)
@@ -116,8 +160,8 @@ class PS_PlayableControllerComponent : ScriptComponent
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
 		if (thisPlayerController.GetPlayerId() != playerId && playerRole != EPlayerRole.ADMINISTRATOR) return;
 		
-		PS_LobbyVoNManager lobbyVoNManager = PS_LobbyVoNManager.GetInstance();
-		lobbyVoNManager.MoveToRoom(playerId, factionKey, groupName);
+		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
+		VoNRoomsManager.MoveToRoom(playerId, factionKey, groupName);
 	}
 	
 	

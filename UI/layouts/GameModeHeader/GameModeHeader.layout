@@ -1,0 +1,211 @@
+FrameWidgetClass {
+ Name "GameModeHeaderFrame"
+ Slot FrameWidgetSlot "{5EB10000F5F77EA0}" {
+  Anchor 0.5 0 0.5 0
+  PositionX -960
+  OffsetLeft -960
+  PositionY 0
+  OffsetTop 0
+  SizeX 1920
+  OffsetRight -960
+  SizeY 93
+  OffsetBottom -93
+ }
+ components {
+  PS_GameModeHeader "{5EB29021C6414A07}" {
+  }
+ }
+ {
+  ImageWidgetClass "{5EB100001D14AACE}" {
+   Name "GameModeHeaderBackground"
+   Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
+    PositionX 10
+    OffsetLeft 10
+    PositionY 10
+    OffsetTop 10
+    SizeX 1900
+    OffsetRight -1910
+    SizeY 69
+    OffsetBottom -79
+   }
+   Color 0.008 0.014 0.016 1
+  }
+  ImageWidgetClass "{5EB10001C17B1550}" {
+   Name "GameModeHeaderBackgroundLine"
+   Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
+    PositionX 10
+    OffsetLeft 10
+    PositionY 79
+    OffsetTop 79
+    SizeX 1900
+    OffsetRight -1910
+    SizeY 4
+    OffsetBottom -83
+   }
+   Color 0.761 0.386 0.078 1
+  }
+  OverlayWidgetClass "{5EB1000190412184}" {
+   Name "GameModeHeaderOverlayButton"
+   Slot FrameWidgetSlot "{5EB1000190412199}" {
+    PositionX 10
+    OffsetLeft 10
+    PositionY 10
+    OffsetTop 10
+    SizeX 1900
+    OffsetRight -1910
+    SizeY 69
+    OffsetBottom -79
+   }
+   {
+    HorizontalLayoutWidgetClass "{5EB100048ABF5C22}" {
+     Name "HorizontalLayoutHeaderButtons"
+     Slot OverlayWidgetSlot "{5EB100048ABF5C00}" {
+     }
+     {
+      ButtonWidgetClass "{5EB100055E841CD3}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
+       Name "NavigationLeftHeader"
+       Slot LayoutSlot "{5D6F1498C9949A58}" {
+        HorizontalAlign 3
+        VerticalAlign 3
+        Padding 10 10 10 10
+       }
+       components {
+        SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
+         m_sLabel ""
+        }
+       }
+      }
+      ButtonWidgetClass "{5EB1000404C189E8}" : "{C89F7100D39A8D45}UI/layouts/GameModeHeader/GameModeHeaderButton.layout" {
+       Name "PreviewButton"
+       Slot LayoutSlot "{5EB1000404C18D33}" {
+        Padding 0 10 10 10
+       }
+      }
+      ButtonWidgetClass "{5EB1000406CEA78A}" : "{C89F7100D39A8D45}UI/layouts/GameModeHeader/GameModeHeaderButton.layout" {
+       Name "LobbyButton"
+       Slot LayoutSlot "{5EB1000404C18D33}" {
+        Padding 10 10 10 10
+       }
+       {
+        SizeLayoutWidgetClass "{5EB2902E629DFD43}" {
+         Prefab "{5EB2902E629DFD43}"
+         {
+          FrameWidgetClass "{5EB100017BC764F4}" {
+           Prefab "{5EB100017BC764F4}"
+           {
+            OverlayWidgetClass "{5EB1000388A8E58A}" {
+             Prefab "{5EB1000388A8E58A}"
+             {
+              TextWidgetClass "{5EB10003D5163631}" {
+               Prefab "{5EB10003D5163631}"
+               Text "SLOT SELECTION"
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+      ButtonWidgetClass "{5EB1000406260CAA}" : "{C89F7100D39A8D45}UI/layouts/GameModeHeader/GameModeHeaderButton.layout" {
+       Name "BriefingButton"
+       Slot LayoutSlot "{5EB1000404C18D33}" {
+        Padding 10 10 10 10
+       }
+       {
+        SizeLayoutWidgetClass "{5EB2902E629DFD43}" {
+         Prefab "{5EB2902E629DFD43}"
+         {
+          FrameWidgetClass "{5EB100017BC764F4}" {
+           Prefab "{5EB100017BC764F4}"
+           {
+            OverlayWidgetClass "{5EB1000388A8E58A}" {
+             Prefab "{5EB1000388A8E58A}"
+             {
+              TextWidgetClass "{5EB10003D5163631}" {
+               Prefab "{5EB10003D5163631}"
+               Text "BRIEFING"
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+      ButtonWidgetClass "{5EB10004061DFD92}" : "{C89F7100D39A8D45}UI/layouts/GameModeHeader/GameModeHeaderButton.layout" {
+       Name "InGameButton"
+       Slot LayoutSlot "{5EB1000404C18D33}" {
+        Padding 10 10 10 10
+       }
+       {
+        SizeLayoutWidgetClass "{5EB2902E629DFD43}" {
+         Prefab "{5EB2902E629DFD43}"
+         {
+          FrameWidgetClass "{5EB100017BC764F4}" {
+           Prefab "{5EB100017BC764F4}"
+           {
+            OverlayWidgetClass "{5EB1000388A8E58A}" {
+             Prefab "{5EB1000388A8E58A}"
+             {
+              TextWidgetClass "{5EB10003D5163631}" {
+               Prefab "{5EB10003D5163631}"
+               Text "IN GAME"
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+      ButtonWidgetClass "{5EB10004078764DC}" : "{C89F7100D39A8D45}UI/layouts/GameModeHeader/GameModeHeaderButton.layout" {
+       Name "DebriefingButton"
+       Slot LayoutSlot "{5EB1000404C18D33}" {
+        Padding 10 10 10 10
+       }
+       {
+        SizeLayoutWidgetClass "{5EB2902E629DFD43}" {
+         Prefab "{5EB2902E629DFD43}"
+         {
+          FrameWidgetClass "{5EB100017BC764F4}" {
+           Prefab "{5EB100017BC764F4}"
+           {
+            OverlayWidgetClass "{5EB1000388A8E58A}" {
+             Prefab "{5EB1000388A8E58A}"
+             {
+              TextWidgetClass "{5EB10003D5163631}" {
+               Prefab "{5EB10003D5163631}"
+               Text "DEBRIEFING"
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+      ButtonWidgetClass "{5EB1000541B35108}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
+       Name "NavigationRightHeader"
+       Slot LayoutSlot "{5D6F1498C9949A58}" {
+        HorizontalAlign 3
+        VerticalAlign 3
+        Padding 10 10 10 10
+       }
+       components {
+        SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
+         m_sLabel ""
+         m_sActionName "MenuTabRight"
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}
