@@ -1,0 +1,17 @@
+SCR_AIGroup : "{9548AE02CF7D1580}Prefabs/Groups/_ForGM/Group_FIA_PlayableMenForGMSpawn.et" {
+ components {
+  SCR_EditableGroupComponent "{50D291F6C83FA532}" {
+   m_UIInfo SCR_EditableGroupUIInfo "{5298E609432D192D}" {
+    Icon "{E125C257C3EBA47A}images/PS_Eng.edds"
+    m_Image "{E125C257C3EBA47A}images/PS_Eng.edds"
+   }
+  }
+ }
+ coords 9.176 1 243.447
+}
+SCR_AIGroup : "{C24A5DE73116F074}Prefabs/Groups/_ForGM/Group_USSR_PlayableMenForGMSpawn.et" {
+ coords 4.532 1 243.132
+}
+SCR_AIGroup : "{FC7BAE5FCDCB70B2}Prefabs/Groups/_ForGM/Group_US_PlayableMenForGMSpawn.et" {
+ coords 6.891 1 243.408
+}

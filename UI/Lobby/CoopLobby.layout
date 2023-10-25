@@ -389,12 +389,12 @@ FrameWidgetClass {
              Slot FrameWidgetSlot "{5D6D141612AB133D}" {
               PositionX 0
               OffsetLeft 0
-              PositionY 128
-              OffsetTop 128
+              PositionY 162
+              OffsetTop 162
               SizeX 480
               OffsetRight -480
-              SizeY 824
-              OffsetBottom -952
+              SizeY 760
+              OffsetBottom -922
              }
              {
               ScrollLayoutWidgetClass "{5D6D1B97707D8F2D}" {
@@ -402,7 +402,7 @@ FrameWidgetClass {
                Slot OverlayWidgetSlot "{5D6D1B9B238445FB}" {
                 HorizontalAlign 3
                 VerticalAlign 0
-                Padding 0 34.12 0 0
+                Padding 0 0 0 0
                }
                {
                 VerticalLayoutWidgetClass "{5D6D1B97707D8F23}" {
