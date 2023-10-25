@@ -25,6 +25,17 @@ class PS_VoNRoomsManager : ScriptComponent
 	vector lastOffset;
 	int m_iLastRoomId = 1;
 	
+	// Multiple menus may broken
+	bool m_bHasChanges = true;
+	void ResetChangesFlag()
+	{
+		m_bHasChanges = false;
+	}
+	bool GetChangesFlag()
+	{
+		return m_bHasChanges;
+	}
+	
 	override protected void OnPostInit(IEntity owner)
 	{
 		// Set default room position
@@ -66,6 +77,8 @@ class PS_VoNRoomsManager : ScriptComponent
 		
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		playableController.VoNPosition = position;
+		
+		m_bHasChanges = true;
 	}
 	
 	
