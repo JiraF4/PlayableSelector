@@ -1,0 +1,9 @@
+MatPBRDecal {
+ Color 0.429 0.429 0.429 1
+ AlphaMul 0
+ BlendMode AlphaBlend
+ DielectricReflectance 0.033
+ NormalPower 2
+ GlobalMapsUVTransform MatUVTransform "{5262B318FDD27B31}" {
+ }
+}
