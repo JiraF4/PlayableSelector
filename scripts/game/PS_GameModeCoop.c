@@ -21,7 +21,10 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	
 	[Attribute("0", uiwidget: UIWidgets.CheckBox, "Faction locked after selection.", category: WB_GAME_MODE_CATEGORY)]
 	protected bool m_bFactionLock;
-		
+	
+	[Attribute("1", uiwidget: UIWidgets.CheckBox, "Markers can place only commanders on briefing.", category: WB_GAME_MODE_CATEGORY)]
+	protected bool m_bMarkersOnlyOnBriefing;
+	
 	override void OnGameStart()
 	{	
 		super.OnGameStart();
@@ -185,6 +188,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	bool IsFactionLockMode()
 	{
 		return m_bFactionLock;
+	}
+	
+	bool IsMarkersOnlyOnBriefing()
+	{
+		return m_bMarkersOnlyOnBriefing;
 	}
 	
 	// Global flags set
