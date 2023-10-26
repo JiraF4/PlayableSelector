@@ -191,9 +191,21 @@ class PS_PlayableControllerComponent : ScriptComponent
 		PS_LobbyVoNComponent von = PS_LobbyVoNComponent.Cast(entity.FindComponent(PS_LobbyVoNComponent));
 		return von;
 	}
+	RadioTransceiver GetVoNTransiver()
+	{
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		IEntity entity = thisPlayerController.GetControlledEntity();
+		SCR_GadgetManagerComponent gadgetManager = SCR_GadgetManagerComponent.Cast( entity.FindComponent(SCR_GadgetManagerComponent) );
+		IEntity radioEntity = gadgetManager.GetGadgetByType(EGadgetType.RADIO);
+		BaseRadioComponent radio = BaseRadioComponent.Cast(radioEntity.FindComponent(BaseRadioComponent));
+		radio.SetPower(true);
+		radio.SetEncryptionKey("111");
+		return RadioTransceiver.Cast(radio.GetTransceiver(0));
+	}
 	void LobbyVoNEnable()
 	{
 		PS_LobbyVoNComponent von = GetVoN();
+		von.SetTransmitRadio(null);
 		von.SetCommMethod(ECommMethod.DIRECT);
 		von.SetCapture(true);
 	}
@@ -202,6 +214,13 @@ class PS_PlayableControllerComponent : ScriptComponent
 		PS_LobbyVoNComponent von = GetVoN();
 		von.SetCommMethod(ECommMethod.DIRECT);
 		von.SetCapture(false);
+	}
+	void LobbyVoNRadioEnable()
+	{
+		PS_LobbyVoNComponent von = GetVoN();
+		von.SetTransmitRadio(GetVoNTransiver());
+		von.SetCommMethod(ECommMethod.SQUAD_RADIO);
+		von.SetCapture(true);
 	}
 	
 	// ------------------ Observer camera controlls ------------------

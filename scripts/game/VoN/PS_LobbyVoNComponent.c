@@ -1,12 +1,12 @@
 //------------------------------------------------------------------------------------------------
-class PS_LobbyVoNComponentClass : VoNComponentClass
+class PS_LobbyVoNComponentClass : SCR_VoNComponentClass
 {}
 
 //------------------------------------------------------------------------------------------------
-class PS_LobbyVoNComponent : VoNComponent 
+class PS_LobbyVoNComponent : SCR_VoNComponent 
 {
-	private const float TRANSMISSION_TIMEOUT_MS = 100;
-	private float m_fTransmitingTimeout;
+	protected const float PS_TRANSMISSION_TIMEOUT_MS = 500;
+	protected float PS_m_fTransmitingTimeout;
 	ref map<int, float> m_fPlayerSpeachReciveTime = new map<int, float>();
 	
 	float GetPlayerSpeechTime(int playerId)
@@ -21,21 +21,21 @@ class PS_LobbyVoNComponent : VoNComponent
 		return GetPlayerSpeechTime(playerId) > worldTime;
 	}
 	
-	bool IsTransmiting()
+	override bool IsTransmiting()
 	{
 		float worldTime = GetGame().GetWorld().GetWorldTime();
-		return m_fTransmitingTimeout > worldTime;
+		return PS_m_fTransmitingTimeout > worldTime;
 	}
 	
 	override protected event void OnCapture(BaseTransceiver transmitter)
 	{
-		m_fTransmitingTimeout = GetGame().GetWorld().GetWorldTime() + TRANSMISSION_TIMEOUT_MS;
+		PS_m_fTransmitingTimeout = GetGame().GetWorld().GetWorldTime() + PS_TRANSMISSION_TIMEOUT_MS;
 		int playerId = GetGame().GetPlayerController().GetPlayerId();
-		m_fPlayerSpeachReciveTime[playerId] = GetGame().GetWorld().GetWorldTime() + TRANSMISSION_TIMEOUT_MS;
+		m_fPlayerSpeachReciveTime[playerId] = GetGame().GetWorld().GetWorldTime() + PS_TRANSMISSION_TIMEOUT_MS;
 	}
 	
 	override protected event void OnReceive(int playerId, BaseTransceiver receiver, int frequency, float quality)
 	{
-		m_fPlayerSpeachReciveTime[playerId] = GetGame().GetWorld().GetWorldTime() + TRANSMISSION_TIMEOUT_MS;
+		m_fPlayerSpeachReciveTime[playerId] = GetGame().GetWorld().GetWorldTime() + PS_TRANSMISSION_TIMEOUT_MS;
 	}
 };

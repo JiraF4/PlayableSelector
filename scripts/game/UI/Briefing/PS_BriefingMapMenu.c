@@ -120,7 +120,7 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 	{
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-		playableController.LobbyVoNEnable();
+		playableController.LobbyVoNRadioEnable();
 	}
 	
 	void Action_LobbyVoNOff()
