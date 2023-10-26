@@ -72,6 +72,14 @@ class PS_CoopLobby: MenuBase
 	// Global options
 	ButtonWidget m_wFactionLockButton;
 	ImageWidget m_wFactionLockImage;
+	
+	// Global game mode header
+	protected Widget m_wGameModeHeader;
+	protected PS_GameModeHeader m_hGameModeHeader;
+	
+	// Voice chat menu
+	protected Widget m_wVoiceChatList;
+	protected PS_VoiceChatList m_hVoiceChatList;
 		
 	protected ResourceName m_sImageSet = "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset";
 	
@@ -120,13 +128,18 @@ class PS_CoopLobby: MenuBase
 		SCR_ButtonBaseComponent factionLockButtonHandler = SCR_ButtonBaseComponent.Cast(m_wFactionLockButton.FindHandler(SCR_ButtonBaseComponent));
 		factionLockButtonHandler.m_OnClicked.Insert(Action_FactionLock);
 		
+		m_wGameModeHeader = GetRootWidget().FindAnyWidget("GameModeHeader");
+		m_hGameModeHeader = PS_GameModeHeader.Cast(m_wGameModeHeader.FindHandler(PS_GameModeHeader));
+		m_wVoiceChatList = GetRootWidget().FindAnyWidget("VoiceChatFrame");
+		m_hVoiceChatList = PS_VoiceChatList.Cast(m_wVoiceChatList.FindHandler(PS_VoiceChatList));
+		
 		GetGame().GetInputManager().AddActionListener("VONDirect", EActionTrigger.DOWN, Action_LobbyVoNOn);
 		GetGame().GetInputManager().AddActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
 				
-		GetGame().GetCallqueue().CallLater(AwaitPLayerController, 100);
+		GetGame().GetCallqueue().CallLater(AwaitPlayerController, 100);
 	}
 	
-	void AwaitPLayerController()
+	void AwaitPlayerController()
 	{
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
@@ -138,7 +151,7 @@ class PS_CoopLobby: MenuBase
 			}
 		}
 		
-		GetGame().GetCallqueue().CallLater(AwaitPLayerController, 100);
+		GetGame().GetCallqueue().CallLater(AwaitPlayerController, 100);
 	}
 	
 	void OnMenuOpenDelay()
@@ -178,6 +191,8 @@ class PS_CoopLobby: MenuBase
 	// Just update state every 100 ms
 	void UpdateCycle() 
 	{
+		m_hVoiceChatList.HardUpdate();
+		m_hGameModeHeader.Update();
 		if (m_fRecconnectTime < GetGame().GetWorld().GetWorldTime()) Fill();
 		GetGame().GetCallqueue().CallLater(UpdateCycle, 100);
 	}
@@ -281,7 +296,7 @@ class PS_CoopLobby: MenuBase
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		m_bNavigationButtonForceStart.SetVisible(playerRole == EPlayerRole.ADMINISTRATOR && gameMode.GetState() == SCR_EGameModeState.PREGAME, false);
-		if (gameMode.GetState() == SCR_EGameModeState.PREGAME) m_bNavigationButtonReady.SetLabel("#PS-Lobby_Ready");
+		if (gameMode.GetState() != SCR_EGameModeState.GAME) m_bNavigationButtonReady.SetLabel("#PS-Lobby_Ready");
 		else {
 			if (playableManager.GetPlayableByPlayer(thisPlayerController.GetPlayerId()) != RplId.Invalid()) m_bNavigationButtonReady.SetLabel("#PS-Lobby_Join");
 			else m_bNavigationButtonReady.SetLabel("#PS-Lobby_JoinAsObserver");
@@ -628,18 +643,25 @@ class PS_CoopLobby: MenuBase
 		
 		// If game already started, close lobby immediately
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		if (seconds >= m_iStartTimerSeconds /*|| gameMode.GetState() == SCR_EGameModeState.GAME*/) {
+		if (seconds >= m_iStartTimerSeconds || gameMode.GetState() == SCR_EGameModeState.GAME) {
 			PlayerController playerController = GetGame().GetPlayerController();
 			PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-			playableController.ApplyPlayable();
 			m_wCounterText.SetText("");
-			// Getting controll take some time, this prevent zero coord blinking. Not the best way though...
-			GetGame().GetCallqueue().CallLater(Close, 100); 
+			
+			if (gameMode.GetState() != SCR_EGameModeState.GAME) {			
+				// Advance to next state
+				playableController.AdvanceGameState(SCR_EGameModeState.SLOTSELECTION);
+			}else{
+				playableController.SwitchToMenu(SCR_EGameModeState.GAME);
+			}
+			
 			return;
 		}
 		else GetGame().GetCallqueue().CallLater(CloseTimer, 100);
 		
-		string secondsStr = (seconds + 1).ToString();
+		int drawSeconds = m_iStartTimerSeconds - seconds;
+		if (drawSeconds < 0) drawSeconds = 0;
+		string secondsStr = drawSeconds.ToString();
 		if (m_wCounterText.GetText() != secondsStr) {
 			m_wCounterText.SetText(secondsStr);
 			AudioSystem.PlaySound("{3119327F3EFCA9C6}Sounds/UI/Samples/Gadgets/UI_Radio_Frequency_Cycle.wav");

@@ -141,7 +141,7 @@ modded class SCR_BaseGameMode
 		}
 	}
 	
-	void SetGameMode(SCR_EGameModeState state)
+	void SetGameModeState(SCR_EGameModeState state)
 	{
 		if (!IsMaster())
 			return;

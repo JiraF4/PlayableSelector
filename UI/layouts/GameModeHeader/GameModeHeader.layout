@@ -80,11 +80,21 @@ FrameWidgetClass {
        Slot LayoutSlot "{5EB1000404C18D33}" {
         Padding 0 10 10 10
        }
+       components {
+        PS_GameModeHeaderButton "{5EB4BBDFAF17BD09}" {
+         m_eState PREGAME
+        }
+       }
       }
       ButtonWidgetClass "{5EB1000406CEA78A}" : "{C89F7100D39A8D45}UI/layouts/GameModeHeader/GameModeHeaderButton.layout" {
        Name "LobbyButton"
        Slot LayoutSlot "{5EB1000404C18D33}" {
         Padding 10 10 10 10
+       }
+       components {
+        PS_GameModeHeaderButton "{5EB4BBDFAF17BD09}" {
+         m_eState SLOTSELECTION
+        }
        }
        {
         SizeLayoutWidgetClass "{5EB2902E629DFD43}" {
@@ -113,6 +123,11 @@ FrameWidgetClass {
        Slot LayoutSlot "{5EB1000404C18D33}" {
         Padding 10 10 10 10
        }
+       components {
+        PS_GameModeHeaderButton "{5EB4BBDFAF17BD09}" {
+         m_eState BRIEFING
+        }
+       }
        {
         SizeLayoutWidgetClass "{5EB2902E629DFD43}" {
          Prefab "{5EB2902E629DFD43}"
@@ -140,6 +155,11 @@ FrameWidgetClass {
        Slot LayoutSlot "{5EB1000404C18D33}" {
         Padding 10 10 10 10
        }
+       components {
+        PS_GameModeHeaderButton "{5EB4BBDFAF17BD09}" {
+         m_eState GAME
+        }
+       }
        {
         SizeLayoutWidgetClass "{5EB2902E629DFD43}" {
          Prefab "{5EB2902E629DFD43}"
@@ -166,6 +186,11 @@ FrameWidgetClass {
        Name "DebriefingButton"
        Slot LayoutSlot "{5EB1000404C18D33}" {
         Padding 10 10 10 10
+       }
+       components {
+        PS_GameModeHeaderButton "{5EB4BBDFAF17BD09}" {
+         m_eState POSTGAME
+        }
        }
        {
         SizeLayoutWidgetClass "{5EB2902E629DFD43}" {
@@ -200,6 +225,40 @@ FrameWidgetClass {
         SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
          m_sLabel ""
          m_sActionName "MenuTabRight"
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+  ButtonWidgetClass "{5EB290EEBC6EAD9B}" : "{C89F7100D39A8D45}UI/layouts/GameModeHeader/GameModeHeaderButton.layout" {
+   Name "AdvanceButton"
+   Slot FrameWidgetSlot "{5EB290EEBC6E570E}" {
+    PositionX 1678
+    OffsetLeft 1678
+    PositionY 25
+    OffsetTop 25
+    SizeX 220
+    OffsetRight -1898
+    SizeY 39
+    OffsetBottom -64
+   }
+   {
+    SizeLayoutWidgetClass "{5EB2902E629DFD43}" {
+     Prefab "{5EB2902E629DFD43}"
+     {
+      FrameWidgetClass "{5EB100017BC764F4}" {
+       Prefab "{5EB100017BC764F4}"
+       {
+        OverlayWidgetClass "{5EB1000388A8E58A}" {
+         Prefab "{5EB1000388A8E58A}"
+         {
+          TextWidgetClass "{5EB10003D5163631}" {
+           Prefab "{5EB10003D5163631}"
+           Text "ADVANCE"
+          }
+         }
         }
        }
       }

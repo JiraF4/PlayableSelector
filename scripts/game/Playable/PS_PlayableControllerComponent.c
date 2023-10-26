@@ -28,6 +28,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 	
 	void SwitchToMenu(SCR_EGameModeState state)
 	{
+		Print("SwitchToMenu: " + state.ToString());
 		SetMenuState(state);
 		GetGame().GetMenuManager().GetTopMenu().Close();
 		switch (state) 
@@ -42,14 +43,25 @@ class PS_PlayableControllerComponent : ScriptComponent
 				GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.BriefingMapMenu);
 				break;
 			case SCR_EGameModeState.GAME:
+				ApplyPlayable();
 				break;
 			case SCR_EGameModeState.POSTGAME:
 				GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.BriefingMapMenu);
 				break;
-		}	
-		
+		}
 	}
 	
+	void AdvanceGameState(SCR_EGameModeState state)
+	{
+		Rpc(RPC_AdvanceGameState, state);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void RPC_AdvanceGameState(SCR_EGameModeState state)
+	{
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		gameMode.AdvanceGameState(state);
+	}
+
 	// ------ FactionLock ------
 	void FactionLockSwitch()
 	{
@@ -321,8 +333,9 @@ class PS_PlayableControllerComponent : ScriptComponent
 		playableManager.SetPlayerPlayable(playerId, playableId);
 		
 		// Pin player if setted by admin
-		if (playerId != thisPlayerController.GetPlayerId()) playableManager.SetPlayerPin(playerId, true);
-				
+		if (playerId != thisPlayerController.GetPlayerId()) playableManager.SetPlayerPin(playerId, true);	
 	}
+	
+	
 	
 }

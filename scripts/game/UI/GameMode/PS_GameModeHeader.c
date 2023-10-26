@@ -1,62 +1,53 @@
 class PS_GameModeHeader : ScriptedWidgetComponent
 {
 	
-	SCR_ButtonBaseComponent m_bButtonPreview;
-	SCR_ButtonBaseComponent m_bButtonLobby;
-	SCR_ButtonBaseComponent m_bButtonBriefing;
-	SCR_ButtonBaseComponent m_bButtonInGame;
-	SCR_ButtonBaseComponent m_bButtonDebriefing;
+	PS_GameModeHeaderButton m_bButtonPreview;
+	PS_GameModeHeaderButton m_bButtonLobby;
+	PS_GameModeHeaderButton m_bButtonBriefing;
+	PS_GameModeHeaderButton m_bButtonInGame;
+	PS_GameModeHeaderButton m_bButtonDebriefing;
+	
+	PS_GameModeHeaderButton m_bButtonAdvance;
 	
 	override void HandlerAttached(Widget w)
 	{
-		m_bButtonPreview = SCR_ButtonBaseComponent.Cast(w.FindAnyWidget("PreviewButton").FindHandler(SCR_ButtonBaseComponent));
-		m_bButtonLobby = SCR_ButtonBaseComponent.Cast(w.FindAnyWidget("LobbyButton").FindHandler(SCR_ButtonBaseComponent));
-		m_bButtonBriefing = SCR_ButtonBaseComponent.Cast(w.FindAnyWidget("BriefingButton").FindHandler(SCR_ButtonBaseComponent));
-		m_bButtonInGame = SCR_ButtonBaseComponent.Cast(w.FindAnyWidget("InGameButton").FindHandler(SCR_ButtonBaseComponent));
-		m_bButtonDebriefing = SCR_ButtonBaseComponent.Cast(w.FindAnyWidget("DebriefingButton").FindHandler(SCR_ButtonBaseComponent));	
+		m_bButtonPreview = PS_GameModeHeaderButton.Cast(w.FindAnyWidget("PreviewButton").FindHandler(PS_GameModeHeaderButton));
+		m_bButtonLobby = PS_GameModeHeaderButton.Cast(w.FindAnyWidget("LobbyButton").FindHandler(PS_GameModeHeaderButton));
+		m_bButtonBriefing = PS_GameModeHeaderButton.Cast(w.FindAnyWidget("BriefingButton").FindHandler(PS_GameModeHeaderButton));
+		m_bButtonInGame = PS_GameModeHeaderButton.Cast(w.FindAnyWidget("InGameButton").FindHandler(PS_GameModeHeaderButton));
+		m_bButtonDebriefing = PS_GameModeHeaderButton.Cast(w.FindAnyWidget("DebriefingButton").FindHandler(PS_GameModeHeaderButton));	
 		
-		m_bButtonDebriefing.m_bUseColorization = false;
+		m_bButtonAdvance = PS_GameModeHeaderButton.Cast(w.FindAnyWidget("AdvanceButton").FindHandler(PS_GameModeHeaderButton));
 		
-		UpdateActiveButtons();
+		GetGame().GetCallqueue().CallLater(AddOnClick, 0);
 	}
 	
-	
-	void UpdateActiveButtons()
+	void AddOnClick()
 	{
-		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		
-		// Disable not active
-		switch (gameMode.GetState())
-		{
-			case SCR_EGameModeState.NULL:
-				break;
-			case SCR_EGameModeState.PREGAME:
-				m_bButtonLobby.m_bUseColorization = false;
-			case SCR_EGameModeState.SLOTSELECTION:
-				m_bButtonBriefing.m_bUseColorization = false;
-			case SCR_EGameModeState.BRIEFING:
-				m_bButtonInGame.m_bUseColorization = false;
-			case SCR_EGameModeState.GAME:
-				m_bButtonDebriefing.m_bUseColorization = false;
-		}
-		
-		// Add actions to active
-		switch (gameMode.GetState())
-		{
-			case SCR_EGameModeState.NULL:
-				break;
-			case SCR_EGameModeState.POSTGAME:
-				m_bButtonDebriefing.m_OnClicked.Insert(Action_DebriefingOpen);
-			case SCR_EGameModeState.GAME:
-				m_bButtonInGame.m_OnClicked.Insert(Action_InGameOpen);
-			case SCR_EGameModeState.BRIEFING:
-				m_bButtonBriefing.m_OnClicked.Insert(Action_BriefingOpen);
-			case SCR_EGameModeState.SLOTSELECTION:
-				m_bButtonLobby.m_OnClicked.Insert(Action_LobbyOpen);
-		}
-		m_bButtonPreview.m_OnClicked.Insert(Action_PreviewOpen);
+		m_bButtonAdvance.m_OnClicked.Insert(Action_Advance);
 	}
 	
+	void Update()
+	{
+		m_bButtonPreview.Update();
+		m_bButtonLobby.Update();
+		m_bButtonBriefing.Update();
+		m_bButtonInGame.Update();
+		m_bButtonDebriefing.Update();
+		
+		
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		PlayerController thisPlayerController = GetGame().GetPlayerController();
+		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
+		m_bButtonAdvance.SetVisible(playerRole == EPlayerRole.ADMINISTRATOR);
+	}
+	
+	void Action_Advance(SCR_ButtonBaseComponent button)
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		playableController.AdvanceGameState(SCR_EGameModeState.NULL);
+	}
 	void Action_PreviewOpen(SCR_ButtonBaseComponent button)
 	{
 		PlayerController playerController = GetGame().GetPlayerController();

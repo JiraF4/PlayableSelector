@@ -93,9 +93,7 @@ class PS_PlayerSelector : SCR_ButtonImageComponent
 		if (state == PS_EPlayableControllerState.Disconected) m_wReadyImage.LoadImageFromSet(0, m_sImageSet, "disconnection");
 		if (state == PS_EPlayableControllerState.Playing) m_wReadyImage.LoadImageFromSet(0, m_sImageSet, "characters");
 		
-		
 		PlayerController playerController = GetGame().GetPlayerController();
-		
 		
 		// Check OUR VoN is WE listen this player?
 		IEntity entity = GetGame().GetPlayerController().GetControlledEntity();

@@ -13,19 +13,10 @@ class PS_VoiceChatList : ScriptedWidgetComponent
 	override void HandlerAttached(Widget w)
 	{
 		m_wPlayersList = VerticalLayoutWidget.Cast(w.FindAnyWidget("PlayersList"));
-		Refreshing();
-	}
-
-	void Refreshing()
-	{
-		HardUpdate();
-		
-		GetGame().GetCallqueue().CallLater(Refreshing, 100);
 	}
 	
 	private int m_iOldPlayersCount = 0;
 	private int m_iOldRoomsCount = 0;
-	
 	
 	// -------------------- Update content functions --------------------
 	void HardUpdate()
@@ -120,6 +111,7 @@ class PS_VoiceChatList : ScriptedWidgetComponent
 	void GetVisibleRooms(out array<int> outRoomsArray)
 	{
 		// global
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();

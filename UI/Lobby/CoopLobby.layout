@@ -576,7 +576,7 @@ FrameWidgetClass {
    }
   }
   FrameWidgetClass "{5EB1000713ADA290}" : "{F43237F55B38B45C}UI/layouts/GameModeHeader/GameModeHeader.layout" {
-   Name "GameModeHeaderFrame0"
+   Name "GameModeHeader"
    Slot FrameWidgetSlot "{5EB10000F5F77EA0}" {
     PositionX -960
     OffsetLeft -960

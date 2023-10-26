@@ -4,12 +4,14 @@ ButtonWidgetClass {
   Padding 10 10 10 10
  }
  components {
-  SCR_ButtonBaseComponent "{5EB2902E13B6A880}" {
+  PS_GameModeHeaderButton "{5EB4BBDFAF17BD09}" {
+   m_bCanBeToggled 1
    m_BackgroundDefault 0.028 0.028 0.028 1
    m_BackgroundHovered 0.098 0.098 0.098 1
    m_BackgroundSelected 0.761 0.386 0.078 1
    m_BackgroundSelectedHovered 0.761 0.386 0.078 1
    m_BackgroundClicked 0.761 0.386 0.078 1
+   m_eState NULL
   }
  }
  {
@@ -23,7 +25,7 @@ ButtonWidgetClass {
    HeightOverride 39
    {
     FrameWidgetClass "{5EB100017BC764F4}" {
-     Name "ButtonOverlay"
+     Name "ButtonFrame"
      Slot AlignableSlot "{5EB1000108B829FA}" {
      }
      {
@@ -65,6 +67,23 @@ ButtonWidgetClass {
          "Min Font Size" 20
         }
        }
+      }
+      ImageWidgetClass "{5EB290426C4BD466}" {
+       Name "AdvanceImage"
+       Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
+        PositionX 181
+        OffsetLeft 181
+        PositionY 0
+        OffsetTop 0
+        SizeX 39
+        OffsetRight -220
+        SizeY 39
+        OffsetBottom -39
+       }
+       Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
+       Image "moveAll"
+       Size 32 32
+       "Flip Horizontally" 1
       }
      }
     }

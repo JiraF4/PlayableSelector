@@ -15,6 +15,9 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 	protected Widget m_wVoiceChatList;
 	protected PS_VoiceChatList m_hVoiceChatList;
 	
+	protected Widget m_wGameModeHeader;
+	protected PS_GameModeHeader m_hGameModeHeader;
+	
 	
 	//------------------------------------------------------------------------------------------------
 	override void OnMenuOpen()
@@ -33,11 +36,16 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 		m_wVoiceChatList = GetRootWidget().FindAnyWidget("VoiceChatFrame");
 		m_hVoiceChatList = PS_VoiceChatList.Cast(m_wVoiceChatList.FindHandler(PS_VoiceChatList));
 		
+		m_wGameModeHeader = GetRootWidget().FindAnyWidget("GameModeHeader");
+		m_hGameModeHeader = PS_GameModeHeader.Cast(m_wGameModeHeader.FindHandler(PS_GameModeHeader));
+		
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-				
+		
 		GetGame().GetInputManager().AddActionListener("VONDirect", EActionTrigger.DOWN, Action_LobbyVoNOn);
 		GetGame().GetInputManager().AddActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
+		
+		GetGame().GetCallqueue().CallLater(UpdateCycle, 0);
 	}
 	void OpenMap()
 	{
@@ -57,10 +65,21 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 		m_MapEntity.OpenMap(mapConfigFullscreen);
 	}
 	
+	void UpdateCycle() 
+	{
+		Update();
+		GetGame().GetCallqueue().CallLater(UpdateCycle, 100);
+	}
+	
+	void Update()
+	{
+		m_hVoiceChatList.HardUpdate();
+		m_hGameModeHeader.Update();
+	}
 	
 	//------------------------------------------------------------------------------------------------
 	override void OnMenuClose()
-	{		
+	{
 		if (m_MapEntity)
 			m_MapEntity.CloseMap();
 		
@@ -87,9 +106,15 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 		if (!m_ChatPanel)
 			return;
 		
+		GetGame().GetCallqueue().CallLater(OpenChat, 0);
+	}
+	
+	void OpenChat()
+	{
 		if (!m_ChatPanel.IsOpen())
 			SCR_ChatPanelManager.GetInstance().OpenChatPanel(m_ChatPanel);
 	}
+	
 	
 	void Action_LobbyVoNOn()
 	{

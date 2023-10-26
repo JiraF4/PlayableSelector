@@ -1,0 +1,31 @@
+FrameWidgetClass {
+ Name "WaitScreen"
+ "Z Order" 9
+ {
+  OverlayWidgetClass "{5EB4B0CB2DF0458F}" : "{01FD644AD2B6317D}UI/layouts/Menus/Common/MenuBackground.layout" {
+   Name "MenuBackground0"
+   Slot FrameWidgetSlot "{552C9A0A8526D2AD}" {
+   }
+  }
+  TextWidgetClass "{5EB4B0CCC160F8B3}" {
+   Name "BePatient"
+   Slot FrameWidgetSlot "{5EB4B0CCC250D614}" {
+    PositionX 195.292
+    OffsetLeft 195.292
+    PositionY 220.988
+    OffsetTop 220.988
+    SizeX 1546.7
+    OffsetRight -1742
+    SizeY 587.612
+    OffsetBottom -808.6
+   }
+   Color 0.475 0.259 0.686 1
+   Text "Плеаз би патиент"\
+   "mi ijidaem inicializaciy govna"
+   "Font Size" 150
+   "Min Font Size" 128
+   "Horizontal Alignment" Center
+   "Vertical Alignment" Center
+  }
+ }
+}
