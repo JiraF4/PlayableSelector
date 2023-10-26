@@ -56,15 +56,19 @@ class PS_PlayableManager : ScriptComponent
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		SCR_GroupsManagerComponent groupsManagerComponent = SCR_GroupsManagerComponent.GetInstance();
 		
+		SetPlayerState(playerId, PS_EPlayableControllerState.Playing);
+		
 		RplId playableId = GetPlayableByPlayer(playerId);
 		IEntity entity;
 		if (playableId == RplId.Invalid() || playableId == -1) {
 			// Remove group
 			SCR_AIGroup currentGroup = groupsManagerComponent.GetPlayerGroup(playableId);
 			if (currentGroup) currentGroup.RemovePlayer(playerId);
+			SetPlayerFactionKey(playerId, "");
 			
 			entity = playableController.GetInitialEntity();
 			playerController.SetInitialMainEntity(entity);
+			
 			return;
 		} else entity = GetPlayableById(playableId).GetOwner();		 
 		
@@ -74,14 +78,7 @@ class PS_PlayableManager : ScriptComponent
 		SCR_ChimeraCharacter playableCharacter = SCR_ChimeraCharacter.Cast(entity);
 		SCR_Faction faction = SCR_Faction.Cast(playableCharacter.GetFaction());
 		
-		// Someone leave lobby start game
-		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		if (gameMode.GetState() == SCR_EGameModeState.PREGAME)
-			gameMode.StartGameMode();
-				
 		GetGame().GetCallqueue().CallLater(ChangeGroup, 0, false, playerId, playableId);
-		
-		SetPlayerState(playerId, PS_EPlayableControllerState.Playing);
 	}
 	
 	void ChangeGroup(int playerId, RplId playableId)
@@ -207,11 +204,6 @@ class PS_PlayableManager : ScriptComponent
 	{
 		RPC_SetPlayerFactionKey(playerId, factionKey);
 		Rpc(RPC_SetPlayerFactionKey, playerId, factionKey);
-	}
-	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	void RPC_SetPlayerFactionKey(int playerId, FactionKey factionKey)
-	{
-		m_playersFaction[playerId] = factionKey;
 		
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PlayerController playerController = playerManager.GetPlayerController(playerId);
@@ -219,6 +211,11 @@ class PS_PlayableManager : ScriptComponent
 		SCR_PlayerFactionAffiliationComponent playerFactionAffiliation = SCR_PlayerFactionAffiliationComponent.Cast(playerController.FindComponent(SCR_PlayerFactionAffiliationComponent));
 		playerFactionAffiliation.SetAffiliatedFactionByKey(factionKey);
 		factionManager.UpdatePlayerFaction_S(playerFactionAffiliation);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RPC_SetPlayerFactionKey(int playerId, FactionKey factionKey)
+	{
+		m_playersFaction[playerId] = factionKey;
 	}
 	
 	void SetPlayerPlayable(int playerId, RplId PlayableId)

@@ -18,8 +18,14 @@ class PS_WaitScreen: MenuBase
 		if (playerController && playableManager.IsReplicated()) {
 			if (playerController.GetPlayerId() != 0) {
 				if (playerController.GetControlledEntity()) {
+					PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
+					int roomId = VoNRoomsManager.GetPlayerRoom(playerController.GetPlayerId());
+					string roomKey = VoNRoomsManager.GetRoomName(roomId);
+					
 					PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 					PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+					
+					playableController.MoveToVoNRoomByKey(playerController.GetPlayerId(), roomKey);
 					playableController.SwitchToMenu(gameMode.GetState());
 					return;
 				}

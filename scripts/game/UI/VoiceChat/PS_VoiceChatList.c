@@ -115,6 +115,7 @@ class PS_VoiceChatList : ScriptedWidgetComponent
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
+		SCR_EGameModeState gameState = gameMode.GetState();
 		
 		// current player
 		PlayerController currentPlayerController = GetGame().GetPlayerController();
@@ -131,28 +132,37 @@ class PS_VoiceChatList : ScriptedWidgetComponent
 			return;
 		}
 		
-		// Faction room
-		int factionRoom = VoNRoomsManager.GetRoomWithFaction(currentPlayerFactionKey, "Faction");
-		outRoomsArray.Insert(factionRoom);
+		if (gameState == SCR_EGameModeState.SLOTSELECTION) {
+			// Faction room
+			int factionRoom = VoNRoomsManager.GetRoomWithFaction(currentPlayerFactionKey, "Faction");
+			outRoomsArray.Insert(factionRoom);
+		}
 		
 		// Room for commanders
 		int commandRoom = VoNRoomsManager.GetRoomWithFaction(currentPlayerFactionKey, "Command");
 		outRoomsArray.Insert(commandRoom);
 		
-		// Room for each group
-		map<RplId, PS_PlayableComponent> playables = playableManager.GetPlayables();
-		for (int i = 0; i < playables.Count(); i++) {
-			PS_PlayableComponent playable = playables.GetElement(i);
-			SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(playable.GetOwner());
-			SCR_Faction faction = SCR_Faction.Cast(character.GetFaction());
-			FactionKey factionKey = faction.GetFactionKey();
-			
-			if (currentPlayerFactionKey != factionKey) continue; // not our faction, skip
-			
-			string groupName = playableManager.GetGroupNameByPlayable(playable.GetId());
-			int groupRoom = VoNRoomsManager.GetRoomWithFaction(currentPlayerFactionKey, groupName); // No creation here :[
-			if (!outRoomsArray.Contains(groupRoom))
-				outRoomsArray.Insert(groupRoom);
+		if (gameState == SCR_EGameModeState.SLOTSELECTION) {
+			// Room for each group
+			map<RplId, PS_PlayableComponent> playables = playableManager.GetPlayables();
+			for (int i = 0; i < playables.Count(); i++) {
+				PS_PlayableComponent playable = playables.GetElement(i);
+				SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(playable.GetOwner());
+				SCR_Faction faction = SCR_Faction.Cast(character.GetFaction());
+				FactionKey factionKey = faction.GetFactionKey();
+				
+				if (currentPlayerFactionKey != factionKey) continue; // not our faction, skip
+				
+				string groupName = playableManager.GetGroupNameByPlayable(playable.GetId());
+				int groupRoom = VoNRoomsManager.GetRoomWithFaction(currentPlayerFactionKey, groupName); // No creation here :[
+				if (!outRoomsArray.Contains(groupRoom))
+					outRoomsArray.Insert(groupRoom);
+			}
+		} else {
+			RplId playableID = playableManager.GetPlayableByPlayer(currentPlayerId);
+			string groupName = playableManager.GetGroupNameByPlayable(playableID);
+			int groupRoom = VoNRoomsManager.GetRoomWithFaction(currentPlayerFactionKey, groupName);
+			outRoomsArray.Insert(groupRoom);
 		}
 		
 		

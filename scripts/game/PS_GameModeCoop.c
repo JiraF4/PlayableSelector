@@ -78,9 +78,10 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	override void OnPlayerKilled(int playerId, IEntity player, IEntity killer)
 	{
 		PlayerManager playerManager = GetGame().GetPlayerManager();
-		SCR_PlayerController playerController = SCR_PlayerController.Cast(playerManager.GetPlayerController(playerId));
-		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-		playerController.SetInitialMainEntity(playableController.GetInitialEntity());
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		playableManager.SetPlayerPlayable(playerId, RplId.Invalid());
+		playableManager.ApplyPlayable(playerId);
+		
 		PS_VoNRoomsManager.GetInstance().MoveToRoom(playerId, "", "Dead");
 	}
 	
