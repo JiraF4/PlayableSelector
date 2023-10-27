@@ -70,6 +70,8 @@ class PS_VoNRoomsManager : ScriptComponent
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void RPC_MoveToRoom(int playerId, int roomId, vector position)
 	{
+		m_bHasChanges = true;
+		
 		m_mPlyersRooms[playerId] = roomId;
 		PlayerController playerController = GetGame().GetPlayerController();
 		if (!playerController) return;
@@ -77,8 +79,6 @@ class PS_VoNRoomsManager : ScriptComponent
 		
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		playableController.VoNPosition = position;
-		
-		m_bHasChanges = true;
 	}
 	
 	

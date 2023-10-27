@@ -18,6 +18,7 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 	protected Widget m_wGameModeHeader;
 	protected PS_GameModeHeader m_hGameModeHeader;
 	
+	protected Widget m_wSteps;
 	
 	// -------------------- Menu events --------------------
 	override void OnMenuOpen()
@@ -38,6 +39,10 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 		
 		m_wGameModeHeader = GetRootWidget().FindAnyWidget("GameModeHeader");
 		m_hGameModeHeader = PS_GameModeHeader.Cast(m_wGameModeHeader.FindHandler(PS_GameModeHeader));
+		
+		m_wSteps = GetRootWidget().FindAnyWidget("StepsFrame");
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		m_wSteps.SetVisible(gameMode.GetState() == SCR_EGameModeState.BRIEFING);
 		
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));

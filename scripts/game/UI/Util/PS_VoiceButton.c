@@ -11,6 +11,13 @@ class PS_VoiceButton : PS_HideableButton
 	
 	void Update()
 	{
+		if (m_iPlayer <= 0)
+		{
+			m_wImage.SetVisible(false);
+			m_wButton.SetVisible(false);	
+		}
+		m_wImage.SetVisible(true);
+		
 		// Check OUR VoN is WE listen this player?
 		PlayerController playerController = GetGame().GetPlayerController();
 		IEntity entity = playerController.GetControlledEntity();
@@ -19,7 +26,11 @@ class PS_VoiceButton : PS_HideableButton
 		if (entity) von = PS_LobbyVoNComponent.Cast(entity.FindComponent(PS_LobbyVoNComponent));
 		if (von && mute != PermissionState.DISALLOWED)
 		{
-			if (von.IsPlayerSpeech(m_iPlayer)) m_wImage.LoadImageFromSet(0, m_sImageSet, "sound-on");
+			if (von.IsPlayerSpeech(m_iPlayer)) {
+				
+				if (von.IsPlayerSpeechInChanel(m_iPlayer)) m_wImage.LoadImageFromSet(0, m_sImageSet, "VON_frequency");
+				else m_wImage.LoadImageFromSet(0, m_sImageSet, "sound-on");
+			}
 			else m_wImage.LoadImageFromSet(0, m_sImageSet, "VON_directspeech");
 		} else m_wImage.LoadImageFromSet(0, m_sImageSet, "sound-off");
 		m_wButton.SetVisible(playerController.GetPlayerId() != m_iPlayer);

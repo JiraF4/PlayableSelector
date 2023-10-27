@@ -55,7 +55,7 @@ class PS_VoiceChatList : ScriptedWidgetComponent
 				PS_VoiceRoomHeader roomHeaderHandler = PS_VoiceRoomHeader.Cast(roomHeader.FindHandler(PS_VoiceRoomHeader));
 				string roomName = VoNRoomsManager.GetRoomName(roomId);
 				FactionKey factionKey = "";
-				if (roomName == "") roomName = "Global";
+				if (roomName == "") roomName = "#PS-VoNRoom_Global";
 				else {
 					array<string> outTokens = new array<string>();
 					roomName.Split("|", outTokens, false);

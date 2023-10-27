@@ -395,8 +395,8 @@ class PS_CoopLobby: MenuBase
 			PS_CharacterSelector characterHandler = PS_CharacterSelector.Cast(characterWidget.FindHandler(PS_CharacterSelector));
 			m_aCharactersListWidgets.Insert(characterWidget);
 			characterHandler.m_OnClicked.Insert(CharacterClick);
-			characterHandler.m_OnMouseEnter.Insert(CharacterMouseEnter);
-			characterHandler.m_OnMouseLeave.Insert(CharacterMouseLeave);
+			characterHandler.m_OnHoverWithWidget.Insert(CharacterMouseEnter);
+			characterHandler.m_OnHoverLeave.Insert(CharacterMouseLeave);
 			characterHandler.m_OnFocus.Insert(CharacterMouseEnter);
 			characterHandler.m_OnFocusLost.Insert(CharacterMouseLeave);
 		}

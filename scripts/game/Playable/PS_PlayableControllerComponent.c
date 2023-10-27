@@ -179,6 +179,8 @@ class PS_PlayableControllerComponent : ScriptComponent
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void RPC_MoveVoNToRoom(int playerId, FactionKey factionKey, string roomName)
 	{
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		
 		// If not admin you can change only herself
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
@@ -187,7 +189,9 @@ class PS_PlayableControllerComponent : ScriptComponent
 		
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		if (gameMode.GetState() == SCR_EGameModeState.BRIEFING) { // On briefing also separate to squads
-			SetVoNKey("Menu" + factionKey + roomName);
+			RplId playableId = playableManager.GetPlayableByPlayer(playerId);
+			int GroupCallSign = playableManager.GetGroupCallsignByPlayable(playableId);
+			SetVoNKey("Menu" + factionKey + GroupCallSign.ToString());
 		}
 		else SetVoNKey("Menu" + factionKey); // Сhange VoN zone
 		

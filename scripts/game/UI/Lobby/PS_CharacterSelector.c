@@ -3,7 +3,7 @@
 // Part of Lobby menu PS_CoopLobby ({9DECCA625D345B35}UI/Lobby/CoopLobby.layout)
 // Lobby insert it into PS_RolesGroup widget
 
-class PS_CharacterSelector : SCR_ButtonImageComponent
+class PS_CharacterSelector : SCR_ButtonComponent
 {
 	protected PS_PlayableComponent m_playable;
 	
@@ -16,8 +16,8 @@ class PS_CharacterSelector : SCR_ButtonImageComponent
 	ButtonWidget m_wDisconnectionButton;
 	ButtonWidget m_wKickButton;
 	ButtonWidget m_wPinButton;
-	ButtonWidget m_wVoiceButton;
-	ImageWidget m_wVoiceImage;
+	
+	PS_VoiceButton m_wVoiceHideableButton;
 	
 	protected ResourceName m_sUIWrapper = "{2EFEA2AF1F38E7F0}UI/Textures/Icons/icons_wrapperUI-64.imageset";
 	
@@ -33,8 +33,10 @@ class PS_CharacterSelector : SCR_ButtonImageComponent
 		m_wDisconnectionButton = ButtonWidget.Cast(w.FindAnyWidget("DisconnectionButton"));
 		m_wKickButton = ButtonWidget.Cast(w.FindAnyWidget("KickButton"));
 		m_wPinButton = ButtonWidget.Cast(w.FindAnyWidget("PinButton"));
-		m_wVoiceButton = ButtonWidget.Cast(w.FindAnyWidget("VoiceButton"));
-		m_wVoiceImage = ImageWidget.Cast(w.FindAnyWidget("VoiceImage"));
+		
+		Widget voiceHideableButtonWidget = Widget.Cast(w.FindAnyWidget("VoiceHideableButton"));
+		m_wVoiceHideableButton = PS_VoiceButton.Cast(voiceHideableButtonWidget.FindHandler(PS_VoiceButton));
+		
 		
 		GetGame().GetCallqueue().CallLater(AddOnClick, 0);
 	}
@@ -47,8 +49,6 @@ class PS_CharacterSelector : SCR_ButtonImageComponent
 		disconnectionButtonHandler.m_OnClicked.Insert(DisconnectionButtonClicked);
 		SCR_ButtonBaseComponent pinButtonHandler = SCR_ButtonBaseComponent.Cast(m_wPinButton.FindHandler(SCR_ButtonBaseComponent));
 		pinButtonHandler.m_OnClicked.Insert(PinButtonClicked);
-		SCR_ButtonBaseComponent voiceButtonHandler = SCR_ButtonBaseComponent.Cast(m_wVoiceButton.FindHandler(SCR_ButtonBaseComponent));
-		voiceButtonHandler.m_OnClicked.Insert(VoiceButtonClicked);
 	}
 	
 	void SetPlayable(PS_PlayableComponent playable)
@@ -74,6 +74,9 @@ class PS_CharacterSelector : SCR_ButtonImageComponent
 		int playerId = playableManager.GetPlayerByPlayable(m_playable.GetId());
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		string playerName = playerManager.GetPlayerName(playerId);
+		
+		m_wVoiceHideableButton.SetPlayer(playerId);
+		m_wVoiceHideableButton.Update();
 		
 		PlayerController currentPlayerController = GetGame().GetPlayerController();
 		EPlayerRole currentPlayerRole = playerManager.GetPlayerRoles(currentPlayerController.GetPlayerId());
@@ -114,24 +117,6 @@ class PS_CharacterSelector : SCR_ButtonImageComponent
 				m_wCharacterStatus.SetText("-");
 				m_wStateIcon.LoadImageFromSet(0, m_sUIWrapper, "dotsMenu");
 			}
-		}
-		
-		// Check OUR VoN is WE listen this player?
-		m_wVoiceImage.SetVisible(false);
-		m_wVoiceButton.SetVisible(false);
-		if (playerId == -1) m_wVoiceButton.SetVisible(false);
-		else {
-			m_wVoiceImage.SetVisible(true);
-			m_wVoiceButton.SetVisible(playerId != currentPlayerController.GetPlayerId());
-			IEntity entity = GetGame().GetPlayerController().GetControlledEntity();
-			PermissionState mute = currentPlayerController.GetPlayerMutedState(playerId);
-			PS_LobbyVoNComponent von;
-			if (entity) von = PS_LobbyVoNComponent.Cast(entity.FindComponent(PS_LobbyVoNComponent));
-			if (von && mute != PermissionState.DISALLOWED)
-			{
-				if (von.IsPlayerSpeech(playerId)) m_wVoiceImage.LoadImageFromSet(0, m_sUIWrapper, "sound-on");
-				else m_wVoiceImage.LoadImageFromSet(0, m_sUIWrapper, "VON_directspeech");
-			} else m_wVoiceImage.LoadImageFromSet(0, m_sUIWrapper, "sound-off");
 		}
 		
 		// If admin show kick button for non admins
@@ -193,17 +178,6 @@ class PS_CharacterSelector : SCR_ButtonImageComponent
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		playableController.UnpinPlayer(playableManager.GetPlayerByPlayable(m_playable.GetId()));
-	}
-	
-	void VoiceButtonClicked(SCR_ButtonBaseComponent pinButton)
-	{
-		PlayerController playerController = GetGame().GetPlayerController();
-		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		int playerId = playableManager.GetPlayerByPlayable(m_playable.GetId());
-		if (playerController.GetPlayerId() == playerId) return;
-		PermissionState mute = playerController.GetPlayerMutedState(playerId);
-		if (mute == PermissionState.ALLOWED) playerController.SetPlayerMutedState(playerId, PermissionState.DISALLOWED);
-		else playerController.SetPlayerMutedState(playerId, PermissionState.ALLOWED);
 	}
 	
 }
