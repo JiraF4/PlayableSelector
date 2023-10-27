@@ -138,15 +138,15 @@ FrameWidgetClass {
   FrameWidgetClass "{5EB0E9EE30E8DFAD}" {
    Name "StepsFrame"
    Slot FrameWidgetSlot "{5EAF56867198CBEE}" {
-    Anchor 1 0.5 1 0.5
-    PositionX -386
-    OffsetLeft -386
-    PositionY -420
-    OffsetTop -420
+    Anchor 1 1 1 1
+    PositionX -430.46
+    OffsetLeft -430.46
+    PositionY -977.784
+    OffsetTop -977.784
     SizeX 376
-    OffsetRight 10
+    OffsetRight 54.46
     SizeY 168
-    OffsetBottom 252
+    OffsetBottom 809.784
    }
    {
     ImageWidgetClass "{5EB0E9EE30E8DFAF}" {
@@ -266,17 +266,18 @@ FrameWidgetClass {
     }
    }
   }
-  FrameWidgetClass "{5EB69C7B4622521E}" : "{35DB604900C55B98}UI/VoiceChat/VoiceChatFrame.layout" {
+  FrameWidgetClass "{5EB701C8F15ED58E}" : "{35DB604900C55B98}UI/VoiceChat/VoiceChatFrame.layout" {
    Name "VoiceChatFrame"
-   Slot FrameWidgetSlot "{5EAF56867198CBEE}" {
-    PositionX -386
-    OffsetLeft -386
-    PositionY -240
-    OffsetTop -240
-    SizeX 376
-    OffsetRight 10
-    SizeY 649
-    OffsetBottom -409
+   Slot FrameWidgetSlot "{5EB701C8F15ED5E1}" {
+    Anchor 1 1 1 1
+    PositionX -480
+    OffsetLeft -480
+    PositionY -800
+    OffsetTop -800
+    SizeX 480
+    OffsetRight 0
+    SizeY 800
+    OffsetBottom 0
    }
   }
   FrameWidgetClass "{5EB100080F354176}" : "{F43237F55B38B45C}UI/layouts/GameModeHeader/GameModeHeader.layout" {

@@ -409,6 +409,7 @@ FrameWidgetClass {
                  Name "PlayersList"
                  Slot AlignableSlot "{5D6D1B9B2EB684B4}" {
                  }
+                 "Is Visible" 0
                 }
                }
               }
@@ -573,6 +574,144 @@ FrameWidgetClass {
   FrameWidgetClass "{5E7B5C5AA84246F8}" : "{D89BBA18F99053D6}UI/layouts/HUD/Chat/ChatHud.layout" {
    Name "Chat0"
    Slot FrameWidgetSlot "{5D4881250D202DF3}" {
+    PositionX 8
+    OffsetLeft 8
+    PositionY 0
+    OffsetTop 0
+    SizeX 1920
+    OffsetRight -1928
+    SizeY 1080
+    OffsetBottom -1080
+   }
+  }
+  FrameWidgetClass "{5EB701C9697A67C6}" {
+   Name "PlayersSwitchFrame"
+   Slot FrameWidgetSlot "{5EB701C9697A6723}" {
+    Anchor 0.5 0.5 0.5 0.5
+    PositionX 480
+    OffsetLeft 480
+    PositionY -369
+    OffsetTop -369
+    SizeX 480
+    OffsetRight -960
+    SizeY 30
+    OffsetBottom 339
+   }
+   {
+    ButtonWidgetClass "{5EB701CAF0B7C9C0}" {
+     Name "PlayersSwitch"
+     Slot FrameWidgetSlot "{5EB701CAF0B7C9D6}" {
+      OffsetLeft 0
+      OffsetTop 0
+      SizeX 240
+      OffsetRight -240
+      OffsetBottom -30
+     }
+     Color 1 1 1 0
+     components {
+      SCR_ButtonBaseComponent "{5EB701CA8A36B4A7}" {
+       m_bCanBeToggled 1
+      }
+     }
+     {
+      FrameWidgetClass "{5EB701CAB29B7D47}" {
+       Name "ButtonPlayersFrame"
+       Slot ButtonWidgetSlot "{5EB701CAB29B7EA8}" {
+       }
+       {
+        OverlayWidgetClass "{5EB701CABF2C93FF}" {
+         Name "Overlay"
+         Slot FrameWidgetSlot "{5EB701CABF2C93D5}" {
+          OffsetLeft 0
+          OffsetTop 0
+          SizeX 240
+          OffsetRight -240
+          OffsetBottom -30
+         }
+         {
+          TextWidgetClass "{5EB701CA45F4D696}" {
+           Name "Text"
+           Slot OverlayWidgetSlot "{5EB701CA45F4D6F1}" {
+            HorizontalAlign 0
+            Padding 3 0 0 0
+           }
+           Text "#PS-Lobby_Players"
+          }
+         }
+        }
+        ImageWidgetClass "{5EB701CA9F3C8B4A}" {
+         Prefab "{5EB10001224C7F50}"
+         Name "Background"
+         Slot FrameWidgetSlot "{5EB701CAB2EE0FA2}" {
+          OffsetLeft 0
+          OffsetTop 0
+          SizeX 240
+          OffsetRight -240
+          OffsetBottom -30
+         }
+        }
+       }
+      }
+     }
+    }
+    ButtonWidgetClass "{5EB701CA613F7B51}" {
+     Name "VoiceSwitch"
+     Slot FrameWidgetSlot "{5EB701CAF0B7C9D6}" {
+      PositionX 240
+      OffsetLeft 240
+      OffsetTop 0
+      SizeX 240
+      OffsetRight -480
+      OffsetBottom -30
+     }
+     Color 1 1 1 0
+     components {
+      SCR_ButtonBaseComponent "{5EB701CA8A36B4A7}" {
+       m_bCanBeToggled 1
+       m_bIsToggled 1
+      }
+     }
+     {
+      FrameWidgetClass "{5EB701CA613F7B53}" {
+       Name "ButtonPlayersFrame"
+       Slot ButtonWidgetSlot "{5EB701CAB29B7EA8}" {
+       }
+       {
+        OverlayWidgetClass "{5EB701CA613F7B54}" {
+         Name "Overlay"
+         Slot FrameWidgetSlot "{5EB701CABF2C93D5}" {
+          OffsetLeft 0
+          OffsetTop 0
+          SizeX 240
+          OffsetRight -240
+          OffsetBottom -30
+         }
+         {
+          TextWidgetClass "{5EB701CA613F7B55}" {
+           Name "Text"
+           Slot OverlayWidgetSlot "{5EB701CA45F4D6F1}" {
+            HorizontalAlign 0
+            Padding 3 0 0 0
+           }
+           Text "#PS-VoNRoom_Header"
+          }
+         }
+        }
+        ImageWidgetClass "{5EB701CA613F7B56}" {
+         Prefab "{5EB10001224C7F50}"
+         Name "Background"
+         Slot FrameWidgetSlot "{5EB701CAB2EE0FA2}" {
+          OffsetLeft 0
+          OffsetTop 0
+          SizeX 240
+          OffsetRight -240
+          OffsetBottom -30
+         }
+        }
+       }
+      }
+     }
+    }
    }
   }
   FrameWidgetClass "{5EB1000713ADA290}" : "{F43237F55B38B45C}UI/layouts/GameModeHeader/GameModeHeader.layout" {
@@ -591,6 +730,25 @@ FrameWidgetClass {
   FrameWidgetClass "{5EB69C7B9FDF9E53}" : "{35DB604900C55B98}UI/VoiceChat/VoiceChatFrame.layout" {
    Name "VoiceChatFrame"
    Slot FrameWidgetSlot "{5EAF56867198CBEE}" {
+    Anchor 0.5 0.5 0.5 0.5
+    PositionX 480
+    OffsetLeft 480
+    PositionY -378
+    OffsetTop -378
+    SizeX 480
+    OffsetRight -960
+    SizeY 800
+    OffsetBottom -422
+   }
+   {
+    ImageWidgetClass "{5EB2900030AFF403}" {
+     Prefab "{5EB2900030AFF403}"
+     "Is Visible" 0
+    }
+    FrameWidgetClass "{5EB2900030AFF404}" {
+     Prefab "{5EB2900030AFF404}"
+     "Is Visible" 0
+    }
    }
   }
   OverlayWidgetClass "{5E6EACEFEB2DB125}" {

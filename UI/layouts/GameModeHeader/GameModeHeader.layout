@@ -98,7 +98,7 @@ FrameWidgetClass {
              {
               TextWidgetClass "{5EB10003D5163631}" {
                Prefab "{5EB10003D5163631}"
-               Text "PS-GameModeHeader_Preview"
+               Text "#PS-GameModeHeader_Preview"
               }
              }
             }
@@ -130,7 +130,7 @@ FrameWidgetClass {
              {
               TextWidgetClass "{5EB10003D5163631}" {
                Prefab "{5EB10003D5163631}"
-               Text "PS-GameModeHeader_Lobby"
+               Text "#PS-GameModeHeader_Lobby"
               }
              }
             }
@@ -162,7 +162,7 @@ FrameWidgetClass {
              {
               TextWidgetClass "{5EB10003D5163631}" {
                Prefab "{5EB10003D5163631}"
-               Text "PS-GameModeHeader_Briefing"
+               Text "#PS-GameModeHeader_Briefing"
               }
              }
             }
@@ -194,7 +194,7 @@ FrameWidgetClass {
              {
               TextWidgetClass "{5EB10003D5163631}" {
                Prefab "{5EB10003D5163631}"
-               Text "PS-GameModeHeader_InGame"
+               Text "#PS-GameModeHeader_InGame"
               }
              }
             }
@@ -226,7 +226,7 @@ FrameWidgetClass {
              {
               TextWidgetClass "{5EB10003D5163631}" {
                Prefab "{5EB10003D5163631}"
-               Text "PS-GameModeHeader_Debriefing"
+               Text "#PS-GameModeHeader_Debriefing"
               }
              }
             }
@@ -279,7 +279,7 @@ FrameWidgetClass {
          {
           TextWidgetClass "{5EB10003D5163631}" {
            Prefab "{5EB10003D5163631}"
-           Text "PS-GameModeHeader_Advance"
+           Text "#PS-GameModeHeader_Advance"
           }
          }
         }

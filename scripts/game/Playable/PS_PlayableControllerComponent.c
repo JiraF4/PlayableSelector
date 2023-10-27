@@ -92,6 +92,8 @@ class PS_PlayableControllerComponent : ScriptComponent
 	// We change to VoN boi lets enable camera
 	private void OnControlledEntityChanged(IEntity from, IEntity to)
 	{
+		RplComponent rpl = RplComponent.Cast(GetOwner().FindComponent(RplComponent));
+		if (!rpl.IsOwner()) return;
 		if (!from && !m_bAfterInitialSwitch) return;
 		if (!to && !m_bAfterInitialSwitch) return;
 		m_bAfterInitialSwitch = true;

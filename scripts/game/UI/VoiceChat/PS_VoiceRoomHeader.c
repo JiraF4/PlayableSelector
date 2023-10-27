@@ -67,6 +67,8 @@ class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 				return;
 		}
 		
-		playableController.MoveToVoNRoom(playerId, m_fFaction.GetFactionKey(), m_sRoomName);
+		FactionKey factionKey = "";
+		if (m_fFaction) factionKey = m_fFaction.GetFactionKey();
+		playableController.MoveToVoNRoom(playerId, factionKey, m_sRoomName);
 	}
 }
