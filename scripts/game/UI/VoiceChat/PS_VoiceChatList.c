@@ -54,13 +54,17 @@ class PS_VoiceChatList : ScriptedWidgetComponent
 				Widget roomHeader = GetGame().GetWorkspace().CreateWidgets(m_sVoiceRoomHeaderPrefab);
 				PS_VoiceRoomHeader roomHeaderHandler = PS_VoiceRoomHeader.Cast(roomHeader.FindHandler(PS_VoiceRoomHeader));
 				string roomName = VoNRoomsManager.GetRoomName(roomId);
+				FactionKey factionKey = "";
 				if (roomName == "") roomName = "Global";
 				else {
 					array<string> outTokens = new array<string>();
 					roomName.Split("|", outTokens, false);
+					factionKey = outTokens[0];
 					roomName = outTokens[1];
 				}
-				roomHeaderHandler.SetRoomName(roomName);
+				SCR_FactionManager factionManager = SCR_FactionManager.Cast(GetGame().GetFactionManager());
+				SCR_Faction faction = SCR_Faction.Cast(factionManager.GetFactionByKey(factionKey));
+				roomHeaderHandler.SetRoomName(faction, roomName);
 				m_aVoiceRoomHeadersList.Insert(roomHeaderHandler);
 				m_aPlayersListWidgets.Insert(roomHeader);
 				m_wPlayersList.AddChild(roomHeader);
@@ -153,15 +157,15 @@ class PS_VoiceChatList : ScriptedWidgetComponent
 				
 				if (currentPlayerFactionKey != factionKey) continue; // not our faction, skip
 				
-				string groupName = playableManager.GetGroupNameByPlayable(playable.GetId());
-				int groupRoom = VoNRoomsManager.GetRoomWithFaction(currentPlayerFactionKey, groupName); // No creation here :[
+				int groupCallSign = playableManager.GetGroupCallsignByPlayable(playable.GetId());
+				int groupRoom = VoNRoomsManager.GetRoomWithFaction(currentPlayerFactionKey, groupCallSign.ToString()); // No creation here :[
 				if (!outRoomsArray.Contains(groupRoom))
 					outRoomsArray.Insert(groupRoom);
 			}
 		} else {
 			RplId playableID = playableManager.GetPlayableByPlayer(currentPlayerId);
-			string groupName = playableManager.GetGroupNameByPlayable(playableID);
-			int groupRoom = VoNRoomsManager.GetRoomWithFaction(currentPlayerFactionKey, groupName);
+			int groupCallSign = playableManager.GetGroupCallsignByPlayable(playableID);
+			int groupRoom = VoNRoomsManager.GetRoomWithFaction(currentPlayerFactionKey, groupCallSign.ToString());
 			outRoomsArray.Insert(groupRoom);
 		}
 		

@@ -384,7 +384,7 @@ class PS_CoopLobby: MenuBase
 		m_aCharactersListWidgets.Clear();
 		
 		// Add new widgets
-		map<string, PS_RolesGroup> RolesGroups = new map<string, PS_RolesGroup>();
+		map<int, PS_RolesGroup> RolesGroups = new map<int, PS_RolesGroup>();
 		PlayerController playerController = GetGame().GetPlayerController();
 		FactionKey currentFactionKey = "";
 		if (playerController) currentFactionKey = playableManager.GetPlayerFactionKey(playerController.GetPlayerId());
@@ -392,16 +392,19 @@ class PS_CoopLobby: MenuBase
 		array<PS_PlayableComponent> factionPlayablesList = m_sFactionPlayables[currentFactionKey];
 		foreach (PS_PlayableComponent playable: factionPlayablesList)
 		{
-			string groupName = playableManager.GetGroupNameByPlayable(playable.GetId());
-			if (!RolesGroups.Contains(groupName))	{
+			int groupCallsign = playableManager.GetGroupCallsignByPlayable(playable.GetId());
+			
+			SCR_FactionManager factionManager = SCR_FactionManager.Cast(GetGame().GetFactionManager());
+			SCR_Faction faction = SCR_Faction.Cast(factionManager.GetFactionByKey(currentFactionKey));
+			if (!RolesGroups.Contains(groupCallsign)) {
 				Widget RolesGroup = GetGame().GetWorkspace().CreateWidgets(m_sRolesGroupPrefab);
 				PS_RolesGroup rolesGroupHandler = PS_RolesGroup.Cast(RolesGroup.FindHandler(PS_RolesGroup));
 				m_aRolesListWidgets.Insert(RolesGroup);
 				m_wRolesList.AddChild(RolesGroup);
-				RolesGroups[groupName] = rolesGroupHandler;
-				rolesGroupHandler.SetName(groupName);
+				RolesGroups[groupCallsign] = rolesGroupHandler;
+				rolesGroupHandler.SetName(faction, groupCallsign);
 			}
-			PS_RolesGroup rolesGroupHandler = RolesGroups[groupName];
+			PS_RolesGroup rolesGroupHandler = RolesGroups[groupCallsign];
 			
 			Widget characterWidget = rolesGroupHandler.AddPlayable(playable);
 			PS_CharacterSelector characterHandler = PS_CharacterSelector.Cast(characterWidget.FindHandler(PS_CharacterSelector));

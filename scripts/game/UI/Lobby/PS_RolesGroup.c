@@ -11,7 +11,7 @@ class PS_RolesGroup : SCR_WLibComponentBase
 	Widget m_wCharactersList;
 	TextWidget m_wRolesGroupName;
 	
-	string n_sGroupName;
+	int n_sGroupCallSign;
 	
 	ButtonWidget m_wVoiceJoinButton;
 	ImageWidget m_wVoiceJoinImage;
@@ -45,9 +45,13 @@ class PS_RolesGroup : SCR_WLibComponentBase
 		return CharacterSelector;
 	}
 	
-	void SetName(string name)
+	void SetName(SCR_Faction faction, int CallSign)
 	{
-		n_sGroupName = name;
+		n_sGroupCallSign = CallSign;
+		
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		string name = playableManager.GroupCallsignToGroupName(faction, CallSign);
+		
 		m_wRolesGroupName.SetText(name);
 	}
 	
@@ -66,7 +70,7 @@ class PS_RolesGroup : SCR_WLibComponentBase
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		
 		int currentRoomId = VoNRoomsManager.GetPlayerRoom(playerId);
-		int roomId = VoNRoomsManager.GetRoomWithFaction(playableManager.GetPlayerFactionKey(playerId), n_sGroupName);
+		int roomId = VoNRoomsManager.GetRoomWithFaction(playableManager.GetPlayerFactionKey(playerId), n_sGroupCallSign.ToString());
 		
 		if (currentRoomId == roomId) m_wVoiceJoinImage.LoadImageFromSet(0, m_sImageSet, "back-to-main-menu");
 		else m_wVoiceJoinImage.LoadImageFromSet(0, m_sImageSet, "VON_directspeech");
@@ -83,10 +87,10 @@ class PS_RolesGroup : SCR_WLibComponentBase
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		
 		int currentRoomId = VoNRoomsManager.GetPlayerRoom(playerId);
-		int roomId = VoNRoomsManager.GetRoomWithFaction(playableManager.GetPlayerFactionKey(playerId), n_sGroupName);
+		int roomId = VoNRoomsManager.GetRoomWithFaction(playableManager.GetPlayerFactionKey(playerId), n_sGroupCallSign.ToString());
 		
 		if (currentRoomId == roomId) playableController.MoveToVoNRoom(playerId, playableManager.GetPlayerFactionKey(playerId), "Faction");
-		else playableController.MoveToVoNRoom(playerId, playableManager.GetPlayerFactionKey(playerId), n_sGroupName);
+		else playableController.MoveToVoNRoom(playerId, playableManager.GetPlayerFactionKey(playerId), n_sGroupCallSign.ToString());
 	}
 }
 

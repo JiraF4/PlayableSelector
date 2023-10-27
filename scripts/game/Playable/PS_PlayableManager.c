@@ -19,7 +19,7 @@ class PS_PlayableManager : ScriptComponent
 	ref map<int, FactionKey> m_playersFaction = new map<int, FactionKey>; // player factions
 		
 	// Clients also don't give a shit about groups, soo we save staff here
-	ref map<RplId, string> m_playableGroups = new map<RplId, string>;
+	ref map<RplId, int> m_playableGroupCallSigns = new map<RplId, int>;
 	
 	// Server only!
 	ref map<SCR_AIGroup, SCR_AIGroup> m_playableToPlayerGroups = new map<SCR_AIGroup, SCR_AIGroup>; // Groups for players, not the same with ai
@@ -134,11 +134,11 @@ class PS_PlayableManager : ScriptComponent
 		return m_playablePlayers[PlayableId];
 	}
 	
-	string GetGroupNameByPlayable(RplId PlayableId)
+	int GetGroupCallsignByPlayable(RplId PlayableId)
 	{
-		string groupName;
-		m_playableGroups.Find(PlayableId, groupName);
-		return groupName;
+		int groupCallsign;
+		m_playableGroupCallSigns.Find(PlayableId, groupCallsign);
+		return groupCallsign;
 	}
 	
 	bool GetPlayerPin(int playerId)
@@ -196,14 +196,18 @@ class PS_PlayableManager : ScriptComponent
 	void RegisterGroupName(RplId playableId, SCR_AIGroup playerGroup)
 	{
 		// save callsign name for clients
-		string company, platoon, squad, sCharacter, format;
-		playerGroup.GetCallsigns(company, platoon, squad, sCharacter, format);
-		string groupName = WidgetManager.Translate(format, company, platoon, squad, sCharacter);
-		SetPlayableGroupName(playableId, groupName);
+		SCR_CallsignGroupComponent callsignComponent = SCR_CallsignGroupComponent.Cast(playerGroup.FindComponent(SCR_CallsignGroupComponent));
+		int company, platoon, squad;
+		callsignComponent.GetCallsignIndexes(company, platoon, squad);
+		//string company, platoon, squad, sCharacter, format;
+		//playerGroup.GetCallsigns(company, platoon, squad, sCharacter, format);
+		//string groupName = WidgetManager.Translate(format, company, platoon, squad, sCharacter);
+		int groupCallsign = 1000000 * company + 1000 * platoon + 1 * squad;
+		SetPlayableGroupCallSign(playableId, groupCallsign);
 		
 		// Create VoN group chanel
 		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
-		VoNRoomsManager.GetOrCreateRoomWithFaction(playerGroup.GetFaction().GetFactionKey(), groupName);
+		VoNRoomsManager.GetOrCreateRoomWithFaction(playerGroup.GetFaction().GetFactionKey(), groupCallsign.ToString());
 		VoNRoomsManager.GetOrCreateRoomWithFaction(playerGroup.GetFaction().GetFactionKey(), "Command");
 		VoNRoomsManager.GetOrCreateRoomWithFaction(playerGroup.GetFaction().GetFactionKey(), "Faction");
 	}
@@ -255,15 +259,15 @@ class PS_PlayableManager : ScriptComponent
 		m_playersStates[playerId] = state;
 	}
 	
-	void SetPlayableGroupName(RplId PlayableId, string groupName)
+	void SetPlayableGroupCallSign(RplId PlayableId, int groupCallsign)
 	{
-		RPC_SetPlayableGroupName(PlayableId, groupName);
-		Rpc(RPC_SetPlayableGroupName, PlayableId, groupName);
+		RPC_SetPlayableGroupCallSign(PlayableId, groupCallsign);
+		Rpc(RPC_SetPlayableGroupCallSign, PlayableId, groupCallsign);
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	void RPC_SetPlayableGroupName(RplId PlayableId, string groupName)
+	void RPC_SetPlayableGroupCallSign(RplId PlayableId, int groupCallsign)
 	{
-		m_playableGroups[PlayableId] = groupName;
+		m_playableGroupCallSigns[PlayableId] = groupCallsign;
 	}
 	
 	void SetPlayerPin(int playerId, bool pined)
@@ -286,7 +290,7 @@ class PS_PlayableManager : ScriptComponent
 		RplId thisPlayableId = GetPlayableByPlayer(thisPlayerId);
 		if (thisPlayableId == RplId.Invalid()) return false;
 		
-		string thisGroupName = GetGroupNameByPlayable(thisPlayableId);
+		int thisGroupCallsign = GetGroupCallsignByPlayable(thisPlayableId);
 		
 		array<int> playerIds = new array<int>();
 		playerManager.GetPlayers(playerIds); 
@@ -296,12 +300,29 @@ class PS_PlayableManager : ScriptComponent
 			RplId playableId = GetPlayableByPlayer(playerId);
 			if (playableId == RplId.Invalid()) continue;
 			if (playableId > thisPlayableId) continue;
-			string groupName = GetGroupNameByPlayable(playableId);
-			if (thisGroupName != groupName) continue;
+			int groupCallsign = GetGroupCallsignByPlayable(playableId);
+			if (thisGroupCallsign != groupCallsign) continue;
 			return false;
 		}
 		
 		return true;
+	}
+	
+	// Use only in UI
+	string GroupCallsignToGroupName(SCR_Faction faction, int groupCallSign)
+	{
+		int companyCallsignIndex, platoonCallsignIndex, squadCallsignIndex;
+		companyCallsignIndex = groupCallSign / 1000000;
+		platoonCallsignIndex = (groupCallSign % 1000000) / 1000;
+		squadCallsignIndex = (groupCallSign % 1000) / 1;
+		
+		SCR_FactionCallsignInfo callsignInfo = faction.GetCallsignInfo();
+		string company = callsignInfo.GetCompanyCallsignName(companyCallsignIndex);
+		string platoon = callsignInfo.GetPlatoonCallsignName(platoonCallsignIndex);
+		string squad   = callsignInfo.GetSquadCallsignName(squadCallsignIndex);
+		string format  = callsignInfo.GetCallsignFormat(false);	
+		
+		return WidgetManager.Translate(format, company, platoon, squad, "");
 	}
 	
 	// Send our precision data, we need it on clients
@@ -317,12 +338,12 @@ class PS_PlayableManager : ScriptComponent
 			writer.WriteInt(m_playersStates.GetElement(i));
 		}
 		
-		int playableGroupsCount = m_playableGroups.Count();
+		int playableGroupsCount = m_playableGroupCallSigns.Count();
 		writer.WriteInt(playableGroupsCount);
 		for (int i = 0; i < playableGroupsCount; i++)
 		{
-			writer.WriteInt(m_playableGroups.GetKey(i));
-			writer.WriteString(m_playableGroups.GetElement(i));
+			writer.WriteInt(m_playableGroupCallSigns.GetKey(i));
+			writer.WriteInt(m_playableGroupCallSigns.GetElement(i));
 		}
 		
 		int playersPlayableCount = m_playersPlayable.Count();
@@ -379,11 +400,11 @@ class PS_PlayableManager : ScriptComponent
 		for (int i = 0; i < playableGroupsCount; i++)
 		{
 			int key;
-			string value;
+			int value;
 			reader.ReadInt(key);
-			reader.ReadString(value);
+			reader.ReadInt(value);
 			
-			m_playableGroups.Insert(key, value);
+			m_playableGroupCallSigns.Insert(key, value);
 		}
 		
 		int playersPlayableCount;

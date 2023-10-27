@@ -114,18 +114,16 @@ class PS_PlayerSelector : SCR_ButtonImageComponent
 		FactionKey currentFactionKey = playableManager.GetPlayerFactionKey(playerController.GetPlayerId());
 		
 		// group
-		string groupName = "";
+		int groupCallSign = 0;
 		RplId playableId = playableManager.GetPlayableByPlayer(m_iPlayer);
-		if (playableId != RplId.Invalid()) groupName = playableManager.GetGroupNameByPlayable(playableId);
-		string currentGroupName = "";
+		if (playableId != RplId.Invalid()) groupCallSign = playableManager.GetGroupCallsignByPlayable(playableId);
+		int currentGroupCallSign = 0;
 		playableId = playableManager.GetPlayableByPlayer(playerController.GetPlayerId());
-		if (playableId != RplId.Invalid()) currentGroupName = playableManager.GetGroupNameByPlayable(playableId);
+		if (playableId != RplId.Invalid()) currentGroupCallSign = playableManager.GetGroupCallsignByPlayable(playableId);
 		
 		// Hardly confusing
-		groupName = "";
-		currentGroupName = "";
-		string VoNRoom = factionKey + groupName;
-		string currentVoNRoom = currentFactionKey + currentGroupName;
+		string VoNRoom = factionKey + groupCallSign.ToString();
+		string currentVoNRoom = currentFactionKey + currentGroupCallSign.ToString();
 		
 		if (VoNRoom != currentVoNRoom) m_wVoiceImage.SetColor(Color.FromInt(0xff595959));
 		else {

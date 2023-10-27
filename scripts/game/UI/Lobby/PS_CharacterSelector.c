@@ -152,7 +152,7 @@ class PS_CharacterSelector : SCR_ButtonImageComponent
 					if (playableManager.IsPlayerGroupLeader(currentPlayerController.GetPlayerId()))
 					{
 						RplId currentPlayableId = playableManager.GetPlayableByPlayer(currentPlayerController.GetPlayerId());
-						showKick = playableManager.GetGroupNameByPlayable(m_playable.GetId()) == playableManager.GetGroupNameByPlayable(currentPlayableId);
+						showKick = playableManager.GetGroupCallsignByPlayable(m_playable.GetId()) == playableManager.GetGroupCallsignByPlayable(currentPlayableId);
 					}
 				};
 			}
