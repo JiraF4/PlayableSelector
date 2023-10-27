@@ -10,8 +10,7 @@ ButtonWidgetClass {
    m_bCanBeToggled 1
    m_BackgroundDefault 1 1 1 0
    m_BackgroundHovered 1 1 1 0.162
-   m_BackgroundSelected 1 1 1 0
-   m_BackgroundSelectedHovered 1 1 1 0.162
+   m_BackgroundSelectedHovered 0.76 0.392 0.08 0.3
    m_BackgroundClicked 1 1 1 0
    m_bShowBorderOnFocus 0
    m_bNoBorderAnimation 1

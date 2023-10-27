@@ -29,7 +29,6 @@ class PS_PlayableControllerComponent : ScriptComponent
 	
 	void SwitchToMenu(SCR_EGameModeState state)
 	{
-		Print("SwitchToMenu: " + state.ToString());
 		SetMenuState(state);
 		GetGame().GetMenuManager().GetTopMenu().Close();
 		switch (state) 

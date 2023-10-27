@@ -245,3 +245,11 @@ modded class SCR_CallsignGroupComponent
 		Rpc(AssignCallsignBroadcast, company, platoon, squad);
 	}
 }
+
+modded class SCR_MapMarkerEntrySquadLeader
+{
+	override void RegisterMarker(SCR_MapMarkerSquadLeader marker, SCR_AIGroup group)
+	{
+		
+	}
+}
