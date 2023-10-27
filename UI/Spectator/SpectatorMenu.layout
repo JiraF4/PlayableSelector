@@ -1,15 +1,39 @@
 FrameWidgetClass {
  Name "SpectatorMenu"
  {
-  FrameWidgetClass "{5EB69C7BB3F3F63A}" : "{35DB604900C55B98}UI/VoiceChat/VoiceChatFrame.layout" {
-   Name "VoiceChatFrame"
-   Slot FrameWidgetSlot "{5EAF56867198CBEE}" {
-   }
-  }
   FrameWidgetClass "{5EA90320D67E1881}" : "{D89BBA18F99053D6}UI/layouts/HUD/Chat/ChatHud.layout" {
    Name "Chat0"
    Slot FrameWidgetSlot "{5D4881250D202DF3}" {
    }
+  }
+  FrameWidgetClass "{5EB701CDC06E16AD}" : "{35DB604900C55B98}UI/VoiceChat/VoiceChatFrame.layout" {
+   Name "VoiceChatFrame"
+   Slot FrameWidgetSlot "{5EB701CDC06E1686}" {
+    Anchor 1 1 1 1
+    PositionX -480
+    OffsetLeft -480
+    PositionY -800
+    OffsetTop -800
+    SizeX 480
+    OffsetRight 0
+    SizeY 800
+    OffsetBottom 0
+   }
+   "Z Order" -10
+  }
+  FrameWidgetClass "{5EB701CD498F59EC}" : "{B7A765172F0BD4D9}UI/layouts/Common/EarlyAccessWatermark.layout" {
+   Name "EarlyAccessRoot"
+   Slot FrameWidgetSlot "{5CEE96372B5D270B}" {
+    PositionX -49.712
+    OffsetLeft 0
+    PositionY 1.434
+    OffsetTop 0
+    SizeX 0
+    OffsetRight 0
+    SizeY 0
+    OffsetBottom 0
+   }
+   Opacity 1
   }
  }
 }

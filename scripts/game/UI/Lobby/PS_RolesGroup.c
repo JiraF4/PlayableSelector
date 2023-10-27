@@ -7,6 +7,7 @@ class PS_RolesGroup : SCR_WLibComponentBase
 {
 	protected ResourceName m_sCharacterSelectorPrefab = "{3F761F63F1DF29D1}UI/Lobby/CharacterSelector.layout";
 	protected ResourceName m_sImageSet = "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset";
+	protected ResourceName m_sImageSetPS = "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset";
 	protected ref array<Widget> m_aCharactersListWidgets = {};
 	Widget m_wCharactersList;
 	TextWidget m_wRolesGroupName;
@@ -72,8 +73,8 @@ class PS_RolesGroup : SCR_WLibComponentBase
 		int currentRoomId = VoNRoomsManager.GetPlayerRoom(playerId);
 		int roomId = VoNRoomsManager.GetRoomWithFaction(playableManager.GetPlayerFactionKey(playerId), n_sGroupCallSign.ToString());
 		
-		if (currentRoomId == roomId) m_wVoiceJoinImage.LoadImageFromSet(0, m_sImageSet, "back-to-main-menu");
-		else m_wVoiceJoinImage.LoadImageFromSet(0, m_sImageSet, "VON_directspeech");
+		if (currentRoomId == roomId) m_wVoiceJoinImage.LoadImageFromSet(0, m_sImageSetPS, "RoomExit");
+		else m_wVoiceJoinImage.LoadImageFromSet(0, m_sImageSetPS, "RoomEnter");
 	}
 	
 	// -------------------- Buttons events --------------------
@@ -89,7 +90,7 @@ class PS_RolesGroup : SCR_WLibComponentBase
 		int currentRoomId = VoNRoomsManager.GetPlayerRoom(playerId);
 		int roomId = VoNRoomsManager.GetRoomWithFaction(playableManager.GetPlayerFactionKey(playerId), n_sGroupCallSign.ToString());
 		
-		if (currentRoomId == roomId) playableController.MoveToVoNRoom(playerId, playableManager.GetPlayerFactionKey(playerId), "Faction");
+		if (currentRoomId == roomId) playableController.MoveToVoNRoom(playerId, playableManager.GetPlayerFactionKey(playerId), "#PS-VoNRoom_Faction");
 		else playableController.MoveToVoNRoom(playerId, playableManager.GetPlayerFactionKey(playerId), n_sGroupCallSign.ToString());
 	}
 }

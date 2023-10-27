@@ -1,0 +1,144 @@
+ImageSetClass {
+ RefSize 2048 2049
+ Textures {
+  ImageSetTextureClass {
+   screenSize FHD
+   size 2048 2049
+   path "{1F96246B326BCE75}UI/Textures/Icons/PS_Atlas_x64.edds"
+  }
+ }
+ Images {
+  ImageSetDefClass WeaponRifle {
+   Name "WeaponRifle"
+   Pos 0 0
+   Size 64 64
+   Flags 3
+  }
+  ImageSetDefClass WeaponHandgun {
+   Name "WeaponHandgun"
+   Pos 64 0
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass WeaponAntitank {
+   Name "WeaponAntitank"
+   Pos 128 0
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass WeaponMachinegun {
+   Name "WeaponMachinegun"
+   Pos 192 0
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass WeaponSniper {
+   Name "WeaponSniper"
+   Pos 256 0
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass Dead {
+   Name "Dead"
+   Pos 0 64
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass Leader {
+   Name "Leader"
+   Pos 64 64
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass Player {
+   Name "Player"
+   Pos 128 64
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass AI {
+   Name "AI"
+   Pos 192 64
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass Dots {
+   Name "Dots"
+   Pos 256 64
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass VoNIdle2 {
+   Name "VoNIdle2"
+   Pos 320 64
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass VoNDisabled {
+   Name "VoNDisabled"
+   Pos 384 64
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass VoNIdle {
+   Name "VoNIdle"
+   Pos 448 64
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass VoNDirect {
+   Name "VoNDirect"
+   Pos 512 64
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass VoNAdmin {
+   Name "VoNAdmin"
+   Pos 576 64
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass VoNBlocked {
+   Name "VoNBlocked"
+   Pos 640 64
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass Lock {
+   Name "Lock"
+   Pos 705 64
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass Wait {
+   Name "Wait"
+   Pos 768 64
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass Attention {
+   Name "Attention"
+   Pos 832 64
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass Attention2 {
+   Name "Attention2"
+   Pos 896 64
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass RoomEnter {
+   Name "RoomEnter"
+   Pos 959 64
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass RoomExit {
+   Name "RoomExit"
+   Pos 1024 64
+   Size 64 64
+   Flags 0
+  }
+ }
+}

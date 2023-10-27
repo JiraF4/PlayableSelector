@@ -74,9 +74,9 @@ VerticalLayoutWidgetClass {
           SizeY 40
           OffsetBottom -40
          }
-         Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
-         Image "VON_directspeech"
-         Size 32 32
+         Texture "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset"
+         Image "RoomEnter"
+         Size 64 64
         }
        }
       }

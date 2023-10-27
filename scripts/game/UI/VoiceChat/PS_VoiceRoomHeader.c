@@ -1,6 +1,7 @@
 class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 {
 	protected ResourceName m_sImageSet = "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset";
+	protected ResourceName m_sImageSetPS = "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset";
 	ImageWidget m_wJoinRoomImage;
 	TextWidget m_wRoomName;
 	string m_sRoomName;
@@ -43,8 +44,8 @@ class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 		// Bad hardcoded staff here
 		if (m_sRoomName == "#PS-VoNRoom_Command")
 		{
-			if (!playableManager.IsPlayerGroupLeader(playerId)) m_wJoinRoomImage.LoadImageFromSet(0, m_sImageSet, "server-locked");
-			else m_wJoinRoomImage.LoadImageFromSet(0, m_sImageSet, "VON_directspeech");
+			if (!playableManager.IsPlayerGroupLeader(playerId)) m_wJoinRoomImage.LoadImageFromSet(0, m_sImageSetPS, "Lock");
+			else m_wJoinRoomImage.LoadImageFromSet(0, m_sImageSetPS, "RoomEnter");
 			return;
 		}
 		

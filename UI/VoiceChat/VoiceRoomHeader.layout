@@ -2,9 +2,10 @@ ButtonWidgetClass {
  Name "VoiceRoomHeader"
  Slot LayoutSlot "{5EB11767C21ECF59}" {
  }
- Color 0.001 0.001 0.001 1
+ Color 0.001 0.001 0.001 0
  components {
   PS_VoiceRoomHeader "{5EB1458A4437EC6E}" {
+   m_BackgroundDefault 1 1 1 0
   }
  }
  {
@@ -23,8 +24,7 @@ ButtonWidgetClass {
       SizeY 44
       OffsetBottom -44
      }
-     Opacity 0.3
-     Color 0.001 0.001 0.001 1
+     Color 0.001 0.001 0.001 0
     }
     ImageWidgetClass "{5EB2906439B72CD7}" {
      Name "JoinRoomImage"
@@ -38,9 +38,9 @@ ButtonWidgetClass {
       SizeY 40
       OffsetBottom -42
      }
-     Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
-     Image "VON_directspeech"
-     Size 32 32
+     Texture "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset"
+     Image "RoomEnter"
+     Size 64 64
     }
     TextWidgetClass "{5EB1458AF2F57E5D}" {
      Prefab "{5D6D1B99A45E5176}"

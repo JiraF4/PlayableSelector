@@ -1,6 +1,7 @@
 class PS_VoiceButton : PS_HideableButton
 {
 	protected ResourceName m_sImageSet = "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset";
+	protected ResourceName m_sImageSetPS = "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset";
 	
 	protected int m_iPlayer;
 	
@@ -29,10 +30,10 @@ class PS_VoiceButton : PS_HideableButton
 			if (von.IsPlayerSpeech(m_iPlayer)) {
 				
 				if (von.IsPlayerSpeechInChanel(m_iPlayer)) m_wImage.LoadImageFromSet(0, m_sImageSet, "VON_frequency");
-				else m_wImage.LoadImageFromSet(0, m_sImageSet, "sound-on");
+				else m_wImage.LoadImageFromSet(0, m_sImageSetPS, "VoNDirect");
 			}
-			else m_wImage.LoadImageFromSet(0, m_sImageSet, "VON_directspeech");
-		} else m_wImage.LoadImageFromSet(0, m_sImageSet, "sound-off");
+			else m_wImage.LoadImageFromSet(0, m_sImageSetPS, "VoNIdle");
+		} else m_wImage.LoadImageFromSet(0, m_sImageSetPS, "VoNDisabled");
 		m_wButton.SetVisible(playerController.GetPlayerId() != m_iPlayer);
 		
 		m_wButtonHandler.m_OnClick.Insert(VoiceMuteSwitch);

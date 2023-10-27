@@ -42,7 +42,7 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 		
 		m_wSteps = GetRootWidget().FindAnyWidget("StepsFrame");
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		m_wSteps.SetVisible(gameMode.GetState() == SCR_EGameModeState.BRIEFING);
+		//m_wSteps.SetVisible(gameMode.GetState() == SCR_EGameModeState.BRIEFING);
 		
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));

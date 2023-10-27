@@ -77,20 +77,6 @@ FrameWidgetClass {
     OffsetBottom 0
    }
   }
-  FrameWidgetClass "{5EAF5687FB22DB6F}" : "{B7A765172F0BD4D9}UI/layouts/Common/EarlyAccessWatermark.layout" {
-   Name "EarlyAccessRoot0"
-   Slot FrameWidgetSlot "{5CEE96372B5D270B}" {
-    PositionX -49.712
-    OffsetLeft -49.712
-    PositionY 1.434
-    OffsetTop 1.434
-    SizeX 0
-    OffsetRight 49.712
-    SizeY 0
-    OffsetBottom -1.434
-   }
-   Opacity 1
-  }
   OverlayWidgetClass "{5EB10006FB0FA7F5}" {
    Name "OverlayFooter"
    Slot FrameWidgetSlot "{5EB10006FB0FA78D}" {
@@ -148,6 +134,7 @@ FrameWidgetClass {
     SizeY 168
     OffsetBottom 809.784
    }
+   "Is Visible" 0
    {
     ImageWidgetClass "{5EB0E9EE30E8DFAF}" {
      Name "StepsBackground"
@@ -292,6 +279,20 @@ FrameWidgetClass {
     SizeY 93
     OffsetBottom -93
    }
+  }
+  FrameWidgetClass "{5EAF5687FB22DB6F}" : "{B7A765172F0BD4D9}UI/layouts/Common/EarlyAccessWatermark.layout" {
+   Name "EarlyAccessRoot"
+   Slot FrameWidgetSlot "{5CEE96372B5D270B}" {
+    PositionX -49.712
+    OffsetLeft 0
+    PositionY 1.434
+    OffsetTop 0
+    SizeX 0
+    OffsetRight 0
+    SizeY 0
+    OffsetBottom 0
+   }
+   Opacity 1
   }
  }
 }
