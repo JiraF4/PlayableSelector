@@ -49,7 +49,7 @@ class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 			return;
 		}
 		
-		m_wJoinRoomImage.LoadImageFromSet(0, m_sImageSet, "VON_directspeech");
+		m_wJoinRoomImage.LoadImageFromSet(0, m_sImageSetPS, "RoomEnter");
 	}
 
 	// -------------------- Buttons events --------------------

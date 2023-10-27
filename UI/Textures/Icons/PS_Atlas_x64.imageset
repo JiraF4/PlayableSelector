@@ -130,7 +130,7 @@ ImageSetClass {
   }
   ImageSetDefClass RoomEnter {
    Name "RoomEnter"
-   Pos 959 64
+   Pos 960 64
    Size 64 64
    Flags 0
   }
