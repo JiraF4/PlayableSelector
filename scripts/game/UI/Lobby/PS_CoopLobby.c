@@ -80,6 +80,10 @@ class PS_CoopLobby: MenuBase
 	// Voice chat menu
 	protected Widget m_wVoiceChatList;
 	protected PS_VoiceChatList m_hVoiceChatList;
+	
+	// Voice/PLayers Switch
+	SCR_ButtonBaseComponent m_bPlayersSwitch;
+	SCR_ButtonBaseComponent m_bVoiceSwitch;
 		
 	protected ResourceName m_sImageSet = "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset";
 	
@@ -112,6 +116,12 @@ class PS_CoopLobby: MenuBase
 		m_bNavigationButtonChat = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationChat").FindHandler(SCR_NavigationButtonComponent));
 		m_bNavigationButtonClose = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationClose").FindHandler(SCR_NavigationButtonComponent));
 		m_bNavigationButtonForceStart = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationForceStart").FindHandler(SCR_NavigationButtonComponent));
+		
+		m_bPlayersSwitch = SCR_ButtonBaseComponent.Cast(GetRootWidget().FindAnyWidget("PlayersSwitch").FindHandler(SCR_ButtonBaseComponent));
+		m_bVoiceSwitch = SCR_ButtonBaseComponent.Cast(GetRootWidget().FindAnyWidget("VoiceSwitch").FindHandler(SCR_ButtonBaseComponent));
+		
+		m_bPlayersSwitch.m_OnClicked.Insert(Action_PlayersSwitch);
+		m_bVoiceSwitch.m_OnClicked.Insert(Action_VoiceSwitch);
 		
 		m_bNavigationButtonReady.m_OnClicked.Insert(Action_Ready);
 		GetGame().GetInputManager().AddActionListener("LobbyReady", EActionTrigger.DOWN, Action_Ready);
@@ -468,7 +478,23 @@ class PS_CoopLobby: MenuBase
 		ArmaReforgerScripted.OpenPauseMenu();
 	}
 	
+	void Action_PlayersSwitch(SCR_ButtonBaseComponent button)
+	{
+		m_bVoiceSwitch.SetToggled(false);
+		m_bPlayersSwitch.SetToggled(true);
+		
+		m_wPlayersList.SetVisible(true);
+		m_wVoiceChatList.SetVisible(false);
+	}
 	
+	void Action_VoiceSwitch(SCR_ButtonBaseComponent button)
+	{
+		m_bVoiceSwitch.SetToggled(true);
+		m_bPlayersSwitch.SetToggled(false);
+		
+		m_wPlayersList.SetVisible(false);
+		m_wVoiceChatList.SetVisible(true);
+	}
 	
 	void Action_ForceStart()
 	{

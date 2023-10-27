@@ -18,8 +18,8 @@ ButtonWidgetClass {
      Slot FrameWidgetSlot "{5EB11767D337F688}" {
       OffsetLeft 0
       OffsetTop 0
-      SizeX 376
-      OffsetRight -376
+      SizeX 480
+      OffsetRight -480
       SizeY 44
       OffsetBottom -44
      }
@@ -29,14 +29,14 @@ ButtonWidgetClass {
     ImageWidgetClass "{5EB2906439B72CD7}" {
      Name "JoinRoomImage"
      Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
-      PositionX 319.149
-      OffsetLeft 319.149
-      PositionY 2.251
-      OffsetTop 2.251
+      PositionX 428
+      OffsetLeft 428
+      PositionY 2
+      OffsetTop 2
       SizeX 40
-      OffsetRight -359.149
+      OffsetRight -468
       SizeY 40
-      OffsetBottom -42.251
+      OffsetBottom -42
      }
      Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
      Image "VON_directspeech"
@@ -50,8 +50,8 @@ ButtonWidgetClass {
       OffsetLeft 6
       PositionY 0
       OffsetTop 0
-      SizeX 164
-      OffsetRight -170
+      SizeX 400
+      OffsetRight -406
       SizeY 44
       OffsetBottom -44
      }

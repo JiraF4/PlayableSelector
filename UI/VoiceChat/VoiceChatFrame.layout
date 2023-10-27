@@ -1,16 +1,5 @@
 FrameWidgetClass {
  Name "VoiceChatFrame"
- Slot FrameWidgetSlot "{5EAF56867198CBEE}" {
-  Anchor 1 0.5 1 0.5
-  PositionX -422.025
-  OffsetLeft -422.025
-  PositionY -312.062
-  OffsetTop -312.062
-  SizeX 376
-  OffsetRight 46.025
-  SizeY 649
-  OffsetBottom -336.938
- }
  components {
   PS_VoiceChatList "{5EB1176278105B6B}" {
   }
@@ -23,10 +12,10 @@ FrameWidgetClass {
     OffsetLeft 0
     PositionY 0
     OffsetTop 0
-    SizeX 376
-    OffsetRight -376
-    SizeY 649
-    OffsetBottom -649
+    SizeX 480
+    OffsetRight -480
+    SizeY 800
+    OffsetBottom -800
    }
    Opacity 0.8
    Color 0.001 0.001 0.001 1
@@ -38,8 +27,8 @@ FrameWidgetClass {
     OffsetLeft 0
     PositionY 0
     OffsetTop 0
-    SizeX 376
-    OffsetRight -376
+    SizeX 480
+    OffsetRight -480
     SizeY 39
     OffsetBottom -39
    }
@@ -51,8 +40,8 @@ FrameWidgetClass {
       OffsetLeft 0
       PositionY 0
       OffsetTop 0
-      SizeX 376
-      OffsetRight -376
+      SizeX 480
+      OffsetRight -480
       SizeY 39
       OffsetBottom -39
      }
@@ -90,10 +79,10 @@ FrameWidgetClass {
     OffsetLeft 0
     PositionY 39
     OffsetTop 39
-    SizeX 376
-    OffsetRight -376
-    SizeY 610
-    OffsetBottom -649
+    SizeX 480
+    OffsetRight -480
+    SizeY 761
+    OffsetBottom -800
    }
    {
     VerticalLayoutWidgetClass "{5EB2900030AFF409}" {

@@ -12,12 +12,12 @@ FrameWidgetClass {
    Prefab "{5EB1176784E2EFB5}"
    Name "LeaderIcon"
    Slot FrameWidgetSlot "{5EB2906F65B847CB}" {
-    PositionX 136
-    OffsetLeft 136
+    PositionX 224
+    OffsetLeft 224
     PositionY 0
     OffsetTop 0
     SizeX 44
-    OffsetRight -180
+    OffsetRight -268
     SizeY 44
     OffsetBottom -44
    }
@@ -30,8 +30,8 @@ FrameWidgetClass {
    Slot FrameWidgetSlot "{5EB11767D337F688}" {
     OffsetLeft 0
     OffsetTop 0
-    SizeX 376
-    OffsetRight -376
+    SizeX 480
+    OffsetRight -480
     SizeY 44
     OffsetBottom -44
    }
@@ -92,12 +92,12 @@ FrameWidgetClass {
    Prefab "{5D6D1B99A45E5176}"
    Name "GroupName"
    Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
-    PositionX 224
-    OffsetLeft 224
+    PositionX 330
+    OffsetLeft 330
     PositionY 0
     OffsetTop 0
     SizeX 133
-    OffsetRight -357
+    OffsetRight -463
     SizeY 44
     OffsetBottom -44
    }
@@ -110,12 +110,12 @@ FrameWidgetClass {
   OverlayWidgetClass "{5EB1176D2E673C6D}" : "{DAAA8D092128D446}UI/Util/HideableButton.layout" {
    Name "VoiceHideableButton"
    Slot FrameWidgetSlot "{5EB1176DC507EF2D}" {
-    PositionX 180
-    OffsetLeft 180
+    PositionX 268
+    OffsetLeft 268
     PositionY 0
     OffsetTop 0
     SizeX 44
-    OffsetRight -224
+    OffsetRight -312
     SizeY 44
     OffsetBottom -44
    }

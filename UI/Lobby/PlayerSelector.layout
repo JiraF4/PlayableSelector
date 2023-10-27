@@ -76,11 +76,11 @@ ButtonWidgetClass {
      Prefab "{5D6D1B99172B8829}"
      Name "PlayerFactionName"
      Slot FrameWidgetSlot "{5D6D1B96C41F633A}" {
-      PositionX 232
-      OffsetLeft 232
+      PositionX 272
+      OffsetLeft 272
       OffsetTop 0
       SizeX 128
-      OffsetRight -360
+      OffsetRight -400
       SizeY 40
       OffsetBottom -40
      }
@@ -93,12 +93,12 @@ ButtonWidgetClass {
     ImageWidgetClass "{5D6ECAA19D5888B1}" {
      Name "ReadyImage"
      Slot FrameWidgetSlot "{5D6ECAA19D588888}" {
-      PositionX 360
-      OffsetLeft 360
+      PositionX 400
+      OffsetLeft 400
       PositionY 0
       OffsetTop 0
       SizeX 40
-      OffsetRight -400
+      OffsetRight -440
       SizeY 40
       OffsetBottom -40
      }
@@ -113,8 +113,8 @@ ButtonWidgetClass {
       OffsetLeft 0
       PositionY 0
       OffsetTop 0
-      SizeX 400
-      OffsetRight -400
+      SizeX 480
+      OffsetRight -480
       SizeY 40
       OffsetBottom -40
      }
@@ -122,12 +122,12 @@ ButtonWidgetClass {
     PanelWidgetClass "{5EA8C92152DB446E}" {
      Name "Border"
      Slot FrameWidgetSlot "{5D6F1490EBB9691E}" {
-      PositionX 2
-      OffsetLeft 2
+      PositionX 1.441
+      OffsetLeft 1.441
       PositionY 0
       OffsetTop 0
       SizeX 400
-      OffsetRight -402
+      OffsetRight -401.441
       SizeY 40
       OffsetBottom -40
      }
