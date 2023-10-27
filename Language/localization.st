@@ -35,9 +35,9 @@ StringTable {
   }
   CustomStringTableItem "{5EB6FE523BA20242}" {
    Id "PS-GameModeHeader_InGame"
-   Target_en_us "In Game"
-   Target_ru_ru "В Игре"
-   Modified 1589051868
+   Target_en_us "Game"
+   Target_ru_ru "Игра"
+   Modified 1589054432
    Author "SeskPC"
    LastChanged "SeskPC"
   }

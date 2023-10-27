@@ -1,6 +1,12 @@
 SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base.et" {
  ID "520EC961A090B1EE"
  components {
+  CharacterSoundComponent "{520EA1D2F659CF84}" {
+   Enabled 0
+  }
+  SCR_CommunicationSoundComponent "{54FD05D0C92D071F}" {
+   Enabled 0
+  }
   PS_LobbyVoNComponent "{5EB538FB1C85789A}" {
    Filename "{B4C3941EC8B2AD20}Sounds/VON/von.acp"
   }
