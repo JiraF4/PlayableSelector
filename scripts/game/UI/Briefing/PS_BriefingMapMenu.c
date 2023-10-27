@@ -19,7 +19,7 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 	protected PS_GameModeHeader m_hGameModeHeader;
 	
 	
-	//------------------------------------------------------------------------------------------------
+	// -------------------- Menu events --------------------
 	override void OnMenuOpen()
 	{	
 		if (m_MapEntity)
@@ -31,7 +31,7 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 		if (wChatPanel)
 			m_ChatPanel = SCR_ChatPanel.Cast(wChatPanel.FindHandler(SCR_ChatPanel));
 		
-		GetGame().GetInputManager().AddActionListener("ChatToggle", EActionTrigger.DOWN, Callback_OnChatToggleAction);
+		GetGame().GetInputManager().AddActionListener("ChatToggle", EActionTrigger.DOWN, Action_OnChatToggleAction);
 		
 		m_wVoiceChatList = GetRootWidget().FindAnyWidget("VoiceChatFrame");
 		m_hVoiceChatList = PS_VoiceChatList.Cast(m_wVoiceChatList.FindHandler(PS_VoiceChatList));
@@ -44,6 +44,8 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 		
 		GetGame().GetInputManager().AddActionListener("VONDirect", EActionTrigger.DOWN, Action_LobbyVoNOn);
 		GetGame().GetInputManager().AddActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
+		GetGame().GetInputManager().AddActionListener("VONChannelToggle", EActionTrigger.DOWN, Action_LobbyVoNChannelOn);
+		GetGame().GetInputManager().AddActionListener("VONChannelToggle", EActionTrigger.UP, Action_LobbyVoNChannelOff);
 		
 		GetGame().GetCallqueue().CallLater(UpdateCycle, 0);
 	}
@@ -64,6 +66,30 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 		MapConfiguration mapConfigFullscreen = m_MapEntity.SetupMapConfig(EMapEntityMode.FULLSCREEN, configComp.GetGadgetMapConfig(), GetRootWidget());
 		m_MapEntity.OpenMap(mapConfigFullscreen);
 	}
+		
+	override void OnMenuInit()
+	{		
+		if (!m_MapEntity)
+			m_MapEntity = SCR_MapEntity.GetMapInstance();
+	}
+	override void OnMenuUpdate(float tDelta)
+	{
+		if (m_ChatPanel)
+			m_ChatPanel.OnUpdateChat(tDelta);
+	}
+	
+	override void OnMenuClose()
+	{
+		if (m_MapEntity)
+			m_MapEntity.CloseMap();
+		
+		GetGame().GetInputManager().RemoveActionListener("ChatToggle", EActionTrigger.DOWN, Action_OnChatToggleAction);
+		
+		GetGame().GetInputManager().RemoveActionListener("VONDirect", EActionTrigger.DOWN, Action_LobbyVoNOn);
+		GetGame().GetInputManager().RemoveActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
+		GetGame().GetInputManager().RemoveActionListener("VONChannelToggle", EActionTrigger.DOWN, Action_LobbyVoNChannelOn);
+		GetGame().GetInputManager().RemoveActionListener("VONChannelToggle", EActionTrigger.UP, Action_LobbyVoNChannelOff);
+	}
 	
 	void UpdateCycle() 
 	{
@@ -77,53 +103,42 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 		m_hGameModeHeader.Update();
 	}
 	
-	//------------------------------------------------------------------------------------------------
-	override void OnMenuClose()
-	{
-		if (m_MapEntity)
-			m_MapEntity.CloseMap();
-		
-		GetGame().GetInputManager().RemoveActionListener("ChatToggle", EActionTrigger.DOWN, Callback_OnChatToggleAction);
-	}
-		
-	//------------------------------------------------------------------------------------------------
-	override void OnMenuInit()
-	{		
-		if (!m_MapEntity)
-			m_MapEntity = SCR_MapEntity.GetMapInstance();
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	override void OnMenuUpdate(float tDelta)
-	{
-		if (m_ChatPanel)
-			m_ChatPanel.OnUpdateChat(tDelta);
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	void Callback_OnChatToggleAction()
+	// -------------------------------------- Actions --------------------------------------
+	void Action_OnChatToggleAction()
 	{
 		if (!m_ChatPanel)
 			return;
 		
-		GetGame().GetCallqueue().CallLater(OpenChat, 0);
+		// Frame delay
+		GetGame().GetCallqueue().CallLater(OpenChatWrap, 0);
 	}
-	
-	void OpenChat()
+	void OpenChatWrap()
 	{
 		if (!m_ChatPanel.IsOpen())
 			SCR_ChatPanelManager.GetInstance().OpenChatPanel(m_ChatPanel);
 	}
 	
-	
+	// -------------------------------------- VoN --------------------------------------
 	void Action_LobbyVoNOn()
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		playableController.LobbyVoNEnable();
+	}
+	void Action_LobbyVoNOff()
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		playableController.LobbyVoNDisable();
+	}
+	// Channel
+	void Action_LobbyVoNChannelOn()
 	{
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		playableController.LobbyVoNRadioEnable();
 	}
-	
-	void Action_LobbyVoNOff()
+	void Action_LobbyVoNChannelOff()
 	{
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));

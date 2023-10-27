@@ -204,10 +204,31 @@ modded class SCR_MapMarkersUI
 
 
 
-
-
-
-
-
-
-
+// Callsings manual set
+modded class SCR_CallsignManagerComponent
+{
+	// Make it public for manual remove
+	override void RemoveAvailibleGroupCallsign(Faction faction, int companyIndex, int platoonIndex, int squadIndex)
+	{
+		super.RemoveAvailibleGroupCallsign(faction, companyIndex, platoonIndex, squadIndex);
+	}
+}
+modded class SCR_CallsignGroupComponent
+{
+	void ReAssignGroupCallsign(int company, int platoon, int squad)
+	{		
+		if (!m_CallsignManager)
+			return;
+		
+		// Make old calsign availible
+		int companyOld, platoonOld, squadOld;
+		GetCallsignIndexes(companyOld, platoonOld, squadOld);
+		m_CallsignManager.MakeGroupCallsignAvailible(m_Faction, companyOld, platoonOld, squadOld);
+		
+		// Remove manuale set callsign from availibles
+		m_CallsignManager.RemoveAvailibleGroupCallsign(m_Faction, company, platoon, squad);
+		
+		AssignCallsignBroadcast(company, platoon, squad);
+		Rpc(AssignCallsignBroadcast, company, platoon, squad);
+	}
+}

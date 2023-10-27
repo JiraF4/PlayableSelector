@@ -14,6 +14,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 	IEntity m_eInitialEntity;
 	vector VoNPosition = PS_VoNRoomsManager.roomInitialPosition;
 	SCR_EGameModeState m_eMenuState = SCR_EGameModeState.PREGAME;
+	bool m_bAfterInitialSwitch = false;
 	
 	// ------ MenuState ------
 	void SetMenuState(SCR_EGameModeState state)
@@ -91,10 +92,14 @@ class PS_PlayableControllerComponent : ScriptComponent
 	// We change to VoN boi lets enable camera
 	private void OnControlledEntityChanged(IEntity from, IEntity to)
 	{
-		if (!from) return;
-		if (!to) return;
-		PS_LobbyVoNComponent vonFrom = PS_LobbyVoNComponent.Cast(from.FindComponent(PS_LobbyVoNComponent));
-		PS_LobbyVoNComponent vonTo = PS_LobbyVoNComponent.Cast(to.FindComponent(PS_LobbyVoNComponent));
+		if (!from && !m_bAfterInitialSwitch) return;
+		if (!to && !m_bAfterInitialSwitch) return;
+		m_bAfterInitialSwitch = true;
+		
+		PS_LobbyVoNComponent vonFrom;
+		if (from) vonFrom = PS_LobbyVoNComponent.Cast(from.FindComponent(PS_LobbyVoNComponent));
+		PS_LobbyVoNComponent vonTo;
+		if (to) vonTo = PS_LobbyVoNComponent.Cast(to.FindComponent(PS_LobbyVoNComponent));
 		if (vonTo && !vonFrom)
 		{
 			SwitchToObserver(from);
@@ -124,6 +129,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		}
 	}
 	
+	// Save VoN boi for reuse
 	IEntity GetInitialEntity()
 	{
 		return m_eInitialEntity;
@@ -179,6 +185,13 @@ class PS_PlayableControllerComponent : ScriptComponent
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
 		if (thisPlayerController.GetPlayerId() != playerId && playerRole != EPlayerRole.ADMINISTRATOR) return;
 		
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if (gameMode.GetState() == SCR_EGameModeState.BRIEFING) { // On briefing also separate to squads
+			SetVoNKey("Menu" + factionKey + groupName);
+		}
+		else SetVoNKey("Menu" + factionKey); // Сhange VoN zone
+		
+		
 		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
 		VoNRoomsManager.MoveToRoom(playerId, factionKey, groupName);
 	}
@@ -199,8 +212,9 @@ class PS_PlayableControllerComponent : ScriptComponent
 		IEntity radioEntity = gadgetManager.GetGadgetByType(EGadgetType.RADIO);
 		BaseRadioComponent radio = BaseRadioComponent.Cast(radioEntity.FindComponent(BaseRadioComponent));
 		radio.SetPower(true);
-		radio.SetEncryptionKey("111");
-		return RadioTransceiver.Cast(radio.GetTransceiver(0));
+		RadioTransceiver transiver = RadioTransceiver.Cast(radio.GetTransceiver(0));
+		transiver.SetFrequency(1);
+		return RadioTransceiver.Cast(transiver);
 	}
 	void LobbyVoNEnable()
 	{
@@ -221,6 +235,16 @@ class PS_PlayableControllerComponent : ScriptComponent
 		von.SetTransmitRadio(GetVoNTransiver());
 		von.SetCommMethod(ECommMethod.SQUAD_RADIO);
 		von.SetCapture(true);
+	}
+	// Separate radio VoNs, CALL IT FROM SERVER
+	void SetVoNKey(string VoNKey)
+	{
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		IEntity entity = thisPlayerController.GetControlledEntity();
+		SCR_GadgetManagerComponent gadgetManager = SCR_GadgetManagerComponent.Cast( entity.FindComponent(SCR_GadgetManagerComponent) );
+		IEntity radioEntity = gadgetManager.GetGadgetByType(EGadgetType.RADIO);
+		BaseRadioComponent radio = BaseRadioComponent.Cast(radioEntity.FindComponent(BaseRadioComponent));
+		radio.SetEncryptionKey(VoNKey);
 	}
 	
 	// ------------------ Observer camera controlls ------------------

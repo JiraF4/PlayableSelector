@@ -1,4 +1,8 @@
 SCR_AIGroup : "{0B03E232E343D3F4}Prefabs/Groups/BLUFOR/Group_US_Team_LAT_P.et" {
+ components {
+  PS_GroupCallsignAssigner "{5EB55CBA90538940}" {
+  }
+ }
  coords 82.261 1 153.616
 }
 SCR_AIGroup : "{107554618BE6FF20}Prefabs/Groups/BLUFOR/Group_US_Team_Suppress_P.et" {

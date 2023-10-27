@@ -135,6 +135,8 @@ class PS_CoopLobby: MenuBase
 		
 		GetGame().GetInputManager().AddActionListener("VONDirect", EActionTrigger.DOWN, Action_LobbyVoNOn);
 		GetGame().GetInputManager().AddActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
+		GetGame().GetInputManager().AddActionListener("VONChannelToggle", EActionTrigger.DOWN, Action_LobbyVoNChannelOn);
+		GetGame().GetInputManager().AddActionListener("VONChannelToggle", EActionTrigger.UP, Action_LobbyVoNChannelOff);
 				
 		GetGame().GetCallqueue().CallLater(AwaitPlayerController, 100);
 	}
@@ -182,9 +184,12 @@ class PS_CoopLobby: MenuBase
 		GetGame().GetInputManager().RemoveActionListener("MenuSelect", EActionTrigger.DOWN, Action_Ready);
 		GetGame().GetInputManager().RemoveActionListener("ChatToggle", EActionTrigger.DOWN, Action_ChatOpen);
 		GetGame().GetInputManager().RemoveActionListener("LobbyGameForceStart", EActionTrigger.DOWN, Action_ForceStart);
+		GetGame().GetInputManager().RemoveActionListener("MenuBack", EActionTrigger.DOWN, Action_Exit);
+		
 		GetGame().GetInputManager().RemoveActionListener("VONDirect", EActionTrigger.DOWN, Action_LobbyVoNOn);
 		GetGame().GetInputManager().RemoveActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
-		GetGame().GetInputManager().RemoveActionListener("MenuBack", EActionTrigger.DOWN, Action_Exit);
+		GetGame().GetInputManager().RemoveActionListener("VONChannelToggle", EActionTrigger.DOWN, Action_LobbyVoNChannelOn);
+		GetGame().GetInputManager().RemoveActionListener("VONChannelToggle", EActionTrigger.UP, Action_LobbyVoNChannelOff);
 	}
 	
 	// Soo many staff need to bee init, i can't track all of it...
@@ -483,26 +488,38 @@ class PS_CoopLobby: MenuBase
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		playableController.ForceGameStart();
 	}
+	void Action_FactionLock()
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		playableController.FactionLockSwitch();
+	}
 	
+	// -------------------------------------- VoN --------------------------------------
 	void Action_LobbyVoNOn()
 	{
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-		playableController.LobbyVoNRadioEnable();
+		playableController.LobbyVoNEnable();
 	}
-	
 	void Action_LobbyVoNOff()
 	{
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		playableController.LobbyVoNDisable();
 	}
-	
-	void Action_FactionLock()
+	// Channel
+	void Action_LobbyVoNChannelOn()
 	{
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-		playableController.FactionLockSwitch();
+		playableController.LobbyVoNRadioEnable();
+	}
+	void Action_LobbyVoNChannelOff()
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		playableController.LobbyVoNDisable();
 	}
 	
 	// -------------------- Widgets events --------------------

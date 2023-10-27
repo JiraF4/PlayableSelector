@@ -167,28 +167,39 @@ class PS_PlayableManager : ScriptComponent
 				playerGroup = groupsManagerComponent.CreateNewPlayableGroup(playableGroup.GetFaction());
 				playerGroup.SetSlave(playableGroup);
 				playerGroup.SetMaxMembers(12);
-				groupsManagerComponent.RegisterGroup(playerGroup);
 				m_playableToPlayerGroups[playableGroup] = playerGroup;
-				
-				
+								
 				playableGroup.SetCanDeleteIfNoPlayer(false);
 				playerGroup.SetCanDeleteIfNoPlayer(false);
 			} else {
 				playerGroup = m_playableToPlayerGroups[playableGroup];
 			}
 			m_playerGroups[playableId] = playerGroup;
-			GetGame().GetCallqueue().CallLater(RegisterGroupName, 0, false, playableId, playerGroup)
+			GetGame().GetCallqueue().CallLater(UpdateGroupCallsigne, 0, false, playableId, playerGroup, playableGroup)
 		}
+	}
+	
+	void UpdateGroupCallsigne(RplId playableId, SCR_AIGroup playerGroup, SCR_AIGroup playableGroup)
+	{
+		// Assign manualy set callsigns
+		PS_GroupCallsignAssigner groupCallsignAssigner = PS_GroupCallsignAssigner.Cast(playableGroup.FindComponent(PS_GroupCallsignAssigner));
+		if (groupCallsignAssigner) {
+			int company, platoon, squad;
+			groupCallsignAssigner.GetCallsign(company, platoon, squad);
+			SCR_CallsignGroupComponent callsignComponent = SCR_CallsignGroupComponent.Cast(playerGroup.FindComponent(SCR_CallsignGroupComponent));
+			callsignComponent.ReAssignGroupCallsign(company, platoon, squad);
+		}
+		
+		GetGame().GetCallqueue().CallLater(RegisterGroupName, 0, false, playableId, playerGroup)
 	}
 	
 	void RegisterGroupName(RplId playableId, SCR_AIGroup playerGroup)
 	{
+		// save callsign name for clients
 		string company, platoon, squad, sCharacter, format;
 		playerGroup.GetCallsigns(company, platoon, squad, sCharacter, format);
 		string groupName = WidgetManager.Translate(format, company, platoon, squad, sCharacter);
 		SetPlayableGroupName(playableId, groupName);
-		
-		
 		
 		// Create VoN group chanel
 		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();

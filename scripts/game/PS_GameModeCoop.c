@@ -16,7 +16,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	[Attribute("1", uiwidget: UIWidgets.CheckBox, "Game may be started only if admin exists on server.", category: WB_GAME_MODE_CATEGORY)]
 	protected bool m_bAdminMode;
 	
-	[Attribute("1", uiwidget: UIWidgets.CheckBox, "Lobby can be open after game start.", category: WB_GAME_MODE_CATEGORY)]
+	[Attribute("0", uiwidget: UIWidgets.CheckBox, "Lobby can be open after game start.", category: WB_GAME_MODE_CATEGORY)]
 	protected bool m_bCanOpenLobbyInGame;
 	
 	[Attribute("0", uiwidget: UIWidgets.CheckBox, "Faction locked after selection.", category: WB_GAME_MODE_CATEGORY)]
@@ -37,7 +37,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	
 	void OpenLobby()
 	{
-		if (!m_bCanOpenLobbyInGame) return;
+		PlayerController playerController = GetGame().GetPlayerController();
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
+		
+		if (!m_bCanOpenLobbyInGame && playerRole != EPlayerRole.ADMINISTRATOR) return;
 		GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.CoopLobby);
 	}
 	
@@ -67,7 +71,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
 		VoNRoomsManager.MoveToRoom(playerId, "", "");
 		
-        Resource resource = Resource.Load("{EF9F633DDC485F1F}Prefabs/InitialPlayerOld.et");
+        Resource resource = Resource.Load("{E1B415916312F029}Prefabs/InitialPlayer.et");
 		EntitySpawnParams params = new EntitySpawnParams();
 		GetTransform(params.Transform);		
         IEntity initialEntity = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
@@ -80,12 +84,20 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	
 	override void OnPlayerKilled(int playerId, IEntity player, IEntity killer)
 	{
+		if (!IsMaster()) return;
+		
+		// TODO: remove CallLater
+		GetGame().GetCallqueue().CallLater(SwitchToInitialEntity, 200, false, playerId);
+	}
+	void SwitchToInitialEntity(int playerId)
+	{
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		playableManager.SetPlayerPlayable(playerId, RplId.Invalid());
 		playableManager.ApplyPlayable(playerId);
 		
-		PS_VoNRoomsManager.GetInstance().MoveToRoom(playerId, "", "Dead");
+		PS_VoNRoomsManager.GetInstance().MoveToRoom(playerId, "", "");
+		
 	}
 	
 	// Update state for disconnected and start timer if need

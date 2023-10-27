@@ -7,6 +7,10 @@ class PS_SpectatorMenu: MenuBase
 {
 	protected SCR_ChatPanel m_ChatPanel;
 	
+	// Voice chat menu
+	protected Widget m_wVoiceChatList;
+	protected PS_VoiceChatList m_hVoiceChatList;
+	
 	protected static void OnShowPlayerList()
 	{
 		ArmaReforgerScripted.OpenPlayerList();
@@ -19,8 +23,24 @@ class PS_SpectatorMenu: MenuBase
 	
 	override void OnMenuOpen()
 	{
+		m_wVoiceChatList = GetRootWidget().FindAnyWidget("VoiceChatFrame");
+		m_hVoiceChatList = PS_VoiceChatList.Cast(m_wVoiceChatList.FindHandler(PS_VoiceChatList));
+		
 		super.OnMenuOpen();
 		InitChat();
+		
+		GetGame().GetCallqueue().CallLater(UpdateCycle, 0);
+	}
+	
+	void UpdateCycle() 
+	{
+		Update();
+		GetGame().GetCallqueue().CallLater(UpdateCycle, 100);
+	}
+	
+	void Update()
+	{
+		m_hVoiceChatList.HardUpdate();
 	}
 	
 	void InitChat()
