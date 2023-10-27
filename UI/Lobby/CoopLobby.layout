@@ -618,6 +618,7 @@ FrameWidgetClass {
      components {
       SCR_ButtonBaseComponent "{5EB701CA8A36B4A7}" {
        m_bCanBeToggled 1
+       m_BackgroundDefault 1 1 1 0
       }
      }
      {
@@ -642,7 +643,7 @@ FrameWidgetClass {
             HorizontalAlign 0
             Padding 3 0 0 0
            }
-           Text "#PS-Lobby_Players"
+           Text "#PS-Lobby_PlayersList"
           }
          }
         }
@@ -676,6 +677,7 @@ FrameWidgetClass {
       SCR_ButtonBaseComponent "{5EB701CA8A36B4A7}" {
        m_bCanBeToggled 1
        m_bIsToggled 1
+       m_BackgroundDefault 1 1 1 0
       }
      }
      {

@@ -137,6 +137,14 @@ StringTable {
    Author "SeskPC"
    LastChanged "SeskPC"
   }
+  CustomStringTableItem "{5EB753E7EBC5365D}" {
+   Id "PS-Lobby_PlayersList"
+   Target_en_us "List"
+   Target_ru_ru "Список"
+   Modified 1589073590
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
   CustomStringTableItem "{5EA75941AE8846DA}" {
    Id "PS-Lobby_Ready"
    Target_en_us "Ready"
