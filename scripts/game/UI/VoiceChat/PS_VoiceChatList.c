@@ -138,19 +138,19 @@ class PS_VoiceChatList : ScriptedWidgetComponent
 		
 		if (gameState == SCR_EGameModeState.SLOTSELECTION) {
 			// Faction room
-			int factionRoom = VoNRoomsManager.GetRoomWithFaction(currentPlayerFactionKey, "Faction");
+			int factionRoom = VoNRoomsManager.GetRoomWithFaction(currentPlayerFactionKey, "#PS-VoNRoom_Faction");
 			outRoomsArray.Insert(factionRoom);
 		}
 		
 		// Room for commanders
-		int commandRoom = VoNRoomsManager.GetRoomWithFaction(currentPlayerFactionKey, "Command");
+		int commandRoom = VoNRoomsManager.GetRoomWithFaction(currentPlayerFactionKey, "#PS-VoNRoom_Command");
 		outRoomsArray.Insert(commandRoom);
 		
 		if (gameState == SCR_EGameModeState.SLOTSELECTION) {
 			// Room for each group
-			map<RplId, PS_PlayableComponent> playables = playableManager.GetPlayables();
+			array<PS_PlayableComponent> playables = playableManager.GetPlayablesSorted();
 			for (int i = 0; i < playables.Count(); i++) {
-				PS_PlayableComponent playable = playables.GetElement(i);
+				PS_PlayableComponent playable = playables[i];
 				SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(playable.GetOwner());
 				SCR_Faction faction = SCR_Faction.Cast(character.GetFaction());
 				FactionKey factionKey = faction.GetFactionKey();

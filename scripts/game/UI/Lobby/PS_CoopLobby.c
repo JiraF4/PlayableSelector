@@ -226,22 +226,7 @@ class PS_CoopLobby: MenuBase
 			}
 			m_aFactionListWidgets.Clear();
 			
-			// sort playables by RplId
-			for (int i = 0; i < playables.Count(); i++) {
-				PS_PlayableComponent playable = playables.GetElement(i);
-				bool isInserted = false;
-				for (int s = 0; s < playablesSorted.Count(); s++) {
-					PS_PlayableComponent playableS = playablesSorted[s];
-					if (playableS.GetId() > playable.GetId()) {
-						playablesSorted.InsertAt(playable, s);
-						isInserted = true;
-						break;
-					}
-				}
-				if (!isInserted) {
-					playablesSorted.Insert(playable);
-				}
-			}
+			playablesSorted = playableManager.GetPlayablesSorted();
 			
 			// clear faction playable map
 			m_sFactionPlayables.Clear();
@@ -552,7 +537,7 @@ class PS_CoopLobby: MenuBase
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		playableController.ChangeFactionKey(playerController.GetPlayerId(), factionKey);
 		playableController.SetPlayerPlayable(playerController.GetPlayerId(), RplId.Invalid()); // Reset character
-		playableController.MoveToVoNRoom(playerController.GetPlayerId(), factionKey, "Faction");
+		playableController.MoveToVoNRoom(playerController.GetPlayerId(), factionKey, "#PS-VoNRoom_Faction");
 	}
 	
 	// ----- Players -----
@@ -631,9 +616,7 @@ class PS_CoopLobby: MenuBase
 		playableController.ChangeFactionKey(m_iCurrentPlayer, playableCharacter.GetFaction().GetFactionKey());
 		playableController.SetPlayerState(m_iCurrentPlayer, PS_EPlayableControllerState.NotReady);
 		playableController.SetPlayerPlayable(m_iCurrentPlayer, handler.GetPlayableId());
-		
-		// TODO: faction room change
-		//playableController.MoveToVoNRoom(m_iCurrentPlayer, playableManager.GetPlayerFactionKey(playerController.GetPlayerId()), playableManager.GetGroupNameByPlayable(handler.GetPlayableId()));
+		playableController.MoveToVoNRoom(m_iCurrentPlayer, playableManager.GetPlayerFactionKey(playerController.GetPlayerId()), playableManager.GetGroupCallsignByPlayable(handler.GetPlayableId()).ToString());
 	}	
 	
 	// -------------------- Extra lobby functions --------------------

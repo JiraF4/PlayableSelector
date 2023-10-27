@@ -41,7 +41,7 @@ class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 		int playerId = playerController.GetPlayerId();
 		
 		// Bad hardcoded staff here
-		if (m_sRoomName == "Command")
+		if (m_sRoomName == "#PS-VoNRoom_Command")
 		{
 			if (!playableManager.IsPlayerGroupLeader(playerId)) m_wJoinRoomImage.LoadImageFromSet(0, m_sImageSet, "server-locked");
 			else m_wJoinRoomImage.LoadImageFromSet(0, m_sImageSet, "VON_directspeech");
@@ -61,7 +61,7 @@ class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		
 		// Bad hardcoded staff here
-		if (m_sRoomName == "Command")
+		if (m_sRoomName == "#PS-VoNRoom_Command")
 		{
 			if (!playableManager.IsPlayerGroupLeader(playerId))
 				return;

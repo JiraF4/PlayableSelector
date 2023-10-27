@@ -110,6 +110,30 @@ class PS_PlayableManager : ScriptComponent
 	{
 		return m_aPlayables;
 	}
+	ref array<PS_PlayableComponent> GetPlayablesSorted() // sort playables by RplId AND CallSign
+	{
+		array<PS_PlayableComponent> playablesSorted = new array<PS_PlayableComponent>();
+		map<RplId, PS_PlayableComponent> playables = GetPlayables();
+		
+		for (int i = 0; i < playables.Count(); i++) {
+			PS_PlayableComponent playable = playables.GetElement(i);
+			int callSign = GetGroupCallsignByPlayable(playable.GetId());
+			bool isInserted = false;
+			for (int s = 0; s < playablesSorted.Count(); s++) {
+				PS_PlayableComponent playableS = playablesSorted[s];
+				int callSignS = GetGroupCallsignByPlayable(playableS.GetId());
+				if ((playableS.GetId() > playable.GetId() && callSign == callSignS) || callSign < callSignS) {
+					playablesSorted.InsertAt(playable, s);
+					isInserted = true;
+					break;
+				}
+			}
+			if (!isInserted) {
+				playablesSorted.Insert(playable);
+			}
+		}
+		return playablesSorted;
+	}
 	FactionKey GetPlayerFactionKey(int playerId)
 	{
 		if (!m_playersFaction.Contains(playerId)) return "";
@@ -208,8 +232,8 @@ class PS_PlayableManager : ScriptComponent
 		// Create VoN group chanel
 		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
 		VoNRoomsManager.GetOrCreateRoomWithFaction(playerGroup.GetFaction().GetFactionKey(), groupCallsign.ToString());
-		VoNRoomsManager.GetOrCreateRoomWithFaction(playerGroup.GetFaction().GetFactionKey(), "Command");
-		VoNRoomsManager.GetOrCreateRoomWithFaction(playerGroup.GetFaction().GetFactionKey(), "Faction");
+		VoNRoomsManager.GetOrCreateRoomWithFaction(playerGroup.GetFaction().GetFactionKey(), "#PS-VoNRoom_Command");
+		VoNRoomsManager.GetOrCreateRoomWithFaction(playerGroup.GetFaction().GetFactionKey(), "#PS-VoNRoom_Faction");
 	}
 	
 	

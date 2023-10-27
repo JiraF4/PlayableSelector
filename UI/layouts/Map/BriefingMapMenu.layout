@@ -30,15 +30,15 @@ FrameWidgetClass {
    Name "ToolMenu"
    Slot FrameWidgetSlot "{59107CDEE98682C5}" {
     Anchor 0.5 0 0.5 0
-    OffsetLeft 0
-    PositionY 0
-    OffsetTop 0
+    PositionX -798.097
+    OffsetLeft -798.097
+    PositionY 94.795
+    OffsetTop 94.795
     SizeX 100
-    OffsetRight -100
-    SizeY 30
-    OffsetBottom -30
+    OffsetRight 698.097
+    SizeY 29.999
+    OffsetBottom -124.794
    }
-   "Is Visible" 0
    {
     RichTextWidgetClass "{59107CD34D2BC078}" {
      Prefab "{59107CD34D2BC078}"
@@ -89,7 +89,6 @@ FrameWidgetClass {
     SizeY 0
     OffsetBottom -1.434
    }
-   "Is Visible" 0
    Opacity 1
   }
   OverlayWidgetClass "{5EB10006FB0FA7F5}" {
@@ -130,113 +129,6 @@ FrameWidgetClass {
           Padding 20 0 0 0
          }
         }
-       }
-      }
-     }
-    }
-   }
-  }
-  FrameWidgetClass "{5EAF56865797F5D3}" {
-   Name "VoiceChatFrame"
-   Slot FrameWidgetSlot "{5EAF56867198CBEE}" {
-    Anchor 1 0.5 1 0.5
-    PositionX -386
-    OffsetLeft -386
-    PositionY -222
-    OffsetTop -222
-    SizeX 376
-    OffsetRight 10
-    SizeY 649
-    OffsetBottom -427
-   }
-   components {
-    PS_VoiceChatList "{5EB1176278105B6B}" {
-    }
-   }
-   {
-    ImageWidgetClass "{5EAF5686872D3FF2}" {
-     Name "VoiceChatBackground"
-     Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
-      PositionX 0
-      OffsetLeft 0
-      PositionY 0
-      OffsetTop 0
-      SizeX 376
-      OffsetRight -376
-      SizeY 649
-      OffsetBottom -649
-     }
-     Opacity 0.8
-     Color 0.001 0.001 0.001 1
-    }
-    FrameWidgetClass "{5EAF568435415339}" {
-     Name "VoiceChatHeaderFrame"
-     Slot FrameWidgetSlot "{5EAF568435415315}" {
-      PositionX 0
-      OffsetLeft 0
-      PositionY 0
-      OffsetTop 0
-      SizeX 376
-      OffsetRight -376
-      SizeY 39
-      OffsetBottom -39
-     }
-     {
-      ImageWidgetClass "{5EAF568BC55A3725}" {
-       Name "VoiceChatHeaderBackground"
-       Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
-        PositionX 0
-        OffsetLeft 0
-        PositionY 0
-        OffsetTop 0
-        SizeX 376
-        OffsetRight -376
-        SizeY 39
-        OffsetBottom -39
-       }
-       Color 0 0 0 1
-      }
-      OverlayWidgetClass "{5EB0E9E7729FE3C5}" {
-       Name "StepsHeaderTextOverlay"
-       Slot FrameWidgetSlot "{5EB0E9ED5655F81D}" {
-        PositionX 0
-        OffsetLeft 0
-        PositionY 0
-        OffsetTop 0
-        SizeX 376
-        OffsetRight -376
-        SizeY 39
-        OffsetBottom -39
-       }
-       {
-        TextWidgetClass "{5EB0E9E7729FE3C4}" {
-         Name "VoiceChatHeaderText"
-         Slot OverlayWidgetSlot "{5EB0E9E7729FE3E7}" {
-          HorizontalAlign 0
-          Padding 8 0 0 0
-         }
-         Text "VOICE CHAT"
-        }
-       }
-      }
-     }
-    }
-    ScrollLayoutWidgetClass "{5EB1000AD8290B21}" {
-     Name "PlayersListScroll"
-     Slot FrameWidgetSlot "{5EB1000AD8290B3B}" {
-      PositionX 0
-      OffsetLeft 0
-      PositionY 39
-      OffsetTop 39
-      SizeX 376
-      OffsetRight -376
-      SizeY 610
-      OffsetBottom -649
-     }
-     {
-      VerticalLayoutWidgetClass "{5EB11576E9D62EC4}" {
-       Name "PlayersList"
-       Slot AlignableSlot "{5EB11576E9D62E23}" {
        }
       }
      }
@@ -318,11 +210,29 @@ FrameWidgetClass {
           HorizontalAlign 0
           Padding 8 0 0 0
          }
-         Text "STEPS"
+         Text "#PS-Briefing_Steps"
         }
        }
       }
      }
+    }
+    TextWidgetClass "{5EB69C7824180AA2}" {
+     Name "StepsHeaderText0"
+     Slot FrameWidgetSlot "{5EB69C7825300550}" {
+      PositionX 3.634
+      OffsetLeft 3.634
+      PositionY 48.853
+      OffsetTop 48.853
+      SizeX 371.58
+      OffsetRight -375.214
+      SizeY 118.077
+      OffsetBottom -166.93
+     }
+     Color 1 0 0.576 1
+     Text "WIP"
+     "Font Size" 999
+     "Horizontal Alignment" Center
+     "Vertical Alignment" Center
     }
     FrameWidgetClass "{5EB0E9E7D363085F}" {
      Name "StepsProgressBarFrame"
@@ -356,6 +266,19 @@ FrameWidgetClass {
     }
    }
   }
+  FrameWidgetClass "{5EB69C7B4622521E}" : "{35DB604900C55B98}UI/VoiceChat/VoiceChatFrame.layout" {
+   Name "VoiceChatFrame"
+   Slot FrameWidgetSlot "{5EAF56867198CBEE}" {
+    PositionX -386
+    OffsetLeft -386
+    PositionY -240
+    OffsetTop -240
+    SizeX 376
+    OffsetRight 10
+    SizeY 649
+    OffsetBottom -409
+   }
+  }
   FrameWidgetClass "{5EB100080F354176}" : "{F43237F55B38B45C}UI/layouts/GameModeHeader/GameModeHeader.layout" {
    Name "GameModeHeader"
    Slot FrameWidgetSlot "{5EB10000F5F77EA0}" {
@@ -367,32 +290,6 @@ FrameWidgetClass {
     OffsetRight -960
     SizeY 93
     OffsetBottom -93
-   }
-   {
-    ButtonWidgetClass "{5EB290EEBC6EAD9B}" {
-     Prefab "{5EB290EEBC6EAD9B}"
-     {
-      SizeLayoutWidgetClass "{5EB2902E629DFD43}" {
-       Prefab "{5EB2902E629DFD43}"
-       {
-        FrameWidgetClass "{5EB100017BC764F4}" {
-         Prefab "{5EB100017BC764F4}"
-         {
-          OverlayWidgetClass "{5EB1000388A8E58A}" {
-           Prefab "{5EB1000388A8E58A}"
-           {
-            TextWidgetClass "{5EB10003D5163631}" {
-             Prefab "{5EB10003D5163631}"
-             Text "ADVANCE"
-            }
-           }
-          }
-         }
-        }
-       }
-      }
-     }
-    }
    }
   }
  }

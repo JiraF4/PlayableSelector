@@ -155,7 +155,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 					}else{
 						if (playableManager.IsPlayerGroupLeader(playerId)) 
 						{
-							VoNRoomsManager.MoveToRoom(playerId, playableManager.GetPlayerFactionKey(playerId), "Command");
+							VoNRoomsManager.MoveToRoom(playerId, playableManager.GetPlayerFactionKey(playerId), "#PS-VoNRoom_Command");
 						} else {
 							string groupName = playableManager.GetGroupCallsignByPlayable(playableId).ToString();
 							VoNRoomsManager.MoveToRoom(playerId, playableManager.GetPlayerFactionKey(playerId), groupName);

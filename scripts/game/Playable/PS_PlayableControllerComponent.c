@@ -246,6 +246,14 @@ class PS_PlayableControllerComponent : ScriptComponent
 		BaseRadioComponent radio = BaseRadioComponent.Cast(radioEntity.FindComponent(BaseRadioComponent));
 		radio.SetEncryptionKey(VoNKey);
 	}
+	bool isVonInit()
+	{
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		IEntity entity = thisPlayerController.GetControlledEntity();
+		SCR_GadgetManagerComponent gadgetManager = SCR_GadgetManagerComponent.Cast( entity.FindComponent(SCR_GadgetManagerComponent) );
+		IEntity radioEntity = gadgetManager.GetGadgetByType(EGadgetType.RADIO);
+		return radioEntity;
+	}
 	
 	// ------------------ Observer camera controlls ------------------
 	void SwitchToObserver(IEntity from)

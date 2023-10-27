@@ -44,11 +44,13 @@ class PS_PlayerVoiceSelector : SCR_ButtonBaseComponent
 		// global
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		SCR_FactionManager factionManager = SCR_FactionManager.Cast(GetGame().GetFactionManager());
 		
 		// player data
 		RplId playableId = playableManager.GetPlayableByPlayer(m_iPlayer);
 		FactionKey factionKey = playableManager.GetPlayerFactionKey(m_iPlayer);
 		string playerName = playerManager.GetPlayerName(m_iPlayer);
+		SCR_Faction faction = SCR_Faction.Cast(factionManager.GetFactionByKey(factionKey));
 		
 		// current player
 		PlayerController currentPlayerController = GetGame().GetPlayerController();
@@ -67,11 +69,13 @@ class PS_PlayerVoiceSelector : SCR_ButtonBaseComponent
 			SCR_EditableCharacterComponent editableCharacterComponent = SCR_EditableCharacterComponent.Cast(character.FindComponent(SCR_EditableCharacterComponent));
 			SCR_UIInfo uiInfo = editableCharacterComponent.GetInfo();
 			int groupCallSign = playableManager.GetGroupCallsignByPlayable(playableId);
+			string groupName = playableManager.GroupCallsignToGroupName(faction, groupCallSign);
+			
 			
 			m_wUnitIcon.SetVisible(true);
 			m_wGroupName.SetVisible(true);
 			m_wUnitIcon.LoadImageTexture(0, uiInfo.GetIconPath());
-			m_wGroupName.SetText(groupCallSign.ToString());
+			m_wGroupName.SetText(groupName);
 		}else{
 			m_wUnitIcon.SetVisible(false);
 			m_wGroupName.SetVisible(false);

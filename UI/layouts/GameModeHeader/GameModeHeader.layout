@@ -69,6 +69,7 @@ FrameWidgetClass {
         VerticalAlign 3
         Padding 10 10 10 10
        }
+       "Is Visible" 0
        components {
         SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
          m_sLabel ""
@@ -83,6 +84,27 @@ FrameWidgetClass {
        components {
         PS_GameModeHeaderButton "{5EB4BBDFAF17BD09}" {
          m_eState PREGAME
+        }
+       }
+       {
+        SizeLayoutWidgetClass "{5EB2902E629DFD43}" {
+         Prefab "{5EB2902E629DFD43}"
+         {
+          FrameWidgetClass "{5EB100017BC764F4}" {
+           Prefab "{5EB100017BC764F4}"
+           {
+            OverlayWidgetClass "{5EB1000388A8E58A}" {
+             Prefab "{5EB1000388A8E58A}"
+             {
+              TextWidgetClass "{5EB10003D5163631}" {
+               Prefab "{5EB10003D5163631}"
+               Text "PS-GameModeHeader_Preview"
+              }
+             }
+            }
+           }
+          }
+         }
         }
        }
       }
@@ -108,7 +130,7 @@ FrameWidgetClass {
              {
               TextWidgetClass "{5EB10003D5163631}" {
                Prefab "{5EB10003D5163631}"
-               Text "SLOT SELECTION"
+               Text "PS-GameModeHeader_Lobby"
               }
              }
             }
@@ -140,7 +162,7 @@ FrameWidgetClass {
              {
               TextWidgetClass "{5EB10003D5163631}" {
                Prefab "{5EB10003D5163631}"
-               Text "BRIEFING"
+               Text "PS-GameModeHeader_Briefing"
               }
              }
             }
@@ -172,7 +194,7 @@ FrameWidgetClass {
              {
               TextWidgetClass "{5EB10003D5163631}" {
                Prefab "{5EB10003D5163631}"
-               Text "IN GAME"
+               Text "PS-GameModeHeader_InGame"
               }
              }
             }
@@ -204,7 +226,7 @@ FrameWidgetClass {
              {
               TextWidgetClass "{5EB10003D5163631}" {
                Prefab "{5EB10003D5163631}"
-               Text "DEBRIEFING"
+               Text "PS-GameModeHeader_Debriefing"
               }
              }
             }
@@ -221,6 +243,7 @@ FrameWidgetClass {
         VerticalAlign 3
         Padding 10 10 10 10
        }
+       "Is Visible" 0
        components {
         SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
          m_sLabel ""
@@ -256,7 +279,7 @@ FrameWidgetClass {
          {
           TextWidgetClass "{5EB10003D5163631}" {
            Prefab "{5EB10003D5163631}"
-           Text "ADVANCE"
+           Text "PS-GameModeHeader_Advance"
           }
          }
         }
