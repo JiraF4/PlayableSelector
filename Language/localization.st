@@ -9,6 +9,46 @@ StringTable {
    Author "SeskPC"
    LastChanged "SeskPC"
   }
+  CustomStringTableItem "{5EB6FE5226347A67}" {
+   Id "PS-GameModeHeader_Briefing"
+   Target_en_us "Briefing"
+   Target_ru_ru "Инструктаж"
+   Modified 1589051957
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
+  CustomStringTableItem "{5EB6FE52166ABC2A}" {
+   Id "PS-GameModeHeader_Debriefing"
+   Target_en_us "Debriefing"
+   Target_ru_ru "Итоги"
+   Modified 1589051905
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
+  CustomStringTableItem "{5EB6FE523BA20242}" {
+   Id "PS-GameModeHeader_InGame"
+   Target_en_us "In Game"
+   Target_ru_ru "В Игре"
+   Modified 1589051868
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
+  CustomStringTableItem "{5EB6FE5256808E8E}" {
+   Id "PS-GameModeHeader_Lobby"
+   Target_en_us "Lobby"
+   Target_ru_ru "Лобби"
+   Modified 1589051783
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
+  CustomStringTableItem "{5EB6FE52778D1F25}" {
+   Id "PS-GameModeHeader_Preview"
+   Target_en_us "Mission Preview"
+   Target_ru_ru "Предпросмотр задания"
+   Modified 1589051743
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
   CustomStringTableItem "{5EA73DBF40044FB3}" {
    Id "PS-Keybind_Comms_Playable_Selector"
    Target_en_us "Team switch"
@@ -102,6 +142,38 @@ StringTable {
    Target_en_us "Roles"
    Target_ru_ru "Роли"
    Modified 1588025338
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
+  CustomStringTableItem "{5EB6E12BC67891C4}" {
+   Id "PS-VoNRoom_Command"
+   Target_en_us "HQ"
+   Target_ru_ru "Штаб"
+   Modified 1589044359
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
+  CustomStringTableItem "{5EB6E12BC05F7F27}" {
+   Id "PS-VoNRoom_Faction"
+   Target_en_us "Faction"
+   Target_ru_ru "Фракция"
+   Modified 1589044327
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
+  CustomStringTableItem "{5EB6E12BF9F8C213}" {
+   Id "PS-VoNRoom_Global"
+   Target_en_us "Global"
+   Target_ru_ru "Глобальный"
+   Modified 1589044312
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
+  CustomStringTableItem "{5EB6FE5384337A16}" {
+   Id "PS-VoNRoom_Header"
+   Target_en_us "Voice Channels"
+   Target_ru_ru "Голосовые Каналы"
+   Modified 1589051689
    Author "SeskPC"
    LastChanged "SeskPC"
   }
