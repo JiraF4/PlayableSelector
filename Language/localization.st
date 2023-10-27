@@ -9,6 +9,14 @@ StringTable {
    Author "SeskPC"
    LastChanged "SeskPC"
   }
+  CustomStringTableItem "{5EB6FE506E004252}" {
+   Id "PS-GameModeHeader_Advance"
+   Target_en_us "Advance"
+   Target_ru_ru "Далее"
+   Modified 1589052626
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
   CustomStringTableItem "{5EB6FE5226347A67}" {
    Id "PS-GameModeHeader_Briefing"
    Target_en_us "Briefing"
@@ -44,8 +52,8 @@ StringTable {
   CustomStringTableItem "{5EB6FE52778D1F25}" {
    Id "PS-GameModeHeader_Preview"
    Target_en_us "Mission Preview"
-   Target_ru_ru "Предпросмотр задания"
-   Modified 1589051743
+   Target_ru_ru "Предпросмотр"
+   Modified 1589052651
    Author "SeskPC"
    LastChanged "SeskPC"
   }
