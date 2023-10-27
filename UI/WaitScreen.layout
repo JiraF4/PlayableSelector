@@ -5,27 +5,40 @@ FrameWidgetClass {
   OverlayWidgetClass "{5EB4B0CB2DF0458F}" : "{01FD644AD2B6317D}UI/layouts/Menus/Common/MenuBackground.layout" {
    Name "MenuBackground0"
    Slot FrameWidgetSlot "{552C9A0A8526D2AD}" {
+    PositionX 0
+    OffsetLeft 0
+    PositionY 0
+    OffsetTop 0
+    SizeX 0
+    OffsetRight 0
+    SizeY 0
+    OffsetBottom 0
    }
-  }
-  TextWidgetClass "{5EB4B0CCC160F8B3}" {
-   Name "BePatient"
-   Slot FrameWidgetSlot "{5EB4B0CCC250D614}" {
-    PositionX 195.292
-    OffsetLeft 195.292
-    PositionY 220.988
-    OffsetTop 220.988
-    SizeX 1546.7
-    OffsetRight -1742
-    SizeY 587.612
-    OffsetBottom -808.6
+   {
+    FrameWidgetClass "{5CECA56A279C044D}" {
+     Prefab "{5CECA56A279C044D}"
+     Slot OverlayWidgetSlot "{5CECA56A279C04A0}" {
+      HorizontalAlign 1
+      VerticalAlign 1
+     }
+     {
+      HorizontalLayoutWidgetClass "{5CEAB7C94A55AF1E}" {
+       Prefab "{5CEAB7C94A55AF1E}"
+       Slot FrameWidgetSlot "{5CEE96363E5C46AD}" {
+        Anchor 0.5 0.5 0.5 0.5
+        PositionX 117.001
+        OffsetLeft 117.001
+        PositionY -8
+        OffsetTop -8
+        SizeX 0
+        OffsetRight -117.001
+        SizeY 0
+        OffsetBottom 8
+       }
+      }
+     }
+    }
    }
-   Color 0.475 0.259 0.686 1
-   Text "Плеаз би патиент"\
-   "mi ijidaem inicializaciy govna"
-   "Font Size" 150
-   "Min Font Size" 128
-   "Horizontal Alignment" Center
-   "Vertical Alignment" Center
   }
  }
 }
