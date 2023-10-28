@@ -9,13 +9,16 @@ class PS_ManualMarker : GenericEntity
 	protected ResourceName m_sMarkerPrefab;
 	[Attribute("{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset")]
 	protected ResourceName m_sImageSet;
+	[Attribute("{0250208EA4A9AB25}UI/Textures/Icons/icons_wrapperUI-32-glow.imageset")]
+	protected ResourceName m_sImageSetGlow;
 	[Attribute("empty")]
 	protected string m_sQuadName;
-	
 	[Attribute("5.0")]
 	protected float m_fWorldSize;
+	[Attribute("")]
+	protected string m_sDescription;
 	
-	FrameWidget m_wRoot;
+	Widget m_wRoot;
 	SCR_MapEntity m_MapEntity;
 	PS_ManualMarkerComponent m_hManualMarkerComponent;
 	
@@ -44,22 +47,37 @@ class PS_ManualMarker : GenericEntity
 	//
 	override protected void EOnInit(IEntity owner)
 	{
-		GetGame().GetCallqueue().CallLater(CreateMap, 1000);
+		m_MapEntity = SCR_MapEntity.GetMapInstance();
+		ScriptInvokerBase<MapConfigurationInvoker> onMapOpen = m_MapEntity.GetOnMapOpen();
+		ScriptInvokerBase<MapConfigurationInvoker> onMapClose = m_MapEntity.GetOnMapClose();
+		
+		onMapOpen.Insert(CreateMapWidget);
+		onMapClose.Insert(DeleteMapWidget);
+		//GetGame().GetCallqueue().CallLater(CreateMap, 1000);
 	}
 	
-	void CreateMap()
+	void CreateMapWidget(MapConfiguration mapConfig)
 	{
-		m_MapEntity = SCR_MapEntity.GetMapInstance();
 		Widget mapFrame = m_MapEntity.GetMapMenuRoot().FindAnyWidget(SCR_MapConstants.MAP_FRAME_NAME);
-		m_wRoot = FrameWidget.Cast(GetGame().GetWorkspace().CreateWidgets(m_sMarkerPrefab, mapFrame));
+		m_wRoot = Widget.Cast(GetGame().GetWorkspace().CreateWidgets(m_sMarkerPrefab, mapFrame));
 		m_hManualMarkerComponent = PS_ManualMarkerComponent.Cast(m_wRoot.FindHandler(PS_ManualMarkerComponent));
 		m_hManualMarkerComponent.SetImage(m_sImageSet, m_sQuadName);
+		m_hManualMarkerComponent.SetImageGlow(m_sImageSetGlow, m_sQuadName);
+		m_hManualMarkerComponent.SetDescription(m_sDescription);
+		m_hManualMarkerComponent.OnMouseLeave(null, null, 0, 0);
+		SetEventMask(EntityEvent.POSTFRAME);
+	}
+	
+	void DeleteMapWidget(MapConfiguration mapConfig)
+	{
+		m_wRoot = null;
+		m_hManualMarkerComponent = null;
+		ClearEventMask(EntityEvent.POSTFRAME);
 	}
 	
 	//
 	void PS_ManualMarker(IEntitySource src, IEntity parent)
 	{
 		SetEventMask(EntityEvent.INIT);
-		SetEventMask(EntityEvent.POSTFRAME);
 	}
 }

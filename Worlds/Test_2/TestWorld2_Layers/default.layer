@@ -16,8 +16,35 @@ PS_GameModeCoop PS_GameModeCoop1 : "{F64CCAF87CCCF567}Prefabs/MP/Modes/PS_GameMo
 GenericEntity {
  coords 5.734 1 3.144
 }
-PS_ManualMarker {
- coords 130.139 1 182.414
+$grp PS_ManualMarker {
+ {
+  coords 130.139 1 182.414
+  m_sImageSet "{FDD5423E69D007F8}UI/Textures/Icons/icons_wrapperUI-128.imageset"
+  m_sImageSetGlow "{6980E83C053C9B5D}UI/Textures/Icons/icons_wrapperUI-128-glow.imageset"
+  m_sQuadName "subscribe"
+  m_fWorldSize 20
+ }
+ {
+  coords 128.766 1 147.382
+  m_sImageSet "{FDD5423E69D007F8}UI/Textures/Icons/icons_wrapperUI-128.imageset"
+  m_sImageSetGlow "{6980E83C053C9B5D}UI/Textures/Icons/icons_wrapperUI-128-glow.imageset"
+  m_sQuadName "subscribe"
+  m_fWorldSize 5
+ }
+ {
+  coords 96.267 1 147.723
+  m_sImageSet "{FDD5423E69D007F8}UI/Textures/Icons/icons_wrapperUI-128.imageset"
+  m_sImageSetGlow "{6980E83C053C9B5D}UI/Textures/Icons/icons_wrapperUI-128-glow.imageset"
+  m_sQuadName "subscribe"
+  m_fWorldSize 5
+ }
+ {
+  coords 115.562 1 109.016
+  m_sImageSet "{FDD5423E69D007F8}UI/Textures/Icons/icons_wrapperUI-128.imageset"
+  m_sImageSetGlow "{6980E83C053C9B5D}UI/Textures/Icons/icons_wrapperUI-128-glow.imageset"
+  m_sQuadName "subscribe"
+  m_fWorldSize 5
+ }
 }
 SCR_MapMarkerEntity : "{DD74BE2BBAE07192}Prefabs/Markers/MapMarkerEntityBase.et" {
  coords 124.751 1 177.233

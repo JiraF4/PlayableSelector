@@ -1,14 +1,5 @@
 FrameWidgetClass {
- Name "rootFrame"
- Slot FrameWidgetSlot "{5D2691F3AE61A7FC}" {
-  OffsetLeft 0
-  OffsetTop 0
-  SizeX 66
-  OffsetRight -66
-  SizeY 66
-  OffsetBottom -66
-  Alignment 0.5 0.5
- }
+ Name "root"
  "Z Order" 60
  Clipping False
  "Ignore Cursor" 0
@@ -17,22 +8,168 @@ FrameWidgetClass {
   }
  }
  {
-  ImageWidgetClass "{5EB91D178F17F034}" {
-   Name "MarkerIcon"
-   Slot FrameWidgetSlot "{5EB91D144F331BE8}" {
+  FrameWidgetClass "{5EB91D1E5DDA01E7}" {
+   Name "MarkerFrame"
+   Slot FrameWidgetSlot "{5EB91D1D83A6D1B0}" {
     PositionX 0
     OffsetLeft 0
     PositionY 0
     OffsetTop 0
-    SizeX 65.803
-    OffsetRight -65.803
-    SizeY 65.907
-    OffsetBottom -65.907
+    SizeX 60
+    OffsetRight -60
+    SizeY 60
+    OffsetBottom -60
    }
-   Clipping False
-   Texture "{2EFEA2AF1F38E7F0}UI/Textures/Icons/icons_wrapperUI-64.imageset"
-   Image "exclamationCircle"
-   Size 56 56
+   {
+    ScrollLayoutWidgetClass "{5EB91D054A482C12}" {
+     Name "MarkerScrollLayout"
+     Slot FrameWidgetSlot "{5EB91D054A482C76}" {
+      OffsetLeft 0
+      OffsetTop 0
+      SizeX 60
+      OffsetRight -60
+      SizeY 60
+      OffsetBottom -60
+     }
+     {
+      RichTextWidgetClass "{5EB91D05EE2185A4}" {
+       Name "MarkeDescription"
+       Slot AlignableSlot "{5EB91D054A5AFB57}" {
+       }
+       Text ""
+       Wrap 1
+       "Shadow Offset" 3 3
+       "Shadow Size Increase" 2
+      }
+     }
+    }
+    ImageWidgetClass "{5EB91D178F17F034}" {
+     Name "MarkerIcon"
+     Slot FrameWidgetSlot "{5EB91D1E649170D7}" {
+      Anchor 0 0 0 0
+      PositionX 0
+      OffsetLeft 0
+      PositionY 0
+      OffsetTop 0
+      SizeX 60
+      OffsetRight -60
+      SizeY 60
+      OffsetBottom -60
+     }
+     Clipping False
+     Texture "{2EFEA2AF1F38E7F0}UI/Textures/Icons/icons_wrapperUI-64.imageset"
+     Image "exclamationCircle"
+     Size 56 56
+    }
+    ImageWidgetClass "{5EB91D1A3673B11B}" {
+     Name "MarkerGlowIcon"
+     Slot FrameWidgetSlot "{5EB91D1E649170D7}" {
+      Anchor 0 0 0 0
+      PositionX 0
+      OffsetLeft 0
+      PositionY 0
+      OffsetTop 0
+      SizeX 60
+      OffsetRight -60
+      SizeY 60
+      OffsetBottom -60
+     }
+     Clipping False
+     Texture "{58E50ACB1FA4F7D7}UI/Textures/Icons/icons_wrapperUI-96-glow.imageset"
+     Image "exclamationCircle"
+     Size 96 96
+    }
+   }
+  }
+  FrameWidgetClass "{5EB91D1C6CA16E5C}" {
+   Name "DescriptionFrame"
+   Slot FrameWidgetSlot "{5EB91D1D83A6D1BD}" {
+    PositionX 42.034
+    OffsetLeft 42.034
+    PositionY 60.264
+    OffsetTop 60.264
+    SizeX 100
+    OffsetRight -142.034
+    SizeY 30
+    OffsetBottom -90.264
+   }
+   {
+    FrameWidgetClass "{5EB91D0BB0EDB7F1}" {
+     Name "Frame0"
+     Slot FrameWidgetSlot "{5EB91D0BB0EDB7DB}" {
+      PositionX 0
+      OffsetLeft 0
+      PositionY 0
+      OffsetTop 0
+      SizeX 16
+      OffsetRight -16
+      SizeY -16
+      OffsetBottom 16
+     }
+     {
+      ImageWidgetClass "{5EB91D1D90549ED3}" {
+       Name "Background0"
+       Slot FrameWidgetSlot "{5EB91D0B536FBDE5}" {
+        Anchor 0 0 0 0
+        PositionX -8
+        OffsetLeft -8
+        PositionY -8
+        OffsetTop -8
+        SizeX 16
+        OffsetRight -8
+        SizeY 16
+        OffsetBottom -8
+       }
+       Color 0.028 0.028 0.028 1
+       Rotation 45
+      }
+     }
+    }
+    ImageWidgetClass "{5EB91D1C661EA7E8}" {
+     Name "Background"
+     Slot FrameWidgetSlot "{5EB91D1C3D779790}" {
+      PositionX 0
+      OffsetLeft 0
+      PositionY 0
+      OffsetTop 0
+      SizeX 256
+      OffsetRight -256
+      SizeY 128
+      OffsetBottom -128
+     }
+     Color 0.028 0.028 0.028 1
+    }
+    ScrollLayoutWidgetClass "{5EB91D1A7C81F001}" {
+     Name "ScrollLayout"
+     Slot FrameWidgetSlot "{5EB91D1A7C81F040}" {
+      Anchor 5 5 5 5
+      PositionX -500
+      OffsetLeft -500
+      PositionY -150
+      OffsetTop -150
+      SizeX 256
+      OffsetRight 244
+      SizeY 128
+      OffsetBottom 22
+     }
+     {
+      RichTextWidgetClass "{5EB91D112318E078}" {
+       Name "DescriptionText"
+       Slot AlignableSlot "{5EB91D1A7C9434DF}" {
+        Padding 5 5 0 0
+       }
+       Text "Lorem ipsum dolor sit amet, consectetur "\
+       ""\
+       "Donec viverra, tortor eget aliquam imperdiet"\
+       ""\
+       "Duis ut mauris augue. Duis convallis aliquet du"
+       Wrap 1
+       "Shadow Offset" 3 3
+       "Shadow Size Increase" 2
+      }
+     }
+    }
+   }
   }
  }
 }
