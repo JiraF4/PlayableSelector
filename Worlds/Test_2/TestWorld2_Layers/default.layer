@@ -16,3 +16,9 @@ PS_GameModeCoop PS_GameModeCoop1 : "{F64CCAF87CCCF567}Prefabs/MP/Modes/PS_GameMo
 GenericEntity {
  coords 5.734 1 3.144
 }
+PS_ManualMarker {
+ coords 130.139 1 182.414
+}
+SCR_MapMarkerEntity : "{DD74BE2BBAE07192}Prefabs/Markers/MapMarkerEntityBase.et" {
+ coords 124.751 1 177.233
+}

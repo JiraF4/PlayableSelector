@@ -1,0 +1,38 @@
+FrameWidgetClass {
+ Name "rootFrame"
+ Slot FrameWidgetSlot "{5D2691F3AE61A7FC}" {
+  OffsetLeft 0
+  OffsetTop 0
+  SizeX 66
+  OffsetRight -66
+  SizeY 66
+  OffsetBottom -66
+  Alignment 0.5 0.5
+ }
+ "Z Order" 60
+ Clipping False
+ "Ignore Cursor" 0
+ components {
+  PS_ManualMarkerComponent "{5EB91D13C38EDB9D}" {
+  }
+ }
+ {
+  ImageWidgetClass "{5EB91D178F17F034}" {
+   Name "MarkerIcon"
+   Slot FrameWidgetSlot "{5EB91D144F331BE8}" {
+    PositionX 0
+    OffsetLeft 0
+    PositionY 0
+    OffsetTop 0
+    SizeX 65.803
+    OffsetRight -65.803
+    SizeY 65.907
+    OffsetBottom -65.907
+   }
+   Clipping False
+   Texture "{2EFEA2AF1F38E7F0}UI/Textures/Icons/icons_wrapperUI-64.imageset"
+   Image "exclamationCircle"
+   Size 56 56
+  }
+ }
+}
