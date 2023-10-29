@@ -8,6 +8,7 @@ class PS_ManualMarkerComponent : SCR_ScriptedWidgetComponent
 	protected RichTextWidget m_wDescriptionText;
 	protected ScrollLayoutWidget m_wMarkerScrollLayout;
 	protected string m_sDescription;
+	protected bool m_bHasGlow;
 	
 	override void HandlerAttached(Widget w)
 	{
@@ -28,6 +29,7 @@ class PS_ManualMarkerComponent : SCR_ScriptedWidgetComponent
 	}
 	void SetImageGlow(ResourceName m_sImageSet, string quadName)
 	{
+		if (m_sImageSet != "") m_bHasGlow = true;
 		m_wMarkerGlowIcon.LoadImageFromSet(0, m_sImageSet, quadName);
 	}
 	void SetDescription(string description)
@@ -61,7 +63,7 @@ class PS_ManualMarkerComponent : SCR_ScriptedWidgetComponent
 	
 	override bool OnMouseEnter(Widget w, int x, int y)
 	{
-		m_wMarkerGlowIcon.SetVisible(true);
+		if (m_bHasGlow) m_wMarkerGlowIcon.SetVisible(true);
 		if (m_sDescription != "") m_wDescriptionFrame.SetVisible(true);
 		
 		return true;

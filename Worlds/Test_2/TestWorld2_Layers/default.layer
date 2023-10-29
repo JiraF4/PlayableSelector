@@ -41,7 +41,7 @@ $grp PS_ManualMarker {
  {
   coords 96.267 1 147.723
   m_sImageSet "{FDD5423E69D007F8}UI/Textures/Icons/icons_wrapperUI-128.imageset"
-  m_sImageSetGlow "{6980E83C053C9B5D}UI/Textures/Icons/icons_wrapperUI-128-glow.imageset"
+  m_sImageSetGlow ""
   m_sQuadName "subscribe"
   m_fWorldSize 5
  }
