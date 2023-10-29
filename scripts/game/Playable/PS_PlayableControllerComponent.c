@@ -15,6 +15,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 	vector VoNPosition = PS_VoNRoomsManager.roomInitialPosition;
 	SCR_EGameModeState m_eMenuState = SCR_EGameModeState.PREGAME;
 	bool m_bAfterInitialSwitch = false;
+	vector m_vObserverPosition = "0 0 0";
 	
 	// ------ MenuState ------
 	void SetMenuState(SCR_EGameModeState state)
@@ -106,6 +107,9 @@ class PS_PlayableControllerComponent : ScriptComponent
 		if (!rpl.IsOwner()) return;
 		if (!from && !m_bAfterInitialSwitch) return;
 		if (!to && !m_bAfterInitialSwitch) return;
+		if (!to) {
+			m_vObserverPosition = from.GetOrigin();
+		}		
 		m_bAfterInitialSwitch = true;
 		
 		PS_LobbyVoNComponent vonFrom;
@@ -282,6 +286,10 @@ class PS_PlayableControllerComponent : ScriptComponent
 		if (from) from.GetTransform(params.Transform);
         Resource resource = Resource.Load("{127C64F4E93A82BC}Prefabs/Editor/Camera/ManualCameraPhoto.et");
         m_eCamera = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
+		if (m_vObserverPosition != "0 0 0") { 
+			m_eCamera.SetOrigin(m_vObserverPosition);
+			m_vObserverPosition = "0 0 0";
+		}
 		GetGame().GetCameraManager().SetCamera(CameraBase.Cast(m_eCamera));
 	}
 	

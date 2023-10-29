@@ -64,7 +64,12 @@ class PS_AlivePlayerList : ScriptedWidgetComponent
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		array<PS_PlayableComponent> playablesSorted = playableManager.GetPlayablesSorted();
 		for (int i = 0; i < playablesSorted.Count(); i++) {
-			outPlayablesArray.Insert(playablesSorted[i]);
+			PS_PlayableComponent playable = playablesSorted[i];
+			SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(playable.GetOwner());
+			if (!character.GetDamageManager().IsDestroyed()) 
+			{
+				outPlayablesArray.Insert(playablesSorted[i]);
+			}
 		}
 	}
 	
