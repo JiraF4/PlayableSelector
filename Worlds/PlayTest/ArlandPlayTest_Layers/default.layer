@@ -6,20 +6,20 @@ TagManager : "{2FA9E172CAB1857A}Prefabs/MP/Managers/TagManager.et" {
 }
 PS_GameModeCoop PS_GameModeCoop1 : "{F64CCAF87CCCF567}Prefabs/MP/Modes/PS_GameModeCoop.et" {
  components {
-  SCR_GameModeSFManager "{5EB339E188A32C22}" {
+  SCR_TimeAndWeatherHandlerComponent "{5E7D773A4347DB9E}" {
+   m_iStartingHours 17
+   m_iStartingMinutes 20
+   m_bRandomStartingWeather 1
   }
  }
  {
-  SCR_FactionManager "5EB339E168B844E5" {
+  SCR_FactionManager "5EBAB92EB4649A27" {
    ID "5EA73DB136618AD9"
    Factions {
     SCR_Faction "{56DEAC40D2DBC8B1}" {
      m_bIsPlayable 1
     }
     SCR_Faction "{56DEAC40D3C2E623}" {
-     m_bIsPlayable 1
-    }
-    SCR_Faction "{56DEAC40D132400B}" {
      m_bIsPlayable 1
     }
    }

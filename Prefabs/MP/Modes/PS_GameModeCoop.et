@@ -381,6 +381,8 @@ PS_GameModeCoop {
   RplComponent "{5D4CE249422E8900}" {
    Streamable Disabled
   }
+  PS_ReplayWriter "{5EBAA3FA8A5746EA}" {
+  }
  }
  PlayerControllerPrefab "{4E5DAC62A374950F}Prefabs/Characters/Core/DefaultPlayerControllerMP_Coop.et"
  m_bAutoPlayerRespawn 0

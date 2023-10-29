@@ -1,8 +1,0 @@
-GenericEntity Area1 : "{C72F956E4AC6A6E7}Prefabs/ScenarioFramework/Components/Area.et" {
- coords 2505.029 148.138 2279.137
- {
-  SCR_TaskDefend : "{888DC29A0B4F3F20}Prefabs/ScenarioFramework/Tasks/TaskDefend.et" {
-   coords -0.043 0.01 2.04
-  }
- }
-}
