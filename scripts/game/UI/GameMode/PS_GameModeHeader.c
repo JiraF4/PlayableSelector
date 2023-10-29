@@ -46,6 +46,11 @@ class PS_GameModeHeader : ScriptedWidgetComponent
 	{
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
+		if (playerRole != EPlayerRole.ADMINISTRATOR) return;
+		
 		playableController.AdvanceGameState(SCR_EGameModeState.NULL);
 	}
 	void Action_PreviewOpen(SCR_ButtonBaseComponent button)

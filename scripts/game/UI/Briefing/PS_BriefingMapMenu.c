@@ -82,7 +82,7 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 	{
 		m_MapEntity.ZoomOut();
 	}
-		
+	
 	override void OnMenuInit()
 	{		
 		if (!m_MapEntity)
