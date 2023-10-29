@@ -51,6 +51,7 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 		GetGame().GetInputManager().AddActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
 		GetGame().GetInputManager().AddActionListener("VONChannelToggle", EActionTrigger.DOWN, Action_LobbyVoNChannelOn);
 		GetGame().GetInputManager().AddActionListener("VONChannelToggle", EActionTrigger.UP, Action_LobbyVoNChannelOff);
+		GetGame().GetInputManager().AddActionListener("MenuBack", EActionTrigger.DOWN, Action_Exit);
 		
 		GetGame().GetCallqueue().CallLater(UpdateCycle, 0);
 	}
@@ -104,6 +105,7 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 		GetGame().GetInputManager().RemoveActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
 		GetGame().GetInputManager().RemoveActionListener("VONChannelToggle", EActionTrigger.DOWN, Action_LobbyVoNChannelOn);
 		GetGame().GetInputManager().RemoveActionListener("VONChannelToggle", EActionTrigger.UP, Action_LobbyVoNChannelOff);
+		GetGame().GetInputManager().RemoveActionListener("MenuBack", EActionTrigger.DOWN, Action_Exit);
 	}
 	
 	void UpdateCycle() 
@@ -159,4 +161,16 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		playableController.LobbyVoNDisable();
 	}
+	void Action_Exit()
+	{
+		// For some strange reason players all the time accidentally exit game, maybe jus open pause menu
+		//GameStateTransitions.RequestGameplayEndTransition();  
+		//Close();
+		GetGame().GetCallqueue().CallLater(OpenPauseMenuWrap, 0); //  Else menu auto close itself
+	}
+	void OpenPauseMenuWrap()
+	{
+		ArmaReforgerScripted.OpenPauseMenu();
+	}
+	
 };
