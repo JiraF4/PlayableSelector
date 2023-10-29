@@ -1,0 +1,104 @@
+FrameWidgetClass "{5EBA3C97F5056809}" {
+ Name "AlivePlayersList"
+ Slot FrameWidgetSlot "{5EBA3C97F505681F}" {
+  Anchor 0 1 0 1
+  PositionX 0
+  OffsetLeft 0
+  PositionY -800
+  OffsetTop -800
+  SizeX 320
+  OffsetRight -320
+  SizeY 800
+  OffsetBottom 0
+ }
+ {
+  FrameWidgetClass "{5EBA3C97FF93DE7A}" {
+   Name "AlivePlayersHeader"
+   Slot FrameWidgetSlot "{5EBA3C97FF93DE52}" {
+    OffsetLeft 0
+    OffsetTop 0
+    SizeX 320
+    OffsetRight -320
+    SizeY 39
+    OffsetBottom -39
+   }
+   Color 0 0 0 1
+   {
+    ImageWidgetClass "{5EBA3C974B568AC5}" {
+     Name "AlivePlayersHeaderBackground"
+     Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
+      Anchor 0 0 0 0
+      PositionX 0
+      OffsetLeft 0
+      PositionY 0
+      OffsetTop 0
+      SizeX 320
+      OffsetRight -320
+      SizeY 39
+      OffsetBottom -39
+     }
+     Color 0 0 0 1
+    }
+    OverlayWidgetClass "{5EBA3C976CAFC55D}" {
+     Name "StepsHeaderTextOverlay"
+     Slot FrameWidgetSlot "{5EB0E9ED5655F81D}" {
+      PositionX 0
+      OffsetLeft 0
+      PositionY 0
+      OffsetTop 0
+      SizeX 320
+      OffsetRight -320
+      SizeY 39
+      OffsetBottom -39
+     }
+     {
+      TextWidgetClass "{5EBA3C976CAFC55F}" {
+       Name "VoiceChatHeaderText"
+       Slot OverlayWidgetSlot "{5EB0E9E7729FE3E7}" {
+        HorizontalAlign 0
+        Padding 8 0 0 0
+       }
+       Text "#PS-ObserverPlayersList"
+      }
+     }
+    }
+   }
+  }
+  ImageWidgetClass "{5EBA3C97969AD0E7}" {
+   Name "AlivePlayersBackground"
+   Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
+    Anchor 0 0 0 0
+    PositionX 0
+    OffsetLeft 0
+    PositionY 0
+    OffsetTop 0
+    SizeX 320
+    OffsetRight -320
+    SizeY 800
+    OffsetBottom -800
+   }
+   Opacity 0.8
+   Color 0.001 0.001 0.001 1
+  }
+  ScrollLayoutWidgetClass "{5EBA3C972331B0F8}" {
+   Name "AlivePlayersListScroll"
+   Slot FrameWidgetSlot "{5EB1000AD8290B3B}" {
+    PositionX 0
+    OffsetLeft 0
+    PositionY 39
+    OffsetTop 39
+    SizeX 320
+    OffsetRight -320
+    SizeY 761
+    OffsetBottom -800
+   }
+   {
+    VerticalLayoutWidgetClass "{5EBA3C972331B0FA}" {
+     Name "AlivePlayersList"
+     Slot AlignableSlot "{5EB11576E9D62E23}" {
+     }
+    }
+   }
+  }
+ }
+}

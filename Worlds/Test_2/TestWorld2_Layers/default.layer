@@ -11,6 +11,10 @@ TagManager : "{2FA9E172CAB1857A}Prefabs/MP/Managers/TagManager.et" {
  coords 79.929 1 170.913
 }
 PS_GameModeCoop PS_GameModeCoop1 : "{F64CCAF87CCCF567}Prefabs/MP/Modes/PS_GameModeCoop.et" {
+ components {
+  PS_ReplayWriter "{5EB97125F91F6AAB}" {
+  }
+ }
  coords 3.45 1.663 3.493
 }
 GenericEntity {
@@ -23,6 +27,7 @@ $grp PS_ManualMarker {
   m_sImageSetGlow "{6980E83C053C9B5D}UI/Textures/Icons/icons_wrapperUI-128-glow.imageset"
   m_sQuadName "subscribe"
   m_fWorldSize 20
+  m_sDescription "Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description "
  }
  {
   coords 128.766 1 147.382

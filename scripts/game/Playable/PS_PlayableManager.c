@@ -36,7 +36,6 @@ class PS_PlayableManager : ScriptComponent
 		if (Replication.IsServer()) m_bRplLoaded = true;
 	}
 	
-	
 	// more singletons for singletons god, make our spagetie kingdom great
 	static PS_PlayableManager GetInstance() 
 	{

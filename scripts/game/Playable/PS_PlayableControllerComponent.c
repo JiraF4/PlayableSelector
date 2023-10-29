@@ -91,6 +91,17 @@ class PS_PlayableControllerComponent : ScriptComponent
 	// We change to VoN boi lets enable camera
 	private void OnControlledEntityChanged(IEntity from, IEntity to)
 	{
+		// Write entity change to replay
+		if (Replication.IsServer()) {
+			RplId toRplId = RplId.Invalid();
+			if (to) {
+				RplComponent rplTo = RplComponent.Cast(to.FindComponent(RplComponent));
+				toRplId = rplTo.Id();
+			}
+			PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+			PS_ReplayWriter.GetInstance().WriteCharacterPossess(toRplId, thisPlayerController.GetPlayerId());
+		}
+		
 		RplComponent rpl = RplComponent.Cast(GetOwner().FindComponent(RplComponent));
 		if (!rpl.IsOwner()) return;
 		if (!from && !m_bAfterInitialSwitch) return;

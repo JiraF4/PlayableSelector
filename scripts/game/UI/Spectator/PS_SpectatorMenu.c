@@ -10,6 +10,8 @@ class PS_SpectatorMenu: MenuBase
 	// Voice chat menu
 	protected Widget m_wVoiceChatList;
 	protected PS_VoiceChatList m_hVoiceChatList;
+	protected Widget m_wAlivePlayerList;
+	protected PS_AlivePlayerList m_hAlivePlayerList;
 	
 	protected static void OnShowPlayerList()
 	{
@@ -25,6 +27,8 @@ class PS_SpectatorMenu: MenuBase
 	{
 		m_wVoiceChatList = GetRootWidget().FindAnyWidget("VoiceChatFrame");
 		m_hVoiceChatList = PS_VoiceChatList.Cast(m_wVoiceChatList.FindHandler(PS_VoiceChatList));
+		m_wAlivePlayerList = GetRootWidget().FindAnyWidget("AlivePlayersList");
+		m_hAlivePlayerList = PS_AlivePlayerList.Cast(m_wAlivePlayerList.FindHandler(PS_AlivePlayerList));
 		
 		super.OnMenuOpen();
 		InitChat();
@@ -40,6 +44,7 @@ class PS_SpectatorMenu: MenuBase
 	
 	void Update()
 	{
+		m_hAlivePlayerList.HardUpdate();
 		m_hVoiceChatList.HardUpdate();
 	}
 	

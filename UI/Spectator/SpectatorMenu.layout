@@ -21,6 +21,15 @@ FrameWidgetClass {
    }
    "Z Order" -10
   }
+  FrameWidgetClass "{5EBA3C94C3245291}" : "{18D3CF175C9AA974}UI/Spectator/AlivePlayersList.layout" {
+   Name "AlivePlayersList"
+   Slot FrameWidgetSlot "{5EBA3C97F505681F}" {
+   }
+   components {
+    PS_AlivePlayerList "{5EBA416A9CB1DC7C}" {
+    }
+   }
+  }
   FrameWidgetClass "{5EB701CD498F59EC}" : "{B7A765172F0BD4D9}UI/layouts/Common/EarlyAccessWatermark.layout" {
    Name "EarlyAccessRoot"
    Slot FrameWidgetSlot "{5CEE96372B5D270B}" {
