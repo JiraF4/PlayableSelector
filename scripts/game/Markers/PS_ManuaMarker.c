@@ -11,6 +11,8 @@ class PS_ManualMarker : GenericEntity
 	protected ResourceName m_sImageSet;
 	[Attribute("{0250208EA4A9AB25}UI/Textures/Icons/icons_wrapperUI-32-glow.imageset")]
 	protected ResourceName m_sImageSetGlow;
+	[Attribute("1 1 1 1", UIWidgets.ColorPicker)]
+	ref Color m_MarkerColor;
 	[Attribute("empty")]
 	protected string m_sQuadName;
 	[Attribute("5.0")]
@@ -64,6 +66,7 @@ class PS_ManualMarker : GenericEntity
 		m_hManualMarkerComponent.SetImage(m_sImageSet, m_sQuadName);
 		m_hManualMarkerComponent.SetImageGlow(m_sImageSetGlow, m_sQuadName);
 		m_hManualMarkerComponent.SetDescription(m_sDescription);
+		m_hManualMarkerComponent.SetColor(m_MarkerColor);
 		m_hManualMarkerComponent.OnMouseLeave(null, null, 0, 0);
 		SetEventMask(EntityEvent.POSTFRAME);
 	}

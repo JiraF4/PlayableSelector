@@ -43,6 +43,11 @@ class PS_ManualMarkerComponent : SCR_ScriptedWidgetComponent
 	{
 		m_wDescriptionText.SetText(description);	
 	}
+	void SetColor(Color color)
+	{
+		m_wMarkerIcon.SetColor(color);	
+		m_wMarkerGlowIcon.SetColor(color);	
+	}
 	
 	void SetSlot(float posX, float posY, float sizeX, float sizeY)
 	{
