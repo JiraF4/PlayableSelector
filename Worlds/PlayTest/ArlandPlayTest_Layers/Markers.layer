@@ -1,0 +1,86 @@
+$grp PS_ManualMarker {
+ {
+  coords 1009.451 38.753 2959.455
+  m_sImageSet "{FDD5423E69D007F8}UI/Textures/Icons/icons_wrapperUI-128.imageset"
+  m_sImageSetGlow "{6980E83C053C9B5D}UI/Textures/Icons/icons_wrapperUI-128-glow.imageset"
+  m_MarkerColor 0.168 0.006 0.007 1
+  m_sQuadName "report"
+  m_fWorldSize 100
+  m_sDescription "HQ"
+  m_bUseWorldScale 0
+ }
+ {
+  coords 1250.949 37.6 2936.698
+  m_sImageSet "{FDD5423E69D007F8}UI/Textures/Icons/icons_wrapperUI-128.imageset"
+  m_sImageSetGlow "{6980E83C053C9B5D}UI/Textures/Icons/icons_wrapperUI-128-glow.imageset"
+  m_MarkerColor 0.168 0.006 0.007 1
+  m_sQuadName "mountAsDriverCommand"
+  m_fWorldSize 100
+  m_sDescription "BTR-70"\
+  "URAL"
+  m_bUseWorldScale 0
+ }
+ {
+  coords 2678.61 77.354 1691.445
+  m_sImageSet "{FDD5423E69D007F8}UI/Textures/Icons/icons_wrapperUI-128.imageset"
+  m_sImageSetGlow "{6980E83C053C9B5D}UI/Textures/Icons/icons_wrapperUI-128-glow.imageset"
+  m_MarkerColor 0.005 0.044 0.114 1
+  m_sQuadName "characters"
+  m_fWorldSize 100
+  m_sDescription "1st Platoon"
+  m_bUseWorldScale 0
+ }
+ {
+  coords 2663.805 80.045 1800.078
+  m_sImageSet "{29DE5CB9A3FE0287}UI/Textures/Icons/icons_radialWeapons.imageset"
+  m_sImageSetGlow ""
+  m_MarkerColor 0.005 0.044 0.114 1
+  m_sQuadName "gadget_binoculars"
+  m_fWorldSize 100
+  m_sDescription "Recon Team"
+  m_bUseWorldScale 0
+ }
+ {
+  coords 2894.254 37.29 3147.046
+  m_sImageSet "{FDD5423E69D007F8}UI/Textures/Icons/icons_wrapperUI-128.imageset"
+  m_sImageSetGlow "{6980E83C053C9B5D}UI/Textures/Icons/icons_wrapperUI-128-glow.imageset"
+  m_MarkerColor 0.005 0.044 0.114 1
+  m_sQuadName "characters"
+  m_fWorldSize 100
+  m_sDescription "2nd Platoon"\
+  "MG Team"
+  m_bUseWorldScale 0
+ }
+ {
+  coords 1336.644 37.322 2386.027
+  m_sImageSet "{FDD5423E69D007F8}UI/Textures/Icons/icons_wrapperUI-128.imageset"
+  m_sImageSetGlow "{6980E83C053C9B5D}UI/Textures/Icons/icons_wrapperUI-128-glow.imageset"
+  m_MarkerColor 0.168 0.006 0.007 1
+  m_sQuadName "mountAsDriverCommand"
+  m_fWorldSize 100
+  m_sDescription "UAZ452"\
+  "URAL"
+  m_bUseWorldScale 0
+ }
+ {
+  coords 1388.351 36.038 2394.87
+  m_sImageSet "{FDD5423E69D007F8}UI/Textures/Icons/icons_wrapperUI-128.imageset"
+  m_sImageSetGlow "{6980E83C053C9B5D}UI/Textures/Icons/icons_wrapperUI-128-glow.imageset"
+  m_MarkerColor 0.168 0.006 0.007 1
+  m_sQuadName "characters"
+  m_fWorldSize 100
+  m_sDescription "2nd Platoon"\
+  "Medical Team"
+  m_bUseWorldScale 0
+ }
+ {
+  coords 1033.296 38.093 2930.666
+  m_sImageSet "{FDD5423E69D007F8}UI/Textures/Icons/icons_wrapperUI-128.imageset"
+  m_sImageSetGlow "{6980E83C053C9B5D}UI/Textures/Icons/icons_wrapperUI-128-glow.imageset"
+  m_MarkerColor 0.168 0.006 0.007 1
+  m_sQuadName "characters"
+  m_fWorldSize 100
+  m_sDescription "1st Platoon"
+  m_bUseWorldScale 0
+ }
+}

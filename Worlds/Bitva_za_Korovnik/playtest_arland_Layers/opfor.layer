@@ -1,0 +1,126 @@
+$grp SCR_AIGroup : "{BB5751D55D9D21AD}Prefabs/Groups/OPFOR/Group_USSR_ManeuverGroup_p.et" {
+ {
+  components {
+   AIFormationComponent "{507E9DC12F541FE6}" {
+    DefaultFormation "Column"
+   }
+   PS_GroupCallsignAssigner "{5EBAB4EF85668A9E}" {
+    m_iSquadCallsign 2
+   }
+  }
+  coords 2372.029 65.333 2774.79
+  angleY -41.609
+  m_aUnitPrefabSlots + {
+   "{47B0BA658525301A}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Rifleman_P.et" "{47B0BA658525301A}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Rifleman_P.et"
+  }
+ }
+ {
+  components {
+   AIFormationComponent "{507E9DC12F541FE6}" {
+    DefaultFormation "Column"
+   }
+   PS_GroupCallsignAssigner "{5EBAB4EF85668A9E}" {
+    m_iSquadCallsign 3
+   }
+  }
+  coords 2373.907 65.057 2777.129
+  angleY -41.609
+  m_aUnitPrefabSlots + {
+   "{47B0BA658525301A}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Rifleman_P.et" "{47B0BA658525301A}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Rifleman_P.et"
+  }
+ }
+ {
+  components {
+   AIFormationComponent "{507E9DC12F541FE6}" {
+    DefaultFormation "Column"
+   }
+   PS_GroupCallsignAssigner "{5EBAB4EF85668A9E}" {
+    m_iSquadCallsign 4
+   }
+  }
+  coords 2375.299 64.512 2779.19
+  angleY -41.609
+  m_aUnitPrefabSlots + {
+   "{47B0BA658525301A}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Rifleman_P.et" "{47B0BA658525301A}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Rifleman_P.et"
+  }
+ }
+ {
+  components {
+   AIFormationComponent "{507E9DC12F541FE6}" {
+    DefaultFormation "Column"
+   }
+   PS_GroupCallsignAssigner "{5EBAB4EF85668A9E}" {
+    m_iPlatoonCallsign 2
+    m_iSquadCallsign 4
+   }
+  }
+  coords 2380.706 61.936 2795.056
+  angleY -41.609
+  m_aUnitPrefabSlots + {
+   "{47B0BA658525301A}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Rifleman_P.et" "{47B0BA658525301A}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Rifleman_P.et"
+  }
+ }
+ {
+  components {
+   AIFormationComponent "{507E9DC12F541FE6}" {
+    DefaultFormation "Column"
+   }
+   PS_GroupCallsignAssigner "{5EBAB4EF85668A9E}" {
+    m_iPlatoonCallsign 2
+    m_iSquadCallsign 2
+   }
+  }
+  coords 2377.436 62.757 2790.656
+  angleY -41.609
+  m_aUnitPrefabSlots + {
+   "{47B0BA658525301A}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Rifleman_P.et" "{47B0BA658525301A}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Rifleman_P.et"
+  }
+ }
+ {
+  components {
+   AIFormationComponent "{507E9DC12F541FE6}" {
+    DefaultFormation "Column"
+   }
+   PS_GroupCallsignAssigner "{5EBAB4EF85668A9E}" {
+    m_iPlatoonCallsign 2
+    m_iSquadCallsign 3
+   }
+  }
+  coords 2379.314 62.481 2792.995
+  angleY -41.609
+  m_aUnitPrefabSlots + {
+   "{47B0BA658525301A}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Rifleman_P.et" "{47B0BA658525301A}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Rifleman_P.et"
+  }
+ }
+}
+$grp SCR_AIGroup : "{E3545CFEDD312D54}Prefabs/Groups/OPFOR/Group_USSR_RifleSquad_p.et" {
+ {
+  components {
+   AIFormationComponent "{507E9DC12F541FE6}" {
+    DefaultFormation "Column"
+   }
+   PS_GroupCallsignAssigner "{5EBAB4EFB91E058F}" {
+   }
+  }
+  coords 2369.581 65.369 2772.081
+  angleY -42.855
+  m_aUnitPrefabSlots {
+   "{B5AEDC813E4F4A58}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Officer_P.et" "{00716F7369F3C5E8}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_AR_P.et" "{DD80FA65DDFF68B9}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Medic_P.et"
+  }
+ }
+ {
+  components {
+   AIFormationComponent "{507E9DC12F541FE6}" {
+    DefaultFormation "Column"
+   }
+   PS_GroupCallsignAssigner "{5EBAB4EFB91E058F}" {
+    m_iPlatoonCallsign 2
+   }
+  }
+  coords 2374.988 62.793 2787.947
+  angleY -42.855
+  m_aUnitPrefabSlots {
+   "{B5AEDC813E4F4A58}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Officer_P.et" "{00716F7369F3C5E8}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_AR_P.et" "{DD80FA65DDFF68B9}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Medic_P.et"
+  }
+ }
+}
