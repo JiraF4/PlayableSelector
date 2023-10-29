@@ -7,7 +7,6 @@ Vehicle UAZ1 : "{259EE7B78C51B624}Prefabs/Vehicles/Wheeled/UAZ469/UAZ469.et" {
  coords 1003.716 38.183 2941.743
  angleX 0.895
  angleY -0.006
- angleZ -0
 }
 $grp SCR_AIGroup : "{41F0D95175F5D179}Prefabs/Groups/OPFOR/Group_USSR_SentryTeam_p.et" {
  {
@@ -23,7 +22,7 @@ $grp SCR_AIGroup : "{41F0D95175F5D179}Prefabs/Groups/OPFOR/Group_USSR_SentryTeam
   }
   coords 1005.067 38.753 2954.107
   m_aUnitPrefabSlots {
-   "{B5AEDC813E4F4A58}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Officer_P.et" "{F72805D5D2D05F63}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_RTO_P.et"
+   "{9C86832A6694F093}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Officer_P_1.et" "{F72805D5D2D05F63}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_RTO_P.et"
   }
  }
  {
