@@ -70,6 +70,15 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 		
 		MapConfiguration mapConfigFullscreen = m_MapEntity.SetupMapConfig(EMapEntityMode.FULLSCREEN, configComp.GetGadgetMapConfig(), GetRootWidget());
 		m_MapEntity.OpenMap(mapConfigFullscreen);
+		GetGame().GetCallqueue().CallLater(OpenMapWrapZoomChange, 0);
+	}
+	void OpenMapWrapZoomChange()
+	{
+		GetGame().GetCallqueue().CallLater(OpenMapWrapZoomChangeWrap, 0);
+	}
+	void OpenMapWrapZoomChangeWrap()
+	{
+		m_MapEntity.ZoomOut();
 	}
 		
 	override void OnMenuInit()
