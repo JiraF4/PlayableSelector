@@ -23,6 +23,7 @@ class PS_ReplayWriter : ScriptComponent
 		if (!Replication.IsServer()) return;
 		string timeStamp = System.GetUnixTime().ToString();
 		m_sReplayFileName = "$profile:Replays/Replay" + timeStamp + ".bin";
+		m_iLastWorldTime = 0;
 		FileIO.MakeDirectory("$profile:Replays");
 		FileHandle replayFile = FileIO.OpenFile(m_sReplayFileName, FileMode.WRITE);
 	}
@@ -42,8 +43,8 @@ class PS_ReplayWriter : ScriptComponent
 	{
 		if (!Replication.IsServer()) return;
 		int timeStamp = GetGame().GetWorld().GetWorldTime();
-		if (m_iLastWorldTime != timeStamp) return;
-		
+		if (m_iLastWorldTime == timeStamp) return;
+		m_iLastWorldTime = timeStamp;
 		FileHandle replayFile = FileIO.OpenFile(m_sReplayFileName, FileMode.APPEND);
 		replayFile.Write(PS_EReplayType.WorldTime, 1); // only one byte for type
 		replayFile.Write(timeStamp, 4);
