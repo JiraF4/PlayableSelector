@@ -20,6 +20,7 @@ class PS_ReplayWriter : ScriptComponent
 	}
 	void CreateFile()
 	{
+		if (!Replication.IsServer()) return;
 		string timeStamp = System.GetUnixTime().ToString();
 		m_sReplayFileName = "$profile:Replays/Replay" + timeStamp + ".bin";
 		FileIO.MakeDirectory("$profile:Replays");
@@ -39,6 +40,7 @@ class PS_ReplayWriter : ScriptComponent
 	// PS_EReplayType.WorldTime
 	void TryInsertTimeStamp()
 	{
+		if (!Replication.IsServer()) return;
 		int timeStamp = GetGame().GetWorld().GetWorldTime();
 		if (m_iLastWorldTime != timeStamp) return;
 		
@@ -50,6 +52,7 @@ class PS_ReplayWriter : ScriptComponent
 	// PS_EReplayType.CharacterMove
 	void WriteCharacterMove(RplId characteRplId, IEntity character)
 	{
+		if (!Replication.IsServer()) return;
 		TryInsertTimeStamp();
 		
 		vector position = character.GetOrigin();
@@ -66,6 +69,7 @@ class PS_ReplayWriter : ScriptComponent
 	// PS_EReplayType.CharacterPossess
 	void WriteCharacterPossess(RplId characteRplId, int PlayerId)
 	{
+		if (!Replication.IsServer()) return;
 		TryInsertTimeStamp();
 		
 		FileHandle replayFile = FileIO.OpenFile(m_sReplayFileName, FileMode.APPEND);
@@ -77,6 +81,7 @@ class PS_ReplayWriter : ScriptComponent
 	// PS_EReplayType.CharacterRegistration
 	void WriteCharacterRegistration(RplId characteRplId, SCR_ChimeraCharacter character)
 	{
+		if (!Replication.IsServer()) return;
 		TryInsertTimeStamp();
 		
 		FactionKey factionKey = character.GetFaction().GetFactionKey();
@@ -92,6 +97,7 @@ class PS_ReplayWriter : ScriptComponent
 	// PS_EReplayType.PlayerRegistration
 	void WritePlayerRegistration(int PlayerId)
 	{
+		if (!Replication.IsServer()) return;
 		TryInsertTimeStamp();
 		
 		PlayerManager playerManager = GetGame().GetPlayerManager();
@@ -107,6 +113,7 @@ class PS_ReplayWriter : ScriptComponent
 	
 	void WriteCharacterDamageStateChanged(RplId characteRplId, EDamageState state)
 	{
+		if (!Replication.IsServer()) return;
 		TryInsertTimeStamp();
 		
 		FileHandle replayFile = FileIO.OpenFile(m_sReplayFileName, FileMode.APPEND);

@@ -74,7 +74,8 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 	}
 	void OpenMapWrapZoomChange()
 	{
-		GetGame().GetCallqueue().CallLater(OpenMapWrapZoomChangeWrap, 0);
+		// What i do with my life...
+		GetGame().GetCallqueue().CallLater(OpenMapWrapZoomChangeWrap, 0); // Another two frames
 	}
 	void OpenMapWrapZoomChangeWrap()
 	{

@@ -53,6 +53,9 @@ $grp PS_ManualMarker {
   m_fWorldSize 5
  }
 }
+Vehicle UAZ452_ambulance1 : "{43C4AF1EEBD001CE}Prefabs/Vehicles/Wheeled/UAZ452/UAZ452_ambulance.et" {
+ coords 98.432 1 110.79
+}
 SCR_MapMarkerEntity : "{DD74BE2BBAE07192}Prefabs/Markers/MapMarkerEntityBase.et" {
  coords 124.751 1 177.233
 }
