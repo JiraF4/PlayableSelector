@@ -19,6 +19,8 @@ class PS_ManualMarker : GenericEntity
 	protected float m_fWorldSize;
 	[Attribute("")]
 	protected string m_sDescription;
+	[Attribute("true")]
+	bool m_bUseWorldScale;
 	
 	Widget m_wRoot;
 	SCR_MapEntity m_MapEntity;
@@ -42,6 +44,11 @@ class PS_ManualMarker : GenericEntity
 		float screenYD = GetGame().GetWorkspace().DPIUnscale(screenY);
 		float sizeXD = GetGame().GetWorkspace().DPIUnscale(screenXEnd - screenX);
 		float sizeYD = GetGame().GetWorkspace().DPIUnscale(screenY - screenYEnd); // Y flip
+		if (!m_bUseWorldScale)
+		{
+			sizeXD = m_fWorldSize;
+			sizeYD = m_fWorldSize;
+		}
 		
 		m_hManualMarkerComponent.SetSlot(screenXD, screenYD, sizeXD, sizeYD);
 	}

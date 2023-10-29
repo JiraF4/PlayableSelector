@@ -27,8 +27,9 @@ $grp PS_ManualMarker {
   m_sImageSetGlow "{6980E83C053C9B5D}UI/Textures/Icons/icons_wrapperUI-128-glow.imageset"
   m_MarkerColor 0.141 0 0 1
   m_sQuadName "subscribe"
-  m_fWorldSize 20
+  m_fWorldSize 64
   m_sDescription "Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description "
+  m_bUseWorldScale 0
  }
  {
   coords 128.766 1 147.382
