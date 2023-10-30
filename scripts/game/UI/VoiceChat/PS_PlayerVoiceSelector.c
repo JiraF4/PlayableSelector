@@ -1,3 +1,7 @@
+// Widget displays info about player in voice chat.
+// Path: {086F282C8CE692F1}UI/VoiceChat/VoicePlayerSelector.layout
+// Part of voice chat list PS_VoiceChatList ({35DB604900C55B98}UI/VoiceChat/VoiceChatFrame.layout)
+
 class PS_PlayerVoiceSelector : SCR_ButtonBaseComponent
 {
 	protected int m_iPlayer;

@@ -1,19 +1,28 @@
 enum PS_EReplayType
 {
 	WorldTime,
-	CharacterMove,
+	EntityMove,
 	CharacterPossess,
 	CharacterRegistration,
+	VehicleRegistration,
 	PlayerRegistration,
-	CharacterDamageStateChanged,
+	EntityDamageStateChanged,
+	CharacterBoardVehicle,
+	CharacterUnBoardVehicle,
+	ProjectileShoot,
 	//...
+}
+
+enum PS_EReplayVehicleType
+{
+	BTR70,
 }
 
 /*
 	WorldTime
 	int - timeMS	
 
-	CharacterMove
+	EntityMove
 	int - RplId
 	float - position x
 	float - position z
@@ -27,13 +36,30 @@ enum PS_EReplayType
 	int - RplId
 	int - factionKey length
 	FactionKey - factionKey
+	
+	VehicleRegistration
+	int - RplId
+	int - PS_EReplayVehicleType
 
 	PlayerRegistration
 	int - playerId
 	int - player name length
 	string - player name
 
-	CharacterDamageStateChanged
+	EntityDamageStateChanged
 	int - RplId
 	int - EDamageState
+	
+	CharacterBoardVehicle
+	int - RplId vehicle id
+	int - playerId
+
+	CharacterUnBoardVehicle
+	int - RplId vehicle id
+	int - playerId
+
+	ProjectileShoot
+	int - RplId shoot entity
+	float - hit position x
+	float - hit position z
 */

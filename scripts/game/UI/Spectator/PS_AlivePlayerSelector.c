@@ -1,3 +1,7 @@
+// Widget displays info about player in list of alive players.
+// Path: {20DCB7288210C151}UI/Spectator/AlivePlayerSelector.layout
+// Part of alive players list PS_AlivePlayerList ({18D3CF175C9AA974}UI/Spectator/AlivePlayersList.layout)
+
 class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 {
 	protected int m_iPlayer;

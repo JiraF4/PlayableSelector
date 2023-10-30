@@ -50,8 +50,8 @@ class PS_ReplayWriter : ScriptComponent
 		replayFile.Write(timeStamp, 4);
 	}
 	
-	// PS_EReplayType.CharacterMove
-	void WriteCharacterMove(RplId characteRplId, IEntity character)
+	// PS_EReplayType.EntityMove
+	void WriteEntityMove(RplId characteRplId, IEntity character)
 	{
 		if (!Replication.IsServer()) return;
 		TryInsertTimeStamp();
@@ -60,7 +60,7 @@ class PS_ReplayWriter : ScriptComponent
 		vector rotation = character.GetYawPitchRoll();
 		
 		FileHandle replayFile = FileIO.OpenFile(m_sReplayFileName, FileMode.APPEND);
-		replayFile.Write(PS_EReplayType.CharacterMove, 1); // only one byte for type
+		replayFile.Write(PS_EReplayType.EntityMove, 1); // only one byte for type
 		replayFile.Write(characteRplId, 4); // rplId
 		replayFile.Write(position[0], -1); // position x
 		replayFile.Write(position[2], -1); // position z
@@ -112,14 +112,64 @@ class PS_ReplayWriter : ScriptComponent
 		replayFile.Write(playerName, playerNameLength); // playerName
 	}
 	
+	// PS_EReplayType.EntityDamageStateChanged
 	void WriteCharacterDamageStateChanged(RplId characteRplId, EDamageState state)
 	{
 		if (!Replication.IsServer()) return;
 		TryInsertTimeStamp();
 		
 		FileHandle replayFile = FileIO.OpenFile(m_sReplayFileName, FileMode.APPEND);
-		replayFile.Write(PS_EReplayType.CharacterDamageStateChanged, 1); // only one byte for type
+		replayFile.Write(PS_EReplayType.EntityDamageStateChanged, 1); // only one byte for type
 		replayFile.Write(characteRplId, 4); // rplId
 		replayFile.Write(state, 4); // EDamageState
+	}
+	
+	// PS_EReplayType.VehicleRegistration
+	void WriteVehicleRegistration(RplId vehicleRplId, PS_EReplayVehicleType vehicleType)
+	{
+		if (!Replication.IsServer()) return;
+		TryInsertTimeStamp();
+		
+		FileHandle replayFile = FileIO.OpenFile(m_sReplayFileName, FileMode.APPEND);
+		replayFile.Write(PS_EReplayType.VehicleRegistration, 1); // only one byte for type
+		replayFile.Write(vehicleRplId, 4); // rplId
+		replayFile.Write(vehicleType, 4); // PS_EReplayVehicleType
+	}
+	
+	// PS_EReplayType.CharacterBoardVehicle
+	void WriteCharacterBoardVehicle(RplId vehicleRplId, int PlayerId)
+	{
+		if (!Replication.IsServer()) return;
+		TryInsertTimeStamp();
+		
+		FileHandle replayFile = FileIO.OpenFile(m_sReplayFileName, FileMode.APPEND);
+		replayFile.Write(PS_EReplayType.CharacterBoardVehicle, 1); // only one byte for type
+		replayFile.Write(vehicleRplId, 4); // rplId
+		replayFile.Write(PlayerId, 4); // playerId
+	}
+	
+	// PS_EReplayType.CharacterUnBoardVehicle
+	void WriteCharacterUnBoardVehicle(RplId vehicleRplId, int PlayerId)
+	{
+		if (!Replication.IsServer()) return;
+		TryInsertTimeStamp();
+		
+		FileHandle replayFile = FileIO.OpenFile(m_sReplayFileName, FileMode.APPEND);
+		replayFile.Write(PS_EReplayType.CharacterUnBoardVehicle, 1); // only one byte for type
+		replayFile.Write(vehicleRplId, 4); // rplId
+		replayFile.Write(PlayerId, 4); // playerId
+	}
+	
+	// PS_EReplayType.ProjectileShoot
+	void WriteProjectileShoot(RplId entityId, float hitPositionX, float hitPositiony)
+	{
+		if (!Replication.IsServer()) return;
+		TryInsertTimeStamp();
+		
+		FileHandle replayFile = FileIO.OpenFile(m_sReplayFileName, FileMode.APPEND);
+		replayFile.Write(PS_EReplayType.ProjectileShoot, 1); // only one byte for type
+		replayFile.Write(entityId, 4); // rplId
+		replayFile.Write(hitPositionX, 4); // hitPositionX
+		replayFile.Write(hitPositiony, 4); // hitPositiony
 	}
 }

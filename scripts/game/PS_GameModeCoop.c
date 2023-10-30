@@ -2,12 +2,10 @@
 // Open lobby on game start
 // Disable respawn logic
 
-//------------------------------------------------------------------------------------------------
 class PS_GameModeCoopClass: SCR_BaseGameModeClass
 {
 };
 
-//------------------------------------------------------------------------------------------------
 class PS_GameModeCoop : SCR_BaseGameMode
 {
 	[Attribute("120000", UIWidgets.EditBox, "Time during which disconnected players reserve playable for reconnection in ms, -1 for infinity time", "", category: WB_GAME_MODE_CATEGORY)]
@@ -25,40 +23,15 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	[Attribute("1", uiwidget: UIWidgets.CheckBox, "Markers can place only commanders on briefing.", category: WB_GAME_MODE_CATEGORY)]
 	protected bool m_bMarkersOnlyOnBriefing;
 	
+	// ------------------------------------------ Events ------------------------------------------
 	override void OnGameStart()
 	{	
 		super.OnGameStart();
 		
 		if (RplSession.Mode() != RplMode.Dedicated) {
 			GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.WaitScreen);
-			GetGame().GetInputManager().AddActionListener("OpenLobby", EActionTrigger.DOWN, OpenLobby);
+			GetGame().GetInputManager().AddActionListener("OpenLobby", EActionTrigger.DOWN, Action_OpenLobby);
 		}
-	}
-	
-	void OpenLobby()
-	{
-		PlayerController playerController = GetGame().GetPlayerController();
-		PlayerManager playerManager = GetGame().GetPlayerManager();
-		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
-		
-		if (!m_bCanOpenLobbyInGame && playerRole != EPlayerRole.ADMINISTRATOR) return;
-		GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.CoopLobby);
-	}
-	
-	
-	void OpenCurrentMenuOnClients()
-	{
-		if (RplSession.Mode() != RplMode.Dedicated) RPC_OpenCurrentMenu(GetState());
-		Rpc(RPC_OpenCurrentMenu, GetState());
-	}
-	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	void RPC_OpenCurrentMenu(SCR_EGameModeState state)
-	{
-		PlayerController playerController = GetGame().GetPlayerController();
-		if (!playerController) return;
-		if (playerController.GetPlayerId() == 0) return;
-		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-		playableController.SwitchToMenu(state);
 	}
 	
 	protected override void OnPlayerConnected(int playerId)
@@ -67,38 +40,12 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		PS_ReplayWriter.GetInstance().WritePlayerRegistration(playerId); // Register new player to replay
 	}
 	
-	void SpawnInitialEntity(int playerId)
-	{
-		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
-		VoNRoomsManager.MoveToRoom(playerId, "", "");
-		
-        Resource resource = Resource.Load("{E1B415916312F029}Prefabs/InitialPlayer.et");
-		EntitySpawnParams params = new EntitySpawnParams();
-		GetTransform(params.Transform);		
-        IEntity initialEntity = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
-		PlayerManager playerManager = GetGame().GetPlayerManager();
-		SCR_PlayerController playerController = SCR_PlayerController.Cast(playerManager.GetPlayerController(playerId));
-		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-		playableController.SetInitialEntity(initialEntity);
-		playerController.SetInitialMainEntity(initialEntity);
-	}
-	
 	override void OnPlayerKilled(int playerId, IEntity player, IEntity killer)
 	{
 		if (!IsMaster()) return;
 		
 		// TODO: remove CallLater
 		GetGame().GetCallqueue().CallLater(SwitchToInitialEntity, 200, false, playerId);
-	}
-	void SwitchToInitialEntity(int playerId)
-	{
-		PlayerManager playerManager = GetGame().GetPlayerManager();
-		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		playableManager.SetPlayerPlayable(playerId, RplId.Invalid());
-		playableManager.ApplyPlayable(playerId);
-		
-		PS_VoNRoomsManager.GetInstance().MoveToRoom(playerId, "", "");
-		
 	}
 	
 	// Update state for disconnected and start timer if need
@@ -120,6 +67,62 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		playerController.SetInitialMainEntity(playableController.GetInitialEntity());
 		
 		super.OnPlayerDisconnected(playerId, cause, timeout);
+	}
+	
+	// ------------------------------------------ Actions ------------------------------------------
+	// Open lobby in game
+	void Action_OpenLobby()
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
+		
+		if (!m_bCanOpenLobbyInGame && playerRole != EPlayerRole.ADMINISTRATOR) return;
+		GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.CoopLobby);
+	}
+	
+	// Force open current game state menu
+	void OpenCurrentMenuOnClients()
+	{
+		if (RplSession.Mode() != RplMode.Dedicated) RPC_OpenCurrentMenu(GetState());
+		Rpc(RPC_OpenCurrentMenu, GetState());
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RPC_OpenCurrentMenu(SCR_EGameModeState state)
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		if (!playerController) return;
+		if (playerController.GetPlayerId() == 0) return;
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		playableController.SwitchToMenu(state);
+	}
+	
+	
+	void SpawnInitialEntity(int playerId)
+	{
+		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
+		VoNRoomsManager.MoveToRoom(playerId, "", "");
+		
+        Resource resource = Resource.Load("{E1B415916312F029}Prefabs/InitialPlayer.et");
+		EntitySpawnParams params = new EntitySpawnParams();
+		GetTransform(params.Transform);		
+        IEntity initialEntity = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		SCR_PlayerController playerController = SCR_PlayerController.Cast(playerManager.GetPlayerController(playerId));
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		playableController.SetInitialEntity(initialEntity);
+		playerController.SetInitialMainEntity(initialEntity);
+	}
+	
+	void SwitchToInitialEntity(int playerId)
+	{
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		playableManager.SetPlayerPlayable(playerId, RplId.Invalid());
+		playableManager.ApplyPlayable(playerId);
+		
+		PS_VoNRoomsManager.GetInstance().MoveToRoom(playerId, "", "");
+		
 	}
 	
 	// If after m_iAvailableReconnectTime player still disconnected release playable
@@ -192,7 +195,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		OpenCurrentMenuOnClients();
 	}
 	
-	// Global flags
+	// ------------------------------------------ Global flags ------------------------------------------
 	bool IsAdminMode()
 	{
 		return m_bAdminMode;
@@ -220,7 +223,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		m_bFactionLock = !m_bFactionLock;
 	}
 	
-	// JIP Replication
+	// ------------------------------------------ JIP Replication ------------------------------------------
 	override bool RplSave(ScriptBitWriter writer)
 	{
 		

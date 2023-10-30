@@ -1,3 +1,7 @@
+// Widget displays info about voice chat room.
+// Path: {C976E42779159507}UI/VoiceChat/VoiceRoomHeader.layout
+// Part of voice chat list PS_VoiceChatList ({35DB604900C55B98}UI/VoiceChat/VoiceChatFrame.layout)
+
 class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 {
 	protected ResourceName m_sImageSet = "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset";

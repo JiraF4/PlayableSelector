@@ -20,7 +20,7 @@ class PS_PlayableComponent : ScriptComponent
 	protected void PositionLogger()
 	{
 		// Regulary write position to replay
-		PS_ReplayWriter.GetInstance().WriteCharacterMove(m_id, m_cOwner);
+		PS_ReplayWriter.GetInstance().WriteEntityMove(m_id, m_cOwner);
 		GetGame().GetCallqueue().CallLater(PositionLogger, 100);
 	}
 	

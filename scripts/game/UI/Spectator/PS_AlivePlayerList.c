@@ -1,3 +1,6 @@
+// Widget displays info about alive players in game.
+// Path: {18D3CF175C9AA974}UI/Spectator/AlivePlayersList.layout
+
 class PS_AlivePlayerList : ScriptedWidgetComponent
 {
 	protected ResourceName m_sAlivePlayerSelectorPrefab = "{20DCB7288210C151}UI/Spectator/AlivePlayerSelector.layout";

@@ -1,3 +1,6 @@
+// Widget displays info about voice rooms in voice chat.
+// Path: {35DB604900C55B98}UI/VoiceChat/VoiceChatFrame.layout
+
 class PS_VoiceChatList : ScriptedWidgetComponent
 {
 	protected ResourceName m_sPlayerVoiceSelectorPrefab = "{086F282C8CE692F1}UI/VoiceChat/VoicePlayerSelector.layout";
