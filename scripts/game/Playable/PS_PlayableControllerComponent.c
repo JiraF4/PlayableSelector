@@ -4,7 +4,6 @@ class PS_PlayableControllerComponentClass: ScriptComponentClass
 {
 }
 
-
 // We can send rpc only from authority
 // And here we are, modifying player controller since it's only what we have on client.
 [ComponentEditorProps(icon: HYBRID_COMPONENT_ICON)]
@@ -203,15 +202,6 @@ class PS_PlayableControllerComponent : ScriptComponent
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
 		if (thisPlayerController.GetPlayerId() != playerId && playerRole != EPlayerRole.ADMINISTRATOR) return;
 		
-		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		if (gameMode.GetState() == SCR_EGameModeState.BRIEFING) { // On briefing also separate to squads
-			RplId playableId = playableManager.GetPlayableByPlayer(playerId);
-			int GroupCallSign = playableManager.GetGroupCallsignByPlayable(playableId);
-			SetVoNKey("Menu" + factionKey + GroupCallSign.ToString());
-		}
-		else SetVoNKey("Menu" + factionKey); // Сhange VoN zone
-		
-		
 		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
 		VoNRoomsManager.MoveToRoom(playerId, factionKey, roomName);
 	}
@@ -284,6 +274,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		IEntity entity = thisPlayerController.GetControlledEntity();
 		EntitySpawnParams params = new EntitySpawnParams();
 		if (from) from.GetTransform(params.Transform);
+		MoveToVoNRoom(thisPlayerController.GetPlayerId(), "", "");
         Resource resource = Resource.Load("{127C64F4E93A82BC}Prefabs/Editor/Camera/ManualCameraPhoto.et");
         m_eCamera = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
 		if (m_vObserverPosition != "0 0 0") { 

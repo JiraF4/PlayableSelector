@@ -97,7 +97,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		playableController.SwitchToMenu(state);
 	}
 	
-	
 	void SpawnInitialEntity(int playerId)
 	{
 		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
@@ -120,9 +119,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		playableManager.SetPlayerPlayable(playerId, RplId.Invalid());
 		playableManager.ApplyPlayable(playerId);
-		
-		PS_VoNRoomsManager.GetInstance().MoveToRoom(playerId, "", "");
-		
 	}
 	
 	// If after m_iAvailableReconnectTime player still disconnected release playable

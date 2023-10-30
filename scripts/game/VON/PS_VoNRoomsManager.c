@@ -64,6 +64,19 @@ class PS_VoNRoomsManager : ScriptComponent
 		int roomId = GetOrCreateRoomWithFaction(factionKey, roomName);
 		vector roomPosition = GetOrCreateRoomPosition(roomId);
 		
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		PlayerController playerController = playerManager.GetPlayerController(playerId);
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		SCR_EGameModeState state = gameMode.GetState();
+		if (state == SCR_EGameModeState.BRIEFING) { // On briefing also separate to squads
+			RplId playableId = playableManager.GetPlayableByPlayer(playerId);
+			int GroupCallSign = playableManager.GetGroupCallsignByPlayable(playableId);
+			playableController.SetVoNKey("Menu" + factionKey + GroupCallSign.ToString());
+		}
+		else playableController.SetVoNKey("Menu" + factionKey); // Сhange VoN zone
+		
 		RPC_MoveToRoom(playerId, roomId, roomPosition);
 		Rpc(RPC_MoveToRoom, playerId, roomId, roomPosition);
 	}
