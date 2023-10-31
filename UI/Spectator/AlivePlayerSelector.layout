@@ -128,7 +128,7 @@ ButtonWidgetClass {
       SizeY 44
       OffsetBottom -44
      }
-     Color 0.376 0.749 0.749 1
+     Color 0.502 0 0.376 1
     }
    }
   }

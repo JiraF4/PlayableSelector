@@ -13,10 +13,12 @@ class PS_PlayerVoiceSelector : SCR_ButtonBaseComponent
 	TextWidget m_wPlayerName;
 	PS_VoiceButton m_wVoiceHideableButton;
 	TextWidget m_wGroupName;
+	ImageWidget m_wCharacterFactionColor;
 	
 	override void HandlerAttached(Widget w)
 	{
 		super.HandlerAttached(w);
+		m_wCharacterFactionColor = ImageWidget.Cast(w.FindAnyWidget("CharacterFactionColor"));
 		m_wUnitIcon = ImageWidget.Cast(w.FindAnyWidget("UnitIcon"));
 		m_wLeaderIcon = ImageWidget.Cast(w.FindAnyWidget("LeaderIcon"));
 		m_wPlayerName = TextWidget.Cast(w.FindAnyWidget("PlayerName"));
@@ -67,6 +69,7 @@ class PS_PlayerVoiceSelector : SCR_ButtonBaseComponent
 		m_wPlayerName.SetText(playerName);
 		m_wVoiceHideableButton.Update();
 		m_wLeaderIcon.SetVisible(playableManager.IsPlayerGroupLeader(m_iPlayer));
+		m_wCharacterFactionColor.SetColor(faction.GetFactionColor());
 		
 		if (playerRole == EPlayerRole.ADMINISTRATOR) m_wPlayerName.SetColor(Color.FromInt(0xfff2a34b));
 		else m_wPlayerName.SetColor(Color.FromInt(0xffffffff));
