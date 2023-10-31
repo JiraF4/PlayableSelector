@@ -136,5 +136,70 @@ FrameWidgetClass {
     }
    }
   }
+  ButtonWidgetClass "{5EBEE9F517B20AEA}" {
+   Name "KickButton"
+   Slot FrameWidgetSlot "{5EA8C93F5E685F59}" {
+    Anchor 0 0 0 0
+    PositionX 180
+    OffsetLeft 180
+    PositionY 0
+    OffsetTop 0
+    SizeX 44
+    OffsetRight -224
+    SizeY 44
+    OffsetBottom -44
+   }
+   Color 0 1 0.019 0
+   components {
+    SCR_ButtonBaseComponent "{5EAB239441B528D5}" {
+     m_sSoundHovered ""
+     m_sSoundClicked ""
+     m_BackgroundDefault 1 1 1 0
+     m_BackgroundHovered 1 1 1 0.162
+     m_BackgroundSelected 1 1 1 0
+     m_BackgroundSelectedHovered 1 1 1 0.162
+     m_BackgroundClicked 1 1 1 0
+     m_bShowBorderOnFocus 0
+     m_bNoBorderAnimation 1
+    }
+   }
+   "no focus" 1
+   {
+    FrameWidgetClass "{5EBEE9F517B20AEC}" {
+     Name "KickButtonFrame"
+     Slot ButtonWidgetSlot "{5EA8C93CB4241314}" {
+     }
+     {
+      ImageWidgetClass "{5EBEE9F517B20AEE}" {
+       Name "Background"
+       Slot FrameWidgetSlot "{5D6E8206B132EE77}" {
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX 44
+        OffsetRight -44
+        SizeY 44
+        OffsetBottom -44
+       }
+      }
+      ImageWidgetClass "{5EBEE9F517B20AEF}" {
+       Name "KickImage"
+       Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
+        OffsetLeft 0
+        OffsetTop 0
+        SizeX 44
+        OffsetRight -44
+        SizeY 44
+        OffsetBottom -44
+       }
+       Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
+       Image "kickCommandAlt"
+       Size 32 32
+      }
+     }
+    }
+   }
+  }
  }
 }
