@@ -14,6 +14,9 @@ PS_GameModeCoop PS_GameModeCoop1 : "{F64CCAF87CCCF567}Prefabs/MP/Modes/PS_GameMo
  components {
   PS_ReplayWriter "{5EB97125F91F6AAB}" {
   }
+  SCR_PreGameGameModeStateComponent "{5EA8C9324DF2DCC1}" {
+   m_bDisableControls 0
+  }
  }
  coords 3.45 1.663 3.493
  m_bKillRedundantUnits 1

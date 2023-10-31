@@ -9,8 +9,8 @@ modded enum ChimeraMenuPreset : ScriptMenuPresetEnum
 //! Fullscreen map menu
 class PS_FadeToGame: ChimeraMenuBase
 {	
-	protected float m_fFadeTime = 5.0;
-	protected float m_fFadeMaxTime = 5.0;
+	protected float m_fFadeTime = 1.0;
+	protected float m_fFadeMaxTime = 1.0;
 	
 	protected ImageWidget m_wFade;
 	
@@ -22,7 +22,7 @@ class PS_FadeToGame: ChimeraMenuBase
 	override void OnMenuUpdate(float tDelta)
 	{
 		m_fFadeTime = m_fFadeTime - tDelta;
-		m_wFade.SetOpacity(0.6 * (m_fFadeTime / m_fFadeMaxTime) + 0.4);
+		m_wFade.SetOpacity(0.8 * (m_fFadeTime / m_fFadeMaxTime) + 0.5);
 		if (m_fFadeTime <= 0) Close();
 	}
 };

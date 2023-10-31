@@ -282,6 +282,9 @@ class PS_PlayableControllerComponent : ScriptComponent
 		if (m_vObserverPosition != "0 0 0") { 
 			m_eCamera.SetOrigin(m_vObserverPosition);
 			m_vObserverPosition = "0 0 0";
+		} else {
+			SCR_MapEntity mapEntity = SCR_MapEntity.GetMapInstance();
+			m_eCamera.SetOrigin(mapEntity.Size() / 2.0 + vector.Up * 100);
 		}
 		GetGame().GetCameraManager().SetCamera(CameraBase.Cast(m_eCamera));
 	}
