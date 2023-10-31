@@ -93,7 +93,7 @@ class PS_CharacterSelector : SCR_ButtonComponent
 		m_wUnitIcon.LoadImageTexture(0, uiInfo.GetIconPath());
 		m_wStateIcon.LoadImageFromSet(0, m_sUIWrapper, "server-unlocked");
 		m_wCharacterStatus.SetText("-");
-		if (faction) m_wCharacterFactionColor.SetColor(faction.GetFactionColor());
+		if (faction) m_wCharacterFactionColor.SetColor(faction.GetOutlineFactionColor());
 		else m_wCharacterFactionColor.SetColor(Color.FromInt(0xFF2c2c2c));
 		m_wCharacterClassName.SetText(m_playable.GetName());
 		m_wCharacterStatus.SetColor(Color.FromInt(0xFFFFFFFF));

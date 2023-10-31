@@ -8,6 +8,18 @@ FrameWidgetClass {
   }
  }
  {
+  ImageWidgetClass "{5EBEE9F3BA2E0A63}" {
+   Name "CharacterFactionColor"
+   Slot FrameWidgetSlot "{5D6D1B9A2749B73B}" {
+    OffsetLeft 0
+    OffsetTop 0
+    SizeX 6
+    OffsetRight -6
+    SizeY 44
+    OffsetBottom -44
+   }
+   Color 0.376 0.749 0.749 1
+  }
   ImageWidgetClass "{5EB2906F65B84659}" {
    Prefab "{5EB1176784E2EFB5}"
    Name "LeaderIcon"
@@ -40,14 +52,14 @@ FrameWidgetClass {
   FrameWidgetClass "{5EB1176F4695C767}" {
    Name "UnitIconFrame"
    Slot FrameWidgetSlot "{5EB1176F4695FD6B}" {
-    PositionX 0
-    OffsetLeft 0
+    PositionX 6
+    OffsetLeft 6
     PositionY 0
     OffsetTop 0
-    SizeX 49.365
-    OffsetRight -49.365
-    SizeY 44.178
-    OffsetBottom -44.178
+    SizeX 44
+    OffsetRight -50
+    SizeY 44
+    OffsetBottom -44
    }
    "Inherit Color" 1
    {
@@ -55,14 +67,14 @@ FrameWidgetClass {
      Name "UnitIcon"
      Slot FrameWidgetSlot "{5E7CF059F272107C}" {
       Anchor 0 0 0 0
-      PositionX -23.617
-      OffsetLeft -23.617
-      PositionY -25.808
-      OffsetTop -25.808
+      PositionX -26
+      OffsetLeft -26
+      PositionY -26
+      OffsetTop -26
       SizeX 96
-      OffsetRight -72.383
+      OffsetRight -70
       SizeY 96
-      OffsetBottom -70.192
+      OffsetBottom -70
      }
      "Inherit Color" 1
      Texture "{00B30C29FAF85E1C}UI/Textures/Editor/EditableEntities/Characters/EditableEntity_Character_AntiTank.edds"

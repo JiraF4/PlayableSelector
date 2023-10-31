@@ -9,7 +9,6 @@ class PS_PlayerSelector : SCR_ButtonBaseComponent
 	protected ResourceName m_sImageSet = "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset";
 	
 	ImageWidget m_wPlayerFactionColor;
-	ImageWidget m_wSelectionFactionColor;
 	TextWidget m_wPlayerName;
 	TextWidget m_wPlayerFactionName;
 	ImageWidget m_wReadyImage;
@@ -23,7 +22,6 @@ class PS_PlayerSelector : SCR_ButtonBaseComponent
 	{
 		super.HandlerAttached(w);
 		m_wPlayerFactionColor = ImageWidget.Cast(w.FindAnyWidget("PlayerFactionColor"));
-		m_wSelectionFactionColor = ImageWidget.Cast(w.FindAnyWidget("PlayerSelectionColor"));
 		m_wPlayerName = TextWidget.Cast(w.FindAnyWidget("PlayerName"));
 		m_wPlayerFactionName = TextWidget.Cast(w.FindAnyWidget("PlayerFactionName"));
 		m_wReadyImage = ImageWidget.Cast(w.FindAnyWidget("ReadyImage"));
@@ -70,11 +68,9 @@ class PS_PlayerSelector : SCR_ButtonBaseComponent
 			m_wPlayerFactionColor.SetColor(faction.GetOutlineFactionColor());
 			m_wPlayerFactionName.SetText(faction.GetFactionName());
 		}else{
-			m_wPlayerFactionColor.SetColor(Color.FromRGBA(0, 0, 0, 0));
+			m_wPlayerFactionColor.SetColor(Color.FromInt(0xFF2c2c2c));
 			m_wPlayerFactionName.SetText("-");
 		}
-		
-		m_wSelectionFactionColor.SetVisible(IsToggled());
 		
 		// if admin set player color
 		m_wPlayerName.SetText(playerManager.GetPlayerName(m_iPlayer));

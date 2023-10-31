@@ -22,26 +22,23 @@ ButtonWidgetClass {
    Slot ButtonWidgetSlot "{5D6D352BAC1362D8}" {
    }
    {
+    ImageWidgetClass "{5EA8C93C82EFEDBC}" {
+     Name "Background"
+     Slot FrameWidgetSlot "{5D6E8206B132EE77}" {
+      PositionX 0
+      OffsetLeft 0
+      PositionY 0
+      OffsetTop 0
+      SizeX 480
+      OffsetRight -480
+      SizeY 40
+      OffsetBottom -40
+     }
+    }
     ImageWidgetClass "{5D6D1B96C41F5C45}" {
      Prefab "{5D6D1B9A2749B71D}"
      Name "PlayerFactionColor"
      Slot FrameWidgetSlot "{5D6D1B96C41F631C}" {
-      PositionX 6
-      OffsetLeft 6
-      PositionY 0
-      OffsetTop 0
-      SizeX 6
-      OffsetRight -12
-      SizeY 40
-      OffsetBottom -40
-     }
-     Color 0.376 0.749 0.749 1
-    }
-    ImageWidgetClass "{5EA8C92131464825}" {
-     Prefab "{5D6D1B9A2749B71D}"
-     Name "PlayerSelectionColor"
-     Slot FrameWidgetSlot "{5D6D1B96C41F631C}" {
-      Anchor 0 0 0 0
       PositionX 0
       OffsetLeft 0
       PositionY 0
@@ -51,18 +48,18 @@ ButtonWidgetClass {
       SizeY 40
       OffsetBottom -40
      }
-     Color 0.561 0.439 0.071 1
+     Color 0.376 0.749 0.749 1
     }
     TextWidgetClass "{5D6D1B96C41F639B}" {
      Prefab "{5D6D1B99A45E5176}"
      Name "PlayerName"
      Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
-      PositionX 16
-      OffsetLeft 16
+      PositionX 10
+      OffsetLeft 10
       PositionY 0
       OffsetTop 0
       SizeX 216
-      OffsetRight -232
+      OffsetRight -226
       SizeY 40
       OffsetBottom -40
      }
@@ -105,19 +102,6 @@ ButtonWidgetClass {
      Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
      Image "check"
      Size 32 32
-    }
-    ImageWidgetClass "{5EA8C93C82EFEDBC}" {
-     Name "Background"
-     Slot FrameWidgetSlot "{5D6E8206B132EE77}" {
-      PositionX 0
-      OffsetLeft 0
-      PositionY 0
-      OffsetTop 0
-      SizeX 480
-      OffsetRight -480
-      SizeY 40
-      OffsetBottom -40
-     }
     }
     PanelWidgetClass "{5EA8C92152DB446E}" {
      Name "Border"
