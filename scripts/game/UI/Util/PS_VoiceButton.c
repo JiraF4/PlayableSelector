@@ -29,7 +29,7 @@ class PS_VoiceButton : PS_HideableButton
 		{
 			if (von.IsPlayerSpeech(m_iPlayer)) {
 				
-				if (von.IsPlayerSpeechInChanel(m_iPlayer)) m_wImage.LoadImageFromSet(0, m_sImageSet, "VON_frequency");
+				if (von.IsPlayerSpeechInChanel(m_iPlayer)) m_wImage.LoadImageFromSet(0, m_sImageSetPS, "VoNChannel");
 				else m_wImage.LoadImageFromSet(0, m_sImageSetPS, "VoNDirect");
 			}
 			else m_wImage.LoadImageFromSet(0, m_sImageSetPS, "VoNIdle");

@@ -140,5 +140,11 @@ ImageSetClass {
    Size 64 64
    Flags 0
   }
+  ImageSetDefClass VoNChannel {
+   Name "VoNChannel"
+   Pos 1600 0
+   Size 64 64
+   Flags 0
+  }
  }
 }
