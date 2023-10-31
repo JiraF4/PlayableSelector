@@ -272,6 +272,25 @@ class PS_PlayableManager : ScriptComponent
 		m_playersFaction[playerId] = factionKey;
 	}
 	
+	
+	void SetPlayablePlayer(RplId PlayableId, int playerId)
+	{
+		RPC_SetPlayablePlayer(PlayableId, playerId);
+		Rpc(RPC_SetPlayablePlayer, PlayableId, playerId);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RPC_SetPlayablePlayer(RplId PlayableId, int playerId)
+	{
+		if (playerId > 0) {
+			RplId oldPlayable = GetPlayableByPlayer(playerId);
+			if (oldPlayable != RplId.Invalid()) m_playablePlayers[oldPlayable] = -1;
+		}
+			
+		m_playersPlayable[playerId] = PlayableId;
+		m_playablePlayers[PlayableId] = playerId;
+	}
+	
+	
 	void SetPlayerPlayable(int playerId, RplId PlayableId)
 	{
 		RPC_SetPlayerPlayable(playerId, PlayableId);
