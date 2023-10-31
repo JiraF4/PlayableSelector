@@ -1,0 +1,20 @@
+FrameWidgetClass {
+ Name "FactionReportFrame"
+ Slot LayoutSlot "{5EBC7340F5460E29}" {
+  Padding 10 10 10 10
+ }
+ {
+  ImageWidgetClass "{5EBC7340A200F4BE}" {
+   Name "Background"
+   Slot FrameWidgetSlot "{5D6E8206B132EE77}" {
+    OffsetLeft 0
+    OffsetTop 0
+    SizeX 560
+    OffsetRight -560
+    SizeY 710
+    OffsetBottom -710
+   }
+   Color 0 0 0 1
+  }
+ }
+}

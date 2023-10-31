@@ -9,6 +9,7 @@ class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 	ImageWidget m_wJoinRoomImage;
 	TextWidget m_wRoomName;
 	string m_sRoomName;
+	int m_iRoomId;
 	SCR_Faction m_fFaction;
 	
 	override void HandlerAttached(Widget w)
@@ -20,11 +21,12 @@ class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 		GetGame().GetCallqueue().CallLater(AddOnClick, 0);
 	}
 	
-	void SetRoomName(SCR_Faction faction, string roomName)
+	void SetRoomName(SCR_Faction faction, string roomName, int roomId)
 	{
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		m_sRoomName = roomName;
 		m_fFaction = faction;
+		m_iRoomId = roomId;
 		
 		string name = roomName;
 		if (name.IsDigitAt(0)) {
@@ -41,9 +43,16 @@ class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 	
 	void UpdateInfo()
 	{
+		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		PlayerController playerController = GetGame().GetPlayerController();
 		int playerId = playerController.GetPlayerId();
+		
+		if (VoNRoomsManager.GetPlayerRoom(playerId) == m_iRoomId) {
+			m_wJoinRoomImage.SetVisible(false);
+			return;
+		}
+		m_wJoinRoomImage.SetVisible(true);
 		
 		// Bad hardcoded staff here
 		if (m_sRoomName == "#PS-VoNRoom_Command")

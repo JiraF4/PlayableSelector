@@ -49,8 +49,8 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 		
 		GetGame().GetInputManager().AddActionListener("VONDirect", EActionTrigger.DOWN, Action_LobbyVoNOn);
 		GetGame().GetInputManager().AddActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
-		GetGame().GetInputManager().AddActionListener("VONChannelToggle", EActionTrigger.DOWN, Action_LobbyVoNChannelOn);
-		GetGame().GetInputManager().AddActionListener("VONChannelToggle", EActionTrigger.UP, Action_LobbyVoNChannelOff);
+		GetGame().GetInputManager().AddActionListener("VONChannel", EActionTrigger.DOWN, Action_LobbyVoNChannelOn);
+		GetGame().GetInputManager().AddActionListener("VONChannel", EActionTrigger.UP, Action_LobbyVoNChannelOff);
 		GetGame().GetInputManager().AddActionListener("MenuBack", EActionTrigger.DOWN, Action_Exit);
 		
 		GetGame().GetCallqueue().CallLater(UpdateCycle, 0);
@@ -103,8 +103,8 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 		
 		GetGame().GetInputManager().RemoveActionListener("VONDirect", EActionTrigger.DOWN, Action_LobbyVoNOn);
 		GetGame().GetInputManager().RemoveActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
-		GetGame().GetInputManager().RemoveActionListener("VONChannelToggle", EActionTrigger.DOWN, Action_LobbyVoNChannelOn);
-		GetGame().GetInputManager().RemoveActionListener("VONChannelToggle", EActionTrigger.UP, Action_LobbyVoNChannelOff);
+		GetGame().GetInputManager().RemoveActionListener("VONChannel", EActionTrigger.DOWN, Action_LobbyVoNChannelOn);
+		GetGame().GetInputManager().RemoveActionListener("VONChannel", EActionTrigger.UP, Action_LobbyVoNChannelOff);
 		GetGame().GetInputManager().RemoveActionListener("MenuBack", EActionTrigger.DOWN, Action_Exit);
 	}
 	

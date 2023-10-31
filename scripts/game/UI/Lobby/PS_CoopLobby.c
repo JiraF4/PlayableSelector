@@ -145,8 +145,8 @@ class PS_CoopLobby: MenuBase
 		
 		GetGame().GetInputManager().AddActionListener("VONDirect", EActionTrigger.DOWN, Action_LobbyVoNOn);
 		GetGame().GetInputManager().AddActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
-		GetGame().GetInputManager().AddActionListener("VONChannelToggle", EActionTrigger.DOWN, Action_LobbyVoNChannelOn);
-		GetGame().GetInputManager().AddActionListener("VONChannelToggle", EActionTrigger.UP, Action_LobbyVoNChannelOff);
+		GetGame().GetInputManager().AddActionListener("VONChannel", EActionTrigger.DOWN, Action_LobbyVoNChannelOn);
+		GetGame().GetInputManager().AddActionListener("VONChannel", EActionTrigger.UP, Action_LobbyVoNChannelOff);
 				
 		GetGame().GetCallqueue().CallLater(AwaitPlayerController, 100);
 	}
@@ -198,8 +198,8 @@ class PS_CoopLobby: MenuBase
 		
 		GetGame().GetInputManager().RemoveActionListener("VONDirect", EActionTrigger.DOWN, Action_LobbyVoNOn);
 		GetGame().GetInputManager().RemoveActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
-		GetGame().GetInputManager().RemoveActionListener("VONChannelToggle", EActionTrigger.DOWN, Action_LobbyVoNChannelOn);
-		GetGame().GetInputManager().RemoveActionListener("VONChannelToggle", EActionTrigger.UP, Action_LobbyVoNChannelOff);
+		GetGame().GetInputManager().RemoveActionListener("VONChannel", EActionTrigger.DOWN, Action_LobbyVoNChannelOn);
+		GetGame().GetInputManager().RemoveActionListener("VONChannel", EActionTrigger.UP, Action_LobbyVoNChannelOff);
 	}
 	
 	// Soo many staff need to bee init, i can't track all of it...
@@ -721,7 +721,8 @@ class PS_CoopLobby: MenuBase
 		{
 			EPlayerRole playerRole = playerManager.GetPlayerRoles(playerId);
 			if (playerRole == EPlayerRole.ADMINISTRATOR) adminExist = true;
-			if (playableManager.GetPlayerState(playerId) != PS_EPlayableControllerState.NotReady) allReady++;
+			PS_EPlayableControllerState playerState = playableManager.GetPlayerState(playerId);
+			if (playerState != PS_EPlayableControllerState.NotReady && playerState != PS_EPlayableControllerState.Disconected) allReady++;
 		}
 		
 		// Check for admin existance if need.

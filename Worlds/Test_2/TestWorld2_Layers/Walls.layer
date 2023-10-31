@@ -15,19 +15,19 @@ $grp SCR_DestructibleEntity : "{2FBF5DEDFA25D947}Prefabs/Structures/Walls/Concre
   coords 96.076 -0.4 129
  }
  {
-  coords 111 -0.4 134.957
+  coords 110.911 -0.4 134.957
   angleY 90
  }
  {
-  coords 111 -0.4 140.779
+  coords 110.911 -0.4 140.779
   angleY 90
  }
  {
-  coords 111 -0.4 146.584
+  coords 110.911 -0.4 146.584
   angleY 90
  }
  {
-  coords 111 -0.4 152.456
+  coords 110.911 -0.4 152.456
   angleY 90
  }
  {
@@ -43,11 +43,11 @@ $grp SCR_DestructibleEntity : "{2FBF5DEDFA25D947}Prefabs/Structures/Walls/Concre
   coords 78.424 -0.4 129
  }
  {
-  coords 111 -0.4 164.019
+  coords 110.911 -0.4 164.019
   angleY 90
  }
  {
-  coords 111 -0.4 158.179
+  coords 110.911 -0.4 158.179
   angleY 90
  }
  {

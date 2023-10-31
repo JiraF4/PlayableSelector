@@ -5,7 +5,7 @@ ButtonWidgetClass {
  Color 0.001 0.001 0.001 0
  components {
   PS_VoiceRoomHeader "{5EB1458A4437EC6E}" {
-   m_BackgroundDefault 1 1 1 0
+   m_BackgroundDefault 1 1 1 0.031
   }
  }
  {
@@ -29,12 +29,12 @@ ButtonWidgetClass {
     ImageWidgetClass "{5EB2906439B72CD7}" {
      Name "JoinRoomImage"
      Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
-      PositionX 428
-      OffsetLeft 428
+      PositionX 423
+      OffsetLeft 423
       PositionY 2
       OffsetTop 2
       SizeX 40
-      OffsetRight -468
+      OffsetRight -463
       SizeY 40
       OffsetBottom -42
      }
@@ -59,6 +59,9 @@ ButtonWidgetClass {
      "Font Size" 20
      "Min Font Size" 20
      "Vertical Alignment" Center
+     FontProperties FontProperties "{5EBC73752A65320C}" {
+      Font "{CD2634D279AB011A}UI/Fonts/Roboto/Roboto_Bold.fnt"
+     }
     }
    }
   }

@@ -251,6 +251,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 	{
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
 		IEntity entity = thisPlayerController.GetControlledEntity();
+		if (!entity) return;
 		SCR_GadgetManagerComponent gadgetManager = SCR_GadgetManagerComponent.Cast( entity.FindComponent(SCR_GadgetManagerComponent) );
 		IEntity radioEntity = gadgetManager.GetGadgetByType(EGadgetType.RADIO);
 		BaseRadioComponent radio = BaseRadioComponent.Cast(radioEntity.FindComponent(BaseRadioComponent));

@@ -76,6 +76,20 @@ FrameWidgetClass {
     SizeY 0
     OffsetBottom 0
    }
+   {
+    HorizontalLayoutWidgetClass "{000000001FC52976}" {
+     Prefab "{000000001FC52976}"
+     {
+      ImageWidgetClass "{000000002766140D}" {
+       Prefab "{000000002766140D}"
+       Slot LayoutSlot "{52DA9C9935318517}" {
+        Padding 0 0 0 0
+        FillWeight 1
+       }
+      }
+     }
+    }
+   }
   }
   OverlayWidgetClass "{5EB10006FB0FA7F5}" {
    Name "OverlayFooter"
@@ -83,11 +97,11 @@ FrameWidgetClass {
     Anchor 0 1 0 1
     PositionX 0
     OffsetLeft 0
-    PositionY -99
-    OffsetTop -99
+    PositionY -48
+    OffsetTop -48
     SizeX 1920
     OffsetRight -1920
-    SizeY 99
+    SizeY 48
     OffsetBottom 0
    }
    {
@@ -95,6 +109,7 @@ FrameWidgetClass {
      Name "HorizontalLayout"
      Slot OverlayWidgetSlot "{5EB10006A9111D66}" {
       HorizontalAlign 0
+      VerticalAlign 0
      }
      {
       ButtonWidgetClass "{5EB10006A092AE46}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
@@ -114,6 +129,28 @@ FrameWidgetClass {
          Slot ButtonWidgetSlot "{5562AD435529FB5D}" {
           Padding 20 0 0 0
          }
+        }
+       }
+      }
+      ButtonWidgetClass "{5EBC737411E50427}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
+       Name "NavigationRoomVoice"
+       Slot LayoutSlot "{5EBC737F18D3A970}" {
+       }
+       components {
+        SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
+         m_sLabel "#PS-Briefing_VoiceChat"
+         m_sActionName "VONDirect"
+        }
+       }
+      }
+      ButtonWidgetClass "{5EBC737411E5047F}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
+       Name "NavigationFactionVoice"
+       Slot LayoutSlot "{5EBC737F18D3A94E}" {
+       }
+       components {
+        SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
+         m_sLabel "#PS-Briefing_GroupVoiceChat"
+         m_sActionName "VONChannel"
         }
        }
       }
@@ -257,14 +294,14 @@ FrameWidgetClass {
    Name "VoiceChatFrame"
    Slot FrameWidgetSlot "{5EB701C8F15ED5E1}" {
     Anchor 1 1 1 1
-    PositionX -480
-    OffsetLeft -480
-    PositionY -800
-    OffsetTop -800
+    PositionX -490
+    OffsetLeft -490
+    PositionY -810
+    OffsetTop -810
     SizeX 480
-    OffsetRight 0
+    OffsetRight 10
     SizeY 800
-    OffsetBottom 0
+    OffsetBottom 10
    }
   }
   FrameWidgetClass "{5EB100080F354176}" : "{F43237F55B38B45C}UI/layouts/GameModeHeader/GameModeHeader.layout" {

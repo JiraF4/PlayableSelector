@@ -1,0 +1,159 @@
+FrameWidgetClass {
+ Name "PlayMenu"
+ "Z Order" 9
+ {
+  FrameWidgetClass "{5EBC73432486C715}" {
+   Prefab "{5CECA56A279C044D}"
+   Name "EarlyAccessFrame0"
+   Slot FrameWidgetSlot "{5EB701CD65513B75}" {
+   }
+   "Z Order" 100000
+  }
+  OverlayWidgetClass "{5EBC73432486C71A}" : "{01FD644AD2B6317D}UI/layouts/Menus/Common/MenuBackground.layout" {
+   Name "MenuBackground0"
+   Slot FrameWidgetSlot "{552C9A0A8526D2AD}" {
+   }
+  }
+  FrameWidgetClass "{5EBC73432499FC63}" : "{F43237F55B38B45C}UI/layouts/GameModeHeader/GameModeHeader.layout" {
+   Name "GameModeHeader"
+   Slot FrameWidgetSlot "{5EB10000F5F77EA0}" {
+    PositionX -960
+    OffsetLeft -960
+    PositionY 0
+    OffsetTop 0
+    SizeX 1920
+    OffsetRight -960
+    SizeY 93
+    OffsetBottom -93
+   }
+  }
+  FrameWidgetClass "{5EBC7343249839D5}" : "{B7A765172F0BD4D9}UI/layouts/Common/EarlyAccessWatermark.layout" {
+   Name "EarlyAccessRoot"
+   Slot FrameWidgetSlot "{5CEE96372B5D270B}" {
+    PositionX 0.214
+    OffsetLeft 0
+    PositionY 2.127
+    OffsetTop 0
+    SizeX 0
+    OffsetRight 0
+    SizeY 0
+    OffsetBottom 0
+   }
+   Opacity 1
+  }
+  FrameWidgetClass "{5EBC7342B7ED9735}" {
+   Name "ReportFrame"
+   Slot FrameWidgetSlot "{5EBC7342B7ED970F}" {
+    PositionX 0
+    OffsetLeft 0
+    PositionY 103
+    OffsetTop 103
+    SizeX 1920
+    OffsetRight -1920
+    SizeY 977
+    OffsetBottom -1080
+   }
+   {
+    VerticalLayoutWidgetClass "{5EBC73425FDE8F03}" {
+     Name "ReportVerticalLayout"
+     Slot FrameWidgetSlot "{5EBC73425FDE8F18}" {
+      OffsetLeft 0
+      OffsetTop 0
+      SizeX 1920
+      OffsetRight -1920
+      SizeY 128
+      OffsetBottom -128
+     }
+     {
+      SizeLayoutWidgetClass "{5EBC734233AECCAC}" {
+       Name "HeaderSizeLayout"
+       Slot LayoutSlot "{5EBC734233AECC91}" {
+       }
+       AllowHeightOverride 1
+       HeightOverride 128
+       {
+        OverlayWidgetClass "{5EBC73422BF95C85}" {
+         Name "HeaderOverlay"
+         Slot AlignableSlot "{5EBC7342339CEBC1}" {
+         }
+         {
+          VerticalLayoutWidgetClass "{5EBC73415A4B2DA9}" {
+           Name "VerticalLayout"
+           Slot OverlayWidgetSlot "{5EBC73415A4B2D84}" {
+           }
+           {
+            TextWidgetClass "{5EBC73415F360710}" {
+             Name "HeaderLabel"
+             Slot LayoutSlot "{5EBC73415F3606EF}" {
+             }
+             Text "After Action Report"
+             "Font Size" 42
+             "Min Font Size" 42
+            }
+            TextWidgetClass "{5EBC73417383E478}" {
+             Name "HeaderResultLabe"
+             Slot LayoutSlot "{5EBC73415F3606EF}" {
+              HorizontalAlign 1
+              Padding 0 0 0 0
+             }
+             Text "USSR Total Victory"
+             "Font Size" 20
+             "Min Font Size" 20
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+      SizeLayoutWidgetClass "{5EBC734188EF9931}" {
+       Name "BodySizeLayout"
+       Slot LayoutSlot "{5EBC734188EF9918}" {
+       }
+       AllowHeightOverride 1
+       HeightOverride 750
+       {
+        HorizontalLayoutWidgetClass "{5EBC7341F98515CE}" {
+         Name "BodyHorizontalLayout"
+         Slot AlignableSlot "{5EBC734188DD6276}" {
+         }
+         {
+          FrameWidgetClass "{5EBC73404AB30DB0}" : "{2987421913A58DF6}UI/Debriefing/FactionReportFrame.layout" {
+           Name "FactionReportFrame2"
+           Slot LayoutSlot "{5EBC7340F5460E29}" {
+           }
+          }
+          FrameWidgetClass "{5EBC734048398166}" : "{2987421913A58DF6}UI/Debriefing/FactionReportFrame.layout" {
+           Name "FactionReportFrame1"
+           Slot LayoutSlot "{5EBC7340F5460E29}" {
+           }
+          }
+          FrameWidgetClass "{5EBC734047F33F9A}" : "{2987421913A58DF6}UI/Debriefing/FactionReportFrame.layout" {
+           Name "FactionReportFrame0"
+           Slot LayoutSlot "{5EBC7340F5460E29}" {
+           }
+          }
+         }
+        }
+       }
+      }
+      SizeLayoutWidgetClass "{5EBC7341BE74E391}" {
+       Name "FooterSizeLayout"
+       Slot LayoutSlot "{5EBC734188EF9918}" {
+       }
+       AllowHeightOverride 1
+       HeightOverride 99
+       {
+        HorizontalLayoutWidgetClass "{5EBC7341BE74E394}" {
+         Name "FooterHorizontalLayout"
+         Slot AlignableSlot "{5EBC734188DD6276}" {
+         }
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}

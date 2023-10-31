@@ -76,6 +76,7 @@ class PS_PlayableManager : ScriptComponent
 		// Set new player faction
 		SCR_ChimeraCharacter playableCharacter = SCR_ChimeraCharacter.Cast(entity);
 		SCR_Faction faction = SCR_Faction.Cast(playableCharacter.GetFaction());
+		SetPlayerFactionKey(playerId, faction.GetFactionKey());
 		
 		GetGame().GetCallqueue().CallLater(ChangeGroup, 0, false, playerId, playableId);
 	}
@@ -96,6 +97,21 @@ class PS_PlayableManager : ScriptComponent
 		playerControllerGroupComponent.PS_AskJoinGroup(playerGroup.GetGroupID());
 		if (playableComponentLeader)
 			if (playableComponentLeader.GetId() > playableId) groupsManagerComponent.SetGroupLeader(playerGroup.GetGroupID(), playerId);
+	}
+	
+	void KillRedundantUnits()
+	{
+		map<RplId, PS_PlayableComponent> playables = GetPlayables();
+		for (int i = 0; i < playables.Count(); i++) {
+			PS_PlayableComponent playable = playables.GetElement(i);
+			if (GetPlayerByPlayable(playable.GetId()) <= 0)
+			{
+				SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(playable.GetOwner());
+				character.SetOrigin("0 0 0");
+				SCR_CharacterDamageManagerComponent damageComponent = SCR_CharacterDamageManagerComponent.Cast(character.FindComponent(SCR_CharacterDamageManagerComponent));
+				damageComponent.Kill();
+			}
+		}
 	}
 	
 	// -------------------------- Get ----------------------------

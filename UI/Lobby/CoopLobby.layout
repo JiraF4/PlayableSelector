@@ -529,6 +529,34 @@ FrameWidgetClass {
               }
              }
             }
+            ButtonWidgetClass "{5EBC73749099FB26}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
+             Name "NavigationRoomVoice"
+             Slot LayoutSlot "{5D6F1498C9949A58}" {
+              HorizontalAlign 3
+              VerticalAlign 3
+              Padding 15 15 15 15
+             }
+             components {
+              SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
+               m_sLabel "#PS-Lobby_VoiceChat"
+               m_sActionName "VONDirect"
+              }
+             }
+            }
+            ButtonWidgetClass "{5EBC7374906C09F0}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
+             Name "NavigationFactionVoice"
+             Slot LayoutSlot "{5D6F1498C9949A58}" {
+              HorizontalAlign 3
+              VerticalAlign 3
+              Padding 15 15 15 15
+             }
+             components {
+              SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
+               m_sLabel "#PS-Lobby_FactionVoiceChat"
+               m_sActionName "VONChannel"
+              }
+             }
+            }
            }
           }
           HorizontalLayoutWidgetClass "{5D6F149AEF5FAFB2}" {

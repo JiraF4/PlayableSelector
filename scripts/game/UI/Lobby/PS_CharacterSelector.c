@@ -166,9 +166,12 @@ class PS_CharacterSelector : SCR_ButtonComponent
 	void KickButtonClicked()
 	{
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-		playableController.SetPlayerPlayable(playableManager.GetPlayerByPlayable(m_playable.GetId()), -1);
+		int playerId = playableManager.GetPlayerByPlayable(m_playable.GetId());
+		playableController.SetPlayerPlayable(playerId, -1);
+		VoNRoomsManager.MoveToRoom(playerId, playableManager.GetPlayerFactionKey(playerId), "");
 	}
 	
 	// Admin may unpin player
