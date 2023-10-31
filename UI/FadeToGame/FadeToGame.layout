@@ -1,0 +1,12 @@
+ScaleWidgetClass {
+ Name "rootScale"
+ "Scale Mode" "Scale to fill"
+ {
+  ImageWidgetClass "{5EBE323FAA1919DF}" {
+   Name "Fade"
+   Slot AlignableSlot "{5EBE323F68AD1203}" {
+   }
+   Color 0 0 0 1
+  }
+ }
+}

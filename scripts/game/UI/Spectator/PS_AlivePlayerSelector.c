@@ -8,6 +8,7 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 	
 	protected ResourceName m_sImageSet = "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset";
 	
+	ImageWidget m_wPlayerFactionColor;
 	ImageWidget m_wUnitIcon;
 	ImageWidget m_wLeaderIcon;
 	TextWidget m_wPlayerName;
@@ -20,6 +21,7 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 		m_wLeaderIcon = ImageWidget.Cast(w.FindAnyWidget("LeaderIcon"));
 		m_wPlayerName = TextWidget.Cast(w.FindAnyWidget("PlayerName"));
 		m_wGroupName = TextWidget.Cast(w.FindAnyWidget("GroupName"));
+		m_wPlayerFactionColor = ImageWidget.Cast(w.FindAnyWidget("PlayerFactionColor"));
 		
 		GetGame().GetCallqueue().CallLater(AddOnClick, 0);
 	}
@@ -57,6 +59,7 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 		// update
 		m_wPlayerName.SetText(playerName);
 		m_wLeaderIcon.SetVisible(playableManager.IsPlayerGroupLeader(m_iPlayer));
+		m_wPlayerFactionColor.SetColor(faction.GetOutlineFactionColor());
 		
 		if (playerRole == EPlayerRole.ADMINISTRATOR) m_wPlayerName.SetColor(Color.FromInt(0xfff2a34b));
 		else m_wPlayerName.SetColor(Color.FromInt(0xffffffff));
