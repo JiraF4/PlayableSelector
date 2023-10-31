@@ -19,7 +19,6 @@ PS_GameModeCoop PS_GameModeCoop1 : "{F64CCAF87CCCF567}Prefabs/MP/Modes/PS_GameMo
   }
  }
  coords 3.45 1.663 3.493
- m_bKillRedundantUnits 1
 }
 GenericEntity {
  coords 5.734 1 3.144

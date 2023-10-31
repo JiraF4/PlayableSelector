@@ -161,7 +161,7 @@ class PS_ReplayWriter : ScriptComponent
 	}
 	
 	// PS_EReplayType.ProjectileShoot
-	void WriteProjectileShoot(RplId entityId, float hitPositionX, float hitPositiony)
+	void WriteProjectileShoot(RplId entityId, float hitPositionX, float hitPositionz)
 	{
 		if (!Replication.IsServer()) return;
 		TryInsertTimeStamp();
@@ -170,6 +170,6 @@ class PS_ReplayWriter : ScriptComponent
 		replayFile.Write(PS_EReplayType.ProjectileShoot, 1); // only one byte for type
 		replayFile.Write(entityId, 4); // rplId
 		replayFile.Write(hitPositionX, 4); // hitPositionX
-		replayFile.Write(hitPositiony, 4); // hitPositiony
+		replayFile.Write(hitPositionz, 4); // hitPositionz
 	}
 }
