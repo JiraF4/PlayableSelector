@@ -1,4 +1,4 @@
-FrameWidgetClass "{5EBA3C97F5056809}" {
+FrameWidgetClass {
  Name "AlivePlayersList"
  Slot FrameWidgetSlot "{5EBA3C97F505681F}" {
   Anchor 0 1 0 1

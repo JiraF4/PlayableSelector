@@ -76,7 +76,7 @@ FrameWidgetClass {
         }
        }
       }
-      ButtonWidgetClass "{5EB1000404C189E8}" : "{C89F7100D39A8D45}UI/layouts/GameModeHeader/GameModeHeaderButton.layout" {
+      ButtonWidgetClass "{5EB1000404C189E8}" : "{C89F7100D39A8D45}UI/GameModeHeader/GameModeHeaderButton.layout" {
        Name "PreviewButton"
        Slot LayoutSlot "{5EB1000404C18D33}" {
         Padding 0 10 10 10
@@ -108,7 +108,7 @@ FrameWidgetClass {
         }
        }
       }
-      ButtonWidgetClass "{5EB1000406CEA78A}" : "{C89F7100D39A8D45}UI/layouts/GameModeHeader/GameModeHeaderButton.layout" {
+      ButtonWidgetClass "{5EB1000406CEA78A}" : "{C89F7100D39A8D45}UI/GameModeHeader/GameModeHeaderButton.layout" {
        Name "LobbyButton"
        Slot LayoutSlot "{5EB1000404C18D33}" {
         Padding 10 10 10 10
@@ -140,7 +140,7 @@ FrameWidgetClass {
         }
        }
       }
-      ButtonWidgetClass "{5EB1000406260CAA}" : "{C89F7100D39A8D45}UI/layouts/GameModeHeader/GameModeHeaderButton.layout" {
+      ButtonWidgetClass "{5EB1000406260CAA}" : "{C89F7100D39A8D45}UI/GameModeHeader/GameModeHeaderButton.layout" {
        Name "BriefingButton"
        Slot LayoutSlot "{5EB1000404C18D33}" {
         Padding 10 10 10 10
@@ -172,7 +172,7 @@ FrameWidgetClass {
         }
        }
       }
-      ButtonWidgetClass "{5EB10004061DFD92}" : "{C89F7100D39A8D45}UI/layouts/GameModeHeader/GameModeHeaderButton.layout" {
+      ButtonWidgetClass "{5EB10004061DFD92}" : "{C89F7100D39A8D45}UI/GameModeHeader/GameModeHeaderButton.layout" {
        Name "InGameButton"
        Slot LayoutSlot "{5EB1000404C18D33}" {
         Padding 10 10 10 10
@@ -204,7 +204,7 @@ FrameWidgetClass {
         }
        }
       }
-      ButtonWidgetClass "{5EB10004078764DC}" : "{C89F7100D39A8D45}UI/layouts/GameModeHeader/GameModeHeaderButton.layout" {
+      ButtonWidgetClass "{5EB10004078764DC}" : "{C89F7100D39A8D45}UI/GameModeHeader/GameModeHeaderButton.layout" {
        Name "DebriefingButton"
        Slot LayoutSlot "{5EB1000404C18D33}" {
         Padding 10 10 10 10
@@ -255,7 +255,7 @@ FrameWidgetClass {
     }
    }
   }
-  ButtonWidgetClass "{5EB290EEBC6EAD9B}" : "{C89F7100D39A8D45}UI/layouts/GameModeHeader/GameModeHeaderButton.layout" {
+  ButtonWidgetClass "{5EB290EEBC6EAD9B}" : "{C89F7100D39A8D45}UI/GameModeHeader/GameModeHeaderButton.layout" {
    Name "AdvanceButton"
    Slot FrameWidgetSlot "{5EB290EEBC6E570E}" {
     PositionX 1678

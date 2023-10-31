@@ -161,6 +161,24 @@ StringTable {
    Author "SeskPC"
    LastChanged "SeskPC"
   }
+  CustomStringTableItem "{5EBE323E513FFB52}" {
+   Id "PS-ObserverPlayersList"
+   Modified 1589525096
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{5EBE323E4409E95B}" {
+   Id "PS-Preview_GameStartSoon"
+   Modified 1589525075
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{5EBE323E40F74A24}" {
+   Id "PS-Preview_PleaseWait"
+   Modified 1589525068
+   Author "zazul"
+   LastChanged "zazul"
+  }
   CustomStringTableItem "{5EB6E12BC67891C4}" {
    Id "PS-VoNRoom_Command"
    Target_en_us "HQ"
