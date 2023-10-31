@@ -72,7 +72,6 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 			int groupCallSign = playableManager.GetGroupCallsignByPlayable(playableId);
 			string groupName = playableManager.GroupCallsignToGroupName(faction, groupCallSign);
 			
-			
 			m_wUnitIcon.SetVisible(true);
 			m_wGroupName.SetVisible(true);
 			m_wUnitIcon.LoadImageTexture(0, uiInfo.GetIconPath());

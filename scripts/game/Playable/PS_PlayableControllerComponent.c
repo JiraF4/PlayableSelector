@@ -197,12 +197,6 @@ class PS_PlayableControllerComponent : ScriptComponent
 	{
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		
-		// If not admin you can change only herself
-		PlayerManager playerManager = GetGame().GetPlayerManager();
-		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
-		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
-		if (thisPlayerController.GetPlayerId() != playerId && playerRole != EPlayerRole.ADMINISTRATOR) return;
-		
 		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
 		VoNRoomsManager.MoveToRoom(playerId, factionKey, roomName);
 	}
@@ -382,6 +376,24 @@ class PS_PlayableControllerComponent : ScriptComponent
 		if (thisPlayerController.GetPlayerId() != playerId && playerRole != EPlayerRole.ADMINISTRATOR) return;
 		
 		playableManager.SetPlayerState(playerId, state);
+	}
+	
+	void SetPlayablePlayer(RplId playableId, int playerId)
+	{
+		Rpc(RPC_SetPlayablePlayer, playableId, playerId);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	protected void RPC_SetPlayablePlayer(RplId playableId, int playerId)
+	{
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		
+		// You can't change playable if pinned and not admin
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
+		if (playableManager.GetPlayerPin(playerId) && playerRole != EPlayerRole.ADMINISTRATOR) return;
+		
+		playableManager.SetPlayablePlayer(playableId, playerId);
 	}
 	
 	void SetPlayerPlayable(int playerId, RplId playableId) 
