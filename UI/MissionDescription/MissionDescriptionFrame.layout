@@ -1,0 +1,128 @@
+FrameWidgetClass {
+ Name "MissionDescriptionFrame"
+ Slot FrameWidgetSlot "{5EBEE964499ECB58}" {
+  Anchor 0 1 0 1
+  PositionX 56.1
+  OffsetLeft 56.1
+  PositionY -909.5
+  OffsetTop -909.5
+  SizeX 480
+  OffsetRight -536.1
+  SizeY 640
+  OffsetBottom 269.5
+ }
+ components {
+  PS_MissionDescriptionUI "{5EC27C79B27C3C0A}" {
+  }
+ }
+ {
+  ImageWidgetClass "{5EBEE964499F3958}" {
+   Name "MissionDescriptionBackground"
+   Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
+    PositionX 0
+    OffsetLeft 0
+    PositionY 0
+    OffsetTop 0
+    SizeX 480
+    OffsetRight -480
+    SizeY 640
+    OffsetBottom -640
+   }
+   Opacity 0.8
+   Color 0.001 0.001 0.001 1
+  }
+  ButtonWidgetClass "{5EC27C6308C71093}" {
+   Name "MissionDescriptionHeaderButton"
+   Slot FrameWidgetSlot "{5EC27C6308C710C2}" {
+    PositionX 0
+    OffsetLeft 0
+    PositionY 0
+    OffsetTop 0
+    SizeX 480
+    OffsetRight -480
+    SizeY 39
+    OffsetBottom -39
+   }
+   components {
+    SCR_ButtonBaseComponent "{5EC27C6316E21DD3}" {
+    }
+   }
+   {
+    FrameWidgetClass "{5EBEE964499F3959}" {
+     Name "MissionDescriptionHeaderFrame"
+     Slot ButtonWidgetSlot "{5EC27C666D0F4B6E}" {
+     }
+     {
+      ImageWidgetClass "{5EBEE964499F395A}" {
+       Name "MissionDescriptionHeaderBackground"
+       Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX 480
+        OffsetRight -480
+        SizeY 39
+        OffsetBottom -39
+       }
+       Color 0 0 0 1
+      }
+      OverlayWidgetClass "{5EBEE964499F395B}" {
+       Name "MissionDescriptionHeaderTextOverlay"
+       Slot FrameWidgetSlot "{5EB0E9ED5655F81D}" {
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX 480
+        OffsetRight -480
+        SizeY 39
+        OffsetBottom -39
+       }
+       {
+        TextWidgetClass "{5EBEE964499F395C}" {
+         Name "MissionDescriptionHeaderText"
+         Slot OverlayWidgetSlot "{5EB0E9E7729FE3E7}" {
+          Padding 8 0 0 0
+         }
+         Text "#PS-MissionDescription_Header"
+        }
+       }
+      }
+      ImageWidgetClass "{5EC27C519FC89D6D}" {
+       Prefab "{5EB1176784E2EFB5}"
+       Name "FolderIcon"
+       Slot FrameWidgetSlot "{5EB2906F65B847CB}" {
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX 39
+        OffsetRight -39
+        SizeY 39
+        OffsetBottom -39
+       }
+       "Is Visible" 0
+       Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
+       Image "veh_left"
+       Size 32 32
+      }
+     }
+    }
+   }
+  }
+  FrameWidgetClass "{5EC27C7521475044}" {
+   Name "ContentFrame"
+   Slot FrameWidgetSlot "{5EC27C752147505E}" {
+    PositionX 0
+    OffsetLeft 0
+    PositionY 39
+    OffsetTop 39
+    SizeX 480
+    OffsetRight -480
+    SizeY 601
+    OffsetBottom -640
+   }
+  }
+ }
+}

@@ -317,12 +317,17 @@ FrameWidgetClass {
     OffsetBottom -93
    }
   }
+  FrameWidgetClass "{5EC27C73EBAC2930}" : "{0CAA34745062743B}UI/MissionDescription/MissionDescriptionFrame.layout" {
+   Name "MissionDescriptionFrame0"
+   Slot FrameWidgetSlot "{5EBEE964499ECB58}" {
+   }
+  }
   FrameWidgetClass "{5EAF5687FB22DB6F}" : "{B7A765172F0BD4D9}UI/layouts/Common/EarlyAccessWatermark.layout" {
    Name "EarlyAccessRoot"
    Slot FrameWidgetSlot "{5CEE96372B5D270B}" {
-    PositionX -49.712
+    PositionX 0
     OffsetLeft 0
-    PositionY 1.434
+    PositionY 0
     OffsetTop 0
     SizeX 0
     OffsetRight 0

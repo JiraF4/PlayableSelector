@@ -1,0 +1,25 @@
+FrameWidgetClass {
+ Name "rootFrame"
+ components {
+  PS_MissionDescriptionContentUI "{5EC27C7C182EA2DF}" {
+   m_sTitle "#PS-Description_HeaderFIA"
+  }
+ }
+ {
+  RichTextWidgetClass "{5EC27C50E4845B76}" {
+   Name "RichText0"
+   Slot FrameWidgetSlot "{5EC27C78E8293EA6}" {
+    OffsetLeft 0
+    OffsetTop 0
+    SizeX 480
+    OffsetRight -480
+    SizeY 601
+    OffsetBottom -601
+   }
+   Text "Description FIA"
+   "Font Size" 20
+   "Min Font Size" 20
+   Wrap 1
+  }
+ }
+}

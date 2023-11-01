@@ -1,5 +1,5 @@
 MetaFileClass {
- Name "{A9721B0C2B17926E}UI/Map/BriefingMapMenu.layout"
+ Name "{ACDDFEA12D499F12}UI/MissionDescriptionTemplates/DescriptionAboutMission.layout"
  Configurations {
   LayoutResourceClass PC {
   }

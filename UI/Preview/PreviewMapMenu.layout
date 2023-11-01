@@ -320,6 +320,11 @@ FrameWidgetClass {
     OffsetBottom -93
    }
   }
+  FrameWidgetClass "{5EC27C79EC033FEA}" : "{0CAA34745062743B}UI/MissionDescription/MissionDescriptionFrame.layout" {
+   Name "MissionDescriptionFrame"
+   Slot FrameWidgetSlot "{5EBEE964499ECB58}" {
+   }
+  }
   FrameWidgetClass "{5EBE2C2798842478}" : "{B7A765172F0BD4D9}UI/layouts/Common/EarlyAccessWatermark.layout" {
    Name "EarlyAccessRoot"
    Slot FrameWidgetSlot "{5CEE96372B5D270B}" {
@@ -357,7 +362,7 @@ FrameWidgetClass {
      {
       ImageWidgetClass "{5EBE32383DFFDDC5}" {
        Name "Background"
-       Slot OverlayWidgetSlot {
+       Slot OverlayWidgetSlot "{5EC27C79EA1DD452}" {
        }
        Color 0 0 0 0.6
        Size 380 128

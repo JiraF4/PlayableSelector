@@ -1,6 +1,42 @@
 StringTable {
  ItemClassName "CustomStringTableItem"
  Items {
+  CustomStringTableItem "{5EC27C54DBE99E97}" {
+   Id "PS-Description_HeaderAboutMission"
+   Modified 1589823343
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{5EC27C54EAA8176D}" {
+   Id "PS-Description_HeaderFIA"
+   Modified 1589823382
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{5EC27C54DD5C222E}" {
+   Id "PS-Description_HeaderObjectives"
+   Modified 1589823347
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{5EC27C54E131620A}" {
+   Id "PS-Description_HeaderRules"
+   Modified 1589823353
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{5EC27C54ED9CAFBA}" {
+   Id "PS-Description_HeaderUS"
+   Modified 1589823377
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{5EC27C54F35F3D06}" {
+   Id "PS-Description_HeaderUSSR"
+   Modified 1589823388
+   Author "zazul"
+   LastChanged "zazul"
+  }
   CustomStringTableItem "{5EB30CD4368261A7}" {
    Id "PS-GameMaster_PlayableGroup"
    Target_en_us "Playable Unit"
