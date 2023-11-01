@@ -685,6 +685,21 @@ FrameWidgetClass {
           OffsetBottom -30
          }
         }
+        ImageWidgetClass "{5EC2F2E5E6BF5292}" {
+         Name "Border"
+         Slot FrameWidgetSlot "{5D6F1490EBB9691E}" {
+          Anchor 0 0 0 0
+          PositionX 0
+          OffsetLeft 0
+          PositionY 0
+          OffsetTop 0
+          SizeX 240
+          OffsetRight -240
+          SizeY 30
+          OffsetBottom -30
+         }
+         Color 1 1 1 0.3
+        }
        }
       }
      }
@@ -743,6 +758,21 @@ FrameWidgetClass {
           OffsetRight -240
           OffsetBottom -30
          }
+        }
+        ImageWidgetClass "{5EC2F2E5F37EE26B}" {
+         Name "Border"
+         Slot FrameWidgetSlot "{5D6F1490EBB9691E}" {
+          Anchor 0 0 0 0
+          PositionX 0
+          OffsetLeft 0
+          PositionY 0
+          OffsetTop 0
+          SizeX 240
+          OffsetRight -240
+          SizeY 30
+          OffsetBottom -30
+         }
+         Color 1 1 1 0.3
         }
        }
       }

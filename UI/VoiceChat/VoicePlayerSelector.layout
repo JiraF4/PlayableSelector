@@ -49,6 +49,21 @@ FrameWidgetClass {
    }
    Opacity 0
   }
+  ImageWidgetClass "{5EC2F2F06BFCCFB6}" {
+   Name "Border"
+   Slot FrameWidgetSlot "{5D6F1490EBB9691E}" {
+    Anchor 0 0 0 0
+    PositionX 0
+    OffsetLeft 0
+    PositionY 0
+    OffsetTop 0
+    SizeX 480
+    OffsetRight -480
+    SizeY 44
+    OffsetBottom -44
+   }
+   Color 0.761 0.392 0.078 1
+  }
   FrameWidgetClass "{5EB1176F4695C767}" {
    Name "UnitIconFrame"
    Slot FrameWidgetSlot "{5EB1176F4695FD6B}" {
