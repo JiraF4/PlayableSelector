@@ -48,6 +48,7 @@ class PS_VoNRoomsManager : ScriptComponent
 		m_mRoomOffsets[0] = roomInitialPosition;
 		m_mVoiceRooms[0] = "";
 		m_mVoiceRoomsFromName[""] = 0;
+		if (Replication.IsServer()) m_bRplLoaded = true;
 	}
 	
 	// more singletons for singletons god, make our spagetie kingdom great
