@@ -18,8 +18,9 @@ FrameWidgetClass {
     FrameWidgetClass "{5CECA56A279C044D}" {
      Prefab "{5CECA56A279C044D}"
      Slot OverlayWidgetSlot "{5CECA56A279C04A0}" {
-      HorizontalAlign 1
-      VerticalAlign 1
+      HorizontalAlign 2
+      VerticalAlign 0
+      Padding 0 4 4 0
      }
      {
       HorizontalLayoutWidgetClass "{5CEAB7C94A55AF1E}" {

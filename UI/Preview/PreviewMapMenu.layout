@@ -394,7 +394,7 @@ FrameWidgetClass {
        Slot OverlayWidgetSlot "{5EC27C79EA1DD452}" {
        }
        Color 0 0 0 0.6
-       Size 380 128
+       Size 550 128
       }
       VerticalLayoutWidgetClass "{5EBE3238B8CC6E25}" {
        Name "HorizontalLayout"
