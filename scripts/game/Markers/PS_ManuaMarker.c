@@ -16,7 +16,9 @@ class PS_ManualMarker : GenericEntity
 	[Attribute("empty")]
 	protected string m_sQuadName;
 	[Attribute("5.0")]
-	protected float m_fWorldSize;
+	protected float m_fWorldSizeWidth;
+	[Attribute("5.0")]
+	protected float m_fWorldSizeHeight;
 	[Attribute("")]
 	protected string m_sDescription;
 	[Attribute("true")]
@@ -38,7 +40,7 @@ class PS_ManualMarker : GenericEntity
 		wX = worldPosition[0];
 		wY = worldPosition[2];
 		m_MapEntity.WorldToScreen(wX, wY, screenX, screenY, true);
-		m_MapEntity.WorldToScreen(wX + m_fWorldSize, wY + m_fWorldSize, screenXEnd, screenYEnd, true);
+		m_MapEntity.WorldToScreen(wX + m_fWorldSizeWidth, wY + m_fWorldSizeHeight, screenXEnd, screenYEnd, true);
 		
 		float screenXD = GetGame().GetWorkspace().DPIUnscale(screenX);
 		float screenYD = GetGame().GetWorkspace().DPIUnscale(screenY);
@@ -46,8 +48,8 @@ class PS_ManualMarker : GenericEntity
 		float sizeYD = GetGame().GetWorkspace().DPIUnscale(screenY - screenYEnd); // Y flip
 		if (!m_bUseWorldScale)
 		{
-			sizeXD = m_fWorldSize;
-			sizeYD = m_fWorldSize;
+			sizeXD = m_fWorldSizeWidth;
+			sizeYD = m_fWorldSizeHeight;
 		}
 		
 		m_hManualMarkerComponent.SetSlot(screenXD, screenYD, sizeXD, sizeYD);
