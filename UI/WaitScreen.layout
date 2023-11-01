@@ -2,12 +2,12 @@ FrameWidgetClass {
  Name "WaitScreen"
  "Z Order" 9
  {
-  OverlayWidgetClass "{5EC32722B70BFBE7}" : "{01FD644AD2B6317D}UI/layouts/Menus/Common/MenuBackground.layout" {
-   Name "MenuBackground1"
+  OverlayWidgetClass "{5EB4B0CB2DF0458F}" : "{01FD644AD2B6317D}UI/layouts/Menus/Common/MenuBackground.layout" {
+   Name "MenuBackground0"
    Slot FrameWidgetSlot "{552C9A0A8526D2AD}" {
-    PositionX -0.869
+    PositionX 0
     OffsetLeft 0
-    PositionY 1.063
+    PositionY 0
     OffsetTop 0
     SizeX 0
     OffsetRight 0
@@ -20,71 +20,21 @@ FrameWidgetClass {
      Slot OverlayWidgetSlot "{5CECA56A279C04A0}" {
       HorizontalAlign 2
       VerticalAlign 0
-     }
-     "Is Enabled" 0
-     "Is Visible" 0
-     {
-      HorizontalLayoutWidgetClass "{5CEAB7C94A55AF1E}" {
-       Prefab "{5CEAB7C94A55AF1E}"
-       Slot FrameWidgetSlot "{5CEE96363E5C46AD}" {
-        PositionX -40.425
-        OffsetLeft -40.425
-        PositionY -4
-        OffsetTop -4
-        SizeX 0
-        OffsetRight 40.425
-        SizeY 0
-        OffsetBottom 4
-       }
-       {
-        TextWidgetClass "{5CEAB7C94A55AF1D}" {
-         Prefab "{5CEAB7C94A55AF1D}"
-         "Is Enabled" 0
-         "Is Visible" 0
-        }
-        TextWidgetClass "{5CEAB7C94A55AF1C}" {
-         Prefab "{5CEAB7C94A55AF1C}"
-         "Is Enabled" 0
-         "Is Visible" 0
-        }
-       }
-      }
-     }
-    }
-   }
-  }
-  OverlayWidgetClass "{5EB4B0CB2DF0458F}" : "{01FD644AD2B6317D}UI/layouts/Menus/Common/MenuBackground.layout" {
-   Name "MenuBackground0"
-   Slot FrameWidgetSlot "{552C9A0A8526D2AD}" {
-    Anchor 0.5 0.5 0.5 0.5
-    PositionX -1801.95
-    OffsetLeft -1801.95
-    PositionY -28.936
-    OffsetTop -28.936
-    SizeX 1920
-    OffsetRight -118.049
-    SizeY 1080
-    OffsetBottom -1051.06
-   }
-   {
-    FrameWidgetClass "{5CECA56A279C044D}" {
-     Prefab "{5CECA56A279C044D}"
-     Slot OverlayWidgetSlot "{5CECA56A279C04A0}" {
-      HorizontalAlign 2
-      VerticalAlign 0
+      Padding 0 4 4 0
      }
      {
       HorizontalLayoutWidgetClass "{5CEAB7C94A55AF1E}" {
        Prefab "{5CEAB7C94A55AF1E}"
        Slot FrameWidgetSlot "{5CEE96363E5C46AD}" {
-        PositionX -40.425
-        OffsetLeft -40.425
-        PositionY -4
-        OffsetTop -4
+        Anchor 0.5 0.5 0.5 0.5
+        PositionX 117.001
+        OffsetLeft 117.001
+        PositionY -8
+        OffsetTop -8
         SizeX 0
-        OffsetRight 40.425
+        OffsetRight -117.001
         SizeY 0
-        OffsetBottom 4
+        OffsetBottom 8
        }
       }
      }
