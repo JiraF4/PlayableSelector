@@ -1,47 +1,115 @@
 StringTable {
  ItemClassName "CustomStringTableItem"
  Items {
+  CustomStringTableItem "{5EC2E46366D61D92}" {
+   Id "PS-Briefing_MissionDescriptionHeader"
+   Target_en_us "Mission description"
+   Target_ru_ru "Описание сценария"
+   Modified 1589838722
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
+  CustomStringTableItem "{5EC2E47F1F2FA6D1}" {
+   Id "PS-Briefing_MissionDescriptionHide"
+   Target_en_us "Hide mission description"
+   Target_ru_ru "Скрыть описание миссии"
+   Modified 1589838171
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
+  CustomStringTableItem "{5EC2E47F0691875D}" {
+   Id "PS-Briefing_MissionDescriptionShow"
+   Target_en_us "Show mission description"
+   Target_ru_ru "Показать описание миссии"
+   Modified 1589838147
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
+  CustomStringTableItem "{5EC2E47F1C0F3895}" {
+   Id "PS-Briefing_VoiceChatHide"
+   Target_en_us "Hide voice chat"
+   Target_ru_ru "Скрыть голосовой чат"
+   Modified 1589838065
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
+  CustomStringTableItem "{5EC2E47F00BC0D4E}" {
+   Id "PS-Briefing_VoiceChatShow"
+   Target_en_us "Show voice chat"
+   Target_ru_ru "Показать голосовой чат"
+   Modified 1589837352
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
+  CustomStringTableItem "{5EC2E474747EACEA}" {
+   Id "PS-Debrief_Losses"
+   Target_en_us "Faction statistic"
+   Target_ru_ru "Фракционная статистика"
+   Modified 1589835442
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
+  CustomStringTableItem "{5EC2E4747D62E00C}" {
+   Id "PS-Debrief_Objectives"
+   Target_en_us "Objectives"
+   Target_ru_ru "Задачи"
+   Modified 1589835414
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
   CustomStringTableItem "{5EC27C54DBE99E97}" {
    Id "PS-Description_HeaderAboutMission"
-   Modified 1589823343
+   Target_en_us "General information"
+   Target_ru_ru "Общая информация"
+   Modified 1589836648
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5EC27C54EAA8176D}" {
    Id "PS-Description_HeaderFIA"
-   Modified 1589823382
+   Target_en_us "FIA objectives"
+   Target_ru_ru "Задачи FIA"
+   Modified 1589836392
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5EC27C54DD5C222E}" {
    Id "PS-Description_HeaderObjectives"
-   Modified 1589823347
+   Target_en_us "Objectives"
+   Target_ru_ru "Задачи"
+   Modified 1589836531
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5EC27C54E131620A}" {
    Id "PS-Description_HeaderRules"
-   Modified 1589823353
+   Target_en_us "Rules"
+   Target_ru_ru "Правила"
+   Modified 1589836354
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5EC27C54ED9CAFBA}" {
    Id "PS-Description_HeaderUS"
-   Modified 1589823377
+   Target_en_us "US Army objectives"
+   Target_ru_ru "Задачи Армии США"
+   Modified 1589836319
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5EC27C54F35F3D06}" {
    Id "PS-Description_HeaderUSSR"
-   Modified 1589823388
+   Target_en_us "Soviet Army objectives"
+   Target_ru_ru "Задачи Советской Армии"
+   Modified 1589836270
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5EB30CD4368261A7}" {
    Id "PS-GameMaster_PlayableGroup"
    Target_en_us "Playable Unit"
-   Target_ru_ru "Играбельный Чел"
-   Modified 1588796631
+   Target_ru_ru "Играбельный чел"
+   Modified 1589834979
    Author "SeskPC"
    LastChanged "SeskPC"
   }
@@ -106,6 +174,22 @@ StringTable {
    Target_en_us "Open lobby"
    Target_ru_ru "Открыть лобби"
    Modified 1588200867
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
+  CustomStringTableItem "{5EC2E47EDD8EAD31}" {
+   Id "PS-Keybind_MissionDescriptionSwitch"
+   Target_en_us "Mission description interface"
+   Target_ru_ru "Интерфейс описания миссии"
+   Modified 1589838257
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
+  CustomStringTableItem "{5EC2E47EA1E2244F}" {
+   Id "PS-Keybind_VoiceChatSwitch"
+   Target_en_us "Voice chat interface"
+   Target_ru_ru "Интерфейс голосового чата"
+   Modified 1589838225
    Author "SeskPC"
    LastChanged "SeskPC"
   }
@@ -197,23 +281,45 @@ StringTable {
    Author "SeskPC"
    LastChanged "SeskPC"
   }
+  CustomStringTableItem "{5EC2E47913C55F2C}" {
+   Id "PS-Lobby_VoiceChat"
+   Target_en_us "Voice Chat"
+   Target_ru_ru "Голосовой чат"
+   Modified 1589835855
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
+  CustomStringTableItem "{5EC2E47910530FBD}" {
+   Id "PS-Lobby_VoiceChatFaction"
+   Target_en_us "Faction voice chat"
+   Target_ru_ru "Голосовой чат "
+   Modified 1589836201
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
   CustomStringTableItem "{5EBE323E513FFB52}" {
    Id "PS-ObserverPlayersList"
-   Modified 1589525096
+   Target_en_us "Alive players"
+   Target_ru_ru "Живые игроки"
+   Modified 1589834974
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5EBE323E4409E95B}" {
    Id "PS-Preview_GameStartSoon"
-   Modified 1589525075
+   Target_en_us "Game will start soon"
+   Target_ru_ru "Игра скоро начнётся"
+   Modified 1589835471
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5EBE323E40F74A24}" {
    Id "PS-Preview_PleaseWait"
-   Modified 1589525068
+   Target_en_us "Please wait"
+   Target_ru_ru "Пожалуйста пожождите"
+   Modified 1589834788
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5EB6E12BC67891C4}" {
    Id "PS-VoNRoom_Command"
@@ -241,9 +347,9 @@ StringTable {
   }
   CustomStringTableItem "{5EB6FE5384337A16}" {
    Id "PS-VoNRoom_Header"
-   Target_en_us "Voice Channels"
-   Target_ru_ru "Голосовые Каналы"
-   Modified 1589051689
+   Target_en_us "Voice сhannels"
+   Target_ru_ru "Голосовые каналы"
+   Modified 1589830923
    Author "SeskPC"
    LastChanged "SeskPC"
   }
