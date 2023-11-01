@@ -17,7 +17,7 @@ class PS_VoNRoomsManager : ScriptComponent
 	
 	// Replication data
 	ref map<int, string> m_mVoiceRooms = new map<int, string>(); // room names for UI
-	ref map<int, int> m_mPlyersRooms = new map<int, int>(); // player to room relationship
+	ref map<int, int> m_mPlayersRooms = new map<int, int>(); // player to room relationship
 	
 	// Move speech bois underground
 	static vector roomInitialPosition = "1 1000000 1";
@@ -34,6 +34,12 @@ class PS_VoNRoomsManager : ScriptComponent
 	bool GetChangesFlag()
 	{
 		return m_bHasChanges;
+	}
+	
+	bool m_bRplLoaded = false;
+	bool IsReplicated()
+	{
+		return m_bRplLoaded;
 	}
 	
 	override protected void OnPostInit(IEntity owner)
@@ -85,7 +91,7 @@ class PS_VoNRoomsManager : ScriptComponent
 	{
 		m_bHasChanges = true;
 		
-		m_mPlyersRooms[playerId] = roomId;
+		m_mPlayersRooms[playerId] = roomId;
 		PlayerController playerController = GetGame().GetPlayerController();
 		if (!playerController) return;
 		if (playerController.GetPlayerId() != playerId) return;
@@ -135,8 +141,8 @@ class PS_VoNRoomsManager : ScriptComponent
 	// ------------------------- Get -------------------------
 	int GetPlayerRoom(int playerId)
 	{
-		if (!m_mPlyersRooms.Contains(playerId)) return -1;
-		return m_mPlyersRooms[playerId];
+		if (!m_mPlayersRooms.Contains(playerId)) return -1;
+		return m_mPlayersRooms[playerId];
 	}
 	int GetRoomWithFaction(FactionKey factionKey, string roomName)
 	{
@@ -155,12 +161,12 @@ class PS_VoNRoomsManager : ScriptComponent
 	// Send our precision data, we need it on clients
 	override bool RplSave(ScriptBitWriter writer)
 	{
-		int plyersRoomsCount = m_mPlyersRooms.Count();
-		writer.WriteInt(plyersRoomsCount);
-		for (int i = 0; i < plyersRoomsCount; i++)
+		int playersRoomsCount = m_mPlayersRooms.Count();
+		writer.WriteInt(playersRoomsCount);
+		for (int i = 0; i < playersRoomsCount; i++)
 		{
-			writer.WriteInt(m_mPlyersRooms.GetKey(i));
-			writer.WriteInt(m_mPlyersRooms.GetElement(i));
+			writer.WriteInt(m_mPlayersRooms.GetKey(i));
+			writer.WriteInt(m_mPlayersRooms.GetElement(i));
 		}
 		
 		int voiceRoomsCount = m_mVoiceRooms.Count();
@@ -176,18 +182,22 @@ class PS_VoNRoomsManager : ScriptComponent
 	
 	override bool RplLoad(ScriptBitReader reader)
 	{
-		int plyersRoomsCount;
-		reader.ReadInt(plyersRoomsCount);
-		for (int i = 0; i < plyersRoomsCount; i++)
+		int playersRoomsCount;
+		reader.ReadInt(playersRoomsCount);
+		for (int i = 0; i < playersRoomsCount; i++)
 		{
 			int key;
 			int value;
 			reader.ReadInt(key);
 			reader.ReadInt(value);
 			
-			m_mPlyersRooms.Insert(key, value);
+			Print("--------");
+			Print("key" + key.ToString());
+			Print("value" + value.ToString());
+			
+			m_mPlayersRooms.Insert(key, value);
 		}
-		
+		Print("----------------");
 		int voiceRoomsCount;
 		reader.ReadInt(voiceRoomsCount);
 		for (int i = 0; i < voiceRoomsCount; i++)
@@ -197,9 +207,15 @@ class PS_VoNRoomsManager : ScriptComponent
 			reader.ReadInt(key);
 			reader.ReadString(value);
 			
+			Print("key" + key.ToString());
+			Print("value" + value);
+			Print("--------");
+			
 			m_mVoiceRooms.Insert(key, value);
 			m_mVoiceRoomsFromName.Insert(value, key);
 		}
+		
+		m_bRplLoaded = true;
 		
 		return true;
 	}

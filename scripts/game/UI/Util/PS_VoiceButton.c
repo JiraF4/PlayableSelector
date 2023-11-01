@@ -22,7 +22,8 @@ class PS_VoiceButton : PS_HideableButton
 		// Check OUR VoN is WE listen this player?
 		PlayerController playerController = GetGame().GetPlayerController();
 		IEntity entity = playerController.GetControlledEntity();
-		PermissionState mute = playerController.GetPlayerMutedState(m_iPlayer);
+		PermissionState mute = PermissionState.DISALLOWED;
+		if (m_iPlayer > 0) playerController.GetPlayerMutedState(m_iPlayer);
 		PS_LobbyVoNComponent von;
 		if (entity) von = PS_LobbyVoNComponent.Cast(entity.FindComponent(PS_LobbyVoNComponent));
 		if (von && mute != PermissionState.DISALLOWED)
