@@ -355,6 +355,7 @@ class PS_PlayableManager : ScriptComponent
 		foreach (int playerId: playerIds)
 		{
 			if (playerId == thisPlayerId) continue;
+			if (GetPlayerFactionKey(playerId) != GetPlayerFactionKey(thisPlayerId)) continue;
 			RplId playableId = GetPlayableByPlayer(playerId);
 			if (playableId == RplId.Invalid()) continue;
 			if (playableId > thisPlayableId) continue;

@@ -9,6 +9,10 @@ SCR_AIGroup : "{107554618BE6FF20}Prefabs/Groups/BLUFOR/Group_US_Team_Suppress_P.
  coords 97.713 1 150.585
 }
 SCR_AIGroup : "{437764899CCFB77B}Prefabs/Groups/OPFOR/Group_USSR_Team_Suppress_P.et" {
+ components {
+  PS_GroupCallsignAssigner "{5EC327233DD693FB}" {
+  }
+ }
  coords 120.993 1 114.544
 }
 SCR_AIGroup : "{9073549836A3B075}Prefabs/Groups/INDFOR/Group_FIA_Team_AT_P.et" {
