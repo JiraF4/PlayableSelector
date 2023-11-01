@@ -417,7 +417,8 @@ PS_GameModeCoop {
  }
  PlayerControllerPrefab "{4E5DAC62A374950F}Prefabs/Characters/Core/DefaultPlayerControllerMP_Coop.et"
  m_bAutoPlayerRespawn 0
- m_fAutoReloadTime 5
+ m_fAutoReloadTime 30
+ m_bMarkersOnlyOnBriefing 0
  {
   SCR_FactionManager "5EA8C932C68D400F" : "{4A188E44289B9A50}Prefabs/MP/Managers/Factions/FactionManager_Editor.et" {
    ID "5EA73DB136618AD9"
