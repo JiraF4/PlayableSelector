@@ -315,15 +315,15 @@ FrameWidgetClass {
   FrameWidgetClass "{5EB701C8F15ED58E}" : "{35DB604900C55B98}UI/VoiceChat/VoiceChatFrame.layout" {
    Name "VoiceChatFrame"
    Slot FrameWidgetSlot "{5EB701C8F15ED5E1}" {
-    Anchor 1 1 1 1
+    Anchor 1 0.5 1 0.5
     PositionX -490
     OffsetLeft -490
-    PositionY -860
-    OffsetTop -860
+    PositionY -320
+    OffsetTop -320
     SizeX 480
     OffsetRight 10
     SizeY 640
-    OffsetBottom 220
+    OffsetBottom -320
    }
    {
     ImageWidgetClass "{5EB2900030AFF403}" {
@@ -367,14 +367,15 @@ FrameWidgetClass {
   FrameWidgetClass "{5EC27C73EBAC2930}" : "{0CAA34745062743B}UI/MissionDescription/MissionDescriptionFrame.layout" {
    Name "MissionDescriptionFrame"
    Slot FrameWidgetSlot "{5EBEE964499ECB58}" {
+    Anchor 0 0.5 0 0.5
     PositionX 10
     OffsetLeft 10
-    PositionY -860
-    OffsetTop -860
+    PositionY -320
+    OffsetTop -320
     SizeX 480
     OffsetRight -490
     SizeY 640
-    OffsetBottom 220
+    OffsetBottom -320
    }
   }
   FrameWidgetClass "{5EAF5687FB22DB6F}" : "{B7A765172F0BD4D9}UI/layouts/Common/EarlyAccessWatermark.layout" {

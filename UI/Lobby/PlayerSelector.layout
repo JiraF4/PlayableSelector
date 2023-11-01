@@ -12,8 +12,6 @@ ButtonWidgetClass {
    m_BackgroundHovered 1 1 1 0.162
    m_BackgroundSelectedHovered 0.76 0.392 0.08 0.3
    m_BackgroundClicked 1 1 1 0
-   m_bShowBorderOnFocus 0
-   m_bNoBorderAnimation 1
   }
  }
  {
@@ -103,20 +101,19 @@ ButtonWidgetClass {
      Image "check"
      Size 32 32
     }
-    PanelWidgetClass "{5EA8C92152DB446E}" {
+    ImageWidgetClass "{5EA8C92152DB446E}" {
      Name "Border"
      Slot FrameWidgetSlot "{5D6F1490EBB9691E}" {
-      PositionX 1.441
-      OffsetLeft 1.441
+      PositionX 0
+      OffsetLeft 0
       PositionY 0
       OffsetTop 0
-      SizeX 400
-      OffsetRight -401.441
+      SizeX 480
+      OffsetRight -480
       SizeY 40
       OffsetBottom -40
      }
-     Color 0.761 0.392 0.078 1
-     style outline_2px
+     Color 1 1 1 0.3
     }
     ImageWidgetClass "{5EA8C93C2D1DC41F}" {
      Name "PinImage"

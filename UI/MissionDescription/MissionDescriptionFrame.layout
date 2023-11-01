@@ -67,6 +67,22 @@ FrameWidgetClass {
        }
        Color 0 0 0 1
       }
+      PanelWidgetClass "{5EC2F2F031B6EDA1}" {
+       Name "Border"
+       Slot FrameWidgetSlot "{5D6F1490EBB9691E}" {
+        Anchor 0 0 0 0
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX 480
+        OffsetRight -480
+        SizeY 44
+        OffsetBottom -44
+       }
+       Color 0.761 0.392 0.078 1
+       style outline_2px
+      }
       OverlayWidgetClass "{5EBEE964499F395B}" {
        Name "MissionDescriptionHeaderTextOverlay"
        Slot FrameWidgetSlot "{5EB0E9ED5655F81D}" {

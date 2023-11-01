@@ -67,6 +67,22 @@ ButtonWidgetClass {
      Image "veh_right"
      Size 32 32
     }
+    PanelWidgetClass "{5EC2F2F0215C80C5}" {
+     Name "Border"
+     Slot FrameWidgetSlot "{5D6F1490EBB9691E}" {
+      Anchor 0 0 0 0
+      PositionX 0
+      OffsetLeft 0
+      PositionY 0
+      OffsetTop 0
+      SizeX 480
+      OffsetRight -480
+      SizeY 44
+      OffsetBottom -44
+     }
+     Color 0.761 0.392 0.078 1
+     style outline_2px
+    }
    }
   }
  }

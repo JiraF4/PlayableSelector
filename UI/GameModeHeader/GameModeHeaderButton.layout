@@ -14,6 +14,7 @@ ButtonWidgetClass {
    m_eState NULL
   }
  }
+ "no focus" 1
  {
   SizeLayoutWidgetClass "{5EB2902E629DFD43}" {
    Name "GameModeHeaderButton"
