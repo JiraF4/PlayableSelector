@@ -103,8 +103,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	void SpawnInitialEntity(int playerId)
 	{
 		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
-		VoNRoomsManager.MoveToRoom(playerId, "", "");
-		
         Resource resource = Resource.Load("{E1B415916312F029}Prefabs/InitialPlayer.et");
 		EntitySpawnParams params = new EntitySpawnParams();
 		GetTransform(params.Transform);		

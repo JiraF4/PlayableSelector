@@ -29,7 +29,7 @@ class PS_WaitScreen: MenuBase
 						Print(roomId.ToString());
 						Print(roomKey);
 						
-						playableController.SetPlayerState(playerController.GetPlayerId(), PS_EPlayableControllerState.Playing);
+						playableController.SetPlayerState(playerController.GetPlayerId(), PS_EPlayableControllerState.NotReady);
 						playableController.MoveToVoNRoomByKey(playerController.GetPlayerId(), roomKey);
 						playableController.SwitchToMenu(gameMode.GetState());
 						return;
