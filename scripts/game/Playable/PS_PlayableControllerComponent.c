@@ -186,6 +186,10 @@ class PS_PlayableControllerComponent : ScriptComponent
 			factionKey = outTokens[0];
 			groupName = outTokens[1];
 		}
+		
+		Print("factionKey " + factionKey);
+		Print("groupName " + groupName);
+		
 		Rpc(RPC_MoveVoNToRoom, playerId, factionKey, groupName);
 	}
 	void MoveToVoNRoom(int playerId, FactionKey factionKey, string roomName)
@@ -195,6 +199,9 @@ class PS_PlayableControllerComponent : ScriptComponent
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void RPC_MoveVoNToRoom(int playerId, FactionKey factionKey, string roomName)
 	{
+		Print("factionKey " + factionKey);
+		Print("groupName " + roomName);
+		
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		
 		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();

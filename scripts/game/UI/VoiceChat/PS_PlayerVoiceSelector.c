@@ -64,7 +64,7 @@ class PS_PlayerVoiceSelector : SCR_ButtonBaseComponent
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(m_iPlayer);
 		int playerRoomId = VoNRoomsManager.GetPlayerRoom(m_iPlayer);
 		string playerRoom = VoNRoomsManager.GetRoomName(playerRoomId);
-		int groupCallSign = playableManager.GetGroupCallsignByPlayable(m_iPlayer);
+		int groupCallSign = playableManager.GetGroupCallsignByPlayable(playableId);
 		 
 		// current player
 		PlayerController currentPlayerController = GetGame().GetPlayerController();
