@@ -1,7 +1,40 @@
 PS_GameModeCoop {
  ID "5D4CDA0160C87274"
  components {
+  PS_MissionDescriptionManager "{5EC30459F8CD66AC}" {
+   m_aDescriptions {
+    PS_MapDescription "{5EC3045B6AFBD311}" {
+     m_sTitle "#PS-Description_HeaderAboutMission"
+     m_sDescriptionLayout "{ACDDFEA12D499F12}UI/MissionDescriptionTemplates/DescriptionAboutMission.layout"
+    }
+    PS_MapDescription "{5EC3045B74BE218C}" {
+     m_sTitle "#PS-Description_HeaderObjectives"
+     m_sDescriptionLayout "{F289382214DA8825}UI/MissionDescriptionTemplates/DescriptionObjectives.layout"
+    }
+    PS_MapDescription "{5EC3045B45C0B05D}" {
+     m_sTitle "#PS-Description_HeaderRules"
+     m_sDescriptionLayout "{F2776B4A507E919E}UI/MissionDescriptionTemplates/DescriptionRules.layout"
+    }
+    PS_MapDescription "{5EC3045B4E61FE0A}" {
+     m_sTitle "#PS-Description_HeaderFIA"
+     m_sFactions "FIA"
+     m_sDescriptionLayout "{6970775993429F7C}UI/MissionDescriptionTemplates/DescriptionFIA.layout"
+    }
+    PS_MapDescription "{5EC3045B535F5157}" {
+     m_sTitle "#PS-Description_HeaderUS"
+     m_sFactions "US"
+     m_sDescriptionLayout "{E9BB75D81C9137A8}UI/MissionDescriptionTemplates/DescriptionUS.layout"
+    }
+    PS_MapDescription "{5EC3045B5C37CEAF}" {
+     m_sTitle "#PS-Description_HeaderUSSR"
+     m_sFactions "USSR"
+     m_sDescriptionLayout "{569546D48527953B}UI/MissionDescriptionTemplates/DescriptionUSSR.layout"
+    }
+   }
+  }
   PS_PlayableManager "{5EA8C9329726C920}" {
+  }
+  PS_ReplayWriter "{5EBAA3FA8A5746EA}" {
   }
   PS_VoNRoomsManager "{5EB2902757964925}" {
   }
@@ -380,8 +413,6 @@ PS_GameModeCoop {
   }
   RplComponent "{5D4CE249422E8900}" {
    Streamable Disabled
-  }
-  PS_ReplayWriter "{5EBAA3FA8A5746EA}" {
   }
  }
  PlayerControllerPrefab "{4E5DAC62A374950F}Prefabs/Characters/Core/DefaultPlayerControllerMP_Coop.et"
