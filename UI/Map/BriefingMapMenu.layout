@@ -160,7 +160,7 @@ FrameWidgetClass {
        }
        components {
         SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
-         m_sLabel "#PS-Briefing_SwitchMissionDescription"
+         m_sLabel "#PS-Briefing_MissionDescriptionHide"
          m_sActionName "SwitchMissionDescription"
         }
        }
@@ -171,7 +171,7 @@ FrameWidgetClass {
        }
        components {
         SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
-         m_sLabel "#PS-Briefing_SwitchVoiceChat"
+         m_sLabel "#PS-Briefing_VoiceChatHide"
          m_sActionName "SwitchVoiceChat"
         }
        }

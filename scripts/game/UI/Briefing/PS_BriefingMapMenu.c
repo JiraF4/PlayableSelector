@@ -22,7 +22,7 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 	protected PS_GameModeHeader m_hGameModeHeader;
 	
 	SCR_NavigationButtonComponent m_bNavigationButtonSwitchMissionDescription;
-	SCR_NavigationButtonComponent m_bNavigationButtonForceSwitchVoiceChat;
+	SCR_NavigationButtonComponent m_bNavigationButtonSwitchVoiceChat;
 	
 	protected Widget m_wSteps;
 	
@@ -65,10 +65,10 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 		GetGame().GetInputManager().AddActionListener("SwitchVoiceChat", EActionTrigger.DOWN, Action_SwitchVoiceChat);
 		
 		m_bNavigationButtonSwitchMissionDescription = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationSwitchMissionDescription").FindHandler(SCR_NavigationButtonComponent));
-		m_bNavigationButtonForceSwitchVoiceChat = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationSwitchVoiceChat").FindHandler(SCR_NavigationButtonComponent));
+		m_bNavigationButtonSwitchVoiceChat = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationSwitchVoiceChat").FindHandler(SCR_NavigationButtonComponent));
 		
 		m_bNavigationButtonSwitchMissionDescription.m_OnClicked.Insert(Action_SwitchMissionDescription);
-		m_bNavigationButtonForceSwitchVoiceChat.m_OnClicked.Insert(Action_SwitchVoiceChat);
+		m_bNavigationButtonSwitchVoiceChat.m_OnClicked.Insert(Action_SwitchVoiceChat);
 		
 		GetGame().GetCallqueue().CallLater(UpdateCycle, 0);
 	}
@@ -195,9 +195,13 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 	void Action_SwitchMissionDescription()
 	{
 		m_wMissionDescription.SetVisible(!m_wMissionDescription.IsVisible());
+		if (m_wMissionDescription.IsVisible()) m_bNavigationButtonSwitchMissionDescription.SetLabel("#PS-Briefing_MissionDescriptionHide");
+		else m_bNavigationButtonSwitchMissionDescription.SetLabel("#PS-Briefing_MissionDescriptionShow");
 	}
 	void Action_SwitchVoiceChat()
 	{
 		m_wVoiceChatList.SetVisible(!m_wVoiceChatList.IsVisible());
+		if (m_wVoiceChatList.IsVisible()) m_bNavigationButtonSwitchVoiceChat.SetLabel("#PS-Briefing_VoiceChatHide");
+		else m_bNavigationButtonSwitchVoiceChat.SetLabel("#PS-Briefing_VoiceChatShow");
 	}
 };
