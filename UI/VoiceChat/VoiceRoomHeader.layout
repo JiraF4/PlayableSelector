@@ -5,7 +5,7 @@ ButtonWidgetClass {
  Color 0.001 0.001 0.001 0
  components {
   PS_VoiceRoomHeader "{5EB1458A4437EC6E}" {
-   m_BackgroundDefault 1 1 1 0.031
+   m_BackgroundDefault 1 1 1 0
   }
  }
  {
@@ -13,6 +13,7 @@ ButtonWidgetClass {
    Name "VoiceRoomFrame"
    Slot ButtonWidgetSlot "{5EB2907FBA3D4CE8}" {
    }
+   Color 0 0 0 0
    {
     ImageWidgetClass "{5EB1458B279C077B}" {
      Name "Background"
