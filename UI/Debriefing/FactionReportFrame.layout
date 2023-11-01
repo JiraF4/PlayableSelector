@@ -14,7 +14,284 @@ FrameWidgetClass {
     SizeY 710
     OffsetBottom -710
    }
-   Color 0 0 0 1
+   Color 0 0 0 0.784
+  }
+  SizeLayoutWidgetClass "{5EBEF61BB0F67362}" {
+   Name "DebriefFaction"
+   Slot FrameWidgetSlot "{5EBEF61BB0F67299}" {
+    PositionX 0
+    OffsetLeft 0
+    PositionY 0
+    OffsetTop 0
+    SizeX 560
+    OffsetRight -560
+    SizeY 710
+    OffsetBottom -710
+   }
+   AllowWidthOverride 1
+   WidthOverride 560
+   {
+    VerticalLayoutWidgetClass "{5EBEF61BB4BF1CFE}" {
+     Name "VerticalLayout0"
+     Slot AlignableSlot "{5EBEF61BBEC4713E}" {
+      VerticalAlign 0
+     }
+     {
+      OverlayWidgetClass "{5EBEF61BC237A8AD}" {
+       Name "Overlay0"
+       Slot LayoutSlot "{5EBF1EC647EB490C}" {
+       }
+      }
+      FrameWidgetClass "{5EBF1EC51031B8BC}" {
+       Name "FactionFrame"
+       Slot LayoutSlot "{5EBF1EC9E8008E11}" {
+        Padding 0 10 0 0
+       }
+       {
+        ImageWidgetClass "{5EBF1EC51031B8A2}" {
+         Name "FactionColor"
+         Slot FrameWidgetSlot "{5E7CF041119B47ED}" {
+          PositionX 0
+          OffsetLeft 0
+          PositionY 0
+          OffsetTop 0
+          SizeX 540
+          OffsetRight -540
+          SizeY 42
+          OffsetBottom -42
+         }
+         Color 0.001 0.082 0.023 1
+        }
+        TextWidgetClass "{5EBF1EC51031B8A0}" {
+         Name "FactionName"
+         Slot FrameWidgetSlot "{5E7CF041119B479A}" {
+          PositionX 0
+          OffsetLeft 0
+          PositionY 0
+          OffsetTop 0
+          SizeX 540
+          OffsetRight -540
+          SizeY 42
+          OffsetBottom -42
+         }
+         Text "Faction"
+         "Font Size" 28
+         "Min Font Size" 28
+         "Horizontal Alignment" Center
+         "Vertical Alignment" Center
+         FontProperties FontProperties "{5E7CF04E69A9FC94}" {
+          Bold 1
+         }
+        }
+       }
+      }
+      FrameWidgetClass "{5EBF1EC025B3360C}" {
+       Name "ObjectivesList"
+       Slot LayoutSlot "{5EBF1EC025B3375E}" {
+        Padding 0 16 0 0
+       }
+       {
+        ImageWidgetClass "{5EBF1EC025B33631}" {
+         Name "ObjectivesColor"
+         Slot FrameWidgetSlot "{5E7CF041119B47ED}" {
+          PositionX 0
+          OffsetLeft 0
+          PositionY 0
+          OffsetTop 0
+          SizeX 540
+          OffsetRight -540
+          SizeY 44
+          OffsetBottom -44
+         }
+         Color 0 0 0 1
+        }
+        TextWidgetClass "{5EBF1EC025B33630}" {
+         Name "ObjectivesName"
+         Slot FrameWidgetSlot "{5E7CF041119B479A}" {
+          PositionX 0
+          OffsetLeft 0
+          PositionY 0
+          OffsetTop 0
+          SizeX 540
+          OffsetRight -540
+          SizeY 44
+          OffsetBottom -44
+         }
+         Text "#PS-Debrief_Objectives"
+         "Font Size" 28
+         "Min Font Size" 28
+         "Horizontal Alignment" Center
+         "Vertical Alignment" Center
+         FontProperties FontProperties "{5E7CF04E69A9FC94}" {
+          Bold 1
+         }
+        }
+        ScrollLayoutWidgetClass "{5EBF1EC1612945C0}" {
+         Name "ObjectiveScroll"
+         Slot FrameWidgetSlot "{5EBF1EC161294512}" {
+          PositionX 0
+          OffsetLeft 0
+          PositionY 52
+          OffsetTop 52
+          SizeX 540
+          OffsetRight -540
+          SizeY 148
+          OffsetBottom -200
+         }
+         {
+          VerticalLayoutWidgetClass "{5EBF1EC82B9DADE8}" {
+           Name "ObjectiveVerticalLayout"
+           Slot AlignableSlot "{5EBF1EC82B9DAD0C}" {
+           }
+           {
+            FrameWidgetClass "{5EBF1ED7BCD220FB}" : "{0860E6EBB3D508DF}UI/Debriefing/ObjectiveFrame.layout" {
+             Name "ObjectiveFrame0"
+             Slot LayoutSlot "{5EBF1EC9E8008D16}" {
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+      FrameWidgetClass "{5EBF1ECC3A1284F3}" {
+       Name "LossesFrame"
+       Slot LayoutSlot "{5EBF1EC025B3375E}" {
+        Padding 0 16 0 0
+       }
+       {
+        ImageWidgetClass "{5EBF1ECC3A1284F0}" {
+         Name "LossesColor"
+         Slot FrameWidgetSlot "{5E7CF041119B47ED}" {
+          PositionX 0
+          OffsetLeft 0
+          PositionY 0
+          OffsetTop 0
+          SizeX 540
+          OffsetRight -540
+          SizeY 44
+          OffsetBottom -44
+         }
+         Color 0 0 0 1
+        }
+        TextWidgetClass "{5EBF1ECC3A1284F7}" {
+         Name "LossesName"
+         Slot FrameWidgetSlot "{5E7CF041119B479A}" {
+          PositionX 0
+          OffsetLeft 0
+          PositionY 0
+          OffsetTop 0
+          SizeX 280
+          OffsetRight -280
+          SizeY 44
+          OffsetBottom -44
+         }
+         Text "#PS-Debrief_Losses"
+         "Font Size" 28
+         "Min Font Size" 28
+         "Horizontal Alignment" Center
+         "Vertical Alignment" Center
+         FontProperties FontProperties "{5E7CF04E69A9FC94}" {
+          Bold 1
+         }
+        }
+        ImageWidgetClass "{5EBF1EDB13CC6CE0}" {
+         Name "UnitTypeImage"
+         Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
+          PositionX 476
+          OffsetLeft 476
+          PositionY 0
+          OffsetTop 0
+          SizeX 44
+          OffsetRight -520
+          SizeY 44
+          OffsetBottom -44
+         }
+         Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
+         Image "death"
+         Size 32 32
+        }
+        ImageWidgetClass "{5EBF1EDBE64B53AA}" {
+         Name "UnitTypeImage0"
+         Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
+          PositionX 416
+          OffsetLeft 416
+          PositionY 0
+          OffsetTop 0
+          SizeX 44
+          OffsetRight -460
+          SizeY 44
+          OffsetBottom -44
+         }
+         Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
+         Image "veh_damage"
+         Size 32 32
+        }
+        ImageWidgetClass "{5EBF1EDBF4F9A5C1}" {
+         Name "UnitTypeImage1"
+         Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
+          PositionX 356
+          OffsetLeft 356
+          PositionY 0
+          OffsetTop 0
+          SizeX 44
+          OffsetRight -400
+          SizeY 44
+          OffsetBottom -44
+         }
+         Texture "{B9199157B90D6216}UI/Textures/InventoryIcons/Medical/Medical-icons.imageset"
+         Image "Wound_4_UI"
+         Size 64 64
+        }
+        ImageWidgetClass "{5EBF1EDBFAFB52DF}" {
+         Name "UnitTypeImage2"
+         Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
+          PositionX 296
+          OffsetLeft 296
+          PositionY 0
+          OffsetTop 0
+          SizeX 44
+          OffsetRight -340
+          SizeY 44
+          OffsetBottom -44
+         }
+         Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
+         Image "thumbs-up"
+         Size 32 32
+        }
+        ScrollLayoutWidgetClass "{5EBF1ECC3A1284F5}" {
+         Name "LossesScroll"
+         Slot FrameWidgetSlot "{5EBF1EC161294512}" {
+          PositionX 0
+          OffsetLeft 0
+          PositionY 52
+          OffsetTop 52
+          SizeX 540
+          OffsetRight -540
+          SizeY 364
+          OffsetBottom -416
+         }
+         {
+          VerticalLayoutWidgetClass "{5EBF1EC8296881D0}" {
+           Name "VerticalLayout0"
+           Slot AlignableSlot "{5EBF1EC8296881CD}" {
+           }
+           {
+            FrameWidgetClass "{5EBF1EDD81864CE8}" : "{D2DC34AA650883BC}UI/Debriefing/LossFrame.layout" {
+             Name "ObjectiveFrame0"
+             Slot LayoutSlot "{5EBF1EC9E8008D16}" {
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   }
   }
  }
 }
