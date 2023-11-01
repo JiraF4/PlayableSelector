@@ -327,11 +327,13 @@ class PS_CoopLobby: MenuBase
 			
 			array<PS_PlayableComponent> factionPlayablesList = m_sFactionPlayables[handler.GetFaction().GetFactionKey()];
 			int i = 0;
+			int lockPLayables = 0;
 			foreach (PS_PlayableComponent playable : factionPlayablesList) {
 				int playerId = playableManager.GetPlayerByPlayable(playable.GetId());
 				if (playerId != -1)  i++;
+				if (playerId == -2)  lockPLayables++;
 			}
-			handler.SetCount(factionPlayersCount, i, factionPlayablesList.Count());
+			handler.SetCount(factionPlayersCount, i - lockPLayables, factionPlayablesList.Count() - lockPLayables);
 		}
 		
 		// update every group widget

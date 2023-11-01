@@ -10,6 +10,7 @@ enum PS_EReplayType
 	CharacterBoardVehicle,
 	CharacterUnBoardVehicle,
 	ProjectileShoot,
+	Explosion,
 	//...
 }
 
@@ -39,7 +40,11 @@ enum PS_EReplayVehicleType
 	
 	VehicleRegistration
 	int - RplId
-	int - PS_EReplayVehicleType
+	int - vehicleName length
+	string - vehicleName
+	EVehicleType - vehicleType
+	int - factionKey length
+	FactionKey - factionKey
 
 	PlayerRegistration
 	int - playerId
@@ -62,4 +67,9 @@ enum PS_EReplayVehicleType
 	int - RplId shoot entity
 	float - hit position x
 	float - hit position z
+
+	Explosion
+	float - hit position x
+	float - hit position z
+	float - Impulse distance
 */

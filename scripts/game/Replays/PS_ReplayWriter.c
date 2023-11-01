@@ -125,15 +125,21 @@ class PS_ReplayWriter : ScriptComponent
 	}
 	
 	// PS_EReplayType.VehicleRegistration
-	void WriteVehicleRegistration(RplId vehicleRplId, PS_EReplayVehicleType vehicleType)
+	void WriteVehicleRegistration(RplId vehicleRplId, string vehicleName, EVehicleType vehicleType, FactionKey factionKey)
 	{
 		if (!Replication.IsServer()) return;
 		TryInsertTimeStamp();
 		
 		FileHandle replayFile = FileIO.OpenFile(m_sReplayFileName, FileMode.APPEND);
 		replayFile.Write(PS_EReplayType.VehicleRegistration, 1); // only one byte for type
-		replayFile.Write(vehicleRplId, 4); // rplId
-		replayFile.Write(vehicleType, 4); // PS_EReplayVehicleType
+		replayFile.Write(vehicleRplId, 4); // vehicleRplId
+		int vehicleNameLength = vehicleName.Length();
+		replayFile.Write(vehicleNameLength, 4); // vehicleName
+		replayFile.Write(vehicleName, vehicleNameLength); // playerName
+		replayFile.Write(vehicleType, 4); // vehicleType
+		int factionKeyLength = factionKey.Length();
+		replayFile.Write(factionKeyLength, 4); // factionKeyLength
+		replayFile.Write(factionKey, factionKeyLength); // factionKey
 	}
 	
 	// PS_EReplayType.CharacterBoardVehicle
@@ -171,5 +177,19 @@ class PS_ReplayWriter : ScriptComponent
 		replayFile.Write(entityId, 4); // rplId
 		replayFile.Write(hitPositionX, 4); // hitPositionX
 		replayFile.Write(hitPositionz, 4); // hitPositionz
+	}
+	
+	
+	// PS_EReplayType.ProjectileShoot
+	void WriteExplosion(float hitPositionX, float hitPositionz, float impulseDistance)
+	{
+		if (!Replication.IsServer()) return;
+		TryInsertTimeStamp();
+		
+		FileHandle replayFile = FileIO.OpenFile(m_sReplayFileName, FileMode.APPEND);
+		replayFile.Write(PS_EReplayType.Explosion, 1); // only one byte for type
+		replayFile.Write(hitPositionX, 4); // hitPositionX
+		replayFile.Write(hitPositionz, 4); // hitPositionz
+		replayFile.Write(impulseDistance, 4); // impulseDistance
 	}
 }

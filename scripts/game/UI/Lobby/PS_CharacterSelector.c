@@ -112,7 +112,6 @@ class PS_CharacterSelector : SCR_ButtonComponent
 			
 			m_wStateIcon.SetColor(Color.FromInt(0xFF2c2c2c));
 			m_wUnitIcon.SetColor(Color.FromInt(0xFF2c2c2c));
-			m_wCharacterStatusIcon.SetColor(Color.FromInt(0xFF2c2c2c));
 			m_wCharacterClassName.SetColor(Color.FromInt(0xFF2c2c2c));
 			m_wCharacterStatus.SetColor(Color.FromInt(0xFF2c2c2c));
 			

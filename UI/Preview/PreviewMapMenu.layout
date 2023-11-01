@@ -323,6 +323,14 @@ FrameWidgetClass {
   FrameWidgetClass "{5EC27C79EC033FEA}" : "{0CAA34745062743B}UI/MissionDescription/MissionDescriptionFrame.layout" {
    Name "MissionDescriptionFrame"
    Slot FrameWidgetSlot "{5EBEE964499ECB58}" {
+    PositionX 10
+    OffsetLeft 10
+    PositionY -650
+    OffsetTop -650
+    SizeX 480
+    OffsetRight -490
+    SizeY 640
+    OffsetBottom 10
    }
   }
   FrameWidgetClass "{5EBE2C2798842478}" : "{B7A765172F0BD4D9}UI/layouts/Common/EarlyAccessWatermark.layout" {

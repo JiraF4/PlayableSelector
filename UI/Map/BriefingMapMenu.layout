@@ -154,6 +154,28 @@ FrameWidgetClass {
         }
        }
       }
+      ButtonWidgetClass "{5EC2F2F500D52606}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
+       Name "NavigationSwitchMissionDescription"
+       Slot LayoutSlot "{5EBC737F18D3A94E}" {
+       }
+       components {
+        SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
+         m_sLabel "#PS-Briefing_SwitchMissionDescription"
+         m_sActionName "SwitchMissionDescription"
+        }
+       }
+      }
+      ButtonWidgetClass "{5EC2F2F5003AC920}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
+       Name "NavigationSwitchVoiceChat"
+       Slot LayoutSlot "{5EBC737F18D3A94E}" {
+       }
+       components {
+        SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
+         m_sLabel "#PS-Briefing_SwitchVoiceChat"
+         m_sActionName "SwitchVoiceChat"
+        }
+       }
+      }
      }
     }
    }
@@ -296,12 +318,37 @@ FrameWidgetClass {
     Anchor 1 1 1 1
     PositionX -490
     OffsetLeft -490
-    PositionY -810
-    OffsetTop -810
+    PositionY -860
+    OffsetTop -860
     SizeX 480
     OffsetRight 10
-    SizeY 800
-    OffsetBottom 10
+    SizeY 640
+    OffsetBottom 220
+   }
+   {
+    ImageWidgetClass "{5EB2900030AFF403}" {
+     Prefab "{5EB2900030AFF403}"
+     Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
+      OffsetLeft 0
+      OffsetTop 0
+      OffsetRight -480
+      SizeY 640
+      OffsetBottom -640
+     }
+    }
+    ScrollLayoutWidgetClass "{5EB2900030AFF408}" {
+     Prefab "{5EB2900030AFF408}"
+     Slot FrameWidgetSlot "{5EB1000AD8290B3B}" {
+      PositionX 0
+      OffsetLeft 0
+      PositionY 39
+      OffsetTop 39
+      SizeX 480
+      OffsetRight -480
+      SizeY 601
+      OffsetBottom -640
+     }
+    }
    }
   }
   FrameWidgetClass "{5EB100080F354176}" : "{F43237F55B38B45C}UI/GameModeHeader/GameModeHeader.layout" {
@@ -318,8 +365,16 @@ FrameWidgetClass {
    }
   }
   FrameWidgetClass "{5EC27C73EBAC2930}" : "{0CAA34745062743B}UI/MissionDescription/MissionDescriptionFrame.layout" {
-   Name "MissionDescriptionFrame0"
+   Name "MissionDescriptionFrame"
    Slot FrameWidgetSlot "{5EBEE964499ECB58}" {
+    PositionX 10
+    OffsetLeft 10
+    PositionY -860
+    OffsetTop -860
+    SizeX 480
+    OffsetRight -490
+    SizeY 640
+    OffsetBottom 220
    }
   }
   FrameWidgetClass "{5EAF5687FB22DB6F}" : "{B7A765172F0BD4D9}UI/layouts/Common/EarlyAccessWatermark.layout" {
