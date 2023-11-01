@@ -15,7 +15,7 @@ ScrollLayoutWidgetClass {
   PS_MissionDescriptionHeadersListUI "{5EC27C7930CA7989}" {
   }
   PS_MissionDescriptionContentUI "{5EC27C7CDA5EFC49}" {
-   m_sTitle "#PS-MissionDescription_Header"
+   m_sTitle "#PS-Briefing_MissionDescriptionHeader"
   }
  }
  {

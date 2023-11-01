@@ -1,6 +1,14 @@
 StringTable {
  ItemClassName "CustomStringTableItem"
  Items {
+  CustomStringTableItem "{5EC2E46366D61D92}" {
+   Id "PS-Briefing_MissionDescriptionHeader"
+   Target_en_us "Mission description"
+   Target_ru_ru "Описание сценария"
+   Modified 1589838722
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
   CustomStringTableItem "{5EC2E47F1F2FA6D1}" {
    Id "PS-Briefing_MissionDescriptionHide"
    Target_en_us "Hide mission description"
