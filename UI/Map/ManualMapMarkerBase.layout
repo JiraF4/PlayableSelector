@@ -78,9 +78,9 @@ FrameWidgetClass {
      Color 0 0 0 0.6
      style full
      {
-      OverlayWidgetClass "{5EC357C0B0940163}" {
-       Name "Overlay"
-       Slot FrameWidgetSlot "{5EC357C0B094015A}" {
+      PanelWidgetClass "{5EC3651206FED48D}" {
+       Name "PanelBorder"
+       Slot FrameWidgetSlot "{5EC3651206FED4CB}" {
         PositionX 0
         OffsetLeft 0
         PositionY 0
@@ -91,20 +91,37 @@ FrameWidgetClass {
         OffsetBottom -156.209
         SizeToContent 1
        }
+       style outline_2px
        {
-        RichTextWidgetClass "{5EB91D112318E078}" {
-         Name "DescriptionText"
-         Slot OverlayWidgetSlot "{5EC357C069D46CD2}" {
-          Padding 10 10 10 10
+        OverlayWidgetClass "{5EC357C0B0940163}" {
+         Name "Overlay"
+         Slot FrameWidgetSlot "{5EC357C0B094015A}" {
+          PositionX 0
+          OffsetLeft 0
+          PositionY 0
+          OffsetTop 0
+          SizeX -370.054
+          OffsetRight 370.054
+          SizeY 156.209
+          OffsetBottom -156.209
+          SizeToContent 1
          }
-         "Z Order" 1
-         Text "Lorem ipsum dolor sit amet, consectetur"\
-         "Donec viverra, tortor eget aliquam imperdiet"\
-         "Duis ut mauris augue. Duis convallis aliquet dfdgfdgdfu"
-         "Horizontal Alignment" Center
-         "Vertical Alignment" Center
-         "Shadow Offset" 3 3
-         "Shadow Size Increase" 2
+         {
+          RichTextWidgetClass "{5EB91D112318E078}" {
+           Name "DescriptionText"
+           Slot OverlayWidgetSlot "{5EC357C069D46CD2}" {
+            Padding 10 10 10 10
+           }
+           "Z Order" 1
+           Text "Lorem ipsum dolor sit amet, consectetur"\
+           "Donec viverra, tortor eget aliquam imperdiet"\
+           "Duis ut mauris augue. Duis convallis aliquet dfdgfdgdfu"
+           "Horizontal Alignment" Center
+           "Vertical Alignment" Center
+           "Shadow Offset" 3 3
+           "Shadow Size Increase" 2
+          }
+         }
         }
        }
       }
