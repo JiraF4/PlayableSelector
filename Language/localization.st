@@ -292,8 +292,8 @@ StringTable {
   CustomStringTableItem "{5EC2E47910530FBD}" {
    Id "PS-Lobby_VoiceChatFaction"
    Target_en_us "Faction voice chat"
-   Target_ru_ru "Голосовой чат "
-   Modified 1589836201
+   Target_ru_ru "Фракционный голосовой чат"
+   Modified 1589854747
    Author "SeskPC"
    LastChanged "SeskPC"
   }

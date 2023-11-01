@@ -551,7 +551,7 @@ FrameWidgetClass {
              }
              components {
               SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
-               m_sLabel "#PS-Lobby_FactionVoiceChat"
+               m_sLabel "#PS-Lobby_VoiceChatFaction"
                m_sActionName "VONChannel"
               }
              }
