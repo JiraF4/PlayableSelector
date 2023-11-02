@@ -37,6 +37,13 @@ class PS_PlayableComponent : ScriptComponent
 	
 	private void RemoveFromList()
 	{
+		if (!Replication.IsServer())
+			return;
+		
+		BaseGameMode gamemode = GetGame().GetGameMode();
+		if (!gamemode)
+			return;
+		
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		playableManager.RemovePlayable(m_id);
 	}
