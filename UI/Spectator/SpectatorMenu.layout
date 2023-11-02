@@ -9,24 +9,111 @@ FrameWidgetClass {
   FrameWidgetClass "{5EB701CDC06E16AD}" : "{35DB604900C55B98}UI/VoiceChat/VoiceChatFrame.layout" {
    Name "VoiceChatFrame"
    Slot FrameWidgetSlot "{5EB701CDC06E1686}" {
-    Anchor 1 1 1 1
-    PositionX -480
-    OffsetLeft -480
-    PositionY -800
-    OffsetTop -800
+    Anchor 1 0.5 1 0.5
+    PositionX -490
+    OffsetLeft -490
+    PositionY -320
+    OffsetTop -320
     SizeX 480
-    OffsetRight 0
-    SizeY 800
-    OffsetBottom 0
+    OffsetRight 10
+    SizeY 640
+    OffsetBottom -320
    }
    "Z Order" -10
+   {
+    ImageWidgetClass "{5EB2900030AFF403}" {
+     Prefab "{5EB2900030AFF403}"
+     Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
+      OffsetLeft 0
+      OffsetTop 0
+      OffsetRight -480
+      SizeY 640
+      OffsetBottom -640
+     }
+    }
+    ScrollLayoutWidgetClass "{5EB2900030AFF408}" {
+     Prefab "{5EB2900030AFF408}"
+     Slot FrameWidgetSlot "{5EB1000AD8290B3B}" {
+      OffsetLeft 0
+      OffsetTop 39
+      OffsetRight -480
+      SizeY 601
+      OffsetBottom -640
+     }
+    }
+   }
   }
   FrameWidgetClass "{5EBA3C94C3245291}" : "{18D3CF175C9AA974}UI/Spectator/AlivePlayersList.layout" {
    Name "AlivePlayersList"
    Slot FrameWidgetSlot "{5EBA3C97F505681F}" {
+    Anchor 0 0.5 0 0.5
+    PositionX 10
+    OffsetLeft 10
+    PositionY -320
+    OffsetTop -320
+    SizeX 480
+    OffsetRight -490
+    SizeY 640
+    OffsetBottom -320
    }
    components {
     PS_AlivePlayerList "{5EBA416A9CB1DC7C}" {
+    }
+   }
+   {
+    FrameWidgetClass "{5EBA3C97FF93DE7A}" {
+     Prefab "{5EBA3C97FF93DE7A}"
+     Slot FrameWidgetSlot "{5EBA3C97FF93DE52}" {
+      OffsetLeft 0
+      OffsetTop 0
+      SizeX 480
+      OffsetRight -480
+      OffsetBottom -39
+     }
+     {
+      ImageWidgetClass "{5EBA3C974B568AC5}" {
+       Prefab "{5EBA3C974B568AC5}"
+       Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
+        OffsetLeft 0
+        OffsetTop 0
+        SizeX 480
+        OffsetRight -480
+        OffsetBottom -39
+       }
+      }
+      OverlayWidgetClass "{5EBA3C976CAFC55D}" {
+       Prefab "{5EBA3C976CAFC55D}"
+       Slot FrameWidgetSlot "{5EB0E9ED5655F81D}" {
+        OffsetLeft 0
+        OffsetTop 0
+        SizeX 480
+        OffsetRight -480
+        OffsetBottom -39
+       }
+      }
+     }
+    }
+    ImageWidgetClass "{5EBA3C97969AD0E7}" {
+     Prefab "{5EBA3C97969AD0E7}"
+     Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
+      OffsetLeft 0
+      OffsetTop 0
+      SizeX 480
+      OffsetRight -480
+      SizeY 640
+      OffsetBottom -640
+     }
+    }
+    ScrollLayoutWidgetClass "{5EBA3C972331B0F8}" {
+     Prefab "{5EBA3C972331B0F8}"
+     Slot FrameWidgetSlot "{5EB1000AD8290B3B}" {
+      OffsetLeft 0
+      OffsetTop 39
+      SizeX 480
+      OffsetRight -480
+      SizeY 601
+      OffsetBottom -640
+     }
     }
    }
   }
@@ -43,6 +130,73 @@ FrameWidgetClass {
     OffsetBottom 0
    }
    Opacity 1
+  }
+  OverlayWidgetClass "{5EC5025171F3344C}" {
+   Name "OverlayFooter"
+   Slot FrameWidgetSlot "{5EB10006FB0FA78D}" {
+    Anchor 0 1 0 1
+    PositionX 0
+    OffsetLeft 0
+    PositionY -48
+    OffsetTop -48
+    SizeX 1920
+    OffsetRight -1920
+    SizeY 48
+    OffsetBottom 0
+   }
+   {
+    HorizontalLayoutWidgetClass "{5EC5025171F3344E}" {
+     Name "HorizontalLayout"
+     Slot OverlayWidgetSlot "{5EB10006A9111D66}" {
+      HorizontalAlign 0
+      VerticalAlign 0
+     }
+     {
+      ButtonWidgetClass "{5EC5025171F33450}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
+       Name "NavigationChat"
+       Slot LayoutSlot "{5EB100087EA225FE}" {
+        Padding 20 0 0 0
+       }
+       components {
+        SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
+         m_sLabel "Chat toggle"
+         m_sActionName "ChatToggle"
+        }
+       }
+       {
+        SizeLayoutWidgetClass "{5562AD435529FB36}" {
+         Prefab "{5562AD435529FB36}"
+         Slot ButtonWidgetSlot "{5562AD435529FB5D}" {
+          Padding 20 0 0 0
+         }
+        }
+       }
+      }
+      ButtonWidgetClass "{5EC5025171F33454}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
+       Name "NavigationFactionVoice"
+       Slot LayoutSlot "{5EBC737F18D3A94E}" {
+       }
+       components {
+        SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
+         m_sLabel "#PS-Spectator_VoiceChat"
+         m_sActionName "VONChannel"
+        }
+       }
+      }
+      ButtonWidgetClass "{5EC5025171F33456}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
+       Name "NavigationSwitchSpectatorUI"
+       Slot LayoutSlot "{5EBC737F18D3A94E}" {
+       }
+       components {
+        SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
+         m_sLabel "#PS-Spectator_SwitchSpectatorUI"
+         m_sActionName "SwitchSpectatorUI"
+        }
+       }
+      }
+     }
+    }
+   }
   }
  }
 }

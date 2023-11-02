@@ -8,11 +8,16 @@ class PS_SpectatorMenu: MenuBase
 	protected SCR_ChatPanel m_ChatPanel;
 	
 	// Voice chat menu
+	protected Widget m_wChat;
 	protected Widget m_wVoiceChatList;
-	protected PS_VoiceChatList m_hVoiceChatList;
+	protected Widget m_wOverlayFooter;
+	protected Widget m_wEarlyAccessRoot;
 	protected Widget m_wAlivePlayerList;
+	protected PS_VoiceChatList m_hVoiceChatList;
 	protected PS_AlivePlayerList m_hAlivePlayerList;
 	
+	SCR_NavigationButtonComponent m_bNavigationSwitchSpectatorUI;
+
 	protected static void OnShowPlayerList()
 	{
 		ArmaReforgerScripted.OpenPlayerList();
@@ -33,6 +38,11 @@ class PS_SpectatorMenu: MenuBase
 		m_hVoiceChatList = PS_VoiceChatList.Cast(m_wVoiceChatList.FindHandler(PS_VoiceChatList));
 		m_wAlivePlayerList = GetRootWidget().FindAnyWidget("AlivePlayersList");
 		m_hAlivePlayerList = PS_AlivePlayerList.Cast(m_wAlivePlayerList.FindHandler(PS_AlivePlayerList));
+		m_wOverlayFooter = GetRootWidget().FindAnyWidget("OverlayFooter");
+		m_wEarlyAccessRoot = GetRootWidget().FindAnyWidget("EarlyAccessRoot");
+		
+		m_bNavigationSwitchSpectatorUI = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationSwitchSpectatorUI").FindHandler(SCR_NavigationButtonComponent));
+		m_bNavigationSwitchSpectatorUI.m_OnClicked.Insert(Action_SwitchSpectatorUI);
 		
 		super.OnMenuOpen();
 		InitChat();
@@ -55,11 +65,11 @@ class PS_SpectatorMenu: MenuBase
 	void InitChat()
 	{
 		// Check if this menu has chat
-		Widget chatPanelWidget = GetRootWidget().FindAnyWidget("ChatPanel");
-		if (!chatPanelWidget)
+		m_wChat = GetRootWidget().FindAnyWidget("ChatPanel");
+		if (!m_wChat)
 			return;
 		
-		m_ChatPanel = SCR_ChatPanel.Cast(chatPanelWidget.FindHandler(SCR_ChatPanel));
+		m_ChatPanel = SCR_ChatPanel.Cast(m_wChat.FindHandler(SCR_ChatPanel));
 	}
 	
 	override void OnMenuInit()
@@ -75,6 +85,7 @@ class PS_SpectatorMenu: MenuBase
 			inputManager.AddActionListener("ChatToggle", EActionTrigger.DOWN, ChatToggle);
 			inputManager.AddActionListener("VONDirect", EActionTrigger.DOWN, Action_LobbyVoNOn);
 			inputManager.AddActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
+			inputManager.AddActionListener("SwitchSpectatorUI", EActionTrigger.UP, Action_SwitchSpectatorUI);
 #ifdef WORKBENCH
 			inputManager.AddActionListener("MenuOpenWB", EActionTrigger.DOWN, OpenPauseMenu);
 #endif
@@ -94,6 +105,7 @@ class PS_SpectatorMenu: MenuBase
 			inputManager.RemoveActionListener("ChatToggle", EActionTrigger.DOWN, ChatToggle);
 			inputManager.RemoveActionListener("LobbyVoN", EActionTrigger.DOWN, Action_LobbyVoNOn);
 			inputManager.RemoveActionListener("LobbyVoN", EActionTrigger.UP, Action_LobbyVoNOff);
+			inputManager.RemoveActionListener("SwitchSpectatorUI", EActionTrigger.UP, Action_SwitchSpectatorUI);
 #ifdef WORKBENCH
 			inputManager.RemoveActionListener("MenuOpenWB", EActionTrigger.DOWN, OpenPauseMenu);
 #endif
@@ -134,5 +146,23 @@ class PS_SpectatorMenu: MenuBase
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		playableController.LobbyVoNDisable();
+	}
+	
+	void Action_SwitchSpectatorUI()
+	{
+		if (m_wVoiceChatList.IsVisible())
+		{
+			m_wChat.SetVisible(false);
+			m_wVoiceChatList.SetVisible(false);
+			m_wOverlayFooter.SetVisible(false);
+			m_wEarlyAccessRoot.SetVisible(false);
+			m_wAlivePlayerList.SetVisible(false);
+		} else {
+			m_wChat.SetVisible(true);
+			m_wVoiceChatList.SetVisible(true);
+			m_wOverlayFooter.SetVisible(true);
+			m_wEarlyAccessRoot.SetVisible(true);
+			m_wAlivePlayerList.SetVisible(true);
+		}
 	}
 }
