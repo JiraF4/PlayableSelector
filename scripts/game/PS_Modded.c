@@ -261,6 +261,18 @@ modded class SCR_PlayersRestrictionZoneManagerComponent
 	{
 		return m_aRestrictionZones;
 	}
+	
+	override protected void KillPlayerOutOfZone(int playerID, IEntity playerEntity)
+	{
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if (gameMode.GetElapsedTime() > (gameMode.m_iFreezeTime - 2000))
+			return;
+		
+		if (!playerEntity)
+			return;
+		
+		super.KillPlayerOutOfZone(playerID, playerEntity);
+	}
 }
 
 /*
