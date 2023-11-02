@@ -7,6 +7,10 @@ class PS_WaitScreen: MenuBase
 {
 	override void OnMenuOpen()
 	{
+		if (RplSession.Mode() == RplMode.Dedicated) {
+			Close();
+			return;
+		}
 		GetGame().GetCallqueue().CallLater(AwaitPlayerController, 100);
 	}
 	

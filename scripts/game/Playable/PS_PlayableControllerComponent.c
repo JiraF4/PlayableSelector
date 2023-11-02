@@ -100,7 +100,6 @@ class PS_PlayableControllerComponent : ScriptComponent
 				toRplId = rplTo.Id();
 			}
 			PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
-			PS_ReplayWriter.GetInstance().WriteCharacterPossess(toRplId, thisPlayerController.GetPlayerId());
 		}
 		
 		RplComponent rpl = RplComponent.Cast(GetOwner().FindComponent(RplComponent));

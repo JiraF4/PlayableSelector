@@ -92,6 +92,10 @@ class PS_CoopLobby: MenuBase
 	// -------------------- Menu events --------------------
 	override void OnMenuOpen()
 	{
+		if (RplSession.Mode() == RplMode.Dedicated) {
+			Close();
+			return;
+		}
 		PlayerController playerController = GetGame().GetPlayerController();
 		if (playerController) { // Menu open faster than player creation
 			PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));

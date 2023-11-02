@@ -21,6 +21,10 @@ class PS_PreviewMapMenu: ChimeraMenuBase
 	// -------------------- Menu events --------------------
 	override void OnMenuOpen()
 	{	
+		if (RplSession.Mode() == RplMode.Dedicated) {
+			Close();
+			return;
+		}
 		if (m_MapEntity)
 		{	
 			GetGame().GetCallqueue().CallLater(OpenMap, 0); 

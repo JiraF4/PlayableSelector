@@ -40,7 +40,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	protected override void OnPlayerConnected(int playerId)
 	{
 		GetGame().GetCallqueue().CallLater(SpawnInitialEntity, 100, false, playerId);
-		PS_ReplayWriter.GetInstance().WritePlayerRegistration(playerId); // Register new player to replay
+		super.OnPlayerConnected(playerId);
 	}
 	
 	override void OnPlayerKilled(int playerId, IEntity player, IEntity killer)

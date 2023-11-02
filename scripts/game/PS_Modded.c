@@ -255,36 +255,4 @@ modded class SCR_MapMarkerEntrySquadLeader
 	}
 }
 
-// vehicles replay hook
-modded class SCR_EditableVehicleComponent
-{
-	override void OnPostInit(IEntity owner)
-	{
-		super.OnPostInit(owner);
-		
-		if (!GetGame().InPlayMode())
-			return;
-		GetGame().GetCallqueue().CallLater(RegisterToReplay, 0, false, owner);
-	}
-	
-	void RegisterToReplay(IEntity owner)
-	{
-		SCR_UIInfo uIInfo = GetInfo();
-		Vehicle vehicle = Vehicle.Cast(owner);
-		RplComponent Rpl = RplComponent.Cast(owner.FindComponent(RplComponent));
-		PS_ReplayWriter replayWriter = PS_ReplayWriter.GetInstance();
-		RplId rplId = Rpl.Id();
-		SCR_VehicleFactionAffiliationComponent factionComponent = SCR_VehicleFactionAffiliationComponent.Cast(owner.FindComponent(SCR_VehicleFactionAffiliationComponent));
-		Faction faction = factionComponent.GetDefaultAffiliatedFaction();
-		replayWriter.WriteVehicleRegistration(rplId, uIInfo.GetName(), vehicle.m_eVehicleType, faction.GetFactionKey());
-		
-		GetGame().GetCallqueue().CallLater(PositionLogger, 100, false, rplId, owner);
-	}
-	
-	protected void PositionLogger(RplId rplId, IEntity owner)
-	{
-		// Regulary write position to replay
-		PS_ReplayWriter.GetInstance().WriteEntityMove(rplId, owner);
-		GetGame().GetCallqueue().CallLater(PositionLogger, 100, false, rplId, owner);
-	}
-}
+

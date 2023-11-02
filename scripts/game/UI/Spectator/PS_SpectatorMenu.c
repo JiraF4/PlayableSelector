@@ -25,6 +25,10 @@ class PS_SpectatorMenu: MenuBase
 	
 	override void OnMenuOpen()
 	{
+		if (RplSession.Mode() == RplMode.Dedicated) {
+			Close();
+			return;
+		}
 		m_wVoiceChatList = GetRootWidget().FindAnyWidget("VoiceChatFrame");
 		m_hVoiceChatList = PS_VoiceChatList.Cast(m_wVoiceChatList.FindHandler(PS_VoiceChatList));
 		m_wAlivePlayerList = GetRootWidget().FindAnyWidget("AlivePlayersList");
