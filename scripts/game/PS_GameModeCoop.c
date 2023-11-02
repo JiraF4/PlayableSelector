@@ -40,7 +40,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	protected override void OnPlayerConnected(int playerId)
 	{
 		GetGame().GetCallqueue().CallLater(SpawnInitialEntity, 100, false, playerId);
-		super.OnPlayerConnected(playerId);
+		m_OnPlayerConnected.Invoke(playerId);
 	}
 	
 	override void OnPlayerKilled(int playerId, IEntity player, IEntity killer)
