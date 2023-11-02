@@ -107,9 +107,12 @@ class PS_PlayableManager : ScriptComponent
 			if (GetPlayerByPlayable(playable.GetId()) <= 0)
 			{
 				SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(playable.GetOwner());
-				character.SetOrigin("0 0 0");
+				SCR_EntityHelper.DeleteEntityAndChildren(character);
+				/*
+				character.ClearFlags(EntityFlags.VISIBLE, true);
 				SCR_CharacterDamageManagerComponent damageComponent = SCR_CharacterDamageManagerComponent.Cast(character.FindComponent(SCR_CharacterDamageManagerComponent));
 				damageComponent.Kill();
+				*/
 			}
 		}
 	}
@@ -216,6 +219,10 @@ class PS_PlayableManager : ScriptComponent
 			m_playerGroups[playableId] = playerGroup;
 			GetGame().GetCallqueue().CallLater(UpdateGroupCallsigne, 0, false, playableId, playerGroup, playableGroup)
 		}
+	}
+	void RemovePlayable(RplId playableId)
+	{
+		m_aPlayables.Remove(playableId);
 	}
 	
 	void UpdateGroupCallsigne(RplId playableId, SCR_AIGroup playerGroup, SCR_AIGroup playableGroup)

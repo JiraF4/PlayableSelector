@@ -30,9 +30,6 @@ class PS_WaitScreen: MenuBase
 						PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 						PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 						
-						Print(roomId.ToString());
-						Print(roomKey);
-						
 						playableController.SetPlayerState(playerController.GetPlayerId(), PS_EPlayableControllerState.NotReady);
 						playableController.MoveToVoNRoomByKey(playerController.GetPlayerId(), roomKey);
 						playableController.SwitchToMenu(gameMode.GetState());

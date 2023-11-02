@@ -1,0 +1,52 @@
+SCR_EditorRestrictionZoneEntity {
+ ID "5EC5183A2E8F3FE2"
+ components {
+  Hierarchy "{56D8A3C5A31496BC}" {
+  }
+  SCR_EditableDescriptorComponent "{56D8A3C5A31496AC}" {
+   m_EntityType SYSTEM
+   m_UIInfo SCR_EditableEntityUIInfo "{56D8A3C5A31496A4}" {
+    Name "#AR-EditableEntity_RestrictionZoneSmall_Name"
+    Description "#AR-EditableEntity_RestrictionZone_Description"
+    Icon "{1FBE76E25DDFB65C}UI/Textures/Editor/EditableEntities/Systems/EditableEntity_System_ZoneRestriction.edds"
+    IconSetName "System_Default"
+    m_Image "{206781701A8D8991}UI/Textures/EditorPreviews/Auto/Systems/RestrictionZone/E_EditorRestrictionZoneSmall.edds"
+    m_aAuthoredLabels {
+     7
+    }
+   }
+   m_bAutoRegister ALWAYS
+   m_bStatic 1
+   m_Flags 32835
+  }
+  SCR_ZoneRestrictionAreaMeshComponent "{56D8A3C5A31496A1}" {
+   m_vResolution 48
+   m_bStretchMaterial 1
+   m_Material "{788C42E96DB8587C}Assets/Editor/VirtualArea/VirtualArea_01_Danger.emat"
+  }
+  RplComponent "{56D8A3C5A314965D}" {
+  }
+ }
+ coords 115.181 1 109.43
+ m_fWarnRadius 14
+ m_fZoneRadius 24
+ m_fZoneTeleportedRadius 34
+ {
+  GenericEntity {
+   ID "5EC5183A2E8F3FE3"
+   components {
+    Hierarchy "{5EC5025412025CAD}" {
+    }
+    SCR_CustomAreaMeshComponent "{5EC5025412025CFA}" {
+     m_vResolution 48
+     m_bStretchMaterial 1
+     m_Material "{034185AE1A11B656}Assets/Editor/VirtualArea/VirtualArea_01_Warning.emat"
+     m_fRadius 14
+    }
+    RplComponent "{5EC5025412025CCE}" {
+    }
+   }
+   coords 0 0 0
+  }
+ }
+}

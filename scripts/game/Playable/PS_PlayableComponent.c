@@ -29,6 +29,17 @@ class PS_PlayableComponent : ScriptComponent
 			rpl.EnableStreaming(false); // They need to be loaded for preview
 		}
 	}
+	
+	void ~PS_PlayableComponent()
+	{
+		RemoveFromList()
+	}
+	
+	private void RemoveFromList()
+	{
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		playableManager.RemovePlayable(m_id);
+	}
 		
 	string GetName()
 	{

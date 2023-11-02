@@ -52,7 +52,7 @@ class PS_ManualMarkerComponent : SCR_ScriptedWidgetComponent
 	
 	void SetSlot(float posX, float posY, float sizeX, float sizeY)
 	{
-		FrameSlot.SetPos(m_wRoot, posX - sizeX/2, posY - sizeY/2);
+		FrameSlot.SetPos(m_wRoot, posX, posY);
 		
 		FrameSlot.SetPos(m_wMarkerIcon, -sizeX/2, -sizeY/2);
 		FrameSlot.SetSize(m_wMarkerIcon, sizeX, sizeY);

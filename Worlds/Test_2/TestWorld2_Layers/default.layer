@@ -12,6 +12,8 @@ TagManager : "{2FA9E172CAB1857A}Prefabs/MP/Managers/TagManager.et" {
 }
 PS_GameModeCoop PS_GameModeCoop1 : "{F64CCAF87CCCF567}Prefabs/MP/Modes/PS_GameModeCoop.et" {
  components {
+  SCR_PlayersRestrictionZoneManagerComponent "{5EC502544E627324}" {
+  }
   SCR_PreGameGameModeStateComponent "{5EA8C9324DF2DCC1}" {
    m_bDisableControls 0
   }
@@ -23,6 +25,7 @@ PS_GameModeCoop PS_GameModeCoop1 : "{F64CCAF87CCCF567}Prefabs/MP/Modes/PS_GameMo
   }
  }
  coords 3.45 1.663 3.493
+ m_bKillRedundantUnits 1
 }
 GenericEntity {
  coords 5.734 1 3.144
@@ -81,6 +84,56 @@ $grp PS_ManualMarker {
   "Description Description Description Description "\
   "Description Description Description Description"\
   "Description "
+ }
+}
+SCR_EditorRestrictionZoneEntity {
+ components {
+  Hierarchy "{56D8A3C5A31496BC}" {
+  }
+  SCR_EditableDescriptorComponent "{56D8A3C5A31496AC}" {
+   m_EntityType SYSTEM
+   m_UIInfo SCR_EditableEntityUIInfo "{56D8A3C5A31496A4}" {
+    Name "#AR-EditableEntity_RestrictionZoneSmall_Name"
+    Description "#AR-EditableEntity_RestrictionZone_Description"
+    Icon "{1FBE76E25DDFB65C}UI/Textures/Editor/EditableEntities/Systems/EditableEntity_System_ZoneRestriction.edds"
+    IconSetName "System_Default"
+    m_Image "{206781701A8D8991}UI/Textures/EditorPreviews/Auto/Systems/RestrictionZone/E_EditorRestrictionZoneSmall.edds"
+    m_aAuthoredLabels {
+     7
+    }
+   }
+   m_bAutoRegister ALWAYS
+   m_bStatic 1
+   m_Flags 32835
+  }
+  SCR_ZoneRestrictionAreaMeshComponent "{56D8A3C5A31496A1}" {
+   m_vResolution 48
+   m_bStretchMaterial 1
+   m_Material "{788C42E96DB8587C}Assets/Editor/VirtualArea/VirtualArea_01_Danger.emat"
+  }
+  RplComponent "{56D8A3C5A314965D}" {
+  }
+ }
+ coords 115.181 1 109.43
+ m_fWarnRadius 14
+ m_fZoneRadius 24
+ m_fZoneTeleportedRadius 34
+ {
+  GenericEntity {
+   components {
+    Hierarchy "{5EC5025412025CAD}" {
+    }
+    SCR_CustomAreaMeshComponent "{5EC5025412025CFA}" {
+     m_vResolution 48
+     m_bStretchMaterial 1
+     m_Material "{034185AE1A11B656}Assets/Editor/VirtualArea/VirtualArea_01_Warning.emat"
+     m_fRadius 14
+    }
+    RplComponent "{5EC5025412025CCE}" {
+    }
+   }
+   coords 0 0 0
+  }
  }
 }
 Vehicle UAZ452_ambulance1 : "{43C4AF1EEBD001CE}Prefabs/Vehicles/Wheeled/UAZ452/UAZ452_ambulance.et" {

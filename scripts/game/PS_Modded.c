@@ -255,4 +255,49 @@ modded class SCR_MapMarkerEntrySquadLeader
 	}
 }
 
+modded class SCR_PlayersRestrictionZoneManagerComponent
+{
+	ref set<SCR_EditorRestrictionZoneEntity> GetZones()
+	{
+		return m_aRestrictionZones;
+	}
+}
 
+/*
+// Someone rewrite it please
+modded class SCR_PlayersRestrictionZoneManagerComponent
+{
+	override protected void KillPlayerOutOfZone(int playerID, IEntity playerEntity)
+	{
+		if (!playerEntity)
+			return;
+		
+		vector playerEntityPosition = playerEntity.GetOrigin();
+		float minDistanceSqrXZ = 99999999;
+		SCR_EditorRestrictionZoneEntity nearestZone = null;
+		for (int i = 0; i < m_aRestrictionZones.Count(); i++)
+		{
+			SCR_EditorRestrictionZoneEntity zone = m_aRestrictionZones.Get(i);
+			vector restrictionZonePosition = zone.GetOrigin();
+			float distanceSqrXZ = vector.DistanceSqXZ(playerEntityPosition, restrictionZonePosition);
+			if (minDistanceSqrXZ > distanceSqrXZ)
+			{
+				minDistanceSqrXZ = distanceSqrXZ;
+				nearestZone = zone;
+			}
+		}
+		
+		if (nearestZone)
+		{
+			vector restrictionZonePosition = nearestZone.GetOrigin();
+			float distance = vector.DistanceXZ(playerEntityPosition, restrictionZonePosition);
+			float maxDistance = nearestZone.GetRestrictionZoneRadius();
+			float moveDistance = (distance - maxDistance) * 5.0;
+			vector moveVector = restrictionZonePosition - playerEntityPosition;
+			moveVector[2] = 0;
+			moveVector.Normalize();
+			playerEntity.SetOrigin(playerEntityPosition - moveVector * moveDistance);
+		}
+	}
+}
+*/
