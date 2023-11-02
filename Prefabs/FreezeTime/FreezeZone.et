@@ -20,7 +20,9 @@ SCR_EditorRestrictionZoneEntity {
    m_Flags 32835
   }
   SCR_ZoneRestrictionAreaMeshComponent "{56D8A3C5A31496A1}" {
+   m_fHeight 1
    m_vResolution 48
+   m_bFollowTerrain 1
    m_bStretchMaterial 1
    m_Material "{788C42E96DB8587C}Assets/Editor/VirtualArea/VirtualArea_01_Danger.emat"
   }
@@ -28,9 +30,9 @@ SCR_EditorRestrictionZoneEntity {
   }
  }
  coords 115.181 1 109.43
- m_fWarnRadius 14
- m_fZoneRadius 24
- m_fZoneTeleportedRadius 34
+ m_fWarnRadius 40
+ m_fZoneRadius 70
+ m_fZoneTeleportedRadius 35
  {
   GenericEntity {
    ID "5EC5183A2E8F3FE3"
@@ -38,10 +40,12 @@ SCR_EditorRestrictionZoneEntity {
     Hierarchy "{5EC5025412025CAD}" {
     }
     SCR_CustomAreaMeshComponent "{5EC5025412025CFA}" {
+     m_fHeight 1
      m_vResolution 48
+     m_bFollowTerrain 1
      m_bStretchMaterial 1
      m_Material "{034185AE1A11B656}Assets/Editor/VirtualArea/VirtualArea_01_Warning.emat"
-     m_fRadius 14
+     m_fRadius 40
     }
     RplComponent "{5EC5025412025CCE}" {
     }

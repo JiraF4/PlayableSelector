@@ -1,0 +1,127 @@
+$grp Vehicle : "{1BABF6B33DA0AEB6}Prefabs/Vehicles/Wheeled/Ural4320/Ural4320_command.et" {
+ Ural4320_command1 {
+  components {
+   FuelManagerComponent "{5622A70CD78A9E2C}" {
+    FuelNodes {
+     SCR_FuelNode "{5622A70CD4036C5A}" {
+      m_fInitialFuelTankState 0
+      m_bCanReceiveFuel 0
+     }
+     SCR_FuelNode "{5628CA84B129D4CE}" {
+      m_fInitialFuelTankState 0
+      m_bCanReceiveFuel 0
+     }
+    }
+   }
+   SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+    m_fVehicleDestroyDamage 11360.7
+   }
+  }
+  coords 5316.548 62.407 5369.093
+  angleX -0.384
+  angleY -142.389
+  angleZ 1.964
+ }
+ Ural4320_command2 {
+  components {
+   FuelManagerComponent "{5622A70CD78A9E2C}" {
+    FuelNodes {
+     SCR_FuelNode "{5622A70CD4036C5A}" {
+      m_fInitialFuelTankState 0
+      m_bCanReceiveFuel 0
+     }
+     SCR_FuelNode "{5628CA84B129D4CE}" {
+      m_fInitialFuelTankState 0
+      m_bCanReceiveFuel 0
+     }
+    }
+   }
+   SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+    m_fVehicleDestroyDamage 11360.7
+   }
+  }
+  coords 5534.431 95.562 6096.873
+  angleX -0.527
+  angleY -138.175
+  angleZ 1.93
+ }
+}
+Vehicle UAZ1 : "{259EE7B78C51B624}Prefabs/Vehicles/Wheeled/UAZ469/UAZ469.et" {
+ components {
+  SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+   m_fVehicleDestroyDamage 8582.14
+  }
+ }
+ coords 4786.973 160.573 7382.493
+ angleX 3.567
+ angleY -175.807
+ angleZ 0.261
+}
+Vehicle UAZ452_ambulance1 : "{43C4AF1EEBD001CE}Prefabs/Vehicles/Wheeled/UAZ452/UAZ452_ambulance.et" {
+ components {
+  SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+   m_fVehicleDestroyDamage 4493.57
+  }
+ }
+ coords 4786.504 159.936 7394.177
+ angleX 3.576
+ angleY -179.457
+ angleZ 0.034
+}
+$grp Vehicle : "{C012BB3488BEA0C2}Prefabs/Vehicles/Wheeled/BTR70/BTR70.et" {
+ BTR2 {
+  components {
+   SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+    m_fVehicleDestroyDamage 13602.9
+   }
+  }
+  coords 5348.239 80.632 6336.411
+  angleX 1.223
+  angleY 149.925
+  angleZ 0.326
+ }
+ BTR1 {
+  components {
+   SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+    m_fVehicleDestroyDamage 13602.9
+   }
+  }
+  coords 5341.737 80.538 6346.19
+  angleX 0.711
+  angleY 142.604
+  angleZ -0.544
+ }
+ BTR3 {
+  components {
+   SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+    m_fVehicleDestroyDamage 13602.9
+   }
+  }
+  coords 5355.096 80.904 6325.888
+  angleX 1.183
+  angleY 155.875
+  angleZ 0.451
+ }
+}
+$grp Vehicle : "{D9B91FAB817A6033}Prefabs/Vehicles/Wheeled/Ural4320/Ural4320_transport_covered.et" {
+ Ural4320_transport_covered1 {
+  components {
+   SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+    m_fVehicleDestroyDamage 11360.7
+   }
+  }
+  coords 4790.15 162.134 7354.508
+  angleX 3.576
+  angleY 180
+ }
+ Ural4320_transport_covered2 {
+  components {
+   SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+    m_fVehicleDestroyDamage 11360.7
+   }
+  }
+  coords 4789.624 161.386 7367.982
+  angleX 3.576
+  angleY 180
+ }
+}

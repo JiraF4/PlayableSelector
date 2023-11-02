@@ -1,0 +1,17 @@
+$grp SCR_EditorRestrictionZoneEntity : "{D832FD7D4F872977}Prefabs/FreezeTime/FreezeZone.et" {
+ {
+  coords 4790.353 160.968 7372.802
+ }
+ {
+  coords 5337.903 80.469 6324.352
+ }
+ {
+  coords 5796.444 3.385 3507.001
+ }
+ {
+  coords 5889.671 5.462 3430.922
+ }
+ {
+  coords 6006.532 5.541 3399.281
+ }
+}

@@ -1,0 +1,110 @@
+Vehicle M997_maxi_ambulance1 : "{00C9BBE426F7D459}Prefabs/Vehicles/Wheeled/M998/M997_maxi_ambulance.et" {
+ components {
+  SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+   m_fVehicleDestroyDamage 12910.7
+  }
+ }
+ coords 6030.036 5.572 3388.092
+ angleY -67.221
+}
+$grp Vehicle : "{04BDACC0BB83284E}Prefabs/Vehicles/Wheeled/M923A1/M923A1_transport_covered_MERDC.et" {
+ M923A1_transport_covered_MERDC3 {
+  components {
+   SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+    m_fVehicleDestroyDamage 11360.7
+   }
+  }
+  coords 5909.332 5.447 3428.025
+  angleX -0.231
+  angleY -75.011
+  angleZ 0.865
+ }
+ M923A1_transport_covered_MERDC4 {
+  components {
+   SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+    m_fVehicleDestroyDamage 11360.7
+   }
+  }
+  coords 5895.017 5.479 3432.097
+  angleY -77.913
+ }
+ M923A1_transport_covered_MERDC5 {
+  components {
+   SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+    m_fVehicleDestroyDamage 11360.7
+   }
+  }
+  coords 5881.151 5.5 3437.27
+  angleY -75
+ }
+}
+Vehicle M1025_armed_M2HB1 : "{3EA6F47D95867114}Prefabs/Vehicles/Wheeled/M998/M1025_armed_M2HB.et" {
+ components {
+  SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+   m_fVehicleDestroyDamage 12912.9
+  }
+ }
+ coords 5982.271 5.406 3412.247
+ angleY -86.823
+}
+Vehicle M151A2_transport1 : "{47D94E1193A88497}Prefabs/Vehicles/Wheeled/M151A2/M151A2_transport.et" {
+ components {
+  SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+   m_fVehicleDestroyDamage 7110.71
+  }
+ }
+ coords 6008.493 5.531 3387.132
+}
+Vehicle M923A1_transport_covered1 : "{81FDAD5EB644CC3D}Prefabs/Vehicles/Wheeled/M923A1/M923A1_transport_covered.et" {
+ components {
+  SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+   m_fVehicleDestroyDamage 11360.7
+  }
+ }
+ coords 5996.763 5.513 3407.01
+ angleX -0.839
+ angleY -69.552
+ angleZ -0.313
+}
+$grp Vehicle : "{DD774A8FD0989A78}Prefabs/Vehicles/Wheeled/M998/M1025_armed_M2HB_MERDC.et" {
+ M1025_armed_M2HB_MERDC1 {
+  components {
+   SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+    m_fVehicleDestroyDamage 12912.9
+   }
+  }
+  coords 5798.713 3.474 3515.052
+  angleX 4.547
+  angleY -92.749
+  angleZ 1.568
+ }
+ M1025_armed_M2HB_MERDC2 {
+  components {
+   SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+    m_fVehicleDestroyDamage 12912.9
+   }
+  }
+  coords 5809.614 3.312 3505.112
+  angleY -39.894
+ }
+ M1025_armed_M2HB_MERDC3 {
+  components {
+   SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+    m_fVehicleDestroyDamage 12912.9
+   }
+  }
+  coords 5804.406 3.334 3511.402
+  angleX 0.614
+  angleY -46.689
+  angleZ -0.651
+ }
+}
+Vehicle M923A1_transport1 : "{F1FBD0972FA5FE09}Prefabs/Vehicles/Wheeled/M923A1/M923A1_transport.et" {
+ components {
+  SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+   m_fVehicleDestroyDamage 11360.7
+  }
+ }
+ coords 6013.401 5.531 3399.753
+ angleY -75.575
+}

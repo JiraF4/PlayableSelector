@@ -1,6 +1,14 @@
 StringTable {
  ItemClassName "CustomStringTableItem"
  Items {
+  CustomStringTableItem "{5EC5311E4F6DC81D}" {
+   Id "PS-Briefing_GroupVoiceChat"
+   Target_en_us "Group сhat"
+   Target_ru_ru "Отрядный чат"
+   Modified 1589982424
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
   CustomStringTableItem "{5EC2E46366D61D92}" {
    Id "PS-Briefing_MissionDescriptionHeader"
    Target_en_us "Mission description"
@@ -22,6 +30,14 @@ StringTable {
    Target_en_us "Show mission description"
    Target_ru_ru "Показать описание миссии"
    Modified 1589838147
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
+  CustomStringTableItem "{5EC5311E7A654D14}" {
+   Id "PS-Briefing_VoiceChat"
+   Target_en_us "Voice chat"
+   Target_ru_ru "Голосовой чат"
+   Modified 1589982033
    Author "SeskPC"
    LastChanged "SeskPC"
   }
@@ -185,6 +201,14 @@ StringTable {
    Author "SeskPC"
    LastChanged "SeskPC"
   }
+  CustomStringTableItem "{5EC5311F4BC93B53}" {
+   Id "PS-Keybind_SwitchSpectatorUI"
+   Target_en_us "Hide/Show UI"
+   Target_ru_ru "Скрыть/Показать UI"
+   Modified 1589981655
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
   CustomStringTableItem "{5EC2E47EA1E2244F}" {
    Id "PS-Keybind_VoiceChatSwitch"
    Target_en_us "Voice chat interface"
@@ -319,6 +343,22 @@ StringTable {
    Target_ru_ru "Пожалуйста пожождите"
    Modified 1589834788
    Author "zazul"
+   LastChanged "SeskPC"
+  }
+  CustomStringTableItem "{5EC5311F409ED937}" {
+   Id "PS-Spectator_SwitchSpectatorUI"
+   Target_en_us "Hide/Show UI"
+   Target_ru_ru "Скрыть/Показать UI"
+   Modified 1589981769
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
+  CustomStringTableItem "{5EC5311F46616798}" {
+   Id "PS-Spectator_VoiceChat"
+   Target_en_us "Voice Chat"
+   Target_ru_ru "Голосовой чат"
+   Modified 1589981833
+   Author "SeskPC"
    LastChanged "SeskPC"
   }
   CustomStringTableItem "{5EB6E12BC67891C4}" {

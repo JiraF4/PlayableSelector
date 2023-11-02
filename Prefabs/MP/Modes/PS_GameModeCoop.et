@@ -34,8 +34,6 @@ PS_GameModeCoop {
   }
   PS_PlayableManager "{5EA8C9329726C920}" {
   }
-  PS_ReplayWriter "{5EBAA3FA8A5746EA}" {
-  }
   PS_VoNRoomsManager "{5EB2902757964925}" {
   }
   SCR_ArsenalManagerComponent "{5D4CE249D697011C}" {
@@ -413,6 +411,8 @@ PS_GameModeCoop {
   }
   RplComponent "{5D4CE249422E8900}" {
    Streamable Disabled
+  }
+  SCR_PlayersRestrictionZoneManagerComponent "{5EC5241EC9284CCA}" {
   }
  }
  PlayerControllerPrefab "{4E5DAC62A374950F}Prefabs/Characters/Core/DefaultPlayerControllerMP_Coop.et"

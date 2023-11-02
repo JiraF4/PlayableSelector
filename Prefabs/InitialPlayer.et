@@ -59,7 +59,7 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
     ItemsInitConfigurationItem "{5EB5371BEC57ECD8}" {
      TargetStorage "Prefabs/Characters/Uniforms/Pants_M70.et"
      PrefabsToSpawn {
-      "{74AA3854E16D9D56}Prefabs/MenuRadio.et"
+      "{74AA3854E16D9D56}Prefabs/MenuRadio.et" "{3A421547BC29F679}Prefabs/Items/Equipment/Flashlights/Flashlight_MX991/Flashlight_MX991.et"
      }
     }
    }

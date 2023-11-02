@@ -1,0 +1,57 @@
+$grp PS_ManualMarker {
+ {
+  coords 5292.128 62.172 5370.663
+  m_sImageSet "{7CD99D22C7AE8195}UI/Textures/GroupManagement/FlagIcons/GroupFlagsOpfor.imageset"
+  m_sImageSetGlow "{7CD99D22C7AE8195}UI/Textures/GroupManagement/FlagIcons/GroupFlagsOpfor.imageset"
+  m_MarkerColor 0.855 0.031 0.028 1
+  m_sQuadName "signal-opfor"
+  m_fWorldSizeWidth 50
+  m_fWorldSizeHeight 35
+  m_sDescription "Command Truck"
+  m_bUseWorldScale 0
+ }
+ {
+  coords 5525.909 97.276 6086.008
+  m_sImageSet "{7CD99D22C7AE8195}UI/Textures/GroupManagement/FlagIcons/GroupFlagsOpfor.imageset"
+  m_sImageSetGlow "{7CD99D22C7AE8195}UI/Textures/GroupManagement/FlagIcons/GroupFlagsOpfor.imageset"
+  m_MarkerColor 0.855 0.031 0.028 1
+  m_sQuadName "signal-opfor"
+  m_fWorldSizeWidth 50
+  m_fWorldSizeHeight 35
+  m_sDescription "Command Truck"
+  m_bUseWorldScale 0
+ }
+ {
+  coords 5359.053 81.093 6318.507
+  m_sImageSet "{7CD99D22C7AE8195}UI/Textures/GroupManagement/FlagIcons/GroupFlagsOpfor.imageset"
+  m_sImageSetGlow "{7CD99D22C7AE8195}UI/Textures/GroupManagement/FlagIcons/GroupFlagsOpfor.imageset"
+  m_MarkerColor 0.855 0.031 0.028 1
+  m_sQuadName "Motorized-rifle-opfor"
+  m_fWorldSizeWidth 50
+  m_fWorldSizeHeight 35
+  m_sDescription "Buran"
+  m_bUseWorldScale 0
+ }
+ {
+  coords 4791.796 163.058 7334.321
+  m_sImageSet "{7CD99D22C7AE8195}UI/Textures/GroupManagement/FlagIcons/GroupFlagsOpfor.imageset"
+  m_sImageSetGlow "{7CD99D22C7AE8195}UI/Textures/GroupManagement/FlagIcons/GroupFlagsOpfor.imageset"
+  m_MarkerColor 0.855 0.031 0.028 1
+  m_sQuadName "infantry-opfor"
+  m_fWorldSizeWidth 50
+  m_fWorldSizeHeight 35
+  m_sDescription "Kompas"
+  m_bUseWorldScale 0
+ }
+ {
+  coords 4791.083 160.162 7394.996
+  m_sImageSet "{7CD99D22C7AE8195}UI/Textures/GroupManagement/FlagIcons/GroupFlagsOpfor.imageset"
+  m_sImageSetGlow "{7CD99D22C7AE8195}UI/Textures/GroupManagement/FlagIcons/GroupFlagsOpfor.imageset"
+  m_MarkerColor 0.855 0.031 0.028 1
+  m_sQuadName "signal-opfor"
+  m_fWorldSizeWidth 50
+  m_fWorldSizeHeight 35
+  m_sDescription "Aktiv"
+  m_bUseWorldScale 0
+ }
+}

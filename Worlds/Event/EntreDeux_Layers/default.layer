@@ -1,0 +1,31 @@
+SCR_AIWorld : "{70CCCF16487C927F}Prefabs/AI/SCR_AIWorld_Eden.et" {
+}
+PerceptionManager PerceptionManager1 : "{028DAEAD63E056BE}Prefabs/World/Game/PerceptionManager.et" {
+}
+TagManager : "{2FA9E172CAB1857A}Prefabs/MP/Managers/TagManager.et" {
+}
+PS_GameModeCoop PS_GameModeCoop1 : "{F64CCAF87CCCF567}Prefabs/MP/Modes/PS_GameModeCoop.et" {
+ components {
+  SCR_TimeAndWeatherHandlerComponent "{5E7D773A4347DB9E}" {
+   m_iStartingHours 13
+   m_bRandomStartingWeather 1
+  }
+ }
+ m_bMarkersOnlyOnBriefing 1
+ m_bKillRedundantUnits 1
+ {
+  SCR_FactionManager "5EC4E502BF0A9EC3" {
+   ID "5EA73DB136618AD9"
+   Factions {
+    SCR_Faction "{56DEAC40D2DBC8B1}" {
+     m_bIsPlayable 1
+    }
+    SCR_Faction "{56DEAC40D3C2E623}" {
+     m_bIsPlayable 1
+    }
+   }
+  }
+ }
+}
+HitRegistrationManager HitRegManager1 : "{0EDA3D48791120DD}Prefabs/MP/HitRegManager.et" {
+}

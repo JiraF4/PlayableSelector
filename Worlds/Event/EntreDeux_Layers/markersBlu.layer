@@ -1,0 +1,57 @@
+$grp PS_ManualMarker {
+ {
+  coords 5804.967 3.37 3514.648
+  m_sImageSet "{1228936E5DB30403}UI/Textures/GroupManagement/FlagIcons/GroupFlagsBlufor.imageset"
+  m_sImageSetGlow "{1228936E5DB30403}UI/Textures/GroupManagement/FlagIcons/GroupFlagsBlufor.imageset"
+  m_MarkerColor 0.016 0.552 0.905 1
+  m_sQuadName "motorized-blufor"
+  m_fWorldSizeWidth 50
+  m_fWorldSizeHeight 35
+  m_sDescription "White"
+  m_bUseWorldScale 0
+ }
+ {
+  coords 5874.238 5.542 3438.715
+  m_sImageSet "{1228936E5DB30403}UI/Textures/GroupManagement/FlagIcons/GroupFlagsBlufor.imageset"
+  m_sImageSetGlow "{1228936E5DB30403}UI/Textures/GroupManagement/FlagIcons/GroupFlagsBlufor.imageset"
+  m_MarkerColor 0.016 0.552 0.905 1
+  m_sQuadName "infantry-blufor"
+  m_fWorldSizeWidth 50
+  m_fWorldSizeHeight 35
+  m_sDescription "Blue"
+  m_bUseWorldScale 0
+ }
+ {
+  coords 5962.881 5.416 3413.921
+  m_sImageSet "{1228936E5DB30403}UI/Textures/GroupManagement/FlagIcons/GroupFlagsBlufor.imageset"
+  m_sImageSetGlow "{1228936E5DB30403}UI/Textures/GroupManagement/FlagIcons/GroupFlagsBlufor.imageset"
+  m_MarkerColor 0.016 0.552 0.905 1
+  m_sQuadName "infantry-blufor"
+  m_fWorldSizeWidth 50
+  m_fWorldSizeHeight 35
+  m_sDescription "Green"
+  m_bUseWorldScale 0
+ }
+ {
+  coords 6042.817 5.193 3380.464
+  m_sImageSet "{1228936E5DB30403}UI/Textures/GroupManagement/FlagIcons/GroupFlagsBlufor.imageset"
+  m_sImageSetGlow "{1228936E5DB30403}UI/Textures/GroupManagement/FlagIcons/GroupFlagsBlufor.imageset"
+  m_MarkerColor 0.016 0.552 0.905 1
+  m_sQuadName "Medical-blufor"
+  m_fWorldSizeWidth 50
+  m_fWorldSizeHeight 35
+  m_sDescription "Red Medical"
+  m_bUseWorldScale 0
+ }
+ {
+  coords 5999.647 5.33 3389.78
+  m_sImageSet "{1228936E5DB30403}UI/Textures/GroupManagement/FlagIcons/GroupFlagsBlufor.imageset"
+  m_sImageSetGlow "{1228936E5DB30403}UI/Textures/GroupManagement/FlagIcons/GroupFlagsBlufor.imageset"
+  m_MarkerColor 0.016 0.552 0.905 1
+  m_sQuadName "signal-blufor"
+  m_fWorldSizeWidth 50
+  m_fWorldSizeHeight 35
+  m_sDescription "Red HQ"
+  m_bUseWorldScale 0
+ }
+}
