@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{3F7B8FD95A19A9D3}UI/MissionDescriptionTemplates/DescriptionObjectivesSes.layout"
+ Configurations {
+  LayoutResourceClass PC {
+  }
+  LayoutResourceClass XBOX_ONE : PC {
+  }
+  LayoutResourceClass XBOX_SERIES : PC {
+  }
+  LayoutResourceClass PS4 : PC {
+  }
+  LayoutResourceClass HEADLESS : PC {
+  }
+ }
+}
