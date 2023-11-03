@@ -45,6 +45,14 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		BaseGameMode gamemode = GetGame().GetGameMode();
 		SCR_PlayersRestrictionZoneManagerComponent restrictionZoneManager = SCR_PlayersRestrictionZoneManagerComponent.Cast(gamemode.FindComponent(SCR_PlayersRestrictionZoneManagerComponent));
 		set<SCR_EditorRestrictionZoneEntity> zones = restrictionZoneManager.GetZones();
+		
+		array<int> playerIds = new array<int>();
+		GetGame().GetPlayerManager().GetPlayers(playerIds);
+		foreach (int playerId : playerIds)
+		{
+			restrictionZoneManager.ResetPlayerZoneData(playerId);
+		}
+		
 		for (int i = 0; i < zones.Count(); i++)
 		{
 			SCR_EditorRestrictionZoneEntity zone = zones.Get(i);

@@ -28,6 +28,7 @@ PS_GameModeCoop PS_GameModeCoop1 : "{F64CCAF87CCCF567}Prefabs/MP/Modes/PS_GameMo
  }
  coords 3.45 1.663 3.493
  m_bKillRedundantUnits 1
+ m_iFreezeTime 10000
 }
 GenericEntity {
  coords 5.734 1 3.144
@@ -117,9 +118,9 @@ SCR_EditorRestrictionZoneEntity {
   }
  }
  coords 115.181 1 109.43
- m_fWarnRadius 14
- m_fZoneRadius 24
- m_fZoneTeleportedRadius 34
+ m_fWarnRadius 100
+ m_fZoneRadius 120
+ m_fZoneTeleportedRadius 8000
  {
   GenericEntity {
    components {
@@ -129,7 +130,7 @@ SCR_EditorRestrictionZoneEntity {
      m_vResolution 48
      m_bStretchMaterial 1
      m_Material "{034185AE1A11B656}Assets/Editor/VirtualArea/VirtualArea_01_Warning.emat"
-     m_fRadius 14
+     m_fRadius 80
     }
     RplComponent "{5EC5025412025CCE}" {
     }

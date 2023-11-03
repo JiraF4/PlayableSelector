@@ -271,7 +271,16 @@ modded class SCR_PlayersRestrictionZoneManagerComponent
 		if (!playerEntity)
 			return;
 		
+		PS_PlayableComponent playableComponent = PS_PlayableComponent.Cast(playerEntity.FindComponent(PS_PlayableComponent));
+		if (!playableComponent)
+			return;
+		
 		super.KillPlayerOutOfZone(playerID, playerEntity);
+	}
+	
+	void ResetPlayerZoneData(int playerID)
+	{
+		SetPlayerZoneData(playerID, null, false, false, -1);
 	}
 }
 
