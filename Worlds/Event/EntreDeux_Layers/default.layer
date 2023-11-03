@@ -13,6 +13,7 @@ PS_GameModeCoop PS_GameModeCoop1 : "{F64CCAF87CCCF567}Prefabs/MP/Modes/PS_GameMo
  }
  m_bMarkersOnlyOnBriefing 1
  m_bKillRedundantUnits 1
+ m_iFreezeTime 180000
  {
   SCR_FactionManager "5EC4E502BF0A9EC3" {
    ID "5EA73DB136618AD9"
