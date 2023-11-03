@@ -305,7 +305,6 @@ FrameWidgetClass {
     SizeY 800
     OffsetBottom 10
    }
-   "Is Visible" 0
   }
   FrameWidgetClass "{5EBE2C2798842486}" : "{F43237F55B38B45C}UI/GameModeHeader/GameModeHeader.layout" {
    Name "GameModeHeader"

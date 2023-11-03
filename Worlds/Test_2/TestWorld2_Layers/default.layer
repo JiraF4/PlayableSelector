@@ -12,6 +12,8 @@ TagManager : "{2FA9E172CAB1857A}Prefabs/MP/Managers/TagManager.et" {
 }
 PS_GameModeCoop PS_GameModeCoop1 : "{F64CCAF87CCCF567}Prefabs/MP/Modes/PS_GameModeCoop.et" {
  components {
+  PS_ReplayWriter "{5EC5619290021CCD}" {
+  }
   SCR_PlayersRestrictionZoneManagerComponent "{5EC502544E627324}" {
   }
   SCR_PreGameGameModeStateComponent "{5EA8C9324DF2DCC1}" {
