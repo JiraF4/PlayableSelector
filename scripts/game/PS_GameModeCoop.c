@@ -198,6 +198,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			case SCR_EGameModeState.BRIEFING:
 				if (m_bKillRedundantUnits) PS_PlayableManager.GetInstance().KillRedundantUnits();
 				GetGame().GetCallqueue().CallLater(removeRestrictedZones, m_iFreezeTime);
+				PS_PlayableManager.GetInstance().ResetRplStream();
 				StartGameMode();
 				break;
 			case SCR_EGameModeState.GAME:

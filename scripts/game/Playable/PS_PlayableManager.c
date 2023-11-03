@@ -36,6 +36,20 @@ class PS_PlayableManager : ScriptComponent
 		if (Replication.IsServer()) m_bRplLoaded = true;
 	}
 	
+	// TODO: fix it please
+	void ResetRplStream()
+	{
+		GetGame().GetCallqueue().CallLater(ResetRplStreamWrap, 1000);
+	}
+	void ResetRplStreamWrap()
+	{
+		map<RplId, PS_PlayableComponent> playables = GetPlayables();
+		for (int i = 0; i < playables.Count(); i++) {
+			PS_PlayableComponent playable = playables.GetElement(i);
+			playable.ResetRplStream();
+		}
+	}
+	
 	// more singletons for singletons god, make our spagetie kingdom great
 	static PS_PlayableManager GetInstance() 
 	{
