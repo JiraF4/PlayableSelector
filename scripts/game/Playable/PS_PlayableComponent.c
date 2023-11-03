@@ -26,7 +26,7 @@ class PS_PlayableComponent : ScriptComponent
 			m_cOwner = SCR_ChimeraCharacter.Cast(owner);
 			m_id = rpl.Id();
 			playableManager.RegisterPlayable(this);
-			rpl.EnableStreaming(false); // They need to be loaded for preview
+			//rpl.EnableStreaming(false); // They need to be loaded for preview
 		}
 	}
 	
