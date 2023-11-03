@@ -10,12 +10,12 @@ FrameWidgetClass {
    Name "VoiceChatFrame"
    Slot FrameWidgetSlot "{5EB701CDC06E1686}" {
     Anchor 1 0.5 1 0.5
-    PositionX -490
-    OffsetLeft -490
+    PositionX -330
+    OffsetLeft -330
     PositionY -320
     OffsetTop -320
-    SizeX 480
-    OffsetRight 10
+    SizeX 330
+    OffsetRight 0
     SizeY 640
     OffsetBottom -320
    }
@@ -26,17 +26,44 @@ FrameWidgetClass {
      Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
       OffsetLeft 0
       OffsetTop 0
-      OffsetRight -480
+      SizeX 330
+      OffsetRight -330
       SizeY 640
       OffsetBottom -640
+     }
+    }
+    FrameWidgetClass "{5EB2900030AFF404}" {
+     Prefab "{5EB2900030AFF404}"
+     Slot FrameWidgetSlot "{5EAF568435415315}" {
+      OffsetLeft 0
+      OffsetTop 0
+      SizeX 330
+      OffsetRight -330
+      OffsetBottom -39
+     }
+     {
+      OverlayWidgetClass "{5EB2900030AFF406}" {
+       Prefab "{5EB2900030AFF406}"
+       Slot FrameWidgetSlot "{5EB0E9ED5655F81D}" {
+        OffsetLeft 0
+        OffsetTop 0
+        SizeX 330
+        OffsetRight -330
+        OffsetBottom -39
+       }
+      }
      }
     }
     ScrollLayoutWidgetClass "{5EB2900030AFF408}" {
      Prefab "{5EB2900030AFF408}"
      Slot FrameWidgetSlot "{5EB1000AD8290B3B}" {
+      Anchor 0 0 0 0
+      PositionX 0
       OffsetLeft 0
+      PositionY 39
       OffsetTop 39
-      OffsetRight -480
+      SizeX 330
+      OffsetRight -330
       SizeY 601
       OffsetBottom -640
      }
@@ -47,12 +74,12 @@ FrameWidgetClass {
    Name "AlivePlayersList"
    Slot FrameWidgetSlot "{5EBA3C97F505681F}" {
     Anchor 0 0.5 0 0.5
-    PositionX 10
-    OffsetLeft 10
+    PositionX 0
+    OffsetLeft 0
     PositionY -320
     OffsetTop -320
-    SizeX 480
-    OffsetRight -490
+    SizeX 330
+    OffsetRight -330
     SizeY 640
     OffsetBottom -320
    }
@@ -66,8 +93,8 @@ FrameWidgetClass {
      Slot FrameWidgetSlot "{5EBA3C97FF93DE52}" {
       OffsetLeft 0
       OffsetTop 0
-      SizeX 480
-      OffsetRight -480
+      SizeX 330
+      OffsetRight -330
       OffsetBottom -39
      }
      {
@@ -76,8 +103,8 @@ FrameWidgetClass {
        Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
         OffsetLeft 0
         OffsetTop 0
-        SizeX 480
-        OffsetRight -480
+        SizeX 330
+        OffsetRight -330
         OffsetBottom -39
        }
       }
@@ -86,8 +113,8 @@ FrameWidgetClass {
        Slot FrameWidgetSlot "{5EB0E9ED5655F81D}" {
         OffsetLeft 0
         OffsetTop 0
-        SizeX 480
-        OffsetRight -480
+        SizeX 330
+        OffsetRight -330
         OffsetBottom -39
        }
       }
@@ -98,8 +125,8 @@ FrameWidgetClass {
      Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
       OffsetLeft 0
       OffsetTop 0
-      SizeX 480
-      OffsetRight -480
+      SizeX 330
+      OffsetRight -330
       SizeY 640
       OffsetBottom -640
      }
@@ -109,8 +136,8 @@ FrameWidgetClass {
      Slot FrameWidgetSlot "{5EB1000AD8290B3B}" {
       OffsetLeft 0
       OffsetTop 39
-      SizeX 480
-      OffsetRight -480
+      SizeX 330
+      OffsetRight -330
       SizeY 601
       OffsetBottom -640
      }
