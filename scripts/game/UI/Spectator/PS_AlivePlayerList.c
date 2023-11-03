@@ -19,10 +19,10 @@ class PS_AlivePlayerList : ScriptedWidgetComponent
 	// -------------------- Update content functions --------------------
 	void HardUpdate()
 	{
-		array<PS_PlayableComponent> alivePlayables = new array<PS_PlayableComponent>();
-		GetAlivePlayables(alivePlayables);
+		array<int> alivePlayers = new array<int>();
+		GetAlivePlayers(alivePlayers);
 		
-		if (m_iOldPlayersCount != alivePlayables.Count())
+		if (m_iOldPlayersCount != alivePlayers.Count())
 		{
 			// Clear old widgets
 			foreach (Widget widget: m_aPlayersListWidgets)
@@ -34,22 +34,19 @@ class PS_AlivePlayerList : ScriptedWidgetComponent
 			
 			PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 			// Add new widgets
-			foreach (PS_PlayableComponent playable: alivePlayables)
+			foreach (int playerId: alivePlayers)
 			{
-				int playerId = playableManager.GetPlayerByPlayable(playable.GetId());
-				if (playerId > 0) {
-					Widget alivePlayerWidget = GetGame().GetWorkspace().CreateWidgets(m_sAlivePlayerSelectorPrefab);
-					PS_AlivePlayerSelector alivePlayerSelector = PS_AlivePlayerSelector.Cast(alivePlayerWidget.FindHandler(PS_AlivePlayerSelector));
-					
-					m_wPlayersList.AddChild(alivePlayerWidget);
-					m_aPlayersListWidgets.Insert(alivePlayerWidget);
-					m_aPlayersAliveList.Insert(alivePlayerSelector);
-					
-					alivePlayerSelector.SetPlayer(playerId);
-				}
+				Widget alivePlayerWidget = GetGame().GetWorkspace().CreateWidgets(m_sAlivePlayerSelectorPrefab);
+				PS_AlivePlayerSelector alivePlayerSelector = PS_AlivePlayerSelector.Cast(alivePlayerWidget.FindHandler(PS_AlivePlayerSelector));
+				
+				m_wPlayersList.AddChild(alivePlayerWidget);
+				m_aPlayersListWidgets.Insert(alivePlayerWidget);
+				m_aPlayersAliveList.Insert(alivePlayerSelector);
+				
+				alivePlayerSelector.SetPlayer(playerId);
 			}
 		}
-		m_iOldPlayersCount = alivePlayables.Count();
+		m_iOldPlayersCount = alivePlayers.Count();
 		
 		SoftUpdate();
 	}
@@ -62,7 +59,7 @@ class PS_AlivePlayerList : ScriptedWidgetComponent
 		}
 	}
 	
-	void GetAlivePlayables(out array<PS_PlayableComponent> outPlayablesArray)
+	void GetAlivePlayers(out array<int> outPlayersArray)
 	{
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		array<PS_PlayableComponent> playablesSorted = playableManager.GetPlayablesSorted();
@@ -71,9 +68,10 @@ class PS_AlivePlayerList : ScriptedWidgetComponent
 			SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(playable.GetOwner());
 			if (!character.GetDamageManager().IsDestroyed()) 
 			{
-				outPlayablesArray.Insert(playablesSorted[i]);
+				int playerId = playableManager.GetPlayerByPlayable(playable.GetId());
+				if (playerId > 0 && !outPlayersArray.Contains(playerId))
+					outPlayersArray.Insert(playerId);
 			}
 		}
 	}
-	
 }
