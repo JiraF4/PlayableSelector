@@ -129,10 +129,13 @@ class PS_PlayableControllerComponent : ScriptComponent
 		{
 			m_eInitialEntity.SetOrigin(VoNPosition);
 			Physics physics = m_eInitialEntity.GetPhysics();
-			physics.SetVelocity("0 0 0");
-			physics.SetAngularVelocity("0 0 0");
-			physics.SetMass(0);
-			physics.SetDamping(1, 1);
+			if (physics)
+			{
+				physics.SetVelocity("0 0 0");
+				physics.SetAngularVelocity("0 0 0");
+				physics.SetMass(0);
+				physics.SetDamping(1, 1);
+			}
 		} else {
 			PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
 			IEntity entity = thisPlayerController.GetControlledEntity();
