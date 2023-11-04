@@ -3,7 +3,7 @@ GameProject {
  GUID "596523840114E2D3"
  TITLE "ReforgerLobbyDEV"
  Dependencies {
-  "5614BBCCBB55ED1C" "58D0FB3206B6F859"
+  "58D0FB3206B6F859"
  }
  Configurations {
   GameProjectConfig PC {
