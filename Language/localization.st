@@ -340,8 +340,8 @@ StringTable {
   CustomStringTableItem "{5EBE323E40F74A24}" {
    Id "PS-Preview_PleaseWait"
    Target_en_us "Please wait"
-   Target_ru_ru "Пожалуйста пожождите"
-   Modified 1589834788
+   Target_ru_ru "Пожалуйста подождите"
+   Modified 1590240962
    Author "zazul"
    LastChanged "SeskPC"
   }
