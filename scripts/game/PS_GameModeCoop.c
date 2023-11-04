@@ -193,8 +193,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	// Switch to next game state
 	void AdvanceGameState(SCR_EGameModeState oldState)
 	{
-		if (oldState == SCR_EGameModeState.GAME) return;
 		SCR_EGameModeState state = GetState();
+		if (state == SCR_EGameModeState.GAME) return;
 		if (oldState != SCR_EGameModeState.NULL && oldState != state) return;
 		switch (state) 
 		{
