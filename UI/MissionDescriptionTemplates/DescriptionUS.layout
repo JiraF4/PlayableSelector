@@ -16,7 +16,7 @@ FrameWidgetClass {
     SizeY 601
     OffsetBottom -601
    }
-   Text "Description US"
+   Text "Faction specific description: US"
    "Font Size" 20
    "Min Font Size" 20
    Wrap 1

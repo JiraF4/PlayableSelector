@@ -1,0 +1,28 @@
+PS_FreezeZone {
+ ID "5ED1319CEC3AAF6D"
+ components {
+  Hierarchy "{56D8A3C5A31496BC}" {
+  }
+  PS_FreezeZoneMeshComponent "{5ECF16C12BDD2EF5}" {
+   m_Material "{E65E61D1541003E2}Assets/Editor/VirtualArea/VirtualArea.emat"
+  }
+  SCR_PreviewEntityComponent "{5ECF16C7CAD3B3FC}" {
+   m_PreviewPrefab "{60E5729BEA18F875}Prefabs/Structures/Walls/Concrete/ConcreteWall_01/ConcreteWall_01_3m.et"
+   m_aEntries {
+    SCR_BasePreviewEntry "{5ECF16C7CDCADD98}" {
+     m_Shape MESH
+    }
+    SCR_BasePreviewEntry "{5ECF16C7995A7658}" {
+     m_Mesh "{60E5729BEA18F875}Prefabs/Structures/Walls/Concrete/ConcreteWall_01/ConcreteWall_01_3m.et"
+     m_Shape PREFAB
+     m_iPivotID ""
+    }
+   }
+  }
+  RplComponent "{56D8A3C5A314965D}" {
+  }
+ }
+ coords 124.799 1.755 112.515
+ m_fZoneRadius 10
+ m_fZoneHeight 8
+}

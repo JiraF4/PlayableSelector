@@ -18,8 +18,7 @@ FrameWidgetClass {
     SizeY 601
     OffsetBottom -601
    }
-   Text ""\
-   "Die from <b>terrible</b> pain"
+   Text "Describe <b>objectives</b> or something"
    "Font Size" 20
    "Min Font Size" 20
    Wrap 1
@@ -27,33 +26,33 @@ FrameWidgetClass {
   ImageWidgetClass "{5EC27C578BF3E87D}" {
    Name "Icon"
    Slot FrameWidgetSlot "{5D6D1B99A45E509C}" {
-    PositionX 160.41
-    OffsetLeft 160.41
-    PositionY 31.734
-    OffsetTop 31.734
+    PositionX 42.574
+    OffsetLeft 42.574
+    PositionY 25.768
+    OffsetTop 25.768
     SizeX 40
-    OffsetRight -200.41
+    OffsetRight -82.574
     SizeY 40
-    OffsetBottom -71.734
+    OffsetBottom -65.768
    }
    Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
-   Image "platform-xbox"
+   Image "report"
    Size 32 32
   }
   ImageWidgetClass "{5EC27C579CCC4197}" {
    Name "Icon0"
    Slot FrameWidgetSlot "{5D6D1B99A45E509C}" {
-    PositionX 177
-    OffsetLeft 177
-    PositionY 9
-    OffsetTop 9
+    PositionX 150.151
+    OffsetLeft 150.151
+    PositionY 26.153
+    OffsetTop 26.153
     SizeX 40
-    OffsetRight -217
+    OffsetRight -190.151
     SizeY 40
-    OffsetBottom -49
+    OffsetBottom -66.153
    }
    Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
-   Image "death"
+   Image "thumbs-up"
    Size 32 32
   }
  }

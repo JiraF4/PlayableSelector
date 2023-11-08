@@ -11,143 +11,41 @@ TagManager : "{2FA9E172CAB1857A}Prefabs/MP/Managers/TagManager.et" {
  coords 79.929 1 170.913
 }
 PS_GameModeCoop PS_GameModeCoop1 : "{F64CCAF87CCCF567}Prefabs/MP/Modes/PS_GameModeCoop.et" {
+ components {
+  PS_FreezeZoneManager "{5ED11E773A9A1284}" {
+   m_iFreezeTime 300000
+  }
+  PS_MissionDescriptionManager "{5EC30459F8CD66AC}" {
+   m_aDescriptions {
+    PS_MapDescription "{5ED1319D10A69356}" {
+     m_sTitle "#PS-Description_HeaderAboutMission"
+     m_sDescriptionLayout "{ACDDFEA12D499F12}UI/MissionDescriptionTemplates/DescriptionAboutMission.layout"
+    }
+    PS_MapDescription "{5ED1319D108AA188}" {
+     m_sTitle "#PS-Description_HeaderObjectives"
+     m_sDescriptionLayout "{F289382214DA8825}UI/MissionDescriptionTemplates/DescriptionObjectives.layout"
+    }
+    PS_MapDescription "{5ED1319D10C1C224}" {
+     m_sTitle "#PS-Description_HeaderRules"
+     m_sDescriptionLayout "{F2776B4A507E919E}UI/MissionDescriptionTemplates/DescriptionRules.layout"
+    }
+    PS_MapDescription "{5ED1319D10669B81}" {
+     m_sTitle "#PS-Description_HeaderFIA"
+     m_sFactions "FIA"
+     m_sDescriptionLayout "{6970775993429F7C}UI/MissionDescriptionTemplates/DescriptionFIA.layout"
+    }
+    PS_MapDescription "{5ED1319D1EEA8F1E}" {
+     m_sTitle "#PS-Description_HeaderUS"
+     m_sFactions "US"
+     m_sDescriptionLayout "{E9BB75D81C9137A8}UI/MissionDescriptionTemplates/DescriptionUS.layout"
+    }
+    PS_MapDescription "{5ED1319D1ECE2C5A}" {
+     m_sTitle "#PS-Description_HeaderUSSR"
+     m_sFactions "USSR"
+     m_sDescriptionLayout "{569546D48527953B}UI/MissionDescriptionTemplates/DescriptionUSSR.layout"
+    }
+   }
+  }
+ }
  coords 3.45 1.663 3.493
-}
-GenericEntity {
- coords 5.734 1 3.144
-}
-PS_FreezeZone {
- components {
-  Hierarchy "{56D8A3C5A31496BC}" {
-  }
-  PS_FreezeZoneMeshComponent "{5ECF16C12BDD2EF5}" {
-   m_Material "{E65E61D1541003E2}Assets/Editor/VirtualArea/VirtualArea.emat"
-  }
-  SCR_PreviewEntityComponent "{5ECF16C7CAD3B3FC}" {
-   m_PreviewPrefab "{60E5729BEA18F875}Prefabs/Structures/Walls/Concrete/ConcreteWall_01/ConcreteWall_01_3m.et"
-   m_aEntries {
-    SCR_BasePreviewEntry "{5ECF16C7CDCADD98}" {
-     m_Shape MESH
-    }
-    SCR_BasePreviewEntry "{5ECF16C7995A7658}" {
-     m_Mesh "{60E5729BEA18F875}Prefabs/Structures/Walls/Concrete/ConcreteWall_01/ConcreteWall_01_3m.et"
-     m_Shape PREFAB
-     m_iPivotID ""
-    }
-   }
-  }
-  RplComponent "{56D8A3C5A314965D}" {
-  }
- }
- coords 124.799 1.755 112.515
- m_fZoneRadius 10
- m_fZoneHeight 8
-}
-$grp PS_ManualMarker {
- {
-  coords 130.139 1 182.414
-  m_sImageSet "{7CD99D22C7AE8195}UI/Textures/GroupManagement/FlagIcons/GroupFlagsOpfor.imageset"
-  m_sImageSetGlow "{7CD99D22C7AE8195}UI/Textures/GroupManagement/FlagIcons/GroupFlagsOpfor.imageset"
-  m_MarkerColor 0.141 0 0 1
-  m_sQuadName "Air-defence-artillery-opfor"
-  m_fWorldSizeWidth 10
-  m_fWorldSizeHeight 5
-  m_sDescription "Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description "
- }
- {
-  coords 128.766 1 147.382
-  m_sImageSet "{FDD5423E69D007F8}UI/Textures/Icons/icons_wrapperUI-128.imageset"
-  m_sImageSetGlow "{6980E83C053C9B5D}UI/Textures/Icons/icons_wrapperUI-128-glow.imageset"
-  m_sQuadName "subscribe"
- }
- {
-  coords 96.267 1 147.723
-  m_sImageSet "{FDD5423E69D007F8}UI/Textures/Icons/icons_wrapperUI-128.imageset"
-  m_sImageSetGlow ""
-  m_sQuadName "subscribe"
- }
- {
-  coords 115.562 1 109.016
-  m_sImageSet "{FDD5423E69D007F8}UI/Textures/Icons/icons_wrapperUI-128.imageset"
-  m_sImageSetGlow "{6980E83C053C9B5D}UI/Textures/Icons/icons_wrapperUI-128-glow.imageset"
-  m_sQuadName "subscribe"
- }
- {
-  coords 133.231 1 178.484
-  m_sImageSet "{7CD99D22C7AE8195}UI/Textures/GroupManagement/FlagIcons/GroupFlagsOpfor.imageset"
-  m_sImageSetGlow "{7CD99D22C7AE8195}UI/Textures/GroupManagement/FlagIcons/GroupFlagsOpfor.imageset"
-  m_MarkerColor 0.141 0 0 1
-  m_sQuadName "Air-defence-artillery-opfor"
-  m_fWorldSizeWidth 10
-  m_fWorldSizeHeight 5
-  m_sDescription "Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description "
- }
- {
-  coords 135.289 1 186.2
-  m_sImageSet "{7CD99D22C7AE8195}UI/Textures/GroupManagement/FlagIcons/GroupFlagsOpfor.imageset"
-  m_sImageSetGlow "{7CD99D22C7AE8195}UI/Textures/GroupManagement/FlagIcons/GroupFlagsOpfor.imageset"
-  m_MarkerColor 0.141 0 0 1
-  m_sQuadName "Air-defence-artillery-opfor"
-  m_fWorldSizeWidth 10
-  m_fWorldSizeHeight 5
-  m_sDescription "Description Description Description Description "\
-  "Description Description Description Description"\
-  "Description Description Description "\
-  "Description Description Description Description"\
-  "Description Description Description Description "\
-  "Description Description Description Description"\
-  "Description "
- }
-}
-StaticModelEntity {
- components {
-  MeshObject "{5ECF16C5802D896F}" {
-   Object "{F09986CDD3D8E7F4}Assets/Structures/Walls/Concrete/ConcreteWall_02_4m.xob"
-   Materials {
-    MaterialAssignClass "{5ECF16C5802D8932}" {
-     SourceMaterial "ConcreteRetainingWall_02"
-     AssignedMaterial "{A22ABF4C49B9F015}Assets/Props/Airport/ATCPanel_E_01/Data/ATCPanel_E_01_glass.emat"
-    }
-    MaterialAssignClass "{5ECF16C5802D8902}" {
-     SourceMaterial "ConcreteRetainingWall_02_MLod"
-     AssignedMaterial "{9668A21511C6F791}Assets/_SharedData/Decals/Invisible_Material.emat"
-    }
-   }
-   LODFactors {
-    1000 0 0 0 0 0 0 0 0
-   }
-   PixelSizeScale 2
-  }
-  RigidBody "{5ECF16C5802D8A28}" {
-   ResponseIndex "HugeDestructible"
-   ModelGeometry 1
-   Static 1
-  }
- }
- coords 113.956 1.73 96.874
- Flags 524291
-}
-Vehicle UAZ452_ambulance1 : "{43C4AF1EEBD001CE}Prefabs/Vehicles/Wheeled/UAZ452/UAZ452_ambulance.et" {
- components {
-  SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
-   m_fVehicleDestroyDamage 4493.57
-  }
- }
- coords 98.432 1 110.79
-}
-Vehicle BTR1 : "{C012BB3488BEA0C2}Prefabs/Vehicles/Wheeled/BTR70/BTR70.et" {
- components {
-  SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
-   m_fVehicleDestroyDamage 13602.9
-  }
- }
- coords 124.554 1 108.128
-}
-Vehicle M151A1 : "{F649585ABB3706C4}Prefabs/Vehicles/Wheeled/M151A2/M151A2.et" {
- components {
-  SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
-   m_fVehicleDestroyDamage 7110.71
-  }
- }
- coords 108.581 1 96.871
 }
