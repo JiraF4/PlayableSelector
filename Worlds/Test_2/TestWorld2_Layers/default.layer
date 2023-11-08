@@ -11,37 +11,27 @@ TagManager : "{2FA9E172CAB1857A}Prefabs/MP/Managers/TagManager.et" {
  coords 79.929 1 170.913
 }
 PS_GameModeCoop PS_GameModeCoop1 : "{F64CCAF87CCCF567}Prefabs/MP/Modes/PS_GameModeCoop.et" {
- coords 3.45 1.663 3.493
-}
-GenericEntity {
- coords 5.734 1 3.144
-}
-PS_FreezeZone {
  components {
-  Hierarchy "{56D8A3C5A31496BC}" {
+  PS_ReplayWriter "{5EC5619290021CCD}" {
   }
-  PS_FreezeZoneMeshComponent "{5ECF16C12BDD2EF5}" {
-   m_Material "{E65E61D1541003E2}Assets/Editor/VirtualArea/VirtualArea.emat"
+  SCR_PlayersRestrictionZoneManagerComponent "{5EC502544E627324}" {
   }
-  SCR_PreviewEntityComponent "{5ECF16C7CAD3B3FC}" {
-   m_PreviewPrefab "{60E5729BEA18F875}Prefabs/Structures/Walls/Concrete/ConcreteWall_01/ConcreteWall_01_3m.et"
-   m_aEntries {
-    SCR_BasePreviewEntry "{5ECF16C7CDCADD98}" {
-     m_Shape MESH
-    }
-    SCR_BasePreviewEntry "{5ECF16C7995A7658}" {
-     m_Mesh "{60E5729BEA18F875}Prefabs/Structures/Walls/Concrete/ConcreteWall_01/ConcreteWall_01_3m.et"
-     m_Shape PREFAB
-     m_iPivotID ""
+  SCR_PreGameGameModeStateComponent "{5EA8C9324DF2DCC1}" {
+   m_bDisableControls 0
+  }
+  SCR_ScoringSystemComponent "{5D4CE2498274717A}" {
+   m_aActions {
+    EndGameAction "{5EC27C75D4A5FAE1}" {
     }
    }
   }
-  RplComponent "{56D8A3C5A314965D}" {
-  }
  }
- coords 124.799 1.755 112.515
- m_fZoneRadius 10
- m_fZoneHeight 8
+ coords 3.45 1.663 3.493
+ m_bKillRedundantUnits 1
+ m_iFreezeTime 10000
+}
+GenericEntity {
+ coords 5.734 1 3.144
 }
 $grp PS_ManualMarker {
  {
@@ -99,33 +89,55 @@ $grp PS_ManualMarker {
   "Description "
  }
 }
-StaticModelEntity {
+SCR_EditorRestrictionZoneEntity {
  components {
-  MeshObject "{5ECF16C5802D896F}" {
-   Object "{F09986CDD3D8E7F4}Assets/Structures/Walls/Concrete/ConcreteWall_02_4m.xob"
-   Materials {
-    MaterialAssignClass "{5ECF16C5802D8932}" {
-     SourceMaterial "ConcreteRetainingWall_02"
-     AssignedMaterial "{A22ABF4C49B9F015}Assets/Props/Airport/ATCPanel_E_01/Data/ATCPanel_E_01_glass.emat"
-    }
-    MaterialAssignClass "{5ECF16C5802D8902}" {
-     SourceMaterial "ConcreteRetainingWall_02_MLod"
-     AssignedMaterial "{9668A21511C6F791}Assets/_SharedData/Decals/Invisible_Material.emat"
-    }
-   }
-   LODFactors {
-    1000 0 0 0 0 0 0 0 0
-   }
-   PixelSizeScale 2
+  Hierarchy "{56D8A3C5A31496BC}" {
   }
-  RigidBody "{5ECF16C5802D8A28}" {
-   ResponseIndex "HugeDestructible"
-   ModelGeometry 1
-   Static 1
+  SCR_EditableDescriptorComponent "{56D8A3C5A31496AC}" {
+   m_EntityType SYSTEM
+   m_UIInfo SCR_EditableEntityUIInfo "{56D8A3C5A31496A4}" {
+    Name "#AR-EditableEntity_RestrictionZoneSmall_Name"
+    Description "#AR-EditableEntity_RestrictionZone_Description"
+    Icon "{1FBE76E25DDFB65C}UI/Textures/Editor/EditableEntities/Systems/EditableEntity_System_ZoneRestriction.edds"
+    IconSetName "System_Default"
+    m_Image "{206781701A8D8991}UI/Textures/EditorPreviews/Auto/Systems/RestrictionZone/E_EditorRestrictionZoneSmall.edds"
+    m_aAuthoredLabels {
+     7
+    }
+   }
+   m_bAutoRegister ALWAYS
+   m_bStatic 1
+   m_Flags 32835
+  }
+  SCR_ZoneRestrictionAreaMeshComponent "{56D8A3C5A31496A1}" {
+   m_vResolution 48
+   m_bStretchMaterial 1
+   m_Material "{788C42E96DB8587C}Assets/Editor/VirtualArea/VirtualArea_01_Danger.emat"
+  }
+  RplComponent "{56D8A3C5A314965D}" {
   }
  }
- coords 113.956 1.73 96.874
- Flags 524291
+ coords 115.181 1 109.43
+ m_fWarnRadius 100
+ m_fZoneRadius 120
+ m_fZoneTeleportedRadius 8000
+ {
+  GenericEntity {
+   components {
+    Hierarchy "{5EC5025412025CAD}" {
+    }
+    SCR_CustomAreaMeshComponent "{5EC5025412025CFA}" {
+     m_vResolution 48
+     m_bStretchMaterial 1
+     m_Material "{034185AE1A11B656}Assets/Editor/VirtualArea/VirtualArea_01_Warning.emat"
+     m_fRadius 80
+    }
+    RplComponent "{5EC5025412025CCE}" {
+    }
+   }
+   coords 0 0 0
+  }
+ }
 }
 Vehicle UAZ452_ambulance1 : "{43C4AF1EEBD001CE}Prefabs/Vehicles/Wheeled/UAZ452/UAZ452_ambulance.et" {
  components {
@@ -136,12 +148,10 @@ Vehicle UAZ452_ambulance1 : "{43C4AF1EEBD001CE}Prefabs/Vehicles/Wheeled/UAZ452/U
  coords 98.432 1 110.79
 }
 Vehicle BTR1 : "{C012BB3488BEA0C2}Prefabs/Vehicles/Wheeled/BTR70/BTR70.et" {
- components {
-  SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
-   m_fVehicleDestroyDamage 13602.9
-  }
- }
- coords 124.554 1 108.128
+ coords 103.995 1 119.845
+}
+SCR_MapMarkerEntity : "{DD74BE2BBAE07192}Prefabs/Markers/MapMarkerEntityBase.et" {
+ coords 124.751 1 177.233
 }
 Vehicle M151A1 : "{F649585ABB3706C4}Prefabs/Vehicles/Wheeled/M151A2/M151A2.et" {
  components {

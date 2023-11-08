@@ -385,11 +385,8 @@ PS_GameModeCoop {
     }
    }
   }
-  SCR_PlayersRestrictionZoneManagerComponent "{5EC5241EC9284CCA}" {
-  }
   SCR_PreGameGameModeStateComponent "{5EA8C9324DF2DCC1}" {
    m_fDuration 0
-   m_bDisableControls 0
   }
   SCR_RespawnSystemComponent "{5E7AE0AF16A4B6CE}" {
    components {
@@ -405,10 +402,6 @@ PS_GameModeCoop {
    m_bEnableRespawn 0
   }
   SCR_ScoringSystemComponent "{5D4CE2498274717A}" {
-   m_aActions {
-    EndGameAction "{5EC27C75D4A5FAE1}" {
-    }
-   }
   }
   SCR_TimeAndWeatherHandlerComponent "{5E7D773A4347DB9E}" {
   }
@@ -419,9 +412,7 @@ PS_GameModeCoop {
   RplComponent "{5D4CE249422E8900}" {
    Streamable Disabled
   }
-  PS_FreezeZoneManager "{5ED11E773A9A1284}" {
-  }
-  SCR_PlayersRestrictionZoneManagerComponent "{5EC502544E627324}" {
+  SCR_PlayersRestrictionZoneManagerComponent "{5EC5241EC9284CCA}" {
   }
  }
  PlayerControllerPrefab "{4E5DAC62A374950F}Prefabs/Characters/Core/DefaultPlayerControllerMP_Coop.et"
@@ -429,7 +420,6 @@ PS_GameModeCoop {
  m_fAutoReloadTime 30
  m_iAvailableReconnectTime -1
  m_bMarkersOnlyOnBriefing 0
- m_bKillRedundantUnits 1
  {
   SCR_FactionManager "5EA8C932C68D400F" : "{4A188E44289B9A50}Prefabs/MP/Managers/Factions/FactionManager_Editor.et" {
    ID "5EA73DB136618AD9"
