@@ -26,6 +26,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	[Attribute("0", uiwidget: UIWidgets.CheckBox, "Remove unused units.", category: WB_GAME_MODE_CATEGORY)]
 	protected bool m_bKillRedundantUnits;
 	
+	[Attribute("30000", UIWidgets.EditBox, "Freeze time", "", category: WB_GAME_MODE_CATEGORY)]
+	int m_iFreezeTime = ;
+	
 	// ------------------------------------------ Events ------------------------------------------
 	override void OnGameStart()
 	{	
@@ -34,6 +37,26 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (RplSession.Mode() != RplMode.Dedicated) {
 			GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.WaitScreen);
 			GetGame().GetInputManager().AddActionListener("OpenLobby", EActionTrigger.DOWN, Action_OpenLobby);
+		}
+	}
+	
+	void removeRestrictedZones()
+	{
+		BaseGameMode gamemode = GetGame().GetGameMode();
+		SCR_PlayersRestrictionZoneManagerComponent restrictionZoneManager = SCR_PlayersRestrictionZoneManagerComponent.Cast(gamemode.FindComponent(SCR_PlayersRestrictionZoneManagerComponent));
+		set<SCR_EditorRestrictionZoneEntity> zones = restrictionZoneManager.GetZones();
+		
+		array<int> playerIds = new array<int>();
+		GetGame().GetPlayerManager().GetPlayers(playerIds);
+		foreach (int playerId : playerIds)
+		{
+			restrictionZoneManager.ResetPlayerZoneData(playerId);
+		}
+		
+		for (int i = 0; i < zones.Count(); i++)
+		{
+			SCR_EditorRestrictionZoneEntity zone = zones.Get(i);
+			SCR_EntityHelper.DeleteEntityAndChildren(zone);
 		}
 	}
 	
@@ -183,6 +206,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 				break;
 			case SCR_EGameModeState.BRIEFING:
 				if (m_bKillRedundantUnits) PS_PlayableManager.GetInstance().KillRedundantUnits();
+				GetGame().GetCallqueue().CallLater(removeRestrictedZones, m_iFreezeTime);
 				PS_PlayableManager.GetInstance().ResetRplStream();
 				StartGameMode();
 				break;

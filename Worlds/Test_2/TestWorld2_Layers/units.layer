@@ -13,7 +13,7 @@ SCR_AIGroup : "{437764899CCFB77B}Prefabs/Groups/OPFOR/Group_USSR_Team_Suppress_P
   PS_GroupCallsignAssigner "{5EC327233DD693FB}" {
   }
  }
- coords 122.559 1 115.886
+ coords 120.993 1 114.544
 }
 SCR_AIGroup : "{9073549836A3B075}Prefabs/Groups/INDFOR/Group_FIA_Team_AT_P.et" {
  coords 124.399 1 152.848
