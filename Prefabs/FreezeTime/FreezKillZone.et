@@ -30,9 +30,9 @@ SCR_EditorRestrictionZoneEntity {
   }
  }
  coords 0 0 0
- m_fWarnRadius 50
- m_fZoneRadius 70
- m_fZoneTeleportedRadius 80
+ m_fWarnRadius 74
+ m_fZoneRadius 114
+ m_fZoneTeleportedRadius 124
  {
   GenericEntity {
    ID "5EC5183A2E8F3FE3"
@@ -45,7 +45,7 @@ SCR_EditorRestrictionZoneEntity {
      m_bFollowTerrain 1
      m_bStretchMaterial 1
      m_Material "{034185AE1A11B656}Assets/Editor/VirtualArea/VirtualArea_01_Warning.emat"
-     m_fRadius 50
+     m_fRadius 74
     }
     RplComponent "{5EC5025412025CCE}" {
     }

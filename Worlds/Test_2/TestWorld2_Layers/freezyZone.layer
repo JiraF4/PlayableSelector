@@ -1,0 +1,16 @@
+SCR_EditorRestrictionZoneEntity : "{D832FD7D4F872977}Prefabs/FreezeTime/FreezKillZone.et" {
+ coords 121.692 1 104.969
+ m_fWarnRadius 15
+ m_fZoneRadius 25
+ m_fZoneTeleportedRadius 35
+ {
+  GenericEntity {
+   ID "5EC5183A2E8F3FE3"
+   components {
+    SCR_CustomAreaMeshComponent "{5EC5025412025CFA}" {
+     m_fRadius 15
+    }
+   }
+  }
+ }
+}
