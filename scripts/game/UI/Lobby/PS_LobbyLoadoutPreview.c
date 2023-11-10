@@ -57,7 +57,7 @@ class PS_LobbyLoadoutPreview : SCR_WLibComponentBase
 	
 	void UpdatePreviewInfo()
 	{
-		ItemPreviewManagerEntity m_PreviewManager = ChimeraWorld.CastFrom(GetGame().GetWorld()).GetItemPreviewManager();
+		ItemPreviewManagerEntity m_PreviewManager = GetGame().GetItemPreviewManager();
 		
 		// Clear all data if playable is null and stop update
 		if (m_playable == null) {

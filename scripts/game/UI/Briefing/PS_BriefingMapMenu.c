@@ -21,8 +21,8 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 	protected Widget m_wGameModeHeader;
 	protected PS_GameModeHeader m_hGameModeHeader;
 	
-	SCR_InputButtonComponent m_bNavigationButtonSwitchMissionDescription;
-	SCR_InputButtonComponent m_bNavigationButtonSwitchVoiceChat;
+	SCR_NavigationButtonComponent m_bNavigationButtonSwitchMissionDescription;
+	SCR_NavigationButtonComponent m_bNavigationButtonSwitchVoiceChat;
 	
 	protected Widget m_wSteps;
 	
@@ -68,8 +68,8 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 		GetGame().GetInputManager().AddActionListener("SwitchMissionDescription", EActionTrigger.DOWN, Action_SwitchMissionDescription);
 		GetGame().GetInputManager().AddActionListener("SwitchVoiceChat", EActionTrigger.DOWN, Action_SwitchVoiceChat);
 		
-		m_bNavigationButtonSwitchMissionDescription = SCR_InputButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationSwitchMissionDescription").FindHandler(SCR_InputButtonComponent));
-		m_bNavigationButtonSwitchVoiceChat = SCR_InputButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationSwitchVoiceChat").FindHandler(SCR_InputButtonComponent));
+		m_bNavigationButtonSwitchMissionDescription = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationSwitchMissionDescription").FindHandler(SCR_NavigationButtonComponent));
+		m_bNavigationButtonSwitchVoiceChat = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationSwitchVoiceChat").FindHandler(SCR_NavigationButtonComponent));
 		
 		m_bNavigationButtonSwitchMissionDescription.m_OnClicked.Insert(Action_SwitchMissionDescription);
 		m_bNavigationButtonSwitchVoiceChat.m_OnClicked.Insert(Action_SwitchVoiceChat);

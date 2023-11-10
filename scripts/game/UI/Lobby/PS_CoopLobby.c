@@ -55,10 +55,10 @@ class PS_CoopLobby: MenuBase
 	protected SCR_ChatPanel m_ChatPanel;
 	
 	// Footer buttons
-	SCR_InputButtonComponent m_bNavigationButtonReady;
-	SCR_InputButtonComponent m_bNavigationButtonChat;
-	SCR_InputButtonComponent m_bNavigationButtonClose;
-	SCR_InputButtonComponent m_bNavigationButtonForceStart;
+	SCR_NavigationButtonComponent m_bNavigationButtonReady;
+	SCR_NavigationButtonComponent m_bNavigationButtonChat;
+	SCR_NavigationButtonComponent m_bNavigationButtonClose;
+	SCR_NavigationButtonComponent m_bNavigationButtonForceStart;
 	
 	// Timer start time, for game launch delay and counter animation
 	int m_iStartTime = 0;
@@ -116,10 +116,10 @@ class PS_CoopLobby: MenuBase
 		m_wChatPanelWidget = GetRootWidget().FindAnyWidget("ChatPanel");
 		m_ChatPanel = SCR_ChatPanel.Cast(m_wChatPanelWidget.FindHandler(SCR_ChatPanel));
 		
-		m_bNavigationButtonReady = SCR_InputButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationStart").FindHandler(SCR_InputButtonComponent));
-		m_bNavigationButtonChat = SCR_InputButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationChat").FindHandler(SCR_InputButtonComponent));
-		m_bNavigationButtonClose = SCR_InputButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationClose").FindHandler(SCR_InputButtonComponent));
-		m_bNavigationButtonForceStart = SCR_InputButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationForceStart").FindHandler(SCR_InputButtonComponent));
+		m_bNavigationButtonReady = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationStart").FindHandler(SCR_NavigationButtonComponent));
+		m_bNavigationButtonChat = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationChat").FindHandler(SCR_NavigationButtonComponent));
+		m_bNavigationButtonClose = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationClose").FindHandler(SCR_NavigationButtonComponent));
+		m_bNavigationButtonForceStart = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationForceStart").FindHandler(SCR_NavigationButtonComponent));
 		
 		m_bPlayersSwitch = SCR_ButtonBaseComponent.Cast(GetRootWidget().FindAnyWidget("PlayersSwitch").FindHandler(SCR_ButtonBaseComponent));
 		m_bVoiceSwitch = SCR_ButtonBaseComponent.Cast(GetRootWidget().FindAnyWidget("VoiceSwitch").FindHandler(SCR_ButtonBaseComponent));

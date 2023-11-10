@@ -16,7 +16,7 @@ class PS_SpectatorMenu: MenuBase
 	protected PS_VoiceChatList m_hVoiceChatList;
 	protected PS_AlivePlayerList m_hAlivePlayerList;
 	
-	SCR_InputButtonComponent m_bNavigationSwitchSpectatorUI;
+	SCR_NavigationButtonComponent m_bNavigationSwitchSpectatorUI;
 
 	protected static void OnShowPlayerList()
 	{
@@ -41,7 +41,7 @@ class PS_SpectatorMenu: MenuBase
 		m_wOverlayFooter = GetRootWidget().FindAnyWidget("OverlayFooter");
 		m_wEarlyAccessRoot = GetRootWidget().FindAnyWidget("EarlyAccessRoot");
 		
-		m_bNavigationSwitchSpectatorUI = SCR_InputButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationSwitchSpectatorUI").FindHandler(SCR_InputButtonComponent));
+		m_bNavigationSwitchSpectatorUI = SCR_NavigationButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationSwitchSpectatorUI").FindHandler(SCR_NavigationButtonComponent));
 		m_bNavigationSwitchSpectatorUI.m_OnClicked.Insert(Action_SwitchSpectatorUI);
 		
 		super.OnMenuOpen();
@@ -80,6 +80,7 @@ class PS_SpectatorMenu: MenuBase
 		if (inputManager)
 		{
 			inputManager.AddActionListener("ShowScoreboard", EActionTrigger.DOWN, OnShowPlayerList);
+			inputManager.AddActionListener("InstantVote", EActionTrigger.DOWN, GetGame().OnInstantVote);
 			inputManager.AddActionListener("MenuOpen", EActionTrigger.DOWN, OpenPauseMenu);
 			inputManager.AddActionListener("ChatToggle", EActionTrigger.DOWN, ChatToggle);
 			inputManager.AddActionListener("VONDirect", EActionTrigger.DOWN, Action_LobbyVoNOn);
@@ -99,6 +100,7 @@ class PS_SpectatorMenu: MenuBase
 		if (inputManager)
 		{
 			inputManager.RemoveActionListener("ShowScoreboard", EActionTrigger.DOWN, OnShowPlayerList);
+			inputManager.RemoveActionListener("InstantVote", EActionTrigger.DOWN, GetGame().OnInstantVote);
 			inputManager.RemoveActionListener("MenuOpen", EActionTrigger.DOWN, OpenPauseMenu);
 			inputManager.RemoveActionListener("ChatToggle", EActionTrigger.DOWN, ChatToggle);
 			inputManager.RemoveActionListener("LobbyVoN", EActionTrigger.DOWN, Action_LobbyVoNOn);
