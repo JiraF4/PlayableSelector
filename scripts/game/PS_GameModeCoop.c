@@ -66,7 +66,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		m_OnPlayerConnected.Invoke(playerId);
 	}
 	
-	override void OnPlayerKilled(int playerId, IEntity player, IEntity killer)
+	protected override void OnPlayerKilled(int playerId, IEntity playerEntity, IEntity killerEntity, notnull Instigator killer)
 	{
 		if (!IsMaster()) return;
 		
