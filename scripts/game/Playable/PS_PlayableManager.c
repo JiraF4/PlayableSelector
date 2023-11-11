@@ -149,6 +149,7 @@ class PS_PlayableManager : ScriptComponent
 		
 		for (int i = 0; i < playables.Count(); i++) {
 			PS_PlayableComponent playable = playables.GetElement(i);
+			if (!playable) continue;
 			int callSign = GetGroupCallsignByPlayable(playable.GetId());
 			bool isInserted = false;
 			for (int s = 0; s < playablesSorted.Count(); s++) {
