@@ -230,6 +230,11 @@ modded class SCR_CallsignGroupComponent
 {
 	void ReAssignGroupCallsign(int company, int platoon, int squad)
 	{		
+		BaseGameMode gameMode = GetGame().GetGameMode();
+		if (!gameMode)
+			return;
+		
+		m_CallsignManager = SCR_CallsignManagerComponent.Cast(gameMode.FindComponent(SCR_CallsignManagerComponent));
 		if (!m_CallsignManager)
 			return;
 		

@@ -39,7 +39,7 @@ class PS_GameModeHeader : ScriptedWidgetComponent
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PlayerController thisPlayerController = GetGame().GetPlayerController();
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
-		m_bButtonAdvance.SetVisible(playerRole == EPlayerRole.ADMINISTRATOR);
+		m_bButtonAdvance.SetVisible(Replication.IsServer());
 	}
 	
 	void Action_Advance(SCR_ButtonBaseComponent button)
@@ -49,7 +49,7 @@ class PS_GameModeHeader : ScriptedWidgetComponent
 		
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
-		if (playerRole != EPlayerRole.ADMINISTRATOR) return;
+		if (playerRole != EPlayerRole.ADMINISTRATOR && !Replication.IsServer()) return;
 		
 		playableController.AdvanceGameState(SCR_EGameModeState.NULL);
 	}

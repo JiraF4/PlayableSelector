@@ -38,6 +38,27 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.WaitScreen);
 			GetGame().GetInputManager().AddActionListener("OpenLobby", EActionTrigger.DOWN, Action_OpenLobby);
 		}
+		
+		GetGame().GetCallqueue().CallLater(AddAdvanceAction, 0, false);
+	}
+	
+	void AddAdvanceAction()
+	{
+		SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
+		ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("adv");
+		invoker.Insert(AdvanceStage_Callback);
+	}
+	
+	void AdvanceStage_Callback(SCR_ChatPanel panel, string data)
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
+		if (playerRole != EPlayerRole.ADMINISTRATOR && !Replication.IsServer()) return;
+		
+		playableController.AdvanceGameState(SCR_EGameModeState.NULL);
 	}
 	
 	void removeRestrictedZones()
