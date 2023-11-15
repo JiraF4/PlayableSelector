@@ -289,6 +289,17 @@ modded class SCR_PlayersRestrictionZoneManagerComponent
 	}
 }
 
+modded class SCR_VehicleWaterPhysicsComponent
+{
+	override void OnPostInit(IEntity owner)
+	{
+		super.OnPostInit(owner);
+		Physics physic = GetOwner().GetPhysics();
+		if (physic) physic.ApplyImpulse("0 1 0");
+	}
+}
+
+
 /*
 // Someone rewrite it please
 modded class SCR_PlayersRestrictionZoneManagerComponent
