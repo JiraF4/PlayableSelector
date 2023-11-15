@@ -41,7 +41,7 @@ class PS_GameModeHeader : ScriptedWidgetComponent
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PlayerController thisPlayerController = GetGame().GetPlayerController();
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
-		m_bButtonAdvance.SetVisible(Replication.IsServer());
+		m_bButtonAdvance.SetVisible(Replication.IsServer() || playerRole == EPlayerRole.ADMINISTRATOR);
 	}
 	
 	void Action_Advance(SCR_ButtonBaseComponent button)
