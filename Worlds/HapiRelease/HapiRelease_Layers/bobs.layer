@@ -1,0 +1,48 @@
+SCR_AIGroup Pilot_Team : "{41F0D95175F5D179}Prefabs/Groups/OPFOR/Group_USSR_SentryTeam_p.et" {
+ components {
+  AIFormationComponent "{507E9DC12F541FE6}" {
+   DefaultFormation "Line"
+  }
+  PS_GroupCallsignAssigner "{5EDEF210C110501A}" {
+   m_iSquadCallsign 2
+  }
+ }
+ coords 4927.3 28.623 11833.156
+ angleY -90
+ m_aUnitPrefabSlots {
+  "{FFE45AFCB29CD014}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_HeliPilot_P.et" "{2B0F3996B07194C4}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_HeliCrew_P.et"
+ }
+}
+Vehicle Mi8MT1 : "{DF5CCB7C0FF049F4}Prefabs/Vehicles/Helicopters/Mi8MT/Mi8MT.et" {
+ coords 4876.041 28.593 11836.341
+ angleY -91.549
+}
+$grp SCR_AIGroup : "{E3545CFEDD312D54}Prefabs/Groups/OPFOR/Group_USSR_RifleSquad_p.et" {
+ VDV_Team_1 {
+  components {
+   AIFormationComponent "{507E9DC12F541FE6}" {
+    DefaultFormation "Line"
+   }
+   PS_GroupCallsignAssigner "{5EDEF212B2C27F67}" {
+   }
+  }
+  coords 4935.812 28.593 11819.677
+  m_aUnitPrefabSlots {
+   "{4D8DA74B43F03CFC}Prefabs/Characters/Factions/OPFOR/USSR_Army/Extra/Character_USSR_SL_Light_P.et" "{C1E04A0DAEC6F626}Prefabs/Characters/Factions/OPFOR/USSR_Army/Extra/Character_USSR_AR_Light_P.et" "{8D17DADE8136336D}Prefabs/Characters/Factions/OPFOR/USSR_Army/Extra/Character_USSR_GL_Light_P.et" "{2CB3BA62728EA97F}Prefabs/Characters/Factions/OPFOR/USSR_Army/Extra/Character_USSR_Sharpshooter_Light_P.et" "{330A47946A9CD333}Prefabs/Characters/Factions/OPFOR/USSR_Army/Extra/Character_USSR_Rifleman_Light_P.et" "{330A47946A9CD333}Prefabs/Characters/Factions/OPFOR/USSR_Army/Extra/Character_USSR_Rifleman_Light_P.et"
+  }
+ }
+ VDV_Team_2 {
+  components {
+   AIFormationComponent "{507E9DC12F541FE6}" {
+    DefaultFormation "Line"
+   }
+   PS_GroupCallsignAssigner "{5EDEF212868ABCBD}" {
+    m_iSquadCallsign 1
+   }
+  }
+  coords 4936.25 28.594 11813.37
+  m_aUnitPrefabSlots {
+   "{4D8DA74B43F03CFC}Prefabs/Characters/Factions/OPFOR/USSR_Army/Extra/Character_USSR_SL_Light_P.et" "{C1E04A0DAEC6F626}Prefabs/Characters/Factions/OPFOR/USSR_Army/Extra/Character_USSR_AR_Light_P.et" "{8D17DADE8136336D}Prefabs/Characters/Factions/OPFOR/USSR_Army/Extra/Character_USSR_GL_Light_P.et" "{2CB3BA62728EA97F}Prefabs/Characters/Factions/OPFOR/USSR_Army/Extra/Character_USSR_Sharpshooter_Light_P.et" "{330A47946A9CD333}Prefabs/Characters/Factions/OPFOR/USSR_Army/Extra/Character_USSR_Rifleman_Light_P.et" "{330A47946A9CD333}Prefabs/Characters/Factions/OPFOR/USSR_Army/Extra/Character_USSR_Rifleman_Light_P.et"
+  }
+ }
+}
