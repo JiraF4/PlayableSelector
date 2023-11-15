@@ -1,0 +1,11 @@
+SCR_GameModeEditor : "{DA3986AF1B5032B7}Prefabs/MP/Modes/Editor/GameMode_Editor_Full.et" {
+ ID "56B2B479C6B96951"
+ components {
+  PS_MissionDescriptionManager "{5EDF002A25B6A176}" {
+  }
+  PS_PlayableManager "{5EDF002A2236304F}" {
+  }
+  PS_VoNRoomsManager "{5EDF002A20327D97}" {
+  }
+ }
+}
