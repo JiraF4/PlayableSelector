@@ -39,6 +39,14 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			GetGame().GetInputManager().AddActionListener("OpenLobby", EActionTrigger.DOWN, Action_OpenLobby);
 		}
 		
+		
+		array<string> aSaves = new array<string>();
+		GetGame().GetBackendApi().GetStorage().AvailableSaves(aSaves);
+		foreach (string save : aSaves)
+		{
+			Print(save);
+		}
+		
 		GetGame().GetCallqueue().CallLater(AddAdvanceAction, 0, false);
 	}
 	
@@ -47,6 +55,14 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
 		ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("adv");
 		invoker.Insert(AdvanceStage_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("lom");
+		invoker.Insert(LoadMap_Callback);
+	}
+	
+	void LoadMap_Callback(SCR_ChatPanel panel, string data)
+	{
+		SCR_SaveManagerCore saveManager = GetGame().GetSaveManager();
+		saveManager.RestartAndLoad(data);
 	}
 	
 	void AdvanceStage_Callback(SCR_ChatPanel panel, string data)
