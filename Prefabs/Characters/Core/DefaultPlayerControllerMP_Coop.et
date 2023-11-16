@@ -1,6 +1,8 @@
 SCR_PlayerController : "{6E2BB64764E3BE9B}Prefabs/Characters/Core/DefaultPlayerController.et" {
  ID "1A9BA6BEFA06E3B1"
  components {
+  PS_BigMsgSenderComponent "{5ED8E740ACEA83B2}" {
+  }
   PS_PlayableControllerComponent "{5EA7206115A83E71}" {
   }
   RadioHandlerComponent "{5D50F641B0525AAD}" {

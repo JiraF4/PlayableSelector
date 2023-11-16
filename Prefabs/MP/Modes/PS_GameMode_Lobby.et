@@ -1,0 +1,47 @@
+PS_GameModeCoop : "{0F307326459A1395}Prefabs/MP/Modes/GameMode_Base.et" {
+ ID "56B2B479C6B96951"
+ components {
+  PS_MissionDescriptionManager "{5ED908871838D082}" {
+  }
+  PS_PlayableManager "{5ED9088791FB410D}" {
+  }
+  PS_VoNRoomsManager "{5ED9088704AA8ACB}" {
+  }
+  SCR_PreGameGameModeStateComponent "{5ED9056CE8168166}" {
+   m_fDuration 0
+  }
+  SCR_SaveLoadComponent "{5EDF3A19778A160E}" {
+   m_Struct SCR_MissionStruct "{5EDF3A19778A1611}" {
+    m_Struct0 SCR_EditorStruct "{5EDF3A19778A1613}" {
+     m_AttributeList SCR_EditorAttributeList "{590C7881C296FA7D}" : "{F3D6C6D25642352C}Configs/Editor/AttributeLists/Edit.conf" {
+     }
+    }
+   }
+   m_iAutosavePeriod 600
+ }
+  SCR_RespawnSystemComponent "{56B2B4793051E7C9}" {
+   m_SpawnLogic SCR_SpawnLogic "{5EDEF21803756CBB}" {
+   }
+  }
+ }
+ coords 0 0 0
+ PlayerControllerPrefab "{4E5DAC62A374950F}Prefabs/Characters/Core/DefaultPlayerControllerMP_Coop.et"
+ {
+  SCR_FactionManager "5EA8C932C68D400F" : "{4A188E44289B9A50}Prefabs/MP/Managers/Factions/FactionManager_Editor.et" {
+   ID "5ED9088735FF2D8B"
+   coords 3.654 -1.112 -0.996
+  }
+  RadioManagerEntity : "{B8E09FAB91C4ECCD}Prefabs/Radio/RadioManager.et" {
+   ID "5ED9088735FF2DEE"
+   coords 3.654 -1.112 -0.996
+  }
+  ScriptedChatEntity : "{F69BC912AC8236F9}Prefabs/MP/ScriptedChatEntity.et" {
+   ID "5ED9088735FF2DC2"
+   coords 3.654 -1.112 -0.996
+  }
+  ItemPreviewManagerEntity "5E7AE0AB2109F297" : "{AB5D049A3AB43FC0}Prefabs/World/Game/ItemPreviewManager_PS.et" {
+   ID "5ED9088735FF2DD5"
+   coords 3.654 -1.112 -0.996
+  }
+ }
+}

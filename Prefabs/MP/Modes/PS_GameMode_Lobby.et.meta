@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_GameMode_Lobby.et"
+ Configurations {
+  EntityTemplateResourceClass PC {
+  }
+  EntityTemplateResourceClass XBOX_ONE : PC {
+  }
+  EntityTemplateResourceClass XBOX_SERIES : PC {
+  }
+  EntityTemplateResourceClass PS4 : PC {
+  }
+  EntityTemplateResourceClass HEADLESS : PC {
+  }
+ }
+}

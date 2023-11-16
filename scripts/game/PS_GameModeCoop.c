@@ -38,6 +38,43 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.WaitScreen);
 			GetGame().GetInputManager().AddActionListener("OpenLobby", EActionTrigger.DOWN, Action_OpenLobby);
 		}
+		
+		
+		array<string> aSaves = new array<string>();
+		GetGame().GetBackendApi().GetStorage().AvailableSaves(aSaves);
+		foreach (string save : aSaves)
+		{
+			Print(save);
+		}
+		
+		GetGame().GetCallqueue().CallLater(AddAdvanceAction, 0, false);
+	}
+	
+	void AddAdvanceAction()
+	{
+		SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
+		ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("adv");
+		invoker.Insert(AdvanceStage_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("lom");
+		invoker.Insert(LoadMap_Callback);
+	}
+	
+	void LoadMap_Callback(SCR_ChatPanel panel, string data)
+	{
+		SCR_SaveManagerCore saveManager = GetGame().GetSaveManager();
+		saveManager.RestartAndLoad(data);
+	}
+	
+	void AdvanceStage_Callback(SCR_ChatPanel panel, string data)
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
+		if (playerRole != EPlayerRole.ADMINISTRATOR && !Replication.IsServer()) return;
+		
+		playableController.AdvanceGameState(SCR_EGameModeState.NULL);
 	}
 	
 	void removeRestrictedZones()
@@ -66,7 +103,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		m_OnPlayerConnected.Invoke(playerId);
 	}
 	
-	override void OnPlayerKilled(int playerId, IEntity player, IEntity killer)
+	protected override void OnPlayerKilled(int playerId, IEntity playerEntity, IEntity killerEntity, notnull Instigator killer)
 	{
 		if (!IsMaster()) return;
 		

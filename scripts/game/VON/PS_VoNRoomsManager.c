@@ -69,7 +69,8 @@ class PS_VoNRoomsManager : ScriptComponent
 		if (factionKey == "") roomName = ""; // Global has only one room
 		
 		int roomId = GetOrCreateRoomWithFaction(factionKey, roomName);
-		vector roomPosition = GetOrCreateRoomPosition(roomId);
+		FactionManager factionManager = GetGame().GetFactionManager();
+		vector roomPosition = GetOrCreateRoomPosition(roomId, factionManager.GetFactionIndex(factionManager.GetFactionByKey(factionKey)));
 		
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
@@ -108,6 +109,8 @@ class PS_VoNRoomsManager : ScriptComponent
 	{
 		if (!Replication.IsServer()) return -1;
 		
+		
+		
 		if (!m_mVoiceRoomsFromName.Contains(roomKey)) {
 			// Create on every client
 			RPC_CreateRoom(m_iLastRoomId, roomKey);
@@ -130,11 +133,11 @@ class PS_VoNRoomsManager : ScriptComponent
 	}
 	
 	// Create position if new roomId provided
-	vector GetOrCreateRoomPosition(int roomId)
+	vector GetOrCreateRoomPosition(int roomId, int factionIndex)
 	{
 		if (!m_mRoomOffsets.Contains(roomId)) {
 			lastOffset = lastOffset + lastOffset.Right;
-			m_mRoomOffsets[roomId] = roomInitialPosition + lastOffset * 100;
+			m_mRoomOffsets[roomId] = roomInitialPosition + lastOffset * 100 + vector.Forward * (float) factionIndex * 5000;
 		}
 		return m_mRoomOffsets[roomId];
 	}

@@ -239,17 +239,19 @@ class PS_PlayableManager : ScriptComponent
 	{
 		m_aPlayables.Remove(playableId);
 	}
-	
 	void UpdateGroupCallsigne(RplId playableId, SCR_AIGroup playerGroup, SCR_AIGroup playableGroup)
 	{
 		// Assign manualy set callsigns
 		PS_GroupCallsignAssigner groupCallsignAssigner = PS_GroupCallsignAssigner.Cast(playableGroup.FindComponent(PS_GroupCallsignAssigner));
-		if (groupCallsignAssigner) {
 			int company, platoon, squad;
+		if (groupCallsignAssigner) {
 			groupCallsignAssigner.GetCallsign(company, platoon, squad);
-			SCR_CallsignGroupComponent callsignComponent = SCR_CallsignGroupComponent.Cast(playerGroup.FindComponent(SCR_CallsignGroupComponent));
-			callsignComponent.ReAssignGroupCallsign(company, platoon, squad);
+		} else {
+			SCR_CallsignGroupComponent callsignComponent = SCR_CallsignGroupComponent.Cast(playableGroup.FindComponent(SCR_CallsignGroupComponent));
+			callsignComponent.GetCallsignIndexes(company, platoon, squad);
 		}
+		SCR_CallsignGroupComponent callsignComponent = SCR_CallsignGroupComponent.Cast(playerGroup.FindComponent(SCR_CallsignGroupComponent));
+		callsignComponent.ReAssignGroupCallsign(company, platoon, squad);
 		
 		GetGame().GetCallqueue().CallLater(RegisterGroupName, 0, false, playableId, playerGroup)
 	}
