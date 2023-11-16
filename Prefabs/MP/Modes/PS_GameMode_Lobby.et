@@ -23,6 +23,7 @@ PS_GameModeCoop : "{0F307326459A1395}Prefabs/MP/Modes/GameMode_Base.et" {
    m_SpawnLogic SCR_SpawnLogic "{5EDEF21803756CBB}" {
    }
   }
+ }
  coords 0 0 0
  PlayerControllerPrefab "{4E5DAC62A374950F}Prefabs/Characters/Core/DefaultPlayerControllerMP_Coop.et"
  {
