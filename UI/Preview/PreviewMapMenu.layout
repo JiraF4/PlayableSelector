@@ -120,7 +120,7 @@ FrameWidgetClass {
         Padding 20 0 0 0
        }
        components {
-        SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
+        SCR_InputButtonComponent "{5474BAC5DBCF129A}" {
          m_sLabel "Chat toggle"
          m_sActionName "ChatToggle"
         }
@@ -139,7 +139,7 @@ FrameWidgetClass {
        Slot LayoutSlot "{5EBC737F18D3A970}" {
        }
        components {
-        SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
+        SCR_InputButtonComponent "{5474BAC5DBCF129A}" {
          m_sLabel "#PS-Briefing_VoiceChat"
          m_sActionName "VONDirect"
         }
@@ -150,7 +150,7 @@ FrameWidgetClass {
        Slot LayoutSlot "{5EBC737F18D3A94E}" {
        }
        components {
-        SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
+        SCR_InputButtonComponent "{5474BAC5DBCF129A}" {
          m_sLabel "#PS-Briefing_GroupVoiceChat"
          m_sActionName "VONChannel"
         }

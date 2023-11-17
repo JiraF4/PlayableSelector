@@ -10,6 +10,10 @@ PS_GameModeCoop : "{0F307326459A1395}Prefabs/MP/Modes/GameMode_Base.et" {
   SCR_PreGameGameModeStateComponent "{5ED9056CE8168166}" {
    m_fDuration 0
   }
+  SCR_RespawnSystemComponent "{56B2B4793051E7C9}" {
+   m_SpawnLogic SCR_SpawnLogic "{5EDEF21803756CBB}" {
+   }
+  }
   SCR_SaveLoadComponent "{5EDF3A19778A160E}" {
    m_Struct SCR_MissionStruct "{5EDF3A19778A1611}" {
     m_Struct0 SCR_EditorStruct "{5EDF3A19778A1613}" {
@@ -18,10 +22,8 @@ PS_GameModeCoop : "{0F307326459A1395}Prefabs/MP/Modes/GameMode_Base.et" {
     }
    }
    m_iAutosavePeriod 600
- }
-  SCR_RespawnSystemComponent "{56B2B4793051E7C9}" {
-   m_SpawnLogic SCR_SpawnLogic "{5EDEF21803756CBB}" {
-   }
+  }
+  SCR_TimeAndWeatherHandlerComponent "{5EE3229927D4D2F5}" {
   }
  }
  coords 0 0 0

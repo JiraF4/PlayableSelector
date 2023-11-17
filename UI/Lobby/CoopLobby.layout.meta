@@ -1,5 +1,5 @@
 MetaFileClass {
- Name "{9DECCA625D345B35}UI/layouts/Menus/PlayMenu/CoopLobby.layout"
+ Name "{9DECCA625D345B35}UI/Lobby/CoopLobby.layout"
  Configurations {
   LayoutResourceClass PC {
   }
