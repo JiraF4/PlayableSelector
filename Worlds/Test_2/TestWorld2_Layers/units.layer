@@ -1,12 +1,8 @@
-SCR_AIGroup : "{8435E75BAC42E0FF}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P_Exp.et" {
- components {
-  PS_GroupCallsignAssigner "{5EE0FA6D058E6E42}" {
-  }
- }
- coords 126.928 1 146.783
- m_aUnitPrefabSlots {
-  "{094747C4F8BE9F9F}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_TL_P.et" "{7E44CF4FB58F8FF7}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_AR_P.et" "{A47EB499090D69B9}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_GL_P.et" "{C262DC827577226C}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_LAT_P.et"
- }
+SCR_AIGroup : "{126BE8C46FA39581}Prefabs/Groups/INDFOR/Group_FIA_FireTeam_P.et" {
+ coords 96.153 1 143.999
+}
+SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.et" {
+ coords 124.656 1 140.44
 }
 SCR_AIGroup : "{9C7902A055DDA271}Prefabs/Groups/OPFOR/Group_USSR_FireGroup_P.et" {
  components {
