@@ -7,6 +7,9 @@ PS_GameModeCoop : "{0F307326459A1395}Prefabs/MP/Modes/GameMode_Base.et" {
   }
   PS_VoNRoomsManager "{5ED9088704AA8ACB}" {
   }
+  SCR_NametagConfigComponent "{571AA9E54FC9210D}" {
+   m_sConfigPath "{09F7AAA14A642683}Configs/NameTags/NametagFriendlies.conf"
+  }
   SCR_PreGameGameModeStateComponent "{5ED9056CE8168166}" {
    m_fDuration 0
   }
@@ -24,6 +27,9 @@ PS_GameModeCoop : "{0F307326459A1395}Prefabs/MP/Modes/GameMode_Base.et" {
    m_iAutosavePeriod 600
   }
   SCR_TimeAndWeatherHandlerComponent "{5EE3229927D4D2F5}" {
+  }
+  SCR_VotingManagerComponent "{5650BB6B6089393A}" {
+   Enabled 0
   }
  }
  coords 0 0 0
