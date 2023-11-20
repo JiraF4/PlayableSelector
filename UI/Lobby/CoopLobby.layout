@@ -480,7 +480,7 @@ FrameWidgetClass {
              }
              "Is Visible" 0
              components {
-              SCR_InputButtonComponent "{5474BAC5DBCF129A}" {
+              SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
                m_sLabel "Navigation left"
                m_sActionName "MenuTabLeft"
               }
@@ -495,7 +495,7 @@ FrameWidgetClass {
              }
              "Is Visible" 0
              components {
-              SCR_InputButtonComponent "{5474BAC5DBCF129A}" {
+              SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
                m_sLabel "Navigation Right"
               }
              }
@@ -508,7 +508,7 @@ FrameWidgetClass {
               Padding 15 15 15 15
              }
              components {
-              SCR_InputButtonComponent "{5474BAC5DBCF129A}" {
+              SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
                m_sLabel "#PS-Lobby_OpenMenu"
                m_sActionName "MenuBack"
               }
@@ -522,7 +522,7 @@ FrameWidgetClass {
               Padding 15 15 15 15
              }
              components {
-              SCR_InputButtonComponent "{5474BAC5DBCF129A}" {
+              SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
                m_sLabel "#PS-Lobby_Chat"
                m_sActionName "ChatToggle"
               }
@@ -536,7 +536,7 @@ FrameWidgetClass {
               Padding 15 15 15 15
              }
              components {
-              SCR_InputButtonComponent "{5474BAC5DBCF129A}" {
+              SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
                m_sLabel "#PS-Lobby_VoiceChat"
                m_sActionName "VONDirect"
               }
@@ -550,7 +550,7 @@ FrameWidgetClass {
               Padding 15 15 15 15
              }
              components {
-              SCR_InputButtonComponent "{5474BAC5DBCF129A}" {
+              SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
                m_sLabel "#PS-Lobby_VoiceChatFaction"
                m_sActionName "VONChannel"
               }
@@ -573,7 +573,7 @@ FrameWidgetClass {
               Padding 15 15 15 15
              }
              components {
-              SCR_InputButtonComponent "{5474BAC5DBCF129A}" {
+              SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
                m_sLabel "#PS-Lobby_Ready"
                m_sActionName "LobbyReady"
               }
@@ -588,7 +588,7 @@ FrameWidgetClass {
              }
              "Is Visible" 0
              components {
-              SCR_InputButtonComponent "{5474BAC5DBCF129A}" {
+              SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
                m_sLabel "#PS-Lobby_ForceStart"
                m_sActionName "MenuRestart"
                m_bFadeAction 1

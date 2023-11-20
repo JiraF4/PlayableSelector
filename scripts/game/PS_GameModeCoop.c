@@ -31,18 +31,12 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	
 	// ------------------------------------------ Events ------------------------------------------
 	override void OnGameStart()
-	{	
+	{
 		super.OnGameStart();
 		
 		if (RplSession.Mode() != RplMode.Dedicated) {
 			GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.WaitScreen);
 			GetGame().GetInputManager().AddActionListener("OpenLobby", EActionTrigger.DOWN, Action_OpenLobby);
-		}
-		array<string> aSaves = new array<string>();
-		GetGame().GetBackendApi().GetStorage().AvailableSaves(aSaves);
-		foreach (string save : aSaves)
-		{
-			Print(save);
 		}
 		
 		GetGame().GetCallqueue().CallLater(AddAdvanceAction, 0, false);
@@ -59,8 +53,14 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	
 	void LoadMap_Callback(SCR_ChatPanel panel, string data)
 	{
-		SCR_SaveManagerCore saveManager = GetGame().GetSaveManager();
-		saveManager.RestartAndLoad(data);
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
+		if (playerRole != EPlayerRole.ADMINISTRATOR && !Replication.IsServer()) return;
+		
+		playableController.LoadMission(data);
 	}
 	
 	void AdvanceStage_Callback(SCR_ChatPanel panel, string data)
@@ -80,6 +80,10 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		BaseGameMode gamemode = GetGame().GetGameMode();
 		SCR_PlayersRestrictionZoneManagerComponent restrictionZoneManager = SCR_PlayersRestrictionZoneManagerComponent.Cast(gamemode.FindComponent(SCR_PlayersRestrictionZoneManagerComponent));
 		set<SCR_EditorRestrictionZoneEntity> zones = restrictionZoneManager.GetZones();
+		
+		SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
+		ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("smsg");
+		invoker.Invoke(null, "Freeze time end");
 		
 		array<int> playerIds = new array<int>();
 		GetGame().GetPlayerManager().GetPlayers(playerIds);

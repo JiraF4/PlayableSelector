@@ -1,5 +1,5 @@
 MetaFileClass {
- Name "{BDC0570417BFB1EA}UI/layouts/Editor/SpectatorMenu.layout"
+ Name "{BDC0570417BFB1EA}UI/Spectator/SpectatorMenu.layout"
  Configurations {
   LayoutResourceClass PC {
   }

@@ -199,7 +199,7 @@ FrameWidgetClass {
         Padding 20 0 0 0
        }
        components {
-        SCR_InputButtonComponent "{5474BAC5DBCF129A}" {
+        SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
          m_sActionName "ChatToggle"
          m_sLabel "Chat toggle"
         }
@@ -210,7 +210,7 @@ FrameWidgetClass {
        Slot LayoutSlot "{5EBC737F18D3A94E}" {
        }
        components {
-        SCR_InputButtonComponent "{5474BAC5DBCF129A}" {
+        SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
          m_sActionName "VONChannel"
          m_sLabel "#PS-Spectator_VoiceChat"
         }
@@ -221,7 +221,7 @@ FrameWidgetClass {
        Slot LayoutSlot "{5EBC737F18D3A94E}" {
        }
        components {
-        SCR_InputButtonComponent "{5474BAC5DBCF129A}" {
+        SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
          m_sActionName "SwitchSpectatorUI"
          m_sLabel "#PS-Spectator_SwitchSpectatorUI"
         }

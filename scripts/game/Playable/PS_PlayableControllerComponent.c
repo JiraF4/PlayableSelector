@@ -43,7 +43,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 				GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.BriefingMapMenu);
 				break;
 			case SCR_EGameModeState.GAME:
-				ApplyPlayable();
+				ApplyPlayable(GetGame().GetPlayerController().GetPlayerId());
 				GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.FadeToGame);
 				break;
 			case SCR_EGameModeState.POSTGAME:
@@ -62,7 +62,18 @@ class PS_PlayableControllerComponent : ScriptComponent
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		gameMode.AdvanceGameState(state);
 	}
-
+	
+	void LoadMission(string missionName)
+	{
+		Rpc(RPC_LoadMission, missionName);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void RPC_LoadMission(string missionName)
+	{
+		SCR_SaveManagerCore saveManager = GetGame().GetSaveManager();
+		saveManager.RestartAndLoad(missionName);
+	}
+	
 	// ------ FactionLock ------
 	void FactionLockSwitch()
 	{
@@ -315,19 +326,19 @@ class PS_PlayableControllerComponent : ScriptComponent
 	}
 	
 	// Get controll on selected playable entity
-	void ApplyPlayable()
+	void ApplyPlayable(int playerId)
 	{
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		if (playableManager.GetPlayableByPlayer(thisPlayerController.GetPlayerId()) == RplId.Invalid()) SwitchToObserver(null);
-		Rpc(RPC_ApplyPlayable)
+		if (playerId == thisPlayerController.GetPlayerId() && playableManager.GetPlayableByPlayer(playerId) == RplId.Invalid()) SwitchToObserver(null);
+		Rpc(RPC_ApplyPlayable, playerId)
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
-	protected void RPC_ApplyPlayable()
+	protected void RPC_ApplyPlayable(int playerId)
 	{
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		PlayerController playerController = PlayerController.Cast(GetOwner());
-		playableManager.ApplyPlayable(playerController.GetPlayerId());
+		playableManager.ApplyPlayable(playerId);
 	}
 	
 	void UnpinPlayer(int playerId)

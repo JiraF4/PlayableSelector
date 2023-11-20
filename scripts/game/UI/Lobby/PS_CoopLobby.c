@@ -67,6 +67,7 @@ class PS_CoopLobby: MenuBase
 	// playables count on revious update, for exclude redunant widget recreation
 	int m_iOldPlayablesCount = 0;
 	int m_iOldPlayersCount = 0;
+	FactionKey m_sCurrentPlayerFaction = "";
 	FactionKey m_sOldPlayerFactionKey = "";
 	
 	// Global options
@@ -191,11 +192,6 @@ class PS_CoopLobby: MenuBase
 	
 	override void OnMenuClose()
 	{
-		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		PlayerController playerController = GetGame().GetPlayerController();
-		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-		playableManager.SetPlayerState(playerController.GetPlayerId(), PS_EPlayableControllerState.Playing);
-		
 		GetGame().GetInputManager().RemoveActionListener("MenuSelect", EActionTrigger.DOWN, Action_Ready);
 		GetGame().GetInputManager().RemoveActionListener("ChatToggle", EActionTrigger.DOWN, Action_ChatOpen);
 		GetGame().GetInputManager().RemoveActionListener("LobbyGameForceStart", EActionTrigger.DOWN, Action_ForceStart);
@@ -650,6 +646,12 @@ class PS_CoopLobby: MenuBase
 		playableController.SetPlayerState(m_iCurrentPlayer, PS_EPlayableControllerState.NotReady);
 		playableController.SetPlayerPlayable(m_iCurrentPlayer, handler.GetPlayableId());
 		playableController.MoveToVoNRoom(m_iCurrentPlayer, playableManager.GetPlayerFactionKey(playerController.GetPlayerId()), playableManager.GetGroupCallsignByPlayable(handler.GetPlayableId()).ToString());
+		
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if (m_iCurrentPlayer != playerController.GetPlayerId() && gameMode.GetState() == SCR_EGameModeState.GAME)
+		{
+			playableController.ApplyPlayable(m_iCurrentPlayer);
+		}
 	}	
 	
 	// -------------------- Extra lobby functions --------------------

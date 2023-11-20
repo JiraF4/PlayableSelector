@@ -74,6 +74,11 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 		m_bNavigationButtonSwitchMissionDescription.m_OnClicked.Insert(Action_SwitchMissionDescription);
 		m_bNavigationButtonSwitchVoiceChat.m_OnClicked.Insert(Action_SwitchVoiceChat);
 		
+		
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		if (playableManager.GetPlayableByPlayer(playerController.GetPlayerId()) != RplId.Invalid())
+			GetRootWidget().FindAnyWidget("PlayableNotSelectedOverlay").SetVisible(false);
+		
 		GetGame().GetCallqueue().CallLater(UpdateCycle, 0);
 	}
 	void OpenMap()

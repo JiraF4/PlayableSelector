@@ -9,7 +9,7 @@ class PS_SpectatorPlayableIcon : SCR_ScriptedWidgetComponent
 	protected float m_fMaxIconDistance = 800.0;
 	protected float m_fMinIconDistance = 10.0;
 	protected float m_fMaxIconSize = 64.0;
-	protected float m_fMinIconSize = 8.0;
+	protected float m_fMinIconSize = 4.0;
 	protected float m_fMaxIconOpacity = 0.8;
 	protected float m_fMinIconOpacity = 0.3;
 	
@@ -38,7 +38,7 @@ class PS_SpectatorPlayableIcon : SCR_ScriptedWidgetComponent
 		SCR_ChimeraCharacter chimeraCharacter = SCR_ChimeraCharacter.Cast(playableComponent.GetOwner());
 		m_eChimeraCharacter = chimeraCharacter;
 		
-		w_iBodyBoneIndex = m_eChimeraCharacter.GetBoneIndex("Spine3");
+		w_iBodyBoneIndex = m_eChimeraCharacter.GetAnimation().GetBoneIndex("Spine3");
 		SCR_Faction faction = SCR_Faction.Cast(chimeraCharacter.GetFaction());
 		if (faction)
 		{
@@ -50,7 +50,7 @@ class PS_SpectatorPlayableIcon : SCR_ScriptedWidgetComponent
 	void Update()
 	{
 		vector boneMat[4];
-		m_eChimeraCharacter.GetBoneMatrix(w_iBodyBoneIndex, boneMat);
+		m_eChimeraCharacter.GetAnimation().GetBoneMatrix(w_iBodyBoneIndex, boneMat);
 		vector iconWorldPosition = m_eChimeraCharacter.GetOrigin() + boneMat[3];
 		vector cameraPosition = GetGame().GetCameraManager().CurrentCamera().GetOrigin();
 		float distanceToPlayable = vector.Distance(cameraPosition, iconWorldPosition);

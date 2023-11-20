@@ -17,7 +17,10 @@ class PS_GameModeHeader : ScriptedWidgetComponent
 		m_bButtonInGame = PS_GameModeHeaderButton.Cast(w.FindAnyWidget("InGameButton").FindHandler(PS_GameModeHeaderButton));
 		m_bButtonDebriefing = PS_GameModeHeaderButton.Cast(w.FindAnyWidget("DebriefingButton").FindHandler(PS_GameModeHeaderButton));	
 		
+		m_bButtonPreview.m_OnClicked.Insert(Action_PreviewOpen);
 		m_bButtonLobby.m_OnClicked.Insert(Action_LobbyOpen);
+		m_bButtonBriefing.m_OnClicked.Insert(Action_BriefingOpen);
+		m_bButtonInGame.m_OnClicked.Insert(Action_InGameOpen);
 		m_bButtonBriefing.m_OnClicked.Insert(Action_BriefingOpen);
 		
 		m_bButtonAdvance = PS_GameModeHeaderButton.Cast(w.FindAnyWidget("AdvanceButton").FindHandler(PS_GameModeHeaderButton));
@@ -57,6 +60,10 @@ class PS_GameModeHeader : ScriptedWidgetComponent
 	}
 	void Action_PreviewOpen(SCR_ButtonBaseComponent button)
 	{
+		SCR_BaseGameMode gameMode = SCR_BaseGameMode.Cast(GetGame().GetGameMode());
+		SCR_EGameModeState state = gameMode.GetState();
+		if (state != SCR_EGameModeState.PREGAME) return;
+		
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		playableController.SwitchToMenu(SCR_EGameModeState.PREGAME);
@@ -75,7 +82,7 @@ class PS_GameModeHeader : ScriptedWidgetComponent
 	{
 		SCR_BaseGameMode gameMode = SCR_BaseGameMode.Cast(GetGame().GetGameMode());
 		SCR_EGameModeState state = gameMode.GetState();
-		if (state != SCR_EGameModeState.SLOTSELECTION) return;
+		if (state != SCR_EGameModeState.SLOTSELECTION && state != SCR_EGameModeState.BRIEFING) return;
 		
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
@@ -83,12 +90,20 @@ class PS_GameModeHeader : ScriptedWidgetComponent
 	}
 	void Action_InGameOpen(SCR_ButtonBaseComponent button)
 	{
+		SCR_BaseGameMode gameMode = SCR_BaseGameMode.Cast(GetGame().GetGameMode());
+		SCR_EGameModeState state = gameMode.GetState();
+		if (state != SCR_EGameModeState.GAME) return;
+		
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		playableController.SwitchToMenu(SCR_EGameModeState.GAME);
 	}
 	void Action_DebriefingOpen(SCR_ButtonBaseComponent button)
 	{
+		SCR_BaseGameMode gameMode = SCR_BaseGameMode.Cast(GetGame().GetGameMode());
+		SCR_EGameModeState state = gameMode.GetState();
+		if (state != SCR_EGameModeState.POSTGAME) return;
+		
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		playableController.SwitchToMenu(SCR_EGameModeState.POSTGAME);

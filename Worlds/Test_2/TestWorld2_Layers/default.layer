@@ -12,6 +12,7 @@ TagManager : "{2FA9E172CAB1857A}Prefabs/MP/Managers/TagManager.et" {
 }
 PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_GameMode_Lobby.et" {
  m_bCanOpenLobbyInGame 1
+ m_iFreezeTime 5000
  {
   SCR_FactionManager "5EE8949D46B62B0A" {
    ID "5ED9088735FF2D8B"

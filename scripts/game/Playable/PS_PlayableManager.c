@@ -314,7 +314,6 @@ class PS_PlayableManager : ScriptComponent
 		m_playablePlayers[PlayableId] = playerId;
 	}
 	
-	
 	void SetPlayerPlayable(int playerId, RplId PlayableId)
 	{
 		RPC_SetPlayerPlayable(playerId, PlayableId);

@@ -118,17 +118,9 @@ FrameWidgetClass {
         Padding 20 0 0 0
        }
        components {
-        SCR_InputButtonComponent "{5474BAC5DBCF129A}" {
-         m_sLabel "Chat toggle"
+        SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
          m_sActionName "ChatToggle"
-        }
-       }
-       {
-        SizeLayoutWidgetClass "{5562AD435529FB36}" {
-         Prefab "{5562AD435529FB36}"
-         Slot ButtonWidgetSlot "{5562AD435529FB5D}" {
-          Padding 20 0 0 0
-         }
+         m_sLabel "Chat toggle"
         }
        }
       }
@@ -137,9 +129,9 @@ FrameWidgetClass {
        Slot LayoutSlot "{5EBC737F18D3A970}" {
        }
        components {
-        SCR_InputButtonComponent "{5474BAC5DBCF129A}" {
-         m_sLabel "#PS-Briefing_VoiceChat"
+        SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
          m_sActionName "VONDirect"
+         m_sLabel "#PS-Briefing_VoiceChat"
         }
        }
       }
@@ -148,9 +140,9 @@ FrameWidgetClass {
        Slot LayoutSlot "{5EBC737F18D3A94E}" {
        }
        components {
-        SCR_InputButtonComponent "{5474BAC5DBCF129A}" {
-         m_sLabel "#PS-Briefing_GroupVoiceChat"
+        SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
          m_sActionName "VONChannel"
+         m_sLabel "#PS-Briefing_GroupVoiceChat"
         }
        }
       }
@@ -159,9 +151,9 @@ FrameWidgetClass {
        Slot LayoutSlot "{5EBC737F18D3A94E}" {
        }
        components {
-        SCR_InputButtonComponent "{5474BAC5DBCF129A}" {
-         m_sLabel "#PS-Briefing_MissionDescriptionHide"
+        SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
          m_sActionName "SwitchMissionDescription"
+         m_sLabel "#PS-Briefing_MissionDescriptionHide"
         }
        }
       }
@@ -170,9 +162,9 @@ FrameWidgetClass {
        Slot LayoutSlot "{5EBC737F18D3A94E}" {
        }
        components {
-        SCR_InputButtonComponent "{5474BAC5DBCF129A}" {
-         m_sLabel "#PS-Briefing_VoiceChatHide"
+        SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
          m_sActionName "SwitchVoiceChat"
+         m_sLabel "#PS-Briefing_VoiceChatHide"
         }
        }
       }
@@ -378,7 +370,7 @@ FrameWidgetClass {
     OffsetBottom -320
    }
   }
-  FrameWidgetClass "{5EAF5687FB22DB6F}" : "{B7A765172F0BD4D9}UI/layouts/Common/EarlyAccessWatermark.layout" {
+  FrameWidgetClass "{5EAF5687FB22DB6F}" : "{B7A765172F0BD4D9}UI/layouts/Common/GameVersionWatermark.layout" {
    Name "EarlyAccessRoot"
    Slot FrameWidgetSlot "{5CEE96372B5D270B}" {
     PositionX 0
@@ -391,6 +383,68 @@ FrameWidgetClass {
     OffsetBottom 0
    }
    Opacity 1
+  }
+  OverlayWidgetClass "{5EE8EEC3453BB107}" {
+   Name "PlayableNotSelectedOverlay"
+   Slot FrameWidgetSlot "{5EBE323890A56A10}" {
+    Anchor 0 0 1 0
+    PositionX 0
+    OffsetLeft 0
+    PositionY 110.3
+    OffsetTop 110.3
+    SizeX 0
+    OffsetRight 0
+    SizeY 1080
+    OffsetBottom -1190.3
+    SizeToContent 1
+   }
+   Clipping False
+   {
+    FrameWidgetClass "{5EE8EEC276DBC65E}" {
+     Name "Frame0"
+     Slot OverlayWidgetSlot "{5EE8EEC276DBC641}" {
+     }
+     {
+      PanelWidgetClass "{5EE8EEC2EE36B624}" {
+       Name "Overlay0"
+       Slot FrameWidgetSlot "{5EE8EEC276CA4EF4}" {
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX 534.441
+        OffsetRight -534.441
+        SizeY 226.533
+        OffsetBottom -226.533
+        SizeToContent 1
+       }
+       Color 0 0 0 0.6
+       style full
+       {
+        VerticalLayoutWidgetClass "{5EE8EEC3453BB10B}" {
+         Name "HorizontalLayout"
+         Slot FrameWidgetSlot "{5EE8EEC25FBC84D3}" {
+          SizeToContent 1
+         }
+         {
+          TextWidgetClass "{5EE8EEC3453BB10C}" {
+           Name "TextPlayableNotSelected"
+           Slot LayoutSlot "{5EE8EEC5B1C05AFD}" {
+            HorizontalAlign 1
+            VerticalAlign 1
+            Padding 4 4 4 4
+           }
+           Text "#PS-Briefing_PlayableNotSelected"
+           "Font Size" 52
+           "Min Font Size" 52
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   }
   }
  }
 }
