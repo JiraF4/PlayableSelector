@@ -1,6 +1,9 @@
 SCR_ChimeraCharacter : "{FE65E8C60C751352}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_PL.et" {
  ID "520EC961A090B1EE"
  components {
+  AIControlComponent "{520EA1D2DB109F34}" {
+   Agenttemplate "{97ECE4FEC16D7EB4}AI/AIAgents/SCR_PlayerAIAgent.et"
+  }
   PS_PlayableComponent "{5E61249E5A65C9C6}" {
    m_name "#AR-Role_PlatoonLeader"
   }

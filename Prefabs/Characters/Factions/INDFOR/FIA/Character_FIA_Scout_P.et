@@ -1,6 +1,9 @@
 SCR_ChimeraCharacter : "{BF1E43FF39AA526B}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_Scout.et" {
  ID "520EC961A090B1EE"
  components {
+  AIControlComponent "{520EA1D2DB109F34}" {
+   Agenttemplate "{97ECE4FEC16D7EB4}AI/AIAgents/SCR_PlayerAIAgent.et"
+  }
   PS_PlayableComponent "{5E61249E38B4AF6B}" {
    m_name "#AR-Role_Scout"
   }

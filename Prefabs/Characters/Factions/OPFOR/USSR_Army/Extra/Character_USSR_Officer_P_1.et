@@ -12,6 +12,9 @@ SCR_ChimeraCharacter : "{5117311FB822FD1F}Prefabs/Characters/Factions/OPFOR/USSR
     }
    }
   }
+  AIControlComponent "{520EA1D2DB109F34}" {
+   Agenttemplate "{97ECE4FEC16D7EB4}AI/AIAgents/SCR_PlayerAIAgent.et"
+  }
   PS_PlayableComponent "{5EBAD31E6F2E024C}" {
    m_name "#AR-Role_Officer"
   }
