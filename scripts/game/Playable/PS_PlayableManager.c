@@ -95,6 +95,21 @@ class PS_PlayableManager : ScriptComponent
 		GetGame().GetCallqueue().CallLater(ChangeGroup, 0, false, playerId, playableId);
 	}
 	
+	// Force ApplyPlayable through menu switch
+	void ForceSwitch(int playerId)
+	{
+		Rpc(RPC_ForceSwitch, playerId);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RPC_ForceSwitch(int playerId)
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		if (playerController.GetPlayerId() != playerId) return;
+		
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		playableController.SwitchToMenu(SCR_EGameModeState.GAME);
+	}
+	
 	void ChangeGroup(int playerId, RplId playableId)
 	{
 		PlayerManager playerManager = GetGame().GetPlayerManager();

@@ -650,7 +650,7 @@ class PS_CoopLobby: MenuBase
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		if (m_iCurrentPlayer != playerController.GetPlayerId() && gameMode.GetState() == SCR_EGameModeState.GAME)
 		{
-			playableController.ApplyPlayable(m_iCurrentPlayer);
+			playableController.ForceSwitch(m_iCurrentPlayer);
 		}
 	}	
 	

@@ -43,7 +43,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 				GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.BriefingMapMenu);
 				break;
 			case SCR_EGameModeState.GAME:
-				ApplyPlayable(GetGame().GetPlayerController().GetPlayerId());
+				ApplyPlayable();
 				GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.FadeToGame);
 				break;
 			case SCR_EGameModeState.POSTGAME:
@@ -130,6 +130,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		{
 			SwitchToObserver(from);
 		}
+		if (!vonTo) SwitchFromObserver();
 	}
 	
 	// Yes every frame, just don't look at it.
@@ -325,20 +326,33 @@ class PS_PlayableControllerComponent : ScriptComponent
 			gameMode.StartGameMode();
 	}
 	
+	void ForceSwitch(int playerId)
+	{
+		Rpc(RPC_ForceSwitch, playerId);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void RPC_ForceSwitch(int playerId)
+	{
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		playableManager.ForceSwitch(playerId)
+	}
+	
 	// Get controll on selected playable entity
-	void ApplyPlayable(int playerId)
+	void ApplyPlayable()
 	{
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		if (playerId == thisPlayerController.GetPlayerId() && playableManager.GetPlayableByPlayer(playerId) == RplId.Invalid()) SwitchToObserver(null);
-		Rpc(RPC_ApplyPlayable, playerId)
+		if (playableManager.GetPlayableByPlayer(thisPlayerController.GetPlayerId()) == RplId.Invalid()) SwitchToObserver(null);
+		Rpc(RPC_ApplyPlayable);
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
-	protected void RPC_ApplyPlayable(int playerId)
+	protected void RPC_ApplyPlayable()
 	{
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		PlayerController playerController = PlayerController.Cast(GetOwner());
-		playableManager.ApplyPlayable(playerId);
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		playableManager.ApplyPlayable(playerController.GetPlayerId());
+		SwitchToMenu(SCR_EGameModeState.GAME);
 	}
 	
 	void UnpinPlayer(int playerId)
