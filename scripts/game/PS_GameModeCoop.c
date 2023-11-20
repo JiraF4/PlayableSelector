@@ -38,8 +38,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.WaitScreen);
 			GetGame().GetInputManager().AddActionListener("OpenLobby", EActionTrigger.DOWN, Action_OpenLobby);
 		}
-		
-		
 		array<string> aSaves = new array<string>();
 		GetGame().GetBackendApi().GetStorage().AvailableSaves(aSaves);
 		foreach (string save : aSaves)

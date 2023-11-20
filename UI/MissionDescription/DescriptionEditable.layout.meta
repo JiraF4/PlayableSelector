@@ -1,5 +1,5 @@
 MetaFileClass {
- Name "{52CA8FF5F56C6F31}UI/layouts/Map/ManualMapMarkerBase.layout"
+ Name "{41DAF7B7061DC0BC}UI/MissionDescriptionTemplates/DescriptionEditable.layout"
  Configurations {
   LayoutResourceClass PC {
   }
