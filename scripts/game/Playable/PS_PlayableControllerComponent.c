@@ -352,7 +352,6 @@ class PS_PlayableControllerComponent : ScriptComponent
 		PlayerController playerController = PlayerController.Cast(GetOwner());
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		playableManager.ApplyPlayable(playerController.GetPlayerId());
-		SwitchToMenu(SCR_EGameModeState.GAME);
 	}
 	
 	void UnpinPlayer(int playerId)
