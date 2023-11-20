@@ -33,7 +33,7 @@ class PS_PlayableComponent : ScriptComponent
 	void ResetRplStream()
 	{
 		RplComponent rpl = RplComponent.Cast(GetOwner().FindComponent(RplComponent));
-		rpl.EnableStreaming(true);
+		//rpl.EnableStreaming(true);
 	}
 	
 	void ~PS_PlayableComponent()
