@@ -1,6 +1,9 @@
 SCR_ChimeraCharacter : "{AB9726163EC1BD81}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Medic.et" {
  ID "51FAD317FC20EC1B"
  components {
+  AIControlComponent "{520EA1D2DB109F34}" {
+   Agenttemplate "{97ECE4FEC16D7EB4}AI/AIAgents/SCR_PlayerAIAgent.et"
+  }
   PS_PlayableComponent "{5E61249EDE9B8F20}" {
    m_name "#AR-Role_Medic"
   }

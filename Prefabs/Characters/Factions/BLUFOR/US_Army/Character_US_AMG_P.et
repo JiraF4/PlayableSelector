@@ -1,6 +1,9 @@
 SCR_ChimeraCharacter : "{6058AB54781A0C52}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_AMG.et" {
  ID "522AAC66D0A2C0DC"
  components {
+  AIControlComponent "{520EA1D2DB109F34}" {
+   Agenttemplate "{97ECE4FEC16D7EB4}AI/AIAgents/SCR_PlayerAIAgent.et"
+  }
   PS_PlayableComponent "{5E61249C9F3F7645}" {
    m_name "#AR-Role_AssistantMachineGunner"
   }
