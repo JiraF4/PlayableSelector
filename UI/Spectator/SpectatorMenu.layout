@@ -6,6 +6,21 @@ FrameWidgetClass {
    Slot FrameWidgetSlot "{5D4881250D202DF3}" {
    }
   }
+  FrameWidgetClass "{5EE8949BDE5C93EE}" {
+   Name "IconsFrame"
+   Slot FrameWidgetSlot "{5EE8949BDE5C93C5}" {
+    Anchor 0 0 1 1
+    PositionX 0
+    OffsetLeft 0
+    PositionY 0
+    OffsetTop 0
+    SizeX 0
+    OffsetRight 0
+    SizeY 0
+    OffsetBottom 0
+   }
+   Clipping True
+  }
   FrameWidgetClass "{5EB701CDC06E16AD}" : "{35DB604900C55B98}UI/VoiceChat/VoiceChatFrame.layout" {
    Name "VoiceChatFrame"
    Slot FrameWidgetSlot "{5EB701CDC06E1686}" {
@@ -19,7 +34,6 @@ FrameWidgetClass {
     SizeY 640
     OffsetBottom -320
    }
-   "Z Order" -10
    {
     ImageWidgetClass "{5EB2900030AFF403}" {
      Prefab "{5EB2900030AFF403}"
@@ -144,7 +158,7 @@ FrameWidgetClass {
     }
    }
   }
-  FrameWidgetClass "{5EB701CD498F59EC}" : "{B7A765172F0BD4D9}UI/layouts/Common/EarlyAccessWatermark.layout" {
+  FrameWidgetClass "{5EB701CD498F59EC}" : "{B7A765172F0BD4D9}UI/layouts/Common/GameVersionWatermark.layout" {
    Name "EarlyAccessRoot"
    Slot FrameWidgetSlot "{5CEE96372B5D270B}" {
     PositionX -49.712
@@ -186,16 +200,8 @@ FrameWidgetClass {
        }
        components {
         SCR_InputButtonComponent "{5474BAC5DBCF129A}" {
-         m_sLabel "Chat toggle"
          m_sActionName "ChatToggle"
-        }
-       }
-       {
-        SizeLayoutWidgetClass "{5562AD435529FB36}" {
-         Prefab "{5562AD435529FB36}"
-         Slot ButtonWidgetSlot "{5562AD435529FB5D}" {
-          Padding 20 0 0 0
-         }
+         m_sLabel "Chat toggle"
         }
        }
       }
@@ -205,8 +211,8 @@ FrameWidgetClass {
        }
        components {
         SCR_InputButtonComponent "{5474BAC5DBCF129A}" {
-         m_sLabel "#PS-Spectator_VoiceChat"
          m_sActionName "VONChannel"
+         m_sLabel "#PS-Spectator_VoiceChat"
         }
        }
       }
@@ -216,8 +222,8 @@ FrameWidgetClass {
        }
        components {
         SCR_InputButtonComponent "{5474BAC5DBCF129A}" {
-         m_sLabel "#PS-Spectator_SwitchSpectatorUI"
          m_sActionName "SwitchSpectatorUI"
+         m_sLabel "#PS-Spectator_SwitchSpectatorUI"
         }
        }
       }

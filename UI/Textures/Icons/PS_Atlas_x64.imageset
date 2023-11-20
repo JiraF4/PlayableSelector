@@ -146,5 +146,11 @@ ImageSetClass {
    Size 64 64
    Flags 0
   }
+  ImageSetDefClass Wounded {
+   Name "Wounded"
+   Pos 1344 64
+   Size 64 64
+   Flags 0
+  }
  }
 }

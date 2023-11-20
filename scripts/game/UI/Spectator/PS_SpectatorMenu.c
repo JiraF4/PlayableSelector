@@ -18,6 +18,16 @@ class PS_SpectatorMenu: MenuBase
 	
 	SCR_InputButtonComponent m_bNavigationSwitchSpectatorUI;
 
+	protected ResourceName m_rPlayableIconPath = "{EE28CD1CBCAED99D}UI/Spectator/SpectatorPlayableIcon.layout";
+	protected FrameWidget m_wIconsFrame;
+	
+	protected ref map<RplId, PS_SpectatorPlayableIcon> m_mIconsList = new map<RplId, PS_SpectatorPlayableIcon>();
+	
+	
+	
+	
+	//string IconsFrame = "IconsFrame";
+	
 	protected static void OnShowPlayerList()
 	{
 		ArmaReforgerScripted.OpenPlayerList();
@@ -40,6 +50,7 @@ class PS_SpectatorMenu: MenuBase
 		m_hAlivePlayerList = PS_AlivePlayerList.Cast(m_wAlivePlayerList.FindHandler(PS_AlivePlayerList));
 		m_wOverlayFooter = GetRootWidget().FindAnyWidget("OverlayFooter");
 		m_wEarlyAccessRoot = GetRootWidget().FindAnyWidget("EarlyAccessRoot");
+		m_wIconsFrame = FrameWidget.Cast(GetRootWidget().FindAnyWidget("IconsFrame"));
 		
 		m_bNavigationSwitchSpectatorUI = SCR_InputButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationSwitchSpectatorUI").FindHandler(SCR_InputButtonComponent));
 		m_bNavigationSwitchSpectatorUI.m_OnClicked.Insert(Action_SwitchSpectatorUI);
@@ -116,7 +127,37 @@ class PS_SpectatorMenu: MenuBase
 		
 		if (m_ChatPanel)
 			m_ChatPanel.OnUpdateChat(tDelta);
+		
+		UpdateIcons();
 		//GetGame().GetInputManager().ActivateContext("SpectatorContext", 1);
+	}
+	
+	void UpdateIcons()
+	{
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance(); 
+		foreach (RplId id, PS_PlayableComponent playableComponent : playableManager.m_aPlayables)
+		{
+			if (!m_mIconsList.Contains(id))
+			{
+				Widget playableMarker = GetGame().GetWorkspace().CreateWidgets(m_rPlayableIconPath, m_wIconsFrame);
+				PS_SpectatorPlayableIcon spectatorPlayableIcon = PS_SpectatorPlayableIcon.Cast(playableMarker.FindHandler(PS_SpectatorPlayableIcon));
+				
+				spectatorPlayableIcon.SetCharacter(playableComponent);
+				
+				m_mIconsList[id] = spectatorPlayableIcon;
+			}
+		}
+		foreach (RplId id, PS_SpectatorPlayableIcon spectatorPlayableIcon : m_mIconsList)
+		{
+			if (playableManager.m_aPlayables.Contains(id))
+			{
+				spectatorPlayableIcon.Update();
+			}
+			else {
+				m_wIconsFrame.RemoveChild(m_mIconsList[id].GetRootWidget());
+				m_mIconsList.Remove(id);
+			}
+		}
 	}
 	
 	void ChatToggle()
@@ -155,12 +196,14 @@ class PS_SpectatorMenu: MenuBase
 			m_wOverlayFooter.SetVisible(false);
 			m_wEarlyAccessRoot.SetVisible(false);
 			m_wAlivePlayerList.SetVisible(false);
+			m_wIconsFrame.SetVisible(false);
 		} else {
 			m_wChat.SetVisible(true);
 			m_wVoiceChatList.SetVisible(true);
 			m_wOverlayFooter.SetVisible(true);
 			m_wEarlyAccessRoot.SetVisible(true);
 			m_wAlivePlayerList.SetVisible(true);
+			m_wIconsFrame.SetVisible(true);
 		}
 	}
 }
