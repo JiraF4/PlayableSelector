@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{DCEEFA8114F6BC36}Worlds/PowerPlantSiege/PowerPlantSiege.ent"
+ Configurations {
+  ENTResourceClass PC {
+  }
+  ENTResourceClass XBOX_ONE : PC {
+  }
+  ENTResourceClass XBOX_SERIES : PC {
+  }
+  ENTResourceClass PS4 : PC {
+  }
+  ENTResourceClass HEADLESS : PC {
+  }
+ }
+}

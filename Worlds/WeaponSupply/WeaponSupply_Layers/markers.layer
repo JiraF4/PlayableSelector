@@ -1,0 +1,35 @@
+$grp PS_ManualMarker {
+ FIA_Camp {
+  coords 11671.354 8.366 2202.079
+  m_sImageSet "{301FC1A2A46D3E0D}UI/Textures/GroupManagement/FlagIcons/GroupFlagsIndfor.imageset"
+  m_sImageSetGlow ""
+  m_sQuadName "Undefined-indfor"
+  m_fWorldSizeWidth 50
+  m_fWorldSizeHeight 35
+  m_sDescription "#AR-Callsign_FIA_Company_0"\
+  "#AR-Callsign_FIA_Company_1"\
+  "#AR-Callsign_FIA_Company_2"\
+  "#AR-Callsign_FIA_Company_3"
+  m_bUseWorldScale 0
+ }
+ FIA_Cave {
+  coords 10631.183 185.961 2441.171
+  m_sImageSet "{301FC1A2A46D3E0D}UI/Textures/GroupManagement/FlagIcons/GroupFlagsIndfor.imageset"
+  m_sImageSetGlow ""
+  m_sQuadName "Undefined-indfor"
+  m_fWorldSizeWidth 50
+  m_fWorldSizeHeight 35
+  m_sDescription "#AR-Callsign_FIA_Company_4"
+  m_bUseWorldScale 0
+ }
+ US_Base {
+  coords 7518.431 166.295 4277.519
+  m_sImageSet "{1228936E5DB30403}UI/Textures/GroupManagement/FlagIcons/GroupFlagsBlufor.imageset"
+  m_sImageSetGlow ""
+  m_sQuadName "Undefined-blufor"
+  m_fWorldSizeWidth 50
+  m_fWorldSizeHeight 35
+  m_sDescription "US Base"
+  m_bUseWorldScale 0
+ }
+}

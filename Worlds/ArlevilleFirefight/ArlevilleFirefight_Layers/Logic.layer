@@ -1,0 +1,58 @@
+$grp SCR_FactionControlTriggerEntity {
+ UsDefend {
+  coords 2779.056 75.245 1651.091
+  TriggerShapeType Sphere
+  SphereRadius 125
+  DrawShape 1
+  PeriodicQueries 1
+  UpdatePeriod 3
+  OnActivate ""\
+  "		SCR_BaseGameMode gameMode = SCR_BaseGameMode.Cast(GetGame().GetGameMode()); // Get the game mode for the end script\""\
+  "	    Faction faction = GetGame().GetFactionManager().GetFactionByKey(\"USSR\"); // Get the winning faction Key\""\
+  "	    int usIndex = GetGame().GetFactionManager().GetFactionIndex(faction); // Get the winning faction key's index\""\
+  "	    gameMode.EndGameMode(SCR_GameModeEndData.CreateSimple(EGameOverTypes.EDITOR_FACTION_VICTORY, -1, usIndex)); // End the mission!\""\
+  "	"
+  m_sOwnerFactionKey "US"
+  m_iRatioMethod "Less than"
+  m_fFriendlyRatioLimit 0.3
+ }
+ UssrLosses {
+  coords 2205.236 145.983 2304.469
+  TriggerShapeType Sphere
+  SphereRadius 2000
+  DrawShape 1
+  PeriodicQueries 1
+  UpdatePeriod 3
+  OnActivate ""\
+  "		SCR_BaseGameMode gameMode = SCR_BaseGameMode.Cast(GetGame().GetGameMode()); // Get the game mode for the end script\""\
+  "	    Faction faction = GetGame().GetFactionManager().GetFactionByKey(\"US\"); // Get the winning faction Key\""\
+  "	    int usIndex = GetGame().GetFactionManager().GetFactionIndex(faction); // Get the winning faction key's index\""\
+  "	    gameMode.EndGameMode(SCR_GameModeEndData.CreateSimple(EGameOverTypes.EDITOR_FACTION_VICTORY, -1, usIndex)); // End the mission!\""\
+  "	"
+  m_sOwnerFactionKey "USSR"
+  m_iRatioMethod "Less than"
+  m_fFriendlyRatioLimit 0.3
+ }
+}
+SCR_PSTimerTriggerEntity TimerToEnd {
+ coords 2773.381 75.65 1630.296
+ UpdatePeriod 3
+ OnActivate ""\
+ "		SCR_BaseGameMode gameMode = SCR_BaseGameMode.Cast(GetGame().GetGameMode()); // Get the game mode for the end script\""\
+ "	    Faction faction = GetGame().GetFactionManager().GetFactionByKey(\"US\"); // Get the winning faction Key\""\
+ "	    int usIndex = GetGame().GetFactionManager().GetFactionIndex(faction); // Get the winning faction key's index\""\
+ "	    gameMode.EndGameMode(SCR_GameModeEndData.CreateSimple(EGameOverTypes.EDITOR_FACTION_VICTORY, -1, usIndex)); // End the mission!\""\
+ "	"
+ m_iTimerValue 4500
+}
+$grp SCR_EditorRestrictionZoneEntity : "{D832FD7D4F872977}Prefabs/FreezeTime/FreezKillZone.et" {
+ {
+  coords 3168.379 3.264 1167.869
+ }
+ {
+  coords 1280.693 37.549 2943.787
+ }
+ SafetyFrezeZone {
+  coords 0 0 0
+ }
+}

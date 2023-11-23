@@ -1,0 +1,250 @@
+$grp SCR_AIGroup : "{126BE8C46FA39581}Prefabs/Groups/INDFOR/Group_FIA_FireTeam_P.et" {
+ {
+  components {
+   AIFormationComponent "{507E9DC12F541FE6}" {
+    DefaultFormation "Line"
+   }
+   PS_GroupCallsignAssigner "{5EE323BD076E5C67}" {
+    m_iCompanyCallsign 2
+    m_iSquadCallsign 2
+   }
+  }
+  coords 11657.854 6.31 2157.998
+  angleY 107.228
+ }
+ {
+  components {
+   AIFormationComponent "{507E9DC12F541FE6}" {
+    DefaultFormation "Line"
+   }
+   PS_GroupCallsignAssigner "{5EE323BD076E5C67}" {
+    m_iCompanyCallsign 2
+    m_iSquadCallsign 3
+   }
+  }
+  coords 11683.248 8.307 2187.759
+  angleY -176.915
+ }
+ {
+  components {
+   AIFormationComponent "{507E9DC12F541FE6}" {
+    DefaultFormation "Line"
+   }
+   PS_GroupCallsignAssigner "{5EE323BD076E5C67}" {
+    m_iCompanyCallsign 2
+    m_iSquadCallsign 1
+   }
+  }
+  coords 11665.561 5.854 2142.558
+  angleY -77.214
+ }
+}
+Vehicle Ural4320_FIA_transport1 : "{16E32C3ABEAFC2C6}Prefabs/Vehicles/Wheeled/Ural4320/Ural4320_FIA_transport.et" {
+ coords 11693.243 7.824 2245.958
+ angleX 0.871
+ angleY -76.773
+ angleZ 0.205
+}
+$grp SCR_AIGroup : "{17C7309FFE4775B0}Prefabs/Groups/INDFOR/Group_FIA_RifleSquad_P.et" {
+ {
+  components {
+   AIFormationComponent "{507E9DC12F541FE6}" {
+    DefaultFormation "Line"
+   }
+   PS_GroupCallsignAssigner "{5EE323BBAF47B846}" {
+    m_iSquadCallsign 1
+   }
+  }
+  coords 11660.244 0.885 2248.667
+  angleY -65.276
+ }
+ {
+  components {
+   AIFormationComponent "{507E9DC12F541FE6}" {
+    DefaultFormation "Line"
+   }
+   PS_GroupCallsignAssigner "{5EE323BBAF47B846}" {
+    m_iSquadCallsign 2
+   }
+  }
+  coords 11683.478 8.297 2238.781
+  angleY -73.124
+ }
+ {
+  components {
+   AIFormationComponent "{507E9DC12F541FE6}" {
+    DefaultFormation "Line"
+   }
+   PS_GroupCallsignAssigner "{5EE323BBAF47B846}" {
+    m_iSquadCallsign 3
+   }
+  }
+  coords 11691.438 8.593 2211.192
+  angleY -83.825
+  m_aUnitPrefabSlots + {
+   "{D45D3F2DCDEFD057}Prefabs/Characters/Factions/INDFOR/FIA/Extra/Character_FIA_Crew_P.et" "{D45D3F2DCDEFD057}Prefabs/Characters/Factions/INDFOR/FIA/Extra/Character_FIA_Crew_P.et"
+  }
+ }
+ {
+  components {
+   AIFormationComponent "{507E9DC12F541FE6}" {
+    DefaultFormation "Line"
+   }
+   PS_GroupCallsignAssigner "{5EE323BBAF47B846}" {
+    m_iCompanyCallsign 4
+   }
+  }
+  coords 10649.347 185.966 2476.669
+  angleY -108.134
+  m_aUnitPrefabSlots {
+   "{5E10F18AF4717622}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_SL_P.et" "{C0C1F1FFD610A6BB}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_RTO_P.et" "{F93D2B11566D65A9}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_Medic_P.et" "{793FBF6474104BA3}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_Scout_P.et" "{BF44997B8982C009}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_Rifleman_P.et" "{BF44997B8982C009}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_Rifleman_P.et"
+  }
+ }
+ {
+  components {
+   AIFormationComponent "{507E9DC12F541FE6}" {
+    DefaultFormation "Line"
+   }
+   PS_GroupCallsignAssigner "{5EE323BBAF47B846}" {
+    m_iCompanyCallsign 4
+    m_iSquadCallsign 1
+   }
+  }
+  coords 10636.315 184.99 2425.522
+  angleY -149.544
+ }
+}
+Vehicle UAZ469_uncovered_CIV_brown1 : "{270F23D61238ABC7}Prefabs/Vehicles/Wheeled/UAZ469/UAZ469_uncovered_CIV_brown.et" {
+ coords 11669.253 6.448 2161.331
+ angleX -1.737
+ angleY -166.099
+ angleZ -0.43
+}
+SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.et" {
+ components {
+  AIFormationComponent "{507E9DC12F541FE6}" {
+   DefaultFormation "Line"
+  }
+  PS_GroupCallsignAssigner "{5EE323B439028DFB}" {
+   m_iPlatoonCallsign 1
+   m_iSquadCallsign 1
+  }
+ }
+ coords 7465.661 164.536 4283.5
+ angleY 99.657
+ m_aUnitPrefabSlots {
+  "{094747C4F8BE9F9F}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_TL_P.et" "{3D67614F24B76051}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Spotter_P.et" "{B452527EA042DFF0}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Sniper_P.et"
+ }
+}
+Vehicle M151A2_M2HB_MERDC1 : "{5168FEA3054D6D15}Prefabs/Vehicles/Wheeled/M151A2/M151A2_M2HB_MERDC.et" {
+ coords 7470.317 164.572 4284.931
+ angleY 97.373
+}
+SCR_AIGroup : "{8298E4105B5A10C0}Prefabs/Groups/INDFOR/Group_FIA_SharpshooterTeam_P.et" {
+ components {
+  AIFormationComponent "{507E9DC12F541FE6}" {
+   DefaultFormation "Line"
+  }
+  PS_GroupCallsignAssigner "{5EE323BDAA5E253A}" {
+   m_iCompanyCallsign 3
+  }
+ }
+ coords 11691.604 7.839 2265.828
+ angleY -122.867
+ m_aUnitPrefabSlots {
+  "{793FBF6474104BA3}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_Scout_P.et" "{C0C1F1FFD610A6BB}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_RTO_P.et" "{950D59E028D3F268}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_Sharpshooter_P.et" "{F93D2B11566D65A9}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_Medic_P.et" "{F93D2B11566D65A9}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_Medic_P.et"
+ }
+}
+SCR_AIGroup : "{9C5DBFC29589C473}Prefabs/Groups/INDFOR/Group_FIA_ReconTeam_P.et" {
+ components {
+  AIFormationComponent "{507E9DC12F541FE6}" {
+   DefaultFormation "Line"
+  }
+  PS_GroupCallsignAssigner "{5EE323BD5DF4ECB9}" {
+   m_iCompanyCallsign 2
+  }
+ }
+ coords 11667.041 4.953 2113.372
+ angleY -85.325
+ m_aUnitPrefabSlots {
+  "{5E10F18AF4717622}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_SL_P.et" "{C0C1F1FFD610A6BB}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_RTO_P.et" "{793FBF6474104BA3}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_Scout_P.et" "{5110200CB0794197}Prefabs/Characters/Factions/INDFOR/FIA/Extra/Character_FIA_Sharpshooter_Light_P.et"
+ }
+}
+Vehicle UAZ469_covered_CIV_red1 : "{A4D16A62B432451A}Prefabs/Vehicles/Wheeled/UAZ469/UAZ469_covered_CIV_red.et" {
+ coords 11660.387 6.071 2152.72
+ angleX -1.98
+ angleY 152.828
+ angleZ 2.021
+}
+GenericEntity : "{A700AD9077074654}Prefabs/Structures/Military/CamoNets/Soviet/CamoNet_Large_Soviet.et" {
+ coords 11702.802 9.086 2219.552
+ angleX 0.108
+ angleY -99.812
+ angleZ -0.015
+}
+Vehicle UAZ469_covered_CIV_VAK1 : "{B2CC137FE424B129}Prefabs/Vehicles/Wheeled/UAZ469/UAZ469_covered_CIV_VAK.et" {
+ coords 11682.709 8.261 2184.309
+ angleX -0.889
+ angleY -83.379
+ angleZ -0.103
+}
+Vehicle BTR70_FIA1 : "{B47110AA1A806556}Prefabs/Vehicles/Wheeled/BTR70/BTR70_FIA.et" {
+ coords 11704.154 8.594 2216.909
+ angleY -92.812
+}
+Vehicle UAZ469_covered_CIV_forest1 : "{B6D330E7E40FE7DD}Prefabs/Vehicles/Wheeled/UAZ469/UAZ469_covered_CIV_forest.et" {
+ coords 11684.672 7.742 2258.975
+ angleX 3.458
+ angleY 173.758
+ angleZ -1.277
+}
+Vehicle Ural4320_FIA_transport_covered1 : "{B70E6D12A8EC2410}Prefabs/Vehicles/Wheeled/Ural4320/Ural4320_FIA_transport_covered.et" {
+ components {
+  SCR_UniversalInventoryStorageComponent "{5916C58171230A92}" {
+   MultiSlots {
+    MultiSlotConfiguration "{5EE323A18954AACE}" {
+     SlotTemplate InventoryStorageSlot Bandages {
+      Prefab "{D6EF54367CECE1D9}Prefabs/Weapons/Explosives/Mine_TM62M/Mine_TM62M.et"
+     }
+     NumSlots 10
+    }
+   }
+  }
+ }
+ coords 11668.146 1.019 2270.61
+ angleX -0.857
+ angleY -163.254
+ angleZ -0.258
+}
+Vehicle UAZ469_covered_CIV_blue1 : "{C8B16ABCA57679A2}Prefabs/Vehicles/Wheeled/UAZ469/UAZ469_covered_CIV_blue.et" {
+ coords 11663.416 5.499 2127.902
+ angleX -0.867
+ angleY -165.677
+ angleZ -0.221
+}
+SCR_AIGroup : "{CA73F9230999408B}Prefabs/Groups/INDFOR/Group_FIA_PlatoonHQ_P.et" {
+ components {
+  AIFormationComponent "{507E9DC12F541FE6}" {
+   DefaultFormation "Line"
+  }
+  PS_GroupCallsignAssigner "{5EE323BC484DCFB6}" {
+  }
+ }
+ coords 11673.678 1.092 2285.058
+ angleY -87.624
+ m_aUnitPrefabSlots + {
+  "{5110200CB0794197}Prefabs/Characters/Factions/INDFOR/FIA/Extra/Character_FIA_Sharpshooter_Light_P.et"
+ }
+}
+Vehicle Ural4320_transport_covered_CIV_blue1 : "{F66EAD0D2016B6BA}Prefabs/Vehicles/Wheeled/Ural4320/Ural4320_transport_covered_CIV_blue.et" {
+ coords 10641.41 148.524 2319.823
+ angleX 0.273
+ angleY 102.89
+ angleZ 2.816
+}
+Vehicle UAZ469_FIA1 : "{F7E9AA0C813EABDA}Prefabs/Vehicles/Wheeled/UAZ469/UAZ469_FIA.et" {
+ coords 11670.023 1 2288.589
+ angleX 0.883
+ angleY 170.376
+ angleZ -0.15
+}

@@ -1,0 +1,24 @@
+GenericEntity : "{0511E95F422061BB}Prefabs/Props/Recreation/Camp/TentSmall_02/TentSmall_02_blue.et" {
+ coords 3252.496 114.155 5385.38
+ angleY -158.966
+}
+$grp StaticModelEntity : "{48A04E0A139BB167}Prefabs/Structures/Military/Camps/TentSmallFIA_01/TentSmallFIA_01.et" {
+ {
+  coords 3257.584 113.975 5384.083
+  angleY -152.441
+ }
+ {
+  coords 3247.042 114.239 5375.817
+  angleY 37.081
+ }
+}
+GenericEntity : "{908E3B090C2438E9}Prefabs/Props/Recreation/Camp/TentSmall_03/TentSmall_03_white.et" {
+ coords 3262.417 113.773 5374.012
+ angleY -50.223
+}
+GenericEntity : "{9E026C6D62171AF3}Prefabs/Props/Recreation/Camp/TentBig_01/TentBig_01_blue.et" {
+ coords 3253.598 114.087 5374.584
+ angleX 1.724
+ angleY 3.956
+ angleZ 1.016
+}

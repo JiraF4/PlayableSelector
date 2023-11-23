@@ -1,0 +1,48 @@
+$grp SCR_FactionControlTriggerEntity {
+ FIADead {
+  coords 5785.834 4.563 9762.048
+  TriggerShapeType "Oriented Bounding Box"
+  SphereRadius 30
+  BoxMaxs 50 50 50
+  DrawShape 1
+  TriggerActivationType "First change"
+  PeriodicQueries 1
+  UpdatePeriod 3
+  OnActivate ""\
+  "		SCR_BaseGameMode gameMode = SCR_BaseGameMode.Cast(GetGame().GetGameMode()); // Get the game mode for the end script\""\
+  "	    Faction faction = GetGame().GetFactionManager().GetFactionByKey(\"US\"); // Get the winning faction Key\""\
+  "	    int usIndex = GetGame().GetFactionManager().GetFactionIndex(faction); // Get the winning faction key's index\""\
+  "	    gameMode.EndGameMode(SCR_GameModeEndData.CreateSimple(EGameOverTypes.EDITOR_FACTION_VICTORY, -1, usIndex)); // End the mission!\""\
+  "	"
+  m_sOwnerFactionKey "FIA"
+  m_fFriendlyRatioLimit 0
+ }
+ USDead {
+  coords 5828.755 4.563 9797.17
+  TriggerShapeType Sphere
+  SphereRadius 500
+  DrawShape 1
+  TriggerActivationType "First change"
+  PeriodicQueries 1
+  UpdatePeriod 3
+  OnActivate ""\
+  "		SCR_BaseGameMode gameMode = SCR_BaseGameMode.Cast(GetGame().GetGameMode()); // Get the game mode for the end script\""\
+  "	    Faction faction = GetGame().GetFactionManager().GetFactionByKey(\"FIA\"); // Get the winning faction Key\""\
+  "	    int usIndex = GetGame().GetFactionManager().GetFactionIndex(faction); // Get the winning faction key's index\""\
+  "	    gameMode.EndGameMode(SCR_GameModeEndData.CreateSimple(EGameOverTypes.EDITOR_FACTION_VICTORY, -1, usIndex)); // End the mission!\""\
+  "	"
+  m_sOwnerFactionKey "US"
+  m_fFriendlyRatioLimit 0
+ }
+}
+SCR_PSTimerTriggerEntity TimerToEnd {
+ coords 5836.117 4.631 9827.759
+ UpdatePeriod 3
+ OnActivate ""\
+ "		SCR_BaseGameMode gameMode = SCR_BaseGameMode.Cast(GetGame().GetGameMode()); // Get the game mode for the end script\""\
+ "	    Faction faction = GetGame().GetFactionManager().GetFactionByKey(\"FIA\"); // Get the winning faction Key\""\
+ "	    int usIndex = GetGame().GetFactionManager().GetFactionIndex(faction); // Get the winning faction key's index\""\
+ "	    gameMode.EndGameMode(SCR_GameModeEndData.CreateSimple(EGameOverTypes.EDITOR_FACTION_VICTORY, -1, usIndex)); // End the mission!\""\
+ "	"
+ m_iTimerValue 420
+}

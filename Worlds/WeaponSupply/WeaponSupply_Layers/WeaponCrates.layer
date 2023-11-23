@@ -1,0 +1,59 @@
+$grp GenericEntity : "{7D39683D0F8EDB59}Prefabs/Props/Military/MilitaryCrates/CrateStack_01/Dst/CrateStack_01_Dst_3_dark.et" {
+ {
+  components {
+   SCR_DestructionMultiPhaseComponent "{5624A88D86EFE8BA}" {
+    m_DestroySpawnObjects {
+     SCR_PrefabSpawnable "{5EE323A0CDADD0F3}" {
+      m_Prefabs {
+       "{6BB2F747B4896E02}Prefabs/Weapons/Warheads/Explosions/Explosion_AmmoRack_Small.et"
+      }
+     }
+    }
+   }
+  }
+  coords 10643.049 185.952 2500.134
+ }
+ {
+  components {
+   SCR_DestructionMultiPhaseComponent "{5624A88D86EFE8BA}" {
+    m_DestroySpawnObjects {
+     SCR_PrefabSpawnable "{5EE323A0CDADD0F3}" {
+      m_Prefabs {
+       "{6BB2F747B4896E02}Prefabs/Weapons/Warheads/Explosions/Explosion_AmmoRack_Small.et"
+      }
+     }
+    }
+   }
+  }
+  coords 10653.522 185.937 2475.193
+ }
+ {
+  components {
+   SCR_DestructionMultiPhaseComponent "{5624A88D86EFE8BA}" {
+    m_DestroySpawnObjects {
+     SCR_PrefabSpawnable "{5EE323A0CDADD0F3}" {
+      m_Prefabs {
+       "{6BB2F747B4896E02}Prefabs/Weapons/Warheads/Explosions/Explosion_AmmoRack_Small.et"
+      }
+     }
+    }
+   }
+  }
+  coords 11652.517 1.289 2257.086
+  angleY 115.028
+ }
+ {
+  components {
+   SCR_DestructionMultiPhaseComponent "{5624A88D86EFE8BA}" {
+    m_DestroySpawnObjects {
+     SCR_PrefabSpawnable "{5EE323A0CDADD0F3}" {
+      m_Prefabs {
+       "{6BB2F747B4896E02}Prefabs/Weapons/Warheads/Explosions/Explosion_AmmoRack_Small.et"
+      }
+     }
+    }
+   }
+  }
+  coords 11696.457 12.501 2236.15
+ }
+}

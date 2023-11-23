@@ -1,0 +1,65 @@
+$grp SCR_AIGroup : "{E3545CFEDD312D54}Prefabs/Groups/OPFOR/Group_USSR_RifleSquad_p.et" {
+ {
+  components {
+   AIFormationComponent "{507E9DC12F541FE6}" {
+    DefaultFormation "Line"
+   }
+   PS_GroupCallsignAssigner "{5ED0FED614D7BB5C}" {
+    m_iCompanyCallsign 2
+    m_iSquadCallsign 2
+   }
+  }
+  coords 1270.317 38 2920.718
+ }
+ {
+  components {
+   AIFormationComponent "{507E9DC12F541FE6}" {
+    DefaultFormation "Line"
+   }
+   PS_GroupCallsignAssigner "{5ED0FED60312D2E1}" {
+    m_iCompanyCallsign 2
+   }
+  }
+  coords 1273.286 37.414 2949.749
+  angleY 66.778
+  m_aUnitPrefabSlots + {
+   "{19CCD8504848310C}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Crew_P.et" "{19CCD8504848310C}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Crew_P.et"
+  }
+ }
+ {
+  components {
+   AIFormationComponent "{507E9DC12F541FE6}" {
+    DefaultFormation "Line"
+   }
+   PS_GroupCallsignAssigner "{5ED0FED60A727399}" {
+    m_iCompanyCallsign 2
+    m_iSquadCallsign 1
+   }
+  }
+  coords 1268.276 37.469 2938.616
+  angleY 64.441
+ }
+}
+SCR_AIGroup : "{E98CEB8BE757C8A5}Prefabs/Groups/OPFOR/Group_USSR_MachineGunTeam_P.et" {
+ components {
+  AIFormationComponent "{507E9DC12F541FE6}" {
+   DefaultFormation "Line"
+  }
+  PS_GroupCallsignAssigner "{5ED0FED61D368C07}" {
+   m_iCompanyCallsign 2
+   m_iSquadCallsign 3
+  }
+ }
+ coords 1285.862 37.969 2920.028
+}
+SCR_AIGroup : "{EAF551923DF4E024}Prefabs/Groups/OPFOR/Group_USSR_MedicalSection_P.et" {
+ components {
+  AIFormationComponent "{507E9DC12F541FE6}" {
+   DefaultFormation "Line"
+  }
+  PS_GroupCallsignAssigner "{5ED0FED618C6DB86}" {
+   m_iCompanyCallsign 3
+  }
+ }
+ coords 1290.558 38 2927.595
+}

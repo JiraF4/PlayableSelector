@@ -1,0 +1,38 @@
+SCR_AIWorld : "{70CCCF16487C927F}Prefabs/AI/SCR_AIWorld_Eden.et" {
+}
+PerceptionManager PerceptionManager1 : "{028DAEAD63E056BE}Prefabs/World/Game/PerceptionManager.et" {
+}
+TagManager : "{2FA9E172CAB1857A}Prefabs/MP/Managers/TagManager.et" {
+}
+PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_GameMode_Lobby.et" {
+ coords 11486.944 0 10872.976
+ m_iAvailableReconnectTime -1
+ m_bKillRedundantUnits 1
+ m_iFreezeTime 180000
+}
+HitRegistrationManager HitRegManager1 : "{0EDA3D48791120DD}Prefabs/MP/HitRegManager.et" {
+}
+$grp SCR_EditorRestrictionZoneEntity : "{D832FD7D4F872977}Prefabs/FreezeTime/FreezKillZone.et" {
+ {
+  coords 11488.384 2.373 10908.199
+ }
+ {
+  coords 11417.474 63.823 11139.696
+  m_fWarnRadius 14
+  m_fZoneRadius 24
+  m_fZoneTeleportedRadius 34
+  {
+   GenericEntity {
+    ID "5EC5183A2E8F3FE3"
+    components {
+     SCR_CustomAreaMeshComponent "{5EC5025412025CFA}" {
+      m_fRadius 14
+     }
+    }
+   }
+  }
+ }
+ {
+  coords 10648.876 2.844 11826.266
+ }
+}

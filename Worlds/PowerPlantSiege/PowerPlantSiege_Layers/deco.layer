@@ -1,0 +1,50 @@
+GenericEntity : "{2B24356C351A2538}Prefabs/Props/Wrecks/M113_wreck.et" {
+ coords 5833.235 7.885 9886.932
+ angleY 160.519
+ {
+  DecalEntity : "{D1D104EBCB9C5E2D}Prefabs/Decals/Miscellaneous/Decal_Damage_Burnt_02.et" {
+   coords -0.574 -0.014 0.003
+   angleX -89.98
+   angleY 19.481
+   angleZ 146.449
+   scale 10
+  }
+ }
+}
+GameEntity : "{50E6A3845C9F20FD}Prefabs/Props/Military/Camps/LanternMilitary_US_01.et" {
+ coords 5808.208 13.638 9787.651
+}
+GenericEntity : "{B85D81962A3F85BA}Prefabs/Props/Fabric/Flags/Flag_1_2_Everon_01.et" {
+ coords 5823.069 20.93 9791.276
+ angleY 143.805
+}
+$grp GenericEntity : "{F29A05EBA7063E7C}Prefabs/Props/Military/Sandbags/Sandbag_01_wall_solid_plastic.et" {
+ {
+  coords 5909.661 10.405 9874.689
+  angleY 24.941
+ }
+ {
+  coords 5904.89 10.106 9876.972
+  angleY 37.85
+ }
+ {
+  coords 5907.121 10.081 9875.562
+  angleY 24.941
+ }
+ {
+  coords 5912.04 10.317 9873.486
+  angleY 24.941
+ }
+ {
+  coords 5899.546 9.889 9879.237
+  angleY 24.941
+ }
+ {
+  coords 5901.219 10.408 9875.7
+  angleY 24.941
+ }
+ {
+  coords 5914.448 10.306 9872.388
+  angleY 24.941
+ }
+}

@@ -1,0 +1,45 @@
+Vehicle M923A1_transport_covered_MERDC1 : "{04BDACC0BB83284E}Prefabs/Vehicles/Wheeled/M923A1/M923A1_transport_covered_MERDC.et" {
+ components {
+  SCR_UniversalInventoryStorageComponent "{5916C580F1DA28BB}" {
+   MultiSlots {
+    MultiSlotConfiguration "{5EB0060CE2CF6195}" {
+     SlotTemplate InventoryStorageSlot LAW_in_Truck {
+      Prefab "{9C5C20FB0E01E64F}Prefabs/Weapons/Launchers/M72/Launcher_M72A3.et"
+     }
+     NumSlots 2
+    }
+   }
+   m_aSlotsToShow {
+   }
+  }
+  SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+   m_fVehicleDestroyDamage 11360.7
+  }
+ }
+ coords 3159.873 4.431 1189.659
+ angleX 2.546
+ angleY -18.436
+ angleZ -0.848
+}
+Vehicle M997_maxi_ambulance_MERDC1 : "{3B1EB924602C7A07}Prefabs/Vehicles/Wheeled/M998/M997_maxi_ambulance_MERDC.et" {
+ components {
+  SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+   m_fVehicleDestroyDamage 12910.7
+  }
+ }
+ coords 3164.086 3.989 1179.373
+ angleX 1.975
+ angleY -17.365
+ angleZ 0.32
+}
+Vehicle M151A2_transport_MERDC1 : "{94DE32169691AC34}Prefabs/Vehicles/Wheeled/M151A2/M151A2_transport_MERDC.et" {
+ components {
+  SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
+   m_fVehicleDestroyDamage 7110.71
+  }
+ }
+ coords 3157.189 4.753 1198.384
+ angleX 1.966
+ angleY -15.764
+ angleZ 0.375
+}

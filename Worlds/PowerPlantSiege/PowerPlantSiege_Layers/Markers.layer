@@ -1,0 +1,20 @@
+$grp PS_ManualMarker {
+ {
+  coords 5809.48 14.093 9794.855
+  m_sImageSet "{301FC1A2A46D3E0D}UI/Textures/GroupManagement/FlagIcons/GroupFlagsIndfor.imageset"
+  m_sImageSetGlow "{301FC1A2A46D3E0D}UI/Textures/GroupManagement/FlagIcons/GroupFlagsIndfor.imageset"
+  m_sQuadName "infantry-indfor"
+  m_fWorldSizeWidth 40
+  m_fWorldSizeHeight 28
+  m_bUseWorldScale 0
+ }
+ {
+  coords 5872.003 9.691 9900.083
+  m_sImageSet "{1228936E5DB30403}UI/Textures/GroupManagement/FlagIcons/GroupFlagsBlufor.imageset"
+  m_sImageSetGlow "{1228936E5DB30403}UI/Textures/GroupManagement/FlagIcons/GroupFlagsBlufor.imageset"
+  m_sQuadName "infantry-blufor"
+  m_fWorldSizeWidth 40
+  m_fWorldSizeHeight 28
+  m_bUseWorldScale 0
+ }
+}

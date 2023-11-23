@@ -1,0 +1,49 @@
+$grp GenericEntity : "{C1977A326F2AA011}Prefabs/Structures/Signs/Military/SignCheckpoint_01_stop.et" {
+ {
+  coords 11635.627 6.062 2009.92
+  angleY 10.581
+ }
+ {
+  coords 11661.943 1.174 2336.893
+  angleX 0.895
+  angleY 178.226
+  angleZ -0.028
+ }
+}
+$grp SCR_EditorRestrictionZoneEntity : "{D832FD7D4F872977}Prefabs/FreezeTime/FreezKillZone.et" {
+ {
+  coords 7503.676 165.759 4252.734
+  m_fWarnRadius 174
+  m_fZoneRadius 214
+  m_fZoneTeleportedRadius 224
+  {
+   GenericEntity {
+    ID "5EC5183A2E8F3FE3"
+    components {
+     SCR_CustomAreaMeshComponent "{5EC5025412025CFA}" {
+      m_fRadius 174
+     }
+    }
+   }
+  }
+ }
+ {
+  coords 10656.509 186.173 2452.222
+ }
+ {
+  coords 11698.256 7.548 2171.011
+  m_fWarnRadius 174
+  m_fZoneRadius 214
+  m_fZoneTeleportedRadius 224
+  {
+   GenericEntity {
+    ID "5EC5183A2E8F3FE3"
+    components {
+     SCR_CustomAreaMeshComponent "{5EC5025412025CFA}" {
+      m_fRadius 174
+     }
+    }
+   }
+  }
+ }
+}

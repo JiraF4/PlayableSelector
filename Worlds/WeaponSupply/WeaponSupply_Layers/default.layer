@@ -1,0 +1,50 @@
+SCR_AIWorld : "{70CCCF16487C927F}Prefabs/AI/SCR_AIWorld_Eden.et" {
+}
+PerceptionManager PerceptionManager1 : "{028DAEAD63E056BE}Prefabs/World/Game/PerceptionManager.et" {
+}
+TagManager : "{2FA9E172CAB1857A}Prefabs/MP/Managers/TagManager.et" {
+}
+PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_GameMode_Lobby.et" {
+ components {
+  PS_MissionDescriptionManager "{5ED908871838D082}" {
+   m_aDescriptions {
+    PS_MapDescription "{5EE323A421B3F3C7}" {
+     m_sTitle "#PS-Description_HeaderAboutMission"
+     m_sDescriptionLayout "{4B7FDA5125793450}UI/MissionDescriptionTemplates/WeaponSupplyDescription.layout"
+    }
+    PS_MapDescription "{5EE323A420B8118D}" {
+     m_sTitle "#PS-Description_HeaderUS"
+     m_sFactions "US"
+     m_sDescriptionLayout "{8A3713400FFF7C44}UI/MissionDescriptionTemplates/WeaponSupplyUS.layout"
+    }
+    PS_MapDescription "{5EE323A4206AB83A}" {
+     m_sTitle "#PS-Description_HeaderFIA"
+     m_sFactions "FIA"
+     m_sDescriptionLayout "{34783E9CCC980238}UI/MissionDescriptionTemplates/WeaponSupplyFIA.layout"
+    }
+   }
+  }
+  SCR_TimeAndWeatherHandlerComponent "{5EE3229927D4D2F5}" {
+   m_iStartingHours 18
+   m_bRandomWeatherChanges 1
+  }
+ }
+ m_iAvailableReconnectTime -1
+ m_bKillRedundantUnits 1
+ m_iFreezeTime 180000
+ {
+  SCR_FactionManager "5EE323AF84C15BB4" {
+   ID "5ED9088735FF2D8B"
+   Factions {
+    SCR_Faction "{56DEAC40D2DBC8B1}" {
+     m_bIsPlayable 1
+    }
+    SCR_Faction "{56DEAC40D132400B}" {
+     m_bIsPlayable 1
+    }
+   }
+  }
+ }
+}
+HitRegistrationManager HitRegManager1 : "{0EDA3D48791120DD}Prefabs/MP/HitRegManager.et" {
+}
