@@ -645,7 +645,7 @@ class PS_CoopLobby: MenuBase
 		playableController.ChangeFactionKey(m_iCurrentPlayer, playableCharacter.GetFaction().GetFactionKey());
 		playableController.SetPlayerState(m_iCurrentPlayer, PS_EPlayableControllerState.NotReady);
 		playableController.SetPlayerPlayable(m_iCurrentPlayer, handler.GetPlayableId());
-		playableController.MoveToVoNRoom(m_iCurrentPlayer, playableManager.GetPlayerFactionKey(playerController.GetPlayerId()), playableManager.GetGroupCallsignByPlayable(handler.GetPlayableId()).ToString());
+		playableController.MoveToVoNRoom(m_iCurrentPlayer, playableCharacter.GetFaction().GetFactionKey(), playableManager.GetGroupCallsignByPlayable(handler.GetPlayableId()).ToString());
 		
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		if (m_iCurrentPlayer != playerController.GetPlayerId() && gameMode.GetState() == SCR_EGameModeState.GAME)

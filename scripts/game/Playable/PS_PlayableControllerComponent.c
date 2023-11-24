@@ -86,7 +86,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
-		if (playerRole != EPlayerRole.ADMINISTRATOR) return;
+		if (playerRole == EPlayerRole.NONE) return;
 		
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		gameMode.FactionLockSwitch();
@@ -182,8 +182,10 @@ class PS_PlayableControllerComponent : ScriptComponent
 		// If not admin you can change only herself
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
-		if (thisPlayerController.GetPlayerId() != playerId && playerRole != EPlayerRole.ADMINISTRATOR) return;
-		if (playableManager.GetPlayerPin(playerId) && playerRole != EPlayerRole.ADMINISTRATOR) return;
+		
+		if (thisPlayerController.GetPlayerId() != playerId && playerRole == EPlayerRole.NONE) return;
+		if (playableManager.GetPlayerPin(playerId) && playerRole == EPlayerRole.NONE) return;
+		
 		
 		playableManager.SetPlayerFactionKey(playerId, factionKey);
 	}
@@ -381,7 +383,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		// If not admin you can change only herself
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
-		if (playerRole != EPlayerRole.ADMINISTRATOR) return;
+		if (playerRole == EPlayerRole.NONE) return;
 		
 		playerManager.KickPlayer(playerId, PlayerManagerKickReason.KICK, 0);
 	}
@@ -400,7 +402,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		// If not admin you can change only herself
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
-		if (thisPlayerController.GetPlayerId() != playerId && playerRole != EPlayerRole.ADMINISTRATOR) return;
+		if (thisPlayerController.GetPlayerId() != playerId && playerRole == EPlayerRole.NONE) return;
 		
 		playableManager.SetPlayerState(playerId, state);
 	}
@@ -418,7 +420,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		// You can't change playable if pinned and not admin
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
-		if (playableManager.GetPlayerPin(playerId) && playerRole != EPlayerRole.ADMINISTRATOR) return;
+		if (playableManager.GetPlayerPin(playerId) && playerRole == EPlayerRole.NONE) return;
 		
 		playableManager.SetPlayablePlayer(playableId, playerId);
 	}
@@ -436,7 +438,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		// You can't change playable if pinned and not admin
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
-		if (playableManager.GetPlayerPin(playerId) && playerRole != EPlayerRole.ADMINISTRATOR) return;
+		if (playableManager.GetPlayerPin(playerId) && playerRole == EPlayerRole.NONE) return;
 		
 		// don't check other staff if empty playable
 		if (playableId == RplId.Invalid()) {
