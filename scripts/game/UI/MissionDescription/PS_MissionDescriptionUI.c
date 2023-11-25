@@ -2,14 +2,13 @@ class PS_MissionDescriptionUI : ScriptedWidgetComponent
 {
 	protected ResourceName m_rStartLayout = "{B965F43FBD01E4B5}UI/MissionDescription/MissionDescriptionListScroll.layout";
 	
+	protected ResourceName m_rPreviousLayout = "";
+	protected ResourceName m_rCurrentLayout;
 	protected FrameWidget m_wContentFrame;
 	protected Widget m_wCurrentContent;
 	protected ImageWidget m_wFolderIcon;
 	protected ButtonWidget m_wMissionDescriptionHeaderButton;
 	protected TextWidget m_wMissionDescriptionHeaderText;
-	
-	protected PS_MissionDescription m_rPreviousMapDescription;
-	protected PS_MissionDescription m_rCurrentMapDescription;
 	
 	// -------------------- Handler events --------------------
 	override void HandlerAttached(Widget w)
@@ -20,7 +19,7 @@ class PS_MissionDescriptionUI : ScriptedWidgetComponent
 		m_wFolderIcon = ImageWidget.Cast(w.FindAnyWidget("FolderIcon"));
 		if (!GetGame().InPlayMode())
 			return;
-		OpenDescriptionList();
+		SwitchContent(m_rStartLayout);
 		GetGame().GetCallqueue().CallLater(AddOnClick, 0);
 	}
 	
@@ -30,53 +29,26 @@ class PS_MissionDescriptionUI : ScriptedWidgetComponent
 		missionDescriptionHeaderButtonHandler.m_OnClicked.Insert(MissionDescriptionHeaderButtonClicked);
 	}
 	
-	void RemoveCurrentContent(PS_MissionDescription mapDescription)
+	void SwitchContent(ResourceName content)
 	{
 		if (m_wCurrentContent)
 		{
 			m_wContentFrame.RemoveChild(m_wCurrentContent);
-			m_rPreviousMapDescription = mapDescription;
+			m_rPreviousLayout = m_rCurrentLayout;
 			m_wFolderIcon.SetVisible(true);
 		}
-	}
-	
-	void OpenDescriptionList()
-	{
-		RemoveCurrentContent(null);
-		m_wFolderIcon.SetVisible(false);
-		
-		m_wCurrentContent = GetGame().GetWorkspace().CreateWidgets(m_rStartLayout);
-		PS_MissionDescriptionContentUI handler = PS_MissionDescriptionContentUI.Cast(m_wCurrentContent.FindHandler(PS_MissionDescriptionContentUI));
-		handler.SetMissionUI(this);
-		m_wMissionDescriptionHeaderText.SetText("Mission description");
-		m_wContentFrame.AddChild(m_wCurrentContent);
-	}
-	
-	void SwitchContent(PS_MissionDescription mapDescription)
-	{
-		RemoveCurrentContent(mapDescription);
-		
-		m_rCurrentMapDescription = mapDescription;
-		m_wCurrentContent = GetGame().GetWorkspace().CreateWidgets(mapDescription.GetDescriptionLayout());
+		m_rCurrentLayout = content;
+		m_wCurrentContent = GetGame().GetWorkspace().CreateWidgets(content);
 		
 		PS_MissionDescriptionContentUI handler = PS_MissionDescriptionContentUI.Cast(m_wCurrentContent.FindHandler(PS_MissionDescriptionContentUI));
 		handler.SetMissionUI(this);
-		handler.SetMissionDescription(mapDescription);
 		m_wMissionDescriptionHeaderText.SetText(handler.GetTitle());
 		m_wContentFrame.AddChild(m_wCurrentContent);
 	}
 	
 	void SwitchBack()
 	{
-		OpenDescriptionList();
-		
-		/*
-		if (!m_rPreviousMapDescription) {
-			OpenDescriptionList();
-			return;
-		}
-		
-		RemoveCurrentContent(null);
+		if (m_rPreviousLayout == "") return;
 		
 		m_wContentFrame.RemoveChild(m_wCurrentContent);
 		m_rCurrentLayout = m_rPreviousLayout;
@@ -88,7 +60,6 @@ class PS_MissionDescriptionUI : ScriptedWidgetComponent
 		m_wMissionDescriptionHeaderText.SetText(handler.GetTitle());
 		m_wContentFrame.AddChild(m_wCurrentContent);
 		m_wFolderIcon.SetVisible(false);
-		*/
 	}
 	
 	

@@ -1,0 +1,133 @@
+FrameWidgetClass {
+ Name "root"
+ Slot FrameWidgetSlot "{5EC357C57F92C4C8}" {
+  OffsetLeft 0
+  OffsetTop 0
+  SizeX 1
+  OffsetRight -1
+  SizeY 1
+  OffsetBottom -1
+ }
+ "Z Order" 60
+ Clipping False
+ "Ignore Cursor" 0
+ components {
+  PS_ManualMarkerComponent "{5EB91D13C38EDB9D}" {
+  }
+ }
+ {
+  FrameWidgetClass "{5EB91D1E5DDA01E7}" {
+   Name "MarkerFrame"
+   Slot FrameWidgetSlot "{5EB91D1D83A6D1B0}" {
+    PositionX 0
+    OffsetLeft 0
+    PositionY 0
+    OffsetTop 0
+    SizeX 60
+    OffsetRight -60
+    SizeY 60
+    OffsetBottom -60
+   }
+   {
+    ScrollLayoutWidgetClass "{5EC357C5300FE777}" {
+     Name "MarkerScrollLayout"
+     Slot FrameWidgetSlot "{5EC357C5300FE75C}" {
+     }
+    }
+    ImageWidgetClass "{5EB91D178F17F034}" {
+     Name "MarkerIcon"
+     Slot FrameWidgetSlot "{5EB91D1E649170D7}" {
+      Anchor 0 0 0 0
+      PositionX 0
+      OffsetLeft 0
+      PositionY 0
+      OffsetTop 0
+      SizeX 60
+      OffsetRight -60
+      SizeY 60
+      OffsetBottom -60
+     }
+     Clipping False
+     Texture "{2EFEA2AF1F38E7F0}UI/Textures/Icons/icons_wrapperUI-64.imageset"
+     Image "exclamationCircle"
+     Size 56 56
+    }
+    ImageWidgetClass "{5EB91D1A3673B11B}" {
+     Name "MarkerGlowIcon"
+     Slot FrameWidgetSlot "{5EB91D1E649170D7}" {
+      Anchor 0 0 0 0
+      PositionX 0
+      OffsetLeft 0
+      PositionY 0
+      OffsetTop 0
+      SizeX 60
+      OffsetRight -60
+      SizeY 60
+      OffsetBottom -60
+     }
+     Clipping False
+     Texture "{58E50ACB1FA4F7D7}UI/Textures/Icons/icons_wrapperUI-96-glow.imageset"
+     Image "exclamationCircle"
+     Size 96 96
+    }
+    PanelWidgetClass "{5EC357C30F6D2666}" {
+     Name "DescriptionPanel"
+     Slot FrameWidgetSlot "{5EC357C312430E6F}" {
+      SizeToContent 1
+     }
+     Color 0 0 0 0.6
+     style full
+     {
+      PanelWidgetClass "{5EC3651206FED48D}" {
+       Name "PanelBorder"
+       Slot FrameWidgetSlot "{5EC3651206FED4CB}" {
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX -370.054
+        OffsetRight 370.054
+        SizeY 156.209
+        OffsetBottom -156.209
+        SizeToContent 1
+       }
+       style outline_2px
+       {
+        OverlayWidgetClass "{5EC357C0B0940163}" {
+         Name "Overlay"
+         Slot FrameWidgetSlot "{5EC357C0B094015A}" {
+          PositionX 0
+          OffsetLeft 0
+          PositionY 0
+          OffsetTop 0
+          SizeX -370.054
+          OffsetRight 370.054
+          SizeY 156.209
+          OffsetBottom -156.209
+          SizeToContent 1
+         }
+         {
+          RichTextWidgetClass "{5EB91D112318E078}" {
+           Name "DescriptionText"
+           Slot OverlayWidgetSlot "{5EC357C069D46CD2}" {
+            Padding 10 10 10 10
+           }
+           "Z Order" 1
+           Text "Lorem ipsum dolor sit amet, consectetur"\
+           "Donec viverra, tortor eget aliquam imperdiet"\
+           "Duis ut mauris augue. Duis convallis aliquet dfdgfdgdfu"
+           "Horizontal Alignment" Center
+           "Vertical Alignment" Center
+           "Shadow Offset" 3 3
+           "Shadow Size Increase" 2
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}
