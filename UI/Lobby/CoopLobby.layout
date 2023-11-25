@@ -337,6 +337,40 @@ FrameWidgetClass {
                Name "MainLoadoutPreview"
                Slot OverlayWidgetSlot "{5D6D1B985B1E5269}" {
                }
+               {
+                FrameWidgetClass "{5D6D1B9826675364}" {
+                 Prefab "{5D6D1B9826675364}"
+                 {
+                  ButtonWidgetClass "{5D6E820114D3BC73}" {
+                   Prefab "{5D6E820114D3BC73}"
+                   {
+                    OverlayWidgetClass "{5D6E820286BE9FB3}" {
+                     Prefab "{5D6E820286BE9FB3}"
+                     {
+                      FrameWidgetClass "{5D6E820286BE9FB5}" {
+                       Prefab "{5D6E820286BE9FB5}"
+                       {
+                        OverlayWidgetClass "{552068607D1612DA}" {
+                         Prefab "{552068607D1612DA}"
+                         {
+                          ImageWidgetClass "{5EF2DAD83B9A446D}" {
+                           Name "Image0"
+                           Slot OverlayWidgetSlot {
+                           }
+                           Texture "{3094131B5608B5B2}images/image.edds"
+                           Size 588 779
+                          }
+                         }
+                        }
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
               }
              }
             }
@@ -481,8 +515,8 @@ FrameWidgetClass {
              "Is Visible" 0
              components {
               SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
-               m_sLabel "Navigation left"
                m_sActionName "MenuTabLeft"
+               m_sLabel "Navigation left"
               }
              }
             }
@@ -509,8 +543,8 @@ FrameWidgetClass {
              }
              components {
               SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
-               m_sLabel "#PS-Lobby_OpenMenu"
                m_sActionName "MenuBack"
+               m_sLabel "#PS-Lobby_OpenMenu"
               }
              }
             }
@@ -523,8 +557,8 @@ FrameWidgetClass {
              }
              components {
               SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
-               m_sLabel "#PS-Lobby_Chat"
                m_sActionName "ChatToggle"
+               m_sLabel "#PS-Lobby_Chat"
               }
              }
             }
@@ -537,8 +571,8 @@ FrameWidgetClass {
              }
              components {
               SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
-               m_sLabel "#PS-Lobby_VoiceChat"
                m_sActionName "VONDirect"
+               m_sLabel "#PS-Lobby_VoiceChat"
               }
              }
             }
@@ -551,8 +585,8 @@ FrameWidgetClass {
              }
              components {
               SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
-               m_sLabel "#PS-Lobby_VoiceChatFaction"
                m_sActionName "VONChannel"
+               m_sLabel "#PS-Lobby_VoiceChatFaction"
               }
              }
             }
@@ -574,8 +608,8 @@ FrameWidgetClass {
              }
              components {
               SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
-               m_sLabel "#PS-Lobby_Ready"
                m_sActionName "LobbyReady"
+               m_sLabel "#PS-Lobby_Ready"
               }
              }
             }
@@ -589,9 +623,8 @@ FrameWidgetClass {
              "Is Visible" 0
              components {
               SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
-               m_sLabel "#PS-Lobby_ForceStart"
                m_sActionName "MenuRestart"
-               m_bFadeAction 1
+               m_sLabel "#PS-Lobby_ForceStart"
               }
              }
             }
@@ -893,7 +926,7 @@ FrameWidgetClass {
     }
    }
   }
-  FrameWidgetClass "{5EB701CD0152AC68}" : "{B7A765172F0BD4D9}UI/layouts/Common/EarlyAccessWatermark.layout" {
+  FrameWidgetClass "{5EB701CD0152AC68}" : "{B7A765172F0BD4D9}UI/layouts/Common/GameVersionWatermark.layout" {
    Name "EarlyAccessRoot"
    Slot FrameWidgetSlot "{5CEE96372B5D270B}" {
     PositionX 0.214

@@ -90,6 +90,7 @@ VerticalLayoutWidgetClass {
            {
             ItemPreviewWidgetClass "{552068601B16C353}" {
              Prefab "{552068601B16C353}"
+             "Is Visible" 0
              Opacity 1
              "Use Engine Scale" 0
              xscale 4
