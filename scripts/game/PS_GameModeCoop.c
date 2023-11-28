@@ -167,7 +167,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
         Resource resource = Resource.Load("{E1B415916312F029}Prefabs/InitialPlayer.et");
 		EntitySpawnParams params = new EntitySpawnParams();
-		GetTransform(params.Transform);		
+		GetTransform(params.Transform);
         IEntity initialEntity = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		SCR_PlayerController playerController = SCR_PlayerController.Cast(playerManager.GetPlayerController(playerId));
