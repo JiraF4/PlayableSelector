@@ -30,12 +30,3 @@ PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_Game
   }
  }
 }
-$grp PS_ManualMarker : "{CD85ADE9E0F54679}PrefabsEditable/Markers/EditableMarker.et" {
- {
-  coords 78.541 1 84.738
- }
- {
-  coords 70.31 1 87.869
-  m_fWorldSize 111
- }
-}

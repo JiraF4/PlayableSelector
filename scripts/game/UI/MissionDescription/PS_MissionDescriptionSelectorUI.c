@@ -3,8 +3,7 @@ class PS_MissionDescriptionSelectorUI : SCR_ButtonBaseComponent
 {
 	TextWidget m_wDescriptionName;
 	
-	string m_sTitle;
-	ResourceName m_rContent;
+	PS_MissionDescription m_Description;
 	
 	override void HandlerAttached(Widget w)
 	{
@@ -18,15 +17,10 @@ class PS_MissionDescriptionSelectorUI : SCR_ButtonBaseComponent
 		m_OnClicked.Insert(HeaderButtonClicked);
 	}
 	
-	void SetTitle(string title)
+	void SetDescription(PS_MissionDescription description)
 	{
-		m_sTitle = title;
-		m_wDescriptionName.SetText(title);
-	}
-	
-	void SetContent(ResourceName content)
-	{
-		m_rContent = content;
+		m_Description = description;
+		m_wDescriptionName.SetText(description.GetTitle());
 	}
 	
 	// -------------------- Buttons events --------------------
@@ -34,6 +28,6 @@ class PS_MissionDescriptionSelectorUI : SCR_ButtonBaseComponent
 	{
 		PS_MissionDescriptionContentUI currentHandlerContent = PS_MissionDescriptionContentUI.Cast(m_wRoot.FindHandler(PS_MissionDescriptionContentUI));
 		PS_MissionDescriptionUI missionDescription = currentHandlerContent.GetMissionUI();
-		missionDescription.SwitchContent(m_rContent);
+		missionDescription.SwitchContent(m_Description);
 	}
 }
