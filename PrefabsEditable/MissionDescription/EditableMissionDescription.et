@@ -4,12 +4,11 @@ PS_MissionDescription {
   PS_EditableMissionDescriptionComponent "{5EE541289B95FCEA}" {
    m_EntityType SYSTEM
    m_UIInfo SCR_EditableDescriptorUIInfo "{5EE5412857A8E166}" {
-    Name "#AR-Weapon_M15_Name"
-    Icon "{F0E2F1CD3542A700}UI/Textures/Editor/EditableEntities/Systems/SingleMine.edds"
-    m_Image "{59C1FD4F96282E73}UI/Textures/EditorPreviews/Auto/Systems/Effects/E_effects_SingleMine.edds"
-    m_sFaction "US"
+    Name "#PS-EditorEntity_MissionDescription_Name"
+    Icon "{55D8040D6C1D0EEE}UI/Textures/Editor/EditableEntities/Slots/EditableEntity_Slot_FlatMedium.edds"
+    m_Image "{55D8040D6C1D0EEE}UI/Textures/Editor/EditableEntities/Slots/EditableEntity_Slot_FlatMedium.edds"
     m_aAuthoredLabels {
-     7 11 38
+     7 13
     }
     m_aAutoLabels {
      1
@@ -37,5 +36,9 @@ PS_MissionDescription {
  coords 98.68 1 169.559
  m_sTitle "A?"
  m_sDescriptionLayout "{41DAF7B7061DC0BC}UI/MissionDescription/DescriptionEditable.layout"
- m_sTextData "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+ m_sTextData "Lorem ipsum dolor sit amet, consectetur adipiscing elit, "\
+ "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "\
+ "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "\
+ "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. "\
+ "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
 }

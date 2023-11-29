@@ -23,6 +23,15 @@ class PS_EditableMissionDescriptionComponent: SCR_EditableDescriptorComponent
 		m_eMissionDescription.SetVisibleForFaction(faction, visible);
 	}
 	
+	bool GetDescriptionVisibleForEmpty()
+	{
+		return m_eMissionDescription.GetVisibleForEmptyFaction();
+	}
+	void SetDescriptionVisibleForEmpty(bool visible)
+	{
+		m_eMissionDescription.SetVisibleForEmptyFaction(visible);
+	}
+	
 	string GetMissionTitle()
 	{
 		return m_eMissionDescription.GetTitle();

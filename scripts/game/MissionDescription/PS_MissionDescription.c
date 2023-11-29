@@ -16,6 +16,7 @@ class PS_MissionDescription : GenericEntity
 	ref array<Faction> VisibleForFactions = new array<Faction>();
 	
 	ref array<string> m_aFactions = new array<string>();
+	bool m_bEmptyFactionVisibility = true;
 	
 	// TODO: Get/Set Broadcast
 	ResourceName GetDescriptionLayout()
@@ -40,6 +41,21 @@ class PS_MissionDescription : GenericEntity
 			{if (!GetVisibleForFaction(faction)) VisibleForFactions.Insert(faction);}
 		else
 			{if (GetVisibleForFaction(faction)) VisibleForFactions.RemoveItem(faction);}
+	}
+	
+	bool GetVisibleForEmptyFaction()
+	{
+		return m_bEmptyFactionVisibility;
+	}
+	void SetVisibleForEmptyFaction(bool visible)
+	{
+		RPC_SetVisibleForEmptyFaction(visible);
+		Rpc(RPC_SetVisibleForEmptyFaction, visible);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	protected void RPC_SetVisibleForEmptyFaction(bool visible)
+	{
+		m_bEmptyFactionVisibility = visible;
 	}
 	
 	string GetTitle()

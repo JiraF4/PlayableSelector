@@ -1,0 +1,71 @@
+$grp SCR_DestructibleEntity : "{2FBF5DEDFA25D947}Prefabs/Structures/Walls/Concrete/ConcreteWall_01/ConcreteWall_01_6m_A.et" {
+ {
+  coords 107.826 -0.4 129
+ }
+ {
+  coords 102.023 -0.4 129
+ }
+ {
+  coords 113.695 -0.4 129
+ }
+ {
+  coords 119.656 -0.4 129
+ }
+ {
+  coords 96.076 -0.4 129
+ }
+ {
+  coords 110.911 -0.4 134.957
+  angleY 90
+ }
+ {
+  coords 110.911 -0.4 140.779
+  angleY 90
+ }
+ {
+  coords 110.911 -0.4 146.584
+  angleY 90
+ }
+ {
+  coords 110.911 -0.4 152.456
+  angleY 90
+ }
+ {
+  coords 90.195 -0.4 129
+ }
+ {
+  coords 125.519 -0.4 129
+ }
+ {
+  coords 84.31 -0.4 129
+ }
+ {
+  coords 78.424 -0.4 129
+ }
+ {
+  coords 110.911 -0.4 164.019
+  angleY 90
+ }
+ {
+  coords 110.911 -0.4 158.179
+  angleY 90
+ }
+ {
+  coords 131.353 -0.4 129
+ }
+ {
+  coords 72.601 -0.4 129
+ }
+ {
+  coords 137.269 -0.4 129
+ }
+ {
+  coords 143.152 -0.4 129
+ }
+ {
+  coords 149.007 -0.4 129
+ }
+ {
+  coords 66.726 -0.4 129
+ }
+}

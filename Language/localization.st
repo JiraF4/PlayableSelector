@@ -121,6 +121,124 @@ StringTable {
    Author "zazul"
    LastChanged "SeskPC"
   }
+  CustomStringTableItem "{5EF96208D034F2DA}" {
+   Id "PS-EditorAttribute_GameModeCoop_CanOpenLobbyInLobby"
+   Target_en_us "Can open lobby in game"
+   Modified 1593486495
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{5EF96208D5FE09A6}" {
+   Id "PS-EditorAttribute_GameModeCoop_CanOpenLobbyInLobby_Description"
+   Modified 1593486393
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{5EF9620B44BDD42D}" {
+   Id "PS-EditorAttribute_GameModeCoop_FreezeTime"
+   Target_en_us "Freeze time"
+   Modified 1593486501
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{5EF9620B4932D858}" {
+   Id "PS-EditorAttribute_GameModeCoop_FreezeTime_Description"
+   Modified 1593486147
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{5EF9620B03413635}" {
+   Id "PS-EditorAttribute_GameModeCoop_ReconnectTime"
+   Target_en_us "Reconnect time"
+   Modified 1593486508
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{5EF9620B07CEB34C}" {
+   Id "PS-EditorAttribute_GameModeCoop_ReconnectTime_Description"
+   Modified 1593486254
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{5EF9620B1D5BEAA7}" {
+   Id "PS-EditorAttribute_GameModeCoop_RemoveRedundantUnits"
+   Target_en_us "Remove redundant units"
+   Modified 1593486522
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{5EF9620B20207DC0}" {
+   Id "PS-EditorAttribute_GameModeCoop_RemoveRedundantUnits_Description"
+   Modified 1593486301
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{5EF9620B995D2494}" {
+   Id "PS-EditorAttribute_MissionDescription_FactionEmpty"
+   Target_en_us "Show to empty faction"
+   Modified 1593486539
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{5EF9620B9D907696}" {
+   Id "PS-EditorAttribute_MissionDescription_FactionEmpty_Description"
+   Modified 1593486064
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{5EF9620BEE5A72E9}" {
+   Id "PS-EditorAttribute_MissionDescription_Factions"
+   Target_en_us "Show to factions"
+   Modified 1593486546
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{5EF9620BF214E3D0}" {
+   Id "PS-EditorAttribute_MissionDescription_Factions_Description"
+   Modified 1593485989
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{5EF9620BCDCE1FDF}" {
+   Id "PS-EditorAttribute_MissionDescription_TextData"
+   Target_en_us "Text data"
+   Modified 1593486571
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{5EF9620BD39D1418}" {
+   Id "PS-EditorAttribute_MissionDescription_TextData_Description"
+   Modified 1593485932
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{5EF9620A25565F4F}" {
+   Id "PS-EditorAttribute_MissionDescription_Title"
+   Target_en_us "Title"
+   Modified 1593486575
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{5EF9620A2941F17B}" {
+   Id "PS-EditorAttribute_MissionDescription_Title_Description"
+   Modified 1593485859
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{5EF9620A4444DA9C}" {
+   Id "PS-EditorCategory_Lobby"
+   Target_en_us "Lobby"
+   Modified 1593485691
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{5EF962097FA8C778}" {
+   Id "PS-EditorEntity_MissionDescription_Name"
+   Target_en_us "Mission description"
+   Modified 1593487480
+   Author "zazul"
+   LastChanged "zazul"
+  }
   CustomStringTableItem "{5EB30CD4368261A7}" {
    Id "PS-GameMaster_PlayableGroup"
    Target_en_us "Playable Unit"

@@ -278,12 +278,73 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	void FactionLockSwitch()
 	{
 		m_bFactionLock = !m_bFactionLock;
-		Rpc(RPC_SetFactionLock, !m_bFactionLock);
+		Rpc(RPC_SetFactionLock, m_bFactionLock);
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	void RPC_SetFactionLock()
+	void RPC_SetFactionLock(bool factionLock)
 	{
-		m_bFactionLock = !m_bFactionLock;
+		m_bFactionLock = factionLock;
+	}
+	
+	// ------------------------------------------ Global variables ------------------------------------------
+	int GetFreezeTime()
+	{
+		return m_iFreezeTime;
+	}
+	void SetFreezeTime(int freezeTime)
+	{
+		RPC_SetFreezeTime(freezeTime);
+		Rpc(RPC_SetFreezeTime, freezeTime);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RPC_SetFreezeTime(int freezeTime)
+	{
+		m_iFreezeTime = freezeTime;
+	}
+	
+	int GetReconnectTime()
+	{
+		return m_iAvailableReconnectTime;
+	}
+	void SetReconnectTime(int availableReconnectTime)
+	{
+		RPC_SetReconnectTime(availableReconnectTime);
+		Rpc(RPC_SetReconnectTime, availableReconnectTime);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RPC_SetReconnectTime(int availableReconnectTime)
+	{
+		m_iAvailableReconnectTime = availableReconnectTime;
+	}
+	
+	bool GetKillRedundantUnits()
+	{
+		return m_bKillRedundantUnits;
+	}
+	void SetKillRedundantUnits(bool killRedundantUnits)
+	{
+		RPC_SetKillRedundantUnits(killRedundantUnits);
+		Rpc(RPC_SetKillRedundantUnits, killRedundantUnits);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RPC_SetKillRedundantUnits(bool killRedundantUnits)
+	{
+		m_bKillRedundantUnits = killRedundantUnits;
+	}
+	
+	bool GetCanOpenLobbyInGame()
+	{
+		return m_bCanOpenLobbyInGame;
+	}
+	void SetCanOpenLobbyInGame(bool canOpenLobbyInGame)
+	{
+		RPC_SetCanOpenLobbyInGame(canOpenLobbyInGame);
+		Rpc(RPC_SetCanOpenLobbyInGame, canOpenLobbyInGame);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RPC_SetCanOpenLobbyInGame(bool canOpenLobbyInGame)
+	{
+		m_bCanOpenLobbyInGame = canOpenLobbyInGame;
 	}
 	
 	// ------------------------------------------ JIP Replication ------------------------------------------
@@ -291,6 +352,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	{
 		
 		writer.WriteBool(m_bFactionLock);
+		writer.WriteInt(m_iFreezeTime);
+		writer.WriteInt(m_iAvailableReconnectTime);
 		
 		return true;
 	}
@@ -298,6 +361,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	override bool RplLoad(ScriptBitReader reader)
 	{
 		reader.ReadBool(m_bFactionLock);
+		reader.ReadInt(m_iFreezeTime);
+		reader.ReadInt(m_iAvailableReconnectTime);
 		
 		return true;
 	}
