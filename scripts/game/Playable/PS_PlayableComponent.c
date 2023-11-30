@@ -9,36 +9,41 @@ class PS_PlayableComponent : ScriptComponent
 {
 	[Attribute()]
 	protected string m_name;
+	[Attribute()]
+	protected bool m_bIsPlayable;
+	
 	protected int m_id;
 	SCR_ChimeraCharacter m_cOwner;
 	
 	override void OnPostInit(IEntity owner)
 	{
-		GetGame().GetCallqueue().CallLater(AddToList, 0, false, owner) // Rpl init delay
+		m_cOwner = SCR_ChimeraCharacter.Cast(owner);
+		if (!m_bIsPlayable) return;
+		GetGame().GetCallqueue().CallLater(AddToList, 0, false, owner) // init delay
 	}
 	
-	private void AddToList(IEntity owner)
+	// Get/Set Broadcast
+	bool GetPlayable()
 	{
-		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		RplComponent rpl = RplComponent.Cast(owner.FindComponent(RplComponent));
-		if(rpl && owner.Type().ToString() == "SCR_ChimeraCharacter")
-		{
-			m_cOwner = SCR_ChimeraCharacter.Cast(owner);
-			m_id = rpl.Id();
-			playableManager.RegisterPlayable(this);
-			//rpl.EnableStreaming(false); // They need to be loaded for preview
-		}
+		return m_bIsPlayable;
+	}
+	void SetPlayable(bool isPlayable)
+	{
+		RPC_SetPlayable(isPlayable);
+		Rpc(RPC_SetPlayable, isPlayable);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RPC_SetPlayable(bool isPlayable)
+	{
+		m_bIsPlayable = isPlayable;
+		if (m_bIsPlayable) GetGame().GetCallqueue().CallLater(AddToList, 0, false, m_cOwner);
+		else RemoveFromList();
 	}
 	
 	void ResetRplStream()
 	{
 		RplComponent rpl = RplComponent.Cast(GetOwner().FindComponent(RplComponent));
-		rpl.EnableStreaming(true);
-	}
-	
-	void ~PS_PlayableComponent()
-	{
-		RemoveFromList()
+		//rpl.EnableStreaming(true);
 	}
 	
 	private void RemoveFromList()
@@ -53,14 +58,33 @@ class PS_PlayableComponent : ScriptComponent
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		playableManager.RemovePlayable(m_id);
 	}
+	
+	private void AddToList(IEntity owner)
+	{
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		RplComponent rpl = RplComponent.Cast(owner.FindComponent(RplComponent));
+		if(rpl && owner.Type().ToString() == "SCR_ChimeraCharacter")
+		{
+			m_id = rpl.Id();
+			playableManager.RegisterPlayable(this);
+			rpl.EnableStreaming(false); // They need to be loaded for preview
+		}
+	}
 		
 	string GetName()
 	{
-		return m_name;
+		SCR_EditableCharacterComponent editableCharacterComponent = SCR_EditableCharacterComponent.Cast(m_cOwner.FindComponent(SCR_EditableCharacterComponent));
+		SCR_UIInfo info = editableCharacterComponent.GetInfo();
+		return info.GetName();
 	}
 	
 	RplId GetId()
 	{
 		return m_id;
+	}
+	
+	void ~PS_PlayableComponent()
+	{
+		RemoveFromList()
 	}
 }

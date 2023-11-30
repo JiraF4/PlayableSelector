@@ -237,6 +237,8 @@ class PS_PlayableManager : ScriptComponent
 	void RegisterPlayable(PS_PlayableComponent playableComponent)
 	{
 		RplId playableId = playableComponent.GetId();
+		if (m_aPlayables.Contains(playableId))
+			return;
 		m_aPlayables[playableId] = playableComponent;
 		
 		// Create player groups for join
@@ -265,6 +267,8 @@ class PS_PlayableManager : ScriptComponent
 	}
 	void RemovePlayable(RplId playableId)
 	{
+		if (!m_aPlayables.Contains(playableId))
+			return;
 		m_aPlayables.Remove(playableId);
 	}
 	void UpdateGroupCallsigne(RplId playableId, SCR_AIGroup playerGroup, SCR_AIGroup playableGroup)
