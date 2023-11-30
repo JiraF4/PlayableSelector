@@ -25,13 +25,13 @@ GameProject {
     }
    }
   }
-  GameProjectConfig HEADLESS {
-  }
   GameProjectConfig XBOX_ONE {
   }
   GameProjectConfig XBOX_SERIES {
   }
   GameProjectConfig PS4 {
+  }
+  GameProjectConfig HEADLESS {
   }
  }
 }

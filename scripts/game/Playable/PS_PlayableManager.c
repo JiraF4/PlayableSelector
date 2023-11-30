@@ -80,11 +80,24 @@ class PS_PlayableManager : ScriptComponent
 			SetPlayerFactionKey(playerId, "");
 			
 			entity = playableController.GetInitialEntity();
+			if (!entity)
+			{
+		        Resource resource = Resource.Load("{E1B415916312F029}Prefabs/InitialPlayer.et");
+				EntitySpawnParams params = new EntitySpawnParams();
+		        IEntity initialEntity = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
+				playableController.SetInitialEntity(initialEntity);
+			}
+			
 			playerController.SetInitialMainEntity(entity);
 			
 			return;
 		} else entity = GetPlayableById(playableId).GetOwner();		 
 		
+		
+		// Delete VoN
+		IEntity vonEntity = playableController.GetInitialEntity();
+		if (vonEntity) SCR_EntityHelper.DeleteEntityAndChildren(vonEntity);
+	
 		playerController.SetInitialMainEntity(entity);
 		
 		// Set new player faction
