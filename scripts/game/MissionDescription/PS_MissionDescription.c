@@ -12,8 +12,9 @@ class PS_MissionDescription : GenericEntity
 	[Attribute("")]
 	string m_sTextData;
 	
-	// TODO: somehove edit it through workbench
-	ref array<Faction> VisibleForFactions = new array<Faction>();
+	[Attribute("")] // For workbench
+	protected string m_sVisibleForFactions;
+	ref array<Faction> m_aVisibleForFactions = new array<Faction>();
 	
 	bool m_bEmptyFactionVisibility = true;
 	
@@ -25,7 +26,7 @@ class PS_MissionDescription : GenericEntity
 	
 	bool GetVisibleForFaction(Faction faction)
 	{
-		return VisibleForFactions.Contains(faction);
+		return m_aVisibleForFactions.Contains(faction);
 	}
 	void SetVisibleForFaction(Faction faction, bool visible)
 	{
@@ -37,9 +38,9 @@ class PS_MissionDescription : GenericEntity
 	{
 		Faction faction = GetGame().GetFactionManager().GetFactionByKey(factionKey);
 		if (visible)
-			{if (!GetVisibleForFaction(faction)) VisibleForFactions.Insert(faction);}
+			{if (!GetVisibleForFaction(faction)) m_aVisibleForFactions.Insert(faction);}
 		else
-			{if (GetVisibleForFaction(faction)) VisibleForFactions.RemoveItem(faction);}
+			{if (GetVisibleForFaction(faction)) m_aVisibleForFactions.RemoveItem(faction);}
 	}
 	
 	bool GetVisibleForEmptyFaction()
@@ -90,6 +91,15 @@ class PS_MissionDescription : GenericEntity
 	// Main functions
 	override protected void EOnInit(IEntity owner)
 	{
+		// Workbench
+		array<string> outTokens = new array<string>();
+		m_sVisibleForFactions.Split(",", outTokens, false);
+		SCR_FactionManager factionManager = SCR_FactionManager.Cast(GetGame().GetFactionManager());
+		foreach (FactionKey factionKey : outTokens)
+		{
+			RPC_SetVisibleForFaction_ByKey(factionKey, true);
+		}
+		
 		// Frame delay for manager init
 		GetGame().GetCallqueue().CallLater(RegisterToDescriptionManager);
 	}
