@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{BB5751D55D9D21AD}Prefabs/Groups/OPFOR/Group_USSR_ManeuverGroup_P.et"
+ Configurations {
+  EntityTemplateResourceClass PC {
+  }
+  EntityTemplateResourceClass XBOX_ONE : PC {
+  }
+  EntityTemplateResourceClass XBOX_SERIES : PC {
+  }
+  EntityTemplateResourceClass PS4 : PC {
+  }
+  EntityTemplateResourceClass HEADLESS : PC {
+  }
+ }
+}

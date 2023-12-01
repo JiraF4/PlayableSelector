@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{722AF7C2C7C14B35}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_Unarmed_P.et"
+ Configurations {
+  EntityTemplateResourceClass PC {
+  }
+  EntityTemplateResourceClass XBOX_ONE : PC {
+  }
+  EntityTemplateResourceClass XBOX_SERIES : PC {
+  }
+  EntityTemplateResourceClass PS4 : PC {
+  }
+  EntityTemplateResourceClass HEADLESS : PC {
+  }
+ }
+}

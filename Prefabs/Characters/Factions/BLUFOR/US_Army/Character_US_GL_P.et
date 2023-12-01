@@ -1,0 +1,11 @@
+SCR_ChimeraCharacter : "{84029128FA6F6BB9}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_GL.et" {
+ ID "51FA8A5FA6C2005C"
+ components {
+  AIControlComponent "{520EA1D2DB109F34}" {
+   Agenttemplate "{97ECE4FEC16D7EB4}AI/AIAgents/SCR_PlayerAIAgent.et"
+  }
+  PS_PlayableComponent "{5EFCC1946F475F15}" {
+   m_bIsPlayable 1
+  }
+ }
+}

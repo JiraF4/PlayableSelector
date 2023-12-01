@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{3662286A13252E45}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Unarmed_P.et"
+ Configurations {
+  EntityTemplateResourceClass PC {
+  }
+  EntityTemplateResourceClass XBOX_ONE : PC {
+  }
+  EntityTemplateResourceClass XBOX_SERIES : PC {
+  }
+  EntityTemplateResourceClass PS4 : PC {
+  }
+  EntityTemplateResourceClass HEADLESS : PC {
+  }
+ }
+}
