@@ -23,6 +23,7 @@ class PS_MissionDescriptionHeadersListUI : ScriptedWidgetComponent
 		PlayerController currentPlayerController = GetGame().GetPlayerController();
 		int currentPlayerId = currentPlayerController.GetPlayerId();
 		FactionKey factionKey = playableManager.GetPlayerFactionKey(currentPlayerId);
+		Faction faction = GetGame().GetFactionManager().GetFactionByKey(factionKey);
 		
 		PS_MissionDescriptionManager missionDescriptionManager = PS_MissionDescriptionManager.GetInstance();
 		array<PS_MissionDescription> descriptions = new array<PS_MissionDescription>;
@@ -30,8 +31,7 @@ class PS_MissionDescriptionHeadersListUI : ScriptedWidgetComponent
 		
 		foreach (PS_MissionDescription description: descriptions)
 		{
-			if (description.m_aFactions.Count() > 0)
-				if (!description.m_aFactions.Contains(factionKey) && !(description.GetVisibleForEmptyFaction() && factionKey == ""))
+			if (!description.GetVisibleForFaction(faction) && !(description.GetVisibleForEmptyFaction() && factionKey == ""))
 					continue;
 			
 			Widget header = GetGame().GetWorkspace().CreateWidgets(m_rHeaderLayout);

@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{CA75436A3C860FB9}Worlds/ArlandLobby/ArlandLobby.ent"
+ Configurations {
+  ENTResourceClass PC {
+  }
+  ENTResourceClass XBOX_ONE : PC {
+  }
+  ENTResourceClass XBOX_SERIES : PC {
+  }
+  ENTResourceClass PS4 : PC {
+  }
+  ENTResourceClass HEADLESS : PC {
+  }
+ }
+}

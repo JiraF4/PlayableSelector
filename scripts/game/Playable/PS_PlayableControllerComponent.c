@@ -71,6 +71,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 	void RPC_LoadMission(string missionName)
 	{
 		SCR_SaveManagerCore saveManager = GetGame().GetSaveManager();
+		// It's litteraly broken on dedicated.
 		saveManager.RestartAndLoad(missionName);
 	}
 	

@@ -15,7 +15,6 @@ class PS_MissionDescription : GenericEntity
 	// TODO: somehove edit it through workbench
 	ref array<Faction> VisibleForFactions = new array<Faction>();
 	
-	ref array<string> m_aFactions = new array<string>();
 	bool m_bEmptyFactionVisibility = true;
 	
 	// TODO: Get/Set Broadcast

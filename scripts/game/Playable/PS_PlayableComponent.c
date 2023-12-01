@@ -48,9 +48,6 @@ class PS_PlayableComponent : ScriptComponent
 	
 	private void RemoveFromList()
 	{
-		if (!Replication.IsServer())
-			return;
-		
 		BaseGameMode gamemode = GetGame().GetGameMode();
 		if (!gamemode)
 			return;
@@ -86,5 +83,17 @@ class PS_PlayableComponent : ScriptComponent
 	void ~PS_PlayableComponent()
 	{
 		RemoveFromList()
+	}
+	
+	// Send our precision data, we need it on clients
+	override bool RplSave(ScriptBitWriter writer)
+	{
+		writer.WriteBool(m_bIsPlayable);
+		return true;
+	}
+	override bool RplLoad(ScriptBitReader reader)
+	{
+		reader.ReadBool(m_bIsPlayable);
+		return true;
 	}
 }

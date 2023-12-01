@@ -34,6 +34,13 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	{
 		super.OnGameStart();
 		
+		string loadSave = GameSessionStorage.s_Data.Get("SCR_SaveFileManager_FileNameToLoad");
+		if (loadSave != "")
+		{
+			SCR_SaveManagerCore saveManager = GetGame().GetSaveManager();
+			saveManager.Load(loadSave);
+		}
+		
 		if (RplSession.Mode() != RplMode.Dedicated) {
 			GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.WaitScreen);
 			GetGame().GetInputManager().AddActionListener("OpenLobby", EActionTrigger.DOWN, Action_OpenLobby);
