@@ -48,6 +48,10 @@ class PS_PlayableComponent : ScriptComponent
 	
 	private void RemoveFromList()
 	{
+		AIControlComponent aiComponent = AIControlComponent.Cast(m_cOwner.FindComponent(AIControlComponent));
+		AIAgent agent = aiComponent.GetAIAgent();
+		agent.ActivateAI();
+		
 		BaseGameMode gamemode = GetGame().GetGameMode();
 		if (!gamemode)
 			return;
@@ -58,6 +62,10 @@ class PS_PlayableComponent : ScriptComponent
 	
 	private void AddToList(IEntity owner)
 	{
+		AIControlComponent aiComponent = AIControlComponent.Cast(owner.FindComponent(AIControlComponent));
+		AIAgent agent = aiComponent.GetAIAgent();
+		agent.DeactivateAI();
+		
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		RplComponent rpl = RplComponent.Cast(owner.FindComponent(RplComponent));
 		if(rpl && owner.Type().ToString() == "SCR_ChimeraCharacter")
