@@ -7,11 +7,5 @@ SCR_ChimeraCharacter : "{854C04F0EA2129CC}Prefabs/Characters/Factions/INDFOR/FIA
   PS_PlayableComponent "{5EFCC1946F475F15}" {
    m_bIsPlayable 1
   }
-  CharacterWeaponSlotComponent "{520EA1D2F659CFDC}" {
-   AttachType InventoryStorageSlot "{9113A68B4D97E2E6}" {
-    Enabled 1
-    Prefab "{C0F7DD85A86B2900}Prefabs/Weapons/Handguns/PM/Handgun_PM.et"
-   }
-  }
  }
 }
