@@ -195,13 +195,8 @@ class PS_VoNRoomsManager : ScriptComponent
 			reader.ReadInt(key);
 			reader.ReadInt(value);
 			
-			Print("--------");
-			Print("key" + key.ToString());
-			Print("value" + value.ToString());
-			
 			m_mPlayersRooms.Insert(key, value);
 		}
-		Print("----------------");
 		int voiceRoomsCount;
 		reader.ReadInt(voiceRoomsCount);
 		for (int i = 0; i < voiceRoomsCount; i++)
@@ -210,10 +205,6 @@ class PS_VoNRoomsManager : ScriptComponent
 			string value;
 			reader.ReadInt(key);
 			reader.ReadString(value);
-			
-			Print("key" + key.ToString());
-			Print("value" + value);
-			Print("--------");
 			
 			m_mVoiceRooms.Insert(key, value);
 			m_mVoiceRoomsFromName.Insert(value, key);

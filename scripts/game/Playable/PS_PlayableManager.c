@@ -236,6 +236,8 @@ class PS_PlayableManager : ScriptComponent
 	// Execute on every client and server
 	void RegisterPlayable(PS_PlayableComponent playableComponent)
 	{
+		//PrintFormat("RegisterPlayable - %1", playableComponent.GetOwner());
+		
 		RplId playableId = playableComponent.GetId();
 		if (m_aPlayables.Contains(playableId))
 			return;
@@ -325,7 +327,7 @@ class PS_PlayableManager : ScriptComponent
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void RPC_SetPlayerFactionKey(int playerId, FactionKey factionKey)
 	{
-		Print("RPC_SetPlayerFactionKey: " + playerId.ToString() + " - " + factionKey);
+		//Print("RPC_SetPlayerFactionKey: " + playerId.ToString() + " - " + factionKey);
 		m_playersFaction[playerId] = factionKey;
 	}
 	
@@ -338,7 +340,7 @@ class PS_PlayableManager : ScriptComponent
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void RPC_SetPlayablePlayer(RplId PlayableId, int playerId)
 	{
-		Print("RPC_SetPlayablePlayer: " + PlayableId.ToString() + " - " + playerId.ToString());
+		//Print("RPC_SetPlayablePlayer: " + PlayableId.ToString() + " - " + playerId.ToString());
 		if (playerId > 0) {
 			RplId oldPlayable = GetPlayableByPlayer(playerId);
 			if (oldPlayable != RplId.Invalid()) m_playablePlayers[oldPlayable] = -1;
@@ -356,7 +358,7 @@ class PS_PlayableManager : ScriptComponent
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void RPC_SetPlayerPlayable(int playerId, RplId PlayableId)
 	{
-		Print("RPC_SetPlayerPlayable: " + playerId.ToString() + " - " + PlayableId.ToString());
+		//Print("RPC_SetPlayerPlayable: " + playerId.ToString() + " - " + PlayableId.ToString());
 		RplId oldPlayable = GetPlayableByPlayer(playerId);
 		if (oldPlayable != RplId.Invalid()) m_playablePlayers[oldPlayable] = -1;
 		
@@ -372,7 +374,7 @@ class PS_PlayableManager : ScriptComponent
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void RPC_SetPlayerState(int playerId, PS_EPlayableControllerState state)
 	{
-		Print("RPC_SetPlayerState: " + playerId.ToString() + " - " + state.ToString());
+		//Print("RPC_SetPlayerState: " + playerId.ToString() + " - " + state.ToString());
 		m_playersStates[playerId] = state;
 	}
 	
@@ -384,7 +386,7 @@ class PS_PlayableManager : ScriptComponent
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void RPC_SetPlayableGroupCallSign(RplId PlayableId, int groupCallsign)
 	{
-		Print("RPC_SetPlayableGroupCallSign: " + PlayableId.ToString() + " - " + groupCallsign.ToString());
+		//Print("RPC_SetPlayableGroupCallSign: " + PlayableId.ToString() + " - " + groupCallsign.ToString());
 		m_playableGroupCallSigns[PlayableId] = groupCallsign;
 	}
 	
@@ -396,7 +398,7 @@ class PS_PlayableManager : ScriptComponent
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void RPC_SetPlayerPin(int playerId, bool pined)
 	{
-		Print("RPC_SetPlayerPin: " + playerId.ToString() + " - " + pined.ToString());
+		//Print("RPC_SetPlayerPin: " + playerId.ToString() + " - " + pined.ToString());
 		m_playersPin[playerId] = pined;
 	}
 	

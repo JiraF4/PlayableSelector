@@ -18,7 +18,6 @@ class PS_PlayableComponent : ScriptComponent
 	override void OnPostInit(IEntity owner)
 	{
 		m_cOwner = SCR_ChimeraCharacter.Cast(owner);
-		if (!m_bIsPlayable) return;
 		GetGame().GetCallqueue().CallLater(AddToList, 0, false, owner) // init delay
 	}
 	
@@ -48,13 +47,22 @@ class PS_PlayableComponent : ScriptComponent
 	
 	private void RemoveFromList()
 	{
-		AIControlComponent aiComponent = AIControlComponent.Cast(m_cOwner.FindComponent(AIControlComponent));
-		AIAgent agent = aiComponent.GetAIAgent();
-		agent.ActivateAI();
-		
 		BaseGameMode gamemode = GetGame().GetGameMode();
 		if (!gamemode)
 			return;
+		
+		if (m_cOwner)
+		{
+			AIControlComponent aiComponent = AIControlComponent.Cast(m_cOwner.FindComponent(AIControlComponent));
+			if (aiComponent)
+			{
+				AIAgent agent = aiComponent.GetAIAgent();
+				if (agent) agent.ActivateAI();
+			}
+			
+			RplComponent rpl = RplComponent.Cast(GetOwner().FindComponent(RplComponent));
+			rpl.EnableStreaming(true);
+		}
 		
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		playableManager.RemovePlayable(m_id);
@@ -62,18 +70,22 @@ class PS_PlayableComponent : ScriptComponent
 	
 	private void AddToList(IEntity owner)
 	{
+		if (!m_bIsPlayable) return;
+		
 		AIControlComponent aiComponent = AIControlComponent.Cast(owner.FindComponent(AIControlComponent));
-		AIAgent agent = aiComponent.GetAIAgent();
-		agent.DeactivateAI();
+		if (aiComponent)
+		{
+			AIAgent agent = aiComponent.GetAIAgent();
+			if (agent) agent.DeactivateAI();
+		}
+		
+		RplComponent rpl = RplComponent.Cast(GetOwner().FindComponent(RplComponent));
+		rpl.EnableStreaming(false);
 		
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		RplComponent rpl = RplComponent.Cast(owner.FindComponent(RplComponent));
-		if(rpl && owner.Type().ToString() == "SCR_ChimeraCharacter")
-		{
-			m_id = rpl.Id();
-			playableManager.RegisterPlayable(this);
-			rpl.EnableStreaming(false); // They need to be loaded for preview
-		}
+		
+		m_id = rpl.Id();
+		playableManager.RegisterPlayable(this);
 	}
 		
 	string GetName()
@@ -88,9 +100,14 @@ class PS_PlayableComponent : ScriptComponent
 		return m_id;
 	}
 	
+	void PS_PlayableComponent(IEntityComponentSource src, IEntity ent, IEntity parent)
+	{
+		
+	}
+	
 	void ~PS_PlayableComponent()
 	{
-		RemoveFromList()
+		RemoveFromList();
 	}
 	
 	// Send our precision data, we need it on clients

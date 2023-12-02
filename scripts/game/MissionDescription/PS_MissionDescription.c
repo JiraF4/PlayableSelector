@@ -125,5 +125,46 @@ class PS_MissionDescription : GenericEntity
 		missionDescriptionManager.UnregisterDescription(this);
 	}
 	
-	// TODO: JIP
+	// JIP Replication
+	override bool RplSave(ScriptBitWriter writer)
+	{
+		// Pack every changeable variable
+		writer.WriteString(m_sTitle);
+		writer.WriteString(m_sDescriptionLayout);
+		writer.WriteString(m_sTextData);
+		writer.WriteBool(m_bEmptyFactionVisibility);
+		
+		string factions = "";
+		foreach (Faction faction: m_aVisibleForFactions)
+		{
+			if (faction) 
+			{
+				if (factions != "") factions += ", ";
+				factions += faction.GetFactionKey();
+			}
+		}
+		writer.WriteString(factions);
+		
+		return true;
+	}
+	override bool RplLoad(ScriptBitReader reader)
+	{
+		// Unpack every changeable variable
+		reader.ReadString(m_sTitle);
+		reader.ReadString(m_sDescriptionLayout);
+		reader.ReadString(m_sTextData);
+		reader.ReadBool(m_bEmptyFactionVisibility);
+		
+		string factions;
+		reader.ReadString(factions);
+		array<string> outTokens = new array<string>();
+		factions.Split(",", outTokens, false);
+		foreach (FactionKey factionKey: outTokens)
+		{
+			SCR_FactionManager factionManager = SCR_FactionManager.Cast(GetGame().GetFactionManager());
+			m_aVisibleForFactions.Insert(factionManager.GetFactionByKey(factionKey));
+		}
+		
+		return true;
+	}
 }
