@@ -157,6 +157,13 @@ class PS_MissionDescription : GenericEntity
 		
 		string factions;
 		reader.ReadString(factions);
+		GetGame().GetCallqueue().CallLater(FactionsInit, 0, false, factions);
+		
+		return true;
+	}
+	
+	void FactionsInit(string factions)
+	{
 		array<string> outTokens = new array<string>();
 		factions.Split(",", outTokens, false);
 		foreach (FactionKey factionKey: outTokens)
@@ -164,7 +171,5 @@ class PS_MissionDescription : GenericEntity
 			SCR_FactionManager factionManager = SCR_FactionManager.Cast(GetGame().GetFactionManager());
 			m_aVisibleForFactions.Insert(factionManager.GetFactionByKey(factionKey));
 		}
-		
-		return true;
 	}
 }
