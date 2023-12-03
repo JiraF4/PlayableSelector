@@ -136,9 +136,61 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			RplComponent rpl = RplComponent.Cast(controlledEntity.FindComponent(RplComponent));
 			rpl.GiveExt(RplIdentity.Local(), false);
 		}
-		playerController.SetInitialMainEntity(playableController.GetInitialEntity());
 		
-		super.OnPlayerDisconnected(playerId, cause, timeout);
+		m_OnPlayerDisconnected.Invoke(playerId, cause, timeout);
+		foreach (SCR_BaseGameModeComponent comp : m_aAdditionalGamemodeComponents)
+		{
+			comp.OnPlayerDisconnected(playerId, cause, timeout);
+		}
+		
+		m_OnPostCompPlayerDisconnected.Invoke(playerId, cause, timeout);
+
+		if (IsMaster())
+		{
+			if (controlledEntity)
+			{
+				if (SCR_ReconnectComponent.GetInstance() && SCR_ReconnectComponent.GetInstance().IsReconnectEnabled())
+				{
+					if (SCR_ReconnectComponent.GetInstance().OnPlayerDC(playerId, cause))	// if conditions to allow reconnect pass, skip the entity delete  
+					{
+						CharacterControllerComponent charController = CharacterControllerComponent.Cast(controlledEntity.FindComponent(CharacterControllerComponent));
+						if (charController)
+						{
+							charController.SetMovement(0, vector.Forward);
+						}
+						
+						CompartmentAccessComponent compAccess = CompartmentAccessComponent.Cast(controlledEntity.FindComponent(CompartmentAccessComponent)); // TODO nullcheck
+						if (compAccess)
+						{
+							BaseCompartmentSlot compartment = compAccess.GetCompartment();
+							if (compartment)
+							{
+								if(GetGame().GetIsClientAuthority())
+								{
+									CarControllerComponent carController = CarControllerComponent.Cast(compartment.GetVehicle().FindComponent(CarControllerComponent));
+									if (carController)
+									{
+										carController.Shutdown();
+										carController.StopEngine(false);
+									}
+								}
+								else
+								{
+									CarControllerComponent_SA carController = CarControllerComponent_SA.Cast(compartment.GetVehicle().FindComponent(CarControllerComponent_SA));
+									if (carController)
+									{
+										carController.Shutdown();
+										carController.StopEngine(false);
+									}
+								}
+							}
+						}
+						
+						return;
+					}
+				}
+			}
+		}
 	}
 	
 	// ------------------------------------------ Actions ------------------------------------------
