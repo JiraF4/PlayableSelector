@@ -81,9 +81,11 @@ class PS_VoNRoomsManager : ScriptComponent
 		if (state == SCR_EGameModeState.BRIEFING) { // On briefing also separate to squads
 			RplId playableId = playableManager.GetPlayableByPlayer(playerId);
 			int GroupCallSign = playableManager.GetGroupCallsignByPlayable(playableId);
-			playableController.SetVoNKey("Menu" + factionKey + GroupCallSign.ToString());
+			playableController.SetVoNKey(1, "Menu" + factionKey + GroupCallSign.ToString());
 		}
-		else playableController.SetVoNKey("Menu" + factionKey); // Сhange VoN zone
+		else playableController.SetVoNKey(1, "Menu" + factionKey); // Сhange VoN zone
+	
+		playableController.SetVoNKey(0, "Menu" + factionKey + "|" + roomName);
 		
 		RPC_MoveToRoom(playerId, roomId, roomPosition);
 		Rpc(RPC_MoveToRoom, playerId, roomId, roomPosition);
