@@ -129,6 +129,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		if (to) vonTo = PS_LobbyVoNComponent.Cast(to.FindComponent(PS_LobbyVoNComponent));
 		if (vonTo && !vonFrom)
 		{
+			if (from) m_vObserverPosition = from.GetOrigin();
 			SwitchToObserver(from);
 		}
 		if (!vonTo) SwitchFromObserver();
@@ -267,8 +268,11 @@ class PS_PlayableControllerComponent : ScriptComponent
 		if (!entity) return;
 		SCR_GadgetManagerComponent gadgetManager = SCR_GadgetManagerComponent.Cast( entity.FindComponent(SCR_GadgetManagerComponent) );
 		IEntity radioEntity = gadgetManager.GetGadgetByType(EGadgetType.RADIO);
-		BaseRadioComponent radio = BaseRadioComponent.Cast(radioEntity.FindComponent(BaseRadioComponent));
-		radio.SetEncryptionKey(VoNKey);
+		if (radioEntity)
+		{
+			BaseRadioComponent radio = BaseRadioComponent.Cast(radioEntity.FindComponent(BaseRadioComponent));
+			radio.SetEncryptionKey(VoNKey);
+		}
 	}
 	bool isVonInit()
 	{

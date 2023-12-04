@@ -16,7 +16,7 @@ class PS_EditableMissionDescriptionComponent: SCR_EditableDescriptorComponent
 	
 	bool GetDescriptionVisibleForFaction(Faction faction)
 	{
-		return m_eMissionDescription.GetVisibleForFaction(faction);
+		return m_eMissionDescription.GetVisibleForFaction(faction.GetFactionKey());
 	}
 	void SetDescriptionVisibleForFaction(Faction faction, bool visible)
 	{

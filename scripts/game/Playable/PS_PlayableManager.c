@@ -84,10 +84,9 @@ class PS_PlayableManager : ScriptComponent
 			{
 		        Resource resource = Resource.Load("{E1B415916312F029}Prefabs/InitialPlayer.et");
 				EntitySpawnParams params = new EntitySpawnParams();
-		        IEntity initialEntity = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
-				playableController.SetInitialEntity(initialEntity);
+		        entity = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
+				playableController.SetInitialEntity(entity);
 			}
-			
 			playerController.SetInitialMainEntity(entity);
 			
 			return;

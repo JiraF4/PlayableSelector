@@ -114,7 +114,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	
 	protected override void OnPlayerKilled(int playerId, IEntity playerEntity, IEntity killerEntity, notnull Instigator killer)
 	{
-		if (!IsMaster()) return;
+		if (!Replication.IsServer()) return;
 		
 		// TODO: remove CallLater
 		GetGame().GetCallqueue().CallLater(SwitchToInitialEntity, 200, false, playerId);
