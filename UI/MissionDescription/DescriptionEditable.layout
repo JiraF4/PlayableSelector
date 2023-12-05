@@ -10,9 +10,10 @@ FrameWidgetClass {
   RichTextWidgetClass "{5EE526C6634AB45A}" {
    Name "RichTextEditable"
    Slot FrameWidgetSlot "{5EC27C78E8293EA6}" {
-    OffsetLeft 0
+    PositionX 15
+    OffsetLeft 15
     OffsetTop 0
-    SizeX 480
+    SizeX 465
     OffsetRight -480
     SizeY 601
     OffsetBottom -601
