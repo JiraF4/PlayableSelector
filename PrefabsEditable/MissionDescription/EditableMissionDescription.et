@@ -33,7 +33,6 @@ PS_MissionDescription {
    Streamable Disabled
   }
  }
- coords 98.68 1 169.559
  m_sTitle "Description title"
  m_sDescriptionLayout "{41DAF7B7061DC0BC}UI/MissionDescription/DescriptionEditable.layout"
  m_sTextData "Description text"

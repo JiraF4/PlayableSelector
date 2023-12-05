@@ -355,7 +355,7 @@ FrameWidgetClass {
                          {
                           ImageWidgetClass "{5EF2DAD83B9A446D}" {
                            Name "Image0"
-                           Slot OverlayWidgetSlot {
+                           Slot OverlayWidgetSlot "{5F0915B372C61D26}" {
                            }
                            Texture "{3094131B5608B5B2}images/image.edds"
                            Size 588 779
@@ -657,12 +657,12 @@ FrameWidgetClass {
     Anchor 0.5 0.5 0.5 0.5
     PositionX 480
     OffsetLeft 480
-    PositionY -369
-    OffsetTop -369
+    PositionY -379
+    OffsetTop -379
     SizeX 480
     OffsetRight -960
     SizeY 30
-    OffsetBottom 339
+    OffsetBottom 349
    }
    {
     ButtonWidgetClass "{5EB701CAF0B7C9C0}" {
@@ -847,6 +847,19 @@ FrameWidgetClass {
     FrameWidgetClass "{5EB2900030AFF404}" {
      Prefab "{5EB2900030AFF404}"
      "Is Visible" 0
+    }
+    ScrollLayoutWidgetClass "{5EB2900030AFF408}" {
+     Prefab "{5EB2900030AFF408}"
+     Slot FrameWidgetSlot "{5EB1000AD8290B3B}" {
+      PositionX 0.506
+      OffsetLeft 0.506
+      PositionY 29
+      OffsetTop 29
+      SizeX 480
+      OffsetRight -480.506
+      SizeY 761
+      OffsetBottom -790
+     }
     }
    }
   }

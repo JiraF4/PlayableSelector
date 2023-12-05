@@ -11,7 +11,7 @@ FrameWidgetClass {
    Slot FrameWidgetSlot "{5EE8948F20BE16F5}" {
     SizeToContent 1
    }
-   Color 0 0 0 1
+   Color 0 0 0 0
    style pixel_outline
    {
     OverlayWidgetClass "{5EE89488CCB4B28D}" {

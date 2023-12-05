@@ -1,0 +1,35 @@
+$grp PS_MissionDescription : "{3136BE42592F3B1B}PrefabsEditable/MissionDescription/EditableMissionDescription.et" {
+ GeneralInfo {
+  m_sTitle "#PS-Description_HeaderAboutMission"
+  m_sTextData "Hello, mission desription!"\
+  "Use text editor like notepad to copy text with line breaks."
+  m_bEmptyFactionVisibility 1
+ }
+ Rules {
+  m_sTitle "#PS-Description_HeaderRules"
+  m_sTextData "Rules if you need them"
+  m_bEmptyFactionVisibility 1
+ }
+ USSRDescription {
+  m_sTitle "#PS-Description_HeaderUSSR"
+  m_sTextData "USSR objectives in faction specific description!"
+  m_aVisibleForFactions {
+   "USSR"
+  }
+ }
+ USDescription {
+  m_sTitle "#PS-Description_HeaderUS"
+  m_sTextData "US objectives in faction specific description!"
+  m_aVisibleForFactions {
+   "US"
+  }
+ }
+ FIADescription {
+  coords 138.44 1 110.31
+  m_sTitle "#PS-Description_HeaderFIA"
+  m_sTextData "FIA objectives in faction specific description!"
+  m_aVisibleForFactions {
+   "FIA"
+  }
+ }
+}

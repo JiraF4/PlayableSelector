@@ -10,8 +10,8 @@ class PS_SpectatorPlayableIcon : SCR_ScriptedWidgetComponent
 	protected float m_fMinIconDistance = 10.0;
 	protected float m_fMaxIconSize = 64.0;
 	protected float m_fMinIconSize = 4.0;
-	protected float m_fMaxIconOpacity = 0.8;
-	protected float m_fMinIconOpacity = 0.3;
+	protected float m_fMaxIconOpacity = 1;
+	protected float m_fMinIconOpacity = 0.8;
 	
 	protected ResourceName m_rIconImageSet = "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset";
 	
