@@ -191,6 +191,9 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 	}
 	void Action_Exit()
 	{
+		// For some strange reason players all the time accidentally exit game, maybe jus open pause menu
+		//GameStateTransitions.RequestGameplayEndTransition();  
+		//Close();
 		GetGame().GetCallqueue().CallLater(OpenPauseMenuWrap, 0); //  Else menu auto close itself
 	}
 	void OpenPauseMenuWrap()

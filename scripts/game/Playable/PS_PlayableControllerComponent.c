@@ -228,29 +228,23 @@ class PS_PlayableControllerComponent : ScriptComponent
 		PS_LobbyVoNComponent von = PS_LobbyVoNComponent.Cast(entity.FindComponent(PS_LobbyVoNComponent));
 		return von;
 	}
-	RadioTransceiver GetVoNTransiver(int radionNum)
+	RadioTransceiver GetVoNTransiver()
 	{
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
 		IEntity entity = thisPlayerController.GetControlledEntity();
 		SCR_GadgetManagerComponent gadgetManager = SCR_GadgetManagerComponent.Cast( entity.FindComponent(SCR_GadgetManagerComponent) );
-		
-		array<SCR_GadgetComponent> radioGadgets = gadgetManager.GetGadgetsByType(EGadgetType.RADIO);
-		if (radioGadgets && radioGadgets.Count() > 0)
-		{
-			if (!radioGadgets.IsIndexValid(radionNum)) return null;
-			BaseRadioComponent radio = BaseRadioComponent.Cast(radioGadgets[radionNum].GetOwner().FindComponent(BaseRadioComponent));
-			radio.SetPower(true);
-			RadioTransceiver transiver = RadioTransceiver.Cast(radio.GetTransceiver(0));
-			transiver.SetFrequency(1);
+		IEntity radioEntity = gadgetManager.GetGadgetByType(EGadgetType.RADIO);
+		BaseRadioComponent radio = BaseRadioComponent.Cast(radioEntity.FindComponent(BaseRadioComponent));
+		radio.SetPower(true);
+		RadioTransceiver transiver = RadioTransceiver.Cast(radio.GetTransceiver(0));
+		transiver.SetFrequency(1);
 		return RadioTransceiver.Cast(transiver);
-		}
-		return null;
 	}
 	void LobbyVoNEnable()
 	{
 		PS_LobbyVoNComponent von = GetVoN();
-		von.SetTransmitRadio(GetVoNTransiver(0));
-		von.SetCommMethod(ECommMethod.SQUAD_RADIO);
+		von.SetTransmitRadio(null);
+		von.SetCommMethod(ECommMethod.DIRECT);
 		von.SetCapture(true);
 	}
 	void LobbyVoNDisable()
@@ -262,22 +256,21 @@ class PS_PlayableControllerComponent : ScriptComponent
 	void LobbyVoNRadioEnable()
 	{
 		PS_LobbyVoNComponent von = GetVoN();
-		von.SetTransmitRadio(GetVoNTransiver(1));
+		von.SetTransmitRadio(GetVoNTransiver());
 		von.SetCommMethod(ECommMethod.SQUAD_RADIO);
 		von.SetCapture(true);
 	}
 	// Separate radio VoNs, CALL IT FROM SERVER
-	void SetVoNKey(int radionNum, string VoNKey)
+	void SetVoNKey(string VoNKey)
 	{
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
 		IEntity entity = thisPlayerController.GetControlledEntity();
 		if (!entity) return;
 		SCR_GadgetManagerComponent gadgetManager = SCR_GadgetManagerComponent.Cast( entity.FindComponent(SCR_GadgetManagerComponent) );
-		array<SCR_GadgetComponent> radioGadgets = gadgetManager.GetGadgetsByType(EGadgetType.RADIO);
-		if (radioGadgets && radioGadgets.Count() > 0)
+		IEntity radioEntity = gadgetManager.GetGadgetByType(EGadgetType.RADIO);
+		if (radioEntity)
 		{
-			if (!radioGadgets.IsIndexValid(radionNum)) return;
-			BaseRadioComponent radio = BaseRadioComponent.Cast(radioGadgets[radionNum].GetOwner().FindComponent(BaseRadioComponent));
+			BaseRadioComponent radio = BaseRadioComponent.Cast(radioEntity.FindComponent(BaseRadioComponent));
 			radio.SetEncryptionKey(VoNKey);
 		}
 	}
