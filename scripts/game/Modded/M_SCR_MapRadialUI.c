@@ -1,11 +1,12 @@
+// Enable markers only for briefing if gamemode coop and flag is set
 modded class SCR_MapRadialUI
 {
 	override protected void OnInputMenuOpen(float value, EActionTrigger reason)
 	{
-		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		if (gameMode.IsMarkersOnlyOnBriefing())
+		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if (gameModeCoop && gameModeCoop.GetMarkersOnlyOnBriefing())
 		{
-			if (gameMode.GetState() != SCR_EGameModeState.BRIEFING) return;
+			if (gameModeCoop.GetState() != SCR_EGameModeState.BRIEFING) return;
 			PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 			PlayerController playerController = GetGame().GetPlayerController();
 			if (!playableManager.IsPlayerGroupLeader(playerController.GetPlayerId())) return;

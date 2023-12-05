@@ -1,3 +1,4 @@
+// Force physic for vehicles
 modded class SCR_VehicleWaterPhysicsComponent
 {
 	override void OnPostInit(IEntity owner)

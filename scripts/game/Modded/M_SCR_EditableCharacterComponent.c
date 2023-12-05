@@ -1,3 +1,4 @@
+// Hook for playable attribute
 modded class SCR_EditableCharacterComponent
 {
 	bool GetPlayable()

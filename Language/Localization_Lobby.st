@@ -134,6 +134,19 @@ StringTable {
    Author "zazul"
    LastChanged "zazul"
   }
+  CustomStringTableItem "{5F0AED380F307AC1}" {
+   Id "PS-EditorAttribute_GameModeCoop_DisableLeaderSquadMarkers"
+   Target_en_us "Disable squad leader markers"
+   Modified 1594552003
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{5F0AED38124D830C}" {
+   Id "PS-EditorAttribute_GameModeCoop_DisableLeaderSquadMarkers_Description"
+   Modified 1594551986
+   Author "zazul"
+   LastChanged "zazul"
+  }
   CustomStringTableItem "{5EF9620B44BDD42D}" {
    Id "PS-EditorAttribute_GameModeCoop_FreezeTime"
    Target_en_us "Freeze time"
@@ -170,6 +183,19 @@ StringTable {
   CustomStringTableItem "{5EF9620B20207DC0}" {
    Id "PS-EditorAttribute_GameModeCoop_RemoveRedundantUnits_Description"
    Modified 1593486301
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{5F0AED380A4931C1}" {
+   Id "PS-EditorAttribute_GameModeCoop_ShowMarkersOnlyOnBriefing"
+   Target_en_us "Markers only on briefing by squad leaders"
+   Modified 1594552041
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{5F0AED380D9701A9}" {
+   Id "PS-EditorAttribute_GameModeCoop_ShowMarkersOnlyOnBriefing_Description"
+   Modified 1594551976
    Author "zazul"
    LastChanged "zazul"
   }

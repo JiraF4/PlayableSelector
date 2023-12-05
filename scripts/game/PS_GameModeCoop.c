@@ -26,6 +26,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	[Attribute("0", uiwidget: UIWidgets.CheckBox, "Remove unused units.", category: WB_GAME_MODE_CATEGORY)]
 	protected bool m_bKillRedundantUnits;
 	
+	[Attribute("0", uiwidget: UIWidgets.CheckBox, "Remove squad markers.", category: WB_GAME_MODE_CATEGORY)]
+	protected bool m_bRemoveSquadMarkers;
+	
 	[Attribute("30000", UIWidgets.EditBox, "Freeze time", "", category: WB_GAME_MODE_CATEGORY)]
 	int m_iFreezeTime = ;
 	
@@ -328,9 +331,34 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		return m_bFactionLock;
 	}
 	
-	bool IsMarkersOnlyOnBriefing()
+	bool GetMarkersOnlyOnBriefing()
 	{
 		return m_bMarkersOnlyOnBriefing;
+	}
+	void SetMarkersOnlyOnBriefing(bool markersOnlyOnBriefing)
+	{
+		RPC_SetMarkersOnlyOnBriefing(markersOnlyOnBriefing);
+		Rpc(RPC_SetMarkersOnlyOnBriefing, markersOnlyOnBriefing);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RPC_SetMarkersOnlyOnBriefing(bool markersOnlyOnBriefing)
+	{
+		m_bMarkersOnlyOnBriefing = markersOnlyOnBriefing;
+	}
+	
+	bool GetDisableLeaderSquadMarkers()
+	{
+		return m_bRemoveSquadMarkers;
+	}
+	void SetDisableLeaderSquadMarkers(bool disableLeaderSquadMarkers)
+	{
+		RPC_SetDisableLeaderSquadMarkers(disableLeaderSquadMarkers);
+		Rpc(RPC_SetDisableLeaderSquadMarkers, disableLeaderSquadMarkers);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RPC_SetDisableLeaderSquadMarkers(bool disableLeaderSquadMarkers)
+	{
+		m_bRemoveSquadMarkers = disableLeaderSquadMarkers;
 	}
 	
 	// Global flags set

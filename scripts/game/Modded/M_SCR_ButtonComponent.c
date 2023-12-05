@@ -1,3 +1,4 @@
+// Strange default button
 modded class SCR_ButtonComponent
 {
 	ref ScriptInvoker<Widget> m_OnHoverWithWidget = new ScriptInvoker();

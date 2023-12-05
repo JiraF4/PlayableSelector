@@ -1,5 +1,5 @@
 [BaseContainerProps()]
-class PS_CanOpenLobbyInGameEditorAttribute : SCR_BaseEditorAttribute
+class PS_DisableLeaderSquadMarkersEditorAttribute : SCR_BaseEditorAttribute
 {	
 	override SCR_BaseEditorAttributeVar ReadVariable(Managed item, SCR_AttributesManagerEditorComponent manager)
 	{
@@ -9,7 +9,7 @@ class PS_CanOpenLobbyInGameEditorAttribute : SCR_BaseEditorAttribute
 		PS_GameModeCoop coopMode = PS_GameModeCoop.Cast(item);
 		if (!coopMode) return null;
 		
-		bool value = coopMode.GetCanOpenLobbyInGame();
+		bool value = coopMode.GetDisableLeaderSquadMarkers();
 		return SCR_BaseEditorAttributeVar.CreateBool(value);
 	}
 	
@@ -22,6 +22,6 @@ class PS_CanOpenLobbyInGameEditorAttribute : SCR_BaseEditorAttribute
 		if (!coopMode) return;
 		
 		int value = var.GetBool();
-		coopMode.SetCanOpenLobbyInGame(value);
+		coopMode.SetDisableLeaderSquadMarkers(value);
 	}
 };
