@@ -13,10 +13,10 @@ class PS_MissionDescription : GenericEntity
 	string m_sTextData;
 	
 	[Attribute("")]
-	ref array<FactionKey> m_aVisibleForFactions = new array<FactionKey>();
+	ref array<FactionKey> m_aVisibleForFactions;
 	
 	[Attribute("")]
-	bool m_bEmptyFactionVisibility = true;
+	bool m_bEmptyFactionVisibility;
 	
 	// TODO: Get/Set Broadcast
 	ResourceName GetDescriptionLayout()
@@ -90,7 +90,9 @@ class PS_MissionDescription : GenericEntity
 	
 	// Main functions
 	override protected void EOnInit(IEntity owner)
-	{		
+	{
+		if (m_aVisibleForFactions == null)
+			m_aVisibleForFactions = new array<FactionKey>();
 		// Frame delay for manager init
 		GetGame().GetCallqueue().CallLater(RegisterToDescriptionManager);
 	}
