@@ -61,6 +61,7 @@ class PS_VoNRoomsManager : ScriptComponent
 	{
 		// Create local room for player
 		GetOrCreateRoomWithFaction("", "#PS-VoNRoom_Local" + playerId.ToString());
+		GetOrCreateRoomWithFaction("", "#PS-VoNRoom_Public" + playerId.ToString());
 	}
 	
 	// more singletons for singletons god, make our spagetie kingdom great
@@ -178,6 +179,23 @@ class PS_VoNRoomsManager : ScriptComponent
 	{
 		if (!m_mVoiceRooms.Contains(roomId)) return "";
 		return m_mVoiceRooms[roomId];
+	}
+	
+	void GetPlayersPublicRooms(out notnull array<int> rooms)
+	{
+		array<int> playerIds = new array<int>();
+		GetGame().GetPlayerManager().GetPlayers(playerIds);
+		foreach (int playerId : playerIds)
+		{
+			int playerRoomId = GetPlayerRoom(playerId);
+			if (rooms.Contains(playerRoomId)) continue;
+			string playerRoomName = GetRoomName(playerRoomId);
+			if (playerRoomName.Length() < 13) continue; // Empty before init room
+			if (playerRoomName.ContainsAt("Public", 13))
+			{
+				rooms.Insert(playerRoomId);
+			}
+		}
 	}
 	
 	// ------------------------- JIP Replication -------------------------

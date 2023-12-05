@@ -5,6 +5,12 @@ class PS_VoiceButton : PS_HideableButton
 	
 	protected int m_iPlayer;
 	
+	override void HandlerAttached(Widget w)
+	{
+		super.HandlerAttached(w);
+		m_wButtonHandler.m_OnClicked.Insert(VoiceMuteSwitch);
+	}
+	
 	void SetPlayer(int playerId)
 	{
 		m_iPlayer = playerId;
@@ -36,8 +42,6 @@ class PS_VoiceButton : PS_HideableButton
 			else m_wImage.LoadImageFromSet(0, m_sImageSetPS, "VoNIdle");
 		} else m_wImage.LoadImageFromSet(0, m_sImageSetPS, "VoNDisabled");
 		m_wButton.SetVisible(playerController.GetPlayerId() != m_iPlayer);
-		
-		m_wButtonHandler.m_OnClick.Insert(VoiceMuteSwitch);
 	}
 	
 	void VoiceMuteSwitch(Widget button)

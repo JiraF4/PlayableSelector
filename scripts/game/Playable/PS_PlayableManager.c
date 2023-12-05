@@ -301,7 +301,7 @@ class PS_PlayableManager : ScriptComponent
 		int groupCallsign = 1000000 * company + 1000 * platoon + 1 * squad;
 		SetPlayableGroupCallSign(playableId, groupCallsign);
 		
-		// Create VoN group chanel
+		// Create VoN group channel
 		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
 		VoNRoomsManager.GetOrCreateRoomWithFaction(playerGroup.GetFaction().GetFactionKey(), groupCallsign.ToString());
 		VoNRoomsManager.GetOrCreateRoomWithFaction(playerGroup.GetFaction().GetFactionKey(), "#PS-VoNRoom_Command");

@@ -16,14 +16,6 @@ class PS_MissionDescriptionManager : ScriptComponent
 	{
 		m_aDescriptions.RemoveItem(mapDescription);
 	}
-		
-	override protected void OnPostInit(IEntity owner)
-	{
-		foreach(PS_MissionDescription description: m_aDescriptions)
-		{
-			//description.m_sFactions.Split(",", description.m_aFactions, true);
-		}
-	}
 	
 	void GetDescriptions(out array<PS_MissionDescription> descriptionsOut)
 	{

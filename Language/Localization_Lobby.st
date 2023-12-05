@@ -615,5 +615,13 @@ StringTable {
    Author "zazul"
    LastChanged "zazul"
   }
+  CustomStringTableItem "{5F0B06B237D1AA55}" {
+   Id "PS-VoNRoom_Public"
+   Target_en_us "room"
+   Target_ru_ru "комната"
+   Modified 1594577827
+   Author "zazul"
+   LastChanged "zazul"
+  }
  }
 }

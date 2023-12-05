@@ -160,6 +160,21 @@ class PS_VoiceChatList : ScriptedWidgetComponent
 				outRoomsArray.Insert(groupRoom);
 		}
 		
+		// Player public room
+		int publicRoom = VoNRoomsManager.GetRoomWithFaction("", "#PS-VoNRoom_Public" + currentPlayerId.ToString());
+		outRoomsArray.Insert(publicRoom);
+		
+		// Other players public rooms
+		array<int> playersPublicRooms = new array<int>();
+		VoNRoomsManager.GetPlayersPublicRooms(playersPublicRooms);
+		foreach (int roomId : playersPublicRooms)
+		{
+			if (!outRoomsArray.Contains(roomId))
+				outRoomsArray.Insert(roomId);
+		}
+		
+		
+		
 		// Local room if you want some privacy
 		int localRoom = VoNRoomsManager.GetRoomWithFaction("", "#PS-VoNRoom_Local" + currentPlayerId.ToString());
 		outRoomsArray.Insert(localRoom);
