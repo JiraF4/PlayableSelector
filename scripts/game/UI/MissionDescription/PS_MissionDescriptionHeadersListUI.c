@@ -31,8 +31,10 @@ class PS_MissionDescriptionHeadersListUI : ScriptedWidgetComponent
 		
 		foreach (PS_MissionDescription description: descriptions)
 		{
-			if (!description.GetVisibleForFaction(factionKey) || !(!description.GetVisibleForEmptyFaction() && factionKey == ""))
-					continue;
+			if (!description.GetVisibleForFaction(factionKey) && factionKey != "")
+				continue;
+			if (!description.GetVisibleForEmptyFaction() && factionKey == "")
+				continue;
 			
 			Widget header = GetGame().GetWorkspace().CreateWidgets(m_rHeaderLayout);
 			PS_MissionDescriptionSelectorUI handler = PS_MissionDescriptionSelectorUI.Cast(header.FindHandler(PS_MissionDescriptionSelectorUI));
