@@ -15,6 +15,7 @@ class PS_MissionDescription : GenericEntity
 	[Attribute("")]
 	ref array<FactionKey> m_aVisibleForFactions = new array<FactionKey>();
 	
+	[Attribute("")]
 	bool m_bEmptyFactionVisibility = true;
 	
 	// TODO: Get/Set Broadcast
