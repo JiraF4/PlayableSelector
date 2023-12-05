@@ -2,12 +2,16 @@ $grp PS_MissionDescription : "{3136BE42592F3B1B}PrefabsEditable/MissionDescripti
  GeneralInfo {
   m_sTitle "#PS-Description_HeaderAboutMission"
   m_sTextData "Hello, mission desription!"\
-  "Use text editor like notepad to copy text with line breaks."
+  "Use text editor like notepad to copy text with line breaks."\
+  "This description show up only on prelobby stage (only to empty faction)"
   m_bEmptyFactionVisibility 1
  }
  Rules {
   m_sTitle "#PS-Description_HeaderRules"
   m_sTextData "Rules if you need them"
+  m_aVisibleForFactions {
+   "US" "USSR" "FIA"
+  }
   m_bEmptyFactionVisibility 1
  }
  USSRDescription {
@@ -31,5 +35,14 @@ $grp PS_MissionDescription : "{3136BE42592F3B1B}PrefabsEditable/MissionDescripti
   m_aVisibleForFactions {
    "FIA"
   }
+ }
+ GeneralInfo2 {
+  coords 134.756 6.26 103.914
+  m_sTitle "#PS-Description_HeaderObjectives"
+  m_sTextData "Just one more localized string you can use!"
+  m_aVisibleForFactions {
+   "USSR" "US"
+  }
+  m_bEmptyFactionVisibility 1
  }
 }

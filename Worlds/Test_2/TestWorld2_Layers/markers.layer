@@ -1,50 +1,65 @@
 $grp PS_ManualMarker : "{CD85ADE9E0F54679}PrefabsEditable/Markers/EditableMarker.et" {
- {
+ USSRSpawn {
   coords 117.911 1 106.587
   m_sImageSet "{B9E14AFE75AEBB19}UI/Textures/Icons/icons_mapMarkersUI_drawing/icons_DR_mapMarkersUI.imageset"
   m_sImageSetGlow ""
   m_MarkerColor 0.502 0 0 1
   m_sQuadName "AR_icon_spawn_point"
-  m_sDescription "USSR"
+  m_sDescription "Marker desription here"
+  m_aVisibleForFactions {
+   "USSR" "US" "FIA"
+  }
   m_bVisibleForEmptyFaction 1
  }
- {
+ USSpawn {
   coords 128.73 1 148.199
   m_sImageSet "{B9E14AFE75AEBB19}UI/Textures/Icons/icons_mapMarkersUI_drawing/icons_DR_mapMarkersUI.imageset"
   m_sImageSetGlow ""
   m_MarkerColor 0 0.125 0.502 1
   m_sQuadName "AR_icon_spawn_point"
   m_fWorldSize 150
-  m_sDescription "US"
+  m_sDescription "This marker has scaling"
   m_bUseWorldScale 0
+  m_aVisibleForFactions {
+   "USSR" "US" "FIA"
+  }
   m_bVisibleForEmptyFaction 1
  }
- {
+ FIASpawn {
   coords 96.211 1 144.487
   m_MarkerColor 0 0.502 0.125 1
   m_sQuadName "flag-2"
-  m_sDescription "FIA"
+  m_sDescription "This marker has glow"
+  m_aVisibleForFactions {
+   "USSR" "US" "FIA"
+  }
   m_bVisibleForEmptyFaction 1
  }
- {
+ FIAOnly {
   coords 35.599 1 221.388
-  m_MarkerColor 0 0.502 0.125 1
+  m_MarkerColor 0 0.502 0.502 1
   m_sQuadName "mark-exclamation"
   m_sDescription "FIA only marker"
-  m_sVisibleForFactions "FIA"
+  m_aVisibleForFactions {
+   "FIA"
+  }
  }
- {
+ USOnly {
   coords 234.561 1 235.127
-  m_MarkerColor 0 0.125 0.502 1
+  m_MarkerColor 0.251 0 0.502 1
   m_sQuadName "mark-exclamation"
   m_sDescription "US only marker"
-  m_sVisibleForFactions "US"
+  m_aVisibleForFactions {
+   "US"
+  }
  }
- {
+ USSROnly {
   coords 110.308 1 7.989
   m_MarkerColor 0.502 0.376 0 1
   m_sQuadName "mark-exclamation"
   m_sDescription "USSR only marker"
-  m_sVisibleForFactions "US"
+  m_aVisibleForFactions {
+   "USSR"
+  }
  }
 }
