@@ -142,6 +142,12 @@ class PS_PlayableControllerComponent : ScriptComponent
 		if (m_eInitialEntity)
 		{
 			m_eInitialEntity.SetOrigin(VoNPosition);
+			
+			// Who broke camera on map?
+			CameraBase cameraBase = GetGame().GetCameraManager().CurrentCamera();
+			if (cameraBase)
+				cameraBase.ApplyTransform(timeSlice);
+			
 			Physics physics = m_eInitialEntity.GetPhysics();
 			if (physics)
 			{

@@ -179,15 +179,19 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 	// Channel
 	void Action_LobbyVoNChannelOn()
 	{
+		/*
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		playableController.LobbyVoNRadioEnable();
+		*/
 	}
 	void Action_LobbyVoNChannelOff()
 	{
+		/*
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		playableController.LobbyVoNDisable();
+		*/
 	}
 	void Action_Exit()
 	{
