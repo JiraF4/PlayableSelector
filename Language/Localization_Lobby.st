@@ -251,6 +251,19 @@ StringTable {
    Author "zazul"
    LastChanged "zazul"
   }
+  CustomStringTableItem "{5F0AF03B543FAF6A}" {
+   Id "PS-EditorAttribute_Playable_IsPlayable"
+   Target_en_us "Is playable"
+   Modified 1594552657
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{5F0AF03B5602B638}" {
+   Id "PS-EditorAttribute_Playable_IsPlayable_Description"
+   Modified 1594552652
+   Author "zazul"
+   LastChanged "zazul"
+  }
   CustomStringTableItem "{5EF9620A4444DA9C}" {
    Id "PS-EditorCategory_Lobby"
    Target_en_us "Lobby"

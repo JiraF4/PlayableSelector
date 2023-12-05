@@ -7,7 +7,8 @@ SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.et" {
 SCR_AIGroup : "{9C7902A055DDA271}Prefabs/Groups/OPFOR/Group_USSR_FireGroup_P.et" {
  components {
   PS_GroupCallsignAssigner "{5EE0FA6D3A22E7BD}" {
+   m_iSquadCallsign 1
   }
  }
- coords 121.76 1 109.35
+ coords 117.269 1 109.35
 }

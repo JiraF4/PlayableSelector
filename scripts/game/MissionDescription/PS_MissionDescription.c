@@ -127,15 +127,11 @@ class PS_MissionDescription : GenericEntity
 		writer.WriteString(m_sTextData);
 		writer.WriteBool(m_bEmptyFactionVisibility);
 		
-		Print("RplSave PS_MissionDescription", LogLevel.ERROR);
-		Print("RplSave PS_MissionDescription", LogLevel.ERROR);
-		Print("RplSave PS_MissionDescription", LogLevel.ERROR);
 		string factions = "";
 		foreach (FactionKey factionKey: m_aVisibleForFactions)
 		{
 			if (factions != "") factions += ",";
 			factions += factionKey;
-			PrintFormat("PS_MissionDescription | %1", factionKey);
 		}
 		writer.WriteString(factions);
 		
@@ -149,9 +145,6 @@ class PS_MissionDescription : GenericEntity
 		reader.ReadString(m_sTextData);
 		reader.ReadBool(m_bEmptyFactionVisibility);
 		
-		Print("RplLoad PS_MissionDescription", LogLevel.ERROR);
-		Print("RplLoad PS_MissionDescription", LogLevel.ERROR);
-		Print("RplLoad PS_MissionDescription", LogLevel.ERROR);
 		string factions;
 		reader.ReadString(factions);
 		GetGame().GetCallqueue().CallLater(FactionsInit, 0, false, factions);
@@ -166,7 +159,6 @@ class PS_MissionDescription : GenericEntity
 		foreach (FactionKey factionKey: outTokens)
 		{
 			m_aVisibleForFactions.Insert(factionKey);
-			PrintFormat("PS_MissionDescription | %1", factionKey);
 		}
 	}
 }

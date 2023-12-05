@@ -32,3 +32,10 @@ PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_Game
 }
 HitRegistrationManager HitRegManager1 : "{0EDA3D48791120DD}Prefabs/MP/HitRegManager.et" {
 }
+SCR_AIGroup : "{9C7902A055DDA271}Prefabs/Groups/OPFOR/Group_USSR_FireGroup_P.et" {
+ components {
+  PS_GroupCallsignAssigner "{5EE0FA6D3A22E7BD}" {
+  }
+ }
+ coords 122.658 1 109.35
+}
