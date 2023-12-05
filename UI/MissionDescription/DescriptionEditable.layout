@@ -12,10 +12,11 @@ FrameWidgetClass {
    Slot FrameWidgetSlot "{5EC27C78E8293EA6}" {
     PositionX 15
     OffsetLeft 15
-    OffsetTop 0
+    PositionY 15
+    OffsetTop 15
     SizeX 465
     OffsetRight -480
-    SizeY 601
+    SizeY 586
     OffsetBottom -601
    }
    Text ""

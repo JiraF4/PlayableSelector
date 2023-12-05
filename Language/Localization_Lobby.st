@@ -33,6 +33,22 @@ StringTable {
    Author "SeskPC"
    LastChanged "SeskPC"
   }
+  CustomStringTableItem "{5F0AFCF3D60D9339}" {
+   Id "PS-Briefing_PlayableNotSelected"
+   Target_en_us "Role are not selected!"\
+   "On mission start you will become a spectator!"
+   Target_ru_ru "Роль не выбрана!"\
+   "На старте миссии вы станете наблюдателем!"
+   Modified 1594565604
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
+  CustomStringTableItem "{5F0AFCF3B4D7E97D}" {
+   Id "PS-Briefing_Steps"
+   Modified 1594564298
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
   CustomStringTableItem "{5EC5311E7A654D14}" {
    Id "PS-Briefing_VoiceChat"
    Target_en_us "Voice chat"
@@ -123,160 +139,195 @@ StringTable {
   }
   CustomStringTableItem "{5EF96208D034F2DA}" {
    Id "PS-EditorAttribute_GameModeCoop_CanOpenLobbyInLobby"
-   Target_en_us "Can open lobby in game"
-   Modified 1593486495
+   Target_en_us "Team Switch"
+   Target_ru_ru "Смена роли"
+   Modified 1594561447
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5EF96208D5FE09A6}" {
    Id "PS-EditorAttribute_GameModeCoop_CanOpenLobbyInLobby_Description"
-   Modified 1593486393
+   Target_en_us "Any player will be able to access the lobby during a mission and change role"
+   Target_ru_ru "Любой игрок сможет получить доступ в лобби во время миссии и сменить роль"
+   Modified 1594563935
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5F0AED380F307AC1}" {
    Id "PS-EditorAttribute_GameModeCoop_DisableLeaderSquadMarkers"
    Target_en_us "Disable squad leader markers"
-   Modified 1594552003
+   Target_ru_ru "Отключить маркера лидеров отрядов"
+   Modified 1594563714
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5F0AED38124D830C}" {
    Id "PS-EditorAttribute_GameModeCoop_DisableLeaderSquadMarkers_Description"
-   Modified 1594551986
+   Target_en_us "Squad leaders markers will not appear on the map."
+   Target_ru_ru "Маркера лидеров отделений не будут отображены на карте"
+   Modified 1594563814
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5EF9620B44BDD42D}" {
    Id "PS-EditorAttribute_GameModeCoop_FreezeTime"
    Target_en_us "Freeze time"
-   Modified 1593486501
+   Target_ru_ru "Фризтайм"
+   Modified 1594561039
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5EF9620B4932D858}" {
    Id "PS-EditorAttribute_GameModeCoop_FreezeTime_Description"
-   Modified 1593486147
+   Target_en_us "Time from mission start to removal of containment zones"
+   Target_ru_ru "Время со старта миссии до удаления зон ограничения"
+   Modified 1594563674
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5EF9620B03413635}" {
    Id "PS-EditorAttribute_GameModeCoop_ReconnectTime"
    Target_en_us "Reconnect time"
-   Modified 1593486508
+   Target_ru_ru "Время для переподключения"
+   Modified 1594561032
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5EF9620B07CEB34C}" {
    Id "PS-EditorAttribute_GameModeCoop_ReconnectTime_Description"
-   Modified 1593486254
+   Target_en_us "Player role reservation time for reconnection"
+   Target_ru_ru "Время резервации роли игрока для переподключения"
+   Modified 1594563528
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5EF9620B1D5BEAA7}" {
    Id "PS-EditorAttribute_GameModeCoop_RemoveRedundantUnits"
    Target_en_us "Remove redundant units"
-   Modified 1593486522
+   Target_ru_ru "Удалить незанятых персонажей"
+   Modified 1594560608
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5EF9620B20207DC0}" {
    Id "PS-EditorAttribute_GameModeCoop_RemoveRedundantUnits_Description"
-   Modified 1593486301
+   Target_en_us "Delete not used playable units on mission start"
+   Target_ru_ru "Удалить незанятых персонажей на старте миссии"
+   Modified 1594563397
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5F0AED380A4931C1}" {
    Id "PS-EditorAttribute_GameModeCoop_ShowMarkersOnlyOnBriefing"
    Target_en_us "Markers only on briefing by squad leaders"
-   Modified 1594552041
+   Target_ru_ru "Маркеры только на брифинге лидерами отрядов"
+   Modified 1594565539
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5F0AED380D9701A9}" {
    Id "PS-EditorAttribute_GameModeCoop_ShowMarkersOnlyOnBriefing_Description"
-   Modified 1594551976
+   Target_en_us "Prevents players from placing markers after the briefing and also if they are not the leader of the squad"
+   Target_ru_ru "Запрещает игрокам ставить маркера после брифинга а также если они не лидеры отряда"
+   Modified 1594563189
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5EF9620B995D2494}" {
    Id "PS-EditorAttribute_MissionDescription_FactionEmpty"
    Target_en_us "Show to empty faction"
-   Modified 1593486539
+   Target_ru_ru "Показать пустой фракции"
+   Modified 1594560563
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5EF9620B9D907696}" {
    Id "PS-EditorAttribute_MissionDescription_FactionEmpty_Description"
-   Modified 1593486064
+   Target_en_us "Will be this description shown on Mission Preview"
+   Target_ru_ru "Будет ли описание доступно на этапе предпросмотра"
+   Modified 1594562765
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5EF9620BEE5A72E9}" {
    Id "PS-EditorAttribute_MissionDescription_Factions"
    Target_en_us "Show to factions"
-   Modified 1593486546
+   Target_ru_ru "Показать фракциям"
+   Modified 1594560552
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5EF9620BF214E3D0}" {
    Id "PS-EditorAttribute_MissionDescription_Factions_Description"
-   Modified 1593485989
+   Target_en_us "This description will be shown to selected factions"
+   Target_ru_ru "Это описание будет доступно выбранным фракциям"
+   Modified 1594562314
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5EF9620BCDCE1FDF}" {
    Id "PS-EditorAttribute_MissionDescription_TextData"
    Target_en_us "Text data"
-   Modified 1593486571
+   Target_ru_ru "Текст"
+   Modified 1594560539
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5EF9620BD39D1418}" {
    Id "PS-EditorAttribute_MissionDescription_TextData_Description"
-   Modified 1593485932
+   Target_en_us "Description tab text"
+   Target_ru_ru "Текст в вкладке описания"
+   Modified 1594562258
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5EF9620A25565F4F}" {
    Id "PS-EditorAttribute_MissionDescription_Title"
    Target_en_us "Title"
-   Modified 1593486575
+   Target_ru_ru "Заголовок"
+   Modified 1594560531
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5EF9620A2941F17B}" {
    Id "PS-EditorAttribute_MissionDescription_Title_Description"
-   Modified 1593485859
+   Target_en_us "Tab title with mission description"
+   Target_ru_ru "Заголовок вкладки с описанием миссии"
+   Modified 1594562204
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5F0AF03B543FAF6A}" {
    Id "PS-EditorAttribute_Playable_IsPlayable"
    Target_en_us "Is playable"
-   Modified 1594552657
+   Target_ru_ru "Играбельный"
+   Modified 1594560199
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5F0AF03B5602B638}" {
    Id "PS-EditorAttribute_Playable_IsPlayable_Description"
-   Modified 1594552652
+   Target_en_us "Players can play as this unit/squad"
+   Target_ru_ru "Игроки смогут играть за этого персонажа/группу"
+   Modified 1594562116
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5EF9620A4444DA9C}" {
    Id "PS-EditorCategory_Lobby"
-   Target_en_us "Lobby"
-   Modified 1593485691
+   Target_en_us "Reforger Lobby"
+   Target_ru_ru "Рефоргер Лобби"
+   Modified 1594560073
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5EF962097FA8C778}" {
    Id "PS-EditorEntity_MissionDescription_Name"
    Target_en_us "Mission description"
-   Modified 1593487480
+   Target_ru_ru "Описание миссии"
+   Modified 1594559969
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5EB30CD4368261A7}" {
    Id "PS-GameMaster_PlayableGroup"
@@ -475,6 +526,12 @@ StringTable {
    Target_en_us "Faction voice chat"
    Target_ru_ru "Фракционный голосовой чат"
    Modified 1589854747
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
+  CustomStringTableItem "{5F0AFCF3DCDE6333}" {
+   Id "PS-MissionDescription_Header"
+   Modified 1594564254
    Author "SeskPC"
    LastChanged "SeskPC"
   }

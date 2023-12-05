@@ -1,14 +1,51 @@
-SCR_AIGroup : "{126BE8C46FA39581}Prefabs/Groups/INDFOR/Group_FIA_FireTeam_P.et" {
- coords 96.153 1 143.999
-}
-SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.et" {
- coords 124.656 1 140.44
-}
-SCR_AIGroup : "{9C7902A055DDA271}Prefabs/Groups/OPFOR/Group_USSR_FireGroup_P.et" {
- components {
-  PS_GroupCallsignAssigner "{5EE0FA6D3A22E7BD}" {
-   m_iSquadCallsign 1
+$grp SCR_AIGroup : "{126BE8C46FA39581}Prefabs/Groups/INDFOR/Group_FIA_FireTeam_P.et" {
+ {
+  components {
+   PS_GroupCallsignAssigner "{5F0B29E8344F998C}" {
+   }
   }
+  coords 101.321 1 144.767
  }
- coords 117.269 1 109.35
+ {
+  components {
+   PS_GroupCallsignAssigner "{5F0B29E83E2D0A7B}" {
+    m_iSquadCallsign 1
+   }
+  }
+  coords 83.348 1 145.808
+ }
+}
+$grp SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.et" {
+ {
+  components {
+   PS_GroupCallsignAssigner "{5F0B29E838442C1F}" {
+   }
+  }
+  coords 124.656 1 140.44
+ }
+ {
+  components {
+   PS_GroupCallsignAssigner "{5F0B29E804BAEC5B}" {
+    m_iSquadCallsign 1
+   }
+  }
+  coords 132.914 1 144.378
+ }
+}
+$grp SCR_AIGroup : "{9C7902A055DDA271}Prefabs/Groups/OPFOR/Group_USSR_FireGroup_P.et" {
+ {
+  components {
+   PS_GroupCallsignAssigner "{5EE0FA6D3A22E7BD}" {
+    m_iSquadCallsign 1
+   }
+  }
+  coords 113.667 1 107.954
+ }
+ {
+  components {
+   PS_GroupCallsignAssigner "{5EE0FA6D3A22E7BD}" {
+   }
+  }
+  coords 122.024 1 113.982
+ }
 }

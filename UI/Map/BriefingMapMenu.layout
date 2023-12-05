@@ -437,6 +437,8 @@ FrameWidgetClass {
            Text "#PS-Briefing_PlayableNotSelected"
            "Font Size" 52
            "Min Font Size" 52
+           "Horizontal Alignment" Center
+           "Vertical Alignment" Center
           }
          }
         }
