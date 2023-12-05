@@ -607,5 +607,13 @@ StringTable {
    Author "SeskPC"
    LastChanged "SeskPC"
   }
+  CustomStringTableItem "{5F0B06B05C63FB17}" {
+   Id "PS-VoNRoom_Local"
+   Target_en_us "Private room (Disable channel)"
+   Target_ru_ru "Приватная комната (Disable channel)"
+   Modified 1594576436
+   Author "zazul"
+   LastChanged "zazul"
+  }
  }
 }

@@ -202,16 +202,16 @@ class PS_PlayableControllerComponent : ScriptComponent
 	void MoveToVoNRoomByKey(int playerId, string roomKey)
 	{
 		string factionKey = "";
-		string groupName = "";
+		string roomName = "#PS-VoNRoom_Global";
 		
 		if (roomKey.Contains("|")) {
 			array<string> outTokens = new array<string>();
 			roomKey.Split("|", outTokens, false);
 			factionKey = outTokens[0];
-			groupName = outTokens[1];
+			roomName = outTokens[1];
 		}
 		
-		Rpc(RPC_MoveVoNToRoom, playerId, factionKey, groupName);
+		Rpc(RPC_MoveVoNToRoom, playerId, factionKey, roomName);
 	}
 	void MoveToVoNRoom(int playerId, FactionKey factionKey, string roomName)
 	{

@@ -29,10 +29,11 @@ class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 		m_iRoomId = roomId;
 		
 		string name = roomName;
-		if (name.IsDigitAt(0)) {
+		if (name != "" && name.IsDigitAt(0)) {
 			int CallSign = roomName.ToInt();
 			name = playableManager.GroupCallsignToGroupName(faction, CallSign);
 		}
+		if (name.StartsWith("#PS-VoNRoom_Local")) name = "#PS-VoNRoom_Local";
 		m_wRoomName.SetText(name);
 	}
 	
