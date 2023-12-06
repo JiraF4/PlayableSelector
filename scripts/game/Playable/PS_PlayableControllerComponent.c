@@ -141,8 +141,8 @@ class PS_PlayableControllerComponent : ScriptComponent
 		// Lets fight with phisyc engine
 		if (m_eInitialEntity)
 		{
-			vector currentOrigin = m_eInitialEntity.GetOrigin();
-			if (currentOrigin == VoNPosition) return;
+			//vector currentOrigin = m_eInitialEntity.GetOrigin();
+			//if (currentOrigin == VoNPosition) return;
 			//Print("Move to: " + currentOrigin.ToString());
 			
 			m_eInitialEntity.SetOrigin(VoNPosition);
