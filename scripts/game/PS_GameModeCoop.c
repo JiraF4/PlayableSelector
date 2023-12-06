@@ -276,7 +276,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 					if (playableId == RplId.Invalid())
 					{
 						playableManager.SetPlayerFactionKey(playerId, "");
-						VoNRoomsManager.MoveToRoom(playerId, "", "");
+						VoNRoomsManager.MoveToRoom(playerId, "", "#PS-VoNRoom_Global");
 					}else{
 						if (playableManager.IsPlayerGroupLeader(playerId)) 
 						{
