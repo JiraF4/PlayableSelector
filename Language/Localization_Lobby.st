@@ -531,7 +531,9 @@ StringTable {
   }
   CustomStringTableItem "{5F0AFCF3DCDE6333}" {
    Id "PS-MissionDescription_Header"
-   Modified 1594564254
+   Target_en_us "Mission description"
+   Target_ru_ru "Описание миссии"
+   Modified 1594684057
    Author "SeskPC"
    LastChanged "SeskPC"
   }
@@ -609,9 +611,9 @@ StringTable {
   }
   CustomStringTableItem "{5F0C9CB1CF9CE91D}" {
    Id "PS-VoNRoom_Local"
-   Target_en_us "private channel"
-   Target_ru_ru "приватный канал"
-   Modified 1594667424
+   Target_en_us "Deafen"
+   Target_ru_ru "Откл.звук"
+   Modified 1594684849
    Author "SeskPC"
    LastChanged "SeskPC"
   }

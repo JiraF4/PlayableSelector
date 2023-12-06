@@ -129,6 +129,10 @@ class PS_VoiceChatList : ScriptedWidgetComponent
 		EPlayerRole currentPlayerRole = playerManager.GetPlayerRoles(currentPlayerController.GetPlayerId());
 		FactionKey currentPlayerFactionKey = playableManager.GetPlayerFactionKey(currentPlayerId);
 		
+		// Local room if you want some privacy
+		int localRoom = VoNRoomsManager.GetRoomWithFaction("", "#PS-VoNRoom_Local" + currentPlayerId.ToString());
+		outRoomsArray.Insert(localRoom);
+		
 		// Global room
 		int globalRoom = VoNRoomsManager.GetRoomWithFaction("", "#PS-VoNRoom_Global");
 		outRoomsArray.Insert(globalRoom);
@@ -172,12 +176,6 @@ class PS_VoiceChatList : ScriptedWidgetComponent
 			if (!outRoomsArray.Contains(roomId))
 				outRoomsArray.Insert(roomId);
 		}
-		
-		
-		
-		// Local room if you want some privacy
-		int localRoom = VoNRoomsManager.GetRoomWithFaction("", "#PS-VoNRoom_Local" + currentPlayerId.ToString());
-		outRoomsArray.Insert(localRoom);
 		
 		// Current room if something gone wrong
 		int currentRoom = VoNRoomsManager.GetPlayerRoom(currentPlayerId);
