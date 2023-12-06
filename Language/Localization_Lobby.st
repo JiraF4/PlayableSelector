@@ -219,9 +219,9 @@ StringTable {
   }
   CustomStringTableItem "{5F0AED380A4931C1}" {
    Id "PS-EditorAttribute_GameModeCoop_ShowMarkersOnlyOnBriefing"
-   Target_en_us "Map varkers can be placed only on briefing by squad leaders"
+   Target_en_us "Map markers can be placed only on briefing by squad leaders"
    Target_ru_ru "Маркеры на карте могут быть поставлены только на брифинге лидерами отрядов"
-   Modified 1594646568
+   Modified 1594663990
    Author "zazul"
    LastChanged "SeskPC"
   }
