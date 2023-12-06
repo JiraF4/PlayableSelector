@@ -5,22 +5,25 @@ class PS_VoNRoomsManagerClass: ScriptComponentClass
 	
 };
 
+// just string but funnier struct: [FactionKey + "|"] + string
+typedef string VoNRoomKey;
 
 // Manage VoN "Rooms"
-// Flying wallles rooms for naked VoN bois, radio soon.
+// Flying wallles rooms for naked VoN bois.
 [ComponentEditorProps(icon: HYBRID_COMPONENT_ICON)]
 class PS_VoNRoomsManager : ScriptComponent
 {	
 	// server data
 	ref map<int, vector> m_mRoomOffsets = new map<int, vector>(); // offset from initial position for each room
-	ref map<string, int> m_mVoiceRoomsFromName = new map<string, int>(); // room key to roomId relationship
+	ref map<VoNRoomKey, int> m_mVoiceRoomsFromName = new map<VoNRoomKey, int>(); // room key to roomId relationship
 	
 	// Replication data
-	ref map<int, string> m_mVoiceRooms = new map<int, string>(); // room names for UI
+	ref map<int, VoNRoomKey> m_mVoiceRooms = new map<int, VoNRoomKey>(); // room names for UI
 	ref map<int, int> m_mPlayersRooms = new map<int, int>(); // player to room relationship
 	
-	// Move speech bois underground
+	// Move speech bois to space
 	static vector roomInitialPosition = "1 1000000 1";
+	
 	// offset every room
 	vector lastOffset;
 	int m_iLastRoomId = 1;
@@ -44,11 +47,21 @@ class PS_VoNRoomsManager : ScriptComponent
 	
 	override protected void OnPostInit(IEntity owner)
 	{
+		SCR_BaseGameMode baseGameMode = SCR_BaseGameMode.Cast(GetGame().GetGameMode());
+		baseGameMode.GetOnPlayerConnected().Insert(OnPlayerConnected);
+		
 		// Set default room position
 		m_mRoomOffsets[0] = roomInitialPosition;
 		m_mVoiceRooms[0] = "";
 		m_mVoiceRoomsFromName[""] = 0;
 		if (Replication.IsServer()) m_bRplLoaded = true;
+	}
+	
+	void OnPlayerConnected(int playerId)
+	{
+		// Create local room for player
+		GetOrCreateRoomWithFaction("", "#PS-VoNRoom_Local" + playerId.ToString());
+		GetOrCreateRoomWithFaction("", "#PS-VoNRoom_Public" + playerId.ToString());
 	}
 	
 	// more singletons for singletons god, make our spagetie kingdom great
@@ -66,25 +79,34 @@ class PS_VoNRoomsManager : ScriptComponent
 	void MoveToRoom(int playerId, FactionKey factionKey, string roomName)
 	{
 		if (!Replication.IsServer()) return;
-		if (factionKey == "") roomName = ""; // Global has only one room
 		
+		// Create new room and id if need
 		int roomId = GetOrCreateRoomWithFaction(factionKey, roomName);
 		FactionManager factionManager = GetGame().GetFactionManager();
 		vector roomPosition = GetOrCreateRoomPosition(roomId, factionManager.GetFactionIndex(factionManager.GetFactionByKey(factionKey)));
 		
+		// Get global stuff
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		PlayerController playerController = playerManager.GetPlayerController(playerId);
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		SCR_EGameModeState state = gameMode.GetState();
-		if (state == SCR_EGameModeState.BRIEFING) { // On briefing also separate to squads
+		
+		// Channel VoN switch
+		if (roomName.StartsWith("#PS-VoNRoom_Local"))
+		{
+			// We need silence
+			playableController.SetVoNKey(roomName);
+		} else if (state == SCR_EGameModeState.BRIEFING) { // On briefing also separate to squads
+			// May be reworked later
 			RplId playableId = playableManager.GetPlayableByPlayer(playerId);
 			int GroupCallSign = playableManager.GetGroupCallsignByPlayable(playableId);
 			playableController.SetVoNKey("Menu" + factionKey + GroupCallSign.ToString());
 		}
 		else playableController.SetVoNKey("Menu" + factionKey); // Сhange VoN zone
 		
+		// Finally move client to room
 		RPC_MoveToRoom(playerId, roomId, roomPosition);
 		Rpc(RPC_MoveToRoom, playerId, roomId, roomPosition);
 	}
@@ -105,12 +127,15 @@ class PS_VoNRoomsManager : ScriptComponent
 	
 	// ------------------------- Room creation -------------------------
 	// Create room if new key provided, RUN ONLY ON SERVER
-	int GetOrCreateRoom(string roomKey)
+	int GetOrCreateRoomWithFaction(FactionKey factionKey, string roomName)
+	{
+		VoNRoomKey roomKey = factionKey + "|" + roomName;
+		if (roomKey == "|") roomKey = "";
+		return GetOrCreateRoom(roomKey);
+	}
+	int GetOrCreateRoom(VoNRoomKey roomKey)
 	{
 		if (!Replication.IsServer()) return -1;
-		
-		
-		
 		if (!m_mVoiceRoomsFromName.Contains(roomKey)) {
 			// Create on every client
 			RPC_CreateRoom(m_iLastRoomId, roomKey);
@@ -120,24 +145,18 @@ class PS_VoNRoomsManager : ScriptComponent
 		return m_mVoiceRoomsFromName[roomKey];
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	void RPC_CreateRoom(int roomId, string roomKey)
+	void RPC_CreateRoom(int roomId, VoNRoomKey roomKey)
 	{
 		m_mVoiceRoomsFromName[roomKey] = roomId;
 		m_mVoiceRooms[roomId] = roomKey;
-	}
-	int GetOrCreateRoomWithFaction(FactionKey factionKey, string roomName)
-	{
-		string roomKey = factionKey + "|" + roomName;
-		if (roomKey == "|") roomKey = "";
-		return GetOrCreateRoom(roomKey);
 	}
 	
 	// Create position if new roomId provided
 	vector GetOrCreateRoomPosition(int roomId, int factionIndex)
 	{
 		if (!m_mRoomOffsets.Contains(roomId)) {
-			lastOffset = lastOffset + lastOffset.Right;
-			m_mRoomOffsets[roomId] = roomInitialPosition + lastOffset * 100 + vector.Forward * (float) factionIndex * 5000;
+			lastOffset = lastOffset + lastOffset.Up * 100;
+			m_mRoomOffsets[roomId] = roomInitialPosition + lastOffset;
 		}
 		return m_mRoomOffsets[roomId];
 	}
@@ -159,6 +178,23 @@ class PS_VoNRoomsManager : ScriptComponent
 	{
 		if (!m_mVoiceRooms.Contains(roomId)) return "";
 		return m_mVoiceRooms[roomId];
+	}
+	
+	void GetPlayersPublicRooms(out notnull array<int> rooms)
+	{
+		array<int> playerIds = new array<int>();
+		GetGame().GetPlayerManager().GetPlayers(playerIds);
+		foreach (int playerId : playerIds)
+		{
+			int playerRoomId = GetPlayerRoom(playerId);
+			if (rooms.Contains(playerRoomId)) continue;
+			string playerRoomName = GetRoomName(playerRoomId);
+			if (playerRoomName.Length() < 13) continue; // Empty before init room
+			if (playerRoomName.ContainsAt("Public", 13))
+			{
+				rooms.Insert(playerRoomId);
+			}
+		}
 	}
 	
 	// ------------------------- JIP Replication -------------------------

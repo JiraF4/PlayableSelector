@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{C4119A10155E2714}Sounds/VON/LobbyVon.sig"
+ Configurations {
+  AudioSignalResourceClass PC {
+  }
+  AudioSignalResourceClass XBOX_ONE : PC {
+  }
+  AudioSignalResourceClass XBOX_SERIES : PC {
+  }
+  AudioSignalResourceClass PS4 : PC {
+  }
+  AudioSignalResourceClass HEADLESS : PC {
+  }
+ }
+}

@@ -36,6 +36,9 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
   SCR_EditableCharacterComponent "{520EA1D2F659C85C}" {
    Enabled 0
   }
+  SCR_VoNComponent "{520EA1D2F659C856}" {
+   Enabled 0
+  }
   CharacterWeaponSlotComponent "{520EA1D2F659CFAB}" {
    WeaponSlotIndex 0
   }

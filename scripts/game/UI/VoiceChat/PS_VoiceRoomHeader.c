@@ -29,9 +29,16 @@ class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 		m_iRoomId = roomId;
 		
 		string name = roomName;
-		if (name.IsDigitAt(0)) {
+		if (name != "" && name.IsDigitAt(0)) {
 			int CallSign = roomName.ToInt();
 			name = playableManager.GroupCallsignToGroupName(faction, CallSign);
+		}
+		if (name.StartsWith("#PS-VoNRoom_Local")) name = "#PS-VoNRoom_Local";
+		if (name.StartsWith("#PS-VoNRoom_Public")) {
+			int playerId = name.Substring(18, name.Length() - 18).ToInt();
+			string playerName = GetGame().GetPlayerManager().GetPlayerName(playerId);
+			if (playerName == "") playerName = playerId.ToString();
+			name = playerName + "'s #PS-VoNRoom_Public"; 
 		}
 		m_wRoomName.SetText(name);
 	}
