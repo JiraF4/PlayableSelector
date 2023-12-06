@@ -7,4 +7,6 @@ This mod brings back old style Arma lobby.
 
 [Mission samples here](https://reforger.armaplatform.com/workshop/5EAF1CB52EF38F0D-ReforgerLobbyMissions)
 
+[PSCore](https://github.com/JiraF4/MissionMakerForDummies)
+
 You can support us on [Boosty!](https://boosty.to/sesk)
