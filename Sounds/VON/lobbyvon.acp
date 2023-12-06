@@ -1,0 +1,627 @@
+AudioClass {
+ signals {
+  SignalClass {
+   id 77837
+   name "Signal Reverb"
+   tl 275.007 -927.125
+   res "{76CBB40EF7F227B6}Sounds/_SharedData/Signals/Reverb/Reverb_Base.sig"
+   inputsport {
+    1 35 40
+   }
+   outputsport {
+    34 39 105
+   }
+   inputvalues {
+    40 1 1
+   }
+   inputvaluesmin {
+    0 0 0
+   }
+   inputvaluesmax {
+    100 1 1
+   }
+  }
+  SignalClass {
+   id 79885
+   name "Signal 78"
+   tl -829 -616.353
+   res "{CF1F9C4B120DE5F8}Sounds/VON/Von.sig"
+   inputsport {
+    1
+   }
+   outputsport {
+    5 8 12
+   }
+   inputvalues {
+    1
+   }
+   inputvaluesmin {
+    0
+   }
+   inputvaluesmax {
+    1
+   }
+  }
+ }
+ filters {
+  FilterClass {
+   id 33814
+   name "Filter Bitcrusher"
+   version 5
+   tl -550.543 -352.021
+   ins {
+    ConnectionsClass connections {
+     id 0
+    }
+   }
+   pi {
+    1
+   }
+   pu {
+    1
+   }
+   wetDry 0
+   DSPObject BitCrusherDSPTypeClass dsp {
+    bitMask "11010101"
+   }
+  }
+  FilterClass {
+   id 39958
+   name "Filter Compressor"
+   version 5
+   tl -873.353 -772.017
+   pi {
+    3
+   }
+   volume_dB 4
+   DSPObject CompressorDSPTypeClass dsp {
+    threshold -23
+    ratio 4
+    attack 10
+    release 50
+   }
+  }
+  FilterClass {
+   id 54294
+   name "Filter HP"
+   version 5
+   tl -881.03 -1104.045
+   pi {
+    3
+   }
+   DSPObject BiquadDSPTypeClass dsp {
+    biquadType HighPass
+    fc 220
+    Q 1
+   }
+  }
+  FilterClass {
+   id 58390
+   name "Filter LP"
+   version 5
+   tl -886.409 -993.056
+   pi {
+    3
+   }
+   DSPObject BiquadDSPTypeClass dsp {
+    fc 8000
+    Q 1.5
+   }
+  }
+  FilterClass {
+   id 62486
+   name "Filter LS"
+   version 5
+   tl -883.909 -877.917
+   pi {
+    3
+   }
+   DSPObject BiquadDSPTypeClass dsp {
+    biquadType LowShelf
+    fc 150
+    Q 1
+    gain -6
+   }
+  }
+  FilterClass {
+   id 63510
+   name "Filter HP"
+   version 5
+   tl -551.821 -271.487
+   pi {
+    1
+   }
+   volume_dB 1
+   DSPObject BiquadDSPTypeClass dsp {
+    biquadType HighPass
+    fc 1200
+    Q 2
+   }
+  }
+  FilterClass {
+   id 64534
+   name "Filter LP"
+   version 5
+   tl -545.821 -196.154
+   pi {
+    1
+   }
+   volume_dB 2
+   DSPObject BiquadDSPTypeClass dsp {
+    fc 3600
+    Q 1.8
+   }
+  }
+  FilterClass {
+   id 82966
+   name "Filter LP"
+   version 5
+   tl -563.989 -474.8
+   pi {
+    1
+   }
+   volume_dB 2
+   DSPObject BiquadDSPTypeClass dsp {
+    fc 3600
+    Q 1.8
+   }
+  }
+  FilterClass {
+   id 85014
+   name "Filter HP"
+   version 5
+   tl -569.989 -552.133
+   pi {
+    1
+   }
+   volume_dB 1
+   DSPObject BiquadDSPTypeClass dsp {
+    biquadType HighPass
+    fc 1200
+    Q 2
+   }
+  }
+  FilterClass {
+   id 87062
+   name "Filter Bitcrusher"
+   version 5
+   tl -563 -638
+   pi {
+    1
+   }
+   pu {
+    1
+   }
+   wetDry 0
+   DSPObject BitCrusherDSPTypeClass dsp {
+    bitMask "11010101"
+   }
+  }
+ }
+ filter_chain {
+  FilterChainClass {
+   id 32791
+   name "FilterChain"
+   comment "Dont use compressor here. Creates panorama movement when DIRECT and RADIO are mixed."
+   version 5
+   tl -327.142 -297.754
+   ctl 1.111 3.444
+   ins {
+    ConnectionsClass connections {
+     id 1
+     links {
+      ConnectionClass connection {
+       id 33814
+       port 65
+      }
+     }
+    }
+    ConnectionsClass connections {
+     id 2
+     links {
+      ConnectionClass connection {
+       id 63510
+       port 65
+      }
+     }
+    }
+    ConnectionsClass connections {
+     id 3
+     links {
+      ConnectionClass connection {
+       id 64534
+       port 65
+      }
+     }
+    }
+   }
+   pi {
+    14
+   }
+   ports 3
+  }
+  FilterChainClass {
+   id 53271
+   name "FilterChain 52"
+   version 5
+   tl -617.093 -841.302
+   ins {
+    ConnectionsClass connections {
+     id 1
+     links {
+      ConnectionClass connection {
+       id 54294
+       port 65
+      }
+     }
+    }
+    ConnectionsClass connections {
+     id 2
+     links {
+      ConnectionClass connection {
+       id 58390
+       port 65
+      }
+     }
+    }
+    ConnectionsClass connections {
+     id 3
+     links {
+      ConnectionClass connection {
+       id 62486
+       port 65
+      }
+     }
+    }
+    ConnectionsClass connections {
+     id 4
+     links {
+      ConnectionClass connection {
+       id 39958
+       port 65
+      }
+     }
+    }
+   }
+   pi {
+    30
+   }
+   ports 4
+  }
+  FilterChainClass {
+   id 83991
+   name "FilterChain"
+   comment "Dont use compressor here. Creates panorama movement when DIRECT and RADIO are mixed."
+   version 5
+   tl -381.31 -561.4
+   ctl 0 -21
+   ins {
+    ConnectionsClass connections {
+     id 1
+     links {
+      ConnectionClass connection {
+       id 87062
+       port 65
+      }
+     }
+    }
+    ConnectionsClass connections {
+     id 2
+     links {
+      ConnectionClass connection {
+       id 85014
+       port 65
+      }
+     }
+    }
+    ConnectionsClass connections {
+     id 3
+     links {
+      ConnectionClass connection {
+       id 82966
+       port 65
+      }
+     }
+    }
+   }
+   pi {
+    14
+   }
+   ports 3
+  }
+ }
+ sounds {
+  SoundClass {
+   id 27657
+   name "VON_RADIO"
+   version 0
+   tl 271.363 -663.582
+   ins {
+    ConnectionsClass connections {
+     id 64
+     links {
+      ConnectionClass connection {
+       id 46098
+       port 65
+      }
+     }
+    }
+   }
+   varName "VON_Radio"
+   varResource "{A60F08955792B575}Sounds/_SharedData/Variables/GlobalVariables.conf"
+   volume_dB 1
+   outState 13323
+   outStatePort 77831
+  }
+  SoundClass {
+   id 49161
+   name "VON_DIRECT"
+   version 0
+   tl 272.848 -787.407
+   ins {
+    ConnectionsClass connections {
+     id 64
+     links {
+      ConnectionClass connection {
+       id 88082
+       port 65
+      }
+     }
+    }
+   }
+   varName "VON_Direct"
+   varResource "{A60F08955792B575}Sounds/_SharedData/Variables/GlobalVariables.conf"
+   outState 13323
+   outStatePort 77831
+  }
+  SoundClass {
+   id 56329
+   name "VON_RAW"
+   version 0
+   tl 212.112 -1506.572
+   ins {
+    ConnectionsClass connections {
+     id 64
+     links {
+      ConnectionClass connection {
+       id 57362
+       port 65
+      }
+     }
+    }
+   }
+   varName "VON_Direct"
+   varResource "{A60F08955792B575}Sounds/_SharedData/Variables/GlobalVariables.conf"
+  }
+ }
+ buses {
+  BusClass {
+   id 50183
+   name "Bus 49"
+   version 5
+   tl -141.024 -527.702
+   ins {
+    ConnectionsClass connections {
+     id 0
+    }
+    ConnectionsClass connections {
+     id 1
+     links {
+      ConnectionClass connection {
+       id 32791
+       port 65
+      }
+     }
+    }
+    ConnectionsClass connections {
+     id 64
+     links {
+      ConnectionClass connection {
+       id 52231
+       port 65
+      }
+     }
+    }
+   }
+   pi {
+    3
+   }
+   pu {
+    1
+   }
+  }
+  BusClass {
+   id 52231
+   name "Bus Direct Processing"
+   version 5
+   tl -368.71 -835.996
+   ins {
+    ConnectionsClass connections {
+     id 1
+     links {
+      ConnectionClass connection {
+       id 53271
+       port 65
+      }
+     }
+    }
+    ConnectionsClass connections {
+     id 64
+     links {
+      ConnectionClass connection {
+       id 26641
+       port 65
+      }
+     }
+    }
+   }
+   pi {
+    2
+   }
+   volume 0.631
+   volume_dB -4
+  }
+ }
+ mixers {
+  MixerClass {
+   id 13323
+   name "OutputState"
+   version 4
+   tl 491.476 -640.722
+   res "{B764D803219C775E}Sounds/FinalMix.afm"
+   ins {
+    ConnectionsClass connections {
+     id 77831
+     links {
+      ConnectionClass connection {
+       id 27657
+       port 65
+      }
+      ConnectionClass connection {
+       id 49161
+       port 65
+      }
+     }
+    }
+    ConnectionsClass connections {
+     id 160775
+     links {
+      ConnectionClass connection {
+       id 69661
+       port 65
+      }
+     }
+    }
+   }
+   pi {
+    294912
+   }
+   path "{B764D803219C775E}Sounds/FinalMix.afm"
+   inputs {
+    "ANM_Footsteps" "ANM_Voice" "WPN_Handling" "WPN_Shots" "WPN_Explosions" "WNP_BulletHits" "CHAR" "ENV_AMB_2D" "VEH_Animations" "Impacts" "Dialogue" "Music" "ENV_Doors" "VEH_Engine" "VEH_Tires" "VON" "SFX" "SFX_Reverb" "VON_Reverb" "Dialogue_Reverb" "Impacts_EXT" "ENV_AMB_3D" "WPN_SonicCracks" "CHAR_Gear" "PA" "SFX_Reverb_Exterior" "UI" "ENV_AMB_3D_Reverb_Exterior" "SFX_Direct"
+   }
+  }
+ }
+ shaders {
+  ShaderClass {
+   id 46098
+   name "Shader 2"
+   version 5
+   tl 74.471 -580.18
+   ins {
+    ConnectionsClass connections {
+     id 64
+     links {
+      ConnectionClass connection {
+       id 50183
+       port 65
+      }
+     }
+    }
+   }
+   ITD 0
+  }
+  ShaderClass {
+   id 57362
+   name "Shader 56"
+   version 5
+   tl -23.015 -1481.064
+   ins {
+    ConnectionsClass connections {
+     id 64
+     links {
+      ConnectionClass connection {
+       id 26641
+       port 65
+      }
+     }
+    }
+   }
+   ITD 0
+  }
+  ShaderClass {
+   id 88082
+   name "Shader 1"
+   version 5
+   tl -22.083 -852.917
+   ins {
+    ConnectionsClass connections {
+     id 0
+     links {
+      ConnectionClass connection {
+       id 48156
+       port 65
+      }
+     }
+    }
+    ConnectionsClass connections {
+     id 64
+     links {
+      ConnectionClass connection {
+       id 52231
+       port 65
+      }
+     }
+    }
+   }
+   pi {
+    23
+   }
+   ITD 0
+  }
+ }
+ streams {
+  StreamClass {
+   id 26641
+   name "Stream 1"
+   version 5
+   tl -551.131 -1067.099
+  }
+ }
+ spatialities {
+  SpatialityClass {
+   id 48156
+   name "Spatiality"
+   version 5
+   tl -201.91 -1127.698
+   spatialFactor 1
+  }
+ }
+ auxOuts {
+  AuxOutClass {
+   id 69661
+   name "AuxOut Reverb INT"
+   version 5
+   tl 481.295 -820.671
+   ins {
+    ConnectionsClass connections {
+     id 1
+     links {
+      ConnectionClass connection {
+       id 77837
+       port 34
+      }
+     }
+    }
+    ConnectionsClass connections {
+     id 2
+     links {
+      ConnectionClass connection {
+       id 77837
+       port 39
+      }
+     }
+    }
+   }
+   pi {
+    7
+   }
+   pu {
+    6
+   }
+   OSPort 160775
+  }
+ }
+ version 1
+ listenerWindowModel "{9F3AF591CD6DFE1A}Assets/Characters/Basebody/Basebody_Male_01.xob"
+}

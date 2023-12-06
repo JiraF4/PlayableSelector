@@ -141,6 +141,10 @@ class PS_PlayableControllerComponent : ScriptComponent
 		// Lets fight with phisyc engine
 		if (m_eInitialEntity)
 		{
+			//vector currentOrigin = m_eInitialEntity.GetOrigin();
+			//if (currentOrigin == VoNPosition) return;
+			//Print("Move to: " + currentOrigin.ToString());
+			
 			m_eInitialEntity.SetOrigin(VoNPosition);
 			
 			// Who broke camera on map?
@@ -155,6 +159,8 @@ class PS_PlayableControllerComponent : ScriptComponent
 				physics.SetAngularVelocity("0 0 0");
 				physics.SetMass(0);
 				physics.SetDamping(1, 1);
+				physics.ChangeSimulationState(SimulationState.NONE);
+				physics.SetActive(ActiveState.INACTIVE);
 			}
 		} else {
 			PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
@@ -202,16 +208,16 @@ class PS_PlayableControllerComponent : ScriptComponent
 	void MoveToVoNRoomByKey(int playerId, string roomKey)
 	{
 		string factionKey = "";
-		string groupName = "";
+		string roomName = "#PS-VoNRoom_Global";
 		
 		if (roomKey.Contains("|")) {
 			array<string> outTokens = new array<string>();
 			roomKey.Split("|", outTokens, false);
 			factionKey = outTokens[0];
-			groupName = outTokens[1];
+			roomName = outTokens[1];
 		}
 		
-		Rpc(RPC_MoveVoNToRoom, playerId, factionKey, groupName);
+		Rpc(RPC_MoveVoNToRoom, playerId, factionKey, roomName);
 	}
 	void MoveToVoNRoom(int playerId, FactionKey factionKey, string roomName)
 	{
@@ -248,23 +254,30 @@ class PS_PlayableControllerComponent : ScriptComponent
 	}
 	void LobbyVoNEnable()
 	{
+		GetGame().GetCallqueue().Remove(LobbyVoNDisableDelayed);
 		PS_LobbyVoNComponent von = GetVoN();
 		von.SetTransmitRadio(null);
 		von.SetCommMethod(ECommMethod.DIRECT);
 		von.SetCapture(true);
 	}
-	void LobbyVoNDisable()
-	{
-		PS_LobbyVoNComponent von = GetVoN();
-		von.SetCommMethod(ECommMethod.DIRECT);
-		von.SetCapture(false);
-	}
 	void LobbyVoNRadioEnable()
 	{
+		GetGame().GetCallqueue().Remove(LobbyVoNDisableDelayed);
 		PS_LobbyVoNComponent von = GetVoN();
 		von.SetTransmitRadio(GetVoNTransiver());
 		von.SetCommMethod(ECommMethod.SQUAD_RADIO);
 		von.SetCapture(true);
+	}
+	void LobbyVoNDisable()
+	{
+		// Delay VoN disable
+		GetGame().GetCallqueue().CallLater(LobbyVoNDisableDelayed, PS_LobbyVoNComponent.PS_TRANSMISSION_TIMEOUT_MS);
+	}
+	void LobbyVoNDisableDelayed()
+	{
+		PS_LobbyVoNComponent von = GetVoN();
+		von.SetCommMethod(ECommMethod.DIRECT);
+		von.SetCapture(false);
 	}
 	// Separate radio VoNs, CALL IT FROM SERVER
 	void SetVoNKey(string VoNKey)
