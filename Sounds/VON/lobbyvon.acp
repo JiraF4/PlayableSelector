@@ -3,7 +3,7 @@ AudioClass {
   SignalClass {
    id 77837
    name "Signal Reverb"
-   tl 226.118 -999.347
+   tl 275.007 -927.125
    res "{76CBB40EF7F227B6}Sounds/_SharedData/Signals/Reverb/Reverb_Base.sig"
    inputsport {
     1 35 40
@@ -483,6 +483,15 @@ AudioClass {
       }
      }
     }
+    ConnectionsClass connections {
+     id 160775
+     links {
+      ConnectionClass connection {
+       id 69661
+       port 65
+      }
+     }
+    }
    }
    pi {
     294912
@@ -537,6 +546,15 @@ AudioClass {
    tl -22.083 -852.917
    ins {
     ConnectionsClass connections {
+     id 0
+     links {
+      ConnectionClass connection {
+       id 48156
+       port 65
+      }
+     }
+    }
+    ConnectionsClass connections {
      id 64
      links {
       ConnectionClass connection {
@@ -574,7 +592,7 @@ AudioClass {
    id 69661
    name "AuxOut Reverb INT"
    version 5
-   tl 501.295 -1018.449
+   tl 481.295 -820.671
    ins {
     ConnectionsClass connections {
      id 1
@@ -601,6 +619,7 @@ AudioClass {
    pu {
     6
    }
+   OSPort 160775
   }
  }
  version 1

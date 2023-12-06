@@ -28,7 +28,7 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
    }
   }
   PS_LobbyVoNComponent "{5EB538FB1C85789A}" {
-   Filename "{BFCD9245CFE16FCC}Sounds/VON/lobbyvon.acp"
+   Filename "{B4C3941EC8B2AD20}Sounds/VON/von.acp"
   }
   SCR_CharacterStaminaComponent "{520EA1D2F659C824}" {
    Enabled 0
