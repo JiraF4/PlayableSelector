@@ -3,12 +3,32 @@ class PS_LobbyVoNComponentClass : SCR_VoNComponentClass
 {}
 
 //------------------------------------------------------------------------------------------------
-class PS_LobbyVoNComponent : SCR_VoNComponent 
+class PS_LobbyVoNComponent : VoNComponent 
 {
-	protected const float PS_TRANSMISSION_TIMEOUT_MS = 500;
+	const float PS_TRANSMISSION_TIMEOUT_MS = 600;
 	protected float PS_m_fTransmitingTimeout;
 	ref map<int, float> m_fPlayerSpeachReciveTime = new map<int, float>();
 	ref map<int, bool> m_fPlayerSpeachReciveIsChannel = new map<int, bool>();
+	
+	void PS_LobbyVoNComponent(IEntityComponentSource src, IEntity ent, IEntity parent)
+	{
+		GetGame().GetCallqueue().CallLater(DisablePhysicForOwner, 0, false, ent);
+	}
+	
+	void DisablePhysicForOwner(IEntity owner)
+	{
+		Physics physics = owner.GetPhysics();
+		if (physics)
+		{
+			physics.SetVelocity("0 0 0");
+			physics.SetAngularVelocity("0 0 0");
+			physics.SetMass(0);
+			physics.SetDamping(1, 1);
+			physics.ChangeSimulationState(SimulationState.NONE);
+			physics.SetActive(ActiveState.INACTIVE);
+		}
+	}
+	
 	
 	float GetPlayerSpeechTime(int playerId)
 	{
@@ -33,17 +53,17 @@ class PS_LobbyVoNComponent : SCR_VoNComponent
 		return GetPlayerSpeechTime(playerId) > worldTime;
 	}
 	
-	override bool IsTransmiting()
+	bool IsTransmiting()
 	{
 		float worldTime = GetGame().GetWorld().GetWorldTime();
-		return PS_m_fTransmitingTimeout > worldTime;
+		return PS_m_fTransmitingTimeout >= worldTime + 100;
 	}
 	
 	override protected event void OnCapture(BaseTransceiver transmitter)
 	{
-		PS_m_fTransmitingTimeout = GetGame().GetWorld().GetWorldTime() + PS_TRANSMISSION_TIMEOUT_MS;
+		PS_m_fTransmitingTimeout = GetGame().GetWorld().GetWorldTime();
 		int playerId = GetGame().GetPlayerController().GetPlayerId();
-		m_fPlayerSpeachReciveTime[playerId] = GetGame().GetWorld().GetWorldTime() + PS_TRANSMISSION_TIMEOUT_MS;
+		m_fPlayerSpeachReciveTime[playerId] = GetGame().GetWorld().GetWorldTime();
 	}
 	
 	override protected event void OnReceive(int playerId, BaseTransceiver receiver, int frequency, float quality)
