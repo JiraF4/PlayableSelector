@@ -48,7 +48,7 @@ class PS_MissionDescriptionUI : ScriptedWidgetComponent
 		m_wCurrentContent = GetGame().GetWorkspace().CreateWidgets(m_rStartLayout);
 		PS_MissionDescriptionContentUI handler = PS_MissionDescriptionContentUI.Cast(m_wCurrentContent.FindHandler(PS_MissionDescriptionContentUI));
 		handler.SetMissionUI(this);
-		m_wMissionDescriptionHeaderText.SetText("Mission description");
+		m_wMissionDescriptionHeaderText.SetText("#PS-MissionDescription_Header");
 		m_wContentFrame.AddChild(m_wCurrentContent);
 	}
 	

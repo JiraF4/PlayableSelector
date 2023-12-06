@@ -348,8 +348,8 @@ StringTable {
   CustomStringTableItem "{5EB6FE5226347A67}" {
    Id "PS-GameModeHeader_Briefing"
    Target_en_us "Briefing"
-   Target_ru_ru "Инструктаж"
-   Modified 1589051957
+   Target_ru_ru "Брифинг"
+   Modified 1594683120
    Author "SeskPC"
    LastChanged "SeskPC"
   }
@@ -604,6 +604,22 @@ StringTable {
    Target_en_us "Voice сhannels"
    Target_ru_ru "Голосовые каналы"
    Modified 1589830923
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
+  CustomStringTableItem "{5F0C9CB1CF9CE91D}" {
+   Id "PS-VoNRoom_Local"
+   Target_en_us "private channel"
+   Target_ru_ru "приватный канал"
+   Modified 1594667424
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
+  CustomStringTableItem "{5F0C9CB1EFDDDB2E}" {
+   Id "PS-VoNRoom_Public"
+   Target_en_us "public channel"
+   Target_ru_ru "публичный канал"
+   Modified 1594667418
    Author "SeskPC"
    LastChanged "SeskPC"
   }
