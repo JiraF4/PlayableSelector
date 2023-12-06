@@ -159,7 +159,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 				physics.SetAngularVelocity("0 0 0");
 				physics.SetMass(0);
 				physics.SetDamping(1, 1);
-				physics.ChangeSimulationState(SimulationState.NONE);
+				//physics.ChangeSimulationState(SimulationState.NONE);
 				physics.SetActive(ActiveState.INACTIVE);
 			}
 		} else {
