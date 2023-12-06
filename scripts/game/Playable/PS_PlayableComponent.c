@@ -90,6 +90,7 @@ class PS_PlayableComponent : ScriptComponent
 		
 	string GetName()
 	{
+		if (m_name != "") return m_name;
 		SCR_EditableCharacterComponent editableCharacterComponent = SCR_EditableCharacterComponent.Cast(m_cOwner.FindComponent(SCR_EditableCharacterComponent));
 		SCR_UIInfo info = editableCharacterComponent.GetInfo();
 		return info.GetName();
