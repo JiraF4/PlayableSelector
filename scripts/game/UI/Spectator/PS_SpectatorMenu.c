@@ -59,6 +59,14 @@ class PS_SpectatorMenu: MenuBase
 		InitChat();
 		
 		GetGame().GetCallqueue().CallLater(UpdateCycle, 0);
+		GetGame().GetCallqueue().CallLater(RoomSwitchToGlobal, 0);
+	}
+	
+	void RoomSwitchToGlobal()
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		playableController.MoveToVoNRoom(playerController.GetPlayerId(), "", "#PS-VoNRoom_Global");
 	}
 	
 	void UpdateCycle() 

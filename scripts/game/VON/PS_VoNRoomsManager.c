@@ -98,6 +98,8 @@ class PS_VoNRoomsManager : ScriptComponent
 		{
 			// We need silence
 			playableController.SetVoNKey(roomName);
+		} else if (state == SCR_EGameModeState.GAME) {
+			playableController.SetVoNKey("Menu" + factionKey + roomName);
 		} else if (state == SCR_EGameModeState.BRIEFING) { // On briefing also separate to squads
 			// May be reworked later
 			RplId playableId = playableManager.GetPlayableByPlayer(playerId);
