@@ -1,0 +1,40 @@
+OverlayWidgetClass {
+ Name "FreezeTimeCounterOverlay"
+ Slot FrameWidgetSlot "{5F0EB4D65857E914}" {
+  Anchor 0.5 0 0.5 0
+  PositionX -960
+  OffsetLeft -960
+  PositionY 0
+  OffsetTop 0
+  SizeX 100
+  OffsetRight 860
+  SizeY 30
+  OffsetBottom -30
+ }
+ components {
+  PS_FreezeTimeCounter "{5F0EB4D7E2F1C395}" {
+  }
+ }
+ {
+  PanelWidgetClass "{5F0EB4D5EF4E8AE7}" {
+   Name "FreezeTimeCounterPannel"
+   Slot OverlayWidgetSlot "{5F0EB4D5EF4E8AC0}" {
+    VerticalAlign 0
+    Padding 0 128 0 0
+   }
+   Color 0 0 0 0.188
+   style full
+   {
+    TextWidgetClass "{5F0EB4D5FBCA212F}" {
+     Name "FreezeTimeCounterText"
+     Slot FrameWidgetSlot "{5F0EB4D54F5D0865}" {
+      SizeToContent 1
+     }
+     Text "00:00"
+     "Font Size" 48
+     "Min Font Size" 48
+    }
+   }
+  }
+ }
+}

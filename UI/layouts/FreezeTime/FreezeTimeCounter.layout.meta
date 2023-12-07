@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{EC8A548C3F53BE4F}UI/layouts/FreezeTime/FreezeTimeCounter.layout"
+ Configurations {
+  LayoutResourceClass PC {
+  }
+  LayoutResourceClass XBOX_ONE : PC {
+  }
+  LayoutResourceClass XBOX_SERIES : PC {
+  }
+  LayoutResourceClass PS4 : PC {
+  }
+  LayoutResourceClass HEADLESS : PC {
+  }
+ }
+}

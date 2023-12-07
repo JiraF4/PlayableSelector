@@ -307,7 +307,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 				break;
 			case SCR_EGameModeState.BRIEFING:
 				if (m_bKillRedundantUnits) PS_PlayableManager.GetInstance().KillRedundantUnits();
-				GetGame().GetCallqueue().CallLater(removeRestrictedZones, m_iFreezeTime);
+				restrictedZonesTimer(m_iFreezeTime);
 				PS_PlayableManager.GetInstance().ResetRplStream();
 				StartGameMode();
 				break;
@@ -319,6 +319,47 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		}
 		OpenCurrentMenuOnClients();
 	}
+	
+	// TODO: move it to component
+	void restrictedZonesTimer(int freezeTime)
+	{
+		// reduce time by second
+		int time = 1000;
+		if (freezeTime < time) time = freezeTime;
+		freezeTime -= time;
+		
+		// Show timer on clients synced to server
+		if (RplSession.Mode() != RplMode.Dedicated) RPC_restrictedZonesTimer(freezeTime);
+		Rpc(RPC_restrictedZonesTimer, freezeTime);
+		
+		// next second or end
+		if (freezeTime <= 0)
+			removeRestrictedZones();
+		else
+			GetGame().GetCallqueue().CallLater(restrictedZonesTimer, time, false, freezeTime);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RPC_restrictedZonesTimer(int freezeTime)
+	{
+		if (freezeTime <= 0)
+		{
+			if (m_hFreezeTimeCounter)
+			{
+				m_hFreezeTimeCounter.GetRootWidget().RemoveFromHierarchy();
+			}
+			return;
+		}
+		
+		if (m_hFreezeTimeCounter == null)
+		{
+			Widget widget = GetGame().GetWorkspace().CreateWidgets("{EC8A548C3F53BE4F}UI/layouts/FreezeTime/FreezeTimeCounter.layout");
+			m_hFreezeTimeCounter = PS_FreezeTimeCounter.Cast(widget.FindHandler(PS_FreezeTimeCounter));
+		}
+		
+		m_hFreezeTimeCounter.SetTime(freezeTime);
+		
+	}
+	PS_FreezeTimeCounter m_hFreezeTimeCounter;
 	
 	// ------------------------------------------ Global flags ------------------------------------------
 	bool IsAdminMode()
