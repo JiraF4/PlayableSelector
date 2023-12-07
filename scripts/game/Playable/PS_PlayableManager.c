@@ -17,13 +17,7 @@ class PS_PlayableManager : ScriptComponent
 	ref map<RplId, int> m_playablePlayers = new map<RplId, int>; // reversed m_playersPlayable for fast search
 	ref map<int, bool> m_playersPin = new map<int, bool>; // is player pined
 	ref map<int, FactionKey> m_playersFaction = new map<int, FactionKey>; // player factions
-		
-	// Clients also don't give a shit about groups, soo we save staff here
-	ref map<RplId, int> m_playableGroupCallSigns = new map<RplId, int>;
-	
-	// Server only!
-	ref map<SCR_AIGroup, SCR_AIGroup> m_playableToPlayerGroups = new map<SCR_AIGroup, SCR_AIGroup>; // Groups for players, not the same with ai
-	ref map<RplId, SCR_AIGroup> m_playerGroups = new map<RplId, SCR_AIGroup>; // Groups for players, not the same with ai
+	ref map<RplId, int> m_playablePlayerGroupId = new map<RplId, int>; // playable to player group
 	
 	bool m_bRplLoaded = false;
 	bool IsReplicated()
@@ -128,7 +122,7 @@ class PS_PlayableManager : ScriptComponent
 		SCR_PlayerController playerController = SCR_PlayerController.Cast(playerManager.GetPlayerController(playerId));
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		
-		SCR_AIGroup playerGroup = m_playerGroups[playableId];
+		SCR_AIGroup playerGroup = GetPlayerGroupByPlayable(playableId);
 		IEntity leaderEntity = playerGroup.GetLeaderEntity();
 		PS_PlayableComponent playableComponentLeader; 
 		if (leaderEntity) playableComponentLeader = PS_PlayableComponent.Cast(leaderEntity.FindComponent(PS_PlayableComponent));
@@ -136,8 +130,17 @@ class PS_PlayableManager : ScriptComponent
 		SCR_PlayerControllerGroupComponent playerControllerGroupComponent = SCR_PlayerControllerGroupComponent.Cast(playerController.FindComponent(SCR_PlayerControllerGroupComponent));
 		SCR_GroupsManagerComponent groupsManagerComponent = SCR_GroupsManagerComponent.GetInstance();
 		playerControllerGroupComponent.PS_AskJoinGroup(playerGroup.GetGroupID());
+		
+		// Another workaround
+		// Thanks bohem, no one zoomer will be harmed if you remove all text from game.
+		// Maybe also multiplayer from arma? It can harm people, very dangerous.
+		if (playerGroup.GetNameAuthorID() == -1)
+		{
+			playerGroup.SetCustomName(playerGroup.GetCustomName(), playerId);
+		}
 		if (playableComponentLeader)
-			if (playableComponentLeader.GetId() > playableId) groupsManagerComponent.SetGroupLeader(playerGroup.GetGroupID(), playerId);
+			if (playableComponentLeader.GetId() > playableId) 
+				groupsManagerComponent.SetGroupLeader(playerGroup.GetGroupID(), playerId);
 	}
 	
 	void KillRedundantUnits()
@@ -218,11 +221,21 @@ class PS_PlayableManager : ScriptComponent
 		return m_playablePlayers[PlayableId];
 	}
 	
+	SCR_AIGroup GetPlayerGroupByPlayable(RplId PlayableId)
+	{
+		if (!m_playablePlayerGroupId.Contains(PlayableId)) 
+			return null;
+		
+		SCR_GroupsManagerComponent groupsManagerComponent = SCR_GroupsManagerComponent.GetInstance();
+		return groupsManagerComponent.FindGroup(m_playablePlayerGroupId[PlayableId]);
+	}
+	
 	int GetGroupCallsignByPlayable(RplId PlayableId)
 	{
-		int groupCallsign;
-		m_playableGroupCallSigns.Find(PlayableId, groupCallsign);
-		return groupCallsign;
+		SCR_AIGroup group = GetPlayerGroupByPlayable(PlayableId);
+		if (!group) return -1;
+		
+		return group.GetCalsignNum();
 	}
 	
 	bool GetPlayerPin(int playerId)
@@ -242,27 +255,28 @@ class PS_PlayableManager : ScriptComponent
 			return;
 		m_aPlayables[playableId] = playableComponent;
 		
-		// Create player groups for join
 		if (Replication.IsServer())
 		{
 			SCR_ChimeraCharacter playableCharacter = SCR_ChimeraCharacter.Cast(playableComponent.GetOwner());
 			AIControlComponent aiControl = AIControlComponent.Cast(playableCharacter.FindComponent(AIControlComponent));
 			SCR_AIGroup playableGroup =  SCR_AIGroup.Cast(aiControl.GetControlAIAgent().GetParentGroup());
 			SCR_AIGroup playerGroup;
-			if (!m_playableToPlayerGroups.Contains(playableGroup))
+			
+			
+			if (!playableGroup.IsSlave())
 			{
 				SCR_GroupsManagerComponent groupsManagerComponent = SCR_GroupsManagerComponent.GetInstance();
 				playerGroup = groupsManagerComponent.CreateNewPlayableGroup(playableGroup.GetFaction());
 				playerGroup.SetSlave(playableGroup);
 				playerGroup.SetMaxMembers(12);
-				m_playableToPlayerGroups[playableGroup] = playerGroup;
+				playerGroup.SetCustomName(playableGroup.GetCustomName(), -1);
 								
 				playableGroup.SetCanDeleteIfNoPlayer(false);
 				playerGroup.SetCanDeleteIfNoPlayer(false);
 			} else {
-				playerGroup = m_playableToPlayerGroups[playableGroup];
+				playerGroup = playableGroup.GetMaster();
 			}
-			m_playerGroups[playableId] = playerGroup;
+			SetPlayablePlayerGroupId(playableId, playerGroup.GetGroupID());
 			GetGame().GetCallqueue().CallLater(UpdateGroupCallsigne, 0, false, playableId, playerGroup, playableGroup)
 		}
 	}
@@ -295,11 +309,7 @@ class PS_PlayableManager : ScriptComponent
 		SCR_CallsignGroupComponent callsignComponent = SCR_CallsignGroupComponent.Cast(playerGroup.FindComponent(SCR_CallsignGroupComponent));
 		int company, platoon, squad;
 		callsignComponent.GetCallsignIndexes(company, platoon, squad);
-		//string company, platoon, squad, sCharacter, format;
-		//playerGroup.GetCallsigns(company, platoon, squad, sCharacter, format);
-		//string groupName = WidgetManager.Translate(format, company, platoon, squad, sCharacter);
 		int groupCallsign = 1000000 * company + 1000 * platoon + 1 * squad;
-		SetPlayableGroupCallSign(playableId, groupCallsign);
 		
 		// Create VoN group channel
 		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
@@ -377,18 +387,6 @@ class PS_PlayableManager : ScriptComponent
 		m_playersStates[playerId] = state;
 	}
 	
-	void SetPlayableGroupCallSign(RplId PlayableId, int groupCallsign)
-	{
-		RPC_SetPlayableGroupCallSign(PlayableId, groupCallsign);
-		Rpc(RPC_SetPlayableGroupCallSign, PlayableId, groupCallsign);
-	}
-	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	void RPC_SetPlayableGroupCallSign(RplId PlayableId, int groupCallsign)
-	{
-		//Print("RPC_SetPlayableGroupCallSign: " + PlayableId.ToString() + " - " + groupCallsign.ToString());
-		m_playableGroupCallSigns[PlayableId] = groupCallsign;
-	}
-	
 	void SetPlayerPin(int playerId, bool pined)
 	{
 		RPC_SetPlayerPin(playerId, pined);
@@ -400,6 +398,18 @@ class PS_PlayableManager : ScriptComponent
 		//Print("RPC_SetPlayerPin: " + playerId.ToString() + " - " + pined.ToString());
 		m_playersPin[playerId] = pined;
 	}
+	
+	void SetPlayablePlayerGroupId(RplId PlayableId, int groupId)
+	{
+		RPC_SetPlayablePlayerGroupId(PlayableId, groupId);
+		Rpc(RPC_SetPlayablePlayerGroupId, PlayableId, groupId);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RPC_SetPlayablePlayerGroupId(RplId PlayableId, int groupId)
+	{
+		m_playablePlayerGroupId[PlayableId] = groupId;
+	}
+	
 	
 	// -------------------------- Util ----------------------------
 	bool IsPlayerGroupLeader(int thisPlayerId)
@@ -459,14 +469,6 @@ class PS_PlayableManager : ScriptComponent
 			writer.WriteInt(m_playersStates.GetElement(i));
 		}
 		
-		int playableGroupsCount = m_playableGroupCallSigns.Count();
-		writer.WriteInt(playableGroupsCount);
-		for (int i = 0; i < playableGroupsCount; i++)
-		{
-			writer.WriteInt(m_playableGroupCallSigns.GetKey(i));
-			writer.WriteInt(m_playableGroupCallSigns.GetElement(i));
-		}
-		
 		int playersPlayableCount = m_playersPlayable.Count();
 		writer.WriteInt(playersPlayableCount);
 		for (int i = 0; i < playersPlayableCount; i++)
@@ -499,6 +501,15 @@ class PS_PlayableManager : ScriptComponent
 			writer.WriteString(m_playersFaction.GetElement(i));
 		}
 		
+		int playablePlayerGroupIdCount = m_playablePlayerGroupId.Count();
+		writer.WriteInt(playablePlayerGroupIdCount);
+		for (int i = 0; i < playablePlayerGroupIdCount; i++)
+		{
+			writer.WriteInt(m_playablePlayerGroupId.GetKey(i));
+			writer.WriteInt(m_playablePlayerGroupId.GetElement(i));
+		}
+		
+		
 		return true;
 	}
 	
@@ -514,18 +525,6 @@ class PS_PlayableManager : ScriptComponent
 			reader.ReadInt(value);
 			
 			m_playersStates.Insert(key, value);
-		}
-		
-		int playableGroupsCount;
-		reader.ReadInt(playableGroupsCount);
-		for (int i = 0; i < playableGroupsCount; i++)
-		{
-			int key;
-			int value;
-			reader.ReadInt(key);
-			reader.ReadInt(value);
-			
-			m_playableGroupCallSigns.Insert(key, value);
 		}
 		
 		int playersPlayableCount;
@@ -574,6 +573,18 @@ class PS_PlayableManager : ScriptComponent
 			reader.ReadString(value);
 			
 			m_playersFaction.Insert(key, value);
+		}
+		
+		int playablePlayerGroupIdCount;
+		reader.ReadInt(playablePlayerGroupIdCount);
+		for (int i = 0; i < playablePlayerGroupIdCount; i++)
+		{
+			int key;
+			int value;
+			reader.ReadInt(key);
+			reader.ReadInt(value);
+			
+			m_playablePlayerGroupId.Insert(key, value);
 		}
 		
 		m_bRplLoaded = true;

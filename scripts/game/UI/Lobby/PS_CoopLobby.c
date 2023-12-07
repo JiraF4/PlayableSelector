@@ -382,7 +382,7 @@ class PS_CoopLobby: MenuBase
 		m_aCharactersListWidgets.Clear();
 		
 		// Add new widgets
-		map<int, PS_RolesGroup> RolesGroups = new map<int, PS_RolesGroup>();
+		map<SCR_AIGroup, PS_RolesGroup> RolesGroups = new map<SCR_AIGroup, PS_RolesGroup>();
 		PlayerController playerController = GetGame().GetPlayerController();
 		FactionKey currentFactionKey = "";
 		if (playerController) currentFactionKey = playableManager.GetPlayerFactionKey(playerController.GetPlayerId());
@@ -390,19 +390,20 @@ class PS_CoopLobby: MenuBase
 		array<PS_PlayableComponent> factionPlayablesList = m_sFactionPlayables[currentFactionKey];
 		foreach (PS_PlayableComponent playable: factionPlayablesList)
 		{
-			int groupCallsign = playableManager.GetGroupCallsignByPlayable(playable.GetId());
+			SCR_AIGroup playableGroup = playableManager.GetPlayerGroupByPlayable(playable.GetId());
 			
+			int groupCallsign = playableManager.GetGroupCallsignByPlayable(playable.GetId());
 			SCR_FactionManager factionManager = SCR_FactionManager.Cast(GetGame().GetFactionManager());
 			SCR_Faction faction = SCR_Faction.Cast(factionManager.GetFactionByKey(currentFactionKey));
-			if (!RolesGroups.Contains(groupCallsign)) {
+			if (!RolesGroups.Contains(playableGroup)) {
 				Widget RolesGroup = GetGame().GetWorkspace().CreateWidgets(m_sRolesGroupPrefab);
 				PS_RolesGroup rolesGroupHandler = PS_RolesGroup.Cast(RolesGroup.FindHandler(PS_RolesGroup));
 				m_aRolesListWidgets.Insert(RolesGroup);
 				m_wRolesList.AddChild(RolesGroup);
-				RolesGroups[groupCallsign] = rolesGroupHandler;
-				rolesGroupHandler.SetName(faction, groupCallsign);
+				RolesGroups[playableGroup] = rolesGroupHandler;
+				rolesGroupHandler.SetGroup(playableGroup);
 			}
-			PS_RolesGroup rolesGroupHandler = RolesGroups[groupCallsign];
+			PS_RolesGroup rolesGroupHandler = RolesGroups[playableGroup];
 			
 			Widget characterWidget = rolesGroupHandler.AddPlayable(playable);
 			PS_CharacterSelector characterHandler = PS_CharacterSelector.Cast(characterWidget.FindHandler(PS_CharacterSelector));

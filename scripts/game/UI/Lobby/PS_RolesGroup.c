@@ -12,7 +12,7 @@ class PS_RolesGroup : SCR_WLibComponentBase
 	Widget m_wCharactersList;
 	TextWidget m_wRolesGroupName;
 	
-	int n_sGroupCallSign;
+	SCR_AIGroup m_gPlayablesGroup;
 	
 	ButtonWidget m_wVoiceJoinButton;
 	ImageWidget m_wVoiceJoinImage;
@@ -46,14 +46,23 @@ class PS_RolesGroup : SCR_WLibComponentBase
 		return CharacterSelector;
 	}
 	
-	void SetName(SCR_Faction faction, int CallSign)
+	void SetGroup(SCR_AIGroup group)
 	{
-		n_sGroupCallSign = CallSign;
+		m_gPlayablesGroup = group;
 		
-		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		string name = playableManager.GroupCallsignToGroupName(faction, CallSign);
+		string customName = group.GetCustomName();
 		
-		m_wRolesGroupName.SetText(name);
+		string company, platoon, squad, character, format;
+		group.GetCallsigns(company, platoon, squad, character, format);
+		string callsign;
+		callsign = WidgetManager.Translate(format, company, platoon, squad, "");
+		
+		if (customName != "")
+		{
+			callsign = string.Format("%1 (%2)", customName, callsign);
+		}
+		
+		m_wRolesGroupName.SetText(callsign);
 	}
 	
 	void GetWidgets(out array<Widget> charactersListWidgets)
@@ -70,8 +79,10 @@ class PS_RolesGroup : SCR_WLibComponentBase
 		int playerId = playerController.GetPlayerId();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		
+		if (!m_gPlayablesGroup) return;
+		
 		int currentRoomId = VoNRoomsManager.GetPlayerRoom(playerId);
-		int roomId = VoNRoomsManager.GetRoomWithFaction(playableManager.GetPlayerFactionKey(playerId), n_sGroupCallSign.ToString());
+		int roomId = VoNRoomsManager.GetRoomWithFaction(playableManager.GetPlayerFactionKey(playerId), m_gPlayablesGroup.GetCalsignNum().ToString());
 		
 		if (currentRoomId == roomId) m_wVoiceJoinImage.LoadImageFromSet(0, m_sImageSetPS, "RoomExit");
 		else m_wVoiceJoinImage.LoadImageFromSet(0, m_sImageSetPS, "RoomEnter");
@@ -88,10 +99,10 @@ class PS_RolesGroup : SCR_WLibComponentBase
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		
 		int currentRoomId = VoNRoomsManager.GetPlayerRoom(playerId);
-		int roomId = VoNRoomsManager.GetRoomWithFaction(playableManager.GetPlayerFactionKey(playerId), n_sGroupCallSign.ToString());
+		int roomId = VoNRoomsManager.GetRoomWithFaction(playableManager.GetPlayerFactionKey(playerId), m_gPlayablesGroup.GetCalsignNum().ToString());
 		
 		if (currentRoomId == roomId) playableController.MoveToVoNRoom(playerId, playableManager.GetPlayerFactionKey(playerId), "#PS-VoNRoom_Faction");
-		else playableController.MoveToVoNRoom(playerId, playableManager.GetPlayerFactionKey(playerId), n_sGroupCallSign.ToString());
+		else playableController.MoveToVoNRoom(playerId, playableManager.GetPlayerFactionKey(playerId), m_gPlayablesGroup.GetCalsignNum().ToString());
 	}
 }
 

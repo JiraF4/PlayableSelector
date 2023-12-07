@@ -5,6 +5,8 @@ $grp SCR_AIGroup : "{126BE8C46FA39581}Prefabs/Groups/INDFOR/Group_FIA_FireTeam_P
    }
   }
   coords 101.321 1 144.767
+  m_bPlayable 1
+  m_sCustomNameSet "Бибураты"
  }
  {
   components {
@@ -13,6 +15,8 @@ $grp SCR_AIGroup : "{126BE8C46FA39581}Prefabs/Groups/INDFOR/Group_FIA_FireTeam_P
    }
   }
   coords 83.348 1 145.808
+  m_bPlayable 1
+  m_sCustomNameSet "Софти"
  }
 }
 $grp SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.et" {
