@@ -220,6 +220,27 @@ class PS_VoNRoomsManager : ScriptComponent
 		return false;
 	}
 	
+	bool IsFactionRoom(int roomId, FactionKey factionKey)
+	{
+		string playerRoomName = GetRoomName(roomId);
+		if (factionKey == "")
+		{
+			if (playerRoomName.StartsWith("|")) return true;
+			return false;
+		}
+		if (playerRoomName.StartsWith(factionKey))
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	bool IsGlobalRoom(int roomId)
+	{
+		string playerRoomName = GetRoomName(roomId);
+		return playerRoomName == "|#PS-VoNRoom_Global";
+	}
+	
 	// ------------------------- JIP Replication -------------------------
 	// Send our precision data, we need it on clients
 	override bool RplSave(ScriptBitWriter writer)

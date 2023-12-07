@@ -83,6 +83,8 @@ class PS_VoiceChatList : SCR_ScriptedWidgetComponent
 		{
 			CreateRoom(roomId);
 		}
+		
+		UpdateInfo();
 	}
 	
 	void CreateRoomIfNeed(int roomId)
@@ -112,13 +114,22 @@ class PS_VoiceChatList : SCR_ScriptedWidgetComponent
 	
 	void RemoveRoomIfNeed(int roomId)
 	{
+		if (m_gVoNRoomsManager.IsGlobalRoom(roomId)) return;
 		// current player
-		if (m_gVoNRoomsManager.IsPublicRoom(roomId) && m_iPublicRoomId != roomId)
+		if (m_gVoNRoomsManager.IsPublicRoom(roomId))
 		{
-			array<int> playersInRoom = new array<int>();
-			m_gVoNRoomsManager.GetPlayersInRoom(playersInRoom, roomId);
-			if (playersInRoom.IsEmpty())
+			if (m_iPublicRoomId != roomId)
+			{
+				array<int> playersInRoom = new array<int>();
+				m_gVoNRoomsManager.GetPlayersInRoom(playersInRoom, roomId);
+				if (playersInRoom.IsEmpty())
+					RemoveRoom(roomId);
+			}
+		} else {
+			if (!m_gVoNRoomsManager.IsFactionRoom(roomId, m_sCurrentFactionKey) && m_gVoNRoomsManager.GetPlayerRoom(m_iPlayerId) != roomId)
+			{
 				RemoveRoom(roomId);
+			}
 		}
 	}
 	
@@ -130,15 +141,15 @@ class PS_VoiceChatList : SCR_ScriptedWidgetComponent
 		m_wRooms.Remove(roomId);
 	}
 	
+	void SwitchFaction(FactionKey factionKey)
+	{
+		if (m_sCurrentFactionKey == factionKey) return;
+		m_sCurrentFactionKey = factionKey;
+		Rebuild();
+	}
+	
 	void MovePlayer(int playerId, int roomId, int oldRoomId)
 	{
-		if (playerId == m_iPlayerId && m_gPlayableManager.GetPlayerFactionKey(playerId) != m_sCurrentFactionKey)
-		{
-			m_sCurrentFactionKey = m_gPlayableManager.GetPlayerFactionKey(playerId);
-			Rebuild();
-			return;
-		}
-		
 		// remove from old room
 		if (m_wRooms.Contains(oldRoomId))
 		{
@@ -183,7 +194,7 @@ class PS_VoiceChatList : SCR_ScriptedWidgetComponent
 		PlayerController currentPlayerController = GetGame().GetPlayerController();
 		int currentPlayerId = currentPlayerController.GetPlayerId();
 		EPlayerRole currentPlayerRole = playerManager.GetPlayerRoles(currentPlayerController.GetPlayerId());
-		FactionKey currentPlayerFactionKey = playableManager.GetPlayerFactionKey(currentPlayerId);
+		FactionKey currentPlayerFactionKey = m_sCurrentFactionKey;
 		
 		if (gameState != SCR_EGameModeState.BRIEFING)
 		{
@@ -259,30 +270,6 @@ class PS_VoiceChatList : SCR_ScriptedWidgetComponent
 			outRoomsArray.Insert(currentRoom);
 		
 	}
-	void GetVisiblePlayers(out array<int> outPlayersArray)
-	{
-		// global
-		PlayerManager playerManager = GetGame().GetPlayerManager();
-		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		
-		// current player
-		PlayerController currentPlayerController = GetGame().GetPlayerController();
-		int currentPlayerId = currentPlayerController.GetPlayerId();
-		EPlayerRole currentPlayerRole = playerManager.GetPlayerRoles(currentPlayerController.GetPlayerId());
-		
-		array<int> playerIds = new array<int>();
-		GetGame().GetPlayerManager().GetPlayers(playerIds);
-		
-		foreach (int playerId: playerIds)
-		{
-			// Check faction
-			if (playableManager.GetPlayerFactionKey(playerId) != playableManager.GetPlayerFactionKey(currentPlayerController.GetPlayerId())) continue;
-			
-			// If all checks completed, add to out list
-			outPlayersArray.Insert(playerId);
-		}
-	}
-	
 };
 
 
