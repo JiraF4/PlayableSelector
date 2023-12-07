@@ -9,7 +9,7 @@ class PS_MissionDescription : GenericEntity
 	string m_sTitle;
 	[Attribute("")]
 	ResourceName m_sDescriptionLayout;
-	[Attribute("")]
+	[Attribute(defvalue: "", uiwidget: UIWidgets.EditBoxMultiline)]
 	string m_sTextData;
 	
 	[Attribute("")]
@@ -18,7 +18,6 @@ class PS_MissionDescription : GenericEntity
 	[Attribute("")]
 	bool m_bEmptyFactionVisibility;
 	
-	// TODO: Get/Set Broadcast
 	ResourceName GetDescriptionLayout()
 	{
 		return m_sDescriptionLayout;

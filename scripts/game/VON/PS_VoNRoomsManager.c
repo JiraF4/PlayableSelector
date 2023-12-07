@@ -191,7 +191,7 @@ class PS_VoNRoomsManager : ScriptComponent
 			int playerRoomId = GetPlayerRoom(playerId);
 			if (rooms.Contains(playerRoomId)) continue;
 			string playerRoomName = GetRoomName(playerRoomId);
-			if (playerRoomName.Length() < 13) continue; // Empty before init room
+			if (playerRoomName.Length() <= 13) continue; // Empty before init room
 			if (playerRoomName.ContainsAt("Public", 13))
 			{
 				rooms.Insert(playerRoomId);
