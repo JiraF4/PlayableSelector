@@ -65,6 +65,13 @@ class PS_CharacterSelector : SCR_ButtonComponent
 		UpdatePlayableInfo();
 	}
 	
+	bool IsLocked()
+	{
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		int playerId = playableManager.GetPlayerByPlayable(m_playable.GetId());
+		return playerId == -2;
+	}
+	
 	void UpdatePlayableInfo()
 	{
 		// global
