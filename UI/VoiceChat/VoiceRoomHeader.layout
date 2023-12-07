@@ -1,7 +1,5 @@
 ButtonWidgetClass {
  Name "VoiceRoomHeader"
- Slot LayoutSlot "{5EB11767C21ECF59}" {
- }
  Color 0.001 0.001 0.001 0
  components {
   PS_VoiceRoomHeader "{5EB1458A4437EC6E}" {

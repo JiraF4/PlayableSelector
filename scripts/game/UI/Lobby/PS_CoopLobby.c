@@ -87,9 +87,7 @@ class PS_CoopLobby: MenuBase
 	SCR_ButtonBaseComponent m_bVoiceSwitch;
 		
 	protected ResourceName m_sImageSet = "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset";
-	
-	float m_fRecconnectTime = -1.0;
-	
+		
 	// -------------------- Menu events --------------------
 	override void OnMenuOpen()
 	{
@@ -154,40 +152,16 @@ class PS_CoopLobby: MenuBase
 		GetGame().GetInputManager().AddActionListener("VONChannel", EActionTrigger.DOWN, Action_LobbyVoNChannelOn);
 		GetGame().GetInputManager().AddActionListener("VONChannel", EActionTrigger.UP, Action_LobbyVoNChannelOff);
 		
-		GetGame().GetCallqueue().CallLater(AwaitPlayerController, 100);
-	}
-	
-	void AwaitPlayerController()
-	{
-		PlayerController playerController = GetGame().GetPlayerController();
-		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		
-		if (playerController && playableManager.IsReplicated()) {
-			if (playerController.GetPlayerId() != 0) {
-				OnMenuOpenDelay();
-				return;
-			}
-		}
-		
-		GetGame().GetCallqueue().CallLater(AwaitPlayerController, 100);
-	}
-	
-	void OnMenuOpenDelay()
-	{
-		PlayerController playerController = GetGame().GetPlayerController();
-		
-		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		if (playableManager.GetPlayableByPlayer(playerController.GetPlayerId()) != RplId.Invalid() && playableManager.GetPlayerState(playerController.GetPlayerId()) == PS_EPlayableControllerState.Disconected)
-			m_fRecconnectTime = GetGame().GetWorld().GetWorldTime() + 500;
-		
-		// Start update cycle
-		UpdateCycle();
+		HardUpdate();
 	}
 	
 	override void OnMenuUpdate(float tDelta)
 	{
 		if (m_ChatPanel)
 			m_ChatPanel.OnUpdateChat(tDelta);
+		
+		
+		TryUpdate();
 	};
 	
 	override void OnMenuClose()
@@ -203,20 +177,19 @@ class PS_CoopLobby: MenuBase
 		GetGame().GetInputManager().RemoveActionListener("VONChannel", EActionTrigger.UP, Action_LobbyVoNChannelOff);
 	}
 	
-	// Soo many staff need to bee init, i can't track all of it...
-	// Just update state every 100 ms
-	void UpdateCycle() 
+	void TryUpdate() 
 	{
-		m_hVoiceChatList.HardUpdate();
-		m_hGameModeHeader.Update();
-		if (m_fRecconnectTime < GetGame().GetWorld().GetWorldTime()) Fill();
-		GetGame().GetCallqueue().CallLater(UpdateCycle, 100);
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		if (playableManager.isUpdated())
+		{
+			HardUpdate();
+		}
 	}
 	
 	// -------------------- Update content functions --------------------
 	
 	// "Hard" update, insert new widgets and call updateMenu
-	void Fill()
+	void HardUpdate()
 	{		
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		// await player initialization

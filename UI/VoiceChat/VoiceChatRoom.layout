@@ -1,0 +1,19 @@
+VerticalLayoutWidgetClass {
+ Name "VoiceChatRoom"
+ components {
+  PS_VoiceChatRoom "{5F0EB4E19DE588FD}" {
+  }
+ }
+ {
+  ButtonWidgetClass "{5F0EB4E661866AAA}" : "{C976E42779159507}UI/VoiceChat/VoiceRoomHeader.layout" {
+   Name "VoiceRoomHeader"
+   Slot LayoutSlot "{5F0EB4E661866A80}" {
+   }
+  }
+  VerticalLayoutWidgetClass "{5F0EB4E6713FA830}" {
+   Name "PlayersVerticalLayout"
+   Slot LayoutSlot "{5F0EB4E6713FA80F}" {
+   }
+  }
+ }
+}

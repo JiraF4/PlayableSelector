@@ -19,6 +19,27 @@ class PS_PlayableManager : ScriptComponent
 	ref map<int, FactionKey> m_playersFaction = new map<int, FactionKey>; // player factions
 	ref map<RplId, int> m_playablePlayerGroupId = new map<RplId, int>; // playable to player group
 	
+	// Invokers
+	ref ScriptInvoker m_eOnFactionChange = new ScriptInvoker(); // int playerId, FactionKey factionKey, FactionKey factionKeyOld
+	
+	void PS_PlayableManager(IEntityComponentSource src, IEntity ent, IEntity parent)
+	{
+		SetEventMask(ent, EntityEvent.FRAME);
+	}
+	int m_bUpdated;
+	bool isUpdated()
+	{
+		return m_bUpdated == 1;
+	}
+	void SetUpdated()
+	{
+		m_bUpdated = 2;
+	}
+	override void EOnFrame(IEntity owner, float timeSlice) //!EntityEvent.FRAME
+	{
+		m_bUpdated--;
+	}
+	
 	bool m_bRplLoaded = false;
 	bool IsReplicated()
 	{
@@ -316,6 +337,8 @@ class PS_PlayableManager : ScriptComponent
 		VoNRoomsManager.GetOrCreateRoomWithFaction(playerGroup.GetFaction().GetFactionKey(), groupCallsign.ToString());
 		VoNRoomsManager.GetOrCreateRoomWithFaction(playerGroup.GetFaction().GetFactionKey(), "#PS-VoNRoom_Command");
 		VoNRoomsManager.GetOrCreateRoomWithFaction(playerGroup.GetFaction().GetFactionKey(), "#PS-VoNRoom_Faction");
+		
+		SetUpdated();
 	}
 	
 	
@@ -336,8 +359,12 @@ class PS_PlayableManager : ScriptComponent
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void RPC_SetPlayerFactionKey(int playerId, FactionKey factionKey)
 	{
-		//Print("RPC_SetPlayerFactionKey: " + playerId.ToString() + " - " + factionKey);
+		FactionKey factionKeyOld = GetPlayerFactionKey(playerId);
 		m_playersFaction[playerId] = factionKey;
+		
+		m_eOnFactionChange.Invoke(playerId, factionKey, factionKeyOld);
+		
+		SetUpdated();
 	}
 	
 	
@@ -349,7 +376,6 @@ class PS_PlayableManager : ScriptComponent
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void RPC_SetPlayablePlayer(RplId PlayableId, int playerId)
 	{
-		//Print("RPC_SetPlayablePlayer: " + PlayableId.ToString() + " - " + playerId.ToString());
 		if (playerId > 0) {
 			RplId oldPlayable = GetPlayableByPlayer(playerId);
 			if (oldPlayable != RplId.Invalid()) m_playablePlayers[oldPlayable] = -1;
@@ -357,6 +383,8 @@ class PS_PlayableManager : ScriptComponent
 			
 		m_playersPlayable[playerId] = PlayableId;
 		m_playablePlayers[PlayableId] = playerId;
+		
+		SetUpdated();
 	}
 	
 	void SetPlayerPlayable(int playerId, RplId PlayableId)
@@ -373,6 +401,8 @@ class PS_PlayableManager : ScriptComponent
 		
 		m_playersPlayable[playerId] = PlayableId;
 		m_playablePlayers[PlayableId] = playerId;
+		
+		SetUpdated();
 	}
 	
 	void SetPlayerState(int playerId, PS_EPlayableControllerState state)
@@ -385,6 +415,8 @@ class PS_PlayableManager : ScriptComponent
 	{
 		//Print("RPC_SetPlayerState: " + playerId.ToString() + " - " + state.ToString());
 		m_playersStates[playerId] = state;
+		
+		SetUpdated();
 	}
 	
 	void SetPlayerPin(int playerId, bool pined)
@@ -397,6 +429,8 @@ class PS_PlayableManager : ScriptComponent
 	{
 		//Print("RPC_SetPlayerPin: " + playerId.ToString() + " - " + pined.ToString());
 		m_playersPin[playerId] = pined;
+		
+		SetUpdated();
 	}
 	
 	void SetPlayablePlayerGroupId(RplId PlayableId, int groupId)
@@ -408,6 +442,8 @@ class PS_PlayableManager : ScriptComponent
 	void RPC_SetPlayablePlayerGroupId(RplId PlayableId, int groupId)
 	{
 		m_playablePlayerGroupId[PlayableId] = groupId;
+		
+		SetUpdated();
 	}
 	
 	

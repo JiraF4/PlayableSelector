@@ -14,6 +14,9 @@ class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 	
 	override void HandlerAttached(Widget w)
 	{
+		if (!GetGame().InPlayMode())
+			return;
+		
 		super.HandlerAttached(w);
 		m_wJoinRoomImage = ImageWidget.Cast(w.FindAnyWidget("JoinRoomImage"));
 		m_wRoomName = TextWidget.Cast(w.FindAnyWidget("RoomName"));
@@ -41,6 +44,11 @@ class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 			name = playerName + "'s #PS-VoNRoom_Public"; 
 		}
 		m_wRoomName.SetText(name);
+	}
+	
+	int GetRoomId()
+	{
+		return m_iRoomId;
 	}
 	
 	void AddOnClick()

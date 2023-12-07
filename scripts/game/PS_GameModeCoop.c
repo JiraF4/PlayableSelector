@@ -44,6 +44,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			saveManager.Load(loadSave);
 		}
 		
+		if (Replication.IsServer())
+		{
+			PS_VoNRoomsManager.GetInstance().GetOrCreateRoomWithFaction("", "#PS-VoNRoom_Global" );
+		}
+		
 		if (RplSession.Mode() != RplMode.Dedicated) {
 			GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.WaitScreen);
 			GetGame().GetInputManager().AddActionListener("OpenLobby", EActionTrigger.DOWN, Action_OpenLobby);

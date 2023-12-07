@@ -73,7 +73,7 @@ FrameWidgetClass {
    }
   }
   ScrollLayoutWidgetClass "{5EB2900030AFF408}" {
-   Name "PlayersListScroll"
+   Name "RoomsListScroll"
    Slot FrameWidgetSlot "{5EB1000AD8290B3B}" {
     PositionX 0
     OffsetLeft 0
@@ -86,7 +86,7 @@ FrameWidgetClass {
    }
    {
     VerticalLayoutWidgetClass "{5EB2900030AFF409}" {
-     Name "PlayersList"
+     Name "RoomsList"
      Slot AlignableSlot "{5EB11576E9D62E23}" {
      }
     }

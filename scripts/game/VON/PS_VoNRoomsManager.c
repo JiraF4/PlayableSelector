@@ -5,14 +5,15 @@ class PS_VoNRoomsManagerClass: ScriptComponentClass
 	
 };
 
-// just string but funnier struct: [FactionKey + "|"] + string
+// just string but funnier 
+// struct: [FactionKey + "|"] + string
 typedef string VoNRoomKey;
 
 // Manage VoN "Rooms"
 // Flying wallles rooms for naked VoN bois.
 [ComponentEditorProps(icon: HYBRID_COMPONENT_ICON)]
 class PS_VoNRoomsManager : ScriptComponent
-{	
+{
 	// server data
 	ref map<int, vector> m_mRoomOffsets = new map<int, vector>(); // offset from initial position for each room
 	ref map<VoNRoomKey, int> m_mVoiceRoomsFromName = new map<VoNRoomKey, int>(); // room key to roomId relationship
@@ -28,17 +29,9 @@ class PS_VoNRoomsManager : ScriptComponent
 	vector lastOffset;
 	int m_iLastRoomId = 1;
 	
-	// Multiple menus may broken
-	bool m_bHasChanges = true;
-	void ResetChangesFlag()
-	{
-		m_bHasChanges = false;
-	}
-	bool GetChangesFlag()
-	{
-		return m_bHasChanges;
-	}
-	
+	// Invokers
+	ref ScriptInvoker m_eOnRoomChanged = new ScriptInvoker(); // int playerId, int roomId, int oldRoomId
+		
 	bool m_bRplLoaded = false;
 	bool IsReplicated()
 	{
@@ -82,6 +75,11 @@ class PS_VoNRoomsManager : ScriptComponent
 		
 		// Create new room and id if need
 		int roomId = GetOrCreateRoomWithFaction(factionKey, roomName);
+		
+		// Skip if same room
+		if (roomId == GetPlayerRoom(playerId))
+			return;
+		
 		FactionManager factionManager = GetGame().GetFactionManager();
 		vector roomPosition = GetOrCreateRoomPosition(roomId, factionManager.GetFactionIndex(factionManager.GetFactionByKey(factionKey)));
 		
@@ -115,9 +113,12 @@ class PS_VoNRoomsManager : ScriptComponent
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void RPC_MoveToRoom(int playerId, int roomId, vector position)
 	{
-		m_bHasChanges = true;
+		int oldRoomId = GetPlayerRoom(playerId);
 		
 		m_mPlayersRooms[playerId] = roomId;
+		
+		m_eOnRoomChanged.Invoke(playerId, roomId, oldRoomId);
+		
 		PlayerController playerController = GetGame().GetPlayerController();
 		if (!playerController) return;
 		if (playerController.GetPlayerId() != playerId) return;
@@ -190,13 +191,33 @@ class PS_VoNRoomsManager : ScriptComponent
 		{
 			int playerRoomId = GetPlayerRoom(playerId);
 			if (rooms.Contains(playerRoomId)) continue;
-			string playerRoomName = GetRoomName(playerRoomId);
-			if (playerRoomName.Length() < 13) continue; // Empty before init room
-			if (playerRoomName.ContainsAt("Public", 13))
+			if (IsPublicRoom(playerRoomId))
 			{
 				rooms.Insert(playerRoomId);
 			}
 		}
+	}
+	
+	void GetPlayersInRoom(out notnull array<int> players, int roomId)
+	{
+		array<int> playerIds = new array<int>();
+		GetGame().GetPlayerManager().GetPlayers(playerIds);
+		foreach (int playerId : playerIds)
+		{
+			if (GetPlayerRoom(playerId) == roomId)
+				players.Insert(playerId);
+		}
+	}
+	
+	bool IsPublicRoom(int roomId)
+	{
+		string playerRoomName = GetRoomName(roomId);
+		if (playerRoomName.Length() <= 13) return false;
+		if (playerRoomName.ContainsAt("Public", 13))
+		{
+			return true;
+		}
+		return false;
 	}
 	
 	// ------------------------- JIP Replication -------------------------

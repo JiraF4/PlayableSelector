@@ -78,7 +78,6 @@ class PS_SpectatorMenu: MenuBase
 	void Update()
 	{
 		m_hAlivePlayerList.HardUpdate();
-		m_hVoiceChatList.HardUpdate();
 	}
 	
 	void InitChat()
