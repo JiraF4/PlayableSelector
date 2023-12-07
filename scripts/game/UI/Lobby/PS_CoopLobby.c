@@ -604,7 +604,7 @@ class PS_CoopLobby: MenuBase
 		  && m_iCurrentPlayer == playerController.GetPlayerId()
 		) {
 			playableController.SetPlayerPlayable(playerController.GetPlayerId(), RplId.Invalid());
-			m_hVoiceChatList.SwitchFaction("");
+			playableController.ChangeFactionKey(playerController.GetPlayerId(), "");
 			return;
 		}
 		
