@@ -206,6 +206,24 @@ FrameWidgetClass {
               }
              }
             }
+            TextWidgetClass "{5F0F444422867436}" {
+             Name "PlayersCounter"
+             Slot FrameWidgetSlot "{5E7CF04137EA34B4}" {
+              PositionX 50
+              OffsetLeft 50
+              PositionY 894
+              OffsetTop 894
+              SizeX 224
+              OffsetRight -274
+              SizeY 40
+              OffsetBottom -934
+             }
+             Text "0 / 42"
+             "Font Size" 26
+             "Min Font Size" 26
+             "Horizontal Alignment" Center
+             "Vertical Alignment" Center
+            }
            }
           }
           FrameWidgetClass "{5D6D14143A70F0FE}" {

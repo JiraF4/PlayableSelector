@@ -82,6 +82,9 @@ class PS_CoopLobby: MenuBase
 	protected Widget m_wVoiceChatList;
 	protected PS_VoiceChatList m_hVoiceChatList;
 	
+	// Players count
+	protected TextWidget m_wPlayersCounter;
+	
 	// Voice/PLayers Switch
 	SCR_ButtonBaseComponent m_bPlayersSwitch;
 	SCR_ButtonBaseComponent m_bVoiceSwitch;
@@ -154,6 +157,8 @@ class PS_CoopLobby: MenuBase
 		
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		m_sCurrentPlayerFaction = playableManager.GetPlayerFactionKey(playerController.GetPlayerId());
+		
+		m_wPlayersCounter = TextWidget.Cast(GetRootWidget().FindAnyWidget("PlayersCounter"));
 		
 		HardUpdate();
 	}
@@ -266,6 +271,8 @@ class PS_CoopLobby: MenuBase
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		
+		array<int> playerIds = new array<int>();
+		GetGame().GetPlayerManager().GetPlayers(playerIds);
 			
 		// Join button rename
 		PlayerController thisPlayerController = GetGame().GetPlayerController();
@@ -288,14 +295,7 @@ class PS_CoopLobby: MenuBase
 		{
 			PS_FactionSelector handler = PS_FactionSelector.Cast(factionSelector.FindHandler(PS_FactionSelector));
 			
-			int factionPlayersCount = 0;
-			array<int> playerIds = new array<int>();
-			GetGame().GetPlayerManager().GetPlayers(playerIds);
-			foreach (int playerId: playerIds)
-			{
-				if (playableManager.GetPlayerFactionKey(playerId) == handler.GetFaction().GetFactionKey())
-					factionPlayersCount = factionPlayersCount + 1;
-			}
+			int readyPlayersCount = 0;
 			
 			if (m_sCurrentPlayerFaction == handler.GetFaction().GetFactionKey()) {
 				if (!handler.IsToggled()) handler.SetToggled(true);
@@ -303,13 +303,17 @@ class PS_CoopLobby: MenuBase
 			
 			array<PS_PlayableComponent> factionPlayablesList = m_sFactionPlayables[handler.GetFaction().GetFactionKey()];
 			int i = 0;
-			int lockPLayables = 0;
+			int lockPlayables = 0;
 			foreach (PS_PlayableComponent playable : factionPlayablesList) {
 				int playerId = playableManager.GetPlayerByPlayable(playable.GetId());
-				if (playerId != -1)  i++;
-				if (playerId == -2)  lockPLayables++;
+				if (playerId != -1) {
+					i++;
+					if (playableManager.GetPlayerState(playerId) == PS_EPlayableControllerState.Ready)
+						readyPlayersCount++;
+				}
+				if (playerId == -2) lockPlayables++;
 			}
-			handler.SetCount(factionPlayersCount, i - lockPLayables, factionPlayablesList.Count() - lockPLayables);
+			handler.SetCount(readyPlayersCount, i - lockPlayables, factionPlayablesList.Count() - lockPlayables);
 		}
 		
 		// update every group widget
@@ -338,6 +342,15 @@ class PS_CoopLobby: MenuBase
 			} else if (playerHandler.IsToggled()) playerHandler.SetToggled(false);
 			playerHandler.UpdatePlayerInfo();
 		}
+		
+		
+		int readyPlayersCount = 0;
+		foreach (int playerId: playerIds)
+		{
+			if (playableManager.GetPlayerState(playerId) == PS_EPlayableControllerState.Ready)
+				readyPlayersCount++;
+		}
+		m_wPlayersCounter.SetTextFormat("%1/%2", readyPlayersCount, playerIds.Count());
 		
 		m_preview.UpdatePreviewInfo();
 		TryClose(); // Start close timer if all players ready
