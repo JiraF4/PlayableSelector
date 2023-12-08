@@ -625,5 +625,12 @@ StringTable {
    Author "SeskPC"
    LastChanged "SeskPC"
   }
+  CustomStringTableItem "{5F0F44E18237239B}" {
+   Id "PS_Briefing_YourPlace"
+   Target_en_us "Your place"
+   Modified 1594951939
+   Author "zazul"
+   LastChanged "zazul"
+  }
  }
 }
