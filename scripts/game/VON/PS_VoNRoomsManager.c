@@ -241,6 +241,12 @@ class PS_VoNRoomsManager : ScriptComponent
 		return playerRoomName == "|#PS-VoNRoom_Global";
 	}
 	
+	bool IsLocalRoom(int roomId)
+	{
+		string playerRoomName = GetRoomName(roomId);
+		return playerRoomName.StartsWith("|#PS-VoNRoom_Local");
+	}
+	
 	// ------------------------- JIP Replication -------------------------
 	// Send our precision data, we need it on clients
 	override bool RplSave(ScriptBitWriter writer)

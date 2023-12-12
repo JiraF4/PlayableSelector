@@ -115,6 +115,8 @@ class PS_VoiceChatList : SCR_ScriptedWidgetComponent
 	void RemoveRoomIfNeed(int roomId)
 	{
 		if (m_gVoNRoomsManager.IsGlobalRoom(roomId)) return;
+		if (m_gVoNRoomsManager.IsLocalRoom(roomId)) return;
+		
 		// current player
 		if (m_gVoNRoomsManager.IsPublicRoom(roomId))
 		{
