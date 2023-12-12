@@ -54,7 +54,9 @@ FrameWidgetClass {
         HorizontalLayoutWidgetClass "{5D6D00D78BA644A5}" {
          Name "HLWBody"
          Slot FrameWidgetSlot "{5D6D1414D5FE836E}" {
+          PositionX 0
           OffsetLeft 0
+          PositionY 0
           OffsetTop 0
           SizeX 1920
           OffsetRight -1920
@@ -86,12 +88,12 @@ FrameWidgetClass {
              Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
               PositionX 8
               OffsetLeft 8
-              PositionY 59
-              OffsetTop 59
+              PositionY 64
+              OffsetTop 64
               SizeX 40
               OffsetRight -48
               SizeY 40
-              OffsetBottom -99
+              OffsetBottom -104
              }
              Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
              Image "server-unlocked"
@@ -103,12 +105,12 @@ FrameWidgetClass {
               Anchor 0 0 0 0
               PositionX 8
               OffsetLeft 8
-              PositionY 59
-              OffsetTop 59
+              PositionY 64
+              OffsetTop 64
               SizeX 40
               OffsetRight -48
               SizeY 40
-              OffsetBottom -99
+              OffsetBottom -104
              }
              Color 0 1 0.019 0
              components {
@@ -167,9 +169,9 @@ FrameWidgetClass {
                Name "FactionHeader"
                Slot OverlayWidgetSlot "{5D6F14918D6DECB2}" {
                 HorizontalAlign 0
-                VerticalAlign 2
-                Padding 48 15 48 25
+                Padding 48 65 48 25
                }
+               Clipping False
                Text "#PS-Lobby_Factions"
                "Font Size" 48
                "Min Font Size" 48
@@ -231,9 +233,9 @@ FrameWidgetClass {
                Name "RolesHeader"
                Slot OverlayWidgetSlot "{5D6F14918D6DEC39}" {
                 HorizontalAlign 0
-                VerticalAlign 2
-                Padding 48 15 48 25
+                Padding 48 65 48 25
                }
+               Clipping False
                Text "#PS-Lobby_Roles"
                "Font Size" 48
                "Min Font Size" 48
@@ -308,10 +310,9 @@ FrameWidgetClass {
               TextWidgetClass "{5D6D14143EA39FC9}" {
                Name "LoadoutPreviewHeader"
                Slot OverlayWidgetSlot "{5D6F14918D6DEDB6}" {
-                HorizontalAlign 0
-                VerticalAlign 2
-                Padding 48 15 48 25
+                Padding 48 65 48 25
                }
+               Clipping False
                Text "#PS-Lobby_LoadoutPreview"
                "Font Size" 48
                "Min Font Size" 48
@@ -412,10 +413,9 @@ FrameWidgetClass {
               TextWidgetClass "{5D6D1415C09A4317}" {
                Name "PlayersHeader"
                Slot OverlayWidgetSlot "{5D6F14918D6DE88A}" {
-                HorizontalAlign 0
-                VerticalAlign 2
-                Padding 48 15 48 25
+                Padding 48 65 48 25
                }
+               Clipping False
                Text "#PS-Lobby_Players"
                "Font Size" 48
                "Min Font Size" 48
