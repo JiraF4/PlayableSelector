@@ -1,3 +1,40 @@
+$grp SCR_EditorRestrictionZoneEntity : "{B2A519402E9AC209}PrefabsEditable/RestrictionZone/E_EditorRestrictionZoneLarge.et" {
+ {
+  coords 10651.646 186.173 2480.119
+ }
+ {
+  coords 7503.676 165.759 4252.734
+  m_fWarnRadius 174
+  m_fZoneRadius 214
+  m_fZoneTeleportedRadius 224
+  {
+   GenericEntity {
+    ID "59D673B36B893D84"
+    components {
+     SCR_CustomAreaMeshComponent "{59D673B22B1EBC57}" {
+      m_fRadius 174
+     }
+    }
+   }
+  }
+ }
+ {
+  coords 11698.256 8.984 2171.011
+  m_fWarnRadius 174
+  m_fZoneRadius 214
+  m_fZoneTeleportedRadius 224
+  {
+   GenericEntity {
+    ID "59D673B36B893D84"
+    components {
+     SCR_CustomAreaMeshComponent "{59D673B22B1EBC57}" {
+      m_fRadius 174
+     }
+    }
+   }
+  }
+ }
+}
 $grp GenericEntity : "{C1977A326F2AA011}Prefabs/Structures/Signs/Military/SignCheckpoint_01_stop.et" {
  {
   coords 11635.627 6.062 2009.92
@@ -8,42 +45,5 @@ $grp GenericEntity : "{C1977A326F2AA011}Prefabs/Structures/Signs/Military/SignCh
   angleX 0.895
   angleY 178.226
   angleZ -0.028
- }
-}
-$grp SCR_EditorRestrictionZoneEntity : "{D832FD7D4F872977}Prefabs/FreezeTime/FreezKillZone.et" {
- {
-  coords 7503.676 165.759 4252.734
-  m_fWarnRadius 174
-  m_fZoneRadius 214
-  m_fZoneTeleportedRadius 224
-  {
-   GenericEntity {
-    ID "5EC5183A2E8F3FE3"
-    components {
-     SCR_CustomAreaMeshComponent "{5EC5025412025CFA}" {
-      m_fRadius 174
-     }
-    }
-   }
-  }
- }
- {
-  coords 10656.509 186.173 2452.222
- }
- {
-  coords 11698.256 7.548 2171.011
-  m_fWarnRadius 174
-  m_fZoneRadius 214
-  m_fZoneTeleportedRadius 224
-  {
-   GenericEntity {
-    ID "5EC5183A2E8F3FE3"
-    components {
-     SCR_CustomAreaMeshComponent "{5EC5025412025CFA}" {
-      m_fRadius 174
-     }
-    }
-   }
-  }
  }
 }

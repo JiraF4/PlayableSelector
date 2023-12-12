@@ -1,0 +1,9 @@
+PS_MissionDescription : "{3136BE42592F3B1B}PrefabsEditable/MissionDescription/EditableMissionDescription.et" {
+ m_sTitle "#PS-Description_HeaderAboutMission"
+ m_sTextData "Power plant assault!"\
+ "US must clear Pover plan buildingt to win!"
+ m_aVisibleForFactions {
+  "US" "FIA"
+ }
+ m_bEmptyFactionVisibility 1
+}

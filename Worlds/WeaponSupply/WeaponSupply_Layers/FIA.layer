@@ -106,12 +106,11 @@ $grp SCR_AIGroup : "{17C7309FFE4775B0}Prefabs/Groups/INDFOR/Group_FIA_RifleSquad
     DefaultFormation "Line"
    }
    PS_GroupCallsignAssigner "{5EE323BBAF47B846}" {
-    m_iCompanyCallsign 4
-    m_iSquadCallsign 1
+    m_iCompanyCallsign 5
    }
   }
-  coords 10636.315 184.99 2425.522
-  angleY -149.544
+  coords 9821.148 4.938 1353.751
+  angleY 65.652
  }
 }
 Vehicle UAZ469_uncovered_CIV_brown1 : "{270F23D61238ABC7}Prefabs/Vehicles/Wheeled/UAZ469/UAZ469_uncovered_CIV_brown.et" {
@@ -139,6 +138,9 @@ SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.et" {
 Vehicle M151A2_M2HB_MERDC1 : "{5168FEA3054D6D15}Prefabs/Vehicles/Wheeled/M151A2/M151A2_M2HB_MERDC.et" {
  coords 7470.317 164.572 4284.931
  angleY 97.373
+}
+Vehicle Ural4320_transport_covered_CIV_orange1 : "{66241E0CEDFCEDFF}Prefabs/Vehicles/Wheeled/Ural4320/Ural4320_transport_covered_CIV_orange.et" {
+ coords 9830.453 4.938 1346.557
 }
 SCR_AIGroup : "{8298E4105B5A10C0}Prefabs/Groups/INDFOR/Group_FIA_SharpshooterTeam_P.et" {
  components {

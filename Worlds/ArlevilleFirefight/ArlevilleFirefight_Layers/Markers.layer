@@ -1,34 +1,42 @@
-$grp PS_ManualMarker {
+$grp PS_ManualMarker : "{CD85ADE9E0F54679}PrefabsEditable/Markers/EditableMarker.et" {
  {
   coords 1277.759 37.681 2930.215
   m_sImageSet "{7CD99D22C7AE8195}UI/Textures/GroupManagement/FlagIcons/GroupFlagsOpfor.imageset"
-  m_sImageSetGlow "{7CD99D22C7AE8195}UI/Textures/GroupManagement/FlagIcons/GroupFlagsOpfor.imageset"
-  m_MarkerColor 0.855 0.031 0.028 1
+  m_sImageSetGlow ""
   m_sQuadName "Undefined-opfor"
-  m_fWorldSizeWidth 50
-  m_fWorldSizeHeight 35
-  m_sDescription "USSR"
+  m_fWorldSize 45
+  m_sDescription "#AR-Faction_USSR"
   m_bUseWorldScale 0
+  m_aVisibleForFactions {
+   "US" "USSR"
+  }
+  m_bVisibleForEmptyFaction 1
  }
  {
-  coords 3162.32 4.217 1184.521
+  coords 3162.183 4.226 1184.663
   m_sImageSet "{1228936E5DB30403}UI/Textures/GroupManagement/FlagIcons/GroupFlagsBlufor.imageset"
-  m_sImageSetGlow "{1228936E5DB30403}UI/Textures/GroupManagement/FlagIcons/GroupFlagsBlufor.imageset"
-  m_MarkerColor 0.016 0.552 0.905 1
+  m_sImageSetGlow ""
   m_sQuadName "Undefined-blufor"
-  m_fWorldSizeWidth 50
-  m_fWorldSizeHeight 35
-  m_sDescription "US"
+  m_fWorldSize 45
+  m_sDescription "#AR-Faction_US"
   m_bUseWorldScale 0
+  m_aVisibleForFactions {
+   "US" "USSR"
+  }
+  m_bVisibleForEmptyFaction 1
  }
  {
-  coords 2769.375 76.822 1650.878
+  coords 2769.448 76.768 1649.81
   m_sImageSet "{88966C7AB9720818}UI/Textures/DeployMenu/Objectives-Briefing/Objectives-briefing.imageset"
-  m_sImageSetGlow "{88966C7AB9720818}UI/Textures/DeployMenu/Objectives-Briefing/Objectives-briefing.imageset"
-  m_MarkerColor 0.005 0.044 0.114 1
+  m_sImageSetGlow ""
+  m_MarkerColor 0 0.125 0.502 1
   m_sQuadName "Defend"
-  m_fWorldSizeWidth 50
-  m_fWorldSizeHeight 50
+  m_fWorldSize 45
+  m_sDescription "Defend"
   m_bUseWorldScale 0
+  m_aVisibleForFactions {
+   "US" "USSR"
+  }
+  m_bVisibleForEmptyFaction 1
  }
 }

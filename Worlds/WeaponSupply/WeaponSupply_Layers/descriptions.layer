@@ -1,0 +1,29 @@
+$grp PS_MissionDescription : "{3136BE42592F3B1B}PrefabsEditable/MissionDescription/EditableMissionDescription.et" {
+ {
+  m_sTitle "#PS-Description_HeaderAboutMission"
+  m_sTextData "Армия США получила информацию о складах вооружения FIA и готовит операцию с целью их уничтожения. "\
+  "Если Армия США не справится с задачей за час, то повстанцам удастся перепрятать свое вооружение."
+  m_aVisibleForFactions {
+   "US" "FIA"
+  }
+  m_bEmptyFactionVisibility 1
+ }
+ {
+  m_sTitle "#PS-Description_HeaderFIA"
+  m_sTextData "У нас имеются 4 ящика ценнейшего вооружения: 2 в пещере и 2 в деревне (лодочная пристань и коричневый дом). "\
+  "В пещере базируется малая группа, им бы не помешала помошь в случае нападения. "\
+  "В камуфлированном грузовике с тентом лежат мины."
+  m_aVisibleForFactions {
+   "FIA"
+  }
+ }
+ {
+  m_sTitle "#PS-Description_HeaderUS"
+  m_sTextData "Нам поступила информация о перевозках вооружения для повстанцев. Необходимо нанести молниеносный удар по их складам и путям снабжения, пока они изменились. "\
+  "На эту задачу выделены: Взвод легкой пехоты на Humvee, пехотный взвод и аэромобильная группа."\
+  "У нас есть час на выполнение этой задачи!"
+  m_aVisibleForFactions {
+   "US"
+  }
+ }
+}

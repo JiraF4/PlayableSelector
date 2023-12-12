@@ -1,0 +1,24 @@
+$grp PS_MissionDescription : "{3136BE42592F3B1B}PrefabsEditable/MissionDescription/EditableMissionDescription.et" {
+ {
+  m_sTitle "#PS-Description_HeaderAboutMission"
+  m_sTextData "USSR attacks Arliville, and US defends it!"
+  m_aVisibleForFactions {
+   "US" "USSR"
+  }
+  m_bEmptyFactionVisibility 1
+ }
+ {
+  m_sTitle "#PS-Description_HeaderUSSR"
+  m_sTextData "Attack Arliville!"
+  m_aVisibleForFactions {
+   "USSR"
+  }
+ }
+ {
+  m_sTitle "#PS-Description_HeaderUS"
+  m_sTextData "Defend Arliville!"
+  m_aVisibleForFactions {
+   "US"
+  }
+ }
+}
