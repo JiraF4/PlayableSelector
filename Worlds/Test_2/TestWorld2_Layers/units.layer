@@ -34,6 +34,9 @@ $grp SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.
    }
   }
   coords 132.914 1 144.378
+  m_aUnitPrefabSlots + {
+   "{E9601333852C637F}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_HeliPilot_P.et"
+  }
  }
 }
 $grp SCR_AIGroup : "{9C7902A055DDA271}Prefabs/Groups/OPFOR/Group_USSR_FireGroup_P.et" {

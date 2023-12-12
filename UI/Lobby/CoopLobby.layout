@@ -372,12 +372,9 @@ FrameWidgetClass {
                         OverlayWidgetClass "{552068607D1612DA}" {
                          Prefab "{552068607D1612DA}"
                          {
-                          ImageWidgetClass "{5EF2DAD83B9A446D}" {
-                           Name "Image0"
-                           Slot OverlayWidgetSlot "{5F0915B372C61D26}" {
-                           }
-                           Texture "{3094131B5608B5B2}images/image.edds"
-                           Size 588 779
+                          ItemPreviewWidgetClass "{552068601B16C353}" {
+                           Prefab "{552068601B16C353}"
+                           camera 1
                           }
                          }
                         }

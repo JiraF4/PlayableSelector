@@ -84,6 +84,7 @@ class PS_CoopLobby: MenuBase
 	
 	// Players count
 	protected TextWidget m_wPlayersCounter;
+	protected ItemPreviewWidget m_wPreview;
 	
 	// Voice/PLayers Switch
 	SCR_ButtonBaseComponent m_bPlayersSwitch;
@@ -160,6 +161,9 @@ class PS_CoopLobby: MenuBase
 		
 		m_wPlayersCounter = TextWidget.Cast(GetRootWidget().FindAnyWidget("PlayersCounter"));
 		
+		// Force refreash
+		m_wPreview = ItemPreviewWidget.Cast(GetRootWidget().FindAnyWidget("Preview"));
+		
 		HardUpdate();
 	}
 	
@@ -168,6 +172,8 @@ class PS_CoopLobby: MenuBase
 		if (m_ChatPanel)
 			m_ChatPanel.OnUpdateChat(tDelta);
 		
+		// Force refreash
+		m_wPreview.SetRefresh(1, 1);
 		
 		TryUpdate();
 	};
