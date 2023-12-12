@@ -79,7 +79,7 @@ class PS_PlayerVoiceSelector : SCR_ButtonBaseComponent
 		m_wPlayerName.SetText(playerName);
 		m_wVoiceHideableButton.Update();
 		m_wLeaderIcon.SetVisible(playableManager.IsPlayerGroupLeader(m_iPlayer));
-		if (faction) m_wCharacterFactionColor.SetColor(faction.GetOutlineFactionColor());
+		if (faction) m_wCharacterFactionColor.SetColor(faction.GetFactionColor());
 		else m_wCharacterFactionColor.SetColor(Color.FromInt(0xFF2c2c2c));
 		
 		bool showKick = currentPlayerRole == EPlayerRole.ADMINISTRATOR;

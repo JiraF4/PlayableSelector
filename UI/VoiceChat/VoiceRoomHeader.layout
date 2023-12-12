@@ -10,9 +10,26 @@ ButtonWidgetClass {
   FrameWidgetClass "{5EB290655B7E7F5F}" {
    Name "VoiceRoomFrame"
    Slot ButtonWidgetSlot "{5EB2907FBA3D4CE8}" {
+    HorizontalAlign 3
+    VerticalAlign 3
    }
    Color 0 0 0 0
    {
+    ImageWidgetClass "{5F18ED157F706E13}" {
+     Name "FactionColor"
+     Slot FrameWidgetSlot "{5EB11767D337F688}" {
+      Anchor 0 0 1 1
+      PositionX 0
+      OffsetLeft 0
+      PositionY 0
+      OffsetTop 0
+      SizeX -1440
+      OffsetRight 0
+      SizeY -1036
+      OffsetBottom 0
+     }
+     Color 0.205 0.205 0.205 1
+    }
     ImageWidgetClass "{5EC2F2E639BEBE9C}" {
      Name "Border"
      Slot FrameWidgetSlot "{5D6F1490EBB9691E}" {
@@ -31,24 +48,27 @@ ButtonWidgetClass {
     ImageWidgetClass "{5EB1458B279C077B}" {
      Name "Background"
      Slot FrameWidgetSlot "{5EB11767D337F688}" {
+      Anchor 0 0 1 1
+      PositionX 0
       OffsetLeft 0
+      PositionY 0
       OffsetTop 0
-      SizeX 480
-      OffsetRight -480
-      SizeY 44
-      OffsetBottom -44
+      SizeX -1440
+      OffsetRight 0
+      SizeY -1036
+      OffsetBottom 0
      }
      Color 0.001 0.001 0.001 0
     }
     ImageWidgetClass "{5EB2906439B72CD7}" {
      Name "JoinRoomImage"
      Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
-      PositionX 423
-      OffsetLeft 423
+      PositionX 415
+      OffsetLeft 415
       PositionY 2
       OffsetTop 2
       SizeX 40
-      OffsetRight -463
+      OffsetRight -455
       SizeY 40
       OffsetBottom -42
      }

@@ -9,10 +9,24 @@ VerticalLayoutWidgetClass {
    Name "VoiceRoomHeader"
    Slot LayoutSlot "{5F0EB4E661866A80}" {
    }
+   {
+    FrameWidgetClass "{5EB290655B7E7F5F}" {
+     Prefab "{5EB290655B7E7F5F}"
+     Slot ButtonWidgetSlot "{5EB2907FBA3D4CE8}" {
+     }
+     {
+      ImageWidgetClass "{5EB1458B279C077B}" {
+       Prefab "{5EB1458B279C077B}"
+       Color 0.122 0.122 0.122 1
+      }
+     }
+    }
+   }
   }
   VerticalLayoutWidgetClass "{5F0EB4E6713FA830}" {
    Name "PlayersVerticalLayout"
    Slot LayoutSlot "{5F0EB4E6713FA80F}" {
+    Padding 0 0 0 8
    }
   }
  }

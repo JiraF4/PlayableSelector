@@ -447,12 +447,12 @@ FrameWidgetClass {
              Slot FrameWidgetSlot "{5D6D141612AB133D}" {
               PositionX 0
               OffsetLeft 0
-              PositionY 162
-              OffsetTop 162
+              PositionY 196
+              OffsetTop 196
               SizeX 480
               OffsetRight -480
-              SizeY 760
-              OffsetBottom -922
+              SizeY 727
+              OffsetBottom -923
              }
              {
               ScrollLayoutWidgetClass "{5D6D1B97707D8F2D}" {
@@ -675,12 +675,12 @@ FrameWidgetClass {
     Anchor 0.5 0.5 0.5 0.5
     PositionX 480
     OffsetLeft 480
-    PositionY -379
-    OffsetTop -379
+    PositionY -349
+    OffsetTop -349
     SizeX 480
     OffsetRight -960
-    SizeY 30
-    OffsetBottom 349
+    SizeY 34
+    OffsetBottom 315
    }
    {
     ButtonWidgetClass "{5EB701CAF0B7C9C0}" {
@@ -696,7 +696,6 @@ FrameWidgetClass {
      components {
       SCR_ButtonBaseComponent "{5EB701CA8A36B4A7}" {
        m_bCanBeToggled 1
-       m_BackgroundDefault 1 1 1 0
       }
      }
      {
@@ -770,7 +769,6 @@ FrameWidgetClass {
       SCR_ButtonBaseComponent "{5EB701CA8A36B4A7}" {
        m_bCanBeToggled 1
        m_bIsToggled 1
-       m_BackgroundDefault 1 1 1 0
       }
      }
      {
@@ -828,6 +826,20 @@ FrameWidgetClass {
        }
       }
      }
+    }
+    ImageWidgetClass "{5F18ED135236DF92}" {
+     Name "Background"
+     Slot FrameWidgetSlot "{5EB701CAB2EE0FA2}" {
+      PositionX 0
+      OffsetLeft 0
+      PositionY 30
+      OffsetTop 30
+      SizeX 480
+      OffsetRight -480
+      SizeY 4
+      OffsetBottom -34
+     }
+     Color 0.76 0.392 0.08 0.3
     }
    }
   }
@@ -1025,13 +1037,13 @@ FrameWidgetClass {
     ScrollLayoutWidgetClass "{5EB2900030AFF408}" {
      Prefab "{5EB2900030AFF408}"
      Slot FrameWidgetSlot "{5EB1000AD8290B3B}" {
-      PositionX 0.506
-      OffsetLeft 0.506
-      PositionY 29
-      OffsetTop 29
+      PositionX 0
+      OffsetLeft 0
+      PositionY 63
+      OffsetTop 63
       SizeX 480
-      OffsetRight -480.506
-      SizeY 761
+      OffsetRight -480
+      SizeY 727
       OffsetBottom -790
      }
     }
@@ -1116,14 +1128,14 @@ FrameWidgetClass {
   FrameWidgetClass "{5EB701CD0152AC68}" : "{B7A765172F0BD4D9}UI/layouts/Common/GameVersionWatermark.layout" {
    Name "EarlyAccessRoot"
    Slot FrameWidgetSlot "{5CEE96372B5D270B}" {
-    PositionX 0.214
-    OffsetLeft 0
-    PositionY 2.127
-    OffsetTop 0
+    PositionX 1
+    OffsetLeft 1
+    PositionY 55
+    OffsetTop 55
     SizeX 0
-    OffsetRight 0
+    OffsetRight -1
     SizeY 0
-    OffsetBottom 0
+    OffsetBottom -55
    }
    Opacity 1
   }

@@ -7,6 +7,7 @@ class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 	protected ResourceName m_sImageSet = "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset";
 	protected ResourceName m_sImageSetPS = "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset";
 	ImageWidget m_wJoinRoomImage;
+	ImageWidget m_wFactionColor;
 	TextWidget m_wRoomName;
 	string m_sRoomName;
 	int m_iRoomId;
@@ -19,6 +20,7 @@ class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 		
 		super.HandlerAttached(w);
 		m_wJoinRoomImage = ImageWidget.Cast(w.FindAnyWidget("JoinRoomImage"));
+		m_wFactionColor = ImageWidget.Cast(w.FindAnyWidget("FactionColor"));
 		m_wRoomName = TextWidget.Cast(w.FindAnyWidget("RoomName"));
 		
 		GetGame().GetCallqueue().CallLater(AddOnClick, 0);
@@ -30,6 +32,11 @@ class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 		m_sRoomName = roomName;
 		m_fFaction = faction;
 		m_iRoomId = roomId;
+		
+		if (m_fFaction)
+		{
+			m_wFactionColor.SetColor(m_fFaction.GetOutlineFactionColor());
+		}
 		
 		string name = roomName;
 		if (name != "" && name.IsDigitAt(0)) {
