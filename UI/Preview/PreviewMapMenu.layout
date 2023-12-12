@@ -121,16 +121,8 @@ FrameWidgetClass {
        }
        components {
         SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
-         m_sLabel "Chat toggle"
          m_sActionName "ChatToggle"
-        }
-       }
-       {
-        SizeLayoutWidgetClass "{5562AD435529FB36}" {
-         Prefab "{5562AD435529FB36}"
-         Slot ButtonWidgetSlot "{5562AD435529FB5D}" {
-          Padding 20 0 0 0
-         }
+         m_sLabel "Chat toggle"
         }
        }
       }
@@ -140,8 +132,8 @@ FrameWidgetClass {
        }
        components {
         SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
-         m_sLabel "#PS-Briefing_VoiceChat"
          m_sActionName "VONDirect"
+         m_sLabel "#PS-Briefing_VoiceChat"
         }
        }
       }
@@ -151,8 +143,8 @@ FrameWidgetClass {
        }
        components {
         SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
-         m_sLabel "#PS-Briefing_GroupVoiceChat"
          m_sActionName "VONChannel"
+         m_sLabel "#PS-Briefing_GroupVoiceChat"
         }
        }
       }
@@ -318,6 +310,162 @@ FrameWidgetClass {
     SizeY 93
     OffsetBottom -93
    }
+   {
+    OverlayWidgetClass "{5EB1000190412184}" {
+     Prefab "{5EB1000190412184}"
+     {
+      HorizontalLayoutWidgetClass "{5EB100048ABF5C22}" {
+       Prefab "{5EB100048ABF5C22}"
+       {
+        ButtonWidgetClass "{5EB1000404C189E8}" {
+         Prefab "{5EB1000404C189E8}"
+         {
+          SizeLayoutWidgetClass "{5EB2902E629DFD43}" {
+           Prefab "{5EB2902E629DFD43}"
+           {
+            FrameWidgetClass "{5EB100017BC764F4}" {
+             Prefab "{5EB100017BC764F4}"
+             {
+              OverlayWidgetClass "{5EB1000388A8E58A}" {
+               Prefab "{5EB1000388A8E58A}"
+               {
+                TextWidgetClass "{5EB10003D5163631}" {
+                 Prefab "{5EB10003D5163631}"
+                 Clipping False
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+        ButtonWidgetClass "{5EB1000406CEA78A}" {
+         Prefab "{5EB1000406CEA78A}"
+         {
+          SizeLayoutWidgetClass "{5EB2902E629DFD43}" {
+           Prefab "{5EB2902E629DFD43}"
+           {
+            FrameWidgetClass "{5EB100017BC764F4}" {
+             Prefab "{5EB100017BC764F4}"
+             {
+              OverlayWidgetClass "{5EB1000388A8E58A}" {
+               Prefab "{5EB1000388A8E58A}"
+               {
+                TextWidgetClass "{5EB10003D5163631}" {
+                 Prefab "{5EB10003D5163631}"
+                 Clipping False
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+        ButtonWidgetClass "{5EB1000406260CAA}" {
+         Prefab "{5EB1000406260CAA}"
+         {
+          SizeLayoutWidgetClass "{5EB2902E629DFD43}" {
+           Prefab "{5EB2902E629DFD43}"
+           {
+            FrameWidgetClass "{5EB100017BC764F4}" {
+             Prefab "{5EB100017BC764F4}"
+             {
+              OverlayWidgetClass "{5EB1000388A8E58A}" {
+               Prefab "{5EB1000388A8E58A}"
+               {
+                TextWidgetClass "{5EB10003D5163631}" {
+                 Prefab "{5EB10003D5163631}"
+                 Clipping False
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+        ButtonWidgetClass "{5EB10004061DFD92}" {
+         Prefab "{5EB10004061DFD92}"
+         {
+          SizeLayoutWidgetClass "{5EB2902E629DFD43}" {
+           Prefab "{5EB2902E629DFD43}"
+           {
+            FrameWidgetClass "{5EB100017BC764F4}" {
+             Prefab "{5EB100017BC764F4}"
+             {
+              OverlayWidgetClass "{5EB1000388A8E58A}" {
+               Prefab "{5EB1000388A8E58A}"
+               {
+                TextWidgetClass "{5EB10003D5163631}" {
+                 Prefab "{5EB10003D5163631}"
+                 Clipping False
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+        ButtonWidgetClass "{5EB10004078764DC}" {
+         Prefab "{5EB10004078764DC}"
+         {
+          SizeLayoutWidgetClass "{5EB2902E629DFD43}" {
+           Prefab "{5EB2902E629DFD43}"
+           {
+            FrameWidgetClass "{5EB100017BC764F4}" {
+             Prefab "{5EB100017BC764F4}"
+             {
+              OverlayWidgetClass "{5EB1000388A8E58A}" {
+               Prefab "{5EB1000388A8E58A}"
+               {
+                TextWidgetClass "{5EB10003D5163631}" {
+                 Prefab "{5EB10003D5163631}"
+                 Clipping False
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+    ButtonWidgetClass "{5EB290EEBC6EAD9B}" {
+     Prefab "{5EB290EEBC6EAD9B}"
+     {
+      SizeLayoutWidgetClass "{5EB2902E629DFD43}" {
+       Prefab "{5EB2902E629DFD43}"
+       {
+        FrameWidgetClass "{5EB100017BC764F4}" {
+         Prefab "{5EB100017BC764F4}"
+         {
+          OverlayWidgetClass "{5EB1000388A8E58A}" {
+           Prefab "{5EB1000388A8E58A}"
+           {
+            TextWidgetClass "{5EB10003D5163631}" {
+             Prefab "{5EB10003D5163631}"
+             Clipping False
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   }
   }
   FrameWidgetClass "{5EC27C79EC033FEA}" : "{0CAA34745062743B}UI/MissionDescription/MissionDescriptionFrame.layout" {
    Name "MissionDescriptionFrame"
@@ -353,7 +501,7 @@ FrameWidgetClass {
     }
    }
   }
-  FrameWidgetClass "{5EBE2C2798842478}" : "{B7A765172F0BD4D9}UI/layouts/Common/EarlyAccessWatermark.layout" {
+  FrameWidgetClass "{5EBE2C2798842478}" : "{B7A765172F0BD4D9}UI/layouts/Common/GameVersionWatermark.layout" {
    Name "EarlyAccessRoot"
    Slot FrameWidgetSlot "{5CEE96372B5D270B}" {
     PositionX -49.712
@@ -367,60 +515,63 @@ FrameWidgetClass {
    }
    Opacity 1
   }
-  OverlayWidgetClass "{5EBE323890A56A36}" {
-   Name "WaitOverlay"
+  OverlayWidgetClass "{5F1894B0493817E0}" {
+   Name "PlayableNotSelectedOverlay"
    Slot FrameWidgetSlot "{5EBE323890A56A10}" {
-    Anchor 0.5 0 0.5 0
-    PositionX -960
-    OffsetLeft -960
-    PositionY 0
-    OffsetTop 0
-    SizeX 1920
-    OffsetRight -960
+    Anchor 0 0 1 0
+    PositionX 0
+    OffsetLeft 0
+    PositionY 110.3
+    OffsetTop 110.3
+    SizeX 0
+    OffsetRight 0
     SizeY 1080
-    OffsetBottom -1080
+    OffsetBottom -1190.3
+    SizeToContent 1
    }
+   Clipping False
    {
-    OverlayWidgetClass "{5EBE3239DAFC5E28}" {
-     Name "Overlay"
-     Slot OverlayWidgetSlot "{5EBE3239DAFC5E10}" {
-      VerticalAlign 0
-      Padding 0 128 0 0
+    FrameWidgetClass "{5F1894B0493817E7}" {
+     Name "Frame0"
+     Slot OverlayWidgetSlot "{5EE8EEC276DBC641}" {
      }
      {
-      ImageWidgetClass "{5EBE32383DFFDDC5}" {
-       Name "Background"
-       Slot OverlayWidgetSlot "{5EC27C79EA1DD452}" {
+      PanelWidgetClass "{5F1894B0493817E5}" {
+       Name "Overlay0"
+       Slot FrameWidgetSlot "{5EE8EEC276CA4EF4}" {
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX 534.441
+        OffsetRight -534.441
+        SizeY 226.533
+        OffsetBottom -226.533
+        SizeToContent 1
        }
        Color 0 0 0 0.6
-       Size 550 128
-      }
-      VerticalLayoutWidgetClass "{5EBE3238B8CC6E25}" {
-       Name "HorizontalLayout"
-       Slot OverlayWidgetSlot "{5EBE3238B8CC6E04}" {
-        VerticalAlign 0
-        Padding 0 12 0 0
-       }
+       style full
        {
-        TextWidgetClass "{5EBE32389A34C8F8}" {
-         Name "TextWait"
-         Slot LayoutSlot "{5EBE3238577F33F4}" {
-          HorizontalAlign 1
-          VerticalAlign 1
+        VerticalLayoutWidgetClass "{5F1894B0493817E4}" {
+         Name "HorizontalLayout"
+         Slot FrameWidgetSlot "{5EE8EEC25FBC84D3}" {
+          SizeToContent 1
          }
-         Text "#PS-Preview_PleaseWait"
-         "Font Size" 52
-         "Min Font Size" 52
-        }
-        TextWidgetClass "{5EBE3238B9EFED1F}" {
-         Name "TextStart"
-         Slot LayoutSlot "{5EBE3238B9EFED34}" {
-          HorizontalAlign 1
-          VerticalAlign 1
+         {
+          TextWidgetClass "{5F1894B0493817EB}" {
+           Name "TextPlayableNotSelected"
+           Slot LayoutSlot "{5EE8EEC5B1C05AFD}" {
+            HorizontalAlign 1
+            VerticalAlign 1
+            Padding 4 4 4 4
+           }
+           Text "#PS-Preview_PleaseWait"
+           "Font Size" 52
+           "Min Font Size" 52
+           "Horizontal Alignment" Center
+           "Vertical Alignment" Center
+          }
          }
-         Text "#PS-Preview_GameStartSoon"
-         "Font Size" 52
-         "Min Font Size" 52
         }
        }
       }
