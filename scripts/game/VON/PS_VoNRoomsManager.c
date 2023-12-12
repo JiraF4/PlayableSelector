@@ -228,7 +228,7 @@ class PS_VoNRoomsManager : ScriptComponent
 			if (playerRoomName.StartsWith("|")) return true;
 			return false;
 		}
-		if (playerRoomName.StartsWith(factionKey))
+		if (playerRoomName.StartsWith(factionKey + "|"))
 		{
 			return true;
 		}
