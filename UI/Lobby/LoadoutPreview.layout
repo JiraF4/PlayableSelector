@@ -1,7 +1,8 @@
-VerticalLayoutWidgetClass {
+FrameWidgetClass {
  Name "MainLoadoutPreview"
  Slot OverlayWidgetSlot "{5D6D1B985B1E5269}" {
  }
+ "Z Order" 3
  components {
   PS_LobbyLoadoutPreview "{5EA71616A67268D8}" {
    m_sSoundHovered ""
@@ -11,8 +12,10 @@ VerticalLayoutWidgetClass {
  {
   FrameWidgetClass "{5D6D1B9826675364}" {
    Name "LoadoutPreviewTile"
-   Slot LayoutSlot "{5D6D1B9826675284}" {
+   Slot FrameWidgetSlot "{5F1EE674922DB236}" {
+    SizeToContent 1
    }
+   "Z Order" 3
    {
     ButtonWidgetClass "{5D6E820114D3BC73}" {
      Name "LoadoutPreviewTileController"
@@ -77,7 +80,7 @@ VerticalLayoutWidgetClass {
          Name "VerticalLayout"
          Slot OverlayWidgetSlot "{5D6E82175062898B}" {
           HorizontalAlign 3
-          VerticalAlign 0
+          VerticalAlign 3
          }
          {
           OverlayWidgetClass "{5F190A8CAF7D46C8}" {
@@ -126,6 +129,36 @@ VerticalLayoutWidgetClass {
             }
            }
           }
+          FrameWidgetClass "{5F1EE66556AD2C37}" : "{D8E7A38F116BB41B}UI/LittleInventory/LittleInventory.layout" {
+           Name "LittleInventory"
+           Slot LayoutSlot "{5F1EE672B99CC07D}" {
+            VerticalAlign 3
+            SizeMode Fill
+           }
+           "Z Order" 4
+           {
+            BlurWidgetClass "{5F1EE661C9E54333}" {
+             Name "Blur"
+             Slot FrameWidgetSlot "{5F1EE661CECFAA80}" {
+              Anchor 0 0 1 1
+              PositionX 0
+              OffsetLeft 0
+              PositionY 0
+              OffsetTop 0
+              SizeX -342
+              OffsetRight 0
+              SizeY -487
+              OffsetBottom 0
+             }
+            }
+            OverlayWidgetClass "{5F14130A0CED83E1}" {
+             Prefab "{5F14130A0CED83E1}"
+             Slot FrameWidgetSlot "{5F141357A73F07B3}" {
+             }
+             "Z Order" 10
+            }
+           }
+          }
          }
         }
         ImageWidgetClass "{5EAB239BC3F16AE8}" {
@@ -146,36 +179,87 @@ VerticalLayoutWidgetClass {
   }
   FrameWidgetClass "{5D6D1B978889C476}" {
    Name "LoadoutPreviewDescription"
-   Slot LayoutSlot "{5D6D1B978889CB92}" {
-    Padding 0 -7 0 0
+   Slot FrameWidgetSlot "{5F1EE674922DB203}" {
+    PositionX 24
+    OffsetLeft 24
+    PositionY 600
+    OffsetTop 600
+    SizeX 0
+    OffsetRight -24
+    SizeY 0
+    OffsetBottom -600
+    SizeToContent 1
    }
    Clipping False
    {
     VerticalLayoutWidgetClass "{5F190A84C81A65C7}" {
      Name "VerticalLayout"
      Slot FrameWidgetSlot "{5F190A84C81A6530}" {
-      PositionX 24
-      OffsetLeft 24
-      PositionY -8
-      OffsetTop -8
+      PositionX 0
+      OffsetLeft 0
+      PositionY 0
+      OffsetTop 0
       SizeX 442
-      OffsetRight -466
+      OffsetRight -442
       SizeY 174
-      OffsetBottom -166
+      OffsetBottom -174
      }
      {
       ButtonWidgetClass "{5F190A84CD55D347}" {
-       Name "OpenInventory"
+       Name "OpenInventoryButton"
        Slot LayoutSlot "{5F190A84CD55D35E}" {
        }
        Color 0.162 0.162 0.162 1
+       components {
+        SCR_ButtonBaseComponent "{5F1EE66674AFCBE2}" {
+        }
+       }
        {
-        TextWidgetClass "{5F190A84ED614973}" {
-         Name "Text"
-         Slot ButtonWidgetSlot "{5F190A9DAFA2B62B}" {
-          Padding 4 4 4 4
+        OverlayWidgetClass "{5F1EE666819D1BD8}" {
+         Name "OpenInventoryOverlay"
+         Slot ButtonWidgetSlot "{5F1EE666819D1B02}" {
+          HorizontalAlign 3
+          VerticalAlign 3
          }
-         Text "Loadout"
+         {
+          ImageWidgetClass "{5F1EE66682D41AC9}" {
+           Name "Background"
+           Slot OverlayWidgetSlot "{5F190A85B2B1470C}" {
+            HorizontalAlign 3
+            VerticalAlign 3
+           }
+           Color 0.216 0.216 0.216 1
+           Size 1 1
+          }
+          PanelWidgetClass "{5F1EE6667DA0FEC4}" {
+           Name "Border"
+           Slot OverlayWidgetSlot "{5F13554B538BBB91}" {
+            HorizontalAlign 3
+            VerticalAlign 3
+           }
+           "Z Order" 9
+           Clipping False
+           Color 0.761 0.386 0.078 1
+           style outline_2px
+          }
+          PanelWidgetClass "{5F1EE6667DA0FE2B}" {
+           Name "Outline"
+           Slot OverlayWidgetSlot "{58C86EE2AC127FB6}" {
+            HorizontalAlign 3
+            VerticalAlign 3
+           }
+           "Z Order" 2
+           Color 0.141 0.141 0.141 0.314
+           style pixel_outline
+          }
+          TextWidgetClass "{5F190A84ED614973}" {
+           Name "Text"
+           Slot OverlayWidgetSlot "{5F1EE663EDBECF95}" {
+            Padding 4 4 4 4
+           }
+           Text "Loadout"
+          }
+         }
         }
        }
       }

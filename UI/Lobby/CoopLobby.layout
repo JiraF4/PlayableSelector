@@ -352,7 +352,7 @@ FrameWidgetClass {
               OffsetBottom -952
              }
              {
-              VerticalLayoutWidgetClass "{5EAB2399481EEBFF}" : "{FE42694A25ACA734}UI/Lobby/LoadoutPreview.layout" {
+              FrameWidgetClass "{5EAB2399481EEBFF}" : "{FE42694A25ACA734}UI/Lobby/LoadoutPreview.layout" {
                Name "MainLoadoutPreview"
                Slot OverlayWidgetSlot "{5D6D1B985B1E5269}" {
                }
@@ -1046,6 +1046,13 @@ FrameWidgetClass {
     }
    }
   }
+  OverlayWidgetClass "{5F1EE67047D122DF}" : "{7CCC70461390089E}UI/LittleInventory/LittleInventoryItemInfo.layout" {
+   Name "LobbyLittleInventoryItemInfo"
+   Slot FrameWidgetSlot "{5F141357A73F07B3}" {
+   }
+   "Z Order" 10
+   "Is Visible" 0
+  }
   OverlayWidgetClass "{5E6EACEFEB2DB125}" {
    Name "OverlayCounter"
    Slot FrameWidgetSlot "{5EAE9BDAD5B4BA2F}" {
@@ -1059,6 +1066,7 @@ FrameWidgetClass {
     SizeY 19998
     OffsetBottom -9995.2
    }
+   "Z Order" 15
    "Is Visible" 0
    {
     SizeLayoutWidgetClass "{5EAE9BD94D12A3CB}" {

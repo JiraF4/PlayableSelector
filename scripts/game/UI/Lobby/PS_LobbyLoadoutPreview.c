@@ -12,10 +12,13 @@ class PS_LobbyLoadoutPreview : SCR_WLibComponentBase
 	protected TextWidget m_wLoadoutText;
 	
 	protected SCR_LoadoutPreviewComponent m_Preview;
+	protected SCR_ButtonBaseComponent m_hOpenInventoryButton;
 	
 	protected PS_PlayableComponent m_playable;
 	
 	protected PS_ImportantItemsDisplay m_hImportantItemsDisplay;
+	
+	protected PS_LittleInventory m_hLittleInventory;
 	
 	override void HandlerAttached(Widget w)
 	{
@@ -30,8 +33,21 @@ class PS_LobbyLoadoutPreview : SCR_WLibComponentBase
 		Widget widget = w.FindAnyWidget("LoadoutPreview");
 		m_Preview = SCR_LoadoutPreviewComponent.Cast(widget.FindHandler(SCR_LoadoutPreviewComponent));
 		
+		Widget widgetOpenInventory = w.FindAnyWidget("OpenInventoryButton");
+		m_hOpenInventoryButton = SCR_ButtonBaseComponent.Cast(widgetOpenInventory.FindHandler(SCR_ButtonBaseComponent));
+		m_hOpenInventoryButton.m_OnClicked.Insert(OpenInventoryButton);
+		
+		Widget widgetLittleInventory = w.FindAnyWidget("LittleInventory");
+		m_hLittleInventory = PS_LittleInventory.Cast(widgetLittleInventory.FindHandler(PS_LittleInventory));
+		m_hLittleInventory.m_iOnEntityRemoved.Insert(EntityRemoved);
+		
 		widget = w.FindAnyWidget("ImportantItemsDisplay");
 		m_hImportantItemsDisplay = PS_ImportantItemsDisplay.Cast(widget.FindHandler(PS_ImportantItemsDisplay));
+	}
+	
+	void SetItemInfoWidget(Widget itemInfoWidget)
+	{
+		m_hLittleInventory.SetExternalItemInfoWidget(itemInfoWidget)
 	}
 	
 	void SetPlayable(PS_PlayableComponent playable)
@@ -41,6 +57,7 @@ class PS_LobbyLoadoutPreview : SCR_WLibComponentBase
 		IEntity entity = null;
 		if (playable) entity = playable.GetOwner();
 		m_hImportantItemsDisplay.SetEntity(entity);
+		CloseInventory();
 	}
 	
 	// Return all items recursive (If item is inventory)
@@ -56,6 +73,36 @@ class PS_LobbyLoadoutPreview : SCR_WLibComponentBase
 				items.InsertAll(subItems);
 			}
 		}
+	}
+	
+	void EntityRemoved(PS_LittleInventoryEntity inventoryEntity)
+	{
+		if (m_hLittleInventory.IsAllClosed())
+		{
+			CloseInventory();
+		}
+	}
+	
+	void CloseInventory()
+	{
+		m_hLittleInventory.Clear();
+		m_hLittleInventory.GetRootWidget().SetVisible(false);
+	}
+	
+	void OpenInventory()
+	{
+		m_hLittleInventory.GetRootWidget().SetVisible(true);
+		IEntity entity = null;
+		if (m_playable) entity = m_playable.GetOwner();
+		if (entity) m_hLittleInventory.OpenEntity(entity);
+	}
+	
+	void OpenInventoryButton(SCR_ButtonBaseComponent button)
+	{
+		if (m_hLittleInventory.GetRootWidget().IsVisible())
+			CloseInventory();
+		else
+			OpenInventory();
 	}
 	
 	void UpdatePreviewInfo()

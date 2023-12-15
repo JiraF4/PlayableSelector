@@ -111,6 +111,7 @@ class PS_CoopLobby: MenuBase
 		
 		Widget widget = GetRootWidget().FindAnyWidget("MainLoadoutPreview");
 		m_preview = PS_LobbyLoadoutPreview.Cast(widget.FindHandler(PS_LobbyLoadoutPreview));
+		m_preview.SetItemInfoWidget(GetRootWidget().FindAnyWidget("LobbyLittleInventoryItemInfo"));
 		m_wCounterText = TextWidget.Cast(GetRootWidget().FindAnyWidget("TextCounter"));
 		m_wOverlayCounter = OverlayWidget.Cast(GetRootWidget().FindAnyWidget("OverlayCounter"));
 		m_wCounterText.SetText("");
