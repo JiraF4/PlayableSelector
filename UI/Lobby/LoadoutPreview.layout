@@ -156,11 +156,11 @@ VerticalLayoutWidgetClass {
      Slot FrameWidgetSlot "{5F190A84C81A6530}" {
       PositionX 24
       OffsetLeft 24
-      PositionY 0
-      OffsetTop 0
+      PositionY -8
+      OffsetTop -8
       SizeX 442
       OffsetRight -466
-      SizeY 166
+      SizeY 174
       OffsetBottom -166
      }
      {
@@ -176,8 +176,6 @@ VerticalLayoutWidgetClass {
           Padding 4 4 4 4
          }
          Text "Loadout"
-         "Font Size" 16
-         "Min Font Size" 16
         }
        }
       }
@@ -222,6 +220,8 @@ VerticalLayoutWidgetClass {
              {
               ImageWidgetClass "{5F190A8467E261FC}" {
                Prefab "{5F190A8467E261FC}"
+               Texture "{B8BD4961F63E8A6B}UI/Textures/Icons/PS_Atlas_240x128.imageset"
+               Image "WeaponSlot"
                Size 134 63
               }
              }
@@ -233,6 +233,8 @@ VerticalLayoutWidgetClass {
              {
               ImageWidgetClass "{5F190A8467E261FC}" {
                Prefab "{5F190A8467E261FC}"
+               Texture "{B8BD4961F63E8A6B}UI/Textures/Icons/PS_Atlas_240x128.imageset"
+               Image "WeaponSlot"
                Size 134 63
               }
              }

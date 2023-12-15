@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{B8BD4961F63E8A6B}UI/Textures/Icons/PS_Atlas_240x128.imageset"
+ Configurations {
+  ImageSetResourceClass PC {
+  }
+  ImageSetResourceClass XBOX_ONE : PC {
+  }
+  ImageSetResourceClass XBOX_SERIES : PC {
+  }
+  ImageSetResourceClass PS4 : PC {
+  }
+  ImageSetResourceClass HEADLESS : PC {
+  }
+ }
+}
