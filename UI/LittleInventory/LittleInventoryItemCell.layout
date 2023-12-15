@@ -1,0 +1,105 @@
+SizeLayoutWidgetClass {
+ Name "ItemCell"
+ Slot GridWidgetSlot "{5F1147F4104E2587}" {
+  HorizontalAlign 3
+  VerticalAlign 3
+ }
+ components {
+  PS_LittleInventoryItemCell "{5F135548FC692505}" {
+  }
+ }
+ AllowWidthOverride 1
+ WidthOverride 64
+ AllowHeightOverride 1
+ HeightOverride 64
+ {
+  ButtonWidgetClass "{5F1147E2EE9D103B}" {
+   Name "Button"
+   Slot AlignableSlot "{5F1147F38EA07562}" {
+    HorizontalAlign 3
+    VerticalAlign 3
+    Padding 4 4 4 4
+   }
+   Color 0.013 0.013 0.013 0
+   components {
+    SCR_ButtonTextComponent "{5F13554A9F49CA88}" {
+     m_BackgroundDefault 0 0 0 0.502
+     m_BackgroundHovered 0.898 0.541 0.184 0.471
+     m_BackgroundSelected 0.76 0.392 0.08 0.3
+     m_TextToggled 0.761 0.386 0.078 1
+    }
+   }
+   {
+    OverlayWidgetClass "{5F13554AAC25679E}" {
+     Name "Overlay"
+     Slot ButtonWidgetSlot "{5F13554AAC2567C6}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+     }
+     {
+      ImageWidgetClass "{5F135548C4336D3F}" {
+       Name "Background"
+       Slot OverlayWidgetSlot "{5548E6E7DF4EE313}" {
+        HorizontalAlign 3
+        VerticalAlign 3
+       }
+      }
+      BlurWidgetClass "{5F135548C4336D7F}" {
+       Name "Blur"
+       Slot OverlayWidgetSlot "{5668B6C9FE3B6123}" {
+        HorizontalAlign 3
+        VerticalAlign 3
+       }
+       Intensity 0.315
+       "Smooth Border" 5 5 5 5
+      }
+      PanelWidgetClass "{5F135548C4336EBD}" {
+       Name "Border"
+       Slot OverlayWidgetSlot "{5F13554B538BBB91}" {
+        HorizontalAlign 3
+        VerticalAlign 3
+       }
+       "Z Order" 9
+       Clipping False
+       Color 0.761 0.386 0.078 1
+       style outline_2px
+      }
+      PanelWidgetClass "{5F135548C4336E9B}" {
+       Name "Outline"
+       Slot OverlayWidgetSlot "{58C86EE2AC127FB6}" {
+        HorizontalAlign 3
+        VerticalAlign 3
+       }
+       "Z Order" 2
+       Color 0.141 0.141 0.141 0.314
+       style pixel_outline
+      }
+      ItemPreviewWidgetClass "{5F117A7FC80651AF}" {
+       Name "ItemPreview"
+       Slot OverlayWidgetSlot "{5F13554B53AF8268}" {
+        HorizontalAlign 3
+        VerticalAlign 3
+       }
+       "Z Order" 1
+       "Use Engine Scale" 0
+       xscale 4
+       yscale 4
+       Format LDR
+       "Use clear color" 1
+       "Blend mode" Blend
+      }
+      TextWidgetClass "{5F16111706FC3348}" {
+       Name "CountText"
+       Slot OverlayWidgetSlot "{5F16111706FC3CA0}" {
+        HorizontalAlign 2
+        VerticalAlign 2
+       }
+       "Z Order" 20
+       Text "12"
+      }
+     }
+    }
+   }
+  }
+ }
+}

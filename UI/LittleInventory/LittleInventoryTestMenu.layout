@@ -1,0 +1,10 @@
+FrameWidgetClass {
+ Name "rootFrame"
+ {
+  FrameWidgetClass "{5F1EE647CEE15D0B}" : "{D8E7A38F116BB41B}UI/LittleInventory/LittleInventory.layout" {
+   Name "LittleInventory0"
+   Slot FrameWidgetSlot "{5F114285AF443202}" {
+   }
+  }
+ }
+}
