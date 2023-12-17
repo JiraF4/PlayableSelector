@@ -9,7 +9,7 @@ modded enum ChimeraMenuPreset : ScriptMenuPresetEnum
 //! Fullscreen map menu
 class PS_BriefingMapMenu: ChimeraMenuBase
 {	
-	protected ResourceName m_rCurrentPlayableMapMarker = "{96E1BAD2EEC610EF}UI/Map/CurrentPlayableMapMarker.layout";
+	protected ResourceName m_rCurrentPlayableMapMarker = "{52CA8FF5F56C6F31}UI/Map/ManualMapMarkerBase.layout";
 	PS_ManualMarkerComponent m_hPlayableMarkerComponent;
 	protected float m_fPlayerMarkerSize = 100;
 	
@@ -119,7 +119,8 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 			Widget mapFrame = m_MapEntity.GetMapMenuRoot().FindAnyWidget(SCR_MapConstants.MAP_FRAME_NAME);
 			Widget playableMarker = Widget.Cast(GetGame().GetWorkspace().CreateWidgets(m_rCurrentPlayableMapMarker, mapFrame));
 			m_hPlayableMarkerComponent = PS_ManualMarkerComponent.Cast(playableMarker.FindHandler(PS_ManualMarkerComponent));
-			m_hPlayableMarkerComponent.SetImageGlow("{67B3A6DC2D712B52}UI/Textures/Icons/icons_mapMarkersUI-glow.imageset", "point-of-interest");
+			m_hPlayableMarkerComponent.SetImage("{27F2439D610D02B3}UI/Imagesets/MilitarySymbol/ICO_Land.imageset", "PlayerSpawnHint");
+			m_hPlayableMarkerComponent.SetImageGlow("","");
 			m_hPlayableMarkerComponent.SetDescription("#PS_Briefing_YourPlace");
 			m_hPlayableMarkerComponent.OnMouseLeave(null, null, 0, 0);
 		}
@@ -153,14 +154,17 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 			PS_PlayableComponent playableComponent = playableManager.GetPlayableById(currentPlayableId);
 			IEntity entity = playableComponent.GetOwner();
 			
-			float wX, wY, screenX, screenY;
+			float wX, wY, screenX, screenY, screenXEnd, screenYEnd;
 			vector worldPosition = entity.GetOrigin();
 			wX = worldPosition[0];
 			wY = worldPosition[2];
 			m_MapEntity.WorldToScreen(wX, wY, screenX, screenY, true);
+			m_MapEntity.WorldToScreen(wX + m_fPlayerMarkerSize, wY + m_fPlayerMarkerSize, screenXEnd, screenYEnd, true);
 			float screenXD = GetGame().GetWorkspace().DPIUnscale(screenX);
 			float screenYD = GetGame().GetWorkspace().DPIUnscale(screenY);
-			m_hPlayableMarkerComponent.SetSlot(screenXD, screenYD, m_fPlayerMarkerSize, m_fPlayerMarkerSize, 0.0);
+			float sizeXD = GetGame().GetWorkspace().DPIUnscale(screenXEnd - screenXD);
+			float sizeYD = GetGame().GetWorkspace().DPIUnscale(screenYD - screenYEnd);
+			m_hPlayableMarkerComponent.SetSlot(screenXD, screenYD, sizeXD, sizeYD, 0.0);
 			m_hPlayableMarkerComponent.SetColor(new Color(1, 1, 1, 1));
 		}
 	}

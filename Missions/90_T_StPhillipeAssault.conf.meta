@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{902D2FBE20CAB925}Missions/90_T_StPhillipeAssault.conf"
+ Configurations {
+  CONFResourceClass PC {
+  }
+  CONFResourceClass XBOX_ONE : PC {
+  }
+  CONFResourceClass XBOX_SERIES : PC {
+  }
+  CONFResourceClass PS4 : PC {
+  }
+  CONFResourceClass HEADLESS : PC {
+  }
+ }
+}

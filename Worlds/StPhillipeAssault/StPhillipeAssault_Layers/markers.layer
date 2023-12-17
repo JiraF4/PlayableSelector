@@ -1,0 +1,85 @@
+$grp PS_ManualMarker : "{CD85ADE9E0F54679}PrefabsEditable/Markers/EditableMarker.et" {
+ KompasNew {
+  coords 4866.555 40.596 9013.8
+  m_sImageSet "{7CD99D22C7AE8195}UI/Textures/GroupManagement/FlagIcons/GroupFlagsOpfor.imageset"
+  m_sImageSetGlow ""
+  m_MarkerColor 0.49 0.49 0.49 1
+  m_sQuadName "Recon-indfor"
+  m_fWorldSize 50
+  m_sDescription "#AR-Callsign_Soviet_Company_C"
+  m_bUseWorldScale 0
+  m_aVisibleForFactions {
+   "USSR" "US"
+  }
+  m_bVisibleForEmptyFaction 1
+ }
+ objNew {
+  coords 4418.825 23.87 10649.055
+  m_sImageSet "{C3F217CA9CF060B4}UI/Imagesets/Conflict/ConflictIconsSet.imageset"
+  m_sImageSetGlow ""
+  m_sQuadName "Task_Defend"
+  m_fWorldSize 50
+  m_sDescription "A"
+  m_bUseWorldScale 0
+  m_aVisibleForFactions {
+   "USSR" "US"
+  }
+  m_bVisibleForEmptyFaction 1
+ }
+ objNew2 {
+  coords 4466.753 18.472 10902.417
+  m_sImageSet "{C3F217CA9CF060B4}UI/Imagesets/Conflict/ConflictIconsSet.imageset"
+  m_sImageSetGlow ""
+  m_sQuadName "Task_Defend"
+  m_fWorldSize 50
+  m_sDescription "H"
+  m_bUseWorldScale 0
+  m_aVisibleForFactions {
+   "USSR" "US"
+  }
+  m_bVisibleForEmptyFaction 1
+ }
+ objNew3 {
+  coords 4562.021 27.931 10502.326
+  m_sImageSet "{C3F217CA9CF060B4}UI/Imagesets/Conflict/ConflictIconsSet.imageset"
+  m_sImageSetGlow ""
+  m_sQuadName "Task_Defend"
+  m_fWorldSize 50
+  m_sDescription "F"
+  m_bUseWorldScale 0
+  m_aVisibleForFactions {
+   "USSR" "US"
+  }
+  m_bVisibleForEmptyFaction 1
+ }
+ US {
+  coords 4407.259 1.625 11065.198
+  m_sImageSet "{1228936E5DB30403}UI/Textures/GroupManagement/FlagIcons/GroupFlagsBlufor.imageset"
+  m_sImageSetGlow ""
+  m_MarkerColor 0.49 0.49 0.49 1
+  m_sQuadName "Undefined-blufor"
+  m_fWorldSize 35
+  m_sDescription "#AR-Callsign_US_Company_A"\
+  "#AR-Callsign_US_Company_B"
+  m_bUseWorldScale 0
+  m_aVisibleForFactions {
+   "USSR" "US"
+  }
+  m_bVisibleForEmptyFaction 1
+ }
+ ussr_mainNEW {
+  coords 3900.323 15.236 8460.915
+  m_sImageSet "{7CD99D22C7AE8195}UI/Textures/GroupManagement/FlagIcons/GroupFlagsOpfor.imageset"
+  m_sImageSetGlow ""
+  m_MarkerColor 0.49 0.49 0.49 1
+  m_sQuadName "Undefined-opfor"
+  m_fWorldSize 50
+  m_sDescription "#AR-Callsign_Soviet_Company_A"\
+  "#AR-Callsign_Soviet_Company_B"
+  m_bUseWorldScale 0
+  m_aVisibleForFactions {
+   "USSR" "US"
+  }
+  m_bVisibleForEmptyFaction 1
+ }
+}

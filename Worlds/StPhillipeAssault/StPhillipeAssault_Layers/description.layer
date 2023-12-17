@@ -1,0 +1,24 @@
+$grp PS_MissionDescription : "{3136BE42592F3B1B}PrefabsEditable/MissionDescription/EditableMissionDescription.et" {
+ general {
+  m_sTitle "#PS-Description_HeaderAboutMission"
+  m_sTextData "Армия СССР готовит штурм Сант-Филипа. Контроль над городом обеспечивают 3 здания: Администрация, Фабрика и Отель. Фризтайм 5 минут."
+  m_aVisibleForFactions {
+   "US" "USSR"
+  }
+  m_bEmptyFactionVisibility 1
+ }
+ us_description {
+  m_sTitle "#PS-Description_HeaderUS"
+  m_sTextData "Задача: Удержать хотя бы одно из отмеченых зданий в городе. По городу можно перемещаться и до окончания фризтайма! Обратите внимание на содержимое вашей техники."
+  m_aVisibleForFactions {
+   "US"
+  }
+ }
+ ussr_description {
+  m_sTitle "#PS-Description_HeaderUSSR"
+  m_sTextData "Задача: Зачистить отмеченные здания в городе. Обратите внимание на содержимое вашей техники."
+  m_aVisibleForFactions {
+   "USSR"
+  }
+ }
+}
