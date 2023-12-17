@@ -83,6 +83,51 @@ FrameWidgetClass {
           VerticalAlign 3
          }
          {
+          FrameWidgetClass "{5F231C322F09CFC5}" {
+           Name "LittleInventoryFrame"
+           Slot LayoutSlot "{5F231C322F09CF28}" {
+            VerticalAlign 3
+            SizeMode Fill
+           }
+           {
+            FrameWidgetClass "{5F1EE66556AD2C37}" : "{D8E7A38F116BB41B}UI/LittleInventory/LittleInventory.layout" {
+             Name "LittleInventory"
+             Slot FrameWidgetSlot "{5F114285AF443202}" {
+              Anchor 0 0 1 1
+              PositionX 0
+              OffsetLeft 0
+              PositionY 0
+              OffsetTop 0
+              SizeX 6
+              OffsetRight 0
+              SizeY 274
+              OffsetBottom 0
+             }
+             {
+              BlurWidgetClass "{5F1EE661C9E54333}" {
+               Name "Blur"
+               Slot FrameWidgetSlot "{5F1EE661CECFAA80}" {
+                Anchor 0 0 1 1
+                PositionX 0
+                OffsetLeft 0
+                PositionY 0
+                OffsetTop 0
+                SizeX -342
+                OffsetRight 0
+                SizeY -487
+                OffsetBottom 0
+               }
+              }
+              OverlayWidgetClass "{5F14130A0CED83E1}" {
+               Prefab "{5F14130A0CED83E1}"
+               Slot FrameWidgetSlot "{5F141357A73F07B3}" {
+               }
+               "Z Order" 10
+              }
+             }
+            }
+           }
+          }
           OverlayWidgetClass "{5F190A8CAF7D46C8}" {
            Name "LoadoutOverlay"
            Slot LayoutSlot "{5F190A8A3BF0ED03}" {
@@ -129,36 +174,6 @@ FrameWidgetClass {
             }
            }
           }
-          FrameWidgetClass "{5F1EE66556AD2C37}" : "{D8E7A38F116BB41B}UI/LittleInventory/LittleInventory.layout" {
-           Name "LittleInventory"
-           Slot LayoutSlot "{5F1EE672B99CC07D}" {
-            VerticalAlign 3
-            SizeMode Fill
-           }
-           "Z Order" 4
-           {
-            BlurWidgetClass "{5F1EE661C9E54333}" {
-             Name "Blur"
-             Slot FrameWidgetSlot "{5F1EE661CECFAA80}" {
-              Anchor 0 0 1 1
-              PositionX 0
-              OffsetLeft 0
-              PositionY 0
-              OffsetTop 0
-              SizeX -342
-              OffsetRight 0
-              SizeY -487
-              OffsetBottom 0
-             }
-            }
-            OverlayWidgetClass "{5F14130A0CED83E1}" {
-             Prefab "{5F14130A0CED83E1}"
-             Slot FrameWidgetSlot "{5F141357A73F07B3}" {
-             }
-             "Z Order" 10
-            }
-           }
-          }
          }
         }
         ImageWidgetClass "{5EAB239BC3F16AE8}" {
@@ -182,12 +197,12 @@ FrameWidgetClass {
    Slot FrameWidgetSlot "{5F1EE674922DB203}" {
     PositionX 24
     OffsetLeft 24
-    PositionY 600
-    OffsetTop 600
+    PositionY 604
+    OffsetTop 604
     SizeX 0
     OffsetRight -24
     SizeY 0
-    OffsetBottom -600
+    OffsetBottom -604
     SizeToContent 1
    }
    Clipping False

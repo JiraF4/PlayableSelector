@@ -27,6 +27,45 @@ PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_Game
   }
  }
 }
+SplineShapeEntity {
+ coords 228.961 1 119.376
+ Points {
+  ShapePoint "{5F231C33851C9C45}" {
+   Position -172.174 0 74.732
+   Data {
+    RiverPointData "{0000000031BA958C}" {
+    }
+   }
+  }
+  ShapePoint "{5F231C3385DBBF73}" {
+   Position -128.856 0 70.467
+  }
+  ShapePoint "{5F231C338583C09E}" {
+   Position -98.266 0 71.186
+  }
+  ShapePoint "{5F231C33847A3A2F}" {
+   Position -72.384 0 70.571
+  }
+  ShapePoint "{5F231C3384381127}" {
+   Position -50.46 0 64.837
+  }
+  ShapePoint "{5F231C3384E4A5DD}" {
+   Position -31.464 0 54.452
+  }
+  ShapePoint "{5F231C338357F2F4}" {
+   Position -26.359 0 46.606
+  }
+  ShapePoint "{5F231C3382431949}" {
+   Position -17.103 0 22.086
+  }
+  ShapePoint "{5F231C33FA915AA5}" {
+   Position -6.493 0 7.121
+  }
+  ShapePoint "{5F231C33FA919E87}" {
+   Position 5 0 0
+  }
+ }
+}
 HitRegistrationManager HitRegManager1 : "{0EDA3D48791120DD}Prefabs/MP/HitRegManager.et" {
 }
 PS_MissionDescription : "{3136BE42592F3B1B}PrefabsEditable/MissionDescription/EditableMissionDescription.et" {
