@@ -11,7 +11,7 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 {	
 	protected ResourceName m_rCurrentPlayableMapMarker = "{52CA8FF5F56C6F31}UI/Map/ManualMapMarkerBase.layout";
 	PS_ManualMarkerComponent m_hPlayableMarkerComponent;
-	protected float m_fPlayerMarkerSize = 100;
+	protected float m_fPlayerMarkerSize = 15;
 	
 	protected SCR_MapEntity m_MapEntity;	
 	protected SCR_ChatPanel m_ChatPanel;
@@ -119,7 +119,7 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 			Widget mapFrame = m_MapEntity.GetMapMenuRoot().FindAnyWidget(SCR_MapConstants.MAP_FRAME_NAME);
 			Widget playableMarker = Widget.Cast(GetGame().GetWorkspace().CreateWidgets(m_rCurrentPlayableMapMarker, mapFrame));
 			m_hPlayableMarkerComponent = PS_ManualMarkerComponent.Cast(playableMarker.FindHandler(PS_ManualMarkerComponent));
-			m_hPlayableMarkerComponent.SetImage("{27F2439D610D02B3}UI/Imagesets/MilitarySymbol/ICO_Land.imageset", "PlayerSpawnHint");
+			m_hPlayableMarkerComponent.SetImage("{B9E14AFE75AEBB19}UI/Textures/Icons/icons_mapMarkersUI_drawing/icons_DR_mapMarkersUI.imageset", "AR_icon_spawn_point");
 			m_hPlayableMarkerComponent.SetImageGlow("","");
 			m_hPlayableMarkerComponent.SetDescription("#PS_Briefing_YourPlace");
 			m_hPlayableMarkerComponent.OnMouseLeave(null, null, 0, 0);
@@ -162,8 +162,9 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 			m_MapEntity.WorldToScreen(wX + m_fPlayerMarkerSize, wY + m_fPlayerMarkerSize, screenXEnd, screenYEnd, true);
 			float screenXD = GetGame().GetWorkspace().DPIUnscale(screenX);
 			float screenYD = GetGame().GetWorkspace().DPIUnscale(screenY);
-			float sizeXD = GetGame().GetWorkspace().DPIUnscale(screenXEnd - screenXD);
-			float sizeYD = GetGame().GetWorkspace().DPIUnscale(screenYD - screenYEnd);
+			float sizeXD = GetGame().GetWorkspace().DPIUnscale(screenXEnd - screenX);
+			float sizeYD = GetGame().GetWorkspace().DPIUnscale(screenY - screenYEnd);
+			sizeYD *= m_hPlayableMarkerComponent.GetYScale();
 			m_hPlayableMarkerComponent.SetSlot(screenXD, screenYD, sizeXD, sizeYD, 0.0);
 			m_hPlayableMarkerComponent.SetColor(new Color(1, 1, 1, 1));
 		}
