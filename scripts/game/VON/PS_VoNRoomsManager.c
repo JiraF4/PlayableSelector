@@ -126,7 +126,28 @@ class PS_VoNRoomsManager : ScriptComponent
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		playableController.VoNPosition = position;
 	}
-	
+	void RestoreRoom(int playerId)
+	{
+		int roomId = GetPlayerRoom(playerId);
+		if (roomId == -1) return;
+		
+		string roomKey = GetRoomName(roomId);
+		// TODO: separate to static method
+		string factionKey = "";
+		string roomName = "#PS-VoNRoom_Global";	
+		if (roomKey.Contains("|")) {
+			array<string> outTokens = new array<string>();
+			roomKey.Split("|", outTokens, false);
+			factionKey = outTokens[0];
+			roomName = outTokens[1];
+		}
+		
+		FactionManager factionManager = GetGame().GetFactionManager();
+		vector roomPosition = GetOrCreateRoomPosition(roomId, factionManager.GetFactionIndex(factionManager.GetFactionByKey(factionKey)));
+		
+		RPC_MoveToRoom(playerId, roomId, roomPosition);
+		Rpc(RPC_MoveToRoom, playerId, roomId, roomPosition);
+	}
 	
 	// ------------------------- Room creation -------------------------
 	// Create room if new key provided, RUN ONLY ON SERVER
