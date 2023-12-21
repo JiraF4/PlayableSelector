@@ -76,7 +76,7 @@ class PS_PlayerVoiceSelector : SCR_ButtonBaseComponent
 		int currentGroupCallSign = playableManager.GetGroupCallsignByPlayable(m_iPlayer);
 				
 		// update
-		m_wPlayerName.SetText(playerName);
+		if (playerName != "") m_wPlayerName.SetText(playerName);
 		m_wVoiceHideableButton.Update();
 		m_wLeaderIcon.SetVisible(playableManager.IsPlayerGroupLeader(m_iPlayer));
 		if (faction) m_wCharacterFactionColor.SetColor(faction.GetFactionColor());
@@ -92,6 +92,7 @@ class PS_PlayerVoiceSelector : SCR_ButtonBaseComponent
 		m_wKickButton.SetVisible(showKick);
 		
 		if (playerRole == EPlayerRole.ADMINISTRATOR) m_wPlayerName.SetColor(Color.FromInt(0xfff2a34b));
+		else if (playerName == "") m_wPlayerName.SetColor(Color.FromInt(0xff999999));
 		else m_wPlayerName.SetColor(Color.FromInt(0xffffffff));
 		
 		if (playableId != RplId.Invalid()) {
