@@ -2,7 +2,6 @@ $grp PS_MissionDescription : "{3136BE42592F3B1B}PrefabsEditable/MissionDescripti
  GeneralInfo {
   m_sTitle "#PS-Description_HeaderAboutMission"
   m_sTextData "Hello, mission desription!"\
-  "Use text editor like notepad to copy text with line breaks."\
   "This description show up only on prelobby stage (only to empty faction)"
   m_bEmptyFactionVisibility 1
  }
@@ -39,7 +38,7 @@ $grp PS_MissionDescription : "{3136BE42592F3B1B}PrefabsEditable/MissionDescripti
  GeneralInfo2 {
   coords 134.756 6.26 103.914
   m_sTitle "#PS-Description_HeaderObjectives"
-  m_sTextData "Just one more localized string you can use!"
+  m_sTextData "Objectives. Just one more localized string you can use!"
   m_aVisibleForFactions {
    "USSR" "US"
   }

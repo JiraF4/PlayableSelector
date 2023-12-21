@@ -2,13 +2,6 @@ FrameWidgetClass {
  Name "PlayMenu"
  "Z Order" 9
  {
-  FrameWidgetClass "{5CECA56A279C044D}" {
-   Prefab "{5CECA56A279C044D}"
-   Name "EarlyAccessFrame0"
-   Slot FrameWidgetSlot "{5EB701CD65513B75}" {
-   }
-   "Z Order" 100000
-  }
   OverlayWidgetClass "{5D6D00D8FBAAF79D}" : "{01FD644AD2B6317D}UI/layouts/Menus/Common/MenuBackground.layout" {
    Name "MenuBackground0"
    Slot FrameWidgetSlot "{552C9A0A8526D2AD}" {
@@ -368,6 +361,30 @@ FrameWidgetClass {
                   }
                  }
                 }
+                FrameWidgetClass "{5D6D1B978889C476}" {
+                 Prefab "{5D6D1B978889C476}"
+                 {
+                  VerticalLayoutWidgetClass "{5F190A84C81A65C7}" {
+                   Prefab "{5F190A84C81A65C7}"
+                   {
+                    ButtonWidgetClass "{5F190A84CD55D347}" {
+                     Prefab "{5F190A84CD55D347}"
+                     {
+                      OverlayWidgetClass "{5F1EE666819D1BD8}" {
+                       Prefab "{5F1EE666819D1BD8}"
+                       {
+                        TextWidgetClass "{5F190A84ED614973}" {
+                         Prefab "{5F190A84ED614973}"
+                         Text "#PS_Lobby_Inventory"
+                        }
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
                }
               }
              }
@@ -409,7 +426,7 @@ FrameWidgetClass {
              {
               TextWidgetClass "{5F0F444422867436}" {
                Name "PlayersCounter"
-               Slot OverlayWidgetSlot {
+               Slot OverlayWidgetSlot "{5F2AF2E728F63945}" {
                 HorizontalAlign 2
                 VerticalAlign 3
                 Padding 0 50 25 0
@@ -667,12 +684,12 @@ FrameWidgetClass {
     Anchor 0.5 0.5 0.5 0.5
     PositionX 480
     OffsetLeft 480
-    PositionY -349
-    OffsetTop -349
+    PositionY -355
+    OffsetTop -355
     SizeX 480
     OffsetRight -960
     SizeY 34
-    OffsetBottom 315
+    OffsetBottom 321
    }
    {
     ButtonWidgetClass "{5EB701CAF0B7C9C0}" {
@@ -1031,12 +1048,12 @@ FrameWidgetClass {
      Slot FrameWidgetSlot "{5EB1000AD8290B3B}" {
       PositionX 0
       OffsetLeft 0
-      PositionY 63
-      OffsetTop 63
+      PositionY 57
+      OffsetTop 57
       SizeX 480
       OffsetRight -480
       SizeY 727
-      OffsetBottom -790
+      OffsetBottom -784
      }
     }
    }
@@ -1129,15 +1146,22 @@ FrameWidgetClass {
    Name "EarlyAccessRoot"
    Slot FrameWidgetSlot "{5CEE96372B5D270B}" {
     PositionX 1
-    OffsetLeft 1
     PositionY 55
-    OffsetTop 55
     SizeX 0
-    OffsetRight -1
     SizeY 0
-    OffsetBottom -55
    }
    Opacity 1
+   {
+    HorizontalLayoutWidgetClass "{5CEAB7C94A55AF1E}" {
+     Prefab "{5CEAB7C94A55AF1E}"
+     Slot FrameWidgetSlot "{5CEE96363E5C46AD}" {
+      OffsetLeft 0
+      OffsetTop 0
+      OffsetRight 0
+      OffsetBottom 0
+     }
+    }
+   }
   }
  }
 }
