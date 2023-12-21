@@ -152,5 +152,71 @@ ImageSetClass {
    Size 64 64
    Flags 0
   }
+  ImageSetDefClass Map {
+   Name "Map"
+   Pos 1536 0
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass Radio {
+   Name "Radio"
+   Pos 1472 0
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass Blood {
+   Name "Blood"
+   Pos 1664 0
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass Connect {
+   Name "Connect"
+   Pos 1728 0
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass Flashlight {
+   Name "Flashlight"
+   Pos 1792 0
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass Watch {
+   Name "Watch"
+   Pos 640 0
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass Binoculars {
+   Name "Binoculars"
+   Pos 1408 0
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass CompasUI {
+   Name "CompasUI"
+   Pos 1344 0
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass Compas {
+   Name "Compas"
+   Pos 1281 -1
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass Radio {
+   Name "Radio"
+   Pos 576 0
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass Grenade {
+   Name "Grenade"
+   Pos 384 0
+   Size 64 64
+   Flags 0
+  }
  }
 }

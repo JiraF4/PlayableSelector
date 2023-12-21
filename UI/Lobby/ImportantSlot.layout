@@ -1,0 +1,41 @@
+OverlayWidgetClass {
+ Name "ImportantSlot"
+ Slot LayoutSlot "{5F190A9DAFA2B7C7}" {
+  Padding 4 4 4 4
+ }
+ components {
+  PS_ImportantSlot "{5F1947FC17895D5B}" {
+  }
+ }
+ {
+  BlurWidgetClass "{5F1947FC8A96F66D}" {
+   Name "Blur"
+   Slot OverlayWidgetSlot "{5F1947FC8A96F645}" {
+    HorizontalAlign 3
+    VerticalAlign 3
+   }
+  }
+  ImageWidgetClass "{5F190A8467E261FC}" {
+   Name "Image"
+   Slot OverlayWidgetSlot "{5F190A9DAFA2B7B7}" {
+   }
+   Texture "{CDE4B2BF08F5EA5F}UI/Textures/InventoryIcons/InvenorySlot-Primary_UI.edds"
+   Size 63 63
+  }
+  ItemPreviewWidgetClass "{5F190A846D26F6E6}" {
+   Name "ItemPreview"
+   Slot OverlayWidgetSlot "{5F190A846D26F6C1}" {
+    HorizontalAlign 3
+    VerticalAlign 3
+   }
+   refresh 1
+   offset 1
+   "Use Engine Scale" 0
+   xscale 4
+   yscale 4
+   "Use clear color" 1
+   "Clear Color" 0 0 0 0.784
+   "Blend mode" Blend
+  }
+ }
+}

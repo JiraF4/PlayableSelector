@@ -707,5 +707,23 @@ StringTable {
    Author "SeskPC"
    LastChanged "SeskPC"
   }
+  CustomStringTableItem "{5F0F44E18237239B}" {
+   Id "PS_Briefing_YourPlace"
+   Target_en_us "Start position"
+   Target_es_es "Posición de salida"
+   Target_ru_ru "Стартовая позиция"
+   Modified 1596653782
+   Author "zazul"
+   LastChanged "SeskPC"
+  }
+  CustomStringTableItem "{5F2AF2E6BD2B3ADB}" {
+   Id "PS_Lobby_Inventory"
+   Target_en_us "Open inventory"
+   Target_es_es "Abrir el inventario"
+   Target_ru_ru "Открыть инвентарь"
+   Modified 1596653680
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
  }
 }

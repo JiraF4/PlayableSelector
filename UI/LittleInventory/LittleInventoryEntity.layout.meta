@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{0E16E87C294C2445}UI/LittleInventory/LittleInventoryEntity.layout"
+ Configurations {
+  LayoutResourceClass PC {
+  }
+  LayoutResourceClass XBOX_ONE : PC {
+  }
+  LayoutResourceClass XBOX_SERIES : PC {
+  }
+  LayoutResourceClass PS4 : PC {
+  }
+  LayoutResourceClass HEADLESS : PC {
+  }
+ }
+}

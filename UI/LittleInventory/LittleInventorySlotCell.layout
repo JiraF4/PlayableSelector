@@ -1,0 +1,37 @@
+SizeLayoutWidgetClass : "{28561DA61E961875}UI/LittleInventory/LittleInventoryItemCell.layout" {
+ Name "LittleInventorySlotCell"
+ components {
+  PS_LittleInventoryItemCell "{5F135548FC692505}" {
+   Enabled 0
+  }
+  PS_LittleInventorySlotCell "{5F1355488A475422}" {
+  }
+ }
+ {
+  ButtonWidgetClass "{5F1147E2EE9D103B}" {
+   Prefab "{5F1147E2EE9D103B}"
+   Color 0.314 0.314 0.314 0
+   {
+    OverlayWidgetClass "{5F13554AAC25679E}" {
+     Prefab "{5F13554AAC25679E}"
+     {
+      ImageWidgetClass "{5F13554850E3BACC}" {
+       Name "SlotImage"
+       Slot OverlayWidgetSlot "{5F13554850E3BA26}" {
+        HorizontalAlign 3
+        VerticalAlign 3
+       }
+       "Z Order" 1
+       "Is Visible" 0
+       Filter 0
+      }
+      ItemPreviewWidgetClass "{5F117A7FC80651AF}" {
+       Prefab "{5F117A7FC80651AF}"
+       "Z Order" 2
+      }
+     }
+    }
+   }
+  }
+ }
+}

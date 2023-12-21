@@ -90,6 +90,7 @@ class PS_PreviewMapMenu: ChimeraMenuBase
 	{
 		if (m_ChatPanel)
 			m_ChatPanel.OnUpdateChat(tDelta);
+		
 	}
 	
 	override void OnMenuClose()
@@ -113,7 +114,6 @@ class PS_PreviewMapMenu: ChimeraMenuBase
 	
 	void Update()
 	{
-		m_hVoiceChatList.HardUpdate();
 		m_hGameModeHeader.Update();
 	}
 	

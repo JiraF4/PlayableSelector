@@ -2,13 +2,6 @@ FrameWidgetClass {
  Name "PlayMenu"
  "Z Order" 9
  {
-  FrameWidgetClass "{5CECA56A279C044D}" {
-   Prefab "{5CECA56A279C044D}"
-   Name "EarlyAccessFrame0"
-   Slot FrameWidgetSlot "{5EB701CD65513B75}" {
-   }
-   "Z Order" 100000
-  }
   OverlayWidgetClass "{5D6D00D8FBAAF79D}" : "{01FD644AD2B6317D}UI/layouts/Menus/Common/MenuBackground.layout" {
    Name "MenuBackground0"
    Slot FrameWidgetSlot "{552C9A0A8526D2AD}" {
@@ -334,7 +327,7 @@ FrameWidgetClass {
               OffsetBottom -952
              }
              {
-              VerticalLayoutWidgetClass "{5EAB2399481EEBFF}" : "{FE42694A25ACA734}UI/Lobby/LoadoutPreview.layout" {
+              FrameWidgetClass "{5EAB2399481EEBFF}" : "{FE42694A25ACA734}UI/Lobby/LoadoutPreview.layout" {
                Name "MainLoadoutPreview"
                Slot OverlayWidgetSlot "{5D6D1B985B1E5269}" {
                }
@@ -354,14 +347,35 @@ FrameWidgetClass {
                         OverlayWidgetClass "{552068607D1612DA}" {
                          Prefab "{552068607D1612DA}"
                          {
-                          ImageWidgetClass "{5EF2DAD83B9A446D}" {
-                           Name "Image0"
-                           Slot OverlayWidgetSlot "{5F0915B372C61D26}" {
-                           }
-                           Texture "{3094131B5608B5B2}images/image.edds"
-                           Size 588 779
+                          ItemPreviewWidgetClass "{552068601B16C353}" {
+                           Prefab "{552068601B16C353}"
+                           camera 1
                           }
                          }
+                        }
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+                FrameWidgetClass "{5D6D1B978889C476}" {
+                 Prefab "{5D6D1B978889C476}"
+                 {
+                  VerticalLayoutWidgetClass "{5F190A84C81A65C7}" {
+                   Prefab "{5F190A84C81A65C7}"
+                   {
+                    ButtonWidgetClass "{5F190A84CD55D347}" {
+                     Prefab "{5F190A84CD55D347}"
+                     {
+                      OverlayWidgetClass "{5F1EE666819D1BD8}" {
+                       Prefab "{5F1EE666819D1BD8}"
+                       {
+                        TextWidgetClass "{5F190A84ED614973}" {
+                         Prefab "{5F190A84ED614973}"
+                         Text "#PS_Lobby_Inventory"
                         }
                        }
                       }
@@ -410,6 +424,19 @@ FrameWidgetClass {
               OffsetBottom -128
              }
              {
+              TextWidgetClass "{5F0F444422867436}" {
+               Name "PlayersCounter"
+               Slot OverlayWidgetSlot "{5F2AF2E728F63945}" {
+                HorizontalAlign 2
+                VerticalAlign 3
+                Padding 0 50 25 0
+               }
+               Text "0 / 128"
+               "Font Size" 26
+               "Min Font Size" 26
+               "Horizontal Alignment" Center
+               "Vertical Alignment" Center
+              }
               TextWidgetClass "{5D6D1415C09A4317}" {
                Name "PlayersHeader"
                Slot OverlayWidgetSlot "{5D6F14918D6DE88A}" {
@@ -429,12 +456,12 @@ FrameWidgetClass {
              Slot FrameWidgetSlot "{5D6D141612AB133D}" {
               PositionX 0
               OffsetLeft 0
-              PositionY 162
-              OffsetTop 162
+              PositionY 190
+              OffsetTop 190
               SizeX 480
               OffsetRight -480
-              SizeY 760
-              OffsetBottom -922
+              SizeY 727
+              OffsetBottom -917
              }
              {
               ScrollLayoutWidgetClass "{5D6D1B97707D8F2D}" {
@@ -657,12 +684,12 @@ FrameWidgetClass {
     Anchor 0.5 0.5 0.5 0.5
     PositionX 480
     OffsetLeft 480
-    PositionY -379
-    OffsetTop -379
+    PositionY -355
+    OffsetTop -355
     SizeX 480
     OffsetRight -960
-    SizeY 30
-    OffsetBottom 349
+    SizeY 34
+    OffsetBottom 321
    }
    {
     ButtonWidgetClass "{5EB701CAF0B7C9C0}" {
@@ -678,7 +705,6 @@ FrameWidgetClass {
      components {
       SCR_ButtonBaseComponent "{5EB701CA8A36B4A7}" {
        m_bCanBeToggled 1
-       m_BackgroundDefault 1 1 1 0
       }
      }
      {
@@ -752,7 +778,6 @@ FrameWidgetClass {
       SCR_ButtonBaseComponent "{5EB701CA8A36B4A7}" {
        m_bCanBeToggled 1
        m_bIsToggled 1
-       m_BackgroundDefault 1 1 1 0
       }
      }
      {
@@ -810,6 +835,20 @@ FrameWidgetClass {
        }
       }
      }
+    }
+    ImageWidgetClass "{5F18ED135236DF92}" {
+     Name "Background"
+     Slot FrameWidgetSlot "{5EB701CAB2EE0FA2}" {
+      PositionX 0
+      OffsetLeft 0
+      PositionY 30
+      OffsetTop 30
+      SizeX 480
+      OffsetRight -480
+      SizeY 4
+      OffsetBottom -34
+     }
+     Color 0.76 0.392 0.08 0.3
     }
    }
   }
@@ -1007,17 +1046,24 @@ FrameWidgetClass {
     ScrollLayoutWidgetClass "{5EB2900030AFF408}" {
      Prefab "{5EB2900030AFF408}"
      Slot FrameWidgetSlot "{5EB1000AD8290B3B}" {
-      PositionX 0.506
-      OffsetLeft 0.506
-      PositionY 29
-      OffsetTop 29
+      PositionX 0
+      OffsetLeft 0
+      PositionY 57
+      OffsetTop 57
       SizeX 480
-      OffsetRight -480.506
-      SizeY 761
-      OffsetBottom -790
+      OffsetRight -480
+      SizeY 727
+      OffsetBottom -784
      }
     }
    }
+  }
+  OverlayWidgetClass "{5F1EE67047D122DF}" : "{7CCC70461390089E}UI/LittleInventory/LittleInventoryItemInfo.layout" {
+   Name "LobbyLittleInventoryItemInfo"
+   Slot FrameWidgetSlot "{5F141357A73F07B3}" {
+   }
+   "Z Order" 10
+   "Is Visible" 0
   }
   OverlayWidgetClass "{5E6EACEFEB2DB125}" {
    Name "OverlayCounter"
@@ -1032,6 +1078,7 @@ FrameWidgetClass {
     SizeY 19998
     OffsetBottom -9995.2
    }
+   "Z Order" 15
    "Is Visible" 0
    {
     SizeLayoutWidgetClass "{5EAE9BD94D12A3CB}" {
@@ -1098,16 +1145,23 @@ FrameWidgetClass {
   FrameWidgetClass "{5EB701CD0152AC68}" : "{B7A765172F0BD4D9}UI/layouts/Common/GameVersionWatermark.layout" {
    Name "EarlyAccessRoot"
    Slot FrameWidgetSlot "{5CEE96372B5D270B}" {
-    PositionX 0.214
-    OffsetLeft 0
-    PositionY 2.127
-    OffsetTop 0
+    PositionX 1
+    PositionY 55
     SizeX 0
-    OffsetRight 0
     SizeY 0
-    OffsetBottom 0
    }
    Opacity 1
+   {
+    HorizontalLayoutWidgetClass "{5CEAB7C94A55AF1E}" {
+     Prefab "{5CEAB7C94A55AF1E}"
+     Slot FrameWidgetSlot "{5CEE96363E5C46AD}" {
+      OffsetLeft 0
+      OffsetTop 0
+      OffsetRight 0
+      OffsetBottom 0
+     }
+    }
+   }
   }
  }
 }

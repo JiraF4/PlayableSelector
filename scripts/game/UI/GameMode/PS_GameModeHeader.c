@@ -33,6 +33,11 @@ class PS_GameModeHeader : ScriptedWidgetComponent
 		m_bButtonAdvance.m_OnClicked.Insert(Action_Advance);
 	}
 	
+	void TryUpdate()
+	{
+		Update();
+	}
+	
 	void Update()
 	{
 		m_bButtonPreview.Update();

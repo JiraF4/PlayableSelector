@@ -44,6 +44,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			saveManager.Load(loadSave);
 		}
 		
+		if (Replication.IsServer())
+		{
+			PS_VoNRoomsManager.GetInstance().GetOrCreateRoomWithFaction("", "#PS-VoNRoom_Global" );
+		}
+		
 		if (RplSession.Mode() != RplMode.Dedicated) {
 			GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.WaitScreen);
 			GetGame().GetInputManager().AddActionListener("OpenLobby", EActionTrigger.DOWN, Action_OpenLobby);
@@ -111,6 +116,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	
 	protected override void OnPlayerConnected(int playerId)
 	{
+		// TODO: remove CallLater
 		GetGame().GetCallqueue().CallLater(SpawnInitialEntity, 100, false, playerId);
 		m_OnPlayerConnected.Invoke(playerId);
 	}
@@ -139,6 +145,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			RplComponent rpl = RplComponent.Cast(controlledEntity.FindComponent(RplComponent));
 			rpl.GiveExt(RplIdentity.Local(), false);
 		}
+		
+		playerController.SetInitialMainEntity(null);
 		
 		m_OnPlayerDisconnected.Invoke(playerId, cause, timeout);
 		foreach (SCR_BaseGameModeComponent comp : m_aAdditionalGamemodeComponents)
@@ -236,6 +244,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		playableController.SetInitialEntity(initialEntity);
 		playerController.SetInitialMainEntity(initialEntity);
+		VoNRoomsManager.RestoreRoom(playerId);
 	}
 	
 	void SwitchToInitialEntity(int playerId)

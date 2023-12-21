@@ -1,0 +1,76 @@
+OverlayWidgetClass {
+ Name "LittleInventoryItemInfo"
+ Slot FrameWidgetSlot "{5F141357A73F07B3}" {
+  OffsetLeft 0
+  OffsetTop 0
+  SizeX 100
+  OffsetRight -100
+  SizeY 30
+  OffsetBottom -30
+  SizeToContent 1
+ }
+ Clipping False
+ components {
+  PS_LittleInventoryItemInfo "{5F14130A52A37CF6}" {
+  }
+ }
+ {
+  PanelWidgetClass "{5F14130E6182E676}" {
+   Name "Background"
+   Slot OverlayWidgetSlot "{5F14135187CB7236}" {
+    HorizontalAlign 3
+    VerticalAlign 3
+   }
+   Color 0 0 0 1
+   style full
+  }
+  BlurWidgetClass "{5F14130EA4C629A9}" {
+   Name "Blur"
+   Slot OverlayWidgetSlot "{5F14133101DD35FA}" {
+    HorizontalAlign 3
+    VerticalAlign 3
+   }
+  }
+  VerticalLayoutWidgetClass "{5F141357B1314D7A}" {
+   Name "VerticalLayout"
+   Slot OverlayWidgetSlot "{5F141357B1314D5A}" {
+    HorizontalAlign 3
+    VerticalAlign 3
+    Padding 8 8 8 8
+   }
+   {
+    TextWidgetClass "{5F141357B70CBA13}" {
+     Name "EntityName"
+     Slot LayoutSlot "{5F141357B70CBA71}" {
+     }
+     Text "Name"
+    }
+    ImageWidgetClass "{5F1413571A3EC262}" {
+     Name "Line"
+     Slot LayoutSlot "{5F14130A4C59BD85}" {
+     }
+     Color 0.761 0.392 0.078 1
+     Size 32 4
+    }
+    SizeLayoutWidgetClass "{5F141331249D3629}" {
+     Name "SizeLayout"
+     Slot LayoutSlot "{5F141331249D3613}" {
+      Padding 0 4 0 0
+     }
+     AllowMaxDesiredWidth 1
+     MaxDesiredWidth 256
+     {
+      TextWidgetClass "{5F141357B628C13C}" {
+       Name "EntityDescription"
+       Slot AlignableSlot "{5F14133124900886}" {
+        Padding 0 4 0 0
+       }
+       Text "Description"
+       Wrap 1
+      }
+     }
+    }
+   }
+  }
+ }
+}

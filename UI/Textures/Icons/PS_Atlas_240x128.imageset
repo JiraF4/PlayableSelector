@@ -1,0 +1,18 @@
+ImageSetClass {
+ RefSize 960 1024
+ Textures {
+  ImageSetTextureClass {
+   screenSize FHD
+   size 960 1024
+   path "{F1C74FD243A8C136}UI/Textures/Icons/PS_Atlas_240x128.edds"
+  }
+ }
+ Images {
+  ImageSetDefClass WeaponSlot {
+   Name "WeaponSlot"
+   Pos 0 0
+   Size 240 128
+   Flags 0
+  }
+ }
+}

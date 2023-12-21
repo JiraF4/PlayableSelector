@@ -1,0 +1,61 @@
+FrameWidgetClass "{5F114285AF44322D}" {
+ Name "LittleInventory"
+ Slot FrameWidgetSlot "{5F114285AF443202}" {
+  Anchor 0.5 0.5 0.5 0.5
+  PositionX -224
+  OffsetLeft -224
+  PositionY -399
+  OffsetTop -399
+  SizeX 448
+  OffsetRight -224
+  SizeY 798
+  OffsetBottom -399
+ }
+ Clipping False
+ components {
+  PS_LittleInventory "{5F1147EA6EFC57B2}" {
+  }
+ }
+ {
+  OverlayWidgetClass "{5F14130B00A19A23}" {
+   Name "Overlay"
+   Slot FrameWidgetSlot "{5F14130B0303D3A7}" {
+    Anchor 0 0 1 1
+    PositionX 0
+    OffsetLeft 0
+    PositionY 0
+    OffsetTop 0
+    SizeX -364.485
+    OffsetRight 0
+    SizeY -768.217
+    OffsetBottom 0
+   }
+   Clipping True
+   {
+    ScrollLayoutWidgetClass "{5F1147FD152DC5E2}" {
+     Name "ScrollLayout"
+     Slot OverlayWidgetSlot "{5F1147FD152DC519}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+     }
+     style Blank
+     {
+      VerticalLayoutWidgetClass "{5F1147FD133082B9}" {
+       Name "LittleInventoryEntitiesList"
+       Slot AlignableSlot "{5F1147FD1519A938}" {
+        HorizontalAlign 3
+        VerticalAlign 3
+       }
+      }
+     }
+    }
+   }
+  }
+  OverlayWidgetClass "{5F14130A0CED83E1}" : "{7CCC70461390089E}UI/LittleInventory/LittleInventoryItemInfo.layout" {
+   Name "LittleInventoryItemInfo"
+   Slot FrameWidgetSlot "{5F141357A73F07B3}" {
+   }
+   "Is Visible" 0
+  }
+ }
+}

@@ -6,15 +6,32 @@ FrameWidgetClass {
    Prefab "{5CECA56A279C044D}"
    Name "EarlyAccessFrame0"
    Slot FrameWidgetSlot "{5EB701CD65513B75}" {
+    Anchor 0 0 0 0
+    PositionX 0
+    OffsetLeft 0
+    PositionY 0
+    OffsetTop 0
+    SizeX 100
+    OffsetRight -100
+    SizeY 30
+    OffsetBottom -30
    }
    "Z Order" 100000
   }
   OverlayWidgetClass "{5EBC73432486C71A}" : "{01FD644AD2B6317D}UI/layouts/Menus/Common/MenuBackground.layout" {
    Name "MenuBackground0"
    Slot FrameWidgetSlot "{552C9A0A8526D2AD}" {
+    PositionX 0
+    OffsetLeft 0
+    PositionY 0
+    OffsetTop 0
+    SizeX 0
+    OffsetRight 0
+    SizeY 0
+    OffsetBottom 0
    }
   }
-  FrameWidgetClass "{5EBC73432499FC63}" : "{F43237F55B38B45C}UI/layouts/GameModeHeader/GameModeHeader.layout" {
+  FrameWidgetClass "{5EBC73432499FC63}" : "{F43237F55B38B45C}UI/GameModeHeader/GameModeHeader.layout" {
    Name "GameModeHeader"
    Slot FrameWidgetSlot "{5EB10000F5F77EA0}" {
     PositionX -960
@@ -27,7 +44,7 @@ FrameWidgetClass {
     OffsetBottom -93
    }
   }
-  FrameWidgetClass "{5EBC7343249839D5}" : "{B7A765172F0BD4D9}UI/layouts/Common/EarlyAccessWatermark.layout" {
+  FrameWidgetClass "{5EBC7343249839D5}" : "{B7A765172F0BD4D9}UI/layouts/Common/GameVersionWatermark.layout" {
    Name "EarlyAccessRoot"
    Slot FrameWidgetSlot "{5CEE96372B5D270B}" {
     PositionX 0.214
@@ -44,25 +61,29 @@ FrameWidgetClass {
   FrameWidgetClass "{5EBC7342B7ED9735}" {
    Name "ReportFrame"
    Slot FrameWidgetSlot "{5EBC7342B7ED970F}" {
-    PositionX 0
-    OffsetLeft 0
-    PositionY 103
-    OffsetTop 103
+    Anchor 0.5 0.5 0.5 0.5
+    PositionX -960
+    OffsetLeft -960
+    PositionY -437
+    OffsetTop -437
     SizeX 1920
-    OffsetRight -1920
+    OffsetRight -960
     SizeY 977
-    OffsetBottom -1080
+    OffsetBottom -540
    }
+   "Z Order" 1
    {
     VerticalLayoutWidgetClass "{5EBC73425FDE8F03}" {
      Name "ReportVerticalLayout"
      Slot FrameWidgetSlot "{5EBC73425FDE8F18}" {
+      Anchor 0 0 1 1
+      PositionX 0
       OffsetLeft 0
+      PositionY 0
       OffsetTop 0
-      SizeX 1920
-      OffsetRight -1920
-      SizeY 128
-      OffsetBottom -128
+      SizeX 0
+      OffsetRight 0
+      SizeY -849
      }
      {
       SizeLayoutWidgetClass "{5EBC734233AECCAC}" {
@@ -110,6 +131,7 @@ FrameWidgetClass {
        Name "BodySizeLayout"
        Slot LayoutSlot "{5EBC734188EF9918}" {
        }
+       Clipping True
        AllowHeightOverride 1
        HeightOverride 750
        {
@@ -120,16 +142,6 @@ FrameWidgetClass {
          {
           FrameWidgetClass "{5EBC73404AB30DB0}" : "{2987421913A58DF6}UI/Debriefing/FactionReportFrame.layout" {
            Name "FactionReportFrame2"
-           Slot LayoutSlot "{5EBC7340F5460E29}" {
-           }
-          }
-          FrameWidgetClass "{5EBC734048398166}" : "{2987421913A58DF6}UI/Debriefing/FactionReportFrame.layout" {
-           Name "FactionReportFrame1"
-           Slot LayoutSlot "{5EBC7340F5460E29}" {
-           }
-          }
-          FrameWidgetClass "{5EBC734047F33F9A}" : "{2987421913A58DF6}UI/Debriefing/FactionReportFrame.layout" {
-           Name "FactionReportFrame0"
            Slot LayoutSlot "{5EBC7340F5460E29}" {
            }
           }

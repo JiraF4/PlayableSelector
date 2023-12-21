@@ -11,10 +11,11 @@ FrameWidgetClass {
   ImageWidgetClass "{5EBEE9F3BA2E0A63}" {
    Name "CharacterFactionColor"
    Slot FrameWidgetSlot "{5D6D1B9A2749B73B}" {
-    OffsetLeft 0
+    PositionX 8
+    OffsetLeft 8
     OffsetTop 0
     SizeX 6
-    OffsetRight -6
+    OffsetRight -14
     SizeY 44
     OffsetBottom -44
    }
@@ -67,12 +68,12 @@ FrameWidgetClass {
   FrameWidgetClass "{5EB1176F4695C767}" {
    Name "UnitIconFrame"
    Slot FrameWidgetSlot "{5EB1176F4695FD6B}" {
-    PositionX 6
-    OffsetLeft 6
+    PositionX 14
+    OffsetLeft 14
     PositionY 0
     OffsetTop 0
     SizeX 44
-    OffsetRight -50
+    OffsetRight -58
     SizeY 44
     OffsetBottom -44
    }

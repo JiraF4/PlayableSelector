@@ -14,7 +14,72 @@ VerticalLayoutWidgetClass {
    Slot LayoutSlot "{5D6D1B9A9C46FD9A}" {
     Padding 15 15 15 15
    }
+   Clipping False
    {
+    ButtonWidgetClass "{5F0F444E4ACD42B0}" {
+     Name "LockButton"
+     Slot FrameWidgetSlot "{5F0F444E4EDB94DB}" {
+      PositionX 520
+      OffsetLeft 520
+      PositionY -3
+      OffsetTop -3
+      SizeX 40
+      OffsetRight -560
+      SizeY 40
+      OffsetBottom -37
+     }
+     Color 0 1 0.019 0
+     components {
+      SCR_ButtonBaseComponent "{5EAB239441B528D5}" {
+       m_sSoundHovered ""
+       m_sSoundClicked ""
+       m_BackgroundDefault 1 1 1 0
+       m_BackgroundHovered 1 1 1 0.162
+       m_BackgroundSelected 1 1 1 0
+       m_BackgroundSelectedHovered 1 1 1 0.162
+       m_BackgroundClicked 1 1 1 0
+       m_bShowBorderOnFocus 0
+       m_bNoBorderAnimation 1
+      }
+     }
+     "no focus" 1
+     {
+      FrameWidgetClass "{5F0F444E4AD28CD7}" {
+       Name "LockButtonFrame"
+       Slot ButtonWidgetSlot "{5EA8C93CB4241314}" {
+       }
+       {
+        ImageWidgetClass "{5F0F444E4AD28CD5}" {
+         Name "Background"
+         Slot FrameWidgetSlot "{5D6E8206B132EE77}" {
+          PositionX 0
+          OffsetLeft 0
+          PositionY 0
+          OffsetTop 0
+          SizeX 40
+          OffsetRight -40
+          SizeY 40
+          OffsetBottom -40
+         }
+        }
+        ImageWidgetClass "{5F0F444E4AD28CD4}" {
+         Name "LockImage"
+         Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
+          OffsetLeft 0
+          OffsetTop 0
+          SizeX 40
+          OffsetRight -40
+          SizeY 40
+          OffsetBottom -40
+         }
+         Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
+         Image "server-unlocked"
+         Size 32 32
+        }
+       }
+      }
+     }
+    }
     ButtonWidgetClass "{5EB29010477A3F42}" {
      Name "VoiceJoinButton"
      Slot FrameWidgetSlot "{5EB290104D9C8F6B}" {

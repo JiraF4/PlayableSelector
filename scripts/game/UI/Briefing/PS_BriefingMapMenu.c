@@ -9,6 +9,10 @@ modded enum ChimeraMenuPreset : ScriptMenuPresetEnum
 //! Fullscreen map menu
 class PS_BriefingMapMenu: ChimeraMenuBase
 {	
+	protected ResourceName m_rCurrentPlayableMapMarker = "{52CA8FF5F56C6F31}UI/Map/ManualMapMarkerBase.layout";
+	PS_ManualMarkerComponent m_hPlayableMarkerComponent;
+	protected float m_fPlayerMarkerSize = 15;
+	
 	protected SCR_MapEntity m_MapEntity;	
 	protected SCR_ChatPanel m_ChatPanel;
 	
@@ -107,6 +111,21 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 	void OpenMapWrapZoomChangeWrap()
 	{
 		m_MapEntity.ZoomOut();
+		
+		/* Starting position marker on briefing
+		// Create marker for playable on briefing
+		SCR_BaseGameMode gameMode = SCR_BaseGameMode.Cast(GetGame().GetGameMode());
+		if (gameMode.GetState() == SCR_EGameModeState.BRIEFING)
+		{		
+			Widget mapFrame = m_MapEntity.GetMapMenuRoot().FindAnyWidget(SCR_MapConstants.MAP_FRAME_NAME);
+			Widget playableMarker = Widget.Cast(GetGame().GetWorkspace().CreateWidgets(m_rCurrentPlayableMapMarker, mapFrame));
+			m_hPlayableMarkerComponent = PS_ManualMarkerComponent.Cast(playableMarker.FindHandler(PS_ManualMarkerComponent));
+			m_hPlayableMarkerComponent.SetImage("{B9E14AFE75AEBB19}UI/Textures/Icons/icons_mapMarkersUI_drawing/icons_DR_mapMarkersUI.imageset", "AR_icon_spawn_point");
+			m_hPlayableMarkerComponent.SetImageGlow("","");
+			m_hPlayableMarkerComponent.SetColor(Color.ORANGE);
+			m_hPlayableMarkerComponent.SetDescription("#PS_Briefing_YourPlace");
+			m_hPlayableMarkerComponent.OnMouseLeave(null, null, 0, 0);
+		}*/
 	}
 	
 	override void OnMenuInit()
@@ -118,6 +137,39 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 	{
 		if (m_ChatPanel)
 			m_ChatPanel.OnUpdateChat(tDelta);
+		
+		// Update playable marker
+		if (m_hPlayableMarkerComponent)
+		{
+			PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+			
+			// current player
+			PlayerController currentPlayerController = GetGame().GetPlayerController();
+			int currentPlayerId = currentPlayerController.GetPlayerId();
+			RplId currentPlayableId = playableManager.GetPlayableByPlayer(currentPlayerId);
+			if (currentPlayableId == RplId.Invalid())
+			{
+				m_hPlayableMarkerComponent.SetColor(new Color(0, 0, 0, 0));
+				return;
+			}
+			
+			PS_PlayableComponent playableComponent = playableManager.GetPlayableById(currentPlayableId);
+			IEntity entity = playableComponent.GetOwner();
+			
+			float wX, wY, screenX, screenY, screenXEnd, screenYEnd;
+			vector worldPosition = entity.GetOrigin();
+			wX = worldPosition[0];
+			wY = worldPosition[2];
+			m_MapEntity.WorldToScreen(wX, wY, screenX, screenY, true);
+			m_MapEntity.WorldToScreen(wX + m_fPlayerMarkerSize, wY + m_fPlayerMarkerSize, screenXEnd, screenYEnd, true);
+			float screenXD = GetGame().GetWorkspace().DPIUnscale(screenX);
+			float screenYD = GetGame().GetWorkspace().DPIUnscale(screenY);
+			float sizeXD = GetGame().GetWorkspace().DPIUnscale(screenXEnd - screenX);
+			float sizeYD = GetGame().GetWorkspace().DPIUnscale(screenY - screenYEnd);
+			sizeYD *= m_hPlayableMarkerComponent.GetYScale();
+			m_hPlayableMarkerComponent.SetSlot(screenXD, screenYD, sizeXD, sizeYD, 0.0);
+			m_hPlayableMarkerComponent.SetColor(new Color(1, 1, 1, 1));
+		}
 	}
 	
 	override void OnMenuClose()
@@ -144,7 +196,6 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 	
 	void Update()
 	{
-		m_hVoiceChatList.HardUpdate();
 		m_hGameModeHeader.Update();
 	}
 	

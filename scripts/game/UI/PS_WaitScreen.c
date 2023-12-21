@@ -24,16 +24,22 @@ class PS_WaitScreen: MenuBase
 				if (playerController.GetControlledEntity()) {
 					PS_PlayableControllerComponent playableControllerComponent = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 					if (playableControllerComponent.isVonInit()) {
-						int roomId = VoNRoomsManager.GetPlayerRoom(playerController.GetPlayerId());
-						string roomKey = VoNRoomsManager.GetRoomName(roomId);
-						
-						PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-						PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-						
-						playableController.SetPlayerState(playerController.GetPlayerId(), PS_EPlayableControllerState.NotReady);
-						playableController.MoveToVoNRoomByKey(playerController.GetPlayerId(), roomKey);
-						playableController.SwitchToMenu(gameMode.GetState());
-						return;
+						int publicRoomId = VoNRoomsManager.GetRoomWithFaction("", "#PS-VoNRoom_Public" + playerController.GetPlayerId().ToString());
+						int globalRoomId = VoNRoomsManager.GetRoomWithFaction("", "#PS-VoNRoom_Global");
+						if (publicRoomId != -1 && globalRoomId != -1)
+						{
+							int roomId = VoNRoomsManager.GetPlayerRoom(playerController.GetPlayerId());
+							string roomKey = VoNRoomsManager.GetRoomName(roomId);
+							
+							PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+							PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+							
+							playableController.SetPlayerState(playerController.GetPlayerId(), PS_EPlayableControllerState.NotReady);
+							playableController.SwitchToMenu(gameMode.GetState());
+							playableController.MoveToVoNRoomByKey(playerController.GetPlayerId(), roomKey);
+							
+							return;
+						}
 					}
 				}
 			}

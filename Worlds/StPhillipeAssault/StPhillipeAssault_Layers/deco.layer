@@ -1,0 +1,113 @@
+GenericEntity : "{21B4CFCFAE632E30}PrefabsEditable/Auto/Props/Wrecks/E_T62_wreck.et" {
+ components {
+  BaseSlotComponent "{5102A8F4EAA33D0E}" {
+   AttachType EntitySlotInfo "{5102A8F42435DDCC}" {
+    Angles 0 -90.7398 0
+   }
+  }
+ }
+ coords 4579.487 18.33 10731.488
+ {
+  DecalEntity : "{4E2502622DA0DB28}Prefabs/Decals/Miscellaneous/Decal_Damage_Burnt_01.et" {
+   coords -0.149 0.07 -2.273
+   angleX -90
+   angleY 180
+   angleZ -162.156
+   scale 10
+  }
+  DecalEntity : "{D1D104EBCB9C5E2D}Prefabs/Decals/Miscellaneous/Decal_Damage_Burnt_02.et" {
+   coords 0.607 0.045 1.899
+   angleX -90
+   angleY 0
+   angleZ 0
+   scale 10
+  }
+ }
+}
+GenericEntity : "{2B24356C351A2538}Prefabs/Props/Wrecks/M113_wreck.et" {
+ coords 4437.538 12.37 10712.114
+ angleX 1.761
+ angleY 79.663
+ angleZ -0.321
+}
+GenericEntity : "{84CBCE9163176B3E}Prefabs/Props/Wrecks/S105_wreck.et" {
+ coords 4585.004 18.074 10660.647
+ angleX -0.916
+ angleY -148.656
+ angleZ -0.167
+ {
+  DecalEntity : "{D1D104EBCB9C5E2D}Prefabs/Decals/Miscellaneous/Decal_Damage_Burnt_02.et" {
+   coords -0.139 0.071 -1.011
+   angleX -89.068
+   angleY -10.312
+   angleZ 115.176
+   scale 10
+  }
+ }
+}
+StaticModelEntity : "{95A4CF49FC9C0481}Prefabs/Compositions/Misc/SubCompositions/Tent_Barrack_Cluttered_US_01.et" {
+ coords 4537.048 16.318 10589.103
+ angleY -118.883
+}
+$grp GenericEntity : "{971F705971EF6F4B}Prefabs/Props/Fabric/Flags/Flag_1_2_US_01.et" {
+ {
+  coords 4459.632 18.988 10899.229
+ }
+ {
+  coords 4423.572 26.846 10650.08
+  angleY 180
+ }
+ {
+  coords 4553.832 49.416 10486.772
+  angleY 14.984
+  angleZ 2.459
+ }
+}
+GenericEntity : "{ACA1BADA1C09110A}PrefabsEditable/Auto/Props/Wrecks/E_BMP1_wreck.et" {
+ components {
+  BaseSlotComponent "{51126E669CF64A1D}" {
+   AttachType EntitySlotInfo "{51126E66FDA4BB72}" {
+    Angles 0 106.1414 0
+   }
+  }
+ }
+ coords 4600.041 14.852 10417.435
+ angleY 7.866
+ {
+  DecalEntity : "{4E2502622DA0DB28}Prefabs/Decals/Miscellaneous/Decal_Damage_Burnt_01.et" {
+   coords -0.338 0.059 0.766
+   angleX -90
+   angleY -7.866
+   angleZ 0
+   scale 10
+  }
+ }
+}
+$grp GenericEntity : "{B725D7E80F3331D7}PrefabsEditable/Auto/Compositions/Misc/SubCompositions/E_Tent_Medical_US_01.et" {
+ {
+  coords 4576.528 16.336 10596.418
+  angleX -0.065
+  angleY -86.281
+  angleZ 0.328
+ }
+ {
+  coords 4575.739 16.157 10608.136
+  angleX -0.004
+  angleY -96.81
+  angleZ 0.334
+ }
+ {
+  coords 4574.396 16.164 10619.805
+  angleX 0.062
+  angleY -108.223
+  angleZ 0.328
+ }
+}
+StaticModelEntity : "{D4ABEC6A0DB2E253}PrefabsEditable/Auto/Compositions/Misc/SubCompositions/Utility/E_Helipad_Lights_US_01.et" {
+ coords 4556.056 -0.114 10604.151
+ angleY -8.096
+}
+StaticModelEntity : "{FA06509902D591F4}Prefabs/Compositions/Misc/SubCompositions/Tent_BarrackHQ_Cluttered_US_01.et" {
+ coords 4533.437 16.282 10601.259
+ angleY -99.852
+}

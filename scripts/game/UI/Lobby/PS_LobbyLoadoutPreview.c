@@ -4,40 +4,60 @@
 
 class PS_LobbyLoadoutPreview : SCR_WLibComponentBase
 {
-	protected ImageWidget m_wFlagImage;
 	protected ImageWidget m_wStateBackgroundImage;
 	protected ImageWidget m_wLoadoutBackgroundImage;
 	protected OverlayWidget m_WStateOverlay;
 	protected OverlayWidget m_WLoadoutOverlay;
 	protected TextWidget m_wStateText;
 	protected TextWidget m_wLoadoutText;
-	protected TextWidget m_wDescriptionText;
-	protected TextWidget m_wDescriptionMagazinesText;
+	
 	protected SCR_LoadoutPreviewComponent m_Preview;
+	protected SCR_ButtonBaseComponent m_hOpenInventoryButton;
 	
 	protected PS_PlayableComponent m_playable;
+	
+	protected PS_ImportantItemsDisplay m_hImportantItemsDisplay;
+	
+	protected PS_LittleInventory m_hLittleInventory;
 	
 	override void HandlerAttached(Widget w)
 	{
 		super.HandlerAttached(w);
-		m_wFlagImage = ImageWidget.Cast(w.FindAnyWidget("FlagImage"));
 		m_wStateBackgroundImage = ImageWidget.Cast(w.FindAnyWidget("StateBackgroundImage"));
 		m_wLoadoutBackgroundImage = ImageWidget.Cast(w.FindAnyWidget("LoadoutBackgroundImage"));
 		m_wStateText = TextWidget.Cast(w.FindAnyWidget("StateText"));
 		m_wLoadoutText = TextWidget.Cast(w.FindAnyWidget("LoadoutText"));
-		m_wDescriptionText = TextWidget.Cast(w.FindAnyWidget("DescriptionText"));
-		m_wDescriptionMagazinesText = TextWidget.Cast(w.FindAnyWidget("DescriptionMagazinesText"));
 		m_WStateOverlay = OverlayWidget.Cast(w.FindAnyWidget("StateOverlay"));
 		m_WLoadoutOverlay = OverlayWidget.Cast(w.FindAnyWidget("LoadoutOverlay"));
 		
 		Widget widget = w.FindAnyWidget("LoadoutPreview");
 		m_Preview = SCR_LoadoutPreviewComponent.Cast(widget.FindHandler(SCR_LoadoutPreviewComponent));
+		
+		Widget widgetOpenInventory = w.FindAnyWidget("OpenInventoryButton");
+		m_hOpenInventoryButton = SCR_ButtonBaseComponent.Cast(widgetOpenInventory.FindHandler(SCR_ButtonBaseComponent));
+		m_hOpenInventoryButton.m_OnClicked.Insert(OpenInventoryButton);
+		
+		Widget widgetLittleInventory = w.FindAnyWidget("LittleInventory");
+		m_hLittleInventory = PS_LittleInventory.Cast(widgetLittleInventory.FindHandler(PS_LittleInventory));
+		m_hLittleInventory.m_iOnEntityRemoved.Insert(EntityRemoved);
+		
+		widget = w.FindAnyWidget("ImportantItemsDisplay");
+		m_hImportantItemsDisplay = PS_ImportantItemsDisplay.Cast(widget.FindHandler(PS_ImportantItemsDisplay));
+	}
+	
+	void SetItemInfoWidget(Widget itemInfoWidget)
+	{
+		m_hLittleInventory.SetExternalItemInfoWidget(itemInfoWidget)
 	}
 	
 	void SetPlayable(PS_PlayableComponent playable)
 	{
 		m_playable = playable;
 		UpdatePreviewInfo();
+		IEntity entity = null;
+		if (playable) entity = playable.GetOwner();
+		m_hImportantItemsDisplay.SetEntity(entity);
+		CloseInventory();
 	}
 	
 	// Return all items recursive (If item is inventory)
@@ -55,23 +75,49 @@ class PS_LobbyLoadoutPreview : SCR_WLibComponentBase
 		}
 	}
 	
+	void EntityRemoved(PS_LittleInventoryEntity inventoryEntity)
+	{
+		if (m_hLittleInventory.IsAllClosed())
+		{
+			CloseInventory();
+		}
+	}
+	
+	void CloseInventory()
+	{
+		m_hLittleInventory.Clear();
+		m_hLittleInventory.GetRootWidget().SetVisible(false);
+	}
+	
+	void OpenInventory()
+	{
+		m_hLittleInventory.GetRootWidget().SetVisible(true);
+		IEntity entity = null;
+		if (m_playable) entity = m_playable.GetOwner();
+		if (entity) m_hLittleInventory.OpenEntity(entity);
+	}
+	
+	void OpenInventoryButton(SCR_ButtonBaseComponent button)
+	{
+		if (m_hLittleInventory.GetRootWidget().IsVisible())
+			CloseInventory();
+		else
+			OpenInventory();
+	}
+	
 	void UpdatePreviewInfo()
 	{
 		ItemPreviewManagerEntity m_PreviewManager = ChimeraWorld.CastFrom(GetGame().GetWorld()).GetItemPreviewManager();
 		
 		// Clear all data if playable is null and stop update
 		if (m_playable == null) {
-			m_wFlagImage.SetVisible(false);
 			m_WStateOverlay.SetVisible(false);
 			m_WLoadoutOverlay.SetVisible(false);
 			m_PreviewManager.SetPreviewItem(m_Preview.GetItemPreviewWidget(), null);
-			m_wDescriptionText.SetText("");
-			m_wDescriptionMagazinesText.SetText("");
 			return;
 		}
 		
 		// Show preview
-		m_wFlagImage.SetVisible(true);
 		m_WLoadoutOverlay.SetVisible(true);
 		
 		SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(m_playable.GetOwner());
@@ -140,7 +186,6 @@ class PS_LobbyLoadoutPreview : SCR_WLibComponentBase
 			int count = weaponsCount.GetElement(i);
 			weapons = weapons + line + "\n";
 		}
-		m_wDescriptionText.SetText(weapons);
 		
 		// Concatinate all magazines to string and update widget text
 		string magazines = "";
@@ -150,7 +195,6 @@ class PS_LobbyLoadoutPreview : SCR_WLibComponentBase
 			int count = magazinessCount.GetElement(i);
 			magazines = magazines + line + "\n";
 		}
-		m_wDescriptionMagazinesText.SetText(magazines);
 		
 		// Set character preview. 
 		// LODs for some reason start rave party if you to far from character. 
@@ -160,7 +204,6 @@ class PS_LobbyLoadoutPreview : SCR_WLibComponentBase
 		
 		// Faction data
 		m_wLoadoutBackgroundImage.SetColor(faction.GetOutlineFactionColor());
-		m_wFlagImage.LoadImageTexture(0, faction.GetFactionFlag());	
 		
 		// Current playable player, or dead if playable already dead.
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();

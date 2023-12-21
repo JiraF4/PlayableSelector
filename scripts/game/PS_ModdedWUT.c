@@ -6,21 +6,7 @@ modded class SCR_CallsignGroupComponent
 		// HOW THIS CAN LOST !!!OWN!!! GROUP?
 		if (!m_Group) return true;
 		
-		if (m_Group.IsSlave())
-		{
-			SCR_AIGroup master = m_Group.GetMaster();
-			
-			if (master)
-			{
-				SCR_CallsignGroupComponent masterCallsignComponent = SCR_CallsignGroupComponent.Cast(master.FindComponent(SCR_CallsignGroupComponent));
-				
-				if (masterCallsignComponent)
-					return masterCallsignComponent.IsUniqueRoleInUse(roleToCheck);
-			}
-		}
-			
-		//~ Was not slave or master group could not be obtained for some reason
-		return m_mAIRoleCallsigns.Contains(roleToCheck) || m_mPlayerRoleCallsigns.Contains(roleToCheck);
+		return super.IsUniqueRoleInUse(roleToCheck);
 	}
 }
 

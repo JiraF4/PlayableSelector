@@ -466,6 +466,8 @@ class PS_PlayableControllerComponent : ScriptComponent
 		
 		// don't check other staff if empty playable
 		if (playableId == RplId.Invalid()) {
+			if (playerId != thisPlayerController.GetPlayerId())
+				playableManager.NotifyKick(playerId);
 			playableManager.SetPlayerPlayable(playerId, playableId);
 			return;
 		}

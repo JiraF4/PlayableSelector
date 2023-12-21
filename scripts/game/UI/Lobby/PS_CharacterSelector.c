@@ -65,6 +65,13 @@ class PS_CharacterSelector : SCR_ButtonComponent
 		UpdatePlayableInfo();
 	}
 	
+	bool IsLocked()
+	{
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		int playerId = playableManager.GetPlayerByPlayable(m_playable.GetId());
+		return playerId == -2;
+	}
+	
 	void UpdatePlayableInfo()
 	{
 		// global
@@ -137,8 +144,13 @@ class PS_CharacterSelector : SCR_ButtonComponent
 			bool showKick = currentPlayerRole == EPlayerRole.ADMINISTRATOR;
 			if (playableManager.IsPlayerGroupLeader(currentPlayerController.GetPlayerId()))
 			{
-				if (!showKick)  showKick = playableManager.GetGroupCallsignByPlayable(m_playable.GetId()) == playableManager.GetGroupCallsignByPlayable(currentPlayableId);
+				if (!showKick)
+					if (playableManager.GetGroupCallsignByPlayable(m_playable.GetId()) == playableManager.GetGroupCallsignByPlayable(currentPlayableId))
+						if (playableManager.GetPlayerFactionKey(playerId) == playableManager.GetPlayerFactionKey(currentPlayerController.GetPlayerId()))
+							showKick = true;
 			}
+			if (m_playable.GetId() == currentPlayableId)
+				showKick = false;
 			
 			if (playableManager.GetPlayerState(playerId) == PS_EPlayableControllerState.Ready)
 				m_wCharacterStatus.SetColor(Color.FromInt(0xFF2eee41));
