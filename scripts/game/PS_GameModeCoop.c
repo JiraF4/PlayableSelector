@@ -64,6 +64,13 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		invoker.Insert(AdvanceStage_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("lom");
 		invoker.Insert(LoadMap_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("sav");
+		invoker.Insert(ExportMissionData_Callback);
+	}
+	
+	void ExportMissionData_Callback(SCR_ChatPanel panel, string data)
+	{
+		PS_MissionDataManager.GetInstance().SaveData();
 	}
 	
 	void LoadMap_Callback(SCR_ChatPanel panel, string data)
@@ -487,7 +494,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	// ------------------------------------------ JIP Replication ------------------------------------------
 	override bool RplSave(ScriptBitWriter writer)
 	{
-		
 		writer.WriteBool(m_bFactionLock);
 		writer.WriteInt(m_iFreezeTime);
 		writer.WriteInt(m_iAvailableReconnectTime);
