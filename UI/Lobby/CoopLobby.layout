@@ -2,13 +2,6 @@ FrameWidgetClass {
  Name "PlayMenu"
  "Z Order" 9
  {
-  FrameWidgetClass "{5CECA56A279C044D}" {
-   Prefab "{5CECA56A279C044D}"
-   Name "EarlyAccessFrame0"
-   Slot FrameWidgetSlot "{5EB701CD65513B75}" {
-   }
-   "Z Order" 100000
-  }
   OverlayWidgetClass "{5D6D00D8FBAAF79D}" : "{01FD644AD2B6317D}UI/layouts/Menus/Common/MenuBackground.layout" {
    Name "MenuBackground0"
    Slot FrameWidgetSlot "{552C9A0A8526D2AD}" {
@@ -1153,15 +1146,22 @@ FrameWidgetClass {
    Name "EarlyAccessRoot"
    Slot FrameWidgetSlot "{5CEE96372B5D270B}" {
     PositionX 1
-    OffsetLeft 1
     PositionY 55
-    OffsetTop 55
     SizeX 0
-    OffsetRight -1
     SizeY 0
-    OffsetBottom -55
    }
    Opacity 1
+   {
+    HorizontalLayoutWidgetClass "{5CEAB7C94A55AF1E}" {
+     Prefab "{5CEAB7C94A55AF1E}"
+     Slot FrameWidgetSlot "{5CEE96363E5C46AD}" {
+      OffsetLeft 0
+      OffsetTop 0
+      OffsetRight 0
+      OffsetBottom 0
+     }
+    }
+   }
   }
  }
 }
