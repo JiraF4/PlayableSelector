@@ -144,7 +144,10 @@ class PS_CharacterSelector : SCR_ButtonComponent
 			bool showKick = currentPlayerRole == EPlayerRole.ADMINISTRATOR;
 			if (playableManager.IsPlayerGroupLeader(currentPlayerController.GetPlayerId()))
 			{
-				if (!showKick)  showKick = playableManager.GetGroupCallsignByPlayable(m_playable.GetId()) == playableManager.GetGroupCallsignByPlayable(currentPlayableId);
+				if (!showKick)
+					if (playableManager.GetGroupCallsignByPlayable(m_playable.GetId()) == playableManager.GetGroupCallsignByPlayable(currentPlayableId))
+						if (playableManager.GetPlayerFactionKey(m_playable.GetId()) == playableManager.GetPlayerFactionKey(currentPlayableId))
+							showKick = true;
 			}
 			
 			if (playableManager.GetPlayerState(playerId) == PS_EPlayableControllerState.Ready)
