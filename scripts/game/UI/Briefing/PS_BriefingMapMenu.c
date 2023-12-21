@@ -112,6 +112,7 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 	{
 		m_MapEntity.ZoomOut();
 		
+		/* Starting position marker on briefing
 		// Create marker for playable on briefing
 		SCR_BaseGameMode gameMode = SCR_BaseGameMode.Cast(GetGame().GetGameMode());
 		if (gameMode.GetState() == SCR_EGameModeState.BRIEFING)
@@ -121,9 +122,10 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 			m_hPlayableMarkerComponent = PS_ManualMarkerComponent.Cast(playableMarker.FindHandler(PS_ManualMarkerComponent));
 			m_hPlayableMarkerComponent.SetImage("{B9E14AFE75AEBB19}UI/Textures/Icons/icons_mapMarkersUI_drawing/icons_DR_mapMarkersUI.imageset", "AR_icon_spawn_point");
 			m_hPlayableMarkerComponent.SetImageGlow("","");
+			m_hPlayableMarkerComponent.SetColor(Color.ORANGE);
 			m_hPlayableMarkerComponent.SetDescription("#PS_Briefing_YourPlace");
 			m_hPlayableMarkerComponent.OnMouseLeave(null, null, 0, 0);
-		}
+		}*/
 	}
 	
 	override void OnMenuInit()
