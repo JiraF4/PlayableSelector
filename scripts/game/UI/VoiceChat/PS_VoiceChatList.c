@@ -256,13 +256,33 @@ class PS_VoiceChatList : SCR_ScriptedWidgetComponent
 				outRoomsArray.Insert(commandRoom);
 			}
 			
-			RplId playableId = playableManager.GetPlayableByPlayer(currentPlayerId);
-			if (playableId != RplId.Invalid())
+			if (playableManager.IsPlayerGroupLeader(currentPlayerId))
 			{
-				PS_PlayableComponent playable = playableManager.GetPlayableById(playableId);
-				int groupCallSign = playableManager.GetGroupCallsignByPlayable(playable.GetId());
-				int groupRoom = VoNRoomsManager.GetRoomWithFaction(currentPlayerFactionKey, groupCallSign.ToString());
-				outRoomsArray.Insert(groupRoom);
+				// TODO: separate to method
+				// Room for each group
+				array<PS_PlayableComponent> playables = playableManager.GetPlayablesSorted();
+				for (int i = 0; i < playables.Count(); i++) {
+					PS_PlayableComponent playable = playables[i];
+					SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(playable.GetOwner());
+					SCR_Faction faction = SCR_Faction.Cast(character.GetFaction());
+					FactionKey factionKey = faction.GetFactionKey();
+					
+					if (currentPlayerFactionKey != factionKey) continue; // not our faction, skip
+					
+					int groupCallSign = playableManager.GetGroupCallsignByPlayable(playable.GetId());
+					int groupRoom = VoNRoomsManager.GetRoomWithFaction(currentPlayerFactionKey, groupCallSign.ToString()); // No creation here :[
+					if (!outRoomsArray.Contains(groupRoom))
+						outRoomsArray.Insert(groupRoom);
+				}
+			} else {
+				RplId playableId = playableManager.GetPlayableByPlayer(currentPlayerId);
+				if (playableId != RplId.Invalid())
+				{
+					PS_PlayableComponent playable = playableManager.GetPlayableById(playableId);
+					int groupCallSign = playableManager.GetGroupCallsignByPlayable(playable.GetId());
+					int groupRoom = VoNRoomsManager.GetRoomWithFaction(currentPlayerFactionKey, groupCallSign.ToString());
+					outRoomsArray.Insert(groupRoom);
+				}
 			}
 		}
 		
