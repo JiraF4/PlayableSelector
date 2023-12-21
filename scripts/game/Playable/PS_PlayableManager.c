@@ -122,6 +122,23 @@ class PS_PlayableManager : ScriptComponent
 		GetGame().GetCallqueue().CallLater(ChangeGroup, 0, false, playerId, playableId);
 	}
 	
+	void NotifyKick(int playerId)
+	{
+		RPC_NotifyKick(playerId);
+		Rpc(RPC_NotifyKick, playerId);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RPC_NotifyKick(int playerId)
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		if (playerId == playerController.GetPlayerId())
+		{
+			SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
+			ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("lmsg");
+			invoker.Invoke(null, "You kicked from slot");
+		}
+	}
+	
 	// Force ApplyPlayable through menu switch
 	void ForceSwitch(int playerId)
 	{
@@ -394,8 +411,7 @@ class PS_PlayableManager : ScriptComponent
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void RPC_SetPlayerPlayable(int playerId, RplId PlayableId)
-	{
-		//Print("RPC_SetPlayerPlayable: " + playerId.ToString() + " - " + PlayableId.ToString());
+	{		
 		RplId oldPlayable = GetPlayableByPlayer(playerId);
 		if (oldPlayable != RplId.Invalid()) m_playablePlayers[oldPlayable] = -1;
 		

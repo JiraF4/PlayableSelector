@@ -146,9 +146,11 @@ class PS_CharacterSelector : SCR_ButtonComponent
 			{
 				if (!showKick)
 					if (playableManager.GetGroupCallsignByPlayable(m_playable.GetId()) == playableManager.GetGroupCallsignByPlayable(currentPlayableId))
-						if (playableManager.GetPlayerFactionKey(m_playable.GetId()) == playableManager.GetPlayerFactionKey(currentPlayableId))
+						if (playableManager.GetPlayerFactionKey(playerId) == playableManager.GetPlayerFactionKey(currentPlayerController.GetPlayerId()))
 							showKick = true;
 			}
+			if (m_playable.GetId() == currentPlayableId)
+				showKick = false;
 			
 			if (playableManager.GetPlayerState(playerId) == PS_EPlayableControllerState.Ready)
 				m_wCharacterStatus.SetColor(Color.FromInt(0xFF2eee41));
