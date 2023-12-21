@@ -456,12 +456,12 @@ FrameWidgetClass {
              Slot FrameWidgetSlot "{5D6D141612AB133D}" {
               PositionX 0
               OffsetLeft 0
-              PositionY 196
-              OffsetTop 196
+              PositionY 190
+              OffsetTop 190
               SizeX 480
               OffsetRight -480
               SizeY 727
-              OffsetBottom -923
+              OffsetBottom -917
              }
              {
               ScrollLayoutWidgetClass "{5D6D1B97707D8F2D}" {
