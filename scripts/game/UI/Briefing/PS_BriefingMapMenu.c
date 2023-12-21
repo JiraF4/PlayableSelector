@@ -123,7 +123,7 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 			m_hPlayableMarkerComponent.SetImage("{B9E14AFE75AEBB19}UI/Textures/Icons/icons_mapMarkersUI_drawing/icons_DR_mapMarkersUI.imageset", "AR_icon_spawn_point");
 			m_hPlayableMarkerComponent.SetImageGlow("","");
 			m_hPlayableMarkerComponent.SetColor(Color.ORANGE);
-			m_hPlayableMarkerComponent.SetDescription("#PS_Briefing_YourPlace");
+			m_hPlayableMarkerComponent.SetDescription("#PS-Briefing_YourPlace");
 			m_hPlayableMarkerComponent.OnMouseLeave(null, null, 0, 0);
 		}*/
 	}

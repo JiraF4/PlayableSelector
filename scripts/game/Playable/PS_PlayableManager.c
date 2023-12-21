@@ -135,7 +135,7 @@ class PS_PlayableManager : ScriptComponent
 		{
 			SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
 			ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("lmsg");
-			invoker.Invoke(null, "You kicked from slot");
+			invoker.Invoke(null, "#PS-Lobby_RoleKick");
 		}
 	}
 	

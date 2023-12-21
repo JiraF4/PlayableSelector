@@ -375,7 +375,7 @@ FrameWidgetClass {
                        {
                         TextWidgetClass "{5F190A84ED614973}" {
                          Prefab "{5F190A84ED614973}"
-                         Text "#PS_Lobby_Inventory"
+                         Text "#PS-Lobby_Inventory"
                         }
                        }
                       }
@@ -848,7 +848,7 @@ FrameWidgetClass {
       SizeY 4
       OffsetBottom -34
      }
-     Color 0.76 0.392 0.08 0.3
+     Color 1 1 1 0.078
     }
    }
   }
@@ -1145,10 +1145,14 @@ FrameWidgetClass {
   FrameWidgetClass "{5EB701CD0152AC68}" : "{B7A765172F0BD4D9}UI/layouts/Common/GameVersionWatermark.layout" {
    Name "EarlyAccessRoot"
    Slot FrameWidgetSlot "{5CEE96372B5D270B}" {
-    PositionX 1
-    PositionY 55
+    PositionX 0
+    OffsetLeft 0
+    PositionY -1.418
+    OffsetTop -1.418
     SizeX 0
+    OffsetRight 0
     SizeY 0
+    OffsetBottom 1.418
    }
    Opacity 1
    {

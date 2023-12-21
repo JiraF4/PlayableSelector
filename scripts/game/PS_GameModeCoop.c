@@ -105,7 +105,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		
 		SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
 		ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("smsg");
-		invoker.Invoke(null, "Freeze time end");
+		invoker.Invoke(null, "#PS-Freeze_End");
 		
 		array<int> playerIds = new array<int>();
 		GetGame().GetPlayerManager().GetPlayers(playerIds);
