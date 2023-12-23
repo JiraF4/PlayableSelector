@@ -136,12 +136,17 @@ class PS_SpectatorMenu: MenuBase
 			m_ChatPanel.OnUpdateChat(tDelta);
 		
 		UpdateIcons();
+		
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		playableController.VoNPosition = GetGame().GetCameraManager().CurrentCamera().GetOrigin() - vector.Up * 1.7;
+		
 		//GetGame().GetInputManager().ActivateContext("SpectatorContext", 1);
 	}
 	
 	void UpdateIcons()
 	{
-		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance(); 
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		foreach (RplId id, PS_PlayableComponent playableComponent : playableManager.m_aPlayables)
 		{
 			if (!m_mIconsList.Contains(id))

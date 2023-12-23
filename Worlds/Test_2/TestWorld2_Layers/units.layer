@@ -26,6 +26,7 @@ $grp SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.
    }
   }
   coords 124.656 1 140.44
+  Flags 2
  }
  {
   components {

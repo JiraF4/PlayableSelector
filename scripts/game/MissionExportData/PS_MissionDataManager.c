@@ -26,6 +26,22 @@ class PS_MissionDataManager : ScriptComponent
 		MissionHeader missionHeader = GetGame().GetMissionHeader();
 		if (missionHeader) data.MissinPath = missionHeader.GetHeaderResourcePath();
 		
+		PS_MissionDescriptionManager missionDescriptionManager = PS_MissionDescriptionManager.GetInstance();
+		array<PS_MissionDescription> descriptions = new array<PS_MissionDescription>();
+		missionDescriptionManager.GetDescriptions(descriptions);
+		foreach (PS_MissionDescription description : descriptions)
+		{
+			PS_MissionDataDescription descriptionData = new PS_MissionDataDescription();
+			data.Descriptions.Insert(descriptionData);
+			
+			descriptionData.Title = description.m_sTitle;
+			descriptionData.DescriptionLayout = description.m_sDescriptionLayout;
+			descriptionData.TextData = description.m_sTextData;
+			descriptionData.VisibleForFactions = description.m_aVisibleForFactions;
+			descriptionData.EmptyFactionVisibility = description.m_bEmptyFactionVisibility;
+		}
+		
+		
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		
 		array<PS_PlayableComponent> playables = playableManager.GetPlayablesSorted();

@@ -1,12 +1,32 @@
 class PS_MissionDataConfig : JsonApiStruct
 {
 	string MissinPath;
+	ref array<ref PS_MissionDataDescription> Descriptions = new array<ref PS_MissionDataDescription>;
 	ref array<ref PS_MissionDataFaction> Factions = new array<ref PS_MissionDataFaction>;
 	
 	void PS_MissionDataConfig()
 	{
 		RegV("MissinPath");
+		RegV("Descriptions");
 		RegV("Factions");
+	}
+}
+
+class PS_MissionDataDescription : JsonApiStruct
+{
+	string Title;
+	string DescriptionLayout;
+	string TextData;
+	ref array<FactionKey> VisibleForFactions;
+	bool EmptyFactionVisibility;
+	
+	void PS_MissionDataConfig()
+	{
+		RegV("Title");
+		RegV("DescriptionLayout");
+		RegV("TextData");
+		RegV("VisibleForFactions");
+		RegV("EmptyFactionVisibility");
 	}
 }
 

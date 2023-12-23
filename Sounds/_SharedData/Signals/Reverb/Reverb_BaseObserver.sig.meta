@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{B6DA23250947EC4D}Sounds/_SharedData/Signals/Reverb/Reverb_BaseObserver.sig"
+ Configurations {
+  AudioSignalResourceClass PC {
+  }
+  AudioSignalResourceClass XBOX_ONE : PC {
+  }
+  AudioSignalResourceClass XBOX_SERIES : PC {
+  }
+  AudioSignalResourceClass PS4 : PC {
+  }
+  AudioSignalResourceClass HEADLESS : PC {
+  }
+ }
+}

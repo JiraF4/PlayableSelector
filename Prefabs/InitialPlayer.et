@@ -7,6 +7,49 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
   SCR_CommunicationSoundComponent "{54FD05D0C92D071F}" {
    Enabled 0
   }
+  SCR_CharacterInventoryStorageComponent "{520EA1D2DB118DAC}" {
+   Enabled 1
+   components {
+    SCR_EquipmentStorageComponent "{56B49DA9722B635D}" {
+     Enabled 0
+    }
+    SCR_SalineStorageComponent "{5C82B07DFE223090}" {
+     Enabled 0
+    }
+    SCR_TourniquetStorageComponent "{5A68C9C9DF306618}" {
+     Enabled 0
+    }
+   }
+  }
+  AIControlComponent "{520EA1D2DB109F34}" {
+   Enabled 1
+   components {
+    AICharacterAimingComponent "{520EA1D2DB109F0C}" {
+     Enabled 1
+    }
+    AICharacterHeadAimingComponent "{520EA1D2DB109F04}" {
+     Enabled 1
+    }
+    AICharacterMovementComponent "{520EA1D2DB109F01}" {
+     Enabled 1
+    }
+    AIPathfindingComponent "{56349A6F9C02E7A1}" {
+     Enabled 1
+    }
+    PerceptionComponent "{54A2CBC75F06064B}" {
+     Enabled 1
+    }
+    SCR_AICombatComponent "{55A2C9BE343B2EA1}" {
+     Enabled 1
+    }
+   }
+  }
+  BaseFlattenGrassComponent "{520EA1D2F659CE26}" {
+   Enabled 1
+  }
+  ColliderHistoryComponent "{566C7EDBB7BCC719}" {
+   Enabled 1
+  }
   MeshObject "{520EA1D2F659C81F}" {
    Materials {
     MaterialAssignClass "{5EBAA3F857638774}" {
@@ -26,8 +69,19 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
      AssignedMaterial "{9668A21511C6F791}Assets/_SharedData/Decals/Invisible_Material.emat"
     }
    }
+   LODFactors {
+    0 0 0 0 0
+   }
+   PixelSizeScale 0
+   CastShadow 0
+   CastFarShadow 0
+   RainOccluder 0
+   WetnessOccluder 0
+   ReceiveLight 0
+   ClutterOccluderClipPlane -10
   }
   PS_LobbyVoNComponent "{5EB538FB1C85789A}" {
+   "Speaking Range" 0
    Filename "{B4C3941EC8B2AD20}Sounds/VON/von.acp"
   }
   SCR_CharacterStaminaComponent "{520EA1D2F659C824}" {
@@ -46,10 +100,11 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
    WeaponSlotIndex 1
   }
   SCR_CharacterIdentityComponent "{5584CBC63E092DBC}" {
+   Override 1
    Identity Identity "{5584CBC6363C648B}" {
     VisualIdentity VisualIdentity "{56E6D9456009D1C4}" {
-     Head "{04F4D8CBA36A534B}Prefabs/Characters/Heads/Head_Black_02.et"
-     Body "{6253161EEAB88EAB}Prefabs/Characters/Basebody/CharacterBasebody_Black_02.et"
+     Head ""
+     Body "{51A3C18E0AF9A0B0}Prefabs/Characters/Basebody/CharacterBasebodyInvisible.et"
     }
     SoundIdentity SoundIdentity "{56E6D945D8F79290}" {
      VoiceID 0
@@ -59,22 +114,16 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
   BaseLoadoutManagerComponent "{520EA1D2DB11821E}" {
    Slots {
     LoadoutSlotInfo Pants {
-     Prefab "{06BC3F18B47799AE}Prefabs/Characters/Uniforms/Pants_M70.et"
-    }
-   }
-  }
-  SCR_InventoryStorageManagerComponent "{520EA1D2DB118DE5}" {
-   InitialInventoryItems {
-    ItemsInitConfigurationItem "{5EB5371BEC57ECD8}" {
-     TargetStorage "Prefabs/Characters/Uniforms/Pants_M70.et"
-     PrefabsToSpawn {
-      "{74AA3854E16D9D56}Prefabs/MenuRadio.et" "{3A421547BC29F679}Prefabs/Items/Equipment/Flashlights/Flashlight_MX991/Flashlight_MX991.et"
-     }
+     Prefab "{0FC6011A517EF7B3}Prefabs/Characters/Uniforms/Pants_M70Test.et"
     }
    }
   }
   CharacterAnimationComponent "{520EA1D2F659C994}" {
    AnimInstance "{B086D0CD3B9E3AB0}anims/workspaces/player/player_PS_VON.asi"
+   "Collision bone" ""
+   "LOD camera distances" {
+   }
+   DefaultShapeLayer 0
    ColliderStand PhysAgentCollisionShapeItem "{5570AA65EEDB5E11}" {
     Size 0 0 0
     Offset 0 0 0
@@ -112,10 +161,13 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
    ColliderWeaponDeploymentProne PhysAgentCollisionShapeItem "{5D070C07BB3E75CF}" {
     Size 0 0 0
    }
+   RagdollLayer 0
+   Definition ""
   }
   RplComponent "{5238B6A9F3442EE7}" {
    "Rpl State Override" None
    Streamable Disabled
   }
  }
+ Flags 0
 }

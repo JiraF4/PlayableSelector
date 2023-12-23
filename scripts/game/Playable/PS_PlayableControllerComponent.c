@@ -138,6 +138,10 @@ class PS_PlayableControllerComponent : ScriptComponent
 	// Yes every frame, just don't look at it.
 	override protected void EOnPostFixedFrame(IEntity owner, float timeSlice)
 	{
+		RplComponent rpl = RplComponent.Cast(owner.FindComponent(RplComponent));
+		if (!rpl.IsOwner())
+			return;
+		
 		// Lets fight with phisyc engine
 		if (m_eInitialEntity)
 		{
