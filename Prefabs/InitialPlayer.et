@@ -11,7 +11,26 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
    Enabled 1
    components {
     SCR_EquipmentStorageComponent "{56B49DA9722B635D}" {
-     Enabled 0
+     InitialStorageSlots {
+      SCR_EquipmentStorageSlot BinocularSlot {
+       PivotID "Collision"
+       Offset 0 -999999 0.17
+       AutoTransform 0
+       Prefab "{575EA58E67448C2A}Prefabs/Items/Equipment/Flashlights/Flashlight_Soviet_01/Flashlight_Soviet_01.et"
+       DisablePhysicsInteraction 1
+       AllowedItemTypes {
+        "FLASHLIGHT"
+       }
+      }
+      SCR_EquipmentStorageSlot WristwatchSlot {
+       PivotID "Collision"
+       Offset 0 -999999 0
+       Prefab "{74AA3854E16D9D56}Prefabs/MenuRadio.et"
+       AllowedItemTypes + {
+        "RADIO"
+       }
+      }
+     }
     }
     SCR_SalineStorageComponent "{5C82B07DFE223090}" {
      Enabled 0
@@ -113,8 +132,9 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
   }
   BaseLoadoutManagerComponent "{520EA1D2DB11821E}" {
    Slots {
+    LoadoutSlotInfo Jacket {
+    }
     LoadoutSlotInfo Pants {
-     Prefab "{0FC6011A517EF7B3}Prefabs/Characters/Uniforms/Pants_M70Test.et"
     }
    }
   }
