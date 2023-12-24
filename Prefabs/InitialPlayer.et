@@ -101,7 +101,7 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
   }
   PS_LobbyVoNComponent "{5EB538FB1C85789A}" {
    "Speaking Range" 0
-   Filename "{B4C3941EC8B2AD20}Sounds/VON/von.acp"
+   Filename "{92582B3603EE5464}Sounds/VON/vonLobby.acp"
   }
   SCR_CharacterStaminaComponent "{520EA1D2F659C824}" {
    Enabled 0
