@@ -202,7 +202,7 @@ ImageSetClass {
   }
   ImageSetDefClass Compas {
    Name "Compas"
-   Pos 1281 -1
+   Pos 1280 0
    Size 64 64
    Flags 0
   }
@@ -216,6 +216,36 @@ ImageSetClass {
    Name "Grenade"
    Pos 384 0
    Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass Helicopter {
+   Name "Helicopter"
+   Pos 1489 79
+   Size 30 34
+   Flags 0
+  }
+  ImageSetDefClass Car {
+   Name "Car"
+   Pos 1623 78
+   Size 18 35
+   Flags 0
+  }
+  ImageSetDefClass APC {
+   Name "APC"
+   Pos 1751 78
+   Size 18 35
+   Flags 0
+  }
+  ImageSetDefClass Tank {
+   Name "Tank"
+   Pos 1812 72
+   Size 24 41
+   Flags 0
+  }
+  ImageSetDefClass Truck {
+   Name "Truck"
+   Pos 1879 77
+   Size 18 37
    Flags 0
   }
  }

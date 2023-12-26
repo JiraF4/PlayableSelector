@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{90FBA2D8AF1358F5}scripts/WorkbenchGame/WorldEditor/MarkerMakerConfig.conf"
+ Configurations {
+  CONFResourceClass PC {
+  }
+  CONFResourceClass XBOX_ONE : PC {
+  }
+  CONFResourceClass XBOX_SERIES : PC {
+  }
+  CONFResourceClass PS4 : PC {
+  }
+  CONFResourceClass HEADLESS : PC {
+  }
+ }
+}
