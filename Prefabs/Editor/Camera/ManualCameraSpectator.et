@@ -1,4 +1,4 @@
-SCR_ManualCamera : "{D6DE32D1C0FCC1C7}Prefabs/Editor/Camera/ManualCameraBase.et" {
+PS_ManualCameraSpectator : "{D6DE32D1C0FCC1C7}Prefabs/Editor/Camera/ManualCameraBase.et" {
  ID "52CC693B212FF1F9"
  m_aComponents {
   SCR_RotateRollManualCameraComponent "{52CC693A99CF4271}" {

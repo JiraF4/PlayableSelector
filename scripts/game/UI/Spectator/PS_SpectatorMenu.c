@@ -39,6 +39,13 @@ class PS_SpectatorMenu: MenuBase
 			ArmaReforgerScripted.OpenPauseMenu();
 	}
 	
+	void SetCameraCharacter(IEntity characterEntity)
+	{
+		PS_ManualCameraSpectator camera = PS_ManualCameraSpectator.Cast(GetGame().GetCameraManager().CurrentCamera());
+		if (camera)
+			camera.SetCharacterEntity(characterEntity);
+	}
+	
 	override void OnMenuOpen()
 	{
 		if (RplSession.Mode() == RplMode.Dedicated) {
@@ -49,6 +56,7 @@ class PS_SpectatorMenu: MenuBase
 		m_hVoiceChatList = PS_VoiceChatList.Cast(m_wVoiceChatList.FindHandler(PS_VoiceChatList));
 		m_wAlivePlayerList = GetRootWidget().FindAnyWidget("AlivePlayersList");
 		m_hAlivePlayerList = PS_AlivePlayerList.Cast(m_wAlivePlayerList.FindHandler(PS_AlivePlayerList));
+		m_hAlivePlayerList.SetSpectatorMenu(this);
 		m_wOverlayFooter = GetRootWidget().FindAnyWidget("OverlayFooter");
 		m_wEarlyAccessRoot = GetRootWidget().FindAnyWidget("EarlyAccessRoot");
 		m_wIconsFrame = FrameWidget.Cast(GetRootWidget().FindAnyWidget("IconsFrame"));
@@ -135,6 +143,8 @@ class PS_SpectatorMenu: MenuBase
 #endif
 		}
 	}
+	
+	
 	
 	override void OnMenuUpdate(float tDelta)
 	{
