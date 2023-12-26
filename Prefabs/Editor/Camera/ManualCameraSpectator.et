@@ -1,0 +1,23 @@
+SCR_ManualCamera : "{D6DE32D1C0FCC1C7}Prefabs/Editor/Camera/ManualCameraBase.et" {
+ ID "52CC693B212FF1F9"
+ m_aComponents {
+  SCR_RotateRollManualCameraComponent "{52CC693A99CF4271}" {
+   m_bEnabled 0
+  }
+  SCR_ZoomManualCameraComponent "{52CC693B212FF016}" {
+   m_bEnabled 0
+  }
+  SCR_EditorCursorManualCameraComponent "{5F34C88A888046D4}" {
+   m_iPriority 35
+  }
+  SCR_EditorHoveredManualCameraComponent "{5F34C88A888046D7}" {
+   m_iPriority 35
+  }
+  SCR_EditorSnapManualCameraComponent "{5F34C88A888046D9}" {
+   m_iPriority 2
+  }
+  SCR_LimitBoxManualCameraComponent "{5F34C88A889FBB1D}" {
+   m_iPriority 1
+  }
+ }
+}

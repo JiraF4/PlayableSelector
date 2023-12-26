@@ -316,7 +316,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		EntitySpawnParams params = new EntitySpawnParams();
 		if (from) from.GetTransform(params.Transform);
 		MoveToVoNRoom(thisPlayerController.GetPlayerId(), "", "");
-        Resource resource = Resource.Load("{127C64F4E93A82BC}Prefabs/Editor/Camera/ManualCameraPhoto.et");
+        Resource resource = Resource.Load("{89ABC7C0A6B85312}Prefabs/Editor/Camera/ManualCameraEdit.et");
         m_eCamera = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
 		if (m_vObserverPosition != "0 0 0") { 
 			m_eCamera.SetOrigin(m_vObserverPosition);
