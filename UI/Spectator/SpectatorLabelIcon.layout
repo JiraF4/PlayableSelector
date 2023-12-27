@@ -1,21 +1,21 @@
 FrameWidgetClass {
- Name "PlayableIconFrame"
+ Name "SpectatorLabelIconFrame"
  Clipping False
  components {
-  PS_SpectatorPlayableIcon "{5F34C8D046BABFCD}" {
+  PS_SpectatorLabelIcon "{5F34C8DE03BF1CFC}" {
   }
  }
  {
-  PanelWidgetClass "{5F34C8DCD5E715FD}" {
-   Name "PanelLabel"
+  PanelWidgetClass "{5EE8948F20BE168B}" {
+   Name "SpectatorLabel"
    Slot FrameWidgetSlot "{5EE8948F20BE16F5}" {
     SizeToContent 1
    }
    Color 0 0 0 0
    style pixel_outline
    {
-    OverlayWidgetClass "{5F34C8DCD5E715FF}" {
-     Name "PanelOverlay"
+    OverlayWidgetClass "{5EE89488CCB4B28D}" {
+     Name "SpectatorLabelOverlay"
      Slot FrameWidgetSlot "{5EE89488CCB4B2FF}" {
       OffsetLeft 0
       OffsetTop 0
@@ -26,12 +26,12 @@ FrameWidgetClass {
       SizeToContent 1
      }
      {
-      TextWidgetClass "{5F34C8DCD5E715F8}" {
-       Name "PlayableLabel"
+      TextWidgetClass "{5EE8948EAC337C76}" {
+       Name "SpectatorLabelText"
        Slot OverlayWidgetSlot "{5EE89488FD3D84DE}" {
         Padding 4 4 4 4
        }
-       Text "Player"
+       Text "Label"
        "Font Size" 32
        "Min Font Size" 32
        "Horizontal Alignment" Center
@@ -41,8 +41,8 @@ FrameWidgetClass {
     }
    }
   }
-  ImageWidgetClass "{5F34C8DCD5E715F9}" {
-   Name "PlayableIcon"
+  ImageWidgetClass "{5EE8948EC9B919B8}" {
+   Name "SpectatorLabelIcon"
    Slot FrameWidgetSlot "{5EE8948CA93791EA}" {
     OffsetLeft 0
     OffsetTop 0
@@ -52,7 +52,7 @@ FrameWidgetClass {
     OffsetBottom -64
    }
    Texture "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset"
-   Image "Player"
+   Image "Circle"
    Size 64 64
   }
  }

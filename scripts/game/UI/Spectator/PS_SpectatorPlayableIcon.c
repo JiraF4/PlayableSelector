@@ -1,5 +1,6 @@
 class PS_SpectatorPlayableIcon : SCR_ScriptedWidgetComponent
-{
+{	
+	
 	protected ImageWidget m_wPlayableIcon;
 	protected TextWidget m_wPlayableLabel;
 	protected PanelWidget m_wPanelLabel;

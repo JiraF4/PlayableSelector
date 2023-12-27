@@ -248,5 +248,11 @@ ImageSetClass {
    Size 18 37
    Flags 0
   }
+  ImageSetDefClass Circle {
+   Name "Circle"
+   Pos 192 128
+   Size 64 64
+   Flags 0
+  }
  }
 }
