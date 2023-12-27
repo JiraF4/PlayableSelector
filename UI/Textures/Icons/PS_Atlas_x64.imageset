@@ -254,5 +254,11 @@ ImageSetClass {
    Size 64 64
    Flags 0
   }
+  ImageSetDefClass Character {
+   Name "Character"
+   Pos 1430 77
+   Size 20 29
+   Flags 0
+  }
  }
 }

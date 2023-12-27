@@ -1,6 +1,6 @@
 class PS_SpectatorLabelIcon : SCR_ScriptedWidgetComponent
 {	
-	IEntity m_eEintity;
+	IEntity m_eEntity;
 	
 	ImageWidget m_wSpectatorLabelIcon;
 	TextWidget m_wSpectatorLabelText;
@@ -16,6 +16,8 @@ class PS_SpectatorLabelIcon : SCR_ScriptedWidgetComponent
 	protected float m_fMaxLabelDistance = 25.0;
 	protected float m_fMinLabelDistance = 10.0;
 	
+	protected TNodeId w_iBoneIndex;
+	
 	override void HandlerAttached(Widget w)
 	{
 		super.HandlerAttached(w);
@@ -25,14 +27,28 @@ class PS_SpectatorLabelIcon : SCR_ScriptedWidgetComponent
 		m_wSpectatorLabel = PanelWidget.Cast(w.FindAnyWidget("SpectatorLabel"));
 	}
 	
-	void SetEntity(IEntity entity)
+	void SetEntity(IEntity entity, string boneName)
 	{
-		m_eEintity = entity;
+		m_eEntity = entity;
+		if (boneName != "")
+		{
+			w_iBoneIndex = entity.GetAnimation().GetBoneIndex(boneName);
+		}
 	}
 	
 	void Update()
 	{
-		vector iconWorldPosition = m_eEintity.GetOrigin();
+		vector iconWorldPosition = m_eEntity.GetOrigin();
+		if (w_iBoneIndex > 0)
+		{
+			vector mat[4];
+			m_eEntity.GetTransform(mat);
+			vector boneMat[4];
+			m_eEntity.GetAnimation().GetBoneMatrix(w_iBoneIndex, boneMat);
+			vector resMat[4];
+			Math3D.MatrixMultiply4(mat, boneMat, resMat);
+			iconWorldPosition = resMat[3];
+		}
 		vector screenPosition = GetGame().GetWorkspace().ProjWorldToScreen(iconWorldPosition, GetGame().GetWorld());
 		
 		vector cameraPosition = GetGame().GetCameraManager().CurrentCamera().GetOrigin();
@@ -71,9 +87,16 @@ class PS_SpectatorLabelIcon : SCR_ScriptedWidgetComponent
 		float LabelSizeYD = GetGame().GetWorkspace().DPIUnscale(LabelSizeY);
 		
 		m_wRoot.SetOpacity(1.0);
+		UpdateLabel();
+		
 		FrameSlot.SetSize(m_wSpectatorLabelIcon, scaledIconSize, scaledIconSize);
 		FrameSlot.SetPos(m_wSpectatorLabelIcon, -scaledIconSize/2, -scaledIconSize/2);
 		FrameSlot.SetPos(m_wSpectatorLabel, -LabelSizeXD/2, -scaledIconSize + scaledIconSize/4);
 		FrameSlot.SetPos(m_wRoot, screenPosition[0], screenPosition[1]);
+	}
+	
+	void UpdateLabel()
+	{
+		
 	}
 }

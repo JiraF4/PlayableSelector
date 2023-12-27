@@ -5,7 +5,7 @@ Vehicle : "{543A50BF3A42AD47}Prefabs/Vehicles/Core/Wheeled_APC_Base.et" {
    m_cMapMarkerConfig PS_ManualMarkerConfig "{5F357420E1A00257}" {
     m_sImageSet "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset"
     m_sQuadName "APC"
-    m_fWorldSize 50
+    m_fWorldSize 2.75
     m_aVisibleForFactions {
      "FIA" "US" "USSR"
     }

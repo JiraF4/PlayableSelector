@@ -27,8 +27,7 @@ class PS_SpectatorMenu: MenuBase
 	
 	protected SCR_MapEntity m_MapEntity;
 	
-	protected ref map<RplId, PS_SpectatorPlayableIcon> m_mIconsListPlayables = new map<RplId, PS_SpectatorPlayableIcon>();
-	protected ref map<PS_SpectatorLabel, PS_SpectatorLabelIcon> m_mIconsList = new map<PS_SpectatorLabel, PS_SpectatorLabelIcon>();
+	protected ref map<PS_SpectatorLabel, PS_SpectatorLabel> m_mIconsList = new map<PS_SpectatorLabel, PS_SpectatorLabel>();
 		
 	protected static void OnShowPlayerList()
 	{
@@ -173,40 +172,16 @@ class PS_SpectatorMenu: MenuBase
 		{
 			if (!m_mIconsList.Contains(spectatorLabel))
 			{
-				Widget spectatorLabelWidget = GetGame().GetWorkspace().CreateWidgets(spectatorLabel.m_sSpectatorLabelLayout, m_wIconsFrame);
-				PS_SpectatorLabelIcon spectatorLabelIcon = PS_SpectatorLabelIcon.Cast(spectatorLabelWidget.FindHandler(PS_SpectatorLabelIcon));
-				spectatorLabelIcon.SetEntity(spectatorLabel.GetOwner());
-				m_mIconsList.Insert(spectatorLabel, spectatorLabelIcon);
+				spectatorLabel.CreateLabel(m_wIconsFrame);
+				m_mIconsList.Insert(spectatorLabel, spectatorLabel);
 			}
-			m_mIconsList.Get(spectatorLabel).Update();
+		}
+		foreach (PS_SpectatorLabel spectatorLabel, PS_SpectatorLabel spectatorLabel2 : m_mIconsList)
+		{
+			if (!spectatorLabel)
+				continue;
+			spectatorLabel.UpdateLabel();
 			spectatorLabel.UpdateMarker();
-		}
-		
-		
-		// Playables
-		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		foreach (RplId id, PS_PlayableComponent playableComponent : playableManager.m_aPlayables)
-		{
-			if (!m_mIconsListPlayables.Contains(id))
-			{
-				Widget playableMarker = GetGame().GetWorkspace().CreateWidgets(m_rPlayableIconPath, m_wIconsFrame);
-				PS_SpectatorPlayableIcon spectatorPlayableIcon = PS_SpectatorPlayableIcon.Cast(playableMarker.FindHandler(PS_SpectatorPlayableIcon));
-				
-				spectatorPlayableIcon.SetCharacter(playableComponent);
-				
-				m_mIconsListPlayables[id] = spectatorPlayableIcon;
-			}
-		}
-		foreach (RplId id, PS_SpectatorPlayableIcon spectatorPlayableIcon : m_mIconsListPlayables)
-		{
-			if (playableManager.m_aPlayables.Contains(id))
-			{
-				spectatorPlayableIcon.Update();
-			}
-			else {
-				m_wIconsFrame.RemoveChild(m_mIconsListPlayables[id].GetRootWidget());
-				m_mIconsListPlayables.Remove(id);
-			}
 		}
 	}
 	

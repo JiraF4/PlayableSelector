@@ -22,33 +22,11 @@ class PS_SpectatorLabelsManager : ScriptComponent
 	
 	void RegistrateLabel(PS_SpectatorLabel label)
 	{
-		Print("----------------------------------------");
-		Print("----------------------------------------");
-		Print("----------------------------------------");
-		Print("----------------------------------------");
-		Print("----------------------------------------");
-		Print("----------------------------------------");
-		Print("RegistrateLabel " + label.ToString());
-		Print("RegistrateLabel " + label.ToString());
-		Print("RegistrateLabel " + label.ToString());
-		Print("RegistrateLabel " + label.ToString());
-		Print("RegistrateLabel " + label.ToString());
 		m_aSpectatorLabels.Insert(label);
 	}
 	
 	void UnRegistrateLabel(PS_SpectatorLabel label)
 	{
-		Print("----------------------------------------");
-		Print("----------------------------------------");
-		Print("----------------------------------------");
-		Print("----------------------------------------");
-		Print("----------------------------------------");
-		Print("----------------------------------------");
-		Print("UnRegistrateLabel " + label.ToString());
-		Print("UnRegistrateLabel " + label.ToString());
-		Print("UnRegistrateLabel " + label.ToString());
-		Print("UnRegistrateLabel " + label.ToString());
-		Print("UnRegistrateLabel " + label.ToString());
 		m_aSpectatorLabels.RemoveItem(label);
 	}
 }

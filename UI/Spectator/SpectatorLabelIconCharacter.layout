@@ -1,0 +1,9 @@
+FrameWidgetClass : "{8A4C0D6D625BB09D}UI/Spectator/SpectatorLabelIcon.layout" {
+ components {
+  PS_SpectatorLabelIcon "{5F34C8DE03BF1CFC}" {
+   Enabled 0
+  }
+  PS_SpectatorLabelIconCharacter "{5F3693B25C31E98D}" {
+  }
+ }
+}
