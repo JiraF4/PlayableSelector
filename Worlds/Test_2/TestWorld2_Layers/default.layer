@@ -27,6 +27,84 @@ PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_Game
   }
  }
 }
+PolylineShapeEntity SUS {
+ components {
+  PS_PolyMarker "{5F36AB89F6CE40DD}" {
+   m_mPolygonTexture "{EE369172FCB6F4B2}UI/Textures/WarningZone.edds"
+   m_mPolygonTextureBorder "{15A6B5F9E6E1DB8E}UI/Textures/WarningZoneBorder.edds"
+  }
+ }
+ coords 218.395 1 34.709
+ Points {
+  ShapePoint "{5F36AB88AC6E34A7}" {
+   Position -36.606 0 15.673
+  }
+  ShapePoint "{5F36AB88285B1F47}" {
+   Position -32.577 0 30.217
+  }
+  ShapePoint "{5F36AB88B2F89717}" {
+   Position -28.786 0 31.981
+  }
+  ShapePoint "{5F36AB88AC6E07FA}" {
+   Position -16.481 0 33.024
+  }
+  ShapePoint "{5F36AB88B46A0023}" {
+   Position -10.987 0 45.261
+  }
+  ShapePoint "{5F36AB88595838CA}" {
+   Position 6.39 0 52.417
+  }
+  ShapePoint "{5F36AB88BCF48640}" {
+   Position 17.748 0 47.24
+  }
+  ShapePoint "{5F36AB885DD0F324}" {
+   Position 25.003 0 40.817
+  }
+  ShapePoint "{5F36AB880142216B}" {
+   Position 28.068 0 39.491
+  }
+  ShapePoint "{5F36AB885EC94DEF}" {
+   Position 36.489 0 31.944
+  }
+  ShapePoint "{5F36AB885FB36A5E}" {
+   Position 34.579 0 12.568
+  }
+  ShapePoint "{5F36AB8822E80D59}" {
+   Position 30.005 0 7.547
+  }
+  ShapePoint "{5F36AB88603F6755}" {
+   Position 25.48 0 6.661
+  }
+  ShapePoint "{5F36AB8199DAA53B}" {
+   Position 20.352 0 -31.727
+  }
+  ShapePoint "{5F36AB819A843ECD}" {
+   Position 9.437 0 -31.583
+  }
+  ShapePoint "{5F36AB88639CFAC2}" {
+   Position 5.492 0 -14.284
+  }
+  ShapePoint "{5F36AB886342DDCC}" {
+   Position -3.462 0 -13.602
+  }
+  ShapePoint "{5F36AB8864D019F5}" {
+   Position -5.46 0 -30.489
+  }
+  ShapePoint "{5F36AB88658FD5E0}" {
+   Position -20.387 0 -28.511
+  }
+  ShapePoint "{5F36AB8866BADFAA}" {
+   Position -21.335 0 -5.989
+  }
+  ShapePoint "{5F36AB8869FA00F2}" {
+   Position -33.231 0 -3.194
+  }
+  ShapePoint "{5F36AB88267B8828}" {
+   Position -35.685 0 -0.223
+  }
+ }
+ IsClosed 1
+}
 SplineShapeEntity {
  coords 228.961 1 119.376
  Points {
