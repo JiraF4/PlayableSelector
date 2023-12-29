@@ -7,9 +7,17 @@ class PS_LoadoutInspectorCustomTitle: BaseContainerCustomTitle
 	}
 }
 
+
+// SPAGETTY WARNIG | SPAGETTY WARNIG | SPAGETTY WARNIG | SPAGETTY WARNIG | SPAGETTY WARNIG | SPAGETTY WARNIG | SPAGETTY WARNIG | SPAGETTY WARNIG
 [BaseContainerProps(), PS_LoadoutInspectorSlotsListCustomTitle()]
 class PS_LoadoutInspector
 {
+	static PS_LoadoutInspector Instance;
+	void PS_LoadoutInspector()
+	{
+		Instance = this;
+	}
+	
 	IEntitySource m_entitySource;
 	
 	[Attribute("", UIWidgets.ResourcePickerThumbnail, "et")]
@@ -34,7 +42,7 @@ class PS_LoadoutInspector
 	[Attribute("", UIWidgets.ResourcePickerThumbnail, "et")]
 	ResourceName m_jacket;
 	[Attribute("")]
-	ref array<ref PS_LoadoutInspectorItemsList> m_jacketItems;
+	ref PS_LoadoutInspectorSlotsList m_jacketItemsSlot;
 	BaseContainer m_jacketContainer;
 	[Attribute("", UIWidgets.ResourcePickerThumbnail, "et")]
 	ResourceName m_armorVest;
@@ -42,7 +50,7 @@ class PS_LoadoutInspector
 	[Attribute("", UIWidgets.ResourcePickerThumbnail, "et")]
 	ResourceName m_pants;
 	[Attribute("")]
-	ref array<ref PS_LoadoutInspectorItemsList> m_pantsItems;
+	ref PS_LoadoutInspectorSlotsList m_pantsItemsSlot;
 	BaseContainer m_pantsContainer;
 	[Attribute("", UIWidgets.ResourcePickerThumbnail, "et")]
 	ResourceName m_boots;
@@ -50,7 +58,7 @@ class PS_LoadoutInspector
 	[Attribute("", UIWidgets.ResourcePickerThumbnail, "et")]
 	ResourceName m_backpack;
 	[Attribute("")]
-	ref array<ref PS_LoadoutInspectorItemsList> m_backpackItems;
+	ref PS_LoadoutInspectorSlotsList m_backpackItemsSlot;
 	BaseContainer m_backpackContainer;
 	[Attribute("", UIWidgets.ResourcePickerThumbnail, "et")]
 	ResourceName m_vest;
@@ -105,12 +113,6 @@ class PS_LoadoutInspector
 			}
 		}
 		
-		int varCount = entitySource.GetComponentCount();
-		for (int i = 0; i < varCount; i++)
-		{
-			Print(entitySource.GetVarName(i));
-		}
-		
 		BaseContainerList slots = baseLoadoutManagerComponent.SetObjectArray("Slots");
 		for (int s = 0; s < slots.Count(); s++)
 		{
@@ -157,42 +159,154 @@ class PS_LoadoutInspector
 				wApi.SetVariableValue(entitySource, {ContainerIdPathEntry("components", componetnId)}, "WeaponTemplate", itemPrefab);
 		}
 		
-		BaseContainerList slotsList = inventoryStorageManagerComponent.GetObjectArray("InitialInventoryItems");
+		/*
 		if (slotsList.Count() == 0)
 			wApi.CreateObjectArrayVariableMember(entitySource, {ContainerIdPathEntry("SCR_InventoryStorageManagerComponent")}, "InitialInventoryItems", "ItemsInitConfigurationItem", 0);
 		while (slotsList.Count() > 1)
 			wApi.RemoveObjectArrayVariableMember(entitySource, {ContainerIdPathEntry("SCR_InventoryStorageManagerComponent")}, "InitialInventoryItems", slotsList.Count() - 1);
+		*/
 		
+		BaseContainerList slotsList = inventoryStorageManagerComponent.GetObjectArray("InitialInventoryItems");
 		array<ref PS_LoadoutInspectorSlotsList> allSlots = getAllSlots();
+		array<int> assignedSlots = new array<int>();
+		linkSlots(assignedSlots, allSlots, slotsList); // Link with existing
 		for (int i = 0; i < allSlots.Count(); i++)
 		{
 			PS_LoadoutInspectorSlotsList itemSlot = allSlots.Get(i);
 			if (itemSlot.m_slot == "")
 				continue;
+			if (itemSlot.m_iSuitableSlot == -2)
+				continue;
 			
-			wApi.CreateObjectArrayVariableMember(entitySource, {ContainerIdPathEntry("SCR_InventoryStorageManagerComponent")}, "InitialInventoryItems", "ItemsInitConfigurationItem", i+1);
+			// Create new if need
+			if (itemSlot.m_iSuitableSlot == -1)
+			{
+				wApi.CreateObjectArrayVariableMember(entitySource, {ContainerIdPathEntry("SCR_InventoryStorageManagerComponent")}, "InitialInventoryItems", "ItemsInitConfigurationItem", slotsList.Count());
+				itemSlot.m_iSuitableSlot = slotsList.Count() - 1;
+				assignedSlots.Insert(slotsList.Count() - 1);
+			}
 			
 			array<ref ContainerIdPathEntry> containerPath = new array<ref ContainerIdPathEntry>();
-			containerPath = {ContainerIdPathEntry("SCR_InventoryStorageManagerComponent"), ContainerIdPathEntry("InitialInventoryItems", i+1)};
+			containerPath = {ContainerIdPathEntry("SCR_InventoryStorageManagerComponent"), ContainerIdPathEntry("InitialInventoryItems", itemSlot.m_iSuitableSlot)};
 			
-			string prefabPath = itemSlot.m_slot.Substring(18, itemSlot.m_slot.Length() - 18);
-			
-			wApi.SetVariableValue(entitySource, containerPath, "TargetStorage", prefabPath);
-			wApi.SetVariableValue(entitySource, containerPath, "TargetPurpose", itemSlot.storagePurpose.ToString());
-			string itemsStr = "";
-			for (int r = 0; r < allSlots.Get(i).m_Items.Count(); r++)
+			BaseContainer slotContainer = slotsList.Get(itemSlot.m_iSuitableSlot);
+			string targetStorage;
+			EStoragePurpose targetPurpose;
+			array<ResourceName> prefabsToSpawnArray;
+			slotContainer.Get("TargetStorage", targetStorage);
+			slotContainer.Get("TargetPurpose", targetPurpose);
+			slotContainer.Get("PrefabsToSpawn", prefabsToSpawnArray);
+			string prefabsToSpawn = "";
+			for (int r = 0; r < prefabsToSpawnArray.Count(); r++)
 			{
-				PS_LoadoutInspectorItemsList itemList = allSlots.Get(i).m_Items.Get(r);
-				if (itemList.m_item == "")
-					continue;
-				
-				for (int j = 0; j < itemList.m_count; j++)
-				{
-					if (itemsStr != "") itemsStr += ",";
-					itemsStr += itemList.m_item;
-				}
+				if (prefabsToSpawn != "") prefabsToSpawn += ",";
+				prefabsToSpawn += prefabsToSpawnArray.Get(r);
 			}
-			wApi.SetVariableValue(entitySource, containerPath, "PrefabsToSpawn", itemsStr);
+			string targetStorageNew = itemSlot.GetSlotPath();
+			EStoragePurpose targetPurposeNew = itemSlot.storagePurpose;
+			string prefabsToSpawnNew = itemSlot.GetPrefabsToSpawn();
+			if (targetStorage != targetStorageNew) wApi.SetVariableValue(entitySource, containerPath, "TargetStorage", targetStorageNew);
+			if (targetPurpose != targetPurposeNew) wApi.SetVariableValue(entitySource, containerPath, "TargetPurpose", targetPurposeNew.ToString());
+			if (prefabsToSpawn != prefabsToSpawnNew) wApi.SetVariableValue(entitySource, containerPath, "PrefabsToSpawn", prefabsToSpawnNew);
+		}
+		for (int i = 0; i < slotsList.Count(); i++)
+		{
+			if (assignedSlots.Contains(i))
+				continue;
+			
+			array<ref ContainerIdPathEntry> containerPath = new array<ref ContainerIdPathEntry>();
+			containerPath = {ContainerIdPathEntry("SCR_InventoryStorageManagerComponent"), ContainerIdPathEntry("InitialInventoryItems", i)};
+			
+			wApi.SetVariableValue(entitySource, containerPath, "TargetStorage", "");
+			wApi.SetVariableValue(entitySource, containerPath, "TargetPurpose", "");
+			wApi.SetVariableValue(entitySource, containerPath, "PrefabsToSpawn", "");
+		}
+	}
+	
+	void linkSlots(array<int> assignedSlots, array<ref PS_LoadoutInspectorSlotsList> slots, BaseContainerList slotsList)
+	{
+		foreach (PS_LoadoutInspectorSlotsList slot : slots)
+		{
+			slot.m_iSuitableSlot = -1;
+		}
+		foreach (PS_LoadoutInspectorSlotsList slot : slots)
+		{
+			linkSlot(slot, slotsList, assignedSlots, 0);
+		}
+		// Exclude not linked empty
+		foreach (PS_LoadoutInspectorSlotsList slot : slots)
+		{
+			if (slot.m_iSuitableSlot == -1 && (!slot.m_Items || slot.m_Items.Count() == 0))
+				slot.m_iSuitableSlot = -2;
+		}
+		foreach (PS_LoadoutInspectorSlotsList slot : slots)
+		{
+			linkSlot(slot, slotsList, assignedSlots, 1);
+		}
+		foreach (PS_LoadoutInspectorSlotsList slot : slots)
+		{
+			linkSlot(slot, slotsList, assignedSlots, 2);
+		}
+		foreach (PS_LoadoutInspectorSlotsList slot : slots)
+		{
+			linkSlot(slot, slotsList, assignedSlots, 3);
+		}
+	}
+	
+	void linkSlot(PS_LoadoutInspectorSlotsList slot, BaseContainerList slotsList, array<int> assignedSlots, int level)
+	{
+		if (slot.m_iSuitableSlot != -1) return;
+		int count = slotsList.Count();
+		for (int i = 0; i < count; i++)
+		{
+			if (assignedSlots.Contains(i))
+				continue;
+			BaseContainer slotContainer = slotsList.Get(i);
+			
+			string targetStorage;
+			EStoragePurpose targetPurpose;
+			string prefabsToSpawn;
+			slotContainer.Get("TargetStorage", targetStorage);
+			slotContainer.Get("TargetPurpose", targetPurpose);
+			slotContainer.Get("PrefabsToSpawn", prefabsToSpawn);
+			
+			string targetStorageNew = slot.GetSlotPath();
+			EStoragePurpose targetPurposeNew = slot.storagePurpose;
+			string prefabsToSpawnNew = slot.GetPrefabsToSpawn();
+			
+			if (level == 0)
+				if (targetStorageNew == targetStorage && 
+					targetPurposeNew == targetPurpose &&
+					prefabsToSpawnNew == prefabsToSpawn)
+				{
+					assignedSlots.Insert(i);
+					slot.m_iSuitableSlot = i;
+					return;
+				}
+			
+			if (level == 1)
+				if (targetStorageNew == targetStorage && 
+					targetPurposeNew == targetPurpose)
+				{
+					assignedSlots.Insert(i);
+					slot.m_iSuitableSlot = i;
+					return;
+				}
+			
+			if (level == 2)
+				if (prefabsToSpawnNew == prefabsToSpawn)
+				{
+					assignedSlots.Insert(i);
+					slot.m_iSuitableSlot = i;
+					return;
+				}
+			
+			if (level == 3)
+			{
+				assignedSlots.Insert(i);
+				slot.m_iSuitableSlot = i;
+				return;
+			}
 		}
 	}
 	
@@ -205,31 +319,25 @@ class PS_LoadoutInspector
 				slots.Insert(m_vestSlots.Get(i));
 			}
 		
-		if (m_jacketItems && m_jacket != "")
+		if (m_jacket != "" && m_jacketItemsSlot)
 		{
-			PS_LoadoutInspectorSlotsList slot = new PS_LoadoutInspectorSlotsList();
-			slot.m_slot = m_jacket;
-			slot.m_Items = m_jacketItems;
-			slot.storagePurpose = EStoragePurpose.PURPOSE_DEPOSIT;
-			slots.Insert(slot);
+			m_jacketItemsSlot.m_slot = m_jacket;
+			m_jacketItemsSlot.storagePurpose = EStoragePurpose.PURPOSE_DEPOSIT;
+			slots.Insert(m_jacketItemsSlot);
 		}
 		
-		if (m_pantsItems && m_pants != "")
+		if (m_pants != "" && m_pantsItemsSlot)
 		{
-			PS_LoadoutInspectorSlotsList slot = new PS_LoadoutInspectorSlotsList();
-			slot.m_slot = m_pants;
-			slot.m_Items = m_pantsItems;
-			slot.storagePurpose = EStoragePurpose.PURPOSE_DEPOSIT;
-			slots.Insert(slot);
+			m_pantsItemsSlot.m_slot = m_pants;
+			m_pantsItemsSlot.storagePurpose = EStoragePurpose.PURPOSE_DEPOSIT;
+			slots.Insert(m_pantsItemsSlot);
 		}
 		
-		if (m_backpackItems && m_backpack != "")
+		if (m_backpack != "" && m_backpackItemsSlot)
 		{
-			PS_LoadoutInspectorSlotsList slot = new PS_LoadoutInspectorSlotsList();
-			slot.m_slot = m_backpack;
-			slot.m_Items = m_backpackItems;
-			slot.storagePurpose = EStoragePurpose.PURPOSE_DEPOSIT;
-			slots.Insert(slot);
+			m_backpackItemsSlot.m_slot = m_backpack;
+			m_backpackItemsSlot.storagePurpose = EStoragePurpose.PURPOSE_DEPOSIT;
+			slots.Insert(m_backpackItemsSlot);
 		}
 		
 		return slots;
@@ -239,9 +347,9 @@ class PS_LoadoutInspector
 	void CheckErrors()
 	{
 		m_errors = new array<ref PS_LoadoutInspectorError>();
-		CheckInventoryCapacity(m_errors, m_jacket, m_jacketItems);
-		CheckInventoryCapacity(m_errors, m_pants, m_pantsItems);
-		CheckInventoryCapacity(m_errors, m_backpack, m_backpackItems);
+		if (m_jacketItemsSlot) CheckInventoryCapacity(m_errors, m_jacket, m_jacketItemsSlot.m_Items);
+		if (m_pantsItemsSlot) CheckInventoryCapacity(m_errors, m_pants, m_pantsItemsSlot.m_Items);
+		if (m_backpackItemsSlot) CheckInventoryCapacity(m_errors, m_backpack, m_backpackItemsSlot.m_Items);
 		if (m_vestSlots)
 		{
 			foreach (PS_LoadoutInspectorSlotsList slotList : m_vestSlots)
@@ -565,15 +673,18 @@ class PS_LoadoutInspector
 	{
 		if (m_pants.Contains(prefabPath))
 		{
-			m_pantsItems = GetItemsList(items);
+			m_pantsItemsSlot = new PS_LoadoutInspectorSlotsList();
+			m_pantsItemsSlot.m_Items = GetItemsList(items);
 		}
 		if (m_jacket.Contains(prefabPath))
 		{
-			m_jacketItems = GetItemsList(items);
+			m_jacketItemsSlot = new PS_LoadoutInspectorSlotsList();
+			m_jacketItemsSlot.m_Items = GetItemsList(items);
 		}
 		if (m_backpack.Contains(prefabPath))
 		{
-			m_backpackItems = GetItemsList(items);
+			m_backpackItemsSlot = new PS_LoadoutInspectorSlotsList();
+			m_backpackItemsSlot.m_Items = GetItemsList(items);
 		}
 		foreach (PS_LoadoutInspectorSlotsList slotList : m_vestSlots)
 		{
@@ -633,9 +744,19 @@ class PS_LoadoutInspectorItemsListCustomTitle: BaseContainerCustomTitle
 		int count;
 		source.Get("m_count", count);
 		title = item;
+		
+		string volumeStr = "";
+		if (item != "")
+		{
+			float volume = 0;
+			vector dimesions = "0 0 0";
+			PS_LoadoutInspector.Instance.GetItemSize(item, volume, dimesions);
+			volumeStr = ((int) (volume * count) / 10).ToString(3) + "V ";
+		}
+			
 		int index = title.LastIndexOf("/");
 		if (index > 0) title = title.Substring(index + 1, title.Length() - index - 4);
-		title = count.ToString() + "x" + title;
+		title = volumeStr + count.ToString() + "x" + title;
 		return true;
 	}
 }
@@ -656,9 +777,30 @@ class PS_LoadoutInspectorSlotsListCustomTitle: BaseContainerCustomTitle
 	{
 		ResourceName slot;
 		source.Get("m_slot", slot);
+		array<ref PS_LoadoutInspectorItemsList> items;
+		source.Get("m_Items", items);
 		
-		BaseContainerList itemLists = source.GetObjectArray("m_Items");
+		bool volume, dimensions;
+		float maxVolume;
+		float cumulativeVolume;
+		CheckInventoryCapacity(slot, items, volume, dimensions, maxVolume, cumulativeVolume);
+		
+		string VolumeStr = ((int) cumulativeVolume / 10).ToString(3) + "/" + ((int) maxVolume / 10).ToString(3) + "V ";
+		
+		if (dimensions)
+		{
+			title = VolumeStr + "DIMENSIONS_ERROR";
+			return true;
+		}
+		
+		if (volume)
+		{
+			title = VolumeStr + "VOLUME_ERROR";
+			return true;
+		}
+		
 		int allItemsCount = 0;
+		BaseContainerList itemLists = source.GetObjectArray("m_Items");
 		int count = itemLists.Count();
 		for (int i = 0; i < count; i++)
 		{
@@ -666,14 +808,74 @@ class PS_LoadoutInspectorSlotsListCustomTitle: BaseContainerCustomTitle
 			int itemsCount;
 			itemListContainer.Get("m_count", itemsCount);
 			allItemsCount += itemsCount;
-		}
+		}	
 		
 		title = slot;
 		int index = title.LastIndexOf("/");
 		if (index > 0) title = title.Substring(index + 1, title.Length() - index - 4);
 		
-		title = allItemsCount.ToString() + "x" + title;
+		title = VolumeStr + allItemsCount.ToString(2) + "x" + title;
 		return true;
+	}
+	
+	void CheckInventoryCapacity(ResourceName inventoryResource, array<ref PS_LoadoutInspectorItemsList> items, out bool volumeCheck, out bool dimensionsCheck, out float maxVolume, out float cumulativeVolume)
+	{
+		if (!items || items.Count() == 0)
+			return;
+		
+		Resource slotItemHolder = BaseContainerTools.LoadContainer(inventoryResource);
+		IEntitySource slotItemContainer = slotItemHolder.GetResource().ToBaseContainer().ToEntitySource();
+		
+		BaseContainer inventoryStorageComponent;
+		int slotItemComponentsCount = slotItemContainer.GetComponentCount();
+		for (int r = 0; r < slotItemComponentsCount; r++)
+		{
+			IEntityComponentSource componentSource = slotItemContainer.GetComponent(r);
+			if (componentSource.GetClassName() == "SCR_UniversalInventoryStorageComponent")
+			{
+				inventoryStorageComponent = componentSource;
+				break;
+			}
+			if (componentSource.GetClassName() == "SCR_EquipmentStorageComponent")
+			{
+				inventoryStorageComponent = componentSource;
+				break;
+			}
+		}
+		
+		if (!inventoryStorageComponent)
+		{
+			volumeCheck = true;
+			dimensionsCheck = true;
+		}
+		
+		vector maxDimesions = "0 0 0";
+		inventoryStorageComponent.Get("MaxCumulativeVolume", maxVolume);
+		inventoryStorageComponent.Get("MaxItemSize", maxDimesions);
+		
+		foreach (PS_LoadoutInspectorItemsList itemList : items)
+		{
+			if (itemList.m_item == "")
+				continue;
+			
+			string titleItem = itemList.m_item;
+			int indexItem = titleItem.LastIndexOf("/");
+			if (indexItem > 0) titleItem = titleItem.Substring(indexItem + 1, titleItem.Length() - indexItem - 4);
+			
+			float volume = 0;
+			vector dimesions = "0 0 0";
+			PS_LoadoutInspector.Instance.GetItemSize(itemList.m_item, volume, dimesions);
+			cumulativeVolume += volume * itemList.m_count;
+			
+			if (!PS_LoadoutInspector.Instance.DimensionsCheck(maxDimesions, dimesions))
+			{
+				dimensionsCheck = true;
+			}
+		}
+		if (cumulativeVolume > maxVolume)
+		{
+			volumeCheck = true;
+		}
 	}
 }
 [BaseContainerProps(), PS_LoadoutInspectorSlotsListCustomTitle()]
@@ -682,9 +884,36 @@ class PS_LoadoutInspectorSlotsList
 	[Attribute("", UIWidgets.Hidden, "et")]
 	ResourceName m_slot;
 	
+	string GetSlotPath()
+	{
+		if (m_slot.Length() < 19) return m_slot;
+		return m_slot.Substring(18, m_slot.Length() - 18);
+	}
+	
 	[Attribute("0", UIWidgets.Hidden, "", "", ParamEnumArray.FromEnum(EStoragePurpose))]
 	EStoragePurpose storagePurpose;
 	
 	[Attribute("1", UIWidgets.Auto)]
 	ref array<ref PS_LoadoutInspectorItemsList> m_Items;
+	
+	string GetPrefabsToSpawn()
+	{
+		if (!m_Items) return "";
+		string itemsStr = "";
+		for (int r = 0; r < m_Items.Count(); r++)
+		{
+			PS_LoadoutInspectorItemsList itemList = m_Items.Get(r);
+			if (itemList.m_item == "")
+				continue;
+			
+			for (int j = 0; j < itemList.m_count; j++)
+			{
+				if (itemsStr != "") itemsStr += ",";
+				itemsStr += itemList.m_item;
+			}
+		}
+		return itemsStr;
+	}
+	
+	int m_iSuitableSlot;
 }
