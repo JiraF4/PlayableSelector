@@ -208,6 +208,7 @@ class PS_CoopLobby: MenuBase
 		{
 			HardUpdate();
 		}
+		UpdateMenu();
 	}
 	
 	// -------------------- Update content functions --------------------
@@ -278,7 +279,6 @@ class PS_CoopLobby: MenuBase
 		m_iOldPlayablesCount = playables.Count();
 		m_sOldPlayerFactionKey = m_sCurrentPlayerFaction;
 		
-		UpdateMenu();
 	}
 	
 	// "Soft" update, just change values do not create any new widgets
