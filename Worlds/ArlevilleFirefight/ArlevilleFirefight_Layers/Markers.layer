@@ -11,6 +11,7 @@ $grp PS_ManualMarker : "{CD85ADE9E0F54679}PrefabsEditable/Markers/EditableMarker
    "US" "USSR"
   }
   m_bVisibleForEmptyFaction 1
+  m_iZOrder 1
  }
  {
   coords 3162.183 4.226 1184.663
@@ -24,6 +25,7 @@ $grp PS_ManualMarker : "{CD85ADE9E0F54679}PrefabsEditable/Markers/EditableMarker
    "US" "USSR"
   }
   m_bVisibleForEmptyFaction 1
+  m_iZOrder 1
  }
  {
   coords 2769.448 76.768 1649.81
@@ -38,5 +40,6 @@ $grp PS_ManualMarker : "{CD85ADE9E0F54679}PrefabsEditable/Markers/EditableMarker
    "US" "USSR"
   }
   m_bVisibleForEmptyFaction 1
+  m_iZOrder 1
  }
 }
