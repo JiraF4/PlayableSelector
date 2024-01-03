@@ -387,6 +387,14 @@ class PS_MissionMakerTool: WorldEditorTool
 			m_API.SetVariableValue(markerEntitySource, null, "m_bVisibleForEmptyFaction", "1");
 		else
 			m_API.SetVariableValue(markerEntitySource, null, "m_bVisibleForEmptyFaction", "0");
+		
+		string gameStateStr = "";
+		foreach (int gameState : markerConfig.m_aHideOnGameModeStates)
+		{
+			if (gameStateStr != "") gameStateStr += ", ";
+			gameStateStr += gameState.ToString();
+		}
+		m_API.SetVariableValue(markerEntitySource, null, "m_aHideOnGameModeStates", gameStateStr);
 	}
 	
 	
