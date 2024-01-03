@@ -23,6 +23,7 @@ class PS_FadeToGame: ChimeraMenuBase
 	{
 		m_fFadeTime = m_fFadeTime - tDelta;
 		m_wFade.SetOpacity(0.8 * (m_fFadeTime / m_fFadeMaxTime) + 0.5);
-		if (m_fFadeTime <= 0) Close();
+		if (m_fFadeTime <= 0) 
+			Close();
 	}
 };

@@ -55,6 +55,17 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		}
 		
 		GetGame().GetCallqueue().CallLater(AddAdvanceAction, 0, false);
+		
+		SCR_EditorModeEntity editorModeEntity = SCR_EditorModeEntity.GetInstance();
+		editorModeEntity.GetOnClosed().Insert(EditorClosed);
+	}
+	
+	void EditorClosed()
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		playerController.SetControlledEntity(null);
+		playableController.SwitchToMenu(GetState());
 	}
 	
 	void AddAdvanceAction()
