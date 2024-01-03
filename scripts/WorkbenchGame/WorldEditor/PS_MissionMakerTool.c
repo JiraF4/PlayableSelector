@@ -395,6 +395,7 @@ class PS_MissionMakerTool: WorldEditorTool
 			gameStateStr += gameState.ToString();
 		}
 		m_API.SetVariableValue(markerEntitySource, null, "m_aHideOnGameModeStates", gameStateStr);
+		m_API.SetVariableValue(markerEntitySource, null, "m_iZOrder", markerConfig.m_iZOrder.ToString());
 	}
 	
 	
