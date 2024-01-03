@@ -74,7 +74,7 @@ class PS_SpectatorLabel : ScriptComponent
 		
 		m_hManualMarkerComponent.SetSlotWorld(GetOwner().GetOrigin()
 			, GetOwner().GetYawPitchRoll() + Vector(90, 0, 0), m_cMapMarkerConfig.m_fWorldSize
-			, m_cMapMarkerConfig.m_bUseWorldScale);
+			, m_cMapMarkerConfig.m_bUseWorldScale, m_cMapMarkerConfig.m_fMinSize);
 	}
 	
 	void CreateMarker()
@@ -92,6 +92,14 @@ class PS_SpectatorLabel : ScriptComponent
 		m_hManualMarkerComponent.SetDescription(m_cMapMarkerConfig.m_sDescription);
 		m_hManualMarkerComponent.SetColor(m_cMapMarkerConfig.m_MarkerColor);
 		m_hManualMarkerComponent.OnMouseLeave(null, null, 0, 0);
+		
+		SCR_ChimeraCharacter chimeraCharacter = SCR_ChimeraCharacter.Cast(GetOwner());
+		if (!chimeraCharacter)
+			return;
+		
+		SCR_Faction faction = SCR_Faction.Cast(chimeraCharacter.GetFaction());
+		if (faction)
+			m_hManualMarkerComponent.SetColor(faction.GetOutlineFactionColor());
 	}
 	
 	void RemoveMarker()
