@@ -2,11 +2,11 @@ FrameWidgetClass {
  Name "PlayableIconFrame"
  Clipping False
  components {
-  PS_SpectatorPlayableIcon "{5EE8948ECF6A4136}" {
+  PS_SpectatorPlayableIcon "{5F34C8D046BABFCD}" {
   }
  }
  {
-  PanelWidgetClass "{5EE8948F20BE168B}" {
+  PanelWidgetClass "{5F34C8DCD5E715FD}" {
    Name "PanelLabel"
    Slot FrameWidgetSlot "{5EE8948F20BE16F5}" {
     SizeToContent 1
@@ -14,7 +14,7 @@ FrameWidgetClass {
    Color 0 0 0 0
    style pixel_outline
    {
-    OverlayWidgetClass "{5EE89488CCB4B28D}" {
+    OverlayWidgetClass "{5F34C8DCD5E715FF}" {
      Name "PanelOverlay"
      Slot FrameWidgetSlot "{5EE89488CCB4B2FF}" {
       OffsetLeft 0
@@ -26,7 +26,7 @@ FrameWidgetClass {
       SizeToContent 1
      }
      {
-      TextWidgetClass "{5EE8948EAC337C76}" {
+      TextWidgetClass "{5F34C8DCD5E715F8}" {
        Name "PlayableLabel"
        Slot OverlayWidgetSlot "{5EE89488FD3D84DE}" {
         Padding 4 4 4 4
@@ -41,7 +41,7 @@ FrameWidgetClass {
     }
    }
   }
-  ImageWidgetClass "{5EE8948EC9B919B8}" {
+  ImageWidgetClass "{5F34C8DCD5E715F9}" {
    Name "PlayableIcon"
    Slot FrameWidgetSlot "{5EE8948CA93791EA}" {
     OffsetLeft 0

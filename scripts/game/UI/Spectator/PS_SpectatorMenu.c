@@ -7,6 +7,8 @@ class PS_SpectatorMenu: MenuBase
 {
 	protected SCR_ChatPanel m_ChatPanel;
 	
+	InputManager m_InputManager;
+	
 	// Voice chat menu
 	protected Widget m_wChat;
 	protected Widget m_wVoiceChatList;
@@ -21,13 +23,12 @@ class PS_SpectatorMenu: MenuBase
 	protected ResourceName m_rPlayableIconPath = "{EE28CD1CBCAED99D}UI/Spectator/SpectatorPlayableIcon.layout";
 	protected FrameWidget m_wIconsFrame;
 	
-	protected ref map<RplId, PS_SpectatorPlayableIcon> m_mIconsList = new map<RplId, PS_SpectatorPlayableIcon>();
+	protected FrameWidget m_wMapFrame;
 	
+	protected SCR_MapEntity m_MapEntity;
 	
-	
-	
-	//string IconsFrame = "IconsFrame";
-	
+	protected ref map<PS_SpectatorLabel, PS_SpectatorLabel> m_mIconsList = new map<PS_SpectatorLabel, PS_SpectatorLabel>();
+		
 	protected static void OnShowPlayerList()
 	{
 		ArmaReforgerScripted.OpenPlayerList();
@@ -36,6 +37,13 @@ class PS_SpectatorMenu: MenuBase
 	{
 		if (!GetGame().GetMenuManager().IsAnyDialogOpen() && IsFocused())
 			ArmaReforgerScripted.OpenPauseMenu();
+	}
+	
+	void SetCameraCharacter(IEntity characterEntity)
+	{
+		PS_ManualCameraSpectator camera = PS_ManualCameraSpectator.Cast(GetGame().GetCameraManager().CurrentCamera());
+		if (camera)
+			camera.SetCharacterEntity(characterEntity);
 	}
 	
 	override void OnMenuOpen()
@@ -48,9 +56,11 @@ class PS_SpectatorMenu: MenuBase
 		m_hVoiceChatList = PS_VoiceChatList.Cast(m_wVoiceChatList.FindHandler(PS_VoiceChatList));
 		m_wAlivePlayerList = GetRootWidget().FindAnyWidget("AlivePlayersList");
 		m_hAlivePlayerList = PS_AlivePlayerList.Cast(m_wAlivePlayerList.FindHandler(PS_AlivePlayerList));
+		m_hAlivePlayerList.SetSpectatorMenu(this);
 		m_wOverlayFooter = GetRootWidget().FindAnyWidget("OverlayFooter");
 		m_wEarlyAccessRoot = GetRootWidget().FindAnyWidget("EarlyAccessRoot");
 		m_wIconsFrame = FrameWidget.Cast(GetRootWidget().FindAnyWidget("IconsFrame"));
+		m_wMapFrame = FrameWidget.Cast(GetRootWidget().FindAnyWidget("MapFrame"));
 		
 		m_bNavigationSwitchSpectatorUI = SCR_InputButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationSwitchSpectatorUI").FindHandler(SCR_InputButtonComponent));
 		m_bNavigationSwitchSpectatorUI.m_OnClicked.Insert(Action_SwitchSpectatorUI);
@@ -94,17 +104,22 @@ class PS_SpectatorMenu: MenuBase
 	{
 		super.OnMenuInit();
 		
-		InputManager inputManager = GetGame().GetInputManager();
-		if (inputManager)
+		if (!m_MapEntity)
+			m_MapEntity = SCR_MapEntity.GetMapInstance();
+			
+		m_InputManager = GetGame().GetInputManager();
+		if (m_InputManager)
 		{
-			inputManager.AddActionListener("ShowScoreboard", EActionTrigger.DOWN, OnShowPlayerList);
-			inputManager.AddActionListener("MenuOpen", EActionTrigger.DOWN, OpenPauseMenu);
-			inputManager.AddActionListener("ChatToggle", EActionTrigger.DOWN, ChatToggle);
-			inputManager.AddActionListener("VONDirect", EActionTrigger.DOWN, Action_LobbyVoNOn);
-			inputManager.AddActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
-			inputManager.AddActionListener("SwitchSpectatorUI", EActionTrigger.UP, Action_SwitchSpectatorUI);
+			m_InputManager.AddActionListener("ShowScoreboard", EActionTrigger.DOWN, OnShowPlayerList);
+			m_InputManager.AddActionListener("MenuOpen", EActionTrigger.DOWN, OpenPauseMenu);
+			m_InputManager.AddActionListener("ChatToggle", EActionTrigger.DOWN, ChatToggle);
+			m_InputManager.AddActionListener("VONDirect", EActionTrigger.DOWN, Action_LobbyVoNOn);
+			m_InputManager.AddActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
+			m_InputManager.AddActionListener("SwitchSpectatorUI", EActionTrigger.DOWN, Action_SwitchSpectatorUI);
+			m_InputManager.AddActionListener("GadgetMap", EActionTrigger.DOWN, Action_ToggleMap);
+			m_InputManager.AddActionListener("ManualCameraTeleport", EActionTrigger.DOWN, Action_ManualCameraTeleport);
 #ifdef WORKBENCH
-			inputManager.AddActionListener("MenuOpenWB", EActionTrigger.DOWN, OpenPauseMenu);
+			m_InputManager.AddActionListener("MenuOpenWB", EActionTrigger.DOWN, OpenPauseMenu);
 #endif
 		}
 	}
@@ -113,20 +128,23 @@ class PS_SpectatorMenu: MenuBase
 	{
 		super.OnMenuClose();
 		
-		InputManager inputManager = GetGame().GetInputManager();
-		if (inputManager)
+		if (m_InputManager)
 		{
-			inputManager.RemoveActionListener("ShowScoreboard", EActionTrigger.DOWN, OnShowPlayerList);
-			inputManager.RemoveActionListener("MenuOpen", EActionTrigger.DOWN, OpenPauseMenu);
-			inputManager.RemoveActionListener("ChatToggle", EActionTrigger.DOWN, ChatToggle);
-			inputManager.RemoveActionListener("LobbyVoN", EActionTrigger.DOWN, Action_LobbyVoNOn);
-			inputManager.RemoveActionListener("LobbyVoN", EActionTrigger.UP, Action_LobbyVoNOff);
-			inputManager.RemoveActionListener("SwitchSpectatorUI", EActionTrigger.UP, Action_SwitchSpectatorUI);
+			m_InputManager.RemoveActionListener("ShowScoreboard", EActionTrigger.DOWN, OnShowPlayerList);
+			m_InputManager.RemoveActionListener("MenuOpen", EActionTrigger.DOWN, OpenPauseMenu);
+			m_InputManager.RemoveActionListener("ChatToggle", EActionTrigger.DOWN, ChatToggle);
+			m_InputManager.RemoveActionListener("LobbyVoN", EActionTrigger.DOWN, Action_LobbyVoNOn);
+			m_InputManager.RemoveActionListener("LobbyVoN", EActionTrigger.UP, Action_LobbyVoNOff);
+			m_InputManager.RemoveActionListener("SwitchSpectatorUI", EActionTrigger.DOWN, Action_SwitchSpectatorUI);
+			m_InputManager.RemoveActionListener("GadgetMap", EActionTrigger.DOWN, Action_ToggleMap);
+			m_InputManager.RemoveActionListener("ManualCameraTeleport", EActionTrigger.DOWN, Action_ManualCameraTeleport);
 #ifdef WORKBENCH
-			inputManager.RemoveActionListener("MenuOpenWB", EActionTrigger.DOWN, OpenPauseMenu);
+			m_InputManager.RemoveActionListener("MenuOpenWB", EActionTrigger.DOWN, OpenPauseMenu);
 #endif
 		}
 	}
+	
+	
 	
 	override void OnMenuUpdate(float tDelta)
 	{
@@ -135,35 +153,37 @@ class PS_SpectatorMenu: MenuBase
 		if (m_ChatPanel)
 			m_ChatPanel.OnUpdateChat(tDelta);
 		
+		if (m_MapEntity.IsOpen())
+			m_InputManager.ActivateContext("MapContext");
+		
 		UpdateIcons();
-		//GetGame().GetInputManager().ActivateContext("SpectatorContext", 1);
+		
+		/* VoN Magic
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		playableController.VoNPosition = GetGame().GetCameraManager().CurrentCamera().GetOrigin() - vector.Up * 1.7;
+		*/
+		
+		//GetGame().Getm_InputManager().ActivateContext("SpectatorContext", 1);
 	}
 	
 	void UpdateIcons()
 	{
-		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance(); 
-		foreach (RplId id, PS_PlayableComponent playableComponent : playableManager.m_aPlayables)
+		PS_SpectatorLabelsManager spectatorLabelsManager = PS_SpectatorLabelsManager.GetInstance();
+		foreach (PS_SpectatorLabel spectatorLabel : spectatorLabelsManager.m_aSpectatorLabels)
 		{
-			if (!m_mIconsList.Contains(id))
+			if (!m_mIconsList.Contains(spectatorLabel))
 			{
-				Widget playableMarker = GetGame().GetWorkspace().CreateWidgets(m_rPlayableIconPath, m_wIconsFrame);
-				PS_SpectatorPlayableIcon spectatorPlayableIcon = PS_SpectatorPlayableIcon.Cast(playableMarker.FindHandler(PS_SpectatorPlayableIcon));
-				
-				spectatorPlayableIcon.SetCharacter(playableComponent);
-				
-				m_mIconsList[id] = spectatorPlayableIcon;
+				spectatorLabel.CreateLabel(m_wIconsFrame);
+				m_mIconsList.Insert(spectatorLabel, spectatorLabel);
 			}
 		}
-		foreach (RplId id, PS_SpectatorPlayableIcon spectatorPlayableIcon : m_mIconsList)
+		foreach (PS_SpectatorLabel spectatorLabel, PS_SpectatorLabel spectatorLabel2 : m_mIconsList)
 		{
-			if (playableManager.m_aPlayables.Contains(id))
-			{
-				spectatorPlayableIcon.Update();
-			}
-			else {
-				m_wIconsFrame.RemoveChild(m_mIconsList[id].GetRootWidget());
-				m_mIconsList.Remove(id);
-			}
+			if (!spectatorLabel)
+				continue;
+			spectatorLabel.UpdateLabel();
+			spectatorLabel.UpdateMarker();
 		}
 	}
 	
@@ -212,5 +232,113 @@ class PS_SpectatorMenu: MenuBase
 			m_wAlivePlayerList.SetVisible(true);
 			m_wIconsFrame.SetVisible(true);
 		}
+	}
+	
+	void Action_ToggleMap()
+	{
+		if (!m_MapEntity.IsOpen()) OpenMap();
+		else CloseMap();
+	}
+	
+	void Action_ManualCameraTeleport()
+	{
+		MoveCamera(GetCursorWorldPos());
+	}
+	
+	void MoveCamera(vector worldPosition)
+	{
+		SCR_ManualCamera camera = SCR_ManualCamera.Cast(GetGame().GetCameraManager().CurrentCamera());
+		if (camera)
+		{
+			SCR_TeleportToCursorManualCameraComponent teleportComponent = SCR_TeleportToCursorManualCameraComponent.Cast(camera.FindCameraComponent(SCR_TeleportToCursorManualCameraComponent));
+			if (teleportComponent)
+			{
+				teleportComponent.TeleportCamera(worldPosition, true, false);
+			}
+		}
+	}
+	
+	vector GetCursorWorldPos()
+	{
+		ArmaReforgerScripted game = GetGame();
+		WorkspaceWidget workspace = game.GetWorkspace();
+		BaseWorld world = game.GetWorld();
+		
+		vector worldPos = "0 0 0";
+		
+		// If map is open return map cursor world position
+		SCR_MapEntity mapEntity = SCR_MapEntity.GetMapInstance();
+		if (mapEntity && mapEntity.IsOpen())
+		{
+			float worldX, worldY;
+			mapEntity.GetMapCursorWorldPosition(worldX, worldY);
+			worldPos[0] = worldX;
+			worldPos[2] = worldY;
+			worldPos[1] = world.GetSurfaceY(worldPos[0], worldPos[2]);
+			
+			return worldPos;
+		}
+		
+		
+		vector cursorPos = GetCursorPos();
+		vector outDir;
+		vector startPos = workspace.ProjScreenToWorld(cursorPos[0], cursorPos[1], outDir, world, -1);
+		outDir *= 1000.0;
+	
+		autoptr TraceParam trace = new TraceParam();
+		trace.Start = startPos;
+		trace.End = startPos + outDir;
+		trace.Flags = TraceFlags.ANY_CONTACT | TraceFlags.WORLD | TraceFlags.ENTS | TraceFlags.OCEAN; 
+		
+		float traceDis = world.TraceMove(trace, null);
+		worldPos = startPos + outDir * traceDis;
+		
+		return worldPos;
+	}
+	
+	vector GetCursorPos()
+	{
+		int cursorX, cursorY;
+		if (m_InputManager && m_InputManager.IsUsingMouseAndKeyboard())
+		{
+			WidgetManager.GetMousePos(cursorX, cursorY);
+			return Vector(GetGame().GetWorkspace().DPIUnscale(cursorX), GetGame().GetWorkspace().DPIUnscale(cursorY), 0);
+		} else {
+			return Vector(GetGame().GetWorkspace().DPIUnscale(GetGame().GetWorkspace().GetWidth()/2.0), GetGame().GetWorkspace().DPIUnscale(GetGame().GetWorkspace().GetHeight()/2.0), 0);
+		}
+	}
+	
+	void OpenMap()
+	{
+		SCR_ManualCamera camera = SCR_ManualCamera.Cast(GetGame().GetCameraManager().CurrentCamera());
+		if (camera)
+			camera.SetInputEnabled(false);
+		
+		m_wMapFrame.SetVisible(true);
+		
+		// WUT?
+		SCR_WidgetHelper.RemoveAllChildren(GetRootWidget().FindAnyWidget("ToolMenuHoriz"));
+		
+		BaseGameMode gameMode = GetGame().GetGameMode();
+		if (!gameMode)
+			return;
+		
+		SCR_MapConfigComponent configComp = SCR_MapConfigComponent.Cast(gameMode.FindComponent(SCR_MapConfigComponent));
+		if (!configComp)
+			return;
+		
+		MapConfiguration mapConfigFullscreen = m_MapEntity.SetupMapConfig(EMapEntityMode.FULLSCREEN, configComp.GetEditorMapConfig(), m_wMapFrame);
+		m_MapEntity.OpenMap(mapConfigFullscreen);
+	}
+	
+	void CloseMap()
+	{
+		SCR_ManualCamera camera = SCR_ManualCamera.Cast(GetGame().GetCameraManager().CurrentCamera());
+		if (camera)
+			camera.SetInputEnabled(true);
+		
+		m_wMapFrame.SetVisible(false);
+		
+		m_MapEntity.CloseMap();
 	}
 }

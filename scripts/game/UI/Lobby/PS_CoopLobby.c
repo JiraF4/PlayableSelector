@@ -48,6 +48,7 @@ class PS_CoopLobby: MenuBase
 	protected ref array<Widget> m_aPlayersListWidgets = {};
 	
 	// Lobby widgets
+	OverlayWidget m_wLoadoutPreviewBody; // Display selected playable info
 	PS_LobbyLoadoutPreview m_preview; // Display selected playable info
 	OverlayWidget m_wOverlayCounter; // Display selected playable info
 	TextWidget m_wCounterText; // Counter for start timer animation
@@ -84,6 +85,9 @@ class PS_CoopLobby: MenuBase
 	
 	// Players count
 	protected TextWidget m_wPlayersCounter;
+	
+	// Preview
+	ButtonWidget m_wPreviewHideButton;
 	protected ItemPreviewWidget m_wPreview;
 	
 	// Voice/PLayers Switch
@@ -109,6 +113,7 @@ class PS_CoopLobby: MenuBase
 		m_wRolesList = GetRootWidget().FindAnyWidget("RolesList");
 		m_wPlayersList = GetRootWidget().FindAnyWidget("PlayersList");
 		
+		m_wLoadoutPreviewBody = OverlayWidget.Cast(GetRootWidget().FindAnyWidget("LoadoutPreviewBody"));
 		Widget widget = GetRootWidget().FindAnyWidget("MainLoadoutPreview");
 		m_preview = PS_LobbyLoadoutPreview.Cast(widget.FindHandler(PS_LobbyLoadoutPreview));
 		m_preview.SetItemInfoWidget(GetRootWidget().FindAnyWidget("LobbyLittleInventoryItemInfo"));
@@ -164,6 +169,9 @@ class PS_CoopLobby: MenuBase
 		
 		// Force refreash
 		m_wPreview = ItemPreviewWidget.Cast(GetRootWidget().FindAnyWidget("Preview"));
+		m_wPreviewHideButton = ButtonWidget.Cast(GetRootWidget().FindAnyWidget("PreviewHideButton"));
+		SCR_ButtonBaseComponent previewHideButtonHandler = SCR_ButtonBaseComponent.Cast(m_wPreviewHideButton.FindHandler(SCR_ButtonBaseComponent));
+		previewHideButtonHandler.m_OnClicked.Insert(Action_HidePreview);
 		
 		HardUpdate();
 	}
@@ -174,7 +182,8 @@ class PS_CoopLobby: MenuBase
 			m_ChatPanel.OnUpdateChat(tDelta);
 		
 		// Force refreash
-		m_wPreview.SetRefresh(1, 1);
+		if (m_wLoadoutPreviewBody.IsVisible())
+			m_wPreview.SetRefresh(1, 1);
 		
 		TryUpdate();
 	};
@@ -199,6 +208,7 @@ class PS_CoopLobby: MenuBase
 		{
 			HardUpdate();
 		}
+		UpdateMenu();
 	}
 	
 	// -------------------- Update content functions --------------------
@@ -269,7 +279,6 @@ class PS_CoopLobby: MenuBase
 		m_iOldPlayablesCount = playables.Count();
 		m_sOldPlayerFactionKey = m_sCurrentPlayerFaction;
 		
-		UpdateMenu();
 	}
 	
 	// "Soft" update, just change values do not create any new widgets
@@ -359,7 +368,8 @@ class PS_CoopLobby: MenuBase
 		}
 		m_wPlayersCounter.SetTextFormat("%1/%2", readyPlayersCount, playerIds.Count());
 		
-		m_preview.UpdatePreviewInfo();
+		if (m_wLoadoutPreviewBody.IsVisible())
+			m_preview.UpdatePreviewInfo();
 		TryClose(); // Start close timer if all players ready
 	}
 	
@@ -505,6 +515,10 @@ class PS_CoopLobby: MenuBase
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		playableController.FactionLockSwitch();
 	}
+	void Action_HidePreview()
+	{
+		m_wLoadoutPreviewBody.SetVisible(!m_wLoadoutPreviewBody.IsVisible());
+	}
 	
 	// -------------------------------------- VoN --------------------------------------
 	void Action_LobbyVoNOn()
@@ -588,6 +602,9 @@ class PS_CoopLobby: MenuBase
 		int playerId = GetGame().GetPlayerController().GetPlayerId();
 		int playableId = playableManager.GetPlayableByPlayer(playerId);
 		
+		if (!m_wLoadoutPreviewBody.IsVisible())
+			return;
+		
 		if (playableId == -1) {
 			m_preview.SetPlayable(null);
 		} else {
@@ -604,6 +621,9 @@ class PS_CoopLobby: MenuBase
 		if (!handler) return;
 		map<RplId, PS_PlayableComponent> playables = playableManager.GetPlayables();
 		int playableId = handler.GetPlayableId();
+		
+		if (!m_wLoadoutPreviewBody.IsVisible())
+			return;
 		m_preview.SetPlayable(playables[playableId]);
 	}
 	

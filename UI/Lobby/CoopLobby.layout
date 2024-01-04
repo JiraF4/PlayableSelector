@@ -286,6 +286,72 @@ FrameWidgetClass {
              Opacity 0.3
              Color 0 0 0 1
             }
+            ButtonWidgetClass "{5F30DC9B75D6DF76}" {
+             Name "PreviewHideButton"
+             Slot FrameWidgetSlot "{5EA8C93F5E685F59}" {
+              Anchor 0 0 0 0
+              PositionX 421
+              OffsetLeft 421
+              PositionY 74
+              OffsetTop 74
+              SizeX 40
+              OffsetRight -461
+              SizeY 40
+              OffsetBottom -114
+             }
+             Color 0 1 0.019 0
+             components {
+              SCR_ButtonBaseComponent "{5EAB2394A927C221}" {
+               m_sSoundHovered ""
+               m_sSoundClicked ""
+               m_BackgroundDefault 1 1 1 0
+               m_BackgroundHovered 1 1 1 0.162
+               m_BackgroundSelected 1 1 1 0
+               m_BackgroundSelectedHovered 1 1 1 0.162
+               m_BackgroundClicked 1 1 1 0
+               m_bShowBorderOnFocus 0
+               m_bNoBorderAnimation 1
+              }
+             }
+             "no focus" 1
+             {
+              FrameWidgetClass "{5F30DC9B75D6DF77}" {
+               Name "PreviewHideButtonFrame"
+               Slot ButtonWidgetSlot "{5EA8C93CB4241314}" {
+               }
+               {
+                ImageWidgetClass "{5F30DC9B75D6DF78}" {
+                 Name "Background"
+                 Slot FrameWidgetSlot "{5D6E8206B132EE77}" {
+                  PositionX 0
+                  OffsetLeft 0
+                  PositionY 0
+                  OffsetTop 0
+                  SizeX 40
+                  OffsetRight -40
+                  SizeY 40
+                  OffsetBottom -40
+                 }
+                 Color 1 1 1 0
+                }
+                ImageWidgetClass "{5F30DC9B212C7217}" {
+                 Name "Image"
+                 Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
+                  OffsetLeft 0
+                  OffsetTop 0
+                  SizeX 40
+                  OffsetRight -40
+                  SizeY 40
+                  OffsetBottom -40
+                 }
+                 Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
+                 Image "camera"
+                 Size 32 32
+                }
+               }
+              }
+             }
+            }
             OverlayWidgetClass "{5D6F149FCE159390}" {
              Name "OverlayLoadoutPreviewHeader"
              Slot FrameWidgetSlot "{5D6F149FCE1593C2}" {
@@ -375,7 +441,7 @@ FrameWidgetClass {
                        {
                         TextWidgetClass "{5F190A84ED614973}" {
                          Prefab "{5F190A84ED614973}"
-                         Text "#PS_Lobby_Inventory"
+                         Text "#PS-Lobby_Inventory"
                         }
                        }
                       }
@@ -848,7 +914,7 @@ FrameWidgetClass {
       SizeY 4
       OffsetBottom -34
      }
-     Color 0.76 0.392 0.08 0.3
+     Color 1 1 1 0.078
     }
    }
   }
@@ -1145,10 +1211,14 @@ FrameWidgetClass {
   FrameWidgetClass "{5EB701CD0152AC68}" : "{B7A765172F0BD4D9}UI/layouts/Common/GameVersionWatermark.layout" {
    Name "EarlyAccessRoot"
    Slot FrameWidgetSlot "{5CEE96372B5D270B}" {
-    PositionX 1
-    PositionY 55
+    PositionX 0
+    OffsetLeft 0
+    PositionY -1.418
+    OffsetTop -1.418
     SizeX 0
+    OffsetRight 0
     SizeY 0
+    OffsetBottom 1.418
    }
    Opacity 1
    {

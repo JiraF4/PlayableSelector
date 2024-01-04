@@ -9,6 +9,8 @@ class PS_AlivePlayerList : ScriptedWidgetComponent
 	protected ref array<Widget> m_aPlayersListWidgets = {};
 	protected ref array<PS_AlivePlayerSelector> m_aPlayersAliveList = {};
 	
+	PS_SpectatorMenu m_mSpectatorMenu;
+	
 	override void HandlerAttached(Widget w)
 	{
 		m_wPlayersList = VerticalLayoutWidget.Cast(w.FindAnyWidget("AlivePlayersList"));
@@ -44,6 +46,7 @@ class PS_AlivePlayerList : ScriptedWidgetComponent
 				m_aPlayersAliveList.Insert(alivePlayerSelector);
 				
 				alivePlayerSelector.SetPlayer(playerId);
+				alivePlayerSelector.SetSpectatorMenu(m_mSpectatorMenu);
 			}
 		}
 		m_iOldPlayersCount = alivePlayers.Count();
@@ -57,6 +60,11 @@ class PS_AlivePlayerList : ScriptedWidgetComponent
 		{
 			alivePlayerSelector.UpdateInfo();
 		}
+	}
+	
+	void SetSpectatorMenu(PS_SpectatorMenu spectatorMenu)
+	{
+		m_mSpectatorMenu = spectatorMenu;
 	}
 	
 	void GetAlivePlayers(out array<int> outPlayersArray)

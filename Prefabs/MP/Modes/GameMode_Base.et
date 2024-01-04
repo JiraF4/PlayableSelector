@@ -1,0 +1,7 @@
+SCR_BaseGameMode {
+ ID "56B2B479C6B96951"
+ components {
+  PS_SpectatorLabelsManager "{5F34C8D0DF1B7479}" {
+  }
+ }
+}

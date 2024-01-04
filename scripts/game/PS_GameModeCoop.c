@@ -55,6 +55,17 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		}
 		
 		GetGame().GetCallqueue().CallLater(AddAdvanceAction, 0, false);
+		
+		SCR_EditorModeEntity editorModeEntity = SCR_EditorModeEntity.GetInstance();
+		editorModeEntity.GetOnClosed().Insert(EditorClosed);
+	}
+	
+	void EditorClosed()
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		playableController.SwitchFromObserver();
+		playableController.SwitchToMenu(GetState());
 	}
 	
 	void AddAdvanceAction()
@@ -64,6 +75,13 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		invoker.Insert(AdvanceStage_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("lom");
 		invoker.Insert(LoadMap_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("sav");
+		invoker.Insert(ExportMissionData_Callback);
+	}
+	
+	void ExportMissionData_Callback(SCR_ChatPanel panel, string data)
+	{
+		PS_MissionDataManager.GetInstance().SaveData();
 	}
 	
 	void LoadMap_Callback(SCR_ChatPanel panel, string data)
@@ -98,7 +116,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		
 		SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
 		ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("smsg");
-		invoker.Invoke(null, "Freeze time end");
+		invoker.Invoke(null, "#PS-Freeze_End");
 		
 		array<int> playerIds = new array<int>();
 		GetGame().GetPlayerManager().GetPlayers(playerIds);
@@ -487,7 +505,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	// ------------------------------------------ JIP Replication ------------------------------------------
 	override bool RplSave(ScriptBitWriter writer)
 	{
-		
 		writer.WriteBool(m_bFactionLock);
 		writer.WriteInt(m_iFreezeTime);
 		writer.WriteInt(m_iAvailableReconnectTime);

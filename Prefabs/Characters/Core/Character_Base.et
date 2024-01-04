@@ -3,5 +3,19 @@ SCR_ChimeraCharacter {
  components {
   PS_PlayableComponent "{5EFCC1946F475F15}" {
   }
+  PS_SpectatorLabel "{5F357473BDE91270}" {
+   m_cMapMarkerConfig PS_ManualMarkerConfig "{5F3693B7CB929BB6}" {
+    m_sImageSet "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset"
+    m_sQuadName "Character"
+    m_fWorldSize 1.5
+    m_aVisibleForFactions {
+     "FIA" "US" "USSR"
+    }
+    m_bVisibleForEmptyFaction 1
+    m_fMinSize 10
+   }
+   m_sSpectatorLabelLayout "{68625BAD23CEE68F}UI/Spectator/SpectatorLabelIconCharacter.layout"
+   m_sBoneName "Spine3"
+  }
  }
 }

@@ -1,5 +1,5 @@
 MetaFileClass {
- Name "{D832FD7D4F872977}Prefabs/FreezeTime/FreezeZone.et"
+ Name "{6EAA30EF620F4A2E}Prefabs/Editor/Camera/ManualCameraSpectator.et"
  Configurations {
   EntityTemplateResourceClass PC {
   }

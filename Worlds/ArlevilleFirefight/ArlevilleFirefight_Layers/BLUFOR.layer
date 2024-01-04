@@ -1,4 +1,4 @@
-SCR_AIGroup : "{90955B4A4EAC6CD0}Prefabs/Groups/BLUFOR/Group_US_MachineGunTeam_P.et" {
+SCR_AIGroup US_G_102_2 : "{90955B4A4EAC6CD0}Prefabs/Groups/BLUFOR/Group_US_MachineGunTeam_P.et" {
  components {
   AIFormationComponent "{507E9DC12F541FE6}" {
    DefaultFormation "Line"
@@ -11,7 +11,7 @@ SCR_AIGroup : "{90955B4A4EAC6CD0}Prefabs/Groups/BLUFOR/Group_US_MachineGunTeam_P
  coords 3180.462 4.564 1195.4
  angleY -120
 }
-SCR_AIGroup : "{93ECE153940F4451}Prefabs/Groups/BLUFOR/Group_US_MedicalSection_P.et" {
+SCR_AIGroup US_G_200_2 : "{93ECE153940F4451}Prefabs/Groups/BLUFOR/Group_US_MedicalSection_P.et" {
  components {
   AIFormationComponent "{507E9DC12F541FE6}" {
    DefaultFormation "Line"
@@ -22,7 +22,7 @@ SCR_AIGroup : "{93ECE153940F4451}Prefabs/Groups/BLUFOR/Group_US_MedicalSection_P
  }
  coords 3157.483 4.143 1176.921
 }
-SCR_AIGroup : "{ABACC233796108ED}Prefabs/Groups/BLUFOR/Group_US_SniperTeam_P.et" {
+SCR_AIGroup US_G_100_2 : "{ABACC233796108ED}Prefabs/Groups/BLUFOR/Group_US_SniperTeam_P.et" {
  components {
   AIFormationComponent "{507E9DC12F541FE6}" {
    DefaultFormation "Line"
@@ -33,7 +33,7 @@ SCR_AIGroup : "{ABACC233796108ED}Prefabs/Groups/BLUFOR/Group_US_SniperTeam_P.et"
  }
  coords 3151.916 4.777 1196.282
 }
-SCR_AIGroup : "{BC357974A560F678}Prefabs/Groups/BLUFOR/Group_US_RifleSquad_p.et" {
+SCR_AIGroup US_G_101_9 : "{BC357974A560F678}Prefabs/Groups/BLUFOR/Group_US_RifleSquad_p.et" {
  components {
   AIFormationComponent "{507E9DC12F541FE6}" {
    DefaultFormation "Line"

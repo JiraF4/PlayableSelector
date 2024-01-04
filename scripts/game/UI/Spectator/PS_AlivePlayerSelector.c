@@ -14,6 +14,8 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 	TextWidget m_wPlayerName;
 	TextWidget m_wGroupName;
 	
+	PS_SpectatorMenu m_mSpectatorMenu;
+	
 	override void HandlerAttached(Widget w)
 	{
 		super.HandlerAttached(w);
@@ -25,6 +27,7 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 		
 		GetGame().GetCallqueue().CallLater(AddOnClick, 0);
 	}
+
 	
 	void AddOnClick()
 	{
@@ -34,6 +37,11 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 	void SetPlayer(int playerId)
 	{
 		m_iPlayer = playerId;
+	}
+	
+	void SetSpectatorMenu(PS_SpectatorMenu spectatorMenu)
+	{
+		m_mSpectatorMenu = spectatorMenu;
 	}
 	
 	void UpdateInfo()
@@ -92,7 +100,7 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		RplId playableId = playableManager.GetPlayableByPlayer(m_iPlayer);
 		PS_PlayableComponent playableComponent = playableManager.GetPlayableById(playableId);
-		camera.SetOrigin(playableComponent.GetOwner().GetOrigin());
+		m_mSpectatorMenu.SetCameraCharacter(playableComponent.GetOwner());
 	}
 	
 }

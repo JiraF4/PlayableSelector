@@ -83,6 +83,15 @@ StringTable {
    Author "SeskPC"
    LastChanged "SeskPC"
   }
+  CustomStringTableItem "{5F0F44E18237239B}" {
+   Id "PS-Briefing_YourPlace"
+   Target_en_us "Start position"
+   Target_es_es "Posición de salida"
+   Target_ru_ru "Стартовая позиция"
+   Modified 1596670983
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
   CustomStringTableItem "{5EC2E474747EACEA}" {
    Id "PS-Debrief_Losses"
    Target_en_us "Faction statistic"
@@ -371,6 +380,14 @@ StringTable {
    Author "zazul"
    LastChanged "SeskPC"
   }
+  CustomStringTableItem "{5F2B43CA207C0B28}" {
+   Id "PS-Freeze_End"
+   Target_en_us "Freezetime is over!"
+   Target_ru_ru "Фризтайм окончен!"
+   Modified 1596671238
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
   CustomStringTableItem "{5EB30CD4368261A7}" {
    Id "PS-GameMaster_PlayableGroup"
    Target_en_us "Playable Unit"
@@ -506,6 +523,15 @@ StringTable {
    Author "SeskPC"
    LastChanged "SeskPC"
   }
+  CustomStringTableItem "{5F2AF2E6BD2B3ADB}" {
+   Id "PS-Lobby_Inventory"
+   Target_en_us "Open inventory"
+   Target_es_es "Abrir el inventario"
+   Target_ru_ru "Открыть инвентарь"
+   Modified 1596670977
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
   CustomStringTableItem "{5EA932EA0659A8C5}" {
    Id "PS-Lobby_Join"
    Target_en_us "Join game"
@@ -566,6 +592,14 @@ StringTable {
    Target_es_es "Preparado"
    Target_ru_ru "Готов"
    Modified 1595450103
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
+  CustomStringTableItem "{5F2B43CA55192971}" {
+   Id "PS-Lobby_RoleKick"
+   Target_en_us "You were kicked from role!"
+   Target_ru_ru "Вас выгнали с роли!"
+   Modified 1596671350
    Author "SeskPC"
    LastChanged "SeskPC"
   }
@@ -704,24 +738,6 @@ StringTable {
    Target_es_es "canal publico"
    Target_ru_ru "публичный канал"
    Modified 1595450275
-   Author "SeskPC"
-   LastChanged "SeskPC"
-  }
-  CustomStringTableItem "{5F0F44E18237239B}" {
-   Id "PS_Briefing_YourPlace"
-   Target_en_us "Start position"
-   Target_es_es "Posición de salida"
-   Target_ru_ru "Стартовая позиция"
-   Modified 1596653782
-   Author "zazul"
-   LastChanged "SeskPC"
-  }
-  CustomStringTableItem "{5F2AF2E6BD2B3ADB}" {
-   Id "PS_Lobby_Inventory"
-   Target_en_us "Open inventory"
-   Target_es_es "Abrir el inventario"
-   Target_ru_ru "Открыть инвентарь"
-   Modified 1596653680
    Author "SeskPC"
    LastChanged "SeskPC"
   }

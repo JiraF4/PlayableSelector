@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{51A3C18E0AF9A0B0}Prefabs/Characters/Basebody/CharacterBasebodyInvisible.et"
+ Configurations {
+  EntityTemplateResourceClass PC {
+  }
+  EntityTemplateResourceClass XBOX_ONE : PC {
+  }
+  EntityTemplateResourceClass XBOX_SERIES : PC {
+  }
+  EntityTemplateResourceClass PS4 : PC {
+  }
+  EntityTemplateResourceClass HEADLESS : PC {
+  }
+ }
+}

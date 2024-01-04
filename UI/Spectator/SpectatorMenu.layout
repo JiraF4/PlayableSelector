@@ -1,11 +1,6 @@
 FrameWidgetClass {
  Name "SpectatorMenu"
  {
-  FrameWidgetClass "{5EA90320D67E1881}" : "{D89BBA18F99053D6}UI/layouts/HUD/Chat/ChatHud.layout" {
-   Name "Chat0"
-   Slot FrameWidgetSlot "{5D4881250D202DF3}" {
-   }
-  }
   FrameWidgetClass "{5EE8949BDE5C93EE}" {
    Name "IconsFrame"
    Slot FrameWidgetSlot "{5EE8949BDE5C93C5}" {
@@ -20,6 +15,63 @@ FrameWidgetClass {
     OffsetBottom 0
    }
    Clipping True
+  }
+  FrameWidgetClass "{5F34C897F439A3AE}" : "{0651202E9F2646DE}UI/layouts/Map/Map.layout" {
+   Name "MapFrame"
+   Slot FrameWidgetSlot "{58731DB204D943BC}" {
+    Anchor 0 0 1 1
+    PositionX 0
+    OffsetLeft 0
+    PositionY 0
+    OffsetTop 0
+    SizeX 0
+    OffsetRight 0
+    SizeY 0
+    OffsetBottom 0
+   }
+   "Is Visible" 0
+   {
+    HorizontalLayoutWidgetClass "{000000001FC52976}" {
+     Prefab "{000000001FC52976}"
+     {
+      ImageWidgetClass "{000000002766140D}" {
+       Prefab "{000000002766140D}"
+       Slot LayoutSlot "{52DA9C9935318517}" {
+        Padding 0 0 0 0
+        FillWeight 1
+       }
+      }
+     }
+    }
+    FrameWidgetClass "{5F34C888848C4724}" : "{2F8AEE78FF5A8104}UI/layouts/Map/ToolMenu.layout" {
+     Name "ToolMenu"
+     Slot FrameWidgetSlot "{59107CDEE98682C5}" {
+      Anchor 0.5 0 0.5 0
+      PositionX -798.097
+      OffsetLeft -798.097
+      PositionY 94.795
+      OffsetTop 94.795
+      SizeX 100
+      OffsetRight 698.097
+      SizeY 29.999
+      OffsetBottom -124.794
+     }
+     {
+      RichTextWidgetClass "{59107CD34D2BC078}" {
+       Prefab "{59107CD34D2BC078}"
+       Slot FrameWidgetSlot "{59107CC3B4EF4150}" {
+       }
+       Text "<shadow color='0,0,0' size='0' offset='1,1' opacity='0.5' mode='image'><action name=\"MapToolMenuFocus\"/></shadow>"
+       "Horizontal Alignment" Right
+      }
+     }
+    }
+   }
+  }
+  FrameWidgetClass "{5EA90320D67E1881}" : "{D89BBA18F99053D6}UI/layouts/HUD/Chat/ChatHud.layout" {
+   Name "Chat0"
+   Slot FrameWidgetSlot "{5D4881250D202DF3}" {
+   }
   }
   FrameWidgetClass "{5EB701CDC06E16AD}" : "{35DB604900C55B98}UI/VoiceChat/VoiceChatFrame.layout" {
    Name "VoiceChatFrame"

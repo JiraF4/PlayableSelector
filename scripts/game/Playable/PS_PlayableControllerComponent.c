@@ -31,6 +31,10 @@ class PS_PlayableControllerComponent : ScriptComponent
 	{
 		SetMenuState(state);
 		GetGame().GetMenuManager().GetTopMenu().Close();
+		GetGame().GetMenuManager().CloseMenuByPreset(ChimeraMenuPreset.PreviewMapMenu);
+		GetGame().GetMenuManager().CloseMenuByPreset(ChimeraMenuPreset.CoopLobby);
+		GetGame().GetMenuManager().CloseMenuByPreset(ChimeraMenuPreset.BriefingMapMenu);
+		GetGame().GetMenuManager().CloseMenuByPreset(ChimeraMenuPreset.FadeToGame);
 		switch (state) 
 		{
 			case SCR_EGameModeState.PREGAME:
@@ -138,6 +142,10 @@ class PS_PlayableControllerComponent : ScriptComponent
 	// Yes every frame, just don't look at it.
 	override protected void EOnPostFixedFrame(IEntity owner, float timeSlice)
 	{
+		RplComponent rpl = RplComponent.Cast(owner.FindComponent(RplComponent));
+		if (!rpl.IsOwner())
+			return;
+		
 		// Lets fight with phisyc engine
 		if (m_eInitialEntity)
 		{
@@ -312,7 +320,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		EntitySpawnParams params = new EntitySpawnParams();
 		if (from) from.GetTransform(params.Transform);
 		MoveToVoNRoom(thisPlayerController.GetPlayerId(), "", "");
-        Resource resource = Resource.Load("{127C64F4E93A82BC}Prefabs/Editor/Camera/ManualCameraPhoto.et");
+        Resource resource = Resource.Load("{6EAA30EF620F4A2E}Prefabs/Editor/Camera/ManualCameraSpectator.et");
         m_eCamera = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
 		if (m_vObserverPosition != "0 0 0") { 
 			m_eCamera.SetOrigin(m_vObserverPosition);
