@@ -64,7 +64,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	{
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-		playerController.SetControlledEntity(null);
+		playableController.SwitchFromObserver();
 		playableController.SwitchToMenu(GetState());
 	}
 	

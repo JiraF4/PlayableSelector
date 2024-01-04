@@ -315,6 +315,13 @@ class PS_MissionMakerTool: WorldEditorTool
 					string format  = callsignInfo.GetCallsignFormat(false);	
 					
 					markerConfig.m_sDescription = WidgetManager.Translate(format, company, platoon, squad, "");
+					
+					
+					string customName;
+					entitySource.Get("m_sCustomNameSet", customName);
+					if (customName != "") customName = "(" + customName + ") ";
+					markerConfig.m_sDescription = customName + markerConfig.m_sDescription;
+					
 					entityName = string.Format("%1_G_%2%3%4_M", faction.GetFactionKey(), companyCallsignIndex, platoonCallsignIndex, squadCallsignIndex);
 				}
 			}

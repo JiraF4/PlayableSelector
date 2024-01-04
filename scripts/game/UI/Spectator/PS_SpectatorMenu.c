@@ -158,9 +158,11 @@ class PS_SpectatorMenu: MenuBase
 		
 		UpdateIcons();
 		
+		/* VoN Magic
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		playableController.VoNPosition = GetGame().GetCameraManager().CurrentCamera().GetOrigin() - vector.Up * 1.7;
+		*/
 		
 		//GetGame().Getm_InputManager().ActivateContext("SpectatorContext", 1);
 	}
