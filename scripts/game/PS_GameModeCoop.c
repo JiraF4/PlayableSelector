@@ -57,7 +57,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		GetGame().GetCallqueue().CallLater(AddAdvanceAction, 0, false);
 		
 		SCR_EditorModeEntity editorModeEntity = SCR_EditorModeEntity.GetInstance();
-		editorModeEntity.GetOnClosed().Insert(EditorClosed);
+		if (editorModeEntity)
+			editorModeEntity.GetOnClosed().Insert(EditorClosed);
 	}
 	
 	void EditorClosed()
