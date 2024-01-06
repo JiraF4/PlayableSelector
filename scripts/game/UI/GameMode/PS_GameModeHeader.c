@@ -65,42 +65,58 @@ class PS_GameModeHeader : ScriptedWidgetComponent
 	}
 	void Action_PreviewOpen(SCR_ButtonBaseComponent button)
 	{
-		SCR_BaseGameMode gameMode = SCR_BaseGameMode.Cast(GetGame().GetGameMode());
-		SCR_EGameModeState state = gameMode.GetState();
-		if (state != SCR_EGameModeState.PREGAME) return;
-		
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		SCR_BaseGameMode gameMode = SCR_BaseGameMode.Cast(GetGame().GetGameMode());
+		SCR_EGameModeState state = gameMode.GetState();
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
+		
+		if (playerRole != EPlayerRole.ADMINISTRATOR)
+			if (state != SCR_EGameModeState.PREGAME) return;
+		
 		playableController.SwitchToMenu(SCR_EGameModeState.PREGAME);
 	}
 	void Action_LobbyOpen(SCR_ButtonBaseComponent button)
 	{
-		SCR_BaseGameMode gameMode = SCR_BaseGameMode.Cast(GetGame().GetGameMode());
-		SCR_EGameModeState state = gameMode.GetState();
-		if (state != SCR_EGameModeState.SLOTSELECTION) return;
-		
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		SCR_BaseGameMode gameMode = SCR_BaseGameMode.Cast(GetGame().GetGameMode());
+		SCR_EGameModeState state = gameMode.GetState();
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
+		
+		if (playerRole != EPlayerRole.ADMINISTRATOR)
+			if (state != SCR_EGameModeState.SLOTSELECTION && state != SCR_EGameModeState.BRIEFING) return;
+		
 		playableController.SwitchToMenu(SCR_EGameModeState.SLOTSELECTION);
 	}
 	void Action_BriefingOpen(SCR_ButtonBaseComponent button)
 	{
-		SCR_BaseGameMode gameMode = SCR_BaseGameMode.Cast(GetGame().GetGameMode());
-		SCR_EGameModeState state = gameMode.GetState();
-		if (state != SCR_EGameModeState.SLOTSELECTION && state != SCR_EGameModeState.BRIEFING) return;
-		
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		SCR_BaseGameMode gameMode = SCR_BaseGameMode.Cast(GetGame().GetGameMode());
+		SCR_EGameModeState state = gameMode.GetState();
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
+		
+		if (playerRole != EPlayerRole.ADMINISTRATOR)
+			if (state != SCR_EGameModeState.SLOTSELECTION && state != SCR_EGameModeState.BRIEFING) return;
+		
 		playableController.SwitchToMenu(SCR_EGameModeState.BRIEFING);
 	}
 	void Action_InGameOpen(SCR_ButtonBaseComponent button)
 	{
-		SCR_BaseGameMode gameMode = SCR_BaseGameMode.Cast(GetGame().GetGameMode());
-		SCR_EGameModeState state = gameMode.GetState();
-		if (state != SCR_EGameModeState.GAME) return;
-		
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		SCR_BaseGameMode gameMode = SCR_BaseGameMode.Cast(GetGame().GetGameMode());
+		SCR_EGameModeState state = gameMode.GetState();
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
+		
+		if (playerRole != EPlayerRole.ADMINISTRATOR)
+			if (state != SCR_EGameModeState.GAME) return;
+		
 		playableController.SwitchToMenu(SCR_EGameModeState.GAME);
 	}
 	void Action_DebriefingOpen(SCR_ButtonBaseComponent button)

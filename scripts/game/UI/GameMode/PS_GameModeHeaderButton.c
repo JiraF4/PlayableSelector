@@ -19,7 +19,9 @@ class PS_GameModeHeaderButton : SCR_ButtonBaseComponent
 		if (m_eState == gameMode.GetState()) m_wAdvanceImage.LoadImageFromSet(0, m_sImageSet, "moveAll");
 		else m_wAdvanceImage.LoadImageFromSet(0, m_sImageSet, "server-locked");
 		
+		// TODO: fix me please
 		if (m_eState == SCR_EGameModeState.BRIEFING && gameMode.GetState() == SCR_EGameModeState.SLOTSELECTION) m_wAdvanceImage.LoadImageFromSet(0, m_sImageSet, "server-unlocked");
+		if (m_eState == SCR_EGameModeState.SLOTSELECTION && gameMode.GetState() == SCR_EGameModeState.BRIEFING) m_wAdvanceImage.LoadImageFromSet(0, m_sImageSet, "server-unlocked");
 		
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
