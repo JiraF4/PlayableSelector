@@ -57,7 +57,7 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 		}
 		else 
 		{
-			m_wRoot.SetOpacity(0.2);
+			m_wRoot.SetOpacity(0.6);
 		}
 	}
 }
