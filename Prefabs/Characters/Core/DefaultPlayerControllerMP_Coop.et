@@ -27,6 +27,8 @@ SCR_PlayerController : "{6E2BB64764E3BE9B}Prefabs/Characters/Core/DefaultPlayerC
    "Self Insert" 0
    Streamable Disabled
   }
+  SCR_ResourcePlayerControllerInventoryComponent "{605B06AC0003C3E9}" {
+  }
  }
  coords 132.656 1 149.255
  SelfRegister 0
