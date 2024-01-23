@@ -1,11 +1,15 @@
 PS_ManualCameraSpectator : "{D6DE32D1C0FCC1C7}Prefabs/Editor/Camera/ManualCameraBase.et" {
  ID "52CC693B212FF1F9"
+ coords 0 0 0
  m_aComponents {
+  SCR_AttachManualCameraComponent "{52CC693B212FF1E7}" {
+   m_Layout ""
+  }
   SCR_RotateRollManualCameraComponent "{52CC693A99CF4271}" {
    m_bEnabled 1
   }
   SCR_ZoomManualCameraComponent "{52CC693B212FF016}" {
-   m_bEnabled 0
+   m_bEnabled 1
   }
   SCR_EditorCursorManualCameraComponent "{5F34C88A888046D4}" {
    m_iPriority 35
@@ -17,7 +21,8 @@ PS_ManualCameraSpectator : "{D6DE32D1C0FCC1C7}Prefabs/Editor/Camera/ManualCamera
    m_iPriority 2
   }
   SCR_LimitBoxManualCameraComponent "{5F34C88A889FBB1D}" {
-   m_iPriority 1
+   m_bEnabled 0
+   m_iPriority 0
   }
  }
 }

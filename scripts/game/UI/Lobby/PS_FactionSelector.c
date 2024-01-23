@@ -39,7 +39,7 @@ class PS_FactionSelector : SCR_ButtonBaseComponent
 	
 	void SetCount(int readyPlayers, int current, int max)
 	{
-		m_wFactionCounter.SetText(readyPlayers.ToString() + " / " + current.ToString() + " / " + max.ToString());
+		m_wFactionCounter.SetText(current.ToString() + " / " + max.ToString());
 		
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		m_wLockImage.SetVisible(false);
