@@ -37,7 +37,7 @@ class PS_FactionSelector : SCR_ButtonBaseComponent
 		m_wFactionFlag.LoadImageTexture(0, uiInfo.GetIconPath());
 	}
 	
-	void SetCount(int readyPlayers, int current, int max)
+	void SetCount(int current, int max)
 	{
 		m_wFactionCounter.SetText(current.ToString() + " / " + max.ToString());
 		
