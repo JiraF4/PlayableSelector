@@ -329,7 +329,7 @@ class PS_CoopLobby: MenuBase
 				}
 				if (playerId == -2) lockPlayables++;
 			}
-			handler.SetCount(readyPlayersCount, i - lockPlayables, factionPlayablesList.Count() - lockPlayables);
+			handler.SetCount(i - lockPlayables, factionPlayablesList.Count() - lockPlayables);
 		}
 		
 		// update every group widget

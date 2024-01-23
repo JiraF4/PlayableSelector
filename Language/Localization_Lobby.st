@@ -383,8 +383,9 @@ StringTable {
   CustomStringTableItem "{5F2B43CA207C0B28}" {
    Id "PS-Freeze_End"
    Target_en_us "Freezetime is over!"
+   Target_es_es "¡La fase de preparación ha terminado!"
    Target_ru_ru "Фризтайм окончен!"
-   Modified 1596671238
+   Modified 1617895570
    Author "SeskPC"
    LastChanged "SeskPC"
   }
@@ -445,9 +446,9 @@ StringTable {
   CustomStringTableItem "{5EB6FE52778D1F25}" {
    Id "PS-GameModeHeader_Preview"
    Target_en_us "Mission Preview"
-   Target_es_es "Previsualizado de mision"
+   Target_es_es "Previsualizado"
    Target_ru_ru "Предпросмотр"
-   Modified 1595449921
+   Modified 1617894053
    Author "SeskPC"
    LastChanged "SeskPC"
   }
@@ -553,9 +554,9 @@ StringTable {
   CustomStringTableItem "{5EA73DBF46DC78AF}" {
    Id "PS-Lobby_LoadoutPreview"
    Target_en_us "Loadout Preview"
-   Target_es_es "Previsualizar equipamiento"
+   Target_es_es "Equipamiento"
    Target_ru_ru "Предпросмотр"
-   Modified 1595450080
+   Modified 1617894153
    Author "SeskPC"
    LastChanged "SeskPC"
   }
@@ -598,8 +599,9 @@ StringTable {
   CustomStringTableItem "{5F2B43CA55192971}" {
    Id "PS-Lobby_RoleKick"
    Target_en_us "You were kicked from role!"
+   Target_es_es "¡Te expulsaron del puesto!"
    Target_ru_ru "Вас выгнали с роли!"
-   Modified 1596671350
+   Modified 1617895429
    Author "SeskPC"
    LastChanged "SeskPC"
   }
@@ -645,15 +647,6 @@ StringTable {
    Target_es_es "Jugadores vivos"
    Target_ru_ru "Живые игроки"
    Modified 1595450145
-   Author "zazul"
-   LastChanged "SeskPC"
-  }
-  CustomStringTableItem "{5EBE323E4409E95B}" {
-   Id "PS-Preview_GameStartSoon"
-   Target_en_us "Game will start soon"
-   Target_es_es "La partida comenzara pronto"
-   Target_ru_ru "Игра скоро начнётся"
-   Modified 1595450164
    Author "zazul"
    LastChanged "SeskPC"
   }
