@@ -6,7 +6,8 @@ StringTable {
    Target_en_us "Group сhat"
    Target_es_es "Chat de Grupo"
    Target_ru_ru "Отрядный чат"
-   Modified 1595448696
+   Target_pt_br "Group сhat"
+   Modified 1618017906
    Author "SeskPC"
    LastChanged "SeskPC"
   }
@@ -15,6 +16,7 @@ StringTable {
    Target_en_us "Mission description"
    Target_es_es "Descripcion de mision"
    Target_ru_ru "Описание сценария"
+   Target_pt_br "Descrição da Missão"
    Modified 1595448713
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -24,6 +26,7 @@ StringTable {
    Target_en_us "Hide mission description"
    Target_es_es "Ocultar descripcion de mision"
    Target_ru_ru "Скрыть описание миссии"
+   Target_pt_br "Ocultar descrição da missão"
    Modified 1595448763
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -33,6 +36,7 @@ StringTable {
    Target_en_us "Show mission description"
    Target_es_es "Mostrar descripcion de mision"
    Target_ru_ru "Показать описание миссии"
+   Target_pt_br "Mostrar descrição da missão"
    Modified 1595448773
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -45,6 +49,8 @@ StringTable {
    "Comenzaras la mision como espectador!"
    Target_ru_ru "Роль не выбрана!"\
    "На старте миссии вы станете наблюдателем!"
+   Target_pt_br "A função não está selecionada!"\
+   "No início da missão você se tornará um espectador!"
    Modified 1595448824
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -52,6 +58,7 @@ StringTable {
   CustomStringTableItem "{5F0AFCF3B4D7E97D}" {
    Id "PS-Briefing_Steps"
    Target_es_es "Pasos a seguir"
+   Target_pt_br "Etapas do briefing"
    Modified 1595448847
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -61,6 +68,7 @@ StringTable {
    Target_en_us "Voice chat"
    Target_es_es "Chat de voz"
    Target_ru_ru "Голосовой чат"
+   Target_pt_br "Chat de voz"
    Modified 1595448855
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -70,6 +78,7 @@ StringTable {
    Target_en_us "Hide voice chat"
    Target_es_es "Ocultar chat de voz"
    Target_ru_ru "Скрыть голосовой чат"
+   Target_pt_br "Ocultar chat de voz"
    Modified 1595448861
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -79,6 +88,7 @@ StringTable {
    Target_en_us "Show voice chat"
    Target_es_es "Mostrar chat de voz"
    Target_ru_ru "Показать голосовой чат"
+   Target_pt_br "Mostrar chat de voz"
    Modified 1595448864
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -88,6 +98,7 @@ StringTable {
    Target_en_us "Start position"
    Target_es_es "Posición de salida"
    Target_ru_ru "Стартовая позиция"
+   Target_pt_br "Posição de Inicio"
    Modified 1596670983
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -97,6 +108,7 @@ StringTable {
    Target_en_us "Faction statistic"
    Target_es_es "Estadisticas de bando"
    Target_ru_ru "Фракционная статистика"
+   Target_pt_br "Estatística da facção"
    Modified 1595448871
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -106,6 +118,7 @@ StringTable {
    Target_en_us "Objectives"
    Target_es_es "Objectivos"
    Target_ru_ru "Задачи"
+   Target_pt_br "Objetivos"
    Modified 1595448877
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -115,6 +128,7 @@ StringTable {
    Target_en_us "General information"
    Target_es_es "Informacion general"
    Target_ru_ru "Общая информация"
+   Target_pt_br "Informaçoes Gerais"
    Modified 1595448900
    Author "zazul"
    LastChanged "SeskPC"
@@ -124,6 +138,7 @@ StringTable {
    Target_en_us "FIA objectives"
    Target_es_es "Objetivos FIA"
    Target_ru_ru "Задачи FIA"
+   Target_pt_br "Objetivos FIA"
    Modified 1595448907
    Author "zazul"
    LastChanged "SeskPC"
@@ -133,6 +148,7 @@ StringTable {
    Target_en_us "Objectives"
    Target_es_es "Objectivos"
    Target_ru_ru "Задачи"
+   Target_pt_br "Objetivos"
    Modified 1595448914
    Author "zazul"
    LastChanged "SeskPC"
@@ -142,6 +158,7 @@ StringTable {
    Target_en_us "Rules"
    Target_es_es "Reglas"
    Target_ru_ru "Правила"
+   Target_pt_br "Regras"
    Modified 1595448924
    Author "zazul"
    LastChanged "SeskPC"
@@ -151,6 +168,7 @@ StringTable {
    Target_en_us "US Army objectives"
    Target_es_es "Objetivos US Army"
    Target_ru_ru "Задачи Армии США"
+   Target_pt_br "Objetivo Exercito americano"
    Modified 1595448929
    Author "zazul"
    LastChanged "SeskPC"
@@ -160,6 +178,7 @@ StringTable {
    Target_en_us "Soviet Army objectives"
    Target_es_es "Objetivos Sovieticos"
    Target_ru_ru "Задачи Советской Армии"
+   Target_pt_br "Objetivo Exercito Soviético"
    Modified 1595448969
    Author "zazul"
    LastChanged "SeskPC"
@@ -169,6 +188,7 @@ StringTable {
    Target_en_us "Team Switch"
    Target_es_es "Cambio de bando"
    Target_ru_ru "Смена роли"
+   Target_pt_br "Troca de Times"
    Modified 1595448988
    Author "zazul"
    LastChanged "SeskPC"
@@ -178,6 +198,7 @@ StringTable {
    Target_en_us "Any player will be able to access the lobby during a mission and change role"
    Target_es_es "Cualquier jugador tiene acceso al lobby durante la partida"
    Target_ru_ru "Любой игрок сможет получить доступ в лобби во время миссии и сменить роль"
+   Target_pt_br "Qualquer jogador poderá acessar o lobby durante uma missão e mudar de função"
    Modified 1595449005
    Author "zazul"
    LastChanged "SeskPC"
@@ -187,6 +208,7 @@ StringTable {
    Target_en_us "Disable squad leader markers"
    Target_es_es "Deshabilita marcas de lideres de escuadras"
    Target_ru_ru "Отключить маркера лидеров отрядов"
+   Target_pt_br "Desativar marcadores de líder de esquadrão"
    Modified 1595449028
    Author "zazul"
    LastChanged "SeskPC"
@@ -196,6 +218,7 @@ StringTable {
    Target_en_us "Squad leaders markers will not appear on the map."
    Target_es_es "Las marcas de lideres de escuadra no apareceran en el mapa"
    Target_ru_ru "Маркера лидеров отделений не будут отображены на карте"
+   Target_pt_br "Marcaçoes de lideres de Esquadrao não irao aparecer no mapa"
    Modified 1595449037
    Author "zazul"
    LastChanged "SeskPC"
@@ -205,6 +228,7 @@ StringTable {
    Target_en_us "Freeze time"
    Target_es_es "Momentos congelados"
    Target_ru_ru "Фризтайм"
+   Target_pt_br "Tempo de congelamento"
    Modified 1595449042
    Author "zazul"
    LastChanged "SeskPC"
@@ -214,6 +238,7 @@ StringTable {
    Target_en_us "Time from mission start to removal of containment zones"
    Target_es_es "Tiempo para quitar las zonas de retencion"
    Target_ru_ru "Время со старта миссии до удаления зон ограничения"
+   Target_pt_br "Tempo desde o início da missão até a remoção das zonas de contenção"
    Modified 1595449590
    Author "zazul"
    LastChanged "SeskPC"
@@ -223,6 +248,7 @@ StringTable {
    Target_en_us "Reconnect time"
    Target_es_es "Tiempo de reconexion"
    Target_ru_ru "Время для переподключения"
+   Target_pt_br "Tempo de reconexão"
    Modified 1595449602
    Author "zazul"
    LastChanged "SeskPC"
@@ -232,6 +258,7 @@ StringTable {
    Target_en_us "Player role reservation time for reconnection"
    Target_es_es "Reserva de tiempo para la reconexion del jugador"
    Target_ru_ru "Время резервации роли игрока для переподключения"
+   Target_pt_br "Tempo de reserva da função do jogador para reconexão"
    Modified 1595449611
    Author "zazul"
    LastChanged "SeskPC"
@@ -241,6 +268,7 @@ StringTable {
    Target_en_us "Remove redundant units"
    Target_es_es "Borrar unidades redundantes"
    Target_ru_ru "Удалить незанятых персонажей"
+   Target_pt_br "Remova unidades redundantes"
    Modified 1595449667
    Author "zazul"
    LastChanged "SeskPC"
@@ -250,6 +278,7 @@ StringTable {
    Target_en_us "Delete not used playable units on mission start"
    Target_es_es "Borra las unidades jugables sin jugador al comienzo de la partida"
    Target_ru_ru "Удалить незанятых персонажей на старте миссии"
+   Target_pt_br "Exclua unidades jogáveis não utilizadas no início da missão"
    Modified 1595449674
    Author "zazul"
    LastChanged "SeskPC"
@@ -259,6 +288,7 @@ StringTable {
    Target_en_us "Map markers can be placed only on briefing by squad leaders"
    Target_es_es "Los marcadores en el mapa solo pueden colocarlos los lideres de escuadra"
    Target_ru_ru "Маркеры на карте могут быть поставлены только на брифинге лидерами отрядов"
+   Target_pt_br "Marcaçoes de mapa só podem ser colocados durante instruções dos líderes de esquadrão"
    Modified 1595449689
    Author "zazul"
    LastChanged "SeskPC"
@@ -268,6 +298,7 @@ StringTable {
    Target_en_us "Prevents players from placing markers after the briefing and also if they are not the leader of the squad"
    Target_es_es "Evita que los jugadores coloquen marcas despues del briefing si no son lideres de escuadra"
    Target_ru_ru "Запрещает игрокам ставить маркера после брифинга а также если они не лидеры отряда"
+   Target_pt_br "Impede que os jogadores coloquem marcadores após o briefing e também se não forem o líder do Squad"
    Modified 1595449696
    Author "zazul"
    LastChanged "SeskPC"
@@ -277,6 +308,7 @@ StringTable {
    Target_en_us "Show to empty faction"
    Target_es_es "Mostrar bando vacio"
    Target_ru_ru "Показать пустой фракции"
+   Target_pt_br "Mostrar para facção vazia"
    Modified 1595449719
    Author "zazul"
    LastChanged "SeskPC"
@@ -286,6 +318,7 @@ StringTable {
    Target_en_us "Will be this description shown on Mission Preview"
    Target_es_es "Se mostrara esta descripcion en la vista previa de la misión"
    Target_ru_ru "Будет ли описание доступно на этапе предпросмотра"
+   Target_pt_br "Esta descrição será mostrada na Prévia da Missão"
    Modified 1595449730
    Author "zazul"
    LastChanged "SeskPC"
@@ -295,6 +328,7 @@ StringTable {
    Target_en_us "Show to factions"
    Target_es_es "Mostrar a bandos"
    Target_ru_ru "Показать фракциям"
+   Target_pt_br "Mostrar para as facçoes"
    Modified 1595449736
    Author "zazul"
    LastChanged "SeskPC"
@@ -304,6 +338,7 @@ StringTable {
    Target_en_us "This description will be shown to selected factions"
    Target_es_es "Esta descripcion se mostrara a bandos selecionados"
    Target_ru_ru "Это описание будет доступно выбранным фракциям"
+   Target_pt_br "Esta descrição será mostrada para facções selecionadas"
    Modified 1595449751
    Author "zazul"
    LastChanged "SeskPC"
@@ -313,6 +348,7 @@ StringTable {
    Target_en_us "Text data"
    Target_es_es "Datos de texto"
    Target_ru_ru "Текст"
+   Target_pt_br "Dados de texto"
    Modified 1595449762
    Author "zazul"
    LastChanged "SeskPC"
@@ -322,6 +358,7 @@ StringTable {
    Target_en_us "Description tab text"
    Target_es_es "Texto de la pestaña descripcion"
    Target_ru_ru "Текст в вкладке описания"
+   Target_pt_br "Texto da guia de descrição"
    Modified 1595449770
    Author "zazul"
    LastChanged "SeskPC"
@@ -331,6 +368,7 @@ StringTable {
    Target_en_us "Title"
    Target_es_es "Titulo"
    Target_ru_ru "Заголовок"
+   Target_pt_br "Titulo"
    Modified 1595449776
    Author "zazul"
    LastChanged "SeskPC"
@@ -340,6 +378,7 @@ StringTable {
    Target_en_us "Tab title with mission description"
    Target_es_es "Pestaña del titulo con la descripcion de la mision"
    Target_ru_ru "Заголовок вкладки с описанием миссии"
+   Target_pt_br "Título da aba com descrição da missão"
    Modified 1595449780
    Author "zazul"
    LastChanged "SeskPC"
@@ -349,6 +388,7 @@ StringTable {
    Target_en_us "Is playable"
    Target_es_es "Es jugable"
    Target_ru_ru "Играбельный"
+   Target_pt_br "Jogavel"
    Modified 1595449793
    Author "zazul"
    LastChanged "SeskPC"
@@ -358,6 +398,7 @@ StringTable {
    Target_en_us "Players can play as this unit/squad"
    Target_es_es "Jugadores pueden jugar como esta unidad/escuadra"
    Target_ru_ru "Игроки смогут играть за этого персонажа/группу"
+   Target_pt_br "Os jogadores podem jogar como esta unidade/esquadrão"
    Modified 1595449800
    Author "zazul"
    LastChanged "SeskPC"
@@ -367,6 +408,7 @@ StringTable {
    Target_en_us "Reforger Lobby"
    Target_es_es "Reforger Lobby"
    Target_ru_ru "Рефоргер Лобби"
+   Target_pt_br "Reforger Lobby"
    Modified 1595449810
    Author "zazul"
    LastChanged "SeskPC"
@@ -376,6 +418,7 @@ StringTable {
    Target_en_us "Mission description"
    Target_es_es "Descripcion de la mision"
    Target_ru_ru "Описание миссии"
+   Target_pt_br "Descriçao da Missao"
    Modified 1595449824
    Author "zazul"
    LastChanged "SeskPC"
@@ -385,6 +428,7 @@ StringTable {
    Target_en_us "Freezetime is over!"
    Target_es_es "¡La fase de preparación ha terminado!"
    Target_ru_ru "Фризтайм окончен!"
+   Target_pt_br "A fase de preparaçao Terminou"
    Modified 1617895570
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -394,6 +438,7 @@ StringTable {
    Target_en_us "Playable Unit"
    Target_es_es "Unidad jugable"
    Target_ru_ru "Играбельный чел"
+   Target_pt_br "Unidade Jogavel"
    Modified 1595449829
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -403,6 +448,7 @@ StringTable {
    Target_en_us "Advance"
    Target_es_es "Avanzar"
    Target_ru_ru "Далее"
+   Target_pt_br "Avançar"
    Modified 1595449833
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -412,6 +458,7 @@ StringTable {
    Target_en_us "Briefing"
    Target_es_es "Briefing"
    Target_ru_ru "Брифинг"
+   Target_pt_br "Briefing"
    Modified 1595449837
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -421,6 +468,7 @@ StringTable {
    Target_en_us "Debriefing"
    Target_es_es "Debriefing"
    Target_ru_ru "Итоги"
+   Target_pt_br "Debriefing"
    Modified 1595449842
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -430,6 +478,7 @@ StringTable {
    Target_en_us "Game"
    Target_es_es "Juego"
    Target_ru_ru "Игра"
+   Target_pt_br "Jogo"
    Modified 1595449846
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -439,6 +488,7 @@ StringTable {
    Target_en_us "Lobby"
    Target_es_es "Lobby"
    Target_ru_ru "Лобби"
+   Target_pt_br "Lobby"
    Modified 1595449850
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -448,6 +498,7 @@ StringTable {
    Target_en_us "Mission Preview"
    Target_es_es "Previsualizado"
    Target_ru_ru "Предпросмотр"
+   Target_pt_br "Preview da Missao"
    Modified 1617894053
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -457,6 +508,7 @@ StringTable {
    Target_en_us "Team switch"
    Target_es_es "Cambio de equipo"
    Target_ru_ru "Смена роли"
+   Target_pt_br "Troca de Equipe"
    Modified 1595449932
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -466,6 +518,7 @@ StringTable {
    Target_en_us "Open lobby"
    Target_es_es "Abrir Lobby"
    Target_ru_ru "Открыть лобби"
+   Target_pt_br "Abrir Lobby"
    Modified 1595449926
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -475,6 +528,7 @@ StringTable {
    Target_en_us "Mission description interface"
    Target_es_es "Interfaz de descripcion de la mision"
    Target_ru_ru "Интерфейс описания миссии"
+   Target_pt_br "Interface de descriçao da Missao"
    Modified 1595449956
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -484,6 +538,7 @@ StringTable {
    Target_en_us "Hide/Show UI"
    Target_es_es "Ocultar/Mostrar UI"
    Target_ru_ru "Скрыть/Показать UI"
+   Target_pt_br "Ocultar/Mostrar UI"
    Modified 1595450005
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -493,6 +548,7 @@ StringTable {
    Target_en_us "Voice chat interface"
    Target_es_es "Interfaz del chat de voz"
    Target_ru_ru "Интерфейс голосового чата"
+   Target_pt_br "Interface do Chat de voz"
    Modified 1595450016
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -502,6 +558,7 @@ StringTable {
    Target_en_us "Chat"
    Target_es_es "Chat"
    Target_ru_ru "Чат"
+   Target_pt_br "Chat"
    Modified 1595450028
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -511,6 +568,7 @@ StringTable {
    Target_en_us "Factions"
    Target_es_es "Bandos"
    Target_ru_ru "Фракции"
+   Target_pt_br "Facçoes"
    Modified 1595450035
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -520,6 +578,7 @@ StringTable {
    Target_en_us "Start game"
    Target_es_es "Iniciar juego"
    Target_ru_ru "Начать игру"
+   Target_pt_br "Iniciar jogo"
    Modified 1595450051
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -529,6 +588,7 @@ StringTable {
    Target_en_us "Open inventory"
    Target_es_es "Abrir el inventario"
    Target_ru_ru "Открыть инвентарь"
+   Target_pt_br "Abrir inventario"
    Modified 1596670977
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -538,6 +598,7 @@ StringTable {
    Target_en_us "Join game"
    Target_es_es "Unirse al juego"
    Target_ru_ru "Вступить в игру"
+   Target_pt_br "Entrar no jogo"
    Modified 1595450064
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -547,6 +608,7 @@ StringTable {
    Target_en_us "Spectate"
    Target_es_es "Espectador"
    Target_ru_ru "Наблюдать"
+   Target_pt_br "Espectador"
    Modified 1595450073
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -556,6 +618,7 @@ StringTable {
    Target_en_us "Loadout Preview"
    Target_es_es "Equipamiento"
    Target_ru_ru "Предпросмотр"
+   Target_pt_br "Loadout Preview"
    Modified 1617894153
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -565,6 +628,7 @@ StringTable {
    Target_en_us "Open menu"
    Target_es_es "Abrir menu"
    Target_ru_ru "Открыть меню"
+   Target_pt_br "Abrir menu"
    Modified 1595450088
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -574,6 +638,7 @@ StringTable {
    Target_en_us "Players"
    Target_es_es "Jugadores"
    Target_ru_ru "Игроки"
+   Target_pt_br "Jogadores"
    Modified 1595450093
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -583,6 +648,7 @@ StringTable {
    Target_en_us "List"
    Target_es_es "Lista"
    Target_ru_ru "Список"
+   Target_pt_br "Lista"
    Modified 1595450098
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -592,6 +658,7 @@ StringTable {
    Target_en_us "Ready"
    Target_es_es "Preparado"
    Target_ru_ru "Готов"
+   Target_pt_br "Preparado"
    Modified 1595450103
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -601,6 +668,7 @@ StringTable {
    Target_en_us "You were kicked from role!"
    Target_es_es "¡Te expulsaron del puesto!"
    Target_ru_ru "Вас выгнали с роли!"
+   Target_pt_br "Te expulsaram da função"
    Modified 1617895429
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -610,6 +678,7 @@ StringTable {
    Target_en_us "Roles"
    Target_es_es "Roles"
    Target_ru_ru "Роли"
+   Target_pt_br "Funçoes"
    Modified 1595450117
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -619,6 +688,7 @@ StringTable {
    Target_en_us "Voice Chat"
    Target_es_es "Chat de voz"
    Target_ru_ru "Голосовой чат"
+   Target_pt_br "Chat de voz"
    Modified 1595450121
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -628,6 +698,7 @@ StringTable {
    Target_en_us "Faction voice chat"
    Target_es_es "Chat de voz de bando"
    Target_ru_ru "Фракционный голосовой чат"
+   Target_pt_br "Chat de voz da facçao"
    Modified 1595450126
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -637,6 +708,7 @@ StringTable {
    Target_en_us "Mission description"
    Target_es_es "Descripcion de mision"
    Target_ru_ru "Описание миссии"
+   Target_pt_br "Descrição da missao"
    Modified 1595450130
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -646,6 +718,7 @@ StringTable {
    Target_en_us "Alive players"
    Target_es_es "Jugadores vivos"
    Target_ru_ru "Живые игроки"
+   Target_pt_br "Jogadores vivos"
    Modified 1595450145
    Author "zazul"
    LastChanged "SeskPC"
@@ -658,6 +731,8 @@ StringTable {
    "La partida comenzara pronto"
    Target_ru_ru "Пожалуйста подождите"\
    "Игра скоро начнётся"
+   Target_pt_br "Por favor espere"\
+   "A partida começara logo"
    Modified 1595452013
    Author "zazul"
    LastChanged "SeskPC"
@@ -667,6 +742,7 @@ StringTable {
    Target_en_us "Hide/Show UI"
    Target_es_es "Ocultar/Mostrar UI"
    Target_ru_ru "Скрыть/Показать UI"
+   Target_pt_br "Ocultar/Mostrar UI"
    Modified 1595450179
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -676,6 +752,7 @@ StringTable {
    Target_en_us "Voice Chat"
    Target_es_es "Chat de voz"
    Target_ru_ru "Голосовой чат"
+   Target_pt_br "Chat de voz"
    Modified 1595450184
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -685,6 +762,7 @@ StringTable {
    Target_en_us "HQ"
    Target_es_es "Mando"
    Target_ru_ru "Штаб"
+   Target_pt_br "Comando"
    Modified 1595450235
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -694,6 +772,7 @@ StringTable {
    Target_en_us "Faction"
    Target_es_es "Bando"
    Target_ru_ru "Фракция"
+   Target_pt_br "Facção"
    Modified 1595450242
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -703,7 +782,8 @@ StringTable {
    Target_en_us "Global"
    Target_es_es "Global"
    Target_ru_ru "Глобальный"
-   Modified 1595450245
+   Target_pt_br "Global"
+   Modified 1618017831
    Author "SeskPC"
    LastChanged "SeskPC"
   }
@@ -712,6 +792,7 @@ StringTable {
    Target_en_us "Voice сhannels"
    Target_es_es "Canales de voz"
    Target_ru_ru "Голосовые каналы"
+   Target_pt_br "Canal de voz"
    Modified 1595450250
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -721,6 +802,7 @@ StringTable {
    Target_en_us "Deafen"
    Target_es_es "Silenciar"
    Target_ru_ru "Откл.звук"
+   Target_pt_br "Silenciar"
    Modified 1595450266
    Author "SeskPC"
    LastChanged "SeskPC"
@@ -730,6 +812,7 @@ StringTable {
    Target_en_us "public channel"
    Target_es_es "canal publico"
    Target_ru_ru "публичный канал"
+   Target_pt_br "canal publico"
    Modified 1595450275
    Author "SeskPC"
    LastChanged "SeskPC"
