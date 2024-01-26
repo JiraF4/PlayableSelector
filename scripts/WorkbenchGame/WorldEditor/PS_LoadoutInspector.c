@@ -20,56 +20,56 @@ class PS_LoadoutInspector
 	
 	IEntitySource m_entitySource;
 	
-	[Attribute("", UIWidgets.ResourcePickerThumbnail, "et")]
+	[Attribute("", UIWidgets.ResourceNamePicker, "et")]
 	ResourceName m_primaryWeapon;
 	BaseContainer m_primaryWeaponContainer;
-	[Attribute("", UIWidgets.ResourcePickerThumbnail, "et")]
+	[Attribute("", UIWidgets.ResourceNamePicker, "et")]
 	ResourceName m_secondWeapon;
 	BaseContainer m_secondWeaponContainer;
-	[Attribute("", UIWidgets.ResourcePickerThumbnail, "et")]
+	[Attribute("", UIWidgets.ResourceNamePicker, "et")]
 	ResourceName m_handWeapon;
 	BaseContainer m_handWeaponContainer;
-	[Attribute("", UIWidgets.ResourcePickerThumbnail, "et")]
+	[Attribute("", UIWidgets.ResourceNamePicker, "et")]
 	ResourceName m_grenade;
 	BaseContainer m_grenadeContainer;
-	[Attribute("", UIWidgets.ResourcePickerThumbnail, "et")]
+	[Attribute("", UIWidgets.ResourceNamePicker, "et")]
 	ResourceName m_throwable;
 	BaseContainer m_throwableContainer;
 	
-	[Attribute("", UIWidgets.ResourcePickerThumbnail, "et")]
+	[Attribute("", UIWidgets.ResourceNamePicker, "et")]
 	ResourceName m_helmet;
 	BaseContainer m_helmetContainer;
-	[Attribute("", UIWidgets.ResourcePickerThumbnail, "et")]
+	[Attribute("", UIWidgets.ResourceNamePicker, "et")]
 	ResourceName m_jacket;
 	[Attribute("")]
 	ref PS_LoadoutInspectorSlotsList m_jacketItemsSlot;
 	BaseContainer m_jacketContainer;
-	[Attribute("", UIWidgets.ResourcePickerThumbnail, "et")]
+	[Attribute("", UIWidgets.ResourceNamePicker, "et")]
 	ResourceName m_armorVest;
 	BaseContainer m_armorVestContainer;
-	[Attribute("", UIWidgets.ResourcePickerThumbnail, "et")]
+	[Attribute("", UIWidgets.ResourceNamePicker, "et")]
 	ResourceName m_pants;
 	[Attribute("")]
 	ref PS_LoadoutInspectorSlotsList m_pantsItemsSlot;
 	BaseContainer m_pantsContainer;
-	[Attribute("", UIWidgets.ResourcePickerThumbnail, "et")]
+	[Attribute("", UIWidgets.ResourceNamePicker, "et")]
 	ResourceName m_boots;
 	BaseContainer m_bootsContainer;
-	[Attribute("", UIWidgets.ResourcePickerThumbnail, "et")]
+	[Attribute("", UIWidgets.ResourceNamePicker, "et")]
 	ResourceName m_backpack;
 	[Attribute("")]
 	ref PS_LoadoutInspectorSlotsList m_backpackItemsSlot;
 	BaseContainer m_backpackContainer;
-	[Attribute("", UIWidgets.ResourcePickerThumbnail, "et")]
+	[Attribute("", UIWidgets.ResourceNamePicker, "et")]
 	ResourceName m_vest;
 	[Attribute("")]
 	ref array<ref PS_LoadoutInspectorSlotsList> m_vestSlots;
 	BaseContainer m_vestContainer;
 	
-	[Attribute("", UIWidgets.ResourcePickerThumbnail, "et")]
+	[Attribute("", UIWidgets.ResourceNamePicker, "et")]
 	ResourceName m_binoculars;
 	BaseContainer m_binocularsContainer;
-	[Attribute("", UIWidgets.ResourcePickerThumbnail, "et")]
+	[Attribute("", UIWidgets.ResourceNamePicker, "et")]
 	ResourceName m_watch;
 	BaseContainer m_watchContainer;
 	
