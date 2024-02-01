@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{CE1EC2AAFA377C9F}UI/layouts/Editor/Map/MapEditor.layout"
+ Configurations {
+  LayoutResourceClass PC {
+  }
+  LayoutResourceClass XBOX_ONE : PC {
+  }
+  LayoutResourceClass XBOX_SERIES : PC {
+  }
+  LayoutResourceClass PS4 : PC {
+  }
+  LayoutResourceClass HEADLESS : PC {
+  }
+ }
+}

@@ -570,7 +570,8 @@ class PS_CoopLobby: MenuBase
 		if (m_sCurrentPlayerFaction == factionKey) factionKey = "";
 		
 		m_sCurrentPlayerFaction = factionKey;
-		m_hVoiceChatList.SwitchFaction(factionKey);
+		if (gameMode.GetState() == SCR_EGameModeState.SLOTSELECTION) // Change room only on lobby state
+			m_hVoiceChatList.SwitchFaction(factionKey);
 		
 		HardUpdate();
 	}
@@ -635,8 +636,14 @@ class PS_CoopLobby: MenuBase
 		PS_CharacterSelector handler = PS_CharacterSelector.Cast(characterSelector);
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-		
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
+		
+		// On briefing selecty character only if not selected
+		if (playerRole != EPlayerRole.ADMINISTRATOR)
+			if (gameMode.GetState() == SCR_EGameModeState.BRIEFING && playableManager.GetPlayableByPlayer(playerController.GetPlayerId()) != RplId.Invalid())
+				return;
+		
 		if (playerRole != EPlayerRole.ADMINISTRATOR && playableManager.GetPlayerPin(m_iCurrentPlayer)) return;
 		
 		playableController.SetPlayerState(playerController.GetPlayerId(), PS_EPlayableControllerState.NotReady);
@@ -660,10 +667,14 @@ class PS_CoopLobby: MenuBase
 		playableController.SetPlayerPlayable(m_iCurrentPlayer, handler.GetPlayableId());
 		playableController.MoveToVoNRoom(m_iCurrentPlayer, playableCharacter.GetFaction().GetFactionKey(), playableManager.GetGroupCallsignByPlayable(handler.GetPlayableId()).ToString());
 		
-		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		if (m_iCurrentPlayer != playerController.GetPlayerId() && gameMode.GetState() == SCR_EGameModeState.GAME)
 		{
 			playableController.ForceSwitch(m_iCurrentPlayer);
+		}
+		if (gameMode.GetState() == SCR_EGameModeState.BRIEFING)
+		{
+			if (playerRole != EPlayerRole.ADMINISTRATOR)
+				playableController.SwitchToMenuServer(SCR_EGameModeState.BRIEFING);
 		}
 	}	
 	

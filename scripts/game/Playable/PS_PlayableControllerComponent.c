@@ -27,6 +27,16 @@ class PS_PlayableControllerComponent : ScriptComponent
 		return m_eMenuState;
 	}
 	
+	void SwitchToMenuServer(SCR_EGameModeState state)
+	{
+		Rpc(RPC_SwitchToMenuServer, state);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Owner)]
+	void RPC_SwitchToMenuServer(SCR_EGameModeState state)
+	{
+		SwitchToMenu(state);
+	}
+	
 	void SwitchToMenu(SCR_EGameModeState state)
 	{
 		SetMenuState(state);

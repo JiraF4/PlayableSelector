@@ -1,0 +1,39 @@
+FrameWidgetClass {
+ {
+  FrameWidgetClass "{60832BF215383412}" : "{0CAA34745062743B}UI/MissionDescription/MissionDescriptionFrame.layout" {
+   Name "MissionDescriptionFrame"
+   Slot FrameWidgetSlot "{5EBEE964499ECB58}" {
+    PositionX 10
+    OffsetLeft 10
+    PositionY -650
+    OffsetTop -650
+    SizeX 480
+    OffsetRight -490
+    SizeY 640
+    OffsetBottom 10
+   }
+   "Z Order" 100
+   {
+    ButtonWidgetClass "{5EC27C6308C71093}" {
+     Prefab "{5EC27C6308C71093}"
+     {
+      FrameWidgetClass "{5EBEE964499F3959}" {
+       Prefab "{5EBEE964499F3959}"
+       {
+        OverlayWidgetClass "{5EBEE964499F395B}" {
+         Prefab "{5EBEE964499F395B}"
+         {
+          TextWidgetClass "{5EBEE964499F395C}" {
+           Prefab "{5EBEE964499F395C}"
+           Text "#PS-Briefing_MissionDescriptionHeader"
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}

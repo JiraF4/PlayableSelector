@@ -3,6 +3,7 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 	protected bool m_bDead = false;
 	protected bool m_bWounded = false;
 	protected SCR_ChimeraCharacter m_eChimeraCharacter;
+	protected SCR_CharacterControllerComponent m_ControllerComponent;
 	protected PS_PlayableComponent m_cPlayableComponent;
 	
 	protected ResourceName m_rIconImageSet = "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset";
@@ -12,6 +13,7 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 		super.SetEntity(entity, boneName);
 		m_eChimeraCharacter = SCR_ChimeraCharacter.Cast(entity);
 		m_cPlayableComponent = PS_PlayableComponent.Cast(m_eChimeraCharacter.FindComponent(PS_PlayableComponent));
+		m_ControllerComponent = SCR_CharacterControllerComponent.Cast(m_eChimeraCharacter.FindComponent(SCR_CharacterControllerComponent));
 		
 		SCR_Faction faction = SCR_Faction.Cast(m_eChimeraCharacter.GetFaction());
 		if (faction)
@@ -39,18 +41,16 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 		
 		if (!m_bDead)
 		{
-			SCR_CharacterControllerComponent characterDamageComp = SCR_CharacterControllerComponent.Cast(m_eChimeraCharacter.FindComponent(SCR_CharacterControllerComponent));
-			
-			if (!m_bWounded && characterDamageComp.IsUnconscious()) {
+			if (!m_bWounded && m_ControllerComponent.IsUnconscious()) {
 				m_wSpectatorLabelIcon.LoadImageFromSet(0, m_rIconImageSet, "Wounded");
 				m_bWounded = true;
 			}
-			if (m_bWounded && !characterDamageComp.IsUnconscious()) {
+			if (m_bWounded && !m_ControllerComponent.IsUnconscious()) {
 				m_wSpectatorLabelIcon.LoadImageFromSet(0, m_rIconImageSet, "Player");
 				m_bWounded = false;
 			}
 			
-			if (characterDamageComp.IsDead()) {
+			if (m_ControllerComponent.IsDead()) {
 				m_wSpectatorLabelIcon.LoadImageFromSet(0, m_rIconImageSet, "Dead");
 				m_bDead = true;
 			}
