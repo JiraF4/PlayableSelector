@@ -146,10 +146,10 @@ ImageSetClass {
    Size 64 64
    Flags 0
   }
-  ImageSetDefClass Wounded {
-   Name "Wounded"
-   Pos 1344 64
-   Size 64 64
+  ImageSetDefClass WoundedCharacter {
+   Name "WoundedCharacter"
+   Pos 1364 73
+   Size 24 35
    Flags 0
   }
   ImageSetDefClass Map {
@@ -258,6 +258,24 @@ ImageSetClass {
    Name "Character"
    Pos 1430 77
    Size 20 29
+   Flags 0
+  }
+  ImageSetDefClass DeadCharacter {
+   Name "DeadCharacter"
+   Pos 2006 77
+   Size 20 29
+   Flags 0
+  }
+  ImageSetDefClass Wounded {
+   Name "Wounded"
+   Pos 1344 64
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass Dead {
+   Name "Dead"
+   Pos 1984 64
+   Size 64 64
    Flags 0
   }
  }

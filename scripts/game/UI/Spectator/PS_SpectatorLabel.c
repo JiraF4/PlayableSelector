@@ -65,16 +65,18 @@ class PS_SpectatorLabel : ScriptComponent
 	protected Widget m_wRootMarker;
 	protected SCR_MapEntity m_MapEntity;
 	protected FrameWidget m_wMapFrame;
-	PS_ManualMarkerComponent m_hManualMarkerComponent;
-	void UpdateMarker()
+	protected PS_ManualMarkerComponent m_hManualMarkerComponent;
+	bool UpdateMarker()
 	{
-		if (!m_cMapMarkerConfig) return;
-		if (!m_MapEntity.IsOpen()) return;
+		if (!m_cMapMarkerConfig) return false;
+		if (!m_MapEntity.IsOpen()) return false;
 		if (!m_hManualMarkerComponent) CreateMarker();
 		
 		m_hManualMarkerComponent.SetSlotWorld(GetOwner().GetOrigin()
 			, GetOwner().GetYawPitchRoll() + Vector(90, 0, 0), m_cMapMarkerConfig.m_fWorldSize
 			, m_cMapMarkerConfig.m_bUseWorldScale, m_cMapMarkerConfig.m_fMinSize);
+		
+		return true;
 	}
 	
 	void CreateMarker()
