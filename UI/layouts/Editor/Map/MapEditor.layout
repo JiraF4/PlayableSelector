@@ -1,0 +1,19 @@
+FrameWidgetClass : "{0651202E9F2646DE}UI/layouts/Map/Map.layout" {
+ {
+  FrameWidgetClass "{60832BF315A3549B}" : "{0CAA34745062743B}UI/MissionDescription/MissionDescriptionFrame.layout" {
+   Name "MissionDescriptionFrame"
+   Slot FrameWidgetSlot "{5EBEE964499ECB58}" {
+    Anchor 0 0.5 0 0.5
+    PositionX 10
+    OffsetLeft 10
+    PositionY -320
+    OffsetTop -320
+    SizeX 480
+    OffsetRight -490
+    SizeY 640
+    OffsetBottom -320
+   }
+   "Z Order" 100
+  }
+ }
+}

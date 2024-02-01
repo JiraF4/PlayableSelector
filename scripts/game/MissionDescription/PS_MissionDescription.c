@@ -18,14 +18,18 @@ class PS_MissionDescription : GenericEntity
 	[Attribute("")]
 	bool m_bEmptyFactionVisibility;
 	
+	[Attribute("")]
+	bool m_bShowForAnyFaction;
+	
 	ResourceName GetDescriptionLayout()
 	{
 		return m_sDescriptionLayout;
 	}
 	
-	bool GetVisibleForFaction(FactionKey factioney)
+	bool GetVisibleForFaction(FactionKey factionKey)
 	{
-		return m_aVisibleForFactions.Contains(factioney);
+		if (m_bShowForAnyFaction) return true;
+		return m_aVisibleForFactions.Contains(factionKey);
 	}
 	void SetVisibleForFaction(Faction faction, bool visible)
 	{

@@ -2,6 +2,7 @@ class PS_MissionDescriptionUI : ScriptedWidgetComponent
 {
 	protected ResourceName m_rStartLayout = "{B965F43FBD01E4B5}UI/MissionDescription/MissionDescriptionListScroll.layout";
 	
+	protected Widget m_wRoot;
 	protected FrameWidget m_wContentFrame;
 	protected Widget m_wCurrentContent;
 	protected ImageWidget m_wFolderIcon;
@@ -14,6 +15,7 @@ class PS_MissionDescriptionUI : ScriptedWidgetComponent
 	// -------------------- Handler events --------------------
 	override void HandlerAttached(Widget w)
 	{
+		m_wRoot = w;
 		m_wContentFrame = FrameWidget.Cast(w.FindAnyWidget("ContentFrame"));
 		m_wMissionDescriptionHeaderButton = ButtonWidget.Cast(w.FindAnyWidget("MissionDescriptionHeaderButton"));
 		m_wMissionDescriptionHeaderText = TextWidget.Cast(w.FindAnyWidget("MissionDescriptionHeaderText"));
@@ -22,6 +24,8 @@ class PS_MissionDescriptionUI : ScriptedWidgetComponent
 			return;
 		OpenDescriptionList();
 		GetGame().GetCallqueue().CallLater(AddOnClick, 0);
+		
+		GetGame().GetInputManager().AddActionListener("SwitchMissionDescription", EActionTrigger.DOWN, Action_SwitchMissionDescription);
 	}
 	
 	void AddOnClick()
@@ -64,6 +68,11 @@ class PS_MissionDescriptionUI : ScriptedWidgetComponent
 		handler.SetMissionDescription(mapDescription);
 		m_wMissionDescriptionHeaderText.SetText(handler.GetTitle());
 		m_wContentFrame.AddChild(m_wCurrentContent);
+	}
+	
+	void Action_SwitchMissionDescription()
+	{
+		m_wRoot.SetVisible(!m_wRoot.IsVisible());
 	}
 	
 	void SwitchBack()

@@ -25,9 +25,6 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 	protected Widget m_wGameModeHeader;
 	protected PS_GameModeHeader m_hGameModeHeader;
 	
-	SCR_InputButtonComponent m_bNavigationButtonSwitchMissionDescription;
-	SCR_InputButtonComponent m_bNavigationButtonSwitchVoiceChat;
-	
 	protected Widget m_wSteps;
 	
 	// -------------------- Menu events --------------------
@@ -69,15 +66,7 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 		GetGame().GetInputManager().AddActionListener("VONChannel", EActionTrigger.DOWN, Action_LobbyVoNChannelOn);
 		GetGame().GetInputManager().AddActionListener("VONChannel", EActionTrigger.UP, Action_LobbyVoNChannelOff);
 		GetGame().GetInputManager().AddActionListener("MenuBack", EActionTrigger.DOWN, Action_Exit);
-		GetGame().GetInputManager().AddActionListener("SwitchMissionDescription", EActionTrigger.DOWN, Action_SwitchMissionDescription);
 		GetGame().GetInputManager().AddActionListener("SwitchVoiceChat", EActionTrigger.DOWN, Action_SwitchVoiceChat);
-		
-		m_bNavigationButtonSwitchMissionDescription = SCR_InputButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationSwitchMissionDescription").FindHandler(SCR_InputButtonComponent));
-		m_bNavigationButtonSwitchVoiceChat = SCR_InputButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationSwitchVoiceChat").FindHandler(SCR_InputButtonComponent));
-		
-		m_bNavigationButtonSwitchMissionDescription.m_OnClicked.Insert(Action_SwitchMissionDescription);
-		m_bNavigationButtonSwitchVoiceChat.m_OnClicked.Insert(Action_SwitchVoiceChat);
-		
 		
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		if (playableManager.GetPlayableByPlayer(playerController.GetPlayerId()) != RplId.Invalid())
@@ -184,7 +173,6 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 		GetGame().GetInputManager().RemoveActionListener("VONChannel", EActionTrigger.DOWN, Action_LobbyVoNChannelOn);
 		GetGame().GetInputManager().RemoveActionListener("VONChannel", EActionTrigger.UP, Action_LobbyVoNChannelOff);
 		GetGame().GetInputManager().RemoveActionListener("MenuBack", EActionTrigger.DOWN, Action_Exit);
-		GetGame().GetInputManager().RemoveActionListener("SwitchMissionDescription", EActionTrigger.DOWN, Action_SwitchMissionDescription);
 		GetGame().GetInputManager().RemoveActionListener("SwitchVoiceChat", EActionTrigger.DOWN, Action_SwitchVoiceChat);
 	}
 	
@@ -256,16 +244,8 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 		ArmaReforgerScripted.OpenPauseMenu();
 	}
 	
-	void Action_SwitchMissionDescription()
-	{
-		m_wMissionDescription.SetVisible(!m_wMissionDescription.IsVisible());
-		if (m_wMissionDescription.IsVisible()) m_bNavigationButtonSwitchMissionDescription.SetLabel("#PS-Briefing_MissionDescriptionHide");
-		else m_bNavigationButtonSwitchMissionDescription.SetLabel("#PS-Briefing_MissionDescriptionShow");
-	}
 	void Action_SwitchVoiceChat()
 	{
 		m_wVoiceChatList.SetVisible(!m_wVoiceChatList.IsVisible());
-		if (m_wVoiceChatList.IsVisible()) m_bNavigationButtonSwitchVoiceChat.SetLabel("#PS-Briefing_VoiceChatHide");
-		else m_bNavigationButtonSwitchVoiceChat.SetLabel("#PS-Briefing_VoiceChatShow");
 	}
 };
