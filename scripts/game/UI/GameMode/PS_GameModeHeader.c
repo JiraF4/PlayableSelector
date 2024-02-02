@@ -19,9 +19,9 @@ class PS_GameModeHeader : ScriptedWidgetComponent
 		
 		m_bButtonPreview.m_OnClicked.Insert(Action_PreviewOpen);
 		m_bButtonLobby.m_OnClicked.Insert(Action_LobbyOpen);
-		m_bButtonBriefing.m_OnClicked.Insert(Action_BriefingOpen);
 		m_bButtonInGame.m_OnClicked.Insert(Action_InGameOpen);
 		m_bButtonBriefing.m_OnClicked.Insert(Action_BriefingOpen);
+		m_bButtonDebriefing.m_OnClicked.Insert(Action_DebriefingOpen);
 		
 		m_bButtonAdvance = PS_GameModeHeaderButton.Cast(w.FindAnyWidget("AdvanceButton").FindHandler(PS_GameModeHeaderButton));
 		
@@ -121,12 +121,16 @@ class PS_GameModeHeader : ScriptedWidgetComponent
 	}
 	void Action_DebriefingOpen(SCR_ButtonBaseComponent button)
 	{
-		SCR_BaseGameMode gameMode = SCR_BaseGameMode.Cast(GetGame().GetGameMode());
-		SCR_EGameModeState state = gameMode.GetState();
-		if (state != SCR_EGameModeState.POSTGAME) return;
-		
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		SCR_BaseGameMode gameMode = SCR_BaseGameMode.Cast(GetGame().GetGameMode());
+		SCR_EGameModeState state = gameMode.GetState();
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
+		
+		if (playerRole != EPlayerRole.ADMINISTRATOR && !Replication.IsServer())
+			if (state != SCR_EGameModeState.POSTGAME) return;
+		
 		playableController.SwitchToMenu(SCR_EGameModeState.POSTGAME);
 	}
 }

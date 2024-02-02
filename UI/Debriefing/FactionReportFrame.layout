@@ -3,6 +3,10 @@ FrameWidgetClass {
  Slot LayoutSlot "{5EBC7340F5460E29}" {
   Padding 10 10 10 10
  }
+ components {
+  PS_DebriefingFactionReportWidgetComponent "{60846DEF82993071}" {
+  }
+ }
  {
   ImageWidgetClass "{5EBC7340A200F4BE}" {
    Name "Background"
@@ -143,13 +147,6 @@ FrameWidgetClass {
            Name "ObjectiveVerticalLayout"
            Slot AlignableSlot "{5EBF1EC82B9DAD0C}" {
            }
-           {
-            FrameWidgetClass "{5EBF1ED7BCD220FB}" : "{0860E6EBB3D508DF}UI/Debriefing/ObjectiveFrame.layout" {
-             Name "ObjectiveFrame0"
-             Slot LayoutSlot "{5EBF1EC9E8008D16}" {
-             }
-            }
-           }
           }
          }
         }
@@ -276,13 +273,6 @@ FrameWidgetClass {
           VerticalLayoutWidgetClass "{5EBF1EC8296881D0}" {
            Name "VerticalLayout0"
            Slot AlignableSlot "{5EBF1EC8296881CD}" {
-           }
-           {
-            FrameWidgetClass "{5EBF1EDD81864CE8}" : "{D2DC34AA650883BC}UI/Debriefing/LossFrame.layout" {
-             Name "ObjectiveFrame0"
-             Slot LayoutSlot "{5EBF1EC9E8008D16}" {
-             }
-            }
            }
           }
          }

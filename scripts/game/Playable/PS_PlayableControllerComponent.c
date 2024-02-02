@@ -61,7 +61,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 				GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.FadeToGame);
 				break;
 			case SCR_EGameModeState.POSTGAME:
-				GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.BriefingMapMenu); // TODO: Debriefing menu
+				GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.DebriefingMenu);
 				break;
 		}
 	}

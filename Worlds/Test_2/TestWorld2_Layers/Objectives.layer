@@ -1,0 +1,6 @@
+PS_Objective {
+ coords 163.725 1 152.329
+ m_iCost 10
+ m_sName "Steal lasagna"
+ m_sFactionKey "FIA"
+}

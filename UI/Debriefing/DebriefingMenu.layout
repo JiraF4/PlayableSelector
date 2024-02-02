@@ -139,13 +139,6 @@ FrameWidgetClass {
          Name "BodyHorizontalLayout"
          Slot AlignableSlot "{5EBC734188DD6276}" {
          }
-         {
-          FrameWidgetClass "{5EBC73404AB30DB0}" : "{2987421913A58DF6}UI/Debriefing/FactionReportFrame.layout" {
-           Name "FactionReportFrame2"
-           Slot LayoutSlot "{5EBC7340F5460E29}" {
-           }
-          }
-         }
         }
        }
       }
