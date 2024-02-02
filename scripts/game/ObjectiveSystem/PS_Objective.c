@@ -6,10 +6,10 @@ class PS_ObjectiveClass : GenericEntityClass
 class PS_Objective : GenericEntity
 {
 	[Attribute("")]
-	int m_iCost;
+	int m_iScore;
 	
 	[Attribute("")]
-	string m_sName;
+	string m_sTitle;
 	
 	[Attribute("")]
 	string m_sDescription;
@@ -26,6 +26,21 @@ class PS_Objective : GenericEntity
 	FactionKey GetFactionKey()
 	{
 		return m_sFactionKey;
+	}
+	
+	int GetScore()
+	{
+		return m_iScore;
+	}
+	
+	string GetTitle()
+	{
+		return m_sTitle;
+	}
+	
+	string GetDescription()
+	{
+		return m_sDescription;
 	}
 	
 	void ~PS_Objective()

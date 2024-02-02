@@ -2,6 +2,10 @@ FrameWidgetClass {
  Name "ObjectiveFrame"
  Slot LayoutSlot "{5EBF1EC9E8008D16}" {
  }
+ components {
+  PS_DebriefingLossesWidgetComponent "{6084E1C19F1615C1}" {
+  }
+ }
  {
   ImageWidgetClass "{5EBF1ED0A97FAABB}" {
    Name "Background"
@@ -17,7 +21,7 @@ FrameWidgetClass {
   }
   TextWidgetClass "{5EBF1ED0A97FAABA}" {
    Prefab "{5D6D1B99A45E5176}"
-   Name "ObjectiveName"
+   Name "UnitName"
    Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
     PositionX 60
     OffsetLeft 60
@@ -51,7 +55,7 @@ FrameWidgetClass {
   }
   TextWidgetClass "{5EBF1ED0A97FAABF}" {
    Prefab "{5D6D1B99A45E5176}"
-   Name "ObjectiveName0"
+   Name "Destroyed"
    Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
     PositionX 476
     OffsetLeft 476
@@ -70,7 +74,7 @@ FrameWidgetClass {
   }
   TextWidgetClass "{5EBF1ED1A09CDA34}" {
    Prefab "{5D6D1B99A45E5176}"
-   Name "ObjectiveName1"
+   Name "VehicleDamaged"
    Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
     PositionX 416
     OffsetLeft 416
@@ -89,7 +93,7 @@ FrameWidgetClass {
   }
   TextWidgetClass "{5EBF1EDDE4F0AE0B}" {
    Prefab "{5D6D1B99A45E5176}"
-   Name "ObjectiveName2"
+   Name "CharacterDamaged"
    Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
     PositionX 356
     OffsetLeft 356
@@ -108,7 +112,7 @@ FrameWidgetClass {
   }
   TextWidgetClass "{5EBF1EDDC874FE63}" {
    Prefab "{5D6D1B99A45E5176}"
-   Name "ObjectiveName3"
+   Name "Undamaged"
    Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
     PositionX 296
     OffsetLeft 296

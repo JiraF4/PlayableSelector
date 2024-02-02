@@ -1,6 +1,20 @@
-PS_Objective {
- coords 163.725 1 152.329
- m_iCost 10
- m_sName "Steal lasagna"
- m_sFactionKey "FIA"
+$grp PS_Objective {
+ {
+  coords 163.725 1 152.329
+  m_iScore 100
+  m_sTitle "Explode lasagna"
+  m_sFactionKey "FIA"
+ }
+ {
+  coords 163.725 1 152.329
+  m_iScore 100
+  m_sTitle "Explode lasagna"
+  m_sFactionKey "USSR"
+ }
+ {
+  coords 163.725 1 152.329
+  m_iScore 100
+  m_sTitle "Explode lasagna"
+  m_sFactionKey "US"
+ }
 }

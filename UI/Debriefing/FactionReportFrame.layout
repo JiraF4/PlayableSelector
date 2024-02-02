@@ -271,7 +271,7 @@ FrameWidgetClass {
          }
          {
           VerticalLayoutWidgetClass "{5EBF1EC8296881D0}" {
-           Name "VerticalLayout0"
+           Name "LossesVerticalLayout"
            Slot AlignableSlot "{5EBF1EC8296881CD}" {
            }
           }

@@ -2,6 +2,10 @@ FrameWidgetClass {
  Name "ObjectiveFrame"
  Slot LayoutSlot "{5EBF1EC9E8008D16}" {
  }
+ components {
+  PS_DebriefingObjectiveWidgetComponent "{6084E1C4324FF049}" {
+  }
+ }
  {
   ImageWidgetClass "{5EBF1EC8B9915317}" {
    Name "Background"
@@ -51,7 +55,7 @@ FrameWidgetClass {
   }
   TextWidgetClass "{5EBF1ED47B73F68B}" {
    Prefab "{5D6D1B99A45E5176}"
-   Name "ObjectiveName0"
+   Name "ObjectiveScore"
    Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
     PositionX 406
     OffsetLeft 406

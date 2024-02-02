@@ -29,4 +29,13 @@ class PS_ObjectiveManager : ScriptComponent
 	{
 		m_aObjectives.RemoveItem(objective);
 	}
+	
+	void GetObjectivesByFactionKey(FactionKey factionKey, out notnull array<PS_Objective> outObjectives)
+	{
+		foreach (PS_Objective objective : m_aObjectives)
+		{
+			if (objective.GetFactionKey() == factionKey)
+				outObjectives.Insert(objective);
+		}
+	}
 };
