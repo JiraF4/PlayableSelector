@@ -131,9 +131,10 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 		PlayerController currentPlayerController = GetGame().GetPlayerController();
 		int currentPlayerId = currentPlayerController.GetPlayerId();
 		FactionKey factionKey = playableManager.GetPlayerFactionKey(currentPlayerId);
-		
+		PS_PlayableControllerComponent playableControllerComponent = PS_PlayableControllerComponent.Cast(currentPlayerController.FindComponent(PS_PlayableControllerComponent));
+			
 		if (m_hVoiceChatList.GetFactionKey() != factionKey)
-			m_hVoiceChatList.SwitchFaction(factionKey);
+			playableControllerComponent.SwitchToMenu(SCR_EGameModeState.BRIEFING);
 		
 		// Update playable marker
 		if (m_hPlayableMarkerComponent)
