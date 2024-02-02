@@ -150,6 +150,11 @@ class PS_VoiceChatList : SCR_ScriptedWidgetComponent
 		Rebuild();
 	}
 	
+	FactionKey GetFactionKey()
+	{
+		return m_sCurrentFactionKey;
+	}
+	
 	void MovePlayer(int playerId, int roomId, int oldRoomId)
 	{
 		// remove from old room

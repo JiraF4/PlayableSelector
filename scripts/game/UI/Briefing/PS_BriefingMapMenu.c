@@ -127,14 +127,19 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 		if (m_ChatPanel)
 			m_ChatPanel.OnUpdateChat(tDelta);
 		
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		PlayerController currentPlayerController = GetGame().GetPlayerController();
+		int currentPlayerId = currentPlayerController.GetPlayerId();
+		FactionKey factionKey = playableManager.GetPlayerFactionKey(currentPlayerId);
+		
+		if (m_hVoiceChatList.GetFactionKey() != factionKey)
+			m_hVoiceChatList.SwitchFaction(factionKey);
+		
 		// Update playable marker
 		if (m_hPlayableMarkerComponent)
 		{
-			PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 			
 			// current player
-			PlayerController currentPlayerController = GetGame().GetPlayerController();
-			int currentPlayerId = currentPlayerController.GetPlayerId();
 			RplId currentPlayableId = playableManager.GetPlayableByPlayer(currentPlayerId);
 			if (currentPlayableId == RplId.Invalid())
 			{

@@ -75,6 +75,7 @@ class PS_CharacterSelector : SCR_ButtonComponent
 	void UpdatePlayableInfo()
 	{
 		// global
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		SCR_FactionManager factionManager = SCR_FactionManager.Cast(GetGame().GetFactionManager());
@@ -144,7 +145,7 @@ class PS_CharacterSelector : SCR_ButtonComponent
 			bool showKick = currentPlayerRole == EPlayerRole.ADMINISTRATOR;
 			if (playableManager.IsPlayerGroupLeader(currentPlayerController.GetPlayerId()))
 			{
-				if (!showKick)
+				if (!showKick && gameMode.GetState() == SCR_EGameModeState.SLOTSELECTION)
 					if (playableManager.GetGroupCallsignByPlayable(m_playable.GetId()) == playableManager.GetGroupCallsignByPlayable(currentPlayableId))
 						if (playableManager.GetPlayerFactionKey(playerId) == playableManager.GetPlayerFactionKey(currentPlayerController.GetPlayerId()))
 							showKick = true;
