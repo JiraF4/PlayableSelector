@@ -182,7 +182,7 @@ class PS_LoadoutInspector
 			if (itemSlot.m_iSuitableSlot == -1)
 			{
 				wApi.CreateObjectArrayVariableMember(entitySource, {ContainerIdPathEntry("SCR_InventoryStorageManagerComponent")}, "InitialInventoryItems", "ItemsInitConfigurationItem", slotsList.Count());
-				itemSlot.m_iSuitableSlot = slotsList.Count() - 1;
+				itemSlot.m_iSuitableSlot = slotsList.Count();
 				assignedSlots.Insert(slotsList.Count() - 1);
 			}
 			
@@ -764,7 +764,7 @@ class PS_LoadoutInspectorItemsListCustomTitle: BaseContainerCustomTitle
 [BaseContainerProps(), PS_LoadoutInspectorItemsListCustomTitle()]
 class PS_LoadoutInspectorItemsList
 {
-	[Attribute("", UIWidgets.ResourcePickerThumbnail, "et")]
+	[Attribute("", UIWidgets.Auto, "et")]
 	ResourceName m_item;
 	
 	[Attribute("1", UIWidgets.Auto)]

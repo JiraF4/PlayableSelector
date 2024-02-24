@@ -746,8 +746,10 @@ class PS_CoopLobby: MenuBase
 		
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		int allReady = 0;
+		
 		array<int> playerIds = new array<int>();
 		GetGame().GetPlayerManager().GetAllPlayers(playerIds);
+			
 		if (playerIds.Count() == 0) return false;
 		bool adminExist = false;
 		foreach (int playerId: playerIds)

@@ -60,6 +60,12 @@ class PS_RolesGroup : SCR_WLibComponentBase
 	{
 		m_gPlayablesGroup = group;
 		
+		if (!group)
+		{
+			m_wRolesGroupName.SetText("");
+			return;
+		}
+			
 		string customName = group.GetCustomName();
 		
 		string company, platoon, squad, character, format;

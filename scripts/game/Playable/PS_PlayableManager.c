@@ -161,18 +161,21 @@ class PS_PlayableManager : ScriptComponent
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		
 		SCR_AIGroup playerGroup = GetPlayerGroupByPlayable(playableId);
-		IEntity leaderEntity = playerGroup.GetLeaderEntity();
+		IEntity leaderEntity = null;
+		if (playerGroup)
+			leaderEntity = playerGroup.GetLeaderEntity();
 		PS_PlayableComponent playableComponentLeader; 
 		if (leaderEntity) playableComponentLeader = PS_PlayableComponent.Cast(leaderEntity.FindComponent(PS_PlayableComponent));
 		
 		SCR_PlayerControllerGroupComponent playerControllerGroupComponent = SCR_PlayerControllerGroupComponent.Cast(playerController.FindComponent(SCR_PlayerControllerGroupComponent));
 		SCR_GroupsManagerComponent groupsManagerComponent = SCR_GroupsManagerComponent.GetInstance();
-		playerControllerGroupComponent.PS_AskJoinGroup(playerGroup.GetGroupID());
+		if (playerGroup)
+			playerControllerGroupComponent.PS_AskJoinGroup(playerGroup.GetGroupID());
 		
 		// Another workaround
 		// Thanks bohem, no one zoomer will be harmed if you remove all text from game.
 		// Maybe also multiplayer from arma? It can harm people, very dangerous.
-		if (playerGroup.GetNameAuthorID() == -1)
+		if (playerGroup && playerGroup.GetNameAuthorID() == -1)
 		{
 			playerGroup.SetCustomName(playerGroup.GetCustomName(), playerId);
 		}
@@ -300,6 +303,8 @@ class PS_PlayableManager : ScriptComponent
 			SCR_AIGroup playableGroup =  SCR_AIGroup.Cast(aiControl.GetControlAIAgent().GetParentGroup());
 			SCR_AIGroup playerGroup;
 			
+			if (!playableGroup)
+				return;
 			
 			if (!playableGroup.IsSlave())
 			{

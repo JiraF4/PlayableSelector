@@ -61,15 +61,21 @@ class PS_PlayerSelector : SCR_ButtonBaseComponent
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		FactionKey factionKey = playableManager.GetPlayerFactionKey(m_iPlayer);
+		
 		if (factionKey != "") 
 		{
 			FactionManager factionManager = GetGame().GetFactionManager();
 			SCR_Faction faction = SCR_Faction.Cast(factionManager.GetFactionByKey(factionKey));
 			m_wPlayerFactionColor.SetColor(faction.GetOutlineFactionColor());
 			m_wPlayerFactionName.SetText(faction.GetFactionName());
+			
+			int factionIndex = GetGame().GetFactionManager().GetFactionIndex(faction);
+			m_wRoot.SetZOrder(factionIndex);
 		}else{
 			m_wPlayerFactionColor.SetColor(Color.FromInt(0xFF2c2c2c));
 			m_wPlayerFactionName.SetText("-");
+			
+			m_wRoot.SetZOrder(-1);
 		}
 		
 		// if admin set player color

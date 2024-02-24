@@ -32,6 +32,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	[Attribute("30000", UIWidgets.EditBox, "Freeze time", "", category: WB_GAME_MODE_CATEGORY)]
 	int m_iFreezeTime = ;
 	
+	[Attribute("0")]
+	protected bool m_bDisableChat;
+	
 	// ------------------------------------------ Events ------------------------------------------
 	override void OnGameStart()
 	{
@@ -164,8 +167,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			RplComponent rpl = RplComponent.Cast(controlledEntity.FindComponent(RplComponent));
 			rpl.GiveExt(RplIdentity.Local(), false);
 		}
-		
-		playerController.SetInitialMainEntity(null);
 		
 		m_OnPlayerDisconnected.Invoke(playerId, cause, timeout);
 		foreach (SCR_BaseGameModeComponent comp : m_aAdditionalGamemodeComponents)
@@ -392,6 +393,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	bool IsAdminMode()
 	{
 		return m_bAdminMode;
+	}
+	
+	bool IsChatDisabled()
+	{
+		return m_bDisableChat;
 	}
 	
 	bool IsFactionLockMode()
