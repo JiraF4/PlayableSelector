@@ -15,6 +15,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 	SCR_EGameModeState m_eMenuState = SCR_EGameModeState.PREGAME;
 	bool m_bAfterInitialSwitch = false;
 	vector m_vObserverPosition = "0 0 0";
+	vector lastCameraTransform[4];
 	
 	// ------ MenuState ------
 	void SetMenuState(SCR_EGameModeState state)
@@ -218,7 +219,6 @@ class PS_PlayableControllerComponent : ScriptComponent
 		if (thisPlayerController.GetPlayerId() != playerId && playerRole == EPlayerRole.NONE) return;
 		if (playableManager.GetPlayerPin(playerId) && playerRole == EPlayerRole.NONE) return;
 		
-		
 		playableManager.SetPlayerFactionKey(playerId, factionKey);
 	}
 	
@@ -321,6 +321,12 @@ class PS_PlayableControllerComponent : ScriptComponent
 	}
 	
 	// ------------------ Observer camera controlls ------------------
+	void SaveCameraTransform()
+	{
+		SCR_CameraEditorComponent cameraManager = SCR_CameraEditorComponent.Cast(SCR_BaseEditorComponent.GetInstance(SCR_CameraEditorComponent, false));
+		cameraManager.GetLastCameraTransform(lastCameraTransform);
+	}
+	
 	void SwitchToObserver(IEntity from)
 	{
 		if (m_eCamera) return;
@@ -330,9 +336,14 @@ class PS_PlayableControllerComponent : ScriptComponent
 		EntitySpawnParams params = new EntitySpawnParams();
 		if (from) from.GetTransform(params.Transform);
 		MoveToVoNRoom(thisPlayerController.GetPlayerId(), "", "");
-        Resource resource = Resource.Load("{6EAA30EF620F4A2E}Prefabs/Editor/Camera/ManualCameraSpectator.et");
-        m_eCamera = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
-		if (m_vObserverPosition != "0 0 0") { 
+      Resource resource = Resource.Load("{6EAA30EF620F4A2E}Prefabs/Editor/Camera/ManualCameraSpectator.et");
+      m_eCamera = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
+		
+		if (lastCameraTransform[3][1] < 10000 && lastCameraTransform[3][1] > 0)
+		{
+			m_eCamera.SetTransform(lastCameraTransform);
+			lastCameraTransform[3][1] = 10000;
+		} else if (m_vObserverPosition != "0 0 0") { 
 			m_eCamera.SetOrigin(m_vObserverPosition);
 			m_vObserverPosition = "0 0 0";
 		} else {

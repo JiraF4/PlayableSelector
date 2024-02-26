@@ -35,6 +35,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	[Attribute("0")]
 	protected bool m_bDisableChat;
 	
+	[RplProp()]
+	protected bool m_fCurrentFreezeTime;
+	
 	// ------------------------------------------ Events ------------------------------------------
 	override void OnGameStart()
 	{
@@ -50,6 +53,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (Replication.IsServer())
 		{
 			PS_VoNRoomsManager.GetInstance().GetOrCreateRoomWithFaction("", "#PS-VoNRoom_Global" );
+			
+			m_fCurrentFreezeTime = m_iAvailableReconnectTime;
+			Replication.BumpMe();
 		}
 		
 		if (RplSession.Mode() != RplMode.Dedicated) {
@@ -59,15 +65,24 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		
 		GetGame().GetCallqueue().CallLater(AddAdvanceAction, 0, false);
 		
+		GetGame().GetCallqueue().CallLater(RegisterEditorClosed, 100, false);
+	}
+	
+	void RegisterEditorClosed()
+	{
 		SCR_EditorModeEntity editorModeEntity = SCR_EditorModeEntity.GetInstance();
 		if (editorModeEntity)
 			editorModeEntity.GetOnClosed().Insert(EditorClosed);
+		else
+			GetGame().GetCallqueue().CallLater(RegisterEditorClosed, 100, false);
 	}
 	
 	void EditorClosed()
 	{
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		
+		playableController.SaveCameraTransform();
 		playableController.SwitchFromObserver();
 		playableController.SwitchToMenu(GetState());
 	}
@@ -232,8 +247,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
 		
-		if (!m_bCanOpenLobbyInGame && playerRole != EPlayerRole.ADMINISTRATOR) return;
-		GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.CoopLobby);
+		if (!m_bCanOpenLobbyInGame && playerRole != EPlayerRole.ADMINISTRATOR && !Replication.IsServer()) return;
+		
+		MenuBase lobbyMenu = GetGame().GetMenuManager().FindMenuByPreset(ChimeraMenuPreset.CoopLobby);
+		if (!lobbyMenu)
+			GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.CoopLobby);
 	}
 	
 	// Force open current game state menu
@@ -356,6 +374,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (freezeTime < time) time = freezeTime;
 		freezeTime -= time;
 		
+		m_fCurrentFreezeTime = freezeTime;
+		Replication.BumpMe();
+		
 		// Show timer on clients synced to server
 		if (RplSession.Mode() != RplMode.Dedicated) RPC_restrictedZonesTimer(freezeTime);
 		Rpc(RPC_restrictedZonesTimer, freezeTime);
@@ -390,6 +411,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	PS_FreezeTimeCounter m_hFreezeTimeCounter;
 	
 	// ------------------------------------------ Global flags ------------------------------------------
+	bool IsFreezeTimeEnd()
+	{
+		return m_fCurrentFreezeTime <= 0;
+	}
+	
 	bool IsAdminMode()
 	{
 		return m_bAdminMode;

@@ -1,0 +1,35 @@
+PolylineShapeEntity {
+ components {
+  PS_PolyZone "{60B2D1EDEC36F39A}" {
+   m_bReversed 1
+  }
+ }
+ coords 81.378 1 93.854
+ Points {
+  ShapePoint "{60B2D1EE3C506275}" {
+   Position -10.067 0 15.108
+  }
+  ShapePoint "{60B2D1EE3C50672D}" {
+   Position 62.175 0 28.266
+  }
+  ShapePoint "{60B2D1EE3D5EC3AF}" {
+   Position 73.249 0 13.412
+  }
+  ShapePoint "{60B2D1EE3E882B49}" {
+   Position 71.466 0 -9.954
+  }
+  ShapePoint "{60B2D1EE3ECCAFC3}" {
+   Position 58.631 0 -44.472
+  }
+  ShapePoint "{60B2D1EE3E303B41}" {
+   Position 11.682 0 -41.911
+  }
+  ShapePoint "{60B2D1EE3E4A1985}" {
+   Position -3.551 0 -24.057
+  }
+ }
+ IsClosed 1
+}
+SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.et" {
+ coords 93.981 1 88.861
+}

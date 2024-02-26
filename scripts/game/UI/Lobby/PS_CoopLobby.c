@@ -104,10 +104,6 @@ class PS_CoopLobby: MenuBase
 			return;
 		}
 		PlayerController playerController = GetGame().GetPlayerController();
-		if (playerController) { // Menu open faster than player creation
-			PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-			playableController.SwitchFromObserver();
-		}
 		
 		m_wFactionList = GetRootWidget().FindAnyWidget("FactionList");
 		m_wRolesList = GetRootWidget().FindAnyWidget("RolesList");
@@ -478,6 +474,15 @@ class PS_CoopLobby: MenuBase
 		// For some strange reason players all the time accidentally exit game, maybe jus open pause menu
 		//GameStateTransitions.RequestGameplayEndTransition();  
 		//Close();
+		
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		SCR_EGameModeState gameModeState = gameMode.GetState();
+		if (gameModeState == SCR_EGameModeState.GAME)
+		{
+			Close();
+			return;
+		}
+		
 		GetGame().GetCallqueue().CallLater(OpenPauseMenuWrap, 0); //  Else menu auto close itself
 	}
 	void OpenPauseMenuWrap()

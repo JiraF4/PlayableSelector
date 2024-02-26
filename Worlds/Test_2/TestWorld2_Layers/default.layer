@@ -9,7 +9,6 @@ TagManager : "{2FA9E172CAB1857A}Prefabs/MP/Managers/TagManager.et" {
 }
 PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_GameMode_Lobby.et" {
  m_bCanOpenLobbyInGame 1
- m_iFreezeTime 5000
  {
   SCR_FactionManager "5EE8949D46B62B0A" {
    ID "5ED9088735FF2D8B"
@@ -27,26 +26,80 @@ PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_Game
   }
  }
 }
-PolylineShapeEntity {
- coords 89.866 1 52.042
- Points {
-  ShapePoint "{608CFEEE9BD870F9}" {
-   Position 6.609 0 -13.635
+$grp PolylineShapeEntity {
+ {
+  coords 89.866 1 52.042
+  Points {
+   ShapePoint "{608CFEEE9BD870F9}" {
+    Position 6.609 0 -13.635
+   }
+   ShapePoint "{608CFEEE9BD84BBD}" {
+    Position 11.486 0 18.347
+   }
+   ShapePoint "{608CFEEE7B915DB0}" {
+    Position 46.643 0 16.461
+   }
+   ShapePoint "{608CFEEE1D3FD75C}" {
+    Position 50.62 0 -6.291
+   }
+   ShapePoint "{608CFEEE1D4C9EB4}" {
+    Position 45.367 0 -19.304
+   }
   }
-  ShapePoint "{608CFEEE9BD84BBD}" {
-   Position 11.486 0 18.347
+  IsClosed 1
+ }
+ {
+  components {
+   PS_PolyLine "{60B2D1EF35A69BD4}" {
+   }
   }
-  ShapePoint "{608CFEEE7B915DB0}" {
-   Position 46.643 0 16.461
-  }
-  ShapePoint "{608CFEEE1D3FD75C}" {
-   Position 50.62 0 -6.291
-  }
-  ShapePoint "{608CFEEE1D4C9EB4}" {
-   Position 45.367 0 -19.304
+  coords 70.514 1 31.408
+  Points {
+   ShapePoint "{60B2D1EF2625323D}" {
+    Position 0 0 0
+   }
+   ShapePoint "{60B2D1EF26253475}" {
+    Position 6.884 0 -11.743
+   }
+   ShapePoint "{60B2D1EF27066B96}" {
+    Position 17.452 0 -19.72
+   }
+   ShapePoint "{60B2D1EF2747482F}" {
+    Position 30.132 0 -16.633
+   }
+   ShapePoint "{60B2D1EF28B2C36A}" {
+    Position 43.235 0 -7.79
+   }
+   ShapePoint "{60B2D1EF28E3607F}" {
+    Position 40.131 0 0.718
+   }
+   ShapePoint "{60B2D1EF283BF66A}" {
+    Position 46.881 0 18.773
+   }
+   ShapePoint "{60B2D1EF286DAAB9}" {
+    Position 57.335 0 29.732
+   }
+   ShapePoint "{60B2D1EF28540F5C}" {
+    Position 73.483 0 50.826
+   }
+   ShapePoint "{60B2D1EF29FED570}" {
+    Position 65.544 0 63.781
+   }
+   ShapePoint "{60B2D1EF292122FD}" {
+    Position 44.629 0 55.02
+   }
+   ShapePoint "{60B2D1EF296A31F3}" {
+    Position 31.513 0 45.289
+   }
   }
  }
- IsClosed 1
+ {
+  components {
+   PS_PolyLine "{60B2D1EE9706F145}" {
+   }
+  }
+  coords 15.488 1 227.398
+ }
 }
 HitRegistrationManager HitRegManager1 : "{0EDA3D48791120DD}Prefabs/MP/HitRegManager.et" {
 }

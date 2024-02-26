@@ -21,6 +21,14 @@ class PS_MissionDescription : GenericEntity
 	[Attribute("")]
 	bool m_bShowForAnyFaction;
 	
+	[Attribute("")]
+	int m_iOrder;
+	
+	int GetOrder()
+	{
+		return m_iOrder;
+	}
+	
 	ResourceName GetDescriptionLayout()
 	{
 		return m_sDescriptionLayout;
