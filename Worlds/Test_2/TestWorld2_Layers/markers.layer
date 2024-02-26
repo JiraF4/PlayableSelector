@@ -254,4 +254,12 @@ $grp PS_ManualMarker : "{CD85ADE9E0F54679}PrefabsEditable/Markers/EditableMarker
    "USSR"
   }
  }
+ EddsMarker {
+  coords 81.289 1 168.531
+  m_sImageSet "{7E6CA7ECD363AE36}UI/Textures/FieldManual/Gameplay/Items/Tiles/ Field_Shovel.edds"
+  m_sImageSetGlow ""
+  m_sQuadName "mark-exclamation"
+  m_sDescription "Edds marker"
+  m_bVisibleForEmptyFaction 1
+ }
 }

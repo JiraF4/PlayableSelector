@@ -32,7 +32,7 @@ ButtonWidgetClass {
      }
      Color 0 0 0 1
     }
-    TextWidgetClass "{5EBEE9660531B5C5}" {
+    RichTextWidgetClass "{5EBEE9660531B5C5}" {
      Prefab "{5D6D1B99A45E5176}"
      Name "DescriptionName"
      Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {

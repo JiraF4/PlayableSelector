@@ -17,12 +17,23 @@ class PS_Objective : GenericEntity
 	[Attribute("")]
 	FactionKey m_sFactionKey;
 	
+	[RplProp()]
+	bool m_bCompleted;
+	
 	void PS_Objective(IEntitySource src, IEntity parent)
 	{
 		if (PS_ObjectiveManager.GetInstance())
 			PS_ObjectiveManager.GetInstance().RegisterObjective(this);
 	}
 	
+	// Set
+	void SetCompleted(bool completed)
+	{
+		m_bCompleted = completed;
+		Replication.BumpMe();
+	}
+	
+	// Get
 	FactionKey GetFactionKey()
 	{
 		return m_sFactionKey;
@@ -41,6 +52,11 @@ class PS_Objective : GenericEntity
 	string GetDescription()
 	{
 		return m_sDescription;
+	}
+	
+	bool GetCompleted()
+	{
+		return m_bCompleted;
 	}
 	
 	void ~PS_Objective()
