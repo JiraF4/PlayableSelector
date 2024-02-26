@@ -117,6 +117,7 @@ FrameWidgetClass {
               HorizontalAlign 1
               Padding 0 0 0 0
              }
+             "Is Visible" 0
              Text "USSR Total Victory"
              "Font Size" 20
              "Min Font Size" 20

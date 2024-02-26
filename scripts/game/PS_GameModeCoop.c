@@ -96,6 +96,19 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		invoker.Insert(LoadMap_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("sav");
 		invoker.Insert(ExportMissionData_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("tst");
+		invoker.Insert(Test_Callback);
+	}
+	
+	void Test_Callback(SCR_ChatPanel panel, string data)
+	{
+		MemoryStatsSnapshot snapshot = new MemoryStatsSnapshot();
+		int statsCount = MemoryStatsSnapshot.GetStatsCount();
+		for (int i = 0; i < statsCount; i++)
+		{
+			Print(MemoryStatsSnapshot.GetStatName(i));
+			Print(snapshot.GetStatValue(i));
+		}
 	}
 	
 	void ExportMissionData_Callback(SCR_ChatPanel panel, string data)

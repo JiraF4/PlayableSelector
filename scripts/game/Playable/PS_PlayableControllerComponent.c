@@ -516,6 +516,16 @@ class PS_PlayableControllerComponent : ScriptComponent
 		if (playerId != thisPlayerController.GetPlayerId()) playableManager.SetPlayerPin(playerId, true);	
 	}
 	
-	
-	
+	void SetObjectiveCompleteState(PS_Objective objective, bool complete)
+	{
+		RplId objectiveId = objective.GetRplId();
+		Rpc(RPC_SetObjectiveCompleteState, objectiveId, complete);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void RPC_SetObjectiveCompleteState(RplId objectiveId, bool complete)
+	{
+		PS_Objective objective = PS_Objective.Cast(Replication.FindItem(objectiveId));
+		if (objective)
+			objective.SetCompleted(complete);
+	}
 }
