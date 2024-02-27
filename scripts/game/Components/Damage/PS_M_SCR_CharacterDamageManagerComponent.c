@@ -14,7 +14,7 @@ modded class SCR_CharacterDamageManagerComponent
 		controller.SetUnconscious(unconscious);
 		if (!unconscious)
 		{
-			GetGame().GetCallqueue().Call(ForceDisableAI);
+			GetGame().GetCallqueue().Call(ForceDisableAI, character);
 			return;
 		}
 
@@ -32,7 +32,7 @@ modded class SCR_CharacterDamageManagerComponent
 		}
 	}
 	
-	void ForceDisableAI()
+	void ForceDisableAI(ChimeraCharacter character)
 	{
 		PS_PlayableComponent playableComponent = PS_PlayableComponent.Cast(character.FindComponent(PS_PlayableComponent));
 		if (playableComponent && playableComponent.GetPlayable())
