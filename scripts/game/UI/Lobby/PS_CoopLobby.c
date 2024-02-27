@@ -261,7 +261,23 @@ class PS_CoopLobby: MenuBase
 			// insert playable to faction
 			array<PS_PlayableComponent> factionPlayablesList = m_sFactionPlayables[factionKey];
 			if (!factionPlayablesList.Contains(playable))
-				factionPlayablesList.Insert(playable);
+			{
+				bool added = false;
+				
+				array<PS_PlayableComponent> sortedPlayables = {};
+				for (int r = 0; r < factionPlayablesList.Count(); r++)
+				{
+					PS_PlayableComponent sortedPlayable = factionPlayablesList[r];
+					if (SCR_CharacterRankComponent.GetCharacterRank(playable.GetOwner()) > SCR_CharacterRankComponent.GetCharacterRank(sortedPlayable.GetOwner()))
+					{
+						factionPlayablesList.InsertAt(playable, r);
+						added = true;
+						break;
+					}
+				}
+				if (!added)
+					factionPlayablesList.Insert(playable);
+			}
 		}
 		
 		// ReFill players if need

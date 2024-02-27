@@ -1,6 +1,24 @@
 FrameWidgetClass {
  Name "SpectatorMenu"
  {
+  HorizontalLayoutWidgetClass "{60B551B74785C98F}" {
+   Name "SidesRatio"
+   Slot FrameWidgetSlot "{60B551B74785C9E5}" {
+    Anchor 0.5 0 0.5 0
+    PositionX -400
+    OffsetLeft -400
+    PositionY 100
+    OffsetTop 100
+    SizeX 800
+    OffsetRight -400
+    SizeY 45
+    OffsetBottom -145
+   }
+   components {
+    PS_SidesRation "{60B551B9F3DAD167}" {
+    }
+   }
+  }
   FrameWidgetClass "{5EE8949BDE5C93EE}" {
    Name "IconsFrame"
    Slot FrameWidgetSlot "{5EE8949BDE5C93C5}" {
@@ -31,18 +49,6 @@ FrameWidgetClass {
    }
    "Is Visible" 0
    {
-    HorizontalLayoutWidgetClass "{000000001FC52976}" {
-     Prefab "{000000001FC52976}"
-     {
-      ImageWidgetClass "{000000002766140D}" {
-       Prefab "{000000002766140D}"
-       Slot LayoutSlot "{52DA9C9935318517}" {
-        Padding 0 0 0 0
-        FillWeight 1
-       }
-      }
-     }
-    }
     FrameWidgetClass "{5F34C888848C4724}" : "{2F8AEE78FF5A8104}UI/layouts/Map/ToolMenu.layout" {
      Name "ToolMenu"
      Slot FrameWidgetSlot "{59107CDEE98682C5}" {
@@ -63,6 +69,18 @@ FrameWidgetClass {
        }
        Text "<shadow color='0,0,0' size='0' offset='1,1' opacity='0.5' mode='image'><action name=\"MapToolMenuFocus\"/></shadow>"
        "Horizontal Alignment" Right
+      }
+     }
+    }
+    HorizontalLayoutWidgetClass "{000000001FC52976}" {
+     Prefab "{000000001FC52976}"
+     {
+      ImageWidgetClass "{000000002766140D}" {
+       Prefab "{000000002766140D}"
+       Slot LayoutSlot "{52DA9C9935318517}" {
+        Padding 0 0 0 0
+        FillWeight 1
+       }
       }
      }
     }
@@ -108,6 +126,19 @@ FrameWidgetClass {
       OffsetBottom -39
      }
      {
+      ImageWidgetClass "{5EB2900030AFF405}" {
+       Prefab "{5EB2900030AFF405}"
+       Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX 330
+        OffsetRight -330
+        SizeY 39
+        OffsetBottom -39
+       }
+      }
       OverlayWidgetClass "{5EB2900030AFF406}" {
        Prefab "{5EB2900030AFF406}"
        Slot FrameWidgetSlot "{5EB0E9ED5655F81D}" {
