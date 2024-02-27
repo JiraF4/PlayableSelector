@@ -38,6 +38,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	[RplProp()]
 	protected bool m_fCurrentFreezeTime;
 	
+	[Attribute("0")]
+	protected bool m_bReserveSlots;
+	
 	// ------------------------------------------ Events ------------------------------------------
 	override void OnGameStart()
 	{
@@ -366,6 +369,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 				SetGameModeState(SCR_EGameModeState.BRIEFING);
 				break;
 			case SCR_EGameModeState.BRIEFING:
+				if (m_bReserveSlots)
+					ReserveSlots();
 				if (m_bKillRedundantUnits) PS_PlayableManager.GetInstance().KillRedundantUnits();
 				restrictedZonesTimer(m_iFreezeTime);
 				StartGameMode();
@@ -377,6 +382,30 @@ class PS_GameModeCoop : SCR_BaseGameMode
 				break;
 		}
 		OpenCurrentMenuOnClients();
+	}
+	
+	void ReserveSlots()
+	{
+		if (!Replication.IsServer())
+			return;
+		
+		PS_SlotsReserver slotsReserver = PS_SlotsReserver.Cast(FindComponent(PS_SlotsReserver));
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		
+		array<string> GUIDs = {};
+		map<RplId, PS_PlayableComponent> playables = playableManager.GetPlayables();
+		foreach (RplId id, PS_PlayableComponent playable : playables)
+		{
+			int playerId = playableManager.GetPlayerByPlayable(id);
+			if (playerId <= 0)
+				continue;
+			
+			string GUID = GetGame().GetBackendApi().GetPlayerIdentityId(playerId);
+			GUIDs.Insert(GUID);
+		}
+		
+		slotsReserver.AddGUIDs(GUIDs);
+		slotsReserver.SetEnabled(true);
 	}
 	
 	// TODO: move it to component

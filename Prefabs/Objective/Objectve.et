@@ -1,0 +1,12 @@
+PS_Objective {
+ ID "60B551D06017C504"
+ components {
+  RplComponent "{60B551D053E22EBB}" {
+   Streamable Disabled
+  }
+ }
+ coords 163.725 1 152.329
+ m_iScore 100
+ m_sTitle "Explode lasagna"
+ m_sFactionKey "FIA"
+}

@@ -1,6 +1,8 @@
 SCR_BaseGameMode {
  ID "56B2B479C6B96951"
  components {
+  PS_SlotsReserver "{60B6B9D16E543DF5}" {
+  }
   PS_SpectatorLabelsManager "{5F34C8D0DF1B7479}" {
   }
  }
