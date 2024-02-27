@@ -1,24 +1,6 @@
 FrameWidgetClass {
  Name "SpectatorMenu"
  {
-  HorizontalLayoutWidgetClass "{60B551B74785C98F}" {
-   Name "SidesRatio"
-   Slot FrameWidgetSlot "{60B551B74785C9E5}" {
-    Anchor 0.5 0 0.5 0
-    PositionX -400
-    OffsetLeft -400
-    PositionY 100
-    OffsetTop 100
-    SizeX 800
-    OffsetRight -400
-    SizeY 45
-    OffsetBottom -145
-   }
-   components {
-    PS_SidesRation "{60B551B9F3DAD167}" {
-    }
-   }
-  }
   FrameWidgetClass "{5EE8949BDE5C93EE}" {
    Name "IconsFrame"
    Slot FrameWidgetSlot "{5EE8949BDE5C93C5}" {
@@ -175,69 +157,13 @@ FrameWidgetClass {
     OffsetLeft 0
     PositionY -320
     OffsetTop -320
-    SizeX 330
-    OffsetRight -330
+    SizeX 320
+    OffsetRight -320
     SizeY 640
     OffsetBottom -320
    }
    components {
     PS_AlivePlayerList "{5EBA416A9CB1DC7C}" {
-    }
-   }
-   {
-    FrameWidgetClass "{5EBA3C97FF93DE7A}" {
-     Prefab "{5EBA3C97FF93DE7A}"
-     Slot FrameWidgetSlot "{5EBA3C97FF93DE52}" {
-      OffsetLeft 0
-      OffsetTop 0
-      SizeX 330
-      OffsetRight -330
-      OffsetBottom -39
-     }
-     {
-      ImageWidgetClass "{5EBA3C974B568AC5}" {
-       Prefab "{5EBA3C974B568AC5}"
-       Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
-        OffsetLeft 0
-        OffsetTop 0
-        SizeX 330
-        OffsetRight -330
-        OffsetBottom -39
-       }
-      }
-      OverlayWidgetClass "{5EBA3C976CAFC55D}" {
-       Prefab "{5EBA3C976CAFC55D}"
-       Slot FrameWidgetSlot "{5EB0E9ED5655F81D}" {
-        OffsetLeft 0
-        OffsetTop 0
-        SizeX 330
-        OffsetRight -330
-        OffsetBottom -39
-       }
-      }
-     }
-    }
-    ImageWidgetClass "{5EBA3C97969AD0E7}" {
-     Prefab "{5EBA3C97969AD0E7}"
-     Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
-      OffsetLeft 0
-      OffsetTop 0
-      SizeX 330
-      OffsetRight -330
-      SizeY 640
-      OffsetBottom -640
-     }
-    }
-    ScrollLayoutWidgetClass "{5EBA3C972331B0F8}" {
-     Prefab "{5EBA3C972331B0F8}"
-     Slot FrameWidgetSlot "{5EB1000AD8290B3B}" {
-      OffsetLeft 0
-      OffsetTop 39
-      SizeX 330
-      OffsetRight -330
-      SizeY 601
-      OffsetBottom -640
-     }
     }
    }
   }

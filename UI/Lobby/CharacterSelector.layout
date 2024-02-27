@@ -87,14 +87,15 @@ ButtonWidgetClass {
           ImageWidgetClass "{5E7CF0476D8FEDDF}" {
            Name "UnitIcon"
            Slot FrameWidgetSlot "{5E7CF059F272107C}" {
-            PositionX -28
-            OffsetLeft -28
-            PositionY -28
-            OffsetTop -28
-            SizeX 96
-            OffsetRight -68
-            SizeY 96
-            OffsetBottom -68
+            Anchor 0 0 0 0
+            PositionX -17
+            OffsetLeft -17
+            PositionY -17
+            OffsetTop -17
+            SizeX 74
+            OffsetRight -57
+            SizeY 74
+            OffsetBottom -57
            }
            "Inherit Color" 1
            Texture "{00B30C29FAF85E1C}UI/Textures/Editor/EditableEntities/Characters/EditableEntity_Character_AntiTank.edds"

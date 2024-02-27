@@ -1,0 +1,60 @@
+ButtonWidgetClass {
+ Name "AliveFactionButton"
+ Slot LayoutSlot "{60B71466C552F090}" {
+  SizeMode Fill
+  FillWeight 1
+ }
+ "Ignore Cursor" 0
+ Color 1 1 1 0
+ components {
+  PS_AliveFactionButton "{60B714637558D5EF}" {
+   m_sSoundHovered ""
+   m_sSoundClicked ""
+   m_BackgroundDefault 1 1 1 0
+   m_BackgroundHovered 1 1 1 0.162
+   m_BackgroundSelected 1 1 1 0
+   m_BackgroundSelectedHovered 1 1 1 0.162
+   m_BackgroundClicked 1 1 1 0
+   m_bShowBorderOnFocus 0
+   m_bNoBorderAnimation 1
+  }
+ }
+ {
+  OverlayWidgetClass "{60B714612F9CCA44}" {
+   Name "Overlay"
+   Slot ButtonWidgetSlot {
+    HorizontalAlign 3
+    VerticalAlign 3
+   }
+   {
+    ImageWidgetClass "{60B714669DE8F0F4}" {
+     Name "BackgroundFaction"
+     Slot OverlayWidgetSlot "{60B71466C552F029}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+     }
+     Color 0.175 0.001 0.001 1
+    }
+    ImageWidgetClass "{60B6B9E6473350B9}" {
+     Prefab "{5EB1176E3DB20C7D}"
+     Name "Background"
+     Slot OverlayWidgetSlot "{60B71466C552F029}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+     }
+    }
+    TextWidgetClass "{60B71466AD5ED5CA}" {
+     Name "SideCount"
+     Slot OverlayWidgetSlot "{60B71466AD5ED522}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+     }
+     Color 0 0 0 1
+     Text "12"
+     "Horizontal Alignment" Center
+     "Vertical Alignment" Center
+    }
+   }
+  }
+ }
+}

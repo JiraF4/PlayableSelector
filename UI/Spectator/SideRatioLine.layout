@@ -24,6 +24,7 @@ PanelWidgetClass {
     SizeY -15
     OffsetBottom 0
    }
+   "Is Visible" 0
    Text "2"
    "Font Size" 50
    "Min Font Size" 50
