@@ -61,6 +61,8 @@ class PS_GameModeHeader : ScriptedWidgetComponent
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
 		if (playerRole != EPlayerRole.ADMINISTRATOR && !Replication.IsServer()) return;
 		
+		if (PS_GameModeCoop.Cast(GetGame().GetGameMode()).GetState() == SCR_EGameModeState.GAME) return;
+		
 		playableController.AdvanceGameState(SCR_EGameModeState.NULL);
 	}
 	void Action_PreviewOpen(SCR_ButtonBaseComponent button)
@@ -129,8 +131,8 @@ class PS_GameModeHeader : ScriptedWidgetComponent
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
 		
 		if (playerRole != EPlayerRole.ADMINISTRATOR && !Replication.IsServer())
-			if (state != SCR_EGameModeState.POSTGAME) return;
+			if (state != SCR_EGameModeState.DEBRIEFING) return;
 		
-		playableController.SwitchToMenu(SCR_EGameModeState.POSTGAME);
+		playableController.SwitchToMenu(SCR_EGameModeState.DEBRIEFING);
 	}
 }

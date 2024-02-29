@@ -70,11 +70,6 @@ FrameWidgetClass {
         Padding 10 10 10 10
        }
        "Is Visible" 0
-       components {
-        SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
-         m_sLabel ""
-        }
-       }
       }
       ButtonWidgetClass "{5EB1000404C189E8}" : "{C89F7100D39A8D45}UI/GameModeHeader/GameModeHeaderButton.layout" {
        Name "PreviewButton"
@@ -211,7 +206,7 @@ FrameWidgetClass {
        }
        components {
         PS_GameModeHeaderButton "{5EB4BBDFAF17BD09}" {
-         m_eState POSTGAME
+         m_eState DEBRIEFING
         }
        }
        {
@@ -244,12 +239,6 @@ FrameWidgetClass {
         Padding 10 10 10 10
        }
        "Is Visible" 0
-       components {
-        SCR_NavigationButtonComponent "{5474BAC5DBCF129A}" {
-         m_sLabel ""
-         m_sActionName "MenuTabRight"
-        }
-       }
       }
      }
     }

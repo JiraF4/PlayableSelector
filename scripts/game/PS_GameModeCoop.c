@@ -358,7 +358,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	void AdvanceGameState(SCR_EGameModeState oldState)
 	{
 		SCR_EGameModeState state = GetState();
-		if (state == SCR_EGameModeState.GAME) return;
 		if (oldState != SCR_EGameModeState.NULL && oldState != state) return;
 		switch (state) 
 		{
@@ -376,7 +375,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 				StartGameMode();
 				break;
 			case SCR_EGameModeState.GAME:
-				SetGameModeState(SCR_EGameModeState.POSTGAME);
+				SetGameModeState(SCR_EGameModeState.DEBRIEFING);
+				break;
+			case SCR_EGameModeState.DEBRIEFING:
 				break;
 			case SCR_EGameModeState.POSTGAME:
 				break;

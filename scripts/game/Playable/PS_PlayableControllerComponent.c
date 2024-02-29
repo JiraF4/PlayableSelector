@@ -46,6 +46,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		GetGame().GetMenuManager().CloseMenuByPreset(ChimeraMenuPreset.CoopLobby);
 		GetGame().GetMenuManager().CloseMenuByPreset(ChimeraMenuPreset.BriefingMapMenu);
 		GetGame().GetMenuManager().CloseMenuByPreset(ChimeraMenuPreset.FadeToGame);
+		GetGame().GetMenuManager().CloseMenuByPreset(ChimeraMenuPreset.DebriefingMenu);
 		switch (state) 
 		{
 			case SCR_EGameModeState.PREGAME:
@@ -60,6 +61,9 @@ class PS_PlayableControllerComponent : ScriptComponent
 			case SCR_EGameModeState.GAME:
 				ApplyPlayable();
 				GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.FadeToGame);
+				break;
+			case SCR_EGameModeState.DEBRIEFING:
+				GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.DebriefingMenu);
 				break;
 			case SCR_EGameModeState.POSTGAME:
 				GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.DebriefingMenu);
