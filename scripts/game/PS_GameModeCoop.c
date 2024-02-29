@@ -11,6 +11,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	[Attribute("120000", UIWidgets.EditBox, "Time during which disconnected players reserve playable for reconnection in ms, -1 for infinity time", "", category: WB_GAME_MODE_CATEGORY)]
 	int m_iAvailableReconnectTime = ;
 	
+	[Attribute("300000", UIWidgets.EditBox, "Time during which disconnected players reserve playable for reconnection in ms, -1 for infinity time", "", category: WB_GAME_MODE_CATEGORY)]
+	int m_iAvailableReconnectAfterSlots = ;
+	
 	[Attribute("1", uiwidget: UIWidgets.CheckBox, "Game may be started only if admin exists on server.", category: WB_GAME_MODE_CATEGORY)]
 	protected bool m_bAdminMode;
 	
@@ -368,6 +371,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 				SetGameModeState(SCR_EGameModeState.BRIEFING);
 				break;
 			case SCR_EGameModeState.BRIEFING:
+				m_iAvailableReconnectTime = m_iAvailableReconnectAfterSlots;
 				if (m_bReserveSlots)
 					ReserveSlots();
 				if (m_bKillRedundantUnits) PS_PlayableManager.GetInstance().KillRedundantUnits();

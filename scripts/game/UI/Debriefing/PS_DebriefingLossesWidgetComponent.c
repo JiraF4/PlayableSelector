@@ -45,7 +45,18 @@ class PS_DebriefingLossesWidgetComponent : SCR_ScriptedWidgetComponent
 		m_UnitType = unitType;
 		int ok, medC, medV, des;
 		//GetGame().GetWorld().GetActiveEntities(entities);
-		GetGame().GetWorld().QueryEntitiesBySphere("0 0 0", 10000000000, QueryEntities);
+		//GetGame().GetWorld().QueryEntitiesBySphere("0 0 0", 10000000000, QueryEntities, EQueryEntitiesFlags.DYNAMIC);
+		
+		foreach (IEntity e : SCR_ChimeraCharacter.m_aCharacters_PS)
+		{
+			QueryEntities(e);
+		}
+		foreach (IEntity e : Vehicle.m_aVehicles_PS)
+		{
+			QueryEntities(e);
+		}
+		
+		
 		foreach (IEntity entity : m_aEntities)
 		{
 			ScriptedDamageManagerComponent damageManagerComponent = ScriptedDamageManagerComponent.Cast(entity.FindComponent(ScriptedDamageManagerComponent));
