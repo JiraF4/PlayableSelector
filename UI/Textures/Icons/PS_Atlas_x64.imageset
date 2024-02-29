@@ -220,7 +220,7 @@ ImageSetClass {
   }
   ImageSetDefClass Helicopter {
    Name "Helicopter"
-   Pos 1489 79
+   Pos 1489 78
    Size 30 34
    Flags 0
   }
@@ -275,6 +275,36 @@ ImageSetClass {
   ImageSetDefClass Dead {
    Name "Dead"
    Pos 1984 64
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass Helicopter2 {
+   Name "Helicopter2"
+   Pos 1472 64
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass Car2 {
+   Name "Car2"
+   Pos 1600 64
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass APC2 {
+   Name "APC2"
+   Pos 1728 64
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass Tank2 {
+   Name "Tank2"
+   Pos 1792 64
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass Truck2 {
+   Name "Truck2"
+   Pos 1856 64
    Size 64 64
    Flags 0
   }

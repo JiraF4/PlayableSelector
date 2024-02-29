@@ -6,6 +6,27 @@ PS_GameModeCoop : "{0F307326459A1395}Prefabs/MP/Modes/GameMode_Base.et" {
   PS_MissionDescriptionManager "{5ED908871838D082}" {
   }
   PS_ObjectiveManager "{60846DEA6E152749}" {
+   m_aObjectiveLavels {
+    PS_ObjectiveLevel "{60BA84346F79B79E}" {
+     m_iScore -100
+     m_sName "#PS-ObjectiveLevel_MajorLoss"
+    }
+    PS_ObjectiveLevel "{60BA84343AC819B2}" {
+     m_iScore -10
+     m_sName "#PS-ObjectiveLevel_MinorLoss"
+    }
+    PS_ObjectiveLevel "{60BA8437C52AEEC4}" {
+     m_sName "#PS-ObjectiveLevel_Draw"
+    }
+    PS_ObjectiveLevel "{60BA8437C9F5791C}" {
+     m_iScore 10
+     m_sName "#PS-ObjectiveLevel_MinorVictory"
+    }
+    PS_ObjectiveLevel "{60BA8437D394C60C}" {
+     m_iScore 100
+     m_sName "#PS-ObjectiveLevel_MajorVictory"
+    }
+   }
   }
   PS_PlayableManager "{5ED9088791FB410D}" {
   }

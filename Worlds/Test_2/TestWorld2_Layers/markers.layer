@@ -104,10 +104,12 @@ $grp PolylineShapeEntity {
  SUS2 {
   components {
    PS_PolyZone "{604680A1322CDBDD}" {
-    m_mPolygonTexture "{EE369172FCB6F4B2}UI/layouts/Textures/WarningZone.edds"
-    m_mPolygonTextureBorder "{15A6B5F9E6E1DB8E}UI/layouts/Textures/WarningZoneBorder.edds"
+    m_mPolygonTexture "{928B4092981F27CB}UI/layouts/Textures/Zone.edds"
+    m_cPolygonColor 0.06 0.118 0.292 1
+    m_mPolygonTextureBorder "{CA01D453D39FB430}UI/layouts/Textures/ZoneBorder.edds"
+    m_cPolygonBorderColor 0.06 0.118 0.292 1
     m_aVisibleForFactions {
-     "US"
+     "US" ""
     }
    }
   }

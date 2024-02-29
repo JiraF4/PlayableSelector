@@ -9,6 +9,8 @@ TagManager : "{2FA9E172CAB1857A}Prefabs/MP/Managers/TagManager.et" {
 }
 PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_GameMode_Lobby.et" {
  m_bCanOpenLobbyInGame 1
+ m_bDisableChat 1
+ m_bReserveSlots 1
  {
   SCR_FactionManager "5EE8949D46B62B0A" {
    ID "5ED9088735FF2D8B"
@@ -28,29 +30,40 @@ PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_Game
 }
 $grp PolylineShapeEntity {
  {
+  components {
+   PS_PolyZone "{60B6B9E8AB5DF7D6}" {
+    m_bReversed 1
+    m_aVisibleForFactions {
+     ""
+    }
+   }
+  }
   coords 89.866 1 52.042
   Points {
    ShapePoint "{608CFEEE9BD870F9}" {
-    Position 6.609 0 -13.635
+    Position -68.742 0 -17.389
    }
    ShapePoint "{608CFEEE9BD84BBD}" {
-    Position 11.486 0 18.347
+    Position -77.566 0 156.171
    }
    ShapePoint "{608CFEEE7B915DB0}" {
-    Position 46.643 0 16.461
+    Position 66.277 0 175.202
    }
    ShapePoint "{608CFEEE1D3FD75C}" {
-    Position 50.62 0 -6.291
+    Position 155.607 0 152.511
    }
    ShapePoint "{608CFEEE1D4C9EB4}" {
-    Position 45.367 0 -19.304
+    Position 141.827 0 -40.279
    }
   }
   IsClosed 1
  }
  {
   components {
-   PS_PolyLine "{60B2D1EF35A69BD4}" {
+   PS_PolyZone "{60B2D1EF35A69BD4}" {
+    m_aVisibleForFactions {
+     ""
+    }
    }
   }
   coords 70.514 1 31.408
@@ -94,10 +107,6 @@ $grp PolylineShapeEntity {
   }
  }
  {
-  components {
-   PS_PolyLine "{60B2D1EE9706F145}" {
-   }
-  }
   coords 15.488 1 227.398
  }
 }

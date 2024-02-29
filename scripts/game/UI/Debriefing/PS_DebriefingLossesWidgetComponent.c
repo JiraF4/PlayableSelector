@@ -1,5 +1,7 @@
 class PS_DebriefingLossesWidgetComponent : SCR_ScriptedWidgetComponent
 {
+	protected ResourceName m_rIconImageSet = "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset";
+	
 	ImageWidget m_wUnitTypeImage;
 	TextWidget m_wUnitName;
 	
@@ -29,6 +31,12 @@ class PS_DebriefingLossesWidgetComponent : SCR_ScriptedWidgetComponent
 	void SetUnitName(string unitName)
 	{
 		m_wUnitName.SetText(unitName);
+	}
+	
+	void SetUnitIcon(string quadName)
+	{
+		if (quadName != "")
+			m_wUnitTypeImage.LoadImageFromSet(0, m_rIconImageSet, quadName);
 	}
 	
 	void SetUnitType(typename unitType, Faction faction, int vehicleTypes)
