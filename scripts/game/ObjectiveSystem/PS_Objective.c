@@ -65,7 +65,8 @@ class PS_Objective : GenericEntity
 
 	void OnObjectiveUpdate()
 	{
-		m_OnObjectiveUpdate.Invoke();
+		if (m_OnObjectiveUpdate)
+			m_OnObjectiveUpdate.Invoke();
 	}
 	
 	RplId GetRplId()
