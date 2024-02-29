@@ -15,14 +15,23 @@ class PS_DebriefingMenu : ChimeraMenuBase
 		
 	ref array<PS_DebriefingFactionReportWidgetComponent> m_aFactionReports = {};
 
+	protected ImageWidget m_wFade;
+	
+	float m_fOpacity = 0;
+	float m_fFadeOpacity = 1;
+	
 	// -------------------- Menu events --------------------
 	override void OnMenuOpen()
 	{
 		m_wBodyHorizontalLayout = HorizontalLayoutWidget.Cast(GetRootWidget().FindAnyWidget("BodyHorizontalLayout"));
 		
+		m_wFade = ImageWidget.Cast(GetRootWidget().FindAnyWidget("Fade"));
+		
 		m_wGameModeHeader = GetRootWidget().FindAnyWidget("GameModeHeader");
 		m_hGameModeHeader = PS_GameModeHeader.Cast(m_wGameModeHeader.FindHandler(PS_GameModeHeader));
 		
+		GetRootWidget().SetOpacity(0);
+				
 		FillFactions();
 		Update();
 		GetGame().GetCallqueue().CallLater(UpdateCycle, 100);
@@ -46,7 +55,16 @@ class PS_DebriefingMenu : ChimeraMenuBase
 
 	override void OnMenuUpdate(float tDelta)
 	{
-
+		if (m_fOpacity < 1.0)
+		{
+			m_fOpacity += tDelta;
+			if (m_fOpacity > 1.0) 
+			{
+				m_fOpacity = 1.0;
+				m_fFadeOpacity -= tDelta;
+			}
+			GetRootWidget().SetOpacity(m_fOpacity);
+		}
 	}
 
 	override void OnMenuClose()

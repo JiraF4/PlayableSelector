@@ -41,7 +41,9 @@ class PS_PlayableControllerComponent : ScriptComponent
 	void SwitchToMenu(SCR_EGameModeState state)
 	{
 		SetMenuState(state);
-		GetGame().GetMenuManager().GetTopMenu().Close();
+		MenuBase topMenu = GetGame().GetMenuManager().GetTopMenu();
+		if (topMenu)
+			topMenu.Close();
 		GetGame().GetMenuManager().CloseMenuByPreset(ChimeraMenuPreset.PreviewMapMenu);
 		GetGame().GetMenuManager().CloseMenuByPreset(ChimeraMenuPreset.CoopLobby);
 		GetGame().GetMenuManager().CloseMenuByPreset(ChimeraMenuPreset.BriefingMapMenu);
