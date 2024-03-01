@@ -10,19 +10,18 @@ ButtonWidgetClass {
   PS_AliveFactionButton "{60B714637558D5EF}" {
    m_sSoundHovered ""
    m_sSoundClicked ""
+   m_bCanBeToggled 1
    m_BackgroundDefault 1 1 1 0
-   m_BackgroundHovered 1 1 1 0.162
-   m_BackgroundSelected 1 1 1 0
-   m_BackgroundSelectedHovered 1 1 1 0.162
-   m_BackgroundClicked 1 1 1 0
-   m_bShowBorderOnFocus 0
-   m_bNoBorderAnimation 1
+   m_BackgroundHovered 1 1 1 0.161
+   m_BackgroundSelected 1 1 1 0.243
+   m_BackgroundSelectedHovered 1 1 1 0.318
+   m_BackgroundClicked 1 1 1 0.318
   }
  }
  {
   OverlayWidgetClass "{60B714612F9CCA44}" {
    Name "Overlay"
-   Slot ButtonWidgetSlot {
+   Slot ButtonWidgetSlot "{60C31D49DF3B2BF8}" {
     HorizontalAlign 3
     VerticalAlign 3
    }
@@ -49,7 +48,6 @@ ButtonWidgetClass {
       HorizontalAlign 3
       VerticalAlign 3
      }
-     Color 0 0 0 1
      Text "12"
      "Horizontal Alignment" Center
      "Vertical Alignment" Center

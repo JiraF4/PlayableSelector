@@ -110,22 +110,24 @@ class PS_AlivePlayerList : ScriptedWidgetComponent
 		}
 		
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		map<RplId, PS_PlayableComponent> playables = playableManager.GetPlayables();
 		map<FactionKey, int> factions = new map<FactionKey, int>();
-		foreach (RplId id, PS_PlayableComponent playableComponent : playables)
+		array<int> alivePlayers = new array<int>();
+		GetAlivePlayers(alivePlayers);
+		foreach (int playerId: alivePlayers)
 		{
-			FactionAffiliationComponent factionAffiliationComponent = FactionAffiliationComponent.Cast(playableComponent.GetOwner().FindComponent(FactionAffiliationComponent));
-			Faction faction = factionAffiliationComponent.GetDefaultAffiliatedFaction();
-			FactionKey factionKey = faction.GetFactionKey();
+			FactionKey factionKey = playableManager.GetPlayerFactionKey(playerId);
 			if (factions.Contains(factionKey))
 				factions[factionKey] = factions[factionKey] + 1;
 			else
 				factions[factionKey] = 1;
 		}
 		
-		foreach (FactionKey factionKey, int count : factions)
+		foreach (FactionKey factionKey, PS_AliveFactionButton aliveFactionButton : m_aFactionButtons)
 		{
-			m_aFactionButtons[factionKey].SetCount(count);
+			if (factions.Contains(factionKey))
+				aliveFactionButton.SetCount(factions[factionKey]);
+			else
+				aliveFactionButton.SetCount(0);
 		}
 	}
 	
@@ -154,13 +156,21 @@ class PS_AlivePlayerList : ScriptedWidgetComponent
 	// -------------------- Buttons events --------------------
 	void FactionButtonClicked(SCR_ButtonBaseComponent playerButton)
 	{
+		foreach (FactionKey factionKey, PS_AliveFactionButton aliveFactionButton : m_aFactionButtons)
+		{
+			aliveFactionButton.SetToggled(false);
+		}
+		
 		PS_AliveFactionButton aliveFactionButton = PS_AliveFactionButton.Cast(playerButton);
 		
 		FactionKey factionKey = aliveFactionButton.GetFactionKey();
 		if (factionKey == m_sSelectedFaction)
 			m_sSelectedFaction = "";
 		else
+		{
+			aliveFactionButton.SetToggled(true);
 			m_sSelectedFaction = factionKey;
+		}
 		m_iOldPlayersCount = -1;
 		HardUpdate();
 	}
