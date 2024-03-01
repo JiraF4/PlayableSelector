@@ -1,0 +1,22 @@
+$grp PS_Objective : "{A4F0B4846EF850C4}Prefabs/Objective/Objectve.et" {
+ {
+  coords 1335.601 39.01 2758.012
+  m_iScore 10
+  m_sTitle "Capture Dingus"
+  m_sFactionKey "US"
+ }
+ {
+  coords 1343.431 39.01 2760.721
+  m_iScore 10
+  m_sTitle "Capture Dingus"
+  m_sFactionKey "USSR"
+ }
+ {
+  coords 1325.608 39.01 2768.425
+  m_sFactionKey "US"
+ }
+ {
+  coords 1336.361 39.01 2773.846
+  m_sFactionKey "USSR"
+ }
+}

@@ -32,6 +32,7 @@ $grp PolylineShapeEntity {
  {
   components {
    PS_PolyZone "{60B6B9E8AB5DF7D6}" {
+    Enabled 0
     m_bReversed 1
     m_aVisibleForFactions {
      ""
@@ -44,7 +45,7 @@ $grp PolylineShapeEntity {
     Position -68.742 0 -17.389
    }
    ShapePoint "{608CFEEE9BD84BBD}" {
-    Position -77.566 0 156.171
+    Position -80.85 0 159.04
    }
    ShapePoint "{608CFEEE7B915DB0}" {
     Position 66.277 0 175.202
