@@ -160,6 +160,53 @@ class PS_SpectatorMenu: MenuBase
 		
 		UpdateIcons();
 		
+		Widget cursorWidget = WidgetManager.GetWidgetUnderCursor();
+		while (cursorWidget)
+		{
+			
+			if (cursorWidget == m_wAlivePlayerList)
+			{
+				break;
+			}
+			
+			if (cursorWidget == m_wVoiceChatList)
+			{
+				break;
+			}
+			
+			cursorWidget = cursorWidget.GetParent();
+		}
+		
+		float alivePlayerListX = FrameSlot.GetPosX(m_wAlivePlayerList);
+		float voiceChatListX = FrameSlot.GetPosX(m_wVoiceChatList);
+		if (cursorWidget == m_wAlivePlayerList)
+		{
+			alivePlayerListX += tDelta * 1200.0;
+			if (alivePlayerListX > 0)
+				alivePlayerListX = 0;
+		}
+		else
+		{
+			alivePlayerListX -= tDelta * 1200.0;
+			if (alivePlayerListX < -300)
+				alivePlayerListX = -300;
+		}
+		FrameSlot.SetPosX(m_wAlivePlayerList, alivePlayerListX);
+		
+		if (cursorWidget == m_wVoiceChatList)
+		{
+			voiceChatListX -= tDelta * 1200.0;
+			if (voiceChatListX < -330)
+				voiceChatListX = -330;
+		}
+		else
+		{
+			voiceChatListX += tDelta * 1200.0;
+			if (voiceChatListX > -20)
+				voiceChatListX = -20;
+		}
+		FrameSlot.SetPosX(m_wVoiceChatList, voiceChatListX);
+		
 		/* VoN Magic
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));

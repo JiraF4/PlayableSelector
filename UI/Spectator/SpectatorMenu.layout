@@ -71,6 +71,38 @@ FrameWidgetClass {
   FrameWidgetClass "{5EA90320D67E1881}" : "{D89BBA18F99053D6}UI/layouts/HUD/Chat/ChatHud.layout" {
    Name "Chat0"
    Slot FrameWidgetSlot "{5D4881250D202DF3}" {
+    PositionX 8
+    OffsetLeft 8
+    PositionY 0
+    OffsetTop 0
+    SizeX 1920
+    OffsetRight -1928
+    SizeY 1080
+    OffsetBottom -1080
+   }
+   {
+    OverlayWidgetClass "{585F053862A9FD1C}" {
+     Prefab "{585F053862A9FD1C}"
+     {
+      OverlayWidgetClass "{56150B2288F76A08}" {
+       Prefab "{56150B2288F76A08}"
+       {
+        VerticalLayoutWidgetClass "{00000000BC2C2020}" {
+         Prefab "{00000000BC2C2020}"
+         {
+          OverlayWidgetClass "{563296652233D952}" {
+           Prefab "{563296652233D952}"
+           Name "m_EditOverlay"
+           Slot LayoutSlot "{563296652233D97A}" {
+            Padding 3 0 0 0
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
    }
   }
   FrameWidgetClass "{5EB701CDC06E16AD}" : "{35DB604900C55B98}UI/VoiceChat/VoiceChatFrame.layout" {
@@ -86,6 +118,7 @@ FrameWidgetClass {
     SizeY 640
     OffsetBottom -320
    }
+   "Ignore Cursor" 0
    {
     ImageWidgetClass "{5EB2900030AFF403}" {
      Prefab "{5EB2900030AFF403}"
@@ -162,6 +195,7 @@ FrameWidgetClass {
     SizeY 640
     OffsetBottom -320
    }
+   "Ignore Cursor" 0
    components {
     PS_AlivePlayerList "{5EBA416A9CB1DC7C}" {
     }
@@ -217,6 +251,7 @@ FrameWidgetClass {
       ButtonWidgetClass "{5EC5025171F33454}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
        Name "NavigationFactionVoice"
        Slot LayoutSlot "{5EBC737F18D3A94E}" {
+        Padding 20 0 0 0
        }
        components {
         SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
@@ -228,6 +263,7 @@ FrameWidgetClass {
       ButtonWidgetClass "{5EC5025171F33456}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
        Name "NavigationSwitchSpectatorUI"
        Slot LayoutSlot "{5EBC737F18D3A94E}" {
+        Padding 20 0 0 0
        }
        components {
         SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
