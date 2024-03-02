@@ -129,11 +129,13 @@ class PS_PlayableComponent : ScriptComponent
 	// Send our precision data, we need it on clients
 	override bool RplSave(ScriptBitWriter writer)
 	{
+		writer.WriteString(m_name);
 		writer.WriteBool(m_bIsPlayable);
 		return true;
 	}
 	override bool RplLoad(ScriptBitReader reader)
 	{
+		reader.ReadString(m_name);
 		reader.ReadBool(m_bIsPlayable);
 		return true;
 	}

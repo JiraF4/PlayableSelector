@@ -41,6 +41,7 @@ class PS_SlotsReserver : ScriptComponent
 			{
 				foreach (string GUID : m_cReservedPlayerIdentitiesConfig.GUIDS)
 				{
+					Print("Reserve: " + GUID);
 					m_aPlayerIdentities.Insert(GUID);
 				}
 			}
