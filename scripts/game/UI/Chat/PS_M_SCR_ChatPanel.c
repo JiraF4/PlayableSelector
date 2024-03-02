@@ -8,7 +8,7 @@ modded class SCR_ChatPanel : ScriptedWidgetComponent
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		FactionKey factionKey = playableManager.GetPlayerFactionKey(playerController.GetPlayerId());
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		if (!gameMode.IsChatDisabled() || gameMode.GetState() == SCR_EGameModeState.BRIEFING || factionKey == "" || playerRole == EPlayerRole.ADMINISTRATOR || playerRole == EPlayerRole.SESSION_ADMINISTRATOR || Replication.IsServer())
+		if (!gameMode.IsChatDisabled() || gameMode.GetState() == SCR_EGameModeState.SLOTSELECTION || gameMode.GetState() == SCR_EGameModeState.BRIEFING || factionKey == "" || playerRole == EPlayerRole.ADMINISTRATOR || playerRole == EPlayerRole.SESSION_ADMINISTRATOR || Replication.IsServer())
 			super.UpdateChatMessages();
 		else
 		{
