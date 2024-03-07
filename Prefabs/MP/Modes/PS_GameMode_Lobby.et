@@ -69,12 +69,9 @@ PS_GameModeCoop : "{0F307326459A1395}Prefabs/MP/Modes/GameMode_Base.et" {
  PlayerControllerPrefab "{4E5DAC62A374950F}Prefabs/Characters/Core/DefaultPlayerControllerMP_Coop.et"
  m_bAutoPlayerRespawn 0
  m_bAllowFactionChange 0
- m_iAvailableReconnectAfterSlots 600000
+ m_iAvailableReconnectAfterSlots 30000
  m_bAdminMode 0
- m_bKillRedundantUnits 1
- m_bRemoveSquadMarkers 1
- m_bDisableChat 1
- m_bReserveSlots 1
+ m_bMarkersOnlyOnBriefing 0
  {
   SCR_FactionManager "5EA8C932C68D400F" : "{4A188E44289B9A50}Prefabs/MP/Managers/Factions/FactionManager_Editor.et" {
    ID "5ED9088735FF2D8B"
