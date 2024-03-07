@@ -260,6 +260,7 @@ class PS_CoopLobby: MenuBase
 			
 			// insert playable to faction
 			array<PS_PlayableComponent> factionPlayablesList = m_sFactionPlayables[factionKey];
+			/*
 			if (!factionPlayablesList.Contains(playable))
 			{
 				bool added = false;
@@ -278,6 +279,9 @@ class PS_CoopLobby: MenuBase
 				if (!added)
 					factionPlayablesList.Insert(playable);
 			}
+			*/
+			if (!factionPlayablesList.Contains(playable))
+				factionPlayablesList.Insert(playable);
 		}
 		
 		// ReFill players if need

@@ -30,6 +30,8 @@ class PS_DebriefingMenu : ChimeraMenuBase
 		m_wGameModeHeader = GetRootWidget().FindAnyWidget("GameModeHeader");
 		m_hGameModeHeader = PS_GameModeHeader.Cast(m_wGameModeHeader.FindHandler(PS_GameModeHeader));
 		
+		GetGame().GetInputManager().AddActionListener("MenuBack", EActionTrigger.DOWN, Action_Exit);
+		
 		GetRootWidget().SetOpacity(0);
 				
 		FillFactions();
@@ -50,7 +52,7 @@ class PS_DebriefingMenu : ChimeraMenuBase
 
 	override void OnMenuInit()
 	{
-
+		
 	}
 
 	override void OnMenuUpdate(float tDelta)
@@ -69,7 +71,7 @@ class PS_DebriefingMenu : ChimeraMenuBase
 
 	override void OnMenuClose()
 	{
-
+		GetGame().GetInputManager().RemoveActionListener("MenuBack", EActionTrigger.DOWN, Action_Exit);
 	}
 	
 	void FillFactions()
@@ -83,5 +85,14 @@ class PS_DebriefingMenu : ChimeraMenuBase
 			m_aFactionReports.Insert(factionReport);
 			factionReport.SetFaction(faction);
 		}
+	}
+	
+	void Action_Exit()
+	{
+		GetGame().GetCallqueue().CallLater(OpenPauseMenuWrap, 0); //  Else menu auto close itself
+	}
+	void OpenPauseMenuWrap()
+	{
+		ArmaReforgerScripted.OpenPauseMenu();
 	}
 }

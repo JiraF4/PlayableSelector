@@ -85,7 +85,14 @@ $grp SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.
       m_name "G2"
      }
      SCR_CharacterRankComponent "{528E6D4286AA2D8F}" {
-      m_iRank LIEUTENANT
+      m_iRank RENEGADE
+     }
+     BaseLoadoutManagerComponent "{520EA1D2DB11821E}" {
+      Slots {
+       LoadoutSlotInfo Hat {
+        Prefab "{483A80042765275F}Prefabs/Characters/HeadGear/Helmet_SPH4_01/Helmet_SPH4_01.et"
+       }
+      }
      }
     }
     coords 0.908 0 -1.211
