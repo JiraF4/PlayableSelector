@@ -24,7 +24,20 @@ class PS_ObjectiveManager : ScriptComponent
 	
 	void RegisterObjective(PS_Objective objective)
 	{
-		m_aObjectives.Insert(objective);
+		bool isInserted = false;
+		
+		for (int i = 0; i < m_aObjectives.Count(); i++)
+		{
+			if (m_aObjectives[i].m_iScore < objective.m_iScore)
+			{
+				m_aObjectives.InsertAt(objective, i);
+				isInserted = true;
+				break;
+			}
+		}
+		
+		if (!isInserted)
+			m_aObjectives.Insert(objective);
 	}
 	
 	void UnRegisterObjective(PS_Objective objective)
@@ -59,7 +72,7 @@ class PS_ObjectiveManager : ScriptComponent
 			if (objectiveLevel.GetScore() >= score)
 				return objectiveLevel;
 		}
-		return null;
+		return m_aObjectiveLavels[m_aObjectiveLavels.Count() - 1];
 	}
 };
 
