@@ -28,7 +28,8 @@ class PS_SidesRation : SCR_ScriptedWidgetComponent
 		foreach (RplId id, PS_PlayableComponent playableComponent : playables)
 		{
 			SCR_ChimeraCharacter chimeraCharacter = SCR_ChimeraCharacter.Cast(playableComponent.GetOwner());
-			
+			if (!chimeraCharacter)
+				continue;
 			SCR_CharacterDamageManagerComponent characterDamageManagerComponent = SCR_CharacterDamageManagerComponent.Cast(chimeraCharacter.FindComponent(SCR_CharacterDamageManagerComponent));
 			if (!characterDamageManagerComponent)
 				continue;

@@ -17,7 +17,9 @@ class PS_SpectatorMenu: MenuBase
 	protected Widget m_wAlivePlayerList;
 	protected Widget m_wSidesRatio;
 	protected PS_VoiceChatList m_hVoiceChatList;
+	protected SCR_ButtonBaseComponent m_hVoiceChatListPinButton;
 	protected PS_AlivePlayerList m_hAlivePlayerList;
+	protected SCR_ButtonBaseComponent m_hAlivePlayerListPinButton;
 	
 	SCR_InputButtonComponent m_bNavigationSwitchSpectatorUI;
 
@@ -55,8 +57,12 @@ class PS_SpectatorMenu: MenuBase
 		}
 		m_wVoiceChatList = GetRootWidget().FindAnyWidget("VoiceChatFrame");
 		m_hVoiceChatList = PS_VoiceChatList.Cast(m_wVoiceChatList.FindHandler(PS_VoiceChatList));
+		m_hVoiceChatListPinButton = SCR_ButtonBaseComponent.Cast(m_wVoiceChatList.FindAnyWidget("PinButton").FindHandler(SCR_ButtonBaseComponent));
+		
 		m_wAlivePlayerList = GetRootWidget().FindAnyWidget("AlivePlayersList");
 		m_hAlivePlayerList = PS_AlivePlayerList.Cast(m_wAlivePlayerList.FindHandler(PS_AlivePlayerList));
+		m_hAlivePlayerListPinButton = SCR_ButtonBaseComponent.Cast(m_wAlivePlayerList.FindAnyWidget("PinButton").FindHandler(SCR_ButtonBaseComponent));
+		
 		m_hAlivePlayerList.SetSpectatorMenu(this);
 		m_wOverlayFooter = GetRootWidget().FindAnyWidget("OverlayFooter");
 		m_wEarlyAccessRoot = GetRootWidget().FindAnyWidget("EarlyAccessRoot");
@@ -179,7 +185,7 @@ class PS_SpectatorMenu: MenuBase
 		
 		float alivePlayerListX = FrameSlot.GetPosX(m_wAlivePlayerList);
 		float voiceChatListX = FrameSlot.GetPosX(m_wVoiceChatList);
-		if (cursorWidget == m_wAlivePlayerList)
+		if (cursorWidget == m_wAlivePlayerList || m_hAlivePlayerListPinButton.IsToggled())
 		{
 			alivePlayerListX += tDelta * 1200.0;
 			if (alivePlayerListX > 0)
@@ -193,7 +199,7 @@ class PS_SpectatorMenu: MenuBase
 		}
 		FrameSlot.SetPosX(m_wAlivePlayerList, alivePlayerListX);
 		
-		if (cursorWidget == m_wVoiceChatList)
+		if (cursorWidget == m_wVoiceChatList || m_hVoiceChatListPinButton.IsToggled())
 		{
 			voiceChatListX -= tDelta * 1200.0;
 			if (voiceChatListX < -330)
