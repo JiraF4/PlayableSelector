@@ -143,6 +143,8 @@ class PS_AlivePlayerList : ScriptedWidgetComponent
 		for (int i = 0; i < playablesSorted.Count(); i++) {
 			PS_PlayableComponent playable = playablesSorted[i];
 			SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(playable.GetOwner());
+			if (!character)
+				continue;
 			if (!character.GetDamageManager().IsDestroyed()) 
 			{
 				int playerId = playableManager.GetPlayerByPlayable(playable.GetId());

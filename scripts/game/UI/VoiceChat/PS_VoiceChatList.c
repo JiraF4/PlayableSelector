@@ -224,6 +224,8 @@ class PS_VoiceChatList : SCR_ScriptedWidgetComponent
 			for (int i = 0; i < playables.Count(); i++) {
 				PS_PlayableComponent playable = playables[i];
 				SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(playable.GetOwner());
+				if (!character)
+					continue;
 				SCR_Faction faction = SCR_Faction.Cast(character.GetFaction());
 				FactionKey factionKey = faction.GetFactionKey();
 				
