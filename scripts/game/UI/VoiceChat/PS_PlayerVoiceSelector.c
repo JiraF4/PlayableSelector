@@ -91,7 +91,7 @@ class PS_PlayerVoiceSelector : SCR_ButtonBaseComponent
 		}
 		m_wKickButton.SetVisible(showKick);
 		
-		if (PS_PlayersHelper.IsAdminOrServer()) m_wPlayerName.SetColor(Color.FromInt(0xfff2a34b));
+		if (SCR_Global.IsAdmin(m_iPlayer)) m_wPlayerName.SetColor(Color.FromInt(0xfff2a34b));
 		else if (playerName == "") m_wPlayerName.SetColor(Color.FromInt(0xff999999));
 		else m_wPlayerName.SetColor(Color.FromInt(0xffffffff));
 		

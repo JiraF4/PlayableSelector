@@ -81,7 +81,7 @@ class PS_PlayerSelector : SCR_ButtonBaseComponent
 		// if admin set player color
 		m_wPlayerName.SetText(playerManager.GetPlayerName(m_iPlayer));
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(m_iPlayer);
-		if (PS_PlayersHelper.IsAdminOrServer()) m_wPlayerName.SetColor(Color.FromInt(0xfff2a34b));
+		if (SCR_Global.IsAdmin(m_iPlayer)) m_wPlayerName.SetColor(Color.FromInt(0xfff2a34b));
 		else m_wPlayerName.SetColor(Color.FromInt(0xffffffff));
 		
 		// If admin show kick button for non admins

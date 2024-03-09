@@ -69,7 +69,7 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 		m_wLeaderIcon.SetVisible(playableManager.IsPlayerGroupLeader(m_iPlayer));
 		m_wPlayerFactionColor.SetColor(faction.GetOutlineFactionColor());
 		
-		if (PS_PlayersHelper.IsAdminOrServer()) m_wPlayerName.SetColor(Color.FromInt(0xfff2a34b));
+		if (SCR_Global.IsAdmin(m_iPlayer)) m_wPlayerName.SetColor(Color.FromInt(0xfff2a34b));
 		else m_wPlayerName.SetColor(Color.FromInt(0xffffffff));
 		
 		if (playableId != RplId.Invalid()) {

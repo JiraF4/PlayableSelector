@@ -34,6 +34,9 @@ class PS_GameModeHeaderButton : SCR_ButtonBaseComponent
 			m_wActiveImage.SetVisible(true);
 		}
 		
+		if (PS_PlayersHelper.IsAdminOrServer())
+			SetStateAvailable(true);
+		
 		// TODO: fix me please
 		if (m_eState == SCR_EGameModeState.BRIEFING && gameMode.GetState() == SCR_EGameModeState.SLOTSELECTION) SetStateAvailable(true);
 		if (m_eState == SCR_EGameModeState.SLOTSELECTION && gameMode.GetState() == SCR_EGameModeState.BRIEFING) SetStateAvailable(true);
