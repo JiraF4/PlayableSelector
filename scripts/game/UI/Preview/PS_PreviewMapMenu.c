@@ -67,7 +67,7 @@ class PS_PreviewMapMenu: ChimeraMenuBase
 		if (!configComp)
 			return;
 		
-		MapConfiguration mapConfigFullscreen = m_MapEntity.SetupMapConfig(EMapEntityMode.FULLSCREEN, configComp.GetGadgetMapConfig(), GetRootWidget());
+		MapConfiguration mapConfigFullscreen = m_MapEntity.SetupMapConfig(EMapEntityMode.FULLSCREEN, "{4B34A766C096D12C}Configs/Map/MapLobby.conf", GetRootWidget());
 		m_MapEntity.OpenMap(mapConfigFullscreen);
 		GetGame().GetCallqueue().CallLater(OpenMapWrapZoomChange, 0);
 	}

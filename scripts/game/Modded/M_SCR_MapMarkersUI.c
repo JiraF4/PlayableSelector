@@ -42,4 +42,19 @@ modded class SCR_MapMarkersUI
 	{
 		OnEntryPerformed(entry);
 	}
+	
+	override void OnDragWidget(Widget widget)
+	{
+		PS_GameModeCoop psGameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if (psGameMode)
+		{
+			if (psGameMode.GetMarkersOnlyOnBriefing())
+			{
+				if (psGameMode.GetState() != SCR_EGameModeState.GAME)
+					super.OnDragWidget(widget);
+				return;
+			}
+		}
+		super.OnDragWidget(widget);
+	}
 }
