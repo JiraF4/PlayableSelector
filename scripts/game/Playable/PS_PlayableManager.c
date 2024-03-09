@@ -227,9 +227,13 @@ class PS_PlayableManager : ScriptComponent
 			for (int s = 0; s < playablesSorted.Count(); s++) {
 				PS_PlayableComponent playableS = playablesSorted[s];
 				int callSignS = GetGroupCallsignByPlayable(playableS.GetId());
-				if (((playableS.GetId() > playable.GetId() 
-					|| (SCR_CharacterRankComponent.GetCharacterRank(playable.GetOwner()) > SCR_CharacterRankComponent.GetCharacterRank(playableS.GetOwner()))) 
-					&& callSign == callSignS) || callSign < callSignS) {
+				
+				bool rplIdGreater = playableS.GetId() > playable.GetId();
+				bool rankGreater = SCR_CharacterRankComponent.GetCharacterRank(playable.GetOwner()) > SCR_CharacterRankComponent.GetCharacterRank(playableS.GetOwner());
+				bool callSignEquival = callSignS == callSign;
+				bool callSignGreater = callSignS > callSign;
+				
+				if (((rplIdGreater || rankGreater) && callSignEquival) || callSignGreater) {
 					playablesSorted.InsertAt(playable, s);
 					isInserted = true;
 					break;
@@ -238,6 +242,7 @@ class PS_PlayableManager : ScriptComponent
 			if (!isInserted) {
 				playablesSorted.Insert(playable);
 			}
+			Print(playable.GetOwner().GetPrefabData().GetPrefabName());
 		}
 		
 		m_PlayablesSorted = playablesSorted;
@@ -304,7 +309,7 @@ class PS_PlayableManager : ScriptComponent
 			return;
 		m_aPlayables[playableId] = playableComponent;
 		
-		UpdatePlayablesSorted();
+		GetGame().GetCallqueue().Call(UpdatePlayablesSorted);
 		
 		if (Replication.IsServer())
 		{
