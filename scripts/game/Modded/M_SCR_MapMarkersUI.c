@@ -12,6 +12,20 @@ modded class SCR_MapMarkersUI
 				PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 				PlayerController playerController = GetGame().GetPlayerController();
 				if (!playableManager.IsPlayerGroupLeader(playerController.GetPlayerId())) return;
+				
+				SCR_MapEntity mapEnt = SCR_MapEntity.GetMapInstance();
+				SCR_MapMarkersUI mapMarkersUI = SCR_MapMarkersUI.Cast(mapEnt.GetMapUIComponent(SCR_MapMarkersUI));
+				
+				SCR_MapMarkerMenuEntry markerEntry = new SCR_MapMarkerMenuEntry();
+				markerEntry.SetMarkerType(SCR_EMapMarkerType.PLACED_CUSTOM);
+				mapMarkersUI.PS_OnEntryPerformed(markerEntry);
+				
+				float wX, wY, sX, sY;
+				mapEnt.GetMapCursorWorldPosition(wX, wY);
+				mapEnt.WorldToScreen(wX, wY, sX, sY);
+				mapEnt.PanSmooth(sX, sY, 0.05);
+				
+				return;
 			}
 		}
 		
@@ -22,5 +36,10 @@ modded class SCR_MapMarkersUI
 		mapRadial.GetRadialController().OnInputOpen();
 		mapRadial.GetRadialController().GetRadialMenu().PerformEntry(m_RootCategoryEntry);
 	
+	}
+	
+	void PS_OnEntryPerformed(SCR_MapMarkerMenuEntry entry)
+	{
+		OnEntryPerformed(entry);
 	}
 }

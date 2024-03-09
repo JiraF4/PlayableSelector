@@ -5,12 +5,7 @@ modded class SCR_MapRadialUI
 	{
 		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		if (gameModeCoop && gameModeCoop.GetMarkersOnlyOnBriefing())
-		{
-			if (gameModeCoop.GetState() != SCR_EGameModeState.BRIEFING) return;
-			PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-			PlayerController playerController = GetGame().GetPlayerController();
-			if (!playableManager.IsPlayerGroupLeader(playerController.GetPlayerId())) return;
-		}
+			return;
 		if (m_RadialMenu && m_RadialMenu.IsOpened())
 			return;
 		
