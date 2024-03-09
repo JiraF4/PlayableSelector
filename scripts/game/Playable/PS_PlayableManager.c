@@ -242,7 +242,7 @@ class PS_PlayableManager : ScriptComponent
 			if (!isInserted) {
 				playablesSorted.Insert(playable);
 			}
-			Print(playable.GetOwner().GetPrefabData().GetPrefabName());
+			//Print(playable.GetOwner().GetPrefabData().GetPrefabName());
 		}
 		
 		m_PlayablesSorted = playablesSorted;
