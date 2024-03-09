@@ -1,11 +1,10 @@
 ButtonWidgetClass {
  Name "Button"
  Slot LayoutSlot "{5EB2902EAC0B9AA0}" {
-  Padding 10 10 10 10
+  Padding 5 5 5 5
  }
  components {
   PS_GameModeHeaderButton "{5EB4BBDFAF17BD09}" {
-   m_bCanBeToggled 1
    m_BackgroundDefault 0.028 0.028 0.028 1
    m_BackgroundHovered 0.098 0.098 0.098 1
    m_BackgroundSelected 0.761 0.386 0.078 1
@@ -21,7 +20,7 @@ ButtonWidgetClass {
    Slot ButtonWidgetSlot "{5EB2902E629DFEA1}" {
    }
    AllowWidthOverride 1
-   WidthOverride 220
+   WidthOverride 166
    AllowHeightOverride 1
    HeightOverride 39
    {
@@ -37,8 +36,8 @@ ButtonWidgetClass {
         OffsetLeft 0
         PositionY 0
         OffsetTop 0
-        SizeX 220
-        OffsetRight -220
+        SizeX 166
+        OffsetRight -166
         SizeY 39
         OffsetBottom -39
        }
@@ -51,18 +50,19 @@ ButtonWidgetClass {
         OffsetLeft 0
         PositionY 0
         OffsetTop 0
-        SizeX 220
-        OffsetRight -220
+        SizeX 166
+        OffsetRight -166
         SizeY 39
         OffsetBottom -39
        }
        {
         TextWidgetClass "{5EB10003D5163631}" {
-         Name "Text"
+         Name "StateText"
          Slot OverlayWidgetSlot "{5EB10008D4DC6DB3}" {
           HorizontalAlign 0
-          Padding 16 8 16 8
+          Padding 8 8 16 8
          }
+         Color 0.216 0.216 0.216 1
          Text "MISSION PREVIEW"
          "Font Size" 20
          "Min Font Size" 20
@@ -81,10 +81,29 @@ ButtonWidgetClass {
         SizeY 39
         OffsetBottom -39
        }
+       "Is Enabled" 0
+       "Is Visible" 0
        Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
        Image "moveAll"
        Size 32 32
        "Flip Horizontally" 1
+      }
+      ImageWidgetClass "{60D306FC2F8F4C3A}" {
+       Name "ActiveImage"
+       Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
+        PositionX 139
+        OffsetLeft 139
+        PositionY 8
+        OffsetTop 8
+        SizeX 24
+        OffsetRight -163
+        SizeY 24
+        OffsetBottom -32
+       }
+       "Is Visible" 0
+       Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
+       Image "check"
+       Size 32 32
       }
      }
     }

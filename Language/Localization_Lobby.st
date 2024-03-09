@@ -57,11 +57,12 @@ StringTable {
   }
   CustomStringTableItem "{5F0AFCF3B4D7E97D}" {
    Id "PS-Briefing_Steps"
+   Target_en_us "Steps"
    Target_es_es "Pasos a seguir"
    Target_pt_br "Etapas do briefing"
-   Modified 1595448847
+   Modified 1624458354
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "zazul"
   }
   CustomStringTableItem "{5EC5311E7A654D14}" {
    Id "PS-Briefing_VoiceChat"
@@ -452,6 +453,14 @@ StringTable {
    Modified 1595449833
    Author "SeskPC"
    LastChanged "SeskPC"
+  }
+  CustomStringTableItem "{60D306C0DDCFA677}" {
+   Id "PS-GameModeHeader_Author"
+   Target_en_us "Author"
+   Target_ru_ru "Автор"
+   Modified 1624458506
+   Author "zazul"
+   LastChanged "zazul"
   }
   CustomStringTableItem "{5EB6FE5226347A67}" {
    Id "PS-GameModeHeader_Briefing"

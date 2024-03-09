@@ -152,8 +152,6 @@ class PS_SpectatorMenu: MenuBase
 		}
 	}
 	
-	
-	
 	override void OnMenuUpdate(float tDelta)
 	{
 		super.OnMenuUpdate(tDelta);

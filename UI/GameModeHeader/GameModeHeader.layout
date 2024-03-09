@@ -1,13 +1,13 @@
 FrameWidgetClass {
  Name "GameModeHeaderFrame"
  Slot FrameWidgetSlot "{5EB10000F5F77EA0}" {
-  Anchor 0.5 0 0.5 0
-  PositionX -960
-  OffsetLeft -960
+  Anchor 0 0 1 0
+  PositionX 0
+  OffsetLeft 0
   PositionY 0
   OffsetTop 0
-  SizeX 1920
-  OffsetRight -960
+  SizeX 0
+  OffsetRight 0
   SizeY 93
   OffsetBottom -93
  }
@@ -16,45 +16,94 @@ FrameWidgetClass {
   }
  }
  {
+  BlurWidgetClass "{60D306EB184AA7C4}" {
+   Name "GameModeHeaderBackgroundBlur"
+   Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
+    Anchor 0 0 1 1
+    PositionX 0
+    OffsetLeft 0
+    PositionY 0
+    OffsetTop 0
+    SizeX 0
+    OffsetRight 0
+    SizeY -518.4
+    OffsetBottom 0
+   }
+   Color 0 0 0 0.894
+   Intensity 0.6
+  }
   ImageWidgetClass "{5EB100001D14AACE}" {
    Name "GameModeHeaderBackground"
    Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
-    PositionX 10
-    OffsetLeft 10
-    PositionY 10
-    OffsetTop 10
-    SizeX 1900
-    OffsetRight -1910
-    SizeY 69
-    OffsetBottom -79
+    Anchor 0 0 1 1
+    PositionX 0
+    OffsetLeft 0
+    PositionY 0
+    OffsetTop 0
+    SizeX 0
+    OffsetRight 0
+    SizeY -518.4
+    OffsetBottom 0
    }
-   Color 0.008 0.014 0.016 1
+   Color 0 0 0 0.894
   }
-  ImageWidgetClass "{5EB10001C17B1550}" {
-   Name "GameModeHeaderBackgroundLine"
-   Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
-    PositionX 10
-    OffsetLeft 10
-    PositionY 79
-    OffsetTop 79
-    SizeX 1900
-    OffsetRight -1910
+  FrameWidgetClass "{60D306F5E1F2C245}" {
+   Name "GameModeHeaderLineFrame"
+   Slot FrameWidgetSlot "{60D306F5E1F2C3B5}" {
+    Anchor 0 1 1 1
+    PositionX 0
+    OffsetLeft 0
+    PositionY -4
+    OffsetTop -4
+    SizeX 0
+    OffsetRight 0
     SizeY 4
-    OffsetBottom -83
+    OffsetBottom 0
    }
-   Color 0.761 0.386 0.078 1
+   {
+    ImageWidgetClass "{5EB10001C17B1550}" {
+     Name "GameModeHeaderLineBackground"
+     Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
+      Anchor 0 1 1 1
+      PositionX 0
+      OffsetLeft 0
+      PositionY -4
+      OffsetTop -4
+      SizeX 0
+      OffsetRight 0
+      SizeY 4
+      OffsetBottom 0
+     }
+     Color 0.238 0.238 0.238 1
+    }
+    ImageWidgetClass "{60D306F5E56A2ED0}" {
+     Name "GameModeHeaderLine"
+     Slot FrameWidgetSlot "{60D306FB5990A56F}" {
+      PositionX 0
+      OffsetLeft 0
+      PositionY 0
+      OffsetTop 0
+      SizeX 680
+      OffsetRight -680
+      SizeY 4
+      OffsetBottom -4
+     }
+     Color 0.761 0.386 0.078 1
+    }
+   }
   }
   OverlayWidgetClass "{5EB1000190412184}" {
    Name "GameModeHeaderOverlayButton"
    Slot FrameWidgetSlot "{5EB1000190412199}" {
-    PositionX 10
-    OffsetLeft 10
-    PositionY 10
-    OffsetTop 10
+    Anchor 0.5 1 0.5 1
+    PositionX -950
+    OffsetLeft -950
+    PositionY -72
+    OffsetTop -72
     SizeX 1900
-    OffsetRight -1910
+    OffsetRight -950
     SizeY 69
-    OffsetBottom -79
+    OffsetBottom 3
    }
    {
     HorizontalLayoutWidgetClass "{5EB100048ABF5C22}" {
@@ -74,7 +123,7 @@ FrameWidgetClass {
       ButtonWidgetClass "{5EB1000404C189E8}" : "{C89F7100D39A8D45}UI/GameModeHeader/GameModeHeaderButton.layout" {
        Name "PreviewButton"
        Slot LayoutSlot "{5EB1000404C18D33}" {
-        Padding 0 10 10 10
+        Padding 2.5 10 2.5 10
        }
        components {
         PS_GameModeHeaderButton "{5EB4BBDFAF17BD09}" {
@@ -106,7 +155,7 @@ FrameWidgetClass {
       ButtonWidgetClass "{5EB1000406CEA78A}" : "{C89F7100D39A8D45}UI/GameModeHeader/GameModeHeaderButton.layout" {
        Name "LobbyButton"
        Slot LayoutSlot "{5EB1000404C18D33}" {
-        Padding 10 10 10 10
+        Padding 2.5 10 2.5 10
        }
        components {
         PS_GameModeHeaderButton "{5EB4BBDFAF17BD09}" {
@@ -138,7 +187,7 @@ FrameWidgetClass {
       ButtonWidgetClass "{5EB1000406260CAA}" : "{C89F7100D39A8D45}UI/GameModeHeader/GameModeHeaderButton.layout" {
        Name "BriefingButton"
        Slot LayoutSlot "{5EB1000404C18D33}" {
-        Padding 10 10 10 10
+        Padding 2.5 10 2.5 10
        }
        components {
         PS_GameModeHeaderButton "{5EB4BBDFAF17BD09}" {
@@ -170,7 +219,7 @@ FrameWidgetClass {
       ButtonWidgetClass "{5EB10004061DFD92}" : "{C89F7100D39A8D45}UI/GameModeHeader/GameModeHeaderButton.layout" {
        Name "InGameButton"
        Slot LayoutSlot "{5EB1000404C18D33}" {
-        Padding 10 10 10 10
+        Padding 2.5 10 2.5 10
        }
        components {
         PS_GameModeHeaderButton "{5EB4BBDFAF17BD09}" {
@@ -202,7 +251,7 @@ FrameWidgetClass {
       ButtonWidgetClass "{5EB10004078764DC}" : "{C89F7100D39A8D45}UI/GameModeHeader/GameModeHeaderButton.layout" {
        Name "DebriefingButton"
        Slot LayoutSlot "{5EB1000404C18D33}" {
-        Padding 10 10 10 10
+        Padding 2.5 10 2.5 10
        }
        components {
         PS_GameModeHeaderButton "{5EB4BBDFAF17BD09}" {
@@ -231,6 +280,62 @@ FrameWidgetClass {
         }
        }
       }
+      ButtonWidgetClass "{5EB290EEBC6EAD9B}" : "{C89F7100D39A8D45}UI/GameModeHeader/GameModeHeaderButton.layout" {
+       Name "AdvanceButton"
+       Slot LayoutSlot "{5EB2902EAC0B9AA0}" {
+        Padding 2.5 10 2.5 10
+       }
+       {
+        SizeLayoutWidgetClass "{5EB2902E629DFD43}" {
+         Prefab "{5EB2902E629DFD43}"
+         Slot ButtonWidgetSlot "{5EB2902E629DFEA1}" {
+         }
+         WidthOverride 39
+         {
+          FrameWidgetClass "{5EB100017BC764F4}" {
+           Prefab "{5EB100017BC764F4}"
+           {
+            ImageWidgetClass "{5EB10001224C7F50}" {
+             Prefab "{5EB10001224C7F50}"
+             Slot FrameWidgetSlot "{5EB100028E787477}" {
+              OffsetLeft 0
+              OffsetTop 0
+              SizeX 39
+              OffsetRight -39
+              OffsetBottom -39
+             }
+            }
+            OverlayWidgetClass "{5EB1000388A8E58A}" {
+             Prefab "{5EB1000388A8E58A}"
+             "Is Visible" 0
+             {
+              TextWidgetClass "{5EB10003D5163631}" {
+               Prefab "{5EB10003D5163631}"
+               Text "#PS-GameModeHeader_Advance"
+              }
+             }
+            }
+            ImageWidgetClass "{5EB290426C4BD466}" {
+             Prefab "{5EB290426C4BD466}"
+             Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
+              PositionX 0
+              OffsetLeft 0
+              OffsetTop 0
+              OffsetRight -39
+              OffsetBottom -39
+             }
+             "Is Visible" 1
+             Color 0 0.502 0.125 1
+             Image "play"
+             Size 32 32
+             "Flip Horizontally" 0
+            }
+           }
+          }
+         }
+        }
+       }
+      }
       ButtonWidgetClass "{5EB1000541B35108}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
        Name "NavigationRightHeader"
        Slot LayoutSlot "{5D6F1498C9949A58}" {
@@ -244,36 +349,95 @@ FrameWidgetClass {
     }
    }
   }
-  ButtonWidgetClass "{5EB290EEBC6EAD9B}" : "{C89F7100D39A8D45}UI/GameModeHeader/GameModeHeaderButton.layout" {
-   Name "AdvanceButton"
-   Slot FrameWidgetSlot "{5EB290EEBC6E570E}" {
-    PositionX 1678
-    OffsetLeft 1678
-    PositionY 25
-    OffsetTop 25
-    SizeX 220
-    OffsetRight -1898
-    SizeY 39
-    OffsetBottom -64
+  OverlayWidgetClass "{60D306E76883E960}" {
+   Name "OverlayTitle"
+   Slot FrameWidgetSlot "{60D306E76883E94A}" {
+    Anchor 0.5 1 0.5 1
+    PositionX -939
+    OffsetLeft -939
+    PositionY -61
+    OffsetTop -61
+    SizeX 440
+    OffsetRight 499
+    SizeY 46
+    OffsetBottom 15
    }
    {
-    SizeLayoutWidgetClass "{5EB2902E629DFD43}" {
-     Prefab "{5EB2902E629DFD43}"
-     {
-      FrameWidgetClass "{5EB100017BC764F4}" {
-       Prefab "{5EB100017BC764F4}"
-       {
-        OverlayWidgetClass "{5EB1000388A8E58A}" {
-         Prefab "{5EB1000388A8E58A}"
-         {
-          TextWidgetClass "{5EB10003D5163631}" {
-           Prefab "{5EB10003D5163631}"
-           Text "#PS-GameModeHeader_Advance"
-          }
-         }
-        }
-       }
-      }
+    ImageWidgetClass "{60D306E5B57371CD}" {
+     Name "GameModeHeaderTitleBackground"
+     Slot OverlayWidgetSlot "{60D306FA73385D2B}" {
+     }
+     Color 0.761 0.386 0.078 1
+     Texture "{E12BB5C5BD00269E}UI/Textures/Common/gradientTexture_Dither_right_512.edds"
+     Size 512 512
+     Mask "{E12BB5C5BD00269E}UI/Textures/Common/gradientTexture_Dither_right_512.edds"
+     "Transition width" 1
+     Progress 0.5
+     "Mask Mode" "Include Below"
+     Range 0.066
+    }
+    TextWidgetClass "{60D306E751C221A5}" {
+     Name "TitleText"
+     Slot OverlayWidgetSlot "{60D306FA73385D0F}" {
+      HorizontalAlign 0
+      Padding 14 0 0 0
+     }
+     Text "Mission name"
+     "Font Size" 28
+     "Min Font Size" 28
+     FontProperties FontProperties "{60D306E8F9E54A46}" {
+      Font "{3E7733BAC8C831F6}UI/Fonts/RobotoCondensed/RobotoCondensed_Regular.fnt"
+      Bold 1
+     }
+    }
+   }
+  }
+  HorizontalLayoutWidgetClass "{60D306E9998FFF05}" {
+   Name "OverlayMissionData"
+   Slot FrameWidgetSlot "{60D306E76883E94A}" {
+    Anchor 0.5 1 0.5 1
+    PositionX 461
+    OffsetLeft 461
+    PositionY -70
+    OffsetTop -70
+    SizeX 482
+    OffsetRight -943
+    SizeY 61
+    OffsetBottom 9
+   }
+   {
+    ImageWidgetClass "{60D306E95D8865E1}" {
+     Name "WeatherImage"
+     Slot LayoutSlot "{60D306FA73385D49}" {
+      HorizontalAlign 0
+      VerticalAlign 0
+      Padding 8 0 0 0
+     }
+     Texture "{786F2BC1E092D7B0}UI/Textures/Editor/Attributes/Weather/Attribute_Weather_Rainy.edds"
+     Size 64 64
+    }
+    ImageWidgetClass "{60D306E962CD6997}" {
+     Name "TimeImage"
+     Slot LayoutSlot "{60D306FA73385EA0}" {
+      HorizontalAlign 0
+      VerticalAlign 0
+      Padding 0 0 0 0
+     }
+     Texture "{5E793A7B8DA84847}UI/Textures/Editor/Attributes/Time/Attribute_Time_Midnight.edds"
+     Size 64 64
+    }
+    RichTextWidgetClass "{60D306E9B981BC2A}" {
+     Name "AuthorRichText"
+     Slot LayoutSlot "{60D306FA73385EB5}" {
+      HorizontalAlign 0
+      VerticalAlign 0
+      Padding 8 18 0 0
+     }
+     Text "<color rgba='226,167,79,255'>#PS-GameModeHeader_Author:</color> Unknown"
+     "Font Size" 26
+     "Min Font Size" 26
+     FontProperties FontProperties "{60D306EACE8179A3}" {
+      Font "{E2CBA6F76AAA42AF}UI/Fonts/Roboto/Roboto_Regular.fnt"
      }
     }
    }
