@@ -114,8 +114,8 @@ class PS_GameModeHeader : ScriptedWidgetComponent
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PlayerController thisPlayerController = GetGame().GetPlayerController();
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
-		//m_bButtonAdvance.SetVisible(Replication.IsServer() || playerRole == EPlayerRole.ADMINISTRATOR);
-		if (!(Replication.IsServer() || playerRole == EPlayerRole.ADMINISTRATOR))
+		//m_bButtonAdvance.SetVisible(Replication.IsServer() || PS_PlayersHelper.IsAdminOrServer());
+		if (!PS_PlayersHelper.IsAdminOrServer())
 		{
 			m_wAdvanceImage.SetColor(Color.Gray);
 		} else {
@@ -170,7 +170,8 @@ class PS_GameModeHeader : ScriptedWidgetComponent
 		
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
-		if (playerRole != EPlayerRole.ADMINISTRATOR && !Replication.IsServer()) return;
+		if (!PS_PlayersHelper.IsAdminOrServer()) 
+			return;
 		
 		if (PS_GameModeCoop.Cast(GetGame().GetGameMode()).GetState() == SCR_EGameModeState.GAME) return;
 		
@@ -185,7 +186,7 @@ class PS_GameModeHeader : ScriptedWidgetComponent
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
 		
-		if (playerRole != EPlayerRole.ADMINISTRATOR)
+		if (!PS_PlayersHelper.IsAdminOrServer())
 			if (state != SCR_EGameModeState.PREGAME) return;
 		
 		playableController.SwitchToMenu(SCR_EGameModeState.PREGAME);
@@ -199,7 +200,7 @@ class PS_GameModeHeader : ScriptedWidgetComponent
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
 		
-		if (playerRole != EPlayerRole.ADMINISTRATOR)
+		if (!PS_PlayersHelper.IsAdminOrServer())
 			if (state != SCR_EGameModeState.SLOTSELECTION && state != SCR_EGameModeState.BRIEFING) return;
 		
 		playableController.SwitchToMenu(SCR_EGameModeState.SLOTSELECTION);
@@ -213,7 +214,7 @@ class PS_GameModeHeader : ScriptedWidgetComponent
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
 		
-		if (playerRole != EPlayerRole.ADMINISTRATOR)
+		if (!PS_PlayersHelper.IsAdminOrServer())
 			if (state != SCR_EGameModeState.SLOTSELECTION && state != SCR_EGameModeState.BRIEFING) return;
 		
 		playableController.SwitchToMenu(SCR_EGameModeState.BRIEFING);
@@ -227,7 +228,7 @@ class PS_GameModeHeader : ScriptedWidgetComponent
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
 		
-		if (playerRole != EPlayerRole.ADMINISTRATOR)
+		if (!PS_PlayersHelper.IsAdminOrServer())
 			if (state != SCR_EGameModeState.GAME) return;
 		
 		playableController.SwitchToMenu(SCR_EGameModeState.GAME);
@@ -241,7 +242,7 @@ class PS_GameModeHeader : ScriptedWidgetComponent
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
 		
-		if (playerRole != EPlayerRole.ADMINISTRATOR && !Replication.IsServer())
+		if (!PS_PlayersHelper.IsAdminOrServer())
 			if (state != SCR_EGameModeState.DEBRIEFING) return;
 		
 		playableController.SwitchToMenu(SCR_EGameModeState.DEBRIEFING);

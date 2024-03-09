@@ -380,7 +380,8 @@ class PS_PlayableControllerComponent : ScriptComponent
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
-		if (playerRole != EPlayerRole.ADMINISTRATOR) return;
+		if (!PS_PlayersHelper.IsAdminOrServer()) 
+			return;
 		
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		if (gameMode.GetState() == SCR_EGameModeState.PREGAME)

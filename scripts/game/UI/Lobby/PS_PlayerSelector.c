@@ -81,13 +81,13 @@ class PS_PlayerSelector : SCR_ButtonBaseComponent
 		// if admin set player color
 		m_wPlayerName.SetText(playerManager.GetPlayerName(m_iPlayer));
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(m_iPlayer);
-		if (playerRole == EPlayerRole.ADMINISTRATOR) m_wPlayerName.SetColor(Color.FromInt(0xfff2a34b));
+		if (PS_PlayersHelper.IsAdminOrServer()) m_wPlayerName.SetColor(Color.FromInt(0xfff2a34b));
 		else m_wPlayerName.SetColor(Color.FromInt(0xffffffff));
 		
 		// If admin show kick button for non admins
 		PlayerController currentPlayerController = GetGame().GetPlayerController();
 		EPlayerRole currentPlayerRole = playerManager.GetPlayerRoles(currentPlayerController.GetPlayerId());
-		m_wKickButton.SetVisible(currentPlayerRole == EPlayerRole.ADMINISTRATOR && playerRole != EPlayerRole.ADMINISTRATOR);
+		m_wKickButton.SetVisible(PS_PlayersHelper.IsAdminOrServer() && playerRole != EPlayerRole.ADMINISTRATOR);
 		
 		PS_EPlayableControllerState state = PS_PlayableManager.GetInstance().GetPlayerState(m_iPlayer);
 		
@@ -99,8 +99,8 @@ class PS_PlayerSelector : SCR_ButtonBaseComponent
 		// If pinned show pinImage or pinButton for admins
 		if (playableManager.GetPlayerPin(m_iPlayer))
 		{
-			m_wPinImage.SetVisible(currentPlayerRole != EPlayerRole.ADMINISTRATOR);
-			m_wPinButton.SetVisible(currentPlayerRole == EPlayerRole.ADMINISTRATOR);
+			m_wPinImage.SetVisible(!PS_PlayersHelper.IsAdminOrServer());
+			m_wPinButton.SetVisible(PS_PlayersHelper.IsAdminOrServer());
 		} else 
 		{
 			m_wPinImage.SetVisible(false);

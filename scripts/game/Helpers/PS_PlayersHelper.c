@@ -1,6 +1,6 @@
 class PS_PlayersHelper
 {
-	bool IsAdminOrLocal()
+	static bool IsAdminOrServer()
 	{
 		if (Replication.IsServer())
 			return true;

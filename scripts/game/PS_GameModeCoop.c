@@ -129,7 +129,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
-		if (playerRole != EPlayerRole.ADMINISTRATOR && !Replication.IsServer()) return;
+		if (!PS_PlayersHelper.IsAdminOrServer()) return;
 		
 		playableController.LoadMission(data);
 	}
@@ -141,7 +141,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
-		if (playerRole != EPlayerRole.ADMINISTRATOR && !Replication.IsServer()) return;
+		if (!PS_PlayersHelper.IsAdminOrServer()) return;
 		
 		playableController.AdvanceGameState(SCR_EGameModeState.NULL);
 	}
@@ -266,7 +266,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
 		
-		if (!m_bCanOpenLobbyInGame && playerRole != EPlayerRole.ADMINISTRATOR && !Replication.IsServer()) return;
+		if (!m_bCanOpenLobbyInGame && !PS_PlayersHelper.IsAdminOrServer()) return;
 		
 		MenuBase lobbyMenu = GetGame().GetMenuManager().FindMenuByPreset(ChimeraMenuPreset.CoopLobby);
 		if (!lobbyMenu)

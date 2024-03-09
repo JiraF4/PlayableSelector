@@ -54,7 +54,7 @@ class PS_DebriefingObjectiveWidgetComponent : SCR_ScriptedWidgetComponent
 		EPlayerRole currentPlayerRole = playerManager.GetPlayerRoles(currentPlayerController.GetPlayerId());
 		PS_PlayableControllerComponent currentPlayableController = PS_PlayableControllerComponent.Cast(currentPlayerController.FindComponent(PS_PlayableControllerComponent));
 		
-		if (currentPlayerRole != EPlayerRole.ADMINISTRATOR && currentPlayerRole != EPlayerRole.SESSION_ADMINISTRATOR && !Replication.IsServer())
+		if (!PS_PlayersHelper.IsAdminOrServer())
 			return;
 		
 		currentPlayableController.SetObjectiveCompleteState(m_Objective, !m_Objective.GetCompleted());
