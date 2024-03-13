@@ -1,0 +1,35 @@
+PanelWidgetClass {
+ Name "SideRatioLine"
+ Slot LayoutSlot "{60B551B42882AEB6}" {
+  SizeMode Fill
+  FillWeight 2
+ }
+ Color 0.024 0.937 0.082 1
+ components {
+  PS_SidesRatioLine "{60B551B9EB04CA13}" {
+  }
+ }
+ style full
+ {
+  TextWidgetClass "{60B551B5D6200DC6}" {
+   Name "SideCount"
+   Slot FrameWidgetSlot "{60B551B5D6200DDC}" {
+    Anchor 0 0 1 1
+    PositionX 0
+    OffsetLeft 0
+    PositionY 0
+    OffsetTop 0
+    SizeX 5.882
+    OffsetRight 0
+    SizeY -15
+    OffsetBottom 0
+   }
+   "Is Visible" 0
+   Text "2"
+   "Font Size" 50
+   "Min Font Size" 50
+   "Horizontal Alignment" Center
+   "Vertical Alignment" Center
+  }
+ }
+}

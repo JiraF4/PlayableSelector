@@ -3,5 +3,6 @@ modded enum SCR_EGameModeState
 {
 	SLOTSELECTION,
 	BRIEFING,
+	DEBRIEFING,
 	NULL,
 }

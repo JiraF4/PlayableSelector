@@ -48,7 +48,7 @@ class PS_FactionSelector : SCR_ButtonBaseComponent
 			PlayerManager playerManager = GetGame().GetPlayerManager();
 			PlayerController currentPlayerController = GetGame().GetPlayerController();
 			EPlayerRole currentPlayerRole = playerManager.GetPlayerRoles(currentPlayerController.GetPlayerId());
-			if (currentPlayerRole != EPlayerRole.ADMINISTRATOR)
+			if (!PS_PlayersHelper.IsAdminOrServer())
 			{
 				PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 				FactionKey factionKey = playableManager.GetPlayerFactionKey(currentPlayerController.GetPlayerId());

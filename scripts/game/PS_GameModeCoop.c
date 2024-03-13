@@ -11,6 +11,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	[Attribute("120000", UIWidgets.EditBox, "Time during which disconnected players reserve playable for reconnection in ms, -1 for infinity time", "", category: WB_GAME_MODE_CATEGORY)]
 	int m_iAvailableReconnectTime = ;
 	
+	[Attribute("300000", UIWidgets.EditBox, "Time during which disconnected players reserve playable for reconnection in ms, -1 for infinity time", "", category: WB_GAME_MODE_CATEGORY)]
+	int m_iAvailableReconnectAfterSlots = ;
+	
 	[Attribute("1", uiwidget: UIWidgets.CheckBox, "Game may be started only if admin exists on server.", category: WB_GAME_MODE_CATEGORY)]
 	protected bool m_bAdminMode;
 	
@@ -32,6 +35,15 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	[Attribute("30000", UIWidgets.EditBox, "Freeze time", "", category: WB_GAME_MODE_CATEGORY)]
 	int m_iFreezeTime = ;
 	
+	[Attribute("0")]
+	protected bool m_bDisableChat;
+	
+	[RplProp()]
+	protected bool m_fCurrentFreezeTime;
+	
+	[Attribute("0")]
+	protected bool m_bReserveSlots;
+	
 	// ------------------------------------------ Events ------------------------------------------
 	override void OnGameStart()
 	{
@@ -47,6 +59,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (Replication.IsServer())
 		{
 			PS_VoNRoomsManager.GetInstance().GetOrCreateRoomWithFaction("", "#PS-VoNRoom_Global" );
+			
+			m_fCurrentFreezeTime = m_iAvailableReconnectTime;
+			Replication.BumpMe();
 		}
 		
 		if (RplSession.Mode() != RplMode.Dedicated) {
@@ -56,15 +71,24 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		
 		GetGame().GetCallqueue().CallLater(AddAdvanceAction, 0, false);
 		
+		GetGame().GetCallqueue().CallLater(RegisterEditorClosed, 100, false);
+	}
+	
+	void RegisterEditorClosed()
+	{
 		SCR_EditorModeEntity editorModeEntity = SCR_EditorModeEntity.GetInstance();
 		if (editorModeEntity)
 			editorModeEntity.GetOnClosed().Insert(EditorClosed);
+		else
+			GetGame().GetCallqueue().CallLater(RegisterEditorClosed, 100, false);
 	}
 	
 	void EditorClosed()
 	{
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		
+		playableController.SaveCameraTransform();
 		playableController.SwitchFromObserver();
 		playableController.SwitchToMenu(GetState());
 	}
@@ -78,6 +102,19 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		invoker.Insert(LoadMap_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("sav");
 		invoker.Insert(ExportMissionData_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("tst");
+		invoker.Insert(Test_Callback);
+	}
+	
+	void Test_Callback(SCR_ChatPanel panel, string data)
+	{
+		MemoryStatsSnapshot snapshot = new MemoryStatsSnapshot();
+		int statsCount = MemoryStatsSnapshot.GetStatsCount();
+		for (int i = 0; i < statsCount; i++)
+		{
+			Print(MemoryStatsSnapshot.GetStatName(i));
+			Print(snapshot.GetStatValue(i));
+		}
 	}
 	
 	void ExportMissionData_Callback(SCR_ChatPanel panel, string data)
@@ -92,7 +129,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
-		if (playerRole != EPlayerRole.ADMINISTRATOR && !Replication.IsServer()) return;
+		if (!PS_PlayersHelper.IsAdminOrServer()) return;
 		
 		playableController.LoadMission(data);
 	}
@@ -104,7 +141,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
-		if (playerRole != EPlayerRole.ADMINISTRATOR && !Replication.IsServer()) return;
+		if (!PS_PlayersHelper.IsAdminOrServer()) return;
 		
 		playableController.AdvanceGameState(SCR_EGameModeState.NULL);
 	}
@@ -164,8 +201,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			RplComponent rpl = RplComponent.Cast(controlledEntity.FindComponent(RplComponent));
 			rpl.GiveExt(RplIdentity.Local(), false);
 		}
-		
-		playerController.SetInitialMainEntity(null);
 		
 		m_OnPlayerDisconnected.Invoke(playerId, cause, timeout);
 		foreach (SCR_BaseGameModeComponent comp : m_aAdditionalGamemodeComponents)
@@ -231,8 +266,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
 		
-		if (!m_bCanOpenLobbyInGame && playerRole != EPlayerRole.ADMINISTRATOR) return;
-		GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.CoopLobby);
+		if (!m_bCanOpenLobbyInGame && !PS_PlayersHelper.IsAdminOrServer()) return;
+		
+		MenuBase lobbyMenu = GetGame().GetMenuManager().FindMenuByPreset(ChimeraMenuPreset.CoopLobby);
+		if (!lobbyMenu)
+			GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.CoopLobby);
 	}
 	
 	// Force open current game state menu
@@ -323,7 +361,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	void AdvanceGameState(SCR_EGameModeState oldState)
 	{
 		SCR_EGameModeState state = GetState();
-		if (state == SCR_EGameModeState.GAME) return;
 		if (oldState != SCR_EGameModeState.NULL && oldState != state) return;
 		switch (state) 
 		{
@@ -334,17 +371,46 @@ class PS_GameModeCoop : SCR_BaseGameMode
 				SetGameModeState(SCR_EGameModeState.BRIEFING);
 				break;
 			case SCR_EGameModeState.BRIEFING:
+				m_iAvailableReconnectTime = m_iAvailableReconnectAfterSlots;
+				if (m_bReserveSlots)
+					ReserveSlots();
 				if (m_bKillRedundantUnits) PS_PlayableManager.GetInstance().KillRedundantUnits();
 				restrictedZonesTimer(m_iFreezeTime);
 				StartGameMode();
 				break;
 			case SCR_EGameModeState.GAME:
-				SetGameModeState(SCR_EGameModeState.POSTGAME);
+				SetGameModeState(SCR_EGameModeState.DEBRIEFING);
+				break;
+			case SCR_EGameModeState.DEBRIEFING:
 				break;
 			case SCR_EGameModeState.POSTGAME:
 				break;
 		}
 		OpenCurrentMenuOnClients();
+	}
+	
+	void ReserveSlots()
+	{
+		if (!Replication.IsServer())
+			return;
+		
+		PS_SlotsReserver slotsReserver = PS_SlotsReserver.Cast(FindComponent(PS_SlotsReserver));
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		
+		array<string> GUIDs = {};
+		map<RplId, PS_PlayableComponent> playables = playableManager.GetPlayables();
+		foreach (RplId id, PS_PlayableComponent playable : playables)
+		{
+			int playerId = playableManager.GetPlayerByPlayable(id);
+			if (playerId <= 0)
+				continue;
+			
+			string GUID = GetGame().GetBackendApi().GetPlayerIdentityId(playerId);
+			GUIDs.Insert(GUID);
+		}
+		
+		slotsReserver.AddGUIDs(GUIDs);
+		slotsReserver.SetEnabled(true);
 	}
 	
 	// TODO: move it to component
@@ -354,6 +420,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		int time = 1000;
 		if (freezeTime < time) time = freezeTime;
 		freezeTime -= time;
+		
+		m_fCurrentFreezeTime = freezeTime;
+		Replication.BumpMe();
 		
 		// Show timer on clients synced to server
 		if (RplSession.Mode() != RplMode.Dedicated) RPC_restrictedZonesTimer(freezeTime);
@@ -389,9 +458,19 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	PS_FreezeTimeCounter m_hFreezeTimeCounter;
 	
 	// ------------------------------------------ Global flags ------------------------------------------
+	bool IsFreezeTimeEnd()
+	{
+		return m_fCurrentFreezeTime <= 0;
+	}
+	
 	bool IsAdminMode()
 	{
 		return m_bAdminMode;
+	}
+	
+	bool IsChatDisabled()
+	{
+		return m_bDisableChat;
 	}
 	
 	bool IsFactionLockMode()

@@ -61,27 +61,33 @@ class PS_PlayerSelector : SCR_ButtonBaseComponent
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		FactionKey factionKey = playableManager.GetPlayerFactionKey(m_iPlayer);
+		
 		if (factionKey != "") 
 		{
 			FactionManager factionManager = GetGame().GetFactionManager();
 			SCR_Faction faction = SCR_Faction.Cast(factionManager.GetFactionByKey(factionKey));
 			m_wPlayerFactionColor.SetColor(faction.GetOutlineFactionColor());
 			m_wPlayerFactionName.SetText(faction.GetFactionName());
+			
+			int factionIndex = GetGame().GetFactionManager().GetFactionIndex(faction);
+			m_wRoot.SetZOrder(factionIndex);
 		}else{
 			m_wPlayerFactionColor.SetColor(Color.FromInt(0xFF2c2c2c));
 			m_wPlayerFactionName.SetText("-");
+			
+			m_wRoot.SetZOrder(-1);
 		}
 		
 		// if admin set player color
 		m_wPlayerName.SetText(playerManager.GetPlayerName(m_iPlayer));
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(m_iPlayer);
-		if (playerRole == EPlayerRole.ADMINISTRATOR) m_wPlayerName.SetColor(Color.FromInt(0xfff2a34b));
+		if (SCR_Global.IsAdmin(m_iPlayer)) m_wPlayerName.SetColor(Color.FromInt(0xfff2a34b));
 		else m_wPlayerName.SetColor(Color.FromInt(0xffffffff));
 		
 		// If admin show kick button for non admins
 		PlayerController currentPlayerController = GetGame().GetPlayerController();
 		EPlayerRole currentPlayerRole = playerManager.GetPlayerRoles(currentPlayerController.GetPlayerId());
-		m_wKickButton.SetVisible(currentPlayerRole == EPlayerRole.ADMINISTRATOR && playerRole != EPlayerRole.ADMINISTRATOR);
+		m_wKickButton.SetVisible(PS_PlayersHelper.IsAdminOrServer() && playerRole != EPlayerRole.ADMINISTRATOR);
 		
 		PS_EPlayableControllerState state = PS_PlayableManager.GetInstance().GetPlayerState(m_iPlayer);
 		
@@ -93,8 +99,8 @@ class PS_PlayerSelector : SCR_ButtonBaseComponent
 		// If pinned show pinImage or pinButton for admins
 		if (playableManager.GetPlayerPin(m_iPlayer))
 		{
-			m_wPinImage.SetVisible(currentPlayerRole != EPlayerRole.ADMINISTRATOR);
-			m_wPinButton.SetVisible(currentPlayerRole == EPlayerRole.ADMINISTRATOR);
+			m_wPinImage.SetVisible(!PS_PlayersHelper.IsAdminOrServer());
+			m_wPinButton.SetVisible(PS_PlayersHelper.IsAdminOrServer());
 		} else 
 		{
 			m_wPinImage.SetVisible(false);

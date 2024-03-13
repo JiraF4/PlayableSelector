@@ -31,18 +31,6 @@ FrameWidgetClass {
    }
    "Is Visible" 0
    {
-    HorizontalLayoutWidgetClass "{000000001FC52976}" {
-     Prefab "{000000001FC52976}"
-     {
-      ImageWidgetClass "{000000002766140D}" {
-       Prefab "{000000002766140D}"
-       Slot LayoutSlot "{52DA9C9935318517}" {
-        Padding 0 0 0 0
-        FillWeight 1
-       }
-      }
-     }
-    }
     FrameWidgetClass "{5F34C888848C4724}" : "{2F8AEE78FF5A8104}UI/layouts/Map/ToolMenu.layout" {
      Name "ToolMenu"
      Slot FrameWidgetSlot "{59107CDEE98682C5}" {
@@ -66,11 +54,54 @@ FrameWidgetClass {
       }
      }
     }
+    HorizontalLayoutWidgetClass "{000000001FC52976}" {
+     Prefab "{000000001FC52976}"
+     {
+      ImageWidgetClass "{000000002766140D}" {
+       Prefab "{000000002766140D}"
+       Slot LayoutSlot "{52DA9C9935318517}" {
+        Padding 0 0 0 0
+        FillWeight 1
+       }
+      }
+     }
+    }
    }
   }
   FrameWidgetClass "{5EA90320D67E1881}" : "{D89BBA18F99053D6}UI/layouts/HUD/Chat/ChatHud.layout" {
    Name "Chat0"
    Slot FrameWidgetSlot "{5D4881250D202DF3}" {
+    PositionX 8
+    OffsetLeft 8
+    PositionY 0
+    OffsetTop 0
+    SizeX 1920
+    OffsetRight -1928
+    SizeY 1080
+    OffsetBottom -1080
+   }
+   {
+    OverlayWidgetClass "{585F053862A9FD1C}" {
+     Prefab "{585F053862A9FD1C}"
+     {
+      OverlayWidgetClass "{56150B2288F76A08}" {
+       Prefab "{56150B2288F76A08}"
+       {
+        VerticalLayoutWidgetClass "{00000000BC2C2020}" {
+         Prefab "{00000000BC2C2020}"
+         {
+          OverlayWidgetClass "{563296652233D952}" {
+           Prefab "{563296652233D952}"
+           Slot LayoutSlot "{563296652233D97A}" {
+            Padding 3 0 0 0
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
    }
   }
   FrameWidgetClass "{5EB701CDC06E16AD}" : "{35DB604900C55B98}UI/VoiceChat/VoiceChatFrame.layout" {
@@ -86,6 +117,7 @@ FrameWidgetClass {
     SizeY 640
     OffsetBottom -320
    }
+   "Ignore Cursor" 0
    {
     ImageWidgetClass "{5EB2900030AFF403}" {
      Prefab "{5EB2900030AFF403}"
@@ -108,6 +140,89 @@ FrameWidgetClass {
       OffsetBottom -39
      }
      {
+      ButtonWidgetClass "{60CF625489094B1B}" {
+       Name "PinButton"
+       Slot FrameWidgetSlot "{5EA8C93F5E685F59}" {
+        Anchor 0 0 0 0
+        PositionX 291
+        OffsetLeft 291
+        PositionY 0
+        OffsetTop 0
+        SizeX 39
+        OffsetRight -330
+        SizeY 39
+        OffsetBottom -39
+       }
+       "Z Order" 1
+       Color 0 1 0.019 0
+       components {
+        SCR_ButtonBaseComponent "{5EAB2394A927C221}" {
+         m_sSoundHovered ""
+         m_sSoundClicked ""
+         m_bCanBeToggled 1
+         m_BackgroundDefault 1 1 1 0
+         m_BackgroundHovered 1 1 1 0.162
+         m_BackgroundSelected 1 1 1 0.162
+         m_BackgroundSelectedHovered 1 1 1 0.243
+         m_BackgroundClicked 1 1 1 0.162
+         m_bShowBorderOnFocus 0
+         m_bNoBorderAnimation 1
+        }
+       }
+       "no focus" 1
+       {
+        FrameWidgetClass "{60CF625489094B1C}" {
+         Name "PinButtonFrame"
+         Slot ButtonWidgetSlot "{5EA8C93CB4241314}" {
+         }
+         {
+          ImageWidgetClass "{60CF625489094B1E}" {
+           Name "Background"
+           Slot FrameWidgetSlot "{5D6E8206B132EE77}" {
+            PositionX 0
+            OffsetLeft 0
+            PositionY 0
+            OffsetTop 0
+            SizeX 39
+            OffsetRight -39
+            SizeY 39
+            OffsetBottom -39
+           }
+           Color 1 1 1 0
+          }
+          ImageWidgetClass "{60CF625489094B1F}" {
+           Name "PinImage"
+           Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
+            PositionX 0
+            OffsetLeft 0
+            PositionY 0
+            OffsetTop 0
+            SizeX 39
+            OffsetRight -39
+            SizeY 39
+            OffsetBottom -39
+           }
+           Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
+           Image "pinPlay"
+           Size 32 32
+          }
+         }
+        }
+       }
+      }
+      ImageWidgetClass "{5EB2900030AFF405}" {
+       Prefab "{5EB2900030AFF405}"
+       Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX 330
+        OffsetRight -330
+        SizeY 39
+        OffsetBottom -39
+       }
+      }
       OverlayWidgetClass "{5EB2900030AFF406}" {
        Prefab "{5EB2900030AFF406}"
        Slot FrameWidgetSlot "{5EB0E9ED5655F81D}" {
@@ -144,11 +259,12 @@ FrameWidgetClass {
     OffsetLeft 0
     PositionY -320
     OffsetTop -320
-    SizeX 330
-    OffsetRight -330
+    SizeX 320
+    OffsetRight -320
     SizeY 640
     OffsetBottom -320
    }
+   "Ignore Cursor" 0
    components {
     PS_AlivePlayerList "{5EBA416A9CB1DC7C}" {
     }
@@ -156,57 +272,82 @@ FrameWidgetClass {
    {
     FrameWidgetClass "{5EBA3C97FF93DE7A}" {
      Prefab "{5EBA3C97FF93DE7A}"
-     Slot FrameWidgetSlot "{5EBA3C97FF93DE52}" {
-      OffsetLeft 0
-      OffsetTop 0
-      SizeX 330
-      OffsetRight -330
-      OffsetBottom -39
-     }
      {
-      ImageWidgetClass "{5EBA3C974B568AC5}" {
-       Prefab "{5EBA3C974B568AC5}"
-       Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
-        OffsetLeft 0
+      ButtonWidgetClass "{60CF6254EE61EB76}" {
+       Name "PinButton"
+       Slot FrameWidgetSlot "{5EA8C93F5E685F59}" {
+        Anchor 0 0 0 0
+        PositionX 281
+        OffsetLeft 281
+        PositionY 0
         OffsetTop 0
-        SizeX 330
-        OffsetRight -330
+        SizeX 39
+        OffsetRight -320
+        SizeY 39
         OffsetBottom -39
        }
-      }
-      OverlayWidgetClass "{5EBA3C976CAFC55D}" {
-       Prefab "{5EBA3C976CAFC55D}"
-       Slot FrameWidgetSlot "{5EB0E9ED5655F81D}" {
-        OffsetLeft 0
-        OffsetTop 0
-        SizeX 330
-        OffsetRight -330
-        OffsetBottom -39
+       "Z Order" 1
+       Color 0 1 0.019 0
+       components {
+        SCR_ButtonBaseComponent "{5EAB2394A927C221}" {
+         m_sSoundHovered ""
+         m_sSoundClicked ""
+         m_bCanBeToggled 1
+         m_BackgroundDefault 1 1 1 0
+         m_BackgroundHovered 1 1 1 0.162
+         m_BackgroundSelected 1 1 1 0.162
+         m_BackgroundSelectedHovered 1 1 1 0.243
+         m_BackgroundClicked 1 1 1 0.162
+         m_bShowBorderOnFocus 0
+         m_bNoBorderAnimation 1
+        }
+       }
+       "no focus" 1
+       {
+        FrameWidgetClass "{60CF6254EE61EB77}" {
+         Name "PinButtonFrame"
+         Slot ButtonWidgetSlot "{5EA8C93CB4241314}" {
+         }
+         {
+          ImageWidgetClass "{60CF6254EE61EB78}" {
+           Name "Background"
+           Slot FrameWidgetSlot "{5D6E8206B132EE77}" {
+            PositionX 0
+            OffsetLeft 0
+            PositionY 0
+            OffsetTop 0
+            SizeX 39
+            OffsetRight -39
+            SizeY 39
+            OffsetBottom -39
+           }
+           Color 1 1 1 0
+          }
+          ImageWidgetClass "{60CF6254EE61EB79}" {
+           Name "PinImage"
+           Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
+            PositionX 0
+            OffsetLeft 0
+            PositionY 0
+            OffsetTop 0
+            SizeX 39
+            OffsetRight -39
+            SizeY 39
+            OffsetBottom -39
+           }
+           Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
+           Image "pinPlay"
+           Size 32 32
+          }
+         }
+        }
        }
       }
      }
     }
     ImageWidgetClass "{5EBA3C97969AD0E7}" {
      Prefab "{5EBA3C97969AD0E7}"
-     Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
-      OffsetLeft 0
-      OffsetTop 0
-      SizeX 330
-      OffsetRight -330
-      SizeY 640
-      OffsetBottom -640
-     }
-    }
-    ScrollLayoutWidgetClass "{5EBA3C972331B0F8}" {
-     Prefab "{5EBA3C972331B0F8}"
-     Slot FrameWidgetSlot "{5EB1000AD8290B3B}" {
-      OffsetLeft 0
-      OffsetTop 39
-      SizeX 330
-      OffsetRight -330
-      SizeY 601
-      OffsetBottom -640
-     }
+     "Z Order" -1
     }
    }
   }
@@ -260,6 +401,7 @@ FrameWidgetClass {
       ButtonWidgetClass "{5EC5025171F33454}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
        Name "NavigationFactionVoice"
        Slot LayoutSlot "{5EBC737F18D3A94E}" {
+        Padding 20 0 0 0
        }
        components {
         SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
@@ -271,6 +413,7 @@ FrameWidgetClass {
       ButtonWidgetClass "{5EC5025171F33456}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
        Name "NavigationSwitchSpectatorUI"
        Slot LayoutSlot "{5EBC737F18D3A94E}" {
+        Padding 20 0 0 0
        }
        components {
         SCR_InputButtonComponent "{5D346C3DD81D95CD}" {

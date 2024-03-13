@@ -1,33 +1,9 @@
-SCR_PlayerController : "{6E2BB64764E3BE9B}Prefabs/Characters/Core/DefaultPlayerController.et" {
+SCR_PlayerController : "{225E51284CC95CFA}Prefabs/Characters/Core/DefaultPlayerControllerMP.et" {
  ID "1A9BA6BEFA06E3B1"
  components {
   PS_BigMsgSenderComponent "{5ED8E740ACEA83B2}" {
   }
   PS_PlayableControllerComponent "{5EA7206115A83E71}" {
-  }
-  RadioHandlerComponent "{5D50F641B0525AAD}" {
-  }
-  SCR_ChatComponent "{5D50F641B0525AB3}" {
-  }
-  SCR_DataCollectorCommunicationComponent "{5D50F641B0525AB5}" {
-  }
-  SCR_MapMarkerSyncComponent "{5EB2907A12B3BDE5}" {
-  }
-  SCR_PlayerFactionAffiliationComponent "{5E60EBD85AB35135}" {
-  }
-  SCR_RespawnComponent "{5D50F641B0525AB9}" {
-   components {
-    SCR_SpawnLockComponent "{5E7B7653693A9263}" {
-    }
-   }
-  }
-  SCR_TaskNetworkComponent "{5D50F641B0525ABB}" {
-  }
-  RplComponent "{5D50F641B0525ABE}" {
-   "Self Insert" 0
-   Streamable Disabled
-  }
-  SCR_ResourcePlayerControllerInventoryComponent "{605B06AC0003C3E9}" {
   }
  }
  coords 132.656 1 149.255

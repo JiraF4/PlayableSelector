@@ -9,7 +9,8 @@ class PS_PlayableManagerClass: ScriptComponentClass
 class PS_PlayableManager : ScriptComponent
 {	
 	// Map of our playables
-	ref map<RplId, PS_PlayableComponent> m_aPlayables = new ref map<RplId, PS_PlayableComponent>(); // We don't sync it!
+	ref map<RplId, PS_PlayableComponent> m_aPlayables = new map<RplId, PS_PlayableComponent>(); // We don't sync it!
+	ref array<PS_PlayableComponent> m_PlayablesSorted = {};
 	
 	// Maps for saving players staff, player controllers local to client
 	ref map<int, PS_EPlayableControllerState> m_playersStates = new map<int, PS_EPlayableControllerState>;
@@ -161,18 +162,21 @@ class PS_PlayableManager : ScriptComponent
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		
 		SCR_AIGroup playerGroup = GetPlayerGroupByPlayable(playableId);
-		IEntity leaderEntity = playerGroup.GetLeaderEntity();
+		IEntity leaderEntity = null;
+		if (playerGroup)
+			leaderEntity = playerGroup.GetLeaderEntity();
 		PS_PlayableComponent playableComponentLeader; 
 		if (leaderEntity) playableComponentLeader = PS_PlayableComponent.Cast(leaderEntity.FindComponent(PS_PlayableComponent));
 		
 		SCR_PlayerControllerGroupComponent playerControllerGroupComponent = SCR_PlayerControllerGroupComponent.Cast(playerController.FindComponent(SCR_PlayerControllerGroupComponent));
 		SCR_GroupsManagerComponent groupsManagerComponent = SCR_GroupsManagerComponent.GetInstance();
-		playerControllerGroupComponent.PS_AskJoinGroup(playerGroup.GetGroupID());
+		if (playerGroup)
+			playerControllerGroupComponent.PS_AskJoinGroup(playerGroup.GetGroupID());
 		
 		// Another workaround
 		// Thanks bohem, no one zoomer will be harmed if you remove all text from game.
 		// Maybe also multiplayer from arma? It can harm people, very dangerous.
-		if (playerGroup.GetNameAuthorID() == -1)
+		if (playerGroup && playerGroup.GetNameAuthorID() == -1)
 		{
 			playerGroup.SetCustomName(playerGroup.GetCustomName(), playerId);
 		}
@@ -210,7 +214,7 @@ class PS_PlayableManager : ScriptComponent
 	{
 		return m_aPlayables;
 	}
-	ref array<PS_PlayableComponent> GetPlayablesSorted() // sort playables by RplId AND CallSign
+	void UpdatePlayablesSorted() // sort playables by RplId AND CallSign
 	{
 		array<PS_PlayableComponent> playablesSorted = new array<PS_PlayableComponent>();
 		map<RplId, PS_PlayableComponent> playables = GetPlayables();
@@ -223,7 +227,13 @@ class PS_PlayableManager : ScriptComponent
 			for (int s = 0; s < playablesSorted.Count(); s++) {
 				PS_PlayableComponent playableS = playablesSorted[s];
 				int callSignS = GetGroupCallsignByPlayable(playableS.GetId());
-				if ((playableS.GetId() > playable.GetId() && callSign == callSignS) || callSign < callSignS) {
+				
+				bool rplIdGreater = playableS.GetId() > playable.GetId();
+				bool rankGreater = SCR_CharacterRankComponent.GetCharacterRank(playable.GetOwner()) > SCR_CharacterRankComponent.GetCharacterRank(playableS.GetOwner());
+				bool callSignEquival = callSignS == callSign;
+				bool callSignGreater = callSignS > callSign;
+				
+				if (((rplIdGreater || rankGreater) && callSignEquival) || callSignGreater) {
 					playablesSorted.InsertAt(playable, s);
 					isInserted = true;
 					break;
@@ -232,8 +242,14 @@ class PS_PlayableManager : ScriptComponent
 			if (!isInserted) {
 				playablesSorted.Insert(playable);
 			}
+			//Print(playable.GetOwner().GetPrefabData().GetPrefabName());
 		}
-		return playablesSorted;
+		
+		m_PlayablesSorted = playablesSorted;
+	}
+	ref array<PS_PlayableComponent> GetPlayablesSorted() // sort playables by RplId AND CallSign
+	{
+		return m_PlayablesSorted;
 	}
 	FactionKey GetPlayerFactionKey(int playerId)
 	{
@@ -293,6 +309,8 @@ class PS_PlayableManager : ScriptComponent
 			return;
 		m_aPlayables[playableId] = playableComponent;
 		
+		GetGame().GetCallqueue().Call(UpdatePlayablesSorted);
+		
 		if (Replication.IsServer())
 		{
 			SCR_ChimeraCharacter playableCharacter = SCR_ChimeraCharacter.Cast(playableComponent.GetOwner());
@@ -300,6 +318,8 @@ class PS_PlayableManager : ScriptComponent
 			SCR_AIGroup playableGroup =  SCR_AIGroup.Cast(aiControl.GetControlAIAgent().GetParentGroup());
 			SCR_AIGroup playerGroup;
 			
+			if (!playableGroup)
+				return;
 			
 			if (!playableGroup.IsSlave())
 			{
@@ -323,6 +343,8 @@ class PS_PlayableManager : ScriptComponent
 		if (!m_aPlayables.Contains(playableId))
 			return;
 		m_aPlayables.Remove(playableId);
+		
+		UpdatePlayablesSorted();
 	}
 	void UpdateGroupCallsigne(RplId playableId, SCR_AIGroup playerGroup, SCR_AIGroup playableGroup)
 	{

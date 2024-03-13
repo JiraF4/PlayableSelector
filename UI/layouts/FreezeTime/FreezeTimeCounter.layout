@@ -11,6 +11,7 @@ OverlayWidgetClass {
   SizeY 30
   OffsetBottom -30
  }
+ "Z Order" 1
  components {
   PS_FreezeTimeCounter "{5F0EB4D7E2F1C395}" {
   }

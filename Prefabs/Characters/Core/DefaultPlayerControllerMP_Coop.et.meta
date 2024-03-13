@@ -1,5 +1,5 @@
 MetaFileClass {
- Name "{4E5DAC62A374950F}Prefabs/Characters/Core/DefaultPlayerControllerMP.et"
+ Name "{4E5DAC62A374950F}Prefabs/Characters/Core/DefaultPlayerControllerMP_Coop.et"
  Configurations {
   EntityTemplateResourceClass PC {
   }

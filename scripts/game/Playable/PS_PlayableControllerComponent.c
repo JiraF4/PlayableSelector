@@ -15,6 +15,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 	SCR_EGameModeState m_eMenuState = SCR_EGameModeState.PREGAME;
 	bool m_bAfterInitialSwitch = false;
 	vector m_vObserverPosition = "0 0 0";
+	vector lastCameraTransform[4];
 	
 	// ------ MenuState ------
 	void SetMenuState(SCR_EGameModeState state)
@@ -40,11 +41,14 @@ class PS_PlayableControllerComponent : ScriptComponent
 	void SwitchToMenu(SCR_EGameModeState state)
 	{
 		SetMenuState(state);
-		GetGame().GetMenuManager().GetTopMenu().Close();
+		MenuBase topMenu = GetGame().GetMenuManager().GetTopMenu();
+		if (topMenu)
+			topMenu.Close();
 		GetGame().GetMenuManager().CloseMenuByPreset(ChimeraMenuPreset.PreviewMapMenu);
 		GetGame().GetMenuManager().CloseMenuByPreset(ChimeraMenuPreset.CoopLobby);
 		GetGame().GetMenuManager().CloseMenuByPreset(ChimeraMenuPreset.BriefingMapMenu);
 		GetGame().GetMenuManager().CloseMenuByPreset(ChimeraMenuPreset.FadeToGame);
+		GetGame().GetMenuManager().CloseMenuByPreset(ChimeraMenuPreset.DebriefingMenu);
 		switch (state) 
 		{
 			case SCR_EGameModeState.PREGAME:
@@ -60,8 +64,11 @@ class PS_PlayableControllerComponent : ScriptComponent
 				ApplyPlayable();
 				GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.FadeToGame);
 				break;
+			case SCR_EGameModeState.DEBRIEFING:
+				GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.DebriefingMenu);
+				break;
 			case SCR_EGameModeState.POSTGAME:
-				GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.BriefingMapMenu); // TODO: Debriefing menu
+				GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.DebriefingMenu);
 				break;
 		}
 	}
@@ -218,7 +225,6 @@ class PS_PlayableControllerComponent : ScriptComponent
 		if (thisPlayerController.GetPlayerId() != playerId && playerRole == EPlayerRole.NONE) return;
 		if (playableManager.GetPlayerPin(playerId) && playerRole == EPlayerRole.NONE) return;
 		
-		
 		playableManager.SetPlayerFactionKey(playerId, factionKey);
 	}
 	
@@ -321,6 +327,12 @@ class PS_PlayableControllerComponent : ScriptComponent
 	}
 	
 	// ------------------ Observer camera controlls ------------------
+	void SaveCameraTransform()
+	{
+		SCR_CameraEditorComponent cameraManager = SCR_CameraEditorComponent.Cast(SCR_BaseEditorComponent.GetInstance(SCR_CameraEditorComponent, false));
+		cameraManager.GetLastCameraTransform(lastCameraTransform);
+	}
+	
 	void SwitchToObserver(IEntity from)
 	{
 		if (m_eCamera) return;
@@ -330,9 +342,14 @@ class PS_PlayableControllerComponent : ScriptComponent
 		EntitySpawnParams params = new EntitySpawnParams();
 		if (from) from.GetTransform(params.Transform);
 		MoveToVoNRoom(thisPlayerController.GetPlayerId(), "", "");
-        Resource resource = Resource.Load("{6EAA30EF620F4A2E}Prefabs/Editor/Camera/ManualCameraSpectator.et");
-        m_eCamera = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
-		if (m_vObserverPosition != "0 0 0") { 
+      Resource resource = Resource.Load("{6EAA30EF620F4A2E}Prefabs/Editor/Camera/ManualCameraSpectator.et");
+      m_eCamera = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
+		
+		if (lastCameraTransform[3][1] < 10000 && lastCameraTransform[3][1] > 0)
+		{
+			m_eCamera.SetTransform(lastCameraTransform);
+			lastCameraTransform[3][1] = 10000;
+		} else if (m_vObserverPosition != "0 0 0") { 
 			m_eCamera.SetOrigin(m_vObserverPosition);
 			m_vObserverPosition = "0 0 0";
 		} else {
@@ -363,7 +380,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
-		if (playerRole != EPlayerRole.ADMINISTRATOR) return;
+		if (SCR_Global.IsAdmin(thisPlayerController.GetPlayerId())) return;
 		
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		if (gameMode.GetState() == SCR_EGameModeState.PREGAME)
@@ -505,6 +522,16 @@ class PS_PlayableControllerComponent : ScriptComponent
 		if (playerId != thisPlayerController.GetPlayerId()) playableManager.SetPlayerPin(playerId, true);	
 	}
 	
-	
-	
+	void SetObjectiveCompleteState(PS_Objective objective, bool complete)
+	{
+		RplId objectiveId = objective.GetRplId();
+		Rpc(RPC_SetObjectiveCompleteState, objectiveId, complete);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void RPC_SetObjectiveCompleteState(RplId objectiveId, bool complete)
+	{
+		PS_Objective objective = PS_Objective.Cast(Replication.FindItem(objectiveId));
+		if (objective)
+			objective.SetCompleted(complete);
+	}
 }

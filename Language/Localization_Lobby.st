@@ -57,11 +57,12 @@ StringTable {
   }
   CustomStringTableItem "{5F0AFCF3B4D7E97D}" {
    Id "PS-Briefing_Steps"
+   Target_en_us "Steps"
    Target_es_es "Pasos a seguir"
    Target_pt_br "Etapas do briefing"
-   Modified 1595448847
+   Modified 1624458354
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "zazul"
   }
   CustomStringTableItem "{5EC5311E7A654D14}" {
    Id "PS-Briefing_VoiceChat"
@@ -453,6 +454,14 @@ StringTable {
    Author "SeskPC"
    LastChanged "SeskPC"
   }
+  CustomStringTableItem "{60D306C0DDCFA677}" {
+   Id "PS-GameModeHeader_Author"
+   Target_en_us "Author"
+   Target_ru_ru "Автор"
+   Modified 1624458506
+   Author "zazul"
+   LastChanged "zazul"
+  }
   CustomStringTableItem "{5EB6FE5226347A67}" {
    Id "PS-GameModeHeader_Briefing"
    Target_en_us "Briefing"
@@ -712,6 +721,46 @@ StringTable {
    Modified 1595450130
    Author "SeskPC"
    LastChanged "SeskPC"
+  }
+  CustomStringTableItem "{60BA84375EEF27A8}" {
+   Id "PS-ObjectiveLevel_Draw"
+   Target_en_us "Draw"
+   Target_ru_ru "Ничья"
+   Modified 1622843550
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{60BA84378C867415}" {
+   Id "PS-ObjectiveLevel_MajorLoss"
+   Target_en_us "Major loss"
+   Target_ru_ru "Поражение"
+   Modified 1622845264
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{60BA843705762142}" {
+   Id "PS-ObjectiveLevel_MajorVictory"
+   Target_en_us "Major victory"
+   Target_ru_ru "Победа"
+   Modified 1622845262
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{60BA8437AF9DA0F3}" {
+   Id "PS-ObjectiveLevel_MinorLoss"
+   Target_en_us "Minor loss"
+   Target_ru_ru "Незначительное поражение"
+   Modified 1622845239
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{60BA84377297495A}" {
+   Id "PS-ObjectiveLevel_MinorVictory"
+   Target_en_us "Minor victory"
+   Target_ru_ru "Незначительная победа"
+   Modified 1622845243
+   Author "zazul"
+   LastChanged "zazul"
   }
   CustomStringTableItem "{5EBE323E513FFB52}" {
    Id "PS-ObserverPlayersList"

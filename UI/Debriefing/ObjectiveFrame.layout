@@ -2,6 +2,10 @@ FrameWidgetClass {
  Name "ObjectiveFrame"
  Slot LayoutSlot "{5EBF1EC9E8008D16}" {
  }
+ components {
+  PS_DebriefingObjectiveWidgetComponent "{6084E1C4324FF049}" {
+  }
+ }
  {
   ImageWidgetClass "{5EBF1EC8B9915317}" {
    Name "Background"
@@ -51,7 +55,7 @@ FrameWidgetClass {
   }
   TextWidgetClass "{5EBF1ED47B73F68B}" {
    Prefab "{5D6D1B99A45E5176}"
-   Name "ObjectiveName0"
+   Name "ObjectiveScore"
    Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
     PositionX 406
     OffsetLeft 406
@@ -67,6 +71,61 @@ FrameWidgetClass {
    "Min Font Size" 20
    "Horizontal Alignment" Center
    "Vertical Alignment" Center
+  }
+  ButtonWidgetClass "{60B551D38F9D7EAF}" {
+   Name "CompleteButton"
+   Slot FrameWidgetSlot "{5EA8C93F5E685F59}" {
+    Anchor 0 0 0 0
+    PositionX 486
+    OffsetLeft 486
+    PositionY 0
+    OffsetTop 0
+    SizeX 44
+    OffsetRight -530
+    SizeY 44
+    OffsetBottom -44
+   }
+   Color 0 1 0.019 0
+   "Inherit Color" 1
+   components {
+    SCR_ButtonBaseComponent "{5EAB23942F4C5DCF}" {
+     m_sSoundHovered ""
+     m_sSoundClicked ""
+     m_BackgroundDefault 1 1 1 0
+     m_BackgroundHovered 1 1 1 0.162
+     m_BackgroundSelected 1 1 1 0
+     m_BackgroundSelectedHovered 1 1 1 0.162
+     m_BackgroundClicked 1 1 1 0
+     m_bShowBorderOnFocus 0
+     m_bNoBorderAnimation 1
+    }
+   }
+   "no focus" 1
+   {
+    FrameWidgetClass "{60B551D38F9D7EB0}" {
+     Name "CompleteButtonFrame"
+     Slot ButtonWidgetSlot "{5EA8C93CB4241314}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+     }
+     "Inherit Color" 1
+     {
+      ImageWidgetClass "{60B551D38F9D7EB2}" {
+       Name "Background"
+       Slot FrameWidgetSlot "{5D6E8206B132EE77}" {
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX 44
+        OffsetRight -44
+        SizeY 44
+        OffsetBottom -44
+       }
+      }
+     }
+    }
+   }
   }
  }
 }

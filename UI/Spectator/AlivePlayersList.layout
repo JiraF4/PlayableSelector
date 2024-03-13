@@ -15,12 +15,14 @@ FrameWidgetClass {
   FrameWidgetClass "{5EBA3C97FF93DE7A}" {
    Name "AlivePlayersHeader"
    Slot FrameWidgetSlot "{5EBA3C97FF93DE52}" {
+    PositionX 0
     OffsetLeft 0
+    PositionY 0
     OffsetTop 0
     SizeX 320
     OffsetRight -320
-    SizeY 39
-    OffsetBottom -39
+    SizeY 84
+    OffsetBottom -84
    }
    Color 0 0 0 1
    {
@@ -59,8 +61,56 @@ FrameWidgetClass {
         Padding 8 0 0 0
        }
        Text "#PS-ObserverPlayersList"
+       FontProperties FontProperties "{60B7146ECF1D691D}" {
+        Font "{E2CBA6F76AAA42AF}UI/Fonts/Roboto/Roboto_Regular.fnt"
+       }
       }
      }
+    }
+    HorizontalLayoutWidgetClass "{60B6B9E39D16176D}" {
+     Name "SidesRatio"
+     Slot FrameWidgetSlot "{60B551B74785C9E5}" {
+      PositionX 0
+      OffsetLeft 0
+      PositionY 39
+      OffsetTop 39
+      SizeX 320
+      OffsetRight -320
+      SizeY 6
+      OffsetBottom -45
+     }
+     components {
+      PS_SidesRation "{60B551B9F3DAD167}" {
+      }
+     }
+    }
+    HorizontalLayoutWidgetClass "{60B6B9E4DF122A3A}" {
+     Name "HorizontalLayoutFactions"
+     Slot FrameWidgetSlot "{60B6B9E4DF122A0D}" {
+      PositionX 0
+      OffsetLeft 0
+      PositionY 51
+      OffsetTop 51
+      SizeX 320
+      OffsetRight -320
+      SizeY 33
+      OffsetBottom -84
+     }
+    }
+    ImageWidgetClass "{60B6B9E4FA7EE07F}" {
+     Name "AlivePlayersHeaderSeparator"
+     Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
+      Anchor 0 0 0 0
+      PositionX 0
+      OffsetLeft 0
+      PositionY 45
+      OffsetTop 45
+      SizeX 320
+      OffsetRight -320
+      SizeY 6
+      OffsetBottom -51
+     }
+     Color 0 0 0 1
     }
    }
   }
@@ -85,11 +135,11 @@ FrameWidgetClass {
    Slot FrameWidgetSlot "{5EB1000AD8290B3B}" {
     PositionX 0
     OffsetLeft 0
-    PositionY 39
-    OffsetTop 39
+    PositionY 84
+    OffsetTop 84
     SizeX 320
     OffsetRight -320
-    SizeY 761
+    SizeY 716
     OffsetBottom -800
    }
    {

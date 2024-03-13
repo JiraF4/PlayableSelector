@@ -21,6 +21,7 @@ class PS_MissionDescriptionSelectorUI : SCR_ButtonBaseComponent
 	{
 		m_Description = description;
 		m_wDescriptionName.SetText(description.GetTitle());
+		m_wRoot.SetZOrder(description.GetOrder());
 	}
 	
 	// -------------------- Buttons events --------------------

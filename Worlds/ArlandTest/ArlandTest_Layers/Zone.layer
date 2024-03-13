@@ -1,0 +1,260 @@
+$grp PolylineShapeEntity {
+ {
+  components {
+   PS_PolyZone "{60C2EE4AFF777ECC}" {
+    m_bReversed 1
+    m_aVisibleForFactions {
+     "" "US" "USSR"
+    }
+   }
+  }
+  coords 1811.357 40.321 2753.206
+  Points {
+   ShapePoint "{60C2EE4AED1D9611}" {
+    Position 48.807 -0.85 33.322
+   }
+   ShapePoint "{60C2EE4AED1DFEFB}" {
+    Position -192.913 -0.234 -36.524
+   }
+   ShapePoint "{60C2EE4AF45E7590}" {
+    Position -481.892 -4.013 -106.94
+   }
+   ShapePoint "{60C2EE4AF6EBC480}" {
+    Position -956.979 -6.977 -210.696
+   }
+   ShapePoint "{60C2EE4AF6044DB7}" {
+    Position -1203.52 -1.32 -228.39
+   }
+   ShapePoint "{60C2EE4AF7A492E0}" {
+    Position -1238.439 -2.497 -101.735
+   }
+   ShapePoint "{60C2EE4AF8FF37A2}" {
+    Position -891.78 -2.275 149.021
+   }
+   ShapePoint "{60C2EE4AFABB4A6B}" {
+    Position -335.274 -3.8 291.031
+   }
+   ShapePoint "{60C2EE4AFA209441}" {
+    Position -88.916 9.784 318.444
+   }
+   ShapePoint "{60C2EE4AFB16B18A}" {
+    Position 23.211 5.773 234.447
+   }
+  }
+  IsClosed 1
+  {
+   PS_PolyZoneTrigger {
+    components {
+     PS_PolyZoneMeshComponent "{60C2EE4DAA20F09B}" {
+      m_Material "{788C42E96DB8587C}Assets/Editor/VirtualArea/VirtualArea_01_Danger.emat"
+     }
+     Hierarchy "{60C2EE4DD45444AA}" {
+     }
+    }
+    TriggerShapeType Sphere
+    SphereRadius 50000
+    TriggerActivationType "All changes"
+    PeriodicQueries 1
+    ClassesFilter {
+     "SCR_ChimeraCharacter"
+    }
+    m_polyZoneEffect PS_PolyZoneEffectScreenBlure "{60C2EE4DF6FD7794}" {
+    }
+    m_bReversed 1
+   }
+  }
+ }
+ {
+  components {
+   PS_PolyZone "{60C2EE4AFF777ECC}" {
+    m_mPolygonTexture "{0750C59EDB7D77E5}UI/layouts/Textures/Grid1.edds"
+    m_cPolygonColor 0.376 0.471 0.749 1
+    m_mPolygonTextureBorder "{CA01D453D39FB430}UI/layouts/Textures/ZoneBorder.edds"
+    m_cPolygonBorderColor 0.376 0.471 0.749 1
+    m_aVisibleForFactions {
+     "" "US" "USSR"
+    }
+    m_aHideOnGameModeStates {
+     1
+    }
+   }
+  }
+  coords 1754.399 40.321 2818.472
+  Points {
+   ShapePoint "{60C2EE4AED1D9611}" {
+    Position 39.182 -1.321 35.941
+   }
+   ShapePoint "{60C2EE4AFABB4A6B}" {
+    Position 4.773 -1.321 25.888
+   }
+   ShapePoint "{60C2EE4AFA209441}" {
+    Position -12.818 -1.321 62.413
+   }
+   ShapePoint "{60C2EE4AFB16B18A}" {
+    Position 29.671 -1.289 73.508
+   }
+  }
+  IsClosed 1
+  {
+   PS_PolyZoneTriggerFreezeZone {
+    components {
+     PS_PolyZoneMeshComponent "{60C2EE4DAA20F09B}" {
+      m_Material "{E65E61D1541003E2}Assets/Editor/VirtualArea/VirtualArea.emat"
+     }
+     Hierarchy "{60C2EE4DD45444AA}" {
+     }
+    }
+    TriggerShapeType Sphere
+    SphereRadius 50000
+    TriggerActivationType "All changes"
+    PeriodicQueries 1
+    ClassesFilter {
+     "SCR_ChimeraCharacter"
+    }
+    m_polyZoneEffect PS_PolyZoneEffectFreezeZone "{60C2EE4E66982BFE}" {
+    }
+    m_bReversed 1
+   }
+  }
+ }
+ {
+  components {
+   PS_PolyZone "{60C2EE4AFF777ECC}" {
+    m_mPolygonTexture "{0750C59EDB7D77E5}UI/layouts/Textures/Grid1.edds"
+    m_cPolygonColor 0.376 0.471 0.749 1
+    m_mPolygonTextureBorder "{CA01D453D39FB430}UI/layouts/Textures/ZoneBorder.edds"
+    m_cPolygonBorderColor 0.376 0.471 0.749 1
+    m_aVisibleForFactions {
+     "" "US" "USSR"
+    }
+    m_aHideOnGameModeStates {
+     1
+    }
+   }
+  }
+  coords 633.215 41.954 2525.941
+  Points {
+   ShapePoint "{60C2EE4AED1D9611}" {
+    Position 39.182 -1.321 35.941
+   }
+   ShapePoint "{60C2EE4AFABB4A6B}" {
+    Position 4.773 -1.321 25.888
+   }
+   ShapePoint "{60C2EE4AFA209441}" {
+    Position -12.818 -1.321 62.413
+   }
+   ShapePoint "{60C2EE4AFB16B18A}" {
+    Position 29.671 -1.289 73.508
+   }
+  }
+  IsClosed 1
+  {
+   PS_PolyZoneTriggerFreezeZone {
+    components {
+     PS_PolyZoneMeshComponent "{60C2EE4DAA20F09B}" {
+      m_Material "{E65E61D1541003E2}Assets/Editor/VirtualArea/VirtualArea.emat"
+     }
+     Hierarchy "{60C2EE4DD45444AA}" {
+     }
+    }
+    TriggerShapeType Sphere
+    SphereRadius 50000
+    TriggerActivationType "All changes"
+    PeriodicQueries 1
+    ClassesFilter {
+     "SCR_ChimeraCharacter"
+    }
+    m_polyZoneEffect PS_PolyZoneEffectFreezeZone "{60C2EE4E66982BFE}" {
+    }
+    m_bReversed 1
+   }
+  }
+ }
+ {
+  components {
+   PS_PolyZone "{60C2EE4FF4D3253A}" {
+    m_mPolygonTextureBorder "{CA01D453D39FB430}UI/layouts/Textures/ZoneBorder.edds"
+    m_cPolygonBorderColor 0 0 0 0.5
+    m_bLineMode 1
+    m_aVisibleForFactions {
+     "" "US" "USSR"
+    }
+   }
+  }
+  coords 1500.93 38.531 2718.218
+  Points {
+   ShapePoint "{60C2EE4FE0A650EE}" {
+    Position 22.846 0.032 -25.083
+   }
+   ShapePoint "{60C2EE4FE0A6BFBC}" {
+    Position 4.704 0.538 27.774
+   }
+   ShapePoint "{60C2EE4FE50AEB36}" {
+    Position -31.389 0.48 96.028
+   }
+   ShapePoint "{60C2EE4FE6281462}" {
+    Position -45.837 -0.52 168.823
+   }
+   ShapePoint "{60C2EE4FE7E73C0A}" {
+    Position -61.316 -0.53 230.081
+   }
+   ShapePoint "{60C2EE4FE85BB96F}" {
+    Position -92.285 -0.633 309.258
+   }
+  }
+ }
+ {
+  components {
+   PS_PolyZone "{60C2EE4AFF777ECC}" {
+    m_mPolygonTexture "{0750C59EDB7D77E5}UI/layouts/Textures/Grid1.edds"
+    m_cPolygonColor 0.157 0.624 0.275 1
+    m_mPolygonTextureBorder "{CA01D453D39FB430}UI/layouts/Textures/ZoneBorder.edds"
+    m_cPolygonBorderColor 0.157 0.624 0.275 1
+    m_aVisibleForFactions {
+     "" "US" "USSR"
+    }
+    m_aHideOnGameModeStates {
+     1
+    }
+   }
+  }
+  coords 1076.1 41.954 2672.27
+  Points {
+   ShapePoint "{60C2EE4AED1D9611}" {
+    Position 69.422 -2.954 5.061
+   }
+   ShapePoint "{60C2EE4AFABB4A6B}" {
+    Position -20.154 -2.954 -11.983
+   }
+   ShapePoint "{60C2EE4AFA209441}" {
+    Position -92.994 -2.954 100.063
+   }
+   ShapePoint "{60C2EE4AFB16B18A}" {
+    Position 15.32 -3.954 144.004
+   }
+  }
+  IsClosed 1
+  {
+   PS_PolyZoneTrigger {
+    components {
+     PS_PolyZoneMeshComponent "{60C2EE4DAA20F09B}" {
+      m_Material "{034185AE1A11B656}Assets/Editor/VirtualArea/VirtualArea_01_Warning.emat"
+     }
+     Hierarchy "{60C2EE4DD45444AA}" {
+     }
+    }
+    TriggerShapeType Sphere
+    SphereRadius 50000
+    TriggerActivationType "All changes"
+    PeriodicQueries 1
+    ClassesFilter {
+     "SCR_ChimeraCharacter"
+    }
+    m_polyZoneEffect PS_PolyZoneEffectRestricted "{60C2EE4060AA9435}" {
+     m_fKillTime 30
+    }
+    m_bReversed 1
+   }
+  }
+ }
+}

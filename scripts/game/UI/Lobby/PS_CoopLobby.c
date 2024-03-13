@@ -104,10 +104,6 @@ class PS_CoopLobby: MenuBase
 			return;
 		}
 		PlayerController playerController = GetGame().GetPlayerController();
-		if (playerController) { // Menu open faster than player creation
-			PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-			playableController.SwitchFromObserver();
-		}
 		
 		m_wFactionList = GetRootWidget().FindAnyWidget("FactionList");
 		m_wRolesList = GetRootWidget().FindAnyWidget("RolesList");
@@ -264,6 +260,26 @@ class PS_CoopLobby: MenuBase
 			
 			// insert playable to faction
 			array<PS_PlayableComponent> factionPlayablesList = m_sFactionPlayables[factionKey];
+			/*
+			if (!factionPlayablesList.Contains(playable))
+			{
+				bool added = false;
+				
+				array<PS_PlayableComponent> sortedPlayables = {};
+				for (int r = 0; r < factionPlayablesList.Count(); r++)
+				{
+					PS_PlayableComponent sortedPlayable = factionPlayablesList[r];
+					if (SCR_CharacterRankComponent.GetCharacterRank(playable.GetOwner()) > SCR_CharacterRankComponent.GetCharacterRank(sortedPlayable.GetOwner()))
+					{
+						factionPlayablesList.InsertAt(playable, r);
+						added = true;
+						break;
+					}
+				}
+				if (!added)
+					factionPlayablesList.Insert(playable);
+			}
+			*/
 			if (!factionPlayablesList.Contains(playable))
 				factionPlayablesList.Insert(playable);
 		}
@@ -294,7 +310,7 @@ class PS_CoopLobby: MenuBase
 		PlayerController thisPlayerController = GetGame().GetPlayerController();
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		m_bNavigationButtonForceStart.SetVisible(playerRole == EPlayerRole.ADMINISTRATOR && gameMode.GetState() == SCR_EGameModeState.PREGAME, false);
+		m_bNavigationButtonForceStart.SetVisible(PS_PlayersHelper.IsAdminOrServer() && gameMode.GetState() == SCR_EGameModeState.PREGAME, false);
 		if (gameMode.GetState() != SCR_EGameModeState.GAME) m_bNavigationButtonReady.SetLabel("#PS-Lobby_Ready");
 		else {
 			if (playableManager.GetPlayableByPlayer(thisPlayerController.GetPlayerId()) != RplId.Invalid()) m_bNavigationButtonReady.SetLabel("#PS-Lobby_Join");
@@ -304,7 +320,7 @@ class PS_CoopLobby: MenuBase
 		// Faction lock state
 		if (!gameMode.IsFactionLockMode()) m_wFactionLockImage.LoadImageFromSet(0, m_sImageSet, "server-unlocked");
 		else m_wFactionLockImage.LoadImageFromSet(0, m_sImageSet, "server-locked");
-		m_wFactionLockButton.SetVisible(playerRole == EPlayerRole.ADMINISTRATOR);
+		m_wFactionLockButton.SetVisible(PS_PlayersHelper.IsAdminOrServer());
 		
 		// calculate players count for every faction
 		foreach (Widget factionSelector: m_aFactionListWidgets)
@@ -478,6 +494,15 @@ class PS_CoopLobby: MenuBase
 		// For some strange reason players all the time accidentally exit game, maybe jus open pause menu
 		//GameStateTransitions.RequestGameplayEndTransition();  
 		//Close();
+		
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		SCR_EGameModeState gameModeState = gameMode.GetState();
+		if (gameModeState == SCR_EGameModeState.GAME)
+		{
+			Close();
+			return;
+		}
+		
 		GetGame().GetCallqueue().CallLater(OpenPauseMenuWrap, 0); //  Else menu auto close itself
 	}
 	void OpenPauseMenuWrap()
@@ -562,7 +587,7 @@ class PS_CoopLobby: MenuBase
 		PlayerController currentPlayerController = GetGame().GetPlayerController();
 		EPlayerRole currentPlayerRole = playerManager.GetPlayerRoles(currentPlayerController.GetPlayerId());
 		FactionKey currentFactionKey = playableManager.GetPlayerFactionKey(currentPlayerController.GetPlayerId());
-		if (gameMode.IsFactionLockMode() && currentPlayerRole != EPlayerRole.ADMINISTRATOR && currentFactionKey != "") return;	
+		if (gameMode.IsFactionLockMode() && !PS_PlayersHelper.IsAdminOrServer() && currentFactionKey != "") return;	
 		
 		SCR_UISoundEntity.SoundEvent(SCR_SoundEvent.CLICK);
 		
@@ -583,7 +608,7 @@ class PS_CoopLobby: MenuBase
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PlayerController playerController = GetGame().GetPlayerController();
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
-		if (playerRole != EPlayerRole.ADMINISTRATOR) return;
+		if (!PS_PlayersHelper.IsAdminOrServer()) return;
 		
 		SCR_UISoundEntity.SoundEvent(SCR_SoundEvent.CLICK);
 		
@@ -640,11 +665,11 @@ class PS_CoopLobby: MenuBase
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
 		
 		// On briefing selecty character only if not selected
-		if (playerRole != EPlayerRole.ADMINISTRATOR)
+		if (!PS_PlayersHelper.IsAdminOrServer())
 			if (gameMode.GetState() == SCR_EGameModeState.BRIEFING && playableManager.GetPlayableByPlayer(playerController.GetPlayerId()) != RplId.Invalid())
 				return;
 		
-		if (playerRole != EPlayerRole.ADMINISTRATOR && playableManager.GetPlayerPin(m_iCurrentPlayer)) return;
+		if (!PS_PlayersHelper.IsAdminOrServer() && playableManager.GetPlayerPin(m_iCurrentPlayer)) return;
 		
 		playableController.SetPlayerState(playerController.GetPlayerId(), PS_EPlayableControllerState.NotReady);
 		if ( handler.GetPlayableId() == playableManager.GetPlayableByPlayer(playerController.GetPlayerId())
@@ -673,7 +698,7 @@ class PS_CoopLobby: MenuBase
 		}
 		if (gameMode.GetState() == SCR_EGameModeState.BRIEFING)
 		{
-			if (playerRole != EPlayerRole.ADMINISTRATOR)
+			if (!PS_PlayersHelper.IsAdminOrServer())
 				playableController.SwitchToMenuServer(SCR_EGameModeState.BRIEFING);
 		}
 	}	
@@ -746,14 +771,16 @@ class PS_CoopLobby: MenuBase
 		
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		int allReady = 0;
+		
 		array<int> playerIds = new array<int>();
 		GetGame().GetPlayerManager().GetAllPlayers(playerIds);
+			
 		if (playerIds.Count() == 0) return false;
 		bool adminExist = false;
 		foreach (int playerId: playerIds)
 		{
 			EPlayerRole playerRole = playerManager.GetPlayerRoles(playerId);
-			if (playerRole == EPlayerRole.ADMINISTRATOR) adminExist = true;
+			if (PS_PlayersHelper.IsAdminOrServer()) adminExist = true;
 			PS_EPlayableControllerState playerState = playableManager.GetPlayerState(playerId);
 			if (playerState != PS_EPlayableControllerState.NotReady && playerState != PS_EPlayableControllerState.Disconected) allReady++;
 		}

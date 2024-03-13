@@ -15,8 +15,11 @@ class PS_SpectatorMenu: MenuBase
 	protected Widget m_wOverlayFooter;
 	protected Widget m_wEarlyAccessRoot;
 	protected Widget m_wAlivePlayerList;
+	protected Widget m_wSidesRatio;
 	protected PS_VoiceChatList m_hVoiceChatList;
+	protected SCR_ButtonBaseComponent m_hVoiceChatListPinButton;
 	protected PS_AlivePlayerList m_hAlivePlayerList;
+	protected SCR_ButtonBaseComponent m_hAlivePlayerListPinButton;
 	
 	SCR_InputButtonComponent m_bNavigationSwitchSpectatorUI;
 
@@ -54,13 +57,18 @@ class PS_SpectatorMenu: MenuBase
 		}
 		m_wVoiceChatList = GetRootWidget().FindAnyWidget("VoiceChatFrame");
 		m_hVoiceChatList = PS_VoiceChatList.Cast(m_wVoiceChatList.FindHandler(PS_VoiceChatList));
+		m_hVoiceChatListPinButton = SCR_ButtonBaseComponent.Cast(m_wVoiceChatList.FindAnyWidget("PinButton").FindHandler(SCR_ButtonBaseComponent));
+		
 		m_wAlivePlayerList = GetRootWidget().FindAnyWidget("AlivePlayersList");
 		m_hAlivePlayerList = PS_AlivePlayerList.Cast(m_wAlivePlayerList.FindHandler(PS_AlivePlayerList));
+		m_hAlivePlayerListPinButton = SCR_ButtonBaseComponent.Cast(m_wAlivePlayerList.FindAnyWidget("PinButton").FindHandler(SCR_ButtonBaseComponent));
+		
 		m_hAlivePlayerList.SetSpectatorMenu(this);
 		m_wOverlayFooter = GetRootWidget().FindAnyWidget("OverlayFooter");
 		m_wEarlyAccessRoot = GetRootWidget().FindAnyWidget("EarlyAccessRoot");
 		m_wIconsFrame = FrameWidget.Cast(GetRootWidget().FindAnyWidget("IconsFrame"));
 		m_wMapFrame = FrameWidget.Cast(GetRootWidget().FindAnyWidget("MapFrame"));
+		m_wSidesRatio = GetRootWidget().FindAnyWidget("SidesRatio");
 		
 		m_bNavigationSwitchSpectatorUI = SCR_InputButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationSwitchSpectatorUI").FindHandler(SCR_InputButtonComponent));
 		m_bNavigationSwitchSpectatorUI.m_OnClicked.Insert(Action_SwitchSpectatorUI);
@@ -144,8 +152,6 @@ class PS_SpectatorMenu: MenuBase
 		}
 	}
 	
-	
-	
 	override void OnMenuUpdate(float tDelta)
 	{
 		super.OnMenuUpdate(tDelta);
@@ -157,6 +163,53 @@ class PS_SpectatorMenu: MenuBase
 			m_InputManager.ActivateContext("MapContext");
 		
 		UpdateIcons();
+		
+		Widget cursorWidget = WidgetManager.GetWidgetUnderCursor();
+		while (cursorWidget)
+		{
+			
+			if (cursorWidget == m_wAlivePlayerList)
+			{
+				break;
+			}
+			
+			if (cursorWidget == m_wVoiceChatList)
+			{
+				break;
+			}
+			
+			cursorWidget = cursorWidget.GetParent();
+		}
+		
+		float alivePlayerListX = FrameSlot.GetPosX(m_wAlivePlayerList);
+		float voiceChatListX = FrameSlot.GetPosX(m_wVoiceChatList);
+		if (cursorWidget == m_wAlivePlayerList || m_hAlivePlayerListPinButton.IsToggled())
+		{
+			alivePlayerListX += tDelta * 1200.0;
+			if (alivePlayerListX > 0)
+				alivePlayerListX = 0;
+		}
+		else
+		{
+			alivePlayerListX -= tDelta * 1200.0;
+			if (alivePlayerListX < -300)
+				alivePlayerListX = -300;
+		}
+		FrameSlot.SetPosX(m_wAlivePlayerList, alivePlayerListX);
+		
+		if (cursorWidget == m_wVoiceChatList || m_hVoiceChatListPinButton.IsToggled())
+		{
+			voiceChatListX -= tDelta * 1200.0;
+			if (voiceChatListX < -330)
+				voiceChatListX = -330;
+		}
+		else
+		{
+			voiceChatListX += tDelta * 1200.0;
+			if (voiceChatListX > -20)
+				voiceChatListX = -20;
+		}
+		FrameSlot.SetPosX(m_wVoiceChatList, voiceChatListX);
 		
 		/* VoN Magic
 		PlayerController playerController = GetGame().GetPlayerController();
@@ -224,6 +277,7 @@ class PS_SpectatorMenu: MenuBase
 			m_wEarlyAccessRoot.SetVisible(false);
 			m_wAlivePlayerList.SetVisible(false);
 			m_wIconsFrame.SetVisible(false);
+			m_wSidesRatio.SetVisible(false);
 		} else {
 			m_wChat.SetVisible(true);
 			m_wVoiceChatList.SetVisible(true);
@@ -231,6 +285,7 @@ class PS_SpectatorMenu: MenuBase
 			m_wEarlyAccessRoot.SetVisible(true);
 			m_wAlivePlayerList.SetVisible(true);
 			m_wIconsFrame.SetVisible(true);
+			m_wSidesRatio.SetVisible(true);
 		}
 	}
 	

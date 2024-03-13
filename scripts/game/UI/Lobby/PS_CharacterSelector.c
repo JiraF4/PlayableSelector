@@ -105,7 +105,7 @@ class PS_CharacterSelector : SCR_ButtonComponent
 		else m_wCharacterFactionColor.SetColor(Color.FromInt(0xFF2c2c2c));
 		m_wCharacterClassName.SetText(m_playable.GetName());
 		m_wCharacterStatus.SetColor(Color.FromInt(0xFFFFFFFF));
-		m_wStateButton.SetVisible(currentPlayerRole == EPlayerRole.ADMINISTRATOR);
+		m_wStateButton.SetVisible(PS_PlayersHelper.IsAdminOrServer());
 		characterState = PS_ECharacterState.Empty;
 		
 		// Voice
@@ -142,7 +142,7 @@ class PS_CharacterSelector : SCR_ButtonComponent
 		{
 			m_wCharacterStatus.SetText(playerName);
 			
-			bool showKick = currentPlayerRole == EPlayerRole.ADMINISTRATOR;
+			bool showKick = PS_PlayersHelper.IsAdminOrServer();
 			if (playableManager.IsPlayerGroupLeader(currentPlayerController.GetPlayerId()))
 			{
 				if (!showKick && gameMode.GetState() == SCR_EGameModeState.SLOTSELECTION)
@@ -158,7 +158,7 @@ class PS_CharacterSelector : SCR_ButtonComponent
 			
 			if (playableManager.GetPlayerPin(playerId)) {
 				m_wStateIcon.LoadImageFromSet(0, m_sUIWrapper, "pinPlay");
-				m_wStateButton.SetVisible(currentPlayerRole == EPlayerRole.ADMINISTRATOR);
+				m_wStateButton.SetVisible(PS_PlayersHelper.IsAdminOrServer());
 				characterState = PS_ECharacterState.Pin;
 			} else if (showKick) {
 				m_wStateIcon.LoadImageFromSet(0, m_sUIWrapper, "kickCommandAlt");

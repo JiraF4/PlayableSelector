@@ -327,12 +327,9 @@ FrameWidgetClass {
    Name "GameModeHeader"
    Slot FrameWidgetSlot "{5EB10000F5F77EA0}" {
     PositionX -960
-    OffsetLeft -960
     PositionY 0
     OffsetTop 0
     SizeX 1920
-    OffsetRight -960
-    SizeY 93
     OffsetBottom -93
    }
    {
@@ -457,30 +454,6 @@ FrameWidgetClass {
                }
               }
              }
-            }
-           }
-          }
-         }
-        }
-       }
-      }
-     }
-    }
-    ButtonWidgetClass "{5EB290EEBC6EAD9B}" {
-     Prefab "{5EB290EEBC6EAD9B}"
-     {
-      SizeLayoutWidgetClass "{5EB2902E629DFD43}" {
-       Prefab "{5EB2902E629DFD43}"
-       {
-        FrameWidgetClass "{5EB100017BC764F4}" {
-         Prefab "{5EB100017BC764F4}"
-         {
-          OverlayWidgetClass "{5EB1000388A8E58A}" {
-           Prefab "{5EB1000388A8E58A}"
-           {
-            TextWidgetClass "{5EB10003D5163631}" {
-             Prefab "{5EB10003D5163631}"
-             Clipping False
             }
            }
           }

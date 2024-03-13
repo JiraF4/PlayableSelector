@@ -47,6 +47,9 @@ class PS_PlayableComponent : ScriptComponent
 	
 	private void RemoveFromList()
 	{
+		GetGame().GetCallqueue().Remove(AddToList);
+		GetGame().GetCallqueue().Remove(AddToListWrap);
+		
 		BaseGameMode gamemode = GetGame().GetGameMode();
 		if (!gamemode)
 			return;
@@ -69,6 +72,18 @@ class PS_PlayableComponent : ScriptComponent
 	}
 	
 	private void AddToList(IEntity owner)
+	{
+		AIControlComponent aiComponent = AIControlComponent.Cast(owner.FindComponent(AIControlComponent));
+		if (aiComponent)
+		{
+			AIAgent agent = aiComponent.GetAIAgent();
+			if (agent) agent.DeactivateAI();
+		}
+		
+		GetGame().GetCallqueue().CallLater(AddToListWrap, 0, false, owner) // init delay
+	}
+	
+	private void AddToListWrap(IEntity owner)
 	{
 		if (!m_bIsPlayable) return;
 		
@@ -114,11 +129,13 @@ class PS_PlayableComponent : ScriptComponent
 	// Send our precision data, we need it on clients
 	override bool RplSave(ScriptBitWriter writer)
 	{
+		writer.WriteString(m_name);
 		writer.WriteBool(m_bIsPlayable);
 		return true;
 	}
 	override bool RplLoad(ScriptBitReader reader)
 	{
+		reader.ReadString(m_name);
 		reader.ReadBool(m_bIsPlayable);
 		return true;
 	}

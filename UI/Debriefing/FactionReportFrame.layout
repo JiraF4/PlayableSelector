@@ -3,6 +3,10 @@ FrameWidgetClass {
  Slot LayoutSlot "{5EBC7340F5460E29}" {
   Padding 10 10 10 10
  }
+ components {
+  PS_DebriefingFactionReportWidgetComponent "{60846DEF82993071}" {
+  }
+ }
  {
   ImageWidgetClass "{5EBC7340A200F4BE}" {
    Name "Background"
@@ -85,6 +89,48 @@ FrameWidgetClass {
         }
        }
       }
+      FrameWidgetClass "{60B4D1ECD6A1E44D}" {
+       Name "ResultFrame"
+       Slot LayoutSlot "{5EBF1EC9E8008E11}" {
+       }
+       {
+        ImageWidgetClass "{60B4D1ECD6A1E44E}" {
+         Name "ResultColor"
+         Slot FrameWidgetSlot "{5E7CF041119B47ED}" {
+          PositionX 0
+          OffsetLeft 0
+          PositionY 0
+          OffsetTop 0
+          SizeX 540
+          OffsetRight -540
+          SizeY 38
+          OffsetBottom -38
+         }
+         Color 0 0 0 0.502
+        }
+        TextWidgetClass "{60B4D1ECD6A1E44F}" {
+         Name "ResultText"
+         Slot FrameWidgetSlot "{5E7CF041119B479A}" {
+          PositionX 0
+          OffsetLeft 0
+          PositionY 0
+          OffsetTop 0
+          SizeX 540
+          OffsetRight -540
+          SizeY 38
+          OffsetBottom -38
+         }
+         Text "Draw"
+         "Font Size" 28
+         "Min Font Size" 28
+         "Horizontal Alignment" Center
+         "Vertical Alignment" Center
+         FontProperties FontProperties "{5E7CF04E69A9FC94}" {
+          Bold 1
+         }
+        }
+       }
+      }
       FrameWidgetClass "{5EBF1EC025B3360C}" {
        Name "ObjectivesList"
        Slot LayoutSlot "{5EBF1EC025B3375E}" {
@@ -142,13 +188,6 @@ FrameWidgetClass {
           VerticalLayoutWidgetClass "{5EBF1EC82B9DADE8}" {
            Name "ObjectiveVerticalLayout"
            Slot AlignableSlot "{5EBF1EC82B9DAD0C}" {
-           }
-           {
-            FrameWidgetClass "{5EBF1ED7BCD220FB}" : "{0860E6EBB3D508DF}UI/Debriefing/ObjectiveFrame.layout" {
-             Name "ObjectiveFrame0"
-             Slot LayoutSlot "{5EBF1EC9E8008D16}" {
-             }
-            }
            }
           }
          }
@@ -269,20 +308,13 @@ FrameWidgetClass {
           OffsetTop 52
           SizeX 540
           OffsetRight -540
-          SizeY 364
-          OffsetBottom -416
+          SizeY 326
+          OffsetBottom -378
          }
          {
           VerticalLayoutWidgetClass "{5EBF1EC8296881D0}" {
-           Name "VerticalLayout0"
+           Name "LossesVerticalLayout"
            Slot AlignableSlot "{5EBF1EC8296881CD}" {
-           }
-           {
-            FrameWidgetClass "{5EBF1EDD81864CE8}" : "{D2DC34AA650883BC}UI/Debriefing/LossFrame.layout" {
-             Name "ObjectiveFrame0"
-             Slot LayoutSlot "{5EBF1EC9E8008D16}" {
-             }
-            }
            }
           }
          }

@@ -13,8 +13,7 @@ class PS_MissionMakerTool: WorldEditorTool
 		if (m_API.GetSelectedEntitiesCount() != 1)
 			return;
 		
-		IEntity entity = m_API.GetSelectedEntity();
-		IEntitySource entitySource = m_API.EntityToSource(entity);
+		IEntitySource entitySource = m_API.GetSelectedEntity();
 		
 		m_inventoryInspector.SetItems(m_API, entitySource);
 	}
@@ -33,8 +32,7 @@ class PS_MissionMakerTool: WorldEditorTool
 		if (m_API.GetSelectedEntitiesCount() != 1)
 			return;
 		
-		IEntity entity = m_API.GetSelectedEntity();
-		IEntitySource entitySource = m_API.EntityToSource(entity);
+		IEntitySource entitySource = m_API.GetSelectedEntity();
 		
 		IEntityComponentSource baseLoadoutManagerComponent = null;
 		array<IEntityComponentSource> weaponSlots = new array<IEntityComponentSource>();
@@ -135,8 +133,8 @@ class PS_MissionMakerTool: WorldEditorTool
 		m_API.BeginEntityAction("Assign callsigns");
 		for (int i = 0; i < selectedCount; i++)
 		{
-			IEntity entity = m_API.GetSelectedEntity(i);
-			AssignCallsign(entity);
+			IEntitySource entitySource = m_API.GetSelectedEntity();
+			AssignCallsign(entitySource);
 		}
 		m_API.EndEntityAction();
 	}
@@ -214,8 +212,10 @@ class PS_MissionMakerTool: WorldEditorTool
 		}
 	}
 	
-	void AssignCallsign(IEntity entity)
+	void AssignCallsign(IEntitySource entitySource)
 	{
+		IEntity entity = m_API.SourceToEntity(entitySource);
+		
 		SCR_AIGroup group = SCR_AIGroup.Cast(entity);
 		if (!group)
 			return;
@@ -223,7 +223,6 @@ class PS_MissionMakerTool: WorldEditorTool
 		if (!faction)
 			return;
 		
-		IEntitySource entitySource = m_API.EntityToSource(entity);
 		IEntityComponentSource componentSourceCallsignAssigner = null;
 		int componentsCount = entitySource.GetComponentCount();
 		for (int i = 0; i < componentsCount; i++)
@@ -258,7 +257,7 @@ class PS_MissionMakerTool: WorldEditorTool
 		
 		string entityName = string.Format("%5%1_G_%2%3%4_%6", faction.GetFactionKey(), companyCallsignIndex, platoonCallsignIndex, squadCallsignIndex, customName, outPrefabs.Count());
 		if (!m_API.FindEntityByName(entityName))
-			m_API.RenameEntity(entity, entityName);
+			m_API.RenameEntity(entitySource, entityName);
 	}
 	
 	// Markers
@@ -278,8 +277,8 @@ class PS_MissionMakerTool: WorldEditorTool
 		m_API.BeginEntityAction("Create marker");
 		for (int i = 0; i < selectedCount; i++)
 		{
-			IEntity entity = m_API.GetSelectedEntity(i);
-			IEntitySource entitySource = m_API.EntityToSource(entity);
+			IEntitySource entitySource = m_API.GetSelectedEntity(i);
+			IEntity entity = m_API.SourceToEntity(entitySource);
 			
 			vector origin = entity.GetOrigin();
 			int currentLayerId = m_API.GetCurrentEntityLayerId();
@@ -362,8 +361,8 @@ class PS_MissionMakerTool: WorldEditorTool
 				markerConfig.m_sDescription = uiInfo.GetName();
 			}
 			
-			IEntity markerEntity = m_API.CreateEntity(m_MarkerMakerConfig.m_sManualMarkerPrefab, entityName, currentLayerId, null, origin, rotation);
-			IEntitySource markerEntitySource = m_API.EntityToSource(markerEntity);
+			IEntitySource markerEntitySource = m_API.CreateEntity(m_MarkerMakerConfig.m_sManualMarkerPrefab, entityName, currentLayerId, null, origin, rotation);
+			//IEntitySource markerEntitySource = m_API.EntityToSource(markerEntity);
 			
 			SetMarkerData(markerEntitySource, markerConfig);
 		}

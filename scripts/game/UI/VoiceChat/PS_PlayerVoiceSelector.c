@@ -82,7 +82,7 @@ class PS_PlayerVoiceSelector : SCR_ButtonBaseComponent
 		if (faction) m_wCharacterFactionColor.SetColor(faction.GetFactionColor());
 		else m_wCharacterFactionColor.SetColor(Color.FromInt(0xFF2c2c2c));
 		
-		bool showKick = currentPlayerRole == EPlayerRole.ADMINISTRATOR;
+		bool showKick = PS_PlayersHelper.IsAdminOrServer();
 		if (playerRoomId == currentPlayerRoomId) {
 			if (currentPlayerRoom.Contains(currentGroupCallSign.ToString())) {
 				if (!showKick) showKick = groupCallSign != currentGroupCallSign;
@@ -91,7 +91,7 @@ class PS_PlayerVoiceSelector : SCR_ButtonBaseComponent
 		}
 		m_wKickButton.SetVisible(showKick);
 		
-		if (playerRole == EPlayerRole.ADMINISTRATOR) m_wPlayerName.SetColor(Color.FromInt(0xfff2a34b));
+		if (SCR_Global.IsAdmin(m_iPlayer)) m_wPlayerName.SetColor(Color.FromInt(0xfff2a34b));
 		else if (playerName == "") m_wPlayerName.SetColor(Color.FromInt(0xff999999));
 		else m_wPlayerName.SetColor(Color.FromInt(0xffffffff));
 		

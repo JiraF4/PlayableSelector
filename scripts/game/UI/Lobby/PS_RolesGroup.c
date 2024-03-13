@@ -60,6 +60,12 @@ class PS_RolesGroup : SCR_WLibComponentBase
 	{
 		m_gPlayablesGroup = group;
 		
+		if (!group)
+		{
+			m_wRolesGroupName.SetText("");
+			return;
+		}
+			
 		string customName = group.GetCustomName();
 		
 		string company, platoon, squad, character, format;
@@ -100,7 +106,7 @@ class PS_RolesGroup : SCR_WLibComponentBase
 		int currentRoomId = VoNRoomsManager.GetPlayerRoom(currentPlayableId);
 		int roomId = VoNRoomsManager.GetRoomWithFaction(playableManager.GetPlayerFactionKey(currentPlayableId), m_gPlayablesGroup.GetCalsignNum().ToString());
 		
-		m_wLockButton.SetVisible(currentPlayerRole == EPlayerRole.ADMINISTRATOR);
+		m_wLockButton.SetVisible(PS_PlayersHelper.IsAdminOrServer());
 		
 		if (IsAllLocked()) m_wLockImage.LoadImageFromSet(0, m_sImageSet, "server-locked");
 		else m_wLockImage.LoadImageFromSet(0, m_sImageSet, "server-unlocked");
@@ -149,7 +155,7 @@ class PS_RolesGroup : SCR_WLibComponentBase
 		EPlayerRole currentPlayerRole = playerManager.GetPlayerRoles(currentPlayerController.GetPlayerId());
 		PS_PlayableControllerComponent currentPlayableController = PS_PlayableControllerComponent.Cast(currentPlayerController.FindComponent(PS_PlayableControllerComponent));
 		
-		if (currentPlayerRole != EPlayerRole.ADMINISTRATOR)
+		if (!PS_PlayersHelper.IsAdminOrServer())
 			return;
 		
 		if (!IsAllLocked())
