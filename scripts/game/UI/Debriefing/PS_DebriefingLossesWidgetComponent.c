@@ -59,7 +59,7 @@ class PS_DebriefingLossesWidgetComponent : SCR_ScriptedWidgetComponent
 		
 		foreach (IEntity entity : m_aEntities)
 		{
-			ScriptedDamageManagerComponent damageManagerComponent = ScriptedDamageManagerComponent.Cast(entity.FindComponent(ScriptedDamageManagerComponent));
+			SCR_DamageManagerComponent damageManagerComponent = SCR_DamageManagerComponent.Cast(entity.FindComponent(SCR_DamageManagerComponent));
 			if (!damageManagerComponent)
 				continue;
 			

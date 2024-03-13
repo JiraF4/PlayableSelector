@@ -9,7 +9,7 @@ class PS_PlayableManagerClass: ScriptComponentClass
 class PS_PlayableManager : ScriptComponent
 {	
 	// Map of our playables
-	ref map<RplId, PS_PlayableComponent> m_aPlayables = new ref map<RplId, PS_PlayableComponent>(); // We don't sync it!
+	ref map<RplId, PS_PlayableComponent> m_aPlayables = new map<RplId, PS_PlayableComponent>(); // We don't sync it!
 	ref array<PS_PlayableComponent> m_PlayablesSorted = {};
 	
 	// Maps for saving players staff, player controllers local to client
