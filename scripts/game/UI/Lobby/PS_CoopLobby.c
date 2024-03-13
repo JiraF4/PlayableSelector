@@ -96,6 +96,8 @@ class PS_CoopLobby: MenuBase
 		
 	protected ResourceName m_sImageSet = "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset";
 		
+	int m_iMaxPlayersCount = 1;
+	
 	// -------------------- Menu events --------------------
 	override void OnMenuOpen()
 	{
@@ -168,6 +170,10 @@ class PS_CoopLobby: MenuBase
 		m_wPreviewHideButton = ButtonWidget.Cast(GetRootWidget().FindAnyWidget("PreviewHideButton"));
 		SCR_ButtonBaseComponent previewHideButtonHandler = SCR_ButtonBaseComponent.Cast(m_wPreviewHideButton.FindHandler(SCR_ButtonBaseComponent));
 		previewHideButtonHandler.m_OnClicked.Insert(Action_HidePreview);
+		
+		DSSession dSSession = GetGame().GetBackendApi().GetDSSession();
+		if (dSSession)
+			m_iMaxPlayersCount = dSSession.PlayerLimit();
 		
 		HardUpdate();
 	}
@@ -382,7 +388,7 @@ class PS_CoopLobby: MenuBase
 			if (playableManager.GetPlayerState(playerId) == PS_EPlayableControllerState.Ready)
 				readyPlayersCount++;
 		}
-		m_wPlayersCounter.SetTextFormat("%1/%2", readyPlayersCount, playerIds.Count());
+		m_wPlayersCounter.SetTextFormat("%1/%2", playerIds.Count(), m_iMaxPlayersCount);
 		
 		if (m_wLoadoutPreviewBody.IsVisible())
 			m_preview.UpdatePreviewInfo();

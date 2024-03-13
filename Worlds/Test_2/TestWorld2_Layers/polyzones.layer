@@ -128,7 +128,7 @@ $grp PolylineShapeEntity {
     ClassesFilter {
      "SCR_ChimeraCharacter"
     }
-    m_polyZoneEffect PS_PolyZoneEffectFreezeZone "{604680A0AED1CC5E}" {
+    m_polyZoneEffect PS_PolyZoneEffectScreenBlure "{604680A0AED1CC5E}" {
     }
     m_bReversed 1
    }

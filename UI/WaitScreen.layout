@@ -14,32 +14,24 @@ FrameWidgetClass {
     SizeY 0
     OffsetBottom 0
    }
-   {
-    FrameWidgetClass "{5CECA56A279C044D}" {
-     Prefab "{5CECA56A279C044D}"
-     Slot OverlayWidgetSlot "{5CECA56A279C04A0}" {
-      HorizontalAlign 2
-      VerticalAlign 0
-      Padding 0 4 4 0
-     }
-     {
-      HorizontalLayoutWidgetClass "{5CEAB7C94A55AF1E}" {
-       Prefab "{5CEAB7C94A55AF1E}"
-       Slot FrameWidgetSlot "{5CEE96363E5C46AD}" {
-        Anchor 0.5 0.5 0.5 0.5
-        PositionX 117.001
-        OffsetLeft 117.001
-        PositionY -8
-        OffsetTop -8
-        SizeX 0
-        OffsetRight -117.001
-        SizeY 0
-        OffsetBottom 8
-       }
-      }
-     }
-    }
+  }
+  TextWidgetClass "{60DB5B8BA8937C0B}" {
+   Name "InfoText"
+   Slot FrameWidgetSlot "{60DB5B8BA8937C65}" {
+    Anchor 0 0 1 1
+    PositionX 589
+    PositionY 279
+    SizeX -917
+    OffsetRight 0
+    SizeY -556
+    OffsetBottom 0
    }
+   Text "Loading"
+   "Font Size" 64
+   "Min Font Size" 64
+   "Horizontal Alignment" Center
+   "Vertical Alignment" Center
+   Wrap 1
   }
  }
 }

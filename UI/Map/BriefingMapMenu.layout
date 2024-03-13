@@ -311,13 +311,13 @@ FrameWidgetClass {
     ScrollLayoutWidgetClass "{5EB2900030AFF408}" {
      Prefab "{5EB2900030AFF408}"
      Slot FrameWidgetSlot "{5EB1000AD8290B3B}" {
-      PositionX 0
-      OffsetLeft 0
-      PositionY 39
-      OffsetTop 39
-      SizeX 480
+      PositionX 10
+      OffsetLeft 10
+      PositionY 49
+      OffsetTop 49
+      SizeX 470
       OffsetRight -480
-      SizeY 601
+      SizeY 591
       OffsetBottom -640
      }
     }

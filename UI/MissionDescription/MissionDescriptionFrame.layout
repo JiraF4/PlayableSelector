@@ -16,7 +16,22 @@ FrameWidgetClass {
   }
  }
  {
-  ImageWidgetClass "{5EBEE964499F3958}" {
+  BlurWidgetClass "{5EBEE964499F3958}" {
+   Name "MissionDescriptionBlure"
+   Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
+    PositionX 0
+    OffsetLeft 0
+    PositionY 0
+    OffsetTop 0
+    SizeX 480
+    OffsetRight -480
+    SizeY 640
+    OffsetBottom -640
+   }
+   Opacity 0.9
+   Intensity 0.3
+  }
+  ImageWidgetClass "{60DB2B586E10A8B4}" {
    Name "MissionDescriptionBackground"
    Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
     PositionX 0
@@ -28,8 +43,8 @@ FrameWidgetClass {
     SizeY 640
     OffsetBottom -640
    }
-   Opacity 0.8
-   Color 0.001 0.001 0.001 1
+   Opacity 0.9
+   Color 0.007 0.012 0.014 0.9
   }
   ButtonWidgetClass "{5EC27C6308C71093}" {
    Name "MissionDescriptionHeaderButton"
@@ -65,7 +80,7 @@ FrameWidgetClass {
         SizeY 39
         OffsetBottom -39
        }
-       Color 0 0 0 1
+       Color 0.007 0.012 0.014 1
       }
       PanelWidgetClass "{5EC2F2F031B6EDA1}" {
        Name "Border"

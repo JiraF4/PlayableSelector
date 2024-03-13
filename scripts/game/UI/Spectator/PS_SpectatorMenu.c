@@ -16,6 +16,7 @@ class PS_SpectatorMenu: MenuBase
 	protected Widget m_wEarlyAccessRoot;
 	protected Widget m_wAlivePlayerList;
 	protected Widget m_wSidesRatio;
+	protected Widget m_wSidesRatioFrame;
 	protected PS_VoiceChatList m_hVoiceChatList;
 	protected SCR_ButtonBaseComponent m_hVoiceChatListPinButton;
 	protected PS_AlivePlayerList m_hAlivePlayerList;
@@ -68,6 +69,7 @@ class PS_SpectatorMenu: MenuBase
 		m_wEarlyAccessRoot = GetRootWidget().FindAnyWidget("EarlyAccessRoot");
 		m_wIconsFrame = FrameWidget.Cast(GetRootWidget().FindAnyWidget("IconsFrame"));
 		m_wMapFrame = FrameWidget.Cast(GetRootWidget().FindAnyWidget("MapFrame"));
+		m_wSidesRatioFrame = GetRootWidget().FindAnyWidget("SidesRatioFrame");
 		m_wSidesRatio = GetRootWidget().FindAnyWidget("SidesRatio");
 		
 		m_bNavigationSwitchSpectatorUI = SCR_InputButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationSwitchSpectatorUI").FindHandler(SCR_InputButtonComponent));
@@ -192,22 +194,22 @@ class PS_SpectatorMenu: MenuBase
 		else
 		{
 			alivePlayerListX -= tDelta * 1200.0;
-			if (alivePlayerListX < -300)
-				alivePlayerListX = -300;
+			if (alivePlayerListX < -310)
+				alivePlayerListX = -310;
 		}
 		FrameSlot.SetPosX(m_wAlivePlayerList, alivePlayerListX);
 		
 		if (cursorWidget == m_wVoiceChatList || m_hVoiceChatListPinButton.IsToggled())
 		{
 			voiceChatListX -= tDelta * 1200.0;
-			if (voiceChatListX < -330)
-				voiceChatListX = -330;
+			if (voiceChatListX < -320)
+				voiceChatListX = -320;
 		}
 		else
 		{
 			voiceChatListX += tDelta * 1200.0;
-			if (voiceChatListX > -20)
-				voiceChatListX = -20;
+			if (voiceChatListX > -10)
+				voiceChatListX = -10;
 		}
 		FrameSlot.SetPosX(m_wVoiceChatList, voiceChatListX);
 		
@@ -277,7 +279,7 @@ class PS_SpectatorMenu: MenuBase
 			m_wEarlyAccessRoot.SetVisible(false);
 			m_wAlivePlayerList.SetVisible(false);
 			m_wIconsFrame.SetVisible(false);
-			m_wSidesRatio.SetVisible(false);
+			m_wSidesRatioFrame.SetVisible(false);
 		} else {
 			m_wChat.SetVisible(true);
 			m_wVoiceChatList.SetVisible(true);
@@ -285,7 +287,7 @@ class PS_SpectatorMenu: MenuBase
 			m_wEarlyAccessRoot.SetVisible(true);
 			m_wAlivePlayerList.SetVisible(true);
 			m_wIconsFrame.SetVisible(true);
-			m_wSidesRatio.SetVisible(true);
+			m_wSidesRatioFrame.SetVisible(true);
 		}
 	}
 	

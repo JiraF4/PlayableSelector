@@ -29,8 +29,7 @@ FrameWidgetClass {
     SizeY -518.4
     OffsetBottom 0
    }
-   Color 0 0 0 0.894
-   Intensity 0.6
+   Intensity 0.3
   }
   ImageWidgetClass "{5EB100001D14AACE}" {
    Name "GameModeHeaderBackground"
@@ -45,7 +44,7 @@ FrameWidgetClass {
     SizeY -518.4
     OffsetBottom 0
    }
-   Color 0 0 0 0.894
+   Color 0.008 0.012 0.016 1
   }
   FrameWidgetClass "{60D306F5E1F2C245}" {
    Name "GameModeHeaderLineFrame"

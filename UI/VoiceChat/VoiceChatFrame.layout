@@ -5,6 +5,20 @@ FrameWidgetClass {
   }
  }
  {
+  BlurWidgetClass "{60DB2B5B1B885EF3}" {
+   Name "VoiceChatBlure"
+   Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
+    PositionX 0
+    OffsetLeft 0
+    PositionY 0
+    OffsetTop 0
+    SizeX 480
+    OffsetRight -480
+    SizeY 800
+    OffsetBottom -800
+   }
+   Intensity 0.3
+  }
   ImageWidgetClass "{5EB2900030AFF403}" {
    Name "VoiceChatBackground"
    Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
@@ -17,8 +31,7 @@ FrameWidgetClass {
     SizeY 800
     OffsetBottom -800
    }
-   Opacity 0.8
-   Color 0.001 0.001 0.001 1
+   Color 0.007 0.012 0.014 0.9
   }
   FrameWidgetClass "{5EB2900030AFF404}" {
    Name "VoiceChatHeaderFrame"
@@ -45,7 +58,7 @@ FrameWidgetClass {
       SizeY 39
       OffsetBottom -39
      }
-     Color 0 0 0 1
+     Color 0.007 0.012 0.014 1
     }
     OverlayWidgetClass "{5EB2900030AFF406}" {
      Name "StepsHeaderTextOverlay"
@@ -75,13 +88,13 @@ FrameWidgetClass {
   ScrollLayoutWidgetClass "{5EB2900030AFF408}" {
    Name "RoomsListScroll"
    Slot FrameWidgetSlot "{5EB1000AD8290B3B}" {
-    PositionX 0
-    OffsetLeft 0
-    PositionY 39
-    OffsetTop 39
-    SizeX 480
+    PositionX 10
+    OffsetLeft 10
+    PositionY 49
+    OffsetTop 49
+    SizeX 470
     OffsetRight -480
-    SizeY 761
+    SizeY 751
     OffsetBottom -800
    }
    {

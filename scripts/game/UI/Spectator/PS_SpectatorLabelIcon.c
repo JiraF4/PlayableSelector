@@ -3,13 +3,16 @@ class PS_SpectatorLabelIcon : SCR_ScriptedWidgetComponent
 	IEntity m_eEntity;
 	
 	ImageWidget m_wSpectatorLabelIcon;
+	OverlayWidget m_wSpectatorLabelBackground;
 	TextWidget m_wSpectatorLabelText;
 	PanelWidget m_wSpectatorLabel;
 	
 	protected float m_fMaxIconDistance = 800.0;
 	protected float m_fMinIconDistance = 10.0;
-	protected float m_fMaxIconSize = 64.0;
-	protected float m_fMinIconSize = 4.0;
+	[Attribute("64.0")]
+	protected float m_fMaxIconSize;
+	[Attribute("4.0")]
+	protected float m_fMinIconSize;
 	protected float m_fMaxIconOpacity = 1;
 	protected float m_fMinIconOpacity = 0.8;
 	
@@ -23,6 +26,7 @@ class PS_SpectatorLabelIcon : SCR_ScriptedWidgetComponent
 		super.HandlerAttached(w);
 		
 		m_wSpectatorLabelIcon = ImageWidget.Cast(w.FindAnyWidget("SpectatorLabelIcon"));
+		m_wSpectatorLabelBackground = OverlayWidget.Cast(w.FindAnyWidget("SpectatorLabelBackground"));
 		m_wSpectatorLabelText = TextWidget.Cast(w.FindAnyWidget("SpectatorLabelText"));
 		m_wSpectatorLabel = PanelWidget.Cast(w.FindAnyWidget("SpectatorLabel"));
 	}
@@ -91,8 +95,15 @@ class PS_SpectatorLabelIcon : SCR_ScriptedWidgetComponent
 		
 		FrameSlot.SetSize(m_wSpectatorLabelIcon, scaledIconSize, scaledIconSize);
 		FrameSlot.SetPos(m_wSpectatorLabelIcon, -scaledIconSize/2, -scaledIconSize/2);
-		FrameSlot.SetPos(m_wSpectatorLabel, -LabelSizeXD/2, -scaledIconSize + scaledIconSize/4);
+		if (m_wSpectatorLabelBackground)
+		{
+			FrameSlot.SetSize(m_wSpectatorLabelBackground, scaledIconSize, scaledIconSize);
+			FrameSlot.SetPos(m_wSpectatorLabelBackground, -scaledIconSize/2, -scaledIconSize/2);
+		}
+		FrameSlot.SetPos(m_wSpectatorLabel, -LabelSizeXD/2, -scaledIconSize);
 		FrameSlot.SetPos(m_wRoot, screenPosition[0], screenPosition[1]);
+		
+		m_wRoot.SetZOrder(screenPosition[2] * -10000);
 	}
 	
 	void UpdateLabel()
