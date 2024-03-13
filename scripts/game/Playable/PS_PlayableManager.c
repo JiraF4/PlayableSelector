@@ -23,6 +23,9 @@ class PS_PlayableManager : ScriptComponent
 	// Invokers
 	ref ScriptInvoker m_eOnFactionChange = new ScriptInvoker(); // int playerId, FactionKey factionKey, FactionKey factionKeyOld
 	
+	[RplProp()]
+	int m_iMaxPlayersCount = 1;
+	
 	void PS_PlayableManager(IEntityComponentSource src, IEntity ent, IEntity parent)
 	{
 		SetEventMask(ent, EntityEvent.FRAME);
@@ -50,6 +53,25 @@ class PS_PlayableManager : ScriptComponent
 	override protected void OnPostInit(IEntity owner)
 	{
 		if (Replication.IsServer()) m_bRplLoaded = true;
+		
+		if (RplSession.Mode() == RplMode.Dedicated)
+			GetGame().GetCallqueue().CallLater(ForceGetSessionPlyersCount, 100, true);
+	}
+	
+	void ForceGetSessionPlyersCount()
+	{
+		DSSession dSSession = GetGame().GetBackendApi().GetDSSession();
+		if (dSSession)
+		{
+			m_iMaxPlayersCount = dSSession.PlayerLimit();
+			Replication.BumpMe();
+			GetGame().GetCallqueue().Remove(ForceGetSessionPlyersCount);
+		}
+	}
+	
+	int GetMaxPlyers()
+	{
+		return m_iMaxPlayersCount;
 	}
 	
 	// TODO: fix it please
