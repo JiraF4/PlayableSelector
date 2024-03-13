@@ -8,40 +8,40 @@ class PS_GameModeCoopClass: SCR_BaseGameModeClass
 
 class PS_GameModeCoop : SCR_BaseGameMode
 {
-	[Attribute("120000", UIWidgets.EditBox, "Time during which disconnected players reserve playable for reconnection in ms, -1 for infinity time", "", category: WB_GAME_MODE_CATEGORY)]
-	int m_iAvailableReconnectTime = ;
+	[Attribute("120000", UIWidgets.EditBox, "Time during which disconnected players reserve role for reconnection in ms, -1 for infinity time", "", category: "Reforger Lobby")]
+	int m_iReconnectTime;
 	
-	[Attribute("300000", UIWidgets.EditBox, "Time during which disconnected players reserve playable for reconnection in ms, -1 for infinity time", "", category: WB_GAME_MODE_CATEGORY)]
-	int m_iAvailableReconnectAfterSlots = ;
+	[Attribute("300000", UIWidgets.EditBox, "Time during which disconnected players reserve role for reconnection in ms, -1 for infinity time", "", category: "Reforger Lobby")]
+	int m_iReconnectTimeAfterBriefing;
 	
-	[Attribute("1", uiwidget: UIWidgets.CheckBox, "Game may be started only if admin exists on server.", category: WB_GAME_MODE_CATEGORY)]
+	[Attribute("0", uiwidget: UIWidgets.CheckBox, "Game may be started only if admin on server.", category: "Reforger Lobby")]
 	protected bool m_bAdminMode;
 	
-	[Attribute("0", uiwidget: UIWidgets.CheckBox, "Lobby can be open after game start.", category: WB_GAME_MODE_CATEGORY)]
-	protected bool m_bCanOpenLobbyInGame;
+	[Attribute("0", uiwidget: UIWidgets.CheckBox, "Anyone can open lobby in game stage.", category: "Reforger Lobby")]
+	protected bool m_bTeamSwitch;
 	
-	[Attribute("0", uiwidget: UIWidgets.CheckBox, "Faction locked after selection.", category: WB_GAME_MODE_CATEGORY)]
+	//[Attribute("0", uiwidget: UIWidgets.CheckBox, "Faction locked after selection.", category: "Reforger Lobby")]
 	protected bool m_bFactionLock;
 	
-	[Attribute("1", uiwidget: UIWidgets.CheckBox, "Markers can place only commanders on briefing.", category: WB_GAME_MODE_CATEGORY)]
+	[Attribute("0", uiwidget: UIWidgets.CheckBox, "Markers can be placed only by commanders on briefing.", category: "Reforger Lobby")]
 	protected bool m_bMarkersOnlyOnBriefing;
 	
-	[Attribute("0", uiwidget: UIWidgets.CheckBox, "Remove unused units.", category: WB_GAME_MODE_CATEGORY)]
-	protected bool m_bKillRedundantUnits;
+	[Attribute("0", uiwidget: UIWidgets.CheckBox, "Remove units not occupied by players.", category: "Reforger Lobby")]
+	protected bool m_bRemoveRedundantUnits;
 	
-	[Attribute("0", uiwidget: UIWidgets.CheckBox, "Remove squad markers.", category: WB_GAME_MODE_CATEGORY)]
+	[Attribute("0", uiwidget: UIWidgets.CheckBox, "Remove default markers on squad leaders.", category: "Reforger Lobby")]
 	protected bool m_bRemoveSquadMarkers;
 	
-	[Attribute("30000", UIWidgets.EditBox, "Freeze time", "", category: WB_GAME_MODE_CATEGORY)]
-	int m_iFreezeTime = ;
+	[Attribute("30000", UIWidgets.EditBox, "Freeze time", "Time in milliseconds before restriction zones are removed.", category: "Reforger Lobby")]
+	int m_iFreezeTime;
 	
-	[Attribute("0")]
+	[Attribute("0", "Disables text chat for alive players on game stage. Admins can always see text chat.", category: "Reforger Lobby")]
 	protected bool m_bDisableChat;
 	
 	[RplProp()]
 	protected bool m_fCurrentFreezeTime;
 	
-	[Attribute("0")]
+	[Attribute("0", "Creates a whitelist on the server for players who have taken roles and also for players specified in $profile:PS_SlotsReserver_Config.json and kicks everyone else.", category: "Reforger Lobby")]
 	protected bool m_bReserveSlots;
 	
 	// ------------------------------------------ Events ------------------------------------------
@@ -60,7 +60,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		{
 			PS_VoNRoomsManager.GetInstance().GetOrCreateRoomWithFaction("", "#PS-VoNRoom_Global" );
 			
-			m_fCurrentFreezeTime = m_iAvailableReconnectTime;
+			m_fCurrentFreezeTime = m_iReconnectTime;
 			Replication.BumpMe();
 		}
 		
@@ -194,7 +194,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		playableManager.SetPlayerState(playerId, PS_EPlayableControllerState.Disconected); 
-		if (m_iAvailableReconnectTime > 0) GetGame().GetCallqueue().CallLater(RemoveDisconnectedPlayer, m_iAvailableReconnectTime, false, playerId);
+		if (m_iReconnectTime > 0) GetGame().GetCallqueue().CallLater(RemoveDisconnectedPlayer, m_iReconnectTime, false, playerId);
 		
 		IEntity controlledEntity = playerController.GetControlledEntity();
 		if (controlledEntity) {
@@ -266,7 +266,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
 		
-		if (!m_bCanOpenLobbyInGame && !PS_PlayersHelper.IsAdminOrServer()) return;
+		if (!m_bTeamSwitch && !PS_PlayersHelper.IsAdminOrServer()) return;
 		
 		MenuBase lobbyMenu = GetGame().GetMenuManager().FindMenuByPreset(ChimeraMenuPreset.CoopLobby);
 		if (!lobbyMenu)
@@ -312,7 +312,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		playableManager.ApplyPlayable(playerId);
 	}
 	
-	// If after m_iAvailableReconnectTime player still disconnected release playable
+	// If after m_iReconnectTime player still disconnected release playable
 	void RemoveDisconnectedPlayer(int playerId)
 	{
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
@@ -371,10 +371,10 @@ class PS_GameModeCoop : SCR_BaseGameMode
 				SetGameModeState(SCR_EGameModeState.BRIEFING);
 				break;
 			case SCR_EGameModeState.BRIEFING:
-				m_iAvailableReconnectTime = m_iAvailableReconnectAfterSlots;
+				m_iReconnectTime = m_iReconnectTimeAfterBriefing;
 				if (m_bReserveSlots)
 					ReserveSlots();
-				if (m_bKillRedundantUnits) PS_PlayableManager.GetInstance().KillRedundantUnits();
+				if (m_bRemoveRedundantUnits) PS_PlayableManager.GetInstance().KillRedundantUnits();
 				restrictedZonesTimer(m_iFreezeTime);
 				StartGameMode();
 				break;
@@ -538,7 +538,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	
 	int GetReconnectTime()
 	{
-		return m_iAvailableReconnectTime;
+		return m_iReconnectTime;
 	}
 	void SetReconnectTime(int availableReconnectTime)
 	{
@@ -548,12 +548,12 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void RPC_SetReconnectTime(int availableReconnectTime)
 	{
-		m_iAvailableReconnectTime = availableReconnectTime;
+		m_iReconnectTime = availableReconnectTime;
 	}
 	
 	bool GetKillRedundantUnits()
 	{
-		return m_bKillRedundantUnits;
+		return m_bRemoveRedundantUnits;
 	}
 	void SetKillRedundantUnits(bool killRedundantUnits)
 	{
@@ -563,12 +563,12 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void RPC_SetKillRedundantUnits(bool killRedundantUnits)
 	{
-		m_bKillRedundantUnits = killRedundantUnits;
+		m_bRemoveRedundantUnits = killRedundantUnits;
 	}
 	
 	bool GetCanOpenLobbyInGame()
 	{
-		return m_bCanOpenLobbyInGame;
+		return m_bTeamSwitch;
 	}
 	void SetCanOpenLobbyInGame(bool canOpenLobbyInGame)
 	{
@@ -578,7 +578,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void RPC_SetCanOpenLobbyInGame(bool canOpenLobbyInGame)
 	{
-		m_bCanOpenLobbyInGame = canOpenLobbyInGame;
+		m_bTeamSwitch = canOpenLobbyInGame;
 	}
 	
 	// ------------------------------------------ JIP Replication ------------------------------------------
@@ -586,7 +586,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	{
 		writer.WriteBool(m_bFactionLock);
 		writer.WriteInt(m_iFreezeTime);
-		writer.WriteInt(m_iAvailableReconnectTime);
+		writer.WriteInt(m_iReconnectTime);
 		
 		return true;
 	}
@@ -595,7 +595,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	{
 		reader.ReadBool(m_bFactionLock);
 		reader.ReadInt(m_iFreezeTime);
-		reader.ReadInt(m_iAvailableReconnectTime);
+		reader.ReadInt(m_iReconnectTime);
 		
 		return true;
 	}
