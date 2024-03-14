@@ -132,7 +132,8 @@ class PS_CoopLobby: MenuBase
 		m_bPlayersSwitch.m_OnClicked.Insert(Action_PlayersSwitch);
 		m_bVoiceSwitch.m_OnClicked.Insert(Action_VoiceSwitch);
 		
-		m_bNavigationButtonReady.GetOnHoldAnimComplete().Insert(Action_Ready);
+		m_bNavigationButtonReady.m_OnActivated.Insert(Action_Ready);
+		//m_bNavigationButtonReady.m_OnClicked.Insert(Action_Ready);
 		//GetGame().GetInputManager().AddActionListener("LobbyReady", EActionTrigger.DOWN, Action_Ready);
 		m_bNavigationButtonChat.m_OnClicked.Insert(Action_ChatOpen);
 		GetGame().GetInputManager().AddActionListener("ChatToggle", EActionTrigger.DOWN, Action_ChatOpen);
