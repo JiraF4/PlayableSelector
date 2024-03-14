@@ -1,7 +1,7 @@
 class PS_VoiceChatRoom : SCR_ScriptedWidgetComponent
 {
-	// consts
-	protected const ResourceName m_sPlayerVoiceSelectorPrefab = "{086F282C8CE692F1}UI/VoiceChat/VoicePlayerSelector.layout";
+	[Attribute("{086F282C8CE692F1}UI/VoiceChat/VoicePlayerSelector.layout")]
+	protected ResourceName m_sPlayerVoiceSelectorPrefab;
 	
 	// Global cached
 	protected PlayerManager m_gPlayerManager;

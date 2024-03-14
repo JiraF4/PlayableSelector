@@ -1,0 +1,68 @@
+FrameWidgetClass : "{086F282C8CE692F1}UI/VoiceChat/VoicePlayerSelector.layout" {
+ {
+  ImageWidgetClass "{60DCC61ECADD1538}" {
+   Prefab "{60DCC61ECADD1538}"
+   Slot FrameWidgetSlot "{60DCC61DAC789BCF}" {
+    PositionX 0
+    OffsetLeft 0
+    PositionY 0
+    OffsetTop 0
+    SizeX 312
+    OffsetRight -312
+    SizeY 44
+    OffsetBottom -44
+   }
+  }
+  ImageWidgetClass "{5EBEE9F3BA2E0A63}" {
+   Prefab "{5EBEE9F3BA2E0A63}"
+   "Is Visible" 0
+  }
+  ImageWidgetClass "{5EB2906F65B84659}" {
+   Prefab "{5EB2906F65B84659}"
+   "Is Visible" 0
+  }
+  FrameWidgetClass "{5EB1176F4695C767}" {
+   Prefab "{5EB1176F4695C767}"
+   "Is Visible" 0
+  }
+  TextWidgetClass "{5EB11767AA8586F0}" {
+   Prefab "{5EB11767AA8586F0}"
+   Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
+    PositionX 6
+    OffsetLeft 6
+    PositionY 0
+    OffsetTop 0
+    SizeX 218
+    OffsetRight -224
+    SizeY 44
+    OffsetBottom -44
+   }
+  }
+  OverlayWidgetClass "{5EB1176D2E673C6D}" {
+   Prefab "{5EB1176D2E673C6D}"
+   Slot FrameWidgetSlot "{5EB1176DC507EF2D}" {
+    PositionX 268
+    OffsetLeft 268
+    PositionY 0
+    OffsetTop 0
+    SizeX 44
+    OffsetRight -312
+    SizeY 44
+    OffsetBottom -44
+   }
+  }
+  ButtonWidgetClass "{5EBEE9F517B20AEA}" {
+   Prefab "{5EBEE9F517B20AEA}"
+   Slot FrameWidgetSlot "{5EA8C93F5E685F59}" {
+    PositionX 224
+    OffsetLeft 224
+    PositionY 0
+    OffsetTop 0
+    SizeX 44
+    OffsetRight -268
+    SizeY 44
+    OffsetBottom -44
+   }
+  }
+ }
+}

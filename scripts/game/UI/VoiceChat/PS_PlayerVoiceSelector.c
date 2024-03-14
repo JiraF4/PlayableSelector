@@ -15,6 +15,7 @@ class PS_PlayerVoiceSelector : SCR_ButtonBaseComponent
 	TextWidget m_wGroupName;
 	ImageWidget m_wCharacterFactionColor;
 	ButtonWidget m_wKickButton;
+	ImageWidget m_wImageCurrent
 	
 	override void HandlerAttached(Widget w)
 	{
@@ -26,6 +27,7 @@ class PS_PlayerVoiceSelector : SCR_ButtonBaseComponent
 		m_wVoiceHideableButton = PS_VoiceButton.Cast(w.FindAnyWidget("VoiceHideableButton").FindHandler(PS_VoiceButton));
 		m_wGroupName = TextWidget.Cast(w.FindAnyWidget("GroupName"));
 		m_wKickButton = ButtonWidget.Cast(w.FindAnyWidget("KickButton"));
+		m_wImageCurrent = ImageWidget.Cast(w.FindAnyWidget("ImageCurrent"));
 		
 		GetGame().GetCallqueue().CallLater(AddOnClick, 0);
 	}
@@ -90,6 +92,7 @@ class PS_PlayerVoiceSelector : SCR_ButtonBaseComponent
 			if (!showKick && currentPlayerRoom.Contains("#PS-VoNRoom_Command")) showKick = !playableManager.IsPlayerGroupLeader(m_iPlayer) && playableManager.IsPlayerGroupLeader(currentPlayerId);
 		}
 		m_wKickButton.SetVisible(showKick);
+		m_wImageCurrent.SetVisible(currentPlayerId == m_iPlayer);
 		
 		if (SCR_Global.IsAdmin(m_iPlayer)) m_wPlayerName.SetColor(Color.FromInt(0xfff2a34b));
 		else if (playerName == "") m_wPlayerName.SetColor(Color.FromInt(0xff999999));

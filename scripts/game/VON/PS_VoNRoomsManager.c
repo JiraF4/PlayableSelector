@@ -23,7 +23,7 @@ class PS_VoNRoomsManager : ScriptComponent
 	ref map<int, int> m_mPlayersRooms = new map<int, int>(); // player to room relationship
 	
 	// Move speech bois to space
-	static vector roomInitialPosition = "-1000000 1000000 1";
+	static vector roomInitialPosition = "-1 1000000 1";
 	
 	// offset every room
 	vector lastOffset;

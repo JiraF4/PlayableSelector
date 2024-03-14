@@ -178,6 +178,11 @@ FrameWidgetClass {
    }
    Clipping False
    "Ignore Cursor" 0
+   components {
+    PS_VoiceChatList "{5EB1176278105B6B}" {
+     m_sVoiceChatRoomPrefab "{01F7BA8E72A1A714}UI/VoiceChat/VoiceChatRoom_Spectator.layout"
+    }
+   }
    {
     ImageWidgetClass "{60DCA2405FB6DEA0}" {
      Name "Extender"

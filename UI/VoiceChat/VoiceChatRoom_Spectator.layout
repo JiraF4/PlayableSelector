@@ -1,0 +1,58 @@
+VerticalLayoutWidgetClass : "{E705A59E59B577F2}UI/VoiceChat/VoiceChatRoom.layout" {
+ components {
+  PS_VoiceChatRoom "{5F0EB4E19DE588FD}" {
+   m_sPlayerVoiceSelectorPrefab "{DA59899DF2E56646}UI/VoiceChat/VoicePlayerSelector_Spectator.layout"
+  }
+ }
+ {
+  ButtonWidgetClass "{5F0EB4E661866AAA}" {
+   Prefab "{5F0EB4E661866AAA}"
+   {
+    FrameWidgetClass "{5EB290655B7E7F5F}" {
+     Prefab "{5EB290655B7E7F5F}"
+     {
+      BlurWidgetClass "{60DCC47BB0F91A0D}" {
+       Name "Background_spectator"
+       Slot FrameWidgetSlot "{60DCC47BB0F91B88}" {
+        Anchor 0 0 1 1
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX -1820
+        OffsetRight 0
+        SizeY -14
+        OffsetBottom 0
+       }
+       Color 0.521 0.521 0.521 1
+      }
+      ImageWidgetClass "{5F18ED157F706E13}" {
+       Prefab "{5F18ED157F706E13}"
+       "Is Visible" 0
+      }
+      TextWidgetClass "{5EB1458AF2F57E5D}" {
+       Prefab "{5EB1458AF2F57E5D}"
+       FontProperties FontProperties "{5EBC73752A65320C}" {
+        Font "{E2CBA6F76AAA42AF}UI/Fonts/Roboto/Roboto_Regular.fnt"
+       }
+      }
+     }
+    }
+   }
+  }
+  ImageWidgetClass "{60DCC61CC5098052}" {
+   Name "Border_spectator"
+   Slot LayoutSlot {
+    HorizontalAlign 3
+    VerticalAlign 3
+   }
+   "Z Order" 1
+   Color 0.761 0.392 0.078 1
+   Size 32 4
+  }
+  VerticalLayoutWidgetClass "{5F0EB4E6713FA830}" {
+   Prefab "{5F0EB4E6713FA830}"
+   "Z Order" 2
+  }
+ }
+}

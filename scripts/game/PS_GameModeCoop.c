@@ -296,7 +296,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	void SpawnInitialEntity(int playerId)
 	{
 		#ifdef WORKBENCH
-		IEntity WBCharacter = SCR_PlayerController.GetLocalControlledEntity();
+		IEntity WBCharacter = GetGame().GetPlayerManager().GetPlayerControlledEntity(playerId);
 		if (WBCharacter)
 			return;
 		#endif
