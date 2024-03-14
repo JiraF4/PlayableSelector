@@ -32,6 +32,10 @@ FrameWidgetClass {
    "Horizontal Alignment" Center
    "Vertical Alignment" Center
    Wrap 1
+   FontProperties FontProperties "{60DCA242801B1ED3}" {
+    Font "{E2CBA6F76AAA42AF}UI/Fonts/Roboto/Roboto_Regular.fnt"
+    OutlineSize 1
+   }
   }
  }
 }

@@ -221,6 +221,7 @@ FrameWidgetClass {
       SizeY 640
       OffsetBottom -640
      }
+     Opacity 0.9
     }
     FrameWidgetClass "{5EB2900030AFF404}" {
      Prefab "{5EB2900030AFF404}"
