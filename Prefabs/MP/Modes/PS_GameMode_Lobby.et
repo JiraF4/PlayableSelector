@@ -69,25 +69,18 @@ PS_GameModeCoop : "{0F307326459A1395}Prefabs/MP/Modes/GameMode_Base.et" {
  PlayerControllerPrefab "{4E5DAC62A374950F}Prefabs/Characters/Core/DefaultPlayerControllerMP_Coop.et"
  m_bAutoPlayerRespawn 0
  m_bAllowFactionChange 0
- m_iAvailableReconnectAfterSlots 30000
- m_bAdminMode 0
- m_bMarkersOnlyOnBriefing 0
  {
   SCR_FactionManager "5EA8C932C68D400F" : "{4A188E44289B9A50}Prefabs/MP/Managers/Factions/FactionManager_Editor.et" {
    ID "5ED9088735FF2D8B"
-   coords 3.654 -1.112 -0.996
   }
   RadioManagerEntity : "{B8E09FAB91C4ECCD}Prefabs/Radio/RadioManager.et" {
    ID "5ED9088735FF2DEE"
-   coords 3.654 -1.112 -0.996
   }
   ScriptedChatEntity : "{F69BC912AC8236F9}Prefabs/MP/ScriptedChatEntity.et" {
    ID "5ED9088735FF2DC2"
-   coords 3.654 -1.112 -0.996
   }
   ItemPreviewManagerEntity "5E7AE0AB2109F297" : "{AB5D049A3AB43FC0}Prefabs/World/Game/ItemPreviewManager_PS.et" {
    ID "5ED9088735FF2DD5"
-   coords 3.654 -1.112 -0.996
   }
  }
 }
