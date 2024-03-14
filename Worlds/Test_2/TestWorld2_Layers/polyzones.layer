@@ -54,35 +54,6 @@ $grp PolylineShapeEntity {
    }
   }
  }
- {
-  components {
-   PS_PolyZone "{60B6B9E8AB5DF7D6}" {
-    m_bReversed 1
-    m_aVisibleForFactions {
-     ""
-    }
-   }
-  }
-  coords 89.866 1 52.042
-  Points {
-   ShapePoint "{608CFEEE9BD870F9}" {
-    Position -68.742 0 -17.389
-   }
-   ShapePoint "{608CFEEE9BD84BBD}" {
-    Position -80.85 0 159.04
-   }
-   ShapePoint "{608CFEEE7B915DB0}" {
-    Position 66.277 0 175.202
-   }
-   ShapePoint "{608CFEEE1D3FD75C}" {
-    Position 155.607 0 152.511
-   }
-   ShapePoint "{608CFEEE1D4C9EB4}" {
-    Position 141.827 0 -40.279
-   }
-  }
-  IsClosed 1
- }
  SUS2 {
   components {
    PS_PolyZone "{604680A1322CDBDD}" {

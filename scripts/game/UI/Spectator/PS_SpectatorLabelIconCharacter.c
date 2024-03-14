@@ -10,6 +10,8 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 	protected ImageWidget m_wSpectatorLabelIconBackground;
 	protected ImageWidget m_wSpectatorLabelIconCircle;
 	protected ImageWidget m_wSpectatorLabelIconWounded;
+	protected ImageWidget m_wSpectatorLabelIconCircleSmall;
+	protected OverlayWidget m_wOverlayCircle;
 	
 	protected ResourceName m_rIconImageSet = "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset";
 	
@@ -18,6 +20,8 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 		m_wSpectatorLabelIconBackground = ImageWidget.Cast(w.FindAnyWidget("SpectatorLabelIconBackground"));
 		m_wSpectatorLabelIconCircle = ImageWidget.Cast(w.FindAnyWidget("SpectatorLabelIconCircle"));
 		m_wSpectatorLabelIconWounded = ImageWidget.Cast(w.FindAnyWidget("SpectatorLabelIconWounded"));
+		m_wSpectatorLabelIconCircleSmall = ImageWidget.Cast(w.FindAnyWidget("SpectatorLabelIconCircleSmall"));
+		m_wOverlayCircle = OverlayWidget.Cast(w.FindAnyWidget("OverlayCircle"));
 		
 		super.HandlerAttached(w);
 	}
@@ -36,6 +40,7 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 			m_wSpectatorLabelIcon.SetColor(faction.GetOutlineFactionColor());
 			m_wSpectatorLabelIconBackground.SetColor(faction.GetFactionColor());
 			m_wSpectatorLabelIconCircle.SetColor(faction.GetOutlineFactionColor());
+			m_wSpectatorLabelIconCircleSmall.SetColor(faction.GetFactionColor());
 		}
 		
 		SCR_UIInfo uiInfo = m_EditableCharacterComponent.GetInfo();
@@ -57,6 +62,17 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 			} else {
 				m_wSpectatorLabelText.SetText(m_cPlayableComponent.GetName());
 			}
+		}
+		
+		if (m_fDistanceToIcon > 120)
+		{
+			m_wOverlayCircle.SetVisible(false);
+			m_wSpectatorLabelIcon.SetVisible(false);
+		}
+		else
+		{
+			m_wOverlayCircle.SetVisible(true);
+			m_wSpectatorLabelIcon.SetVisible(true);
 		}
 		
 		if (!m_bDead)
