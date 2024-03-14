@@ -184,49 +184,6 @@ FrameWidgetClass {
               }
              }
             }
-            OverlayWidgetClass "{60DB5B8AA8CBF1CF}" {
-             Name "OverlayPlayersCounter"
-             Slot FrameWidgetSlot "{60DB5B8AA8CBF138}" {
-              PositionX 0
-              OffsetLeft 0
-              PositionY 888
-              OffsetTop 888
-              SizeX 320
-              OffsetRight -320
-              SizeY 65
-              OffsetBottom -953
-             }
-             {
-              PanelWidgetClass "{60DB5B8A86DB6B67}" {
-               Name "PanelPlayersCounter"
-               Slot OverlayWidgetSlot "{60DB65C7C43AD196}" {
-                HorizontalAlign 1
-                VerticalAlign 1
-               }
-               Color 0 0 0 0.25
-               style full
-               {
-                TextWidgetClass "{5F0F444422867436}" {
-                 Name "PlayersCounter"
-                 Slot FrameWidgetSlot "{60DB5B8A9725A903}" {
-                  OffsetLeft 0
-                  OffsetTop 0
-                  SizeX 99.999
-                  OffsetRight -100
-                  SizeY 30
-                  OffsetBottom -30
-                  SizeToContent 1
-                 }
-                 Text "0 / 128"
-                 "Font Size" 26
-                 "Min Font Size" 26
-                 "Horizontal Alignment" Center
-                 "Vertical Alignment" Center
-                }
-               }
-              }
-             }
-            }
             OverlayWidgetClass "{5D6D141612AB1323}" {
              Name "FactionBody"
              Slot FrameWidgetSlot "{5D6D141612AB133D}" {
@@ -463,14 +420,14 @@ FrameWidgetClass {
              Name "PreviewHideButton"
              Slot FrameWidgetSlot "{5EA8C93F5E685F59}" {
               Anchor 0 0 0 0
-              PositionX 425
-              OffsetLeft 425
-              PositionY 162
-              OffsetTop 162
+              PositionX 421
+              OffsetLeft 421
+              PositionY 75
+              OffsetTop 75
               SizeX 40
-              OffsetRight -465
+              OffsetRight -461
               SizeY 40
-              OffsetBottom -202
+              OffsetBottom -115
              }
              Color 0 1 0.019 0
              components {
@@ -574,6 +531,49 @@ FrameWidgetClass {
                "Min Font Size" 48
                "Horizontal Alignment" Center
                "Vertical Alignment" Center
+              }
+             }
+            }
+            OverlayWidgetClass "{60DD09FA511FB2E9}" {
+             Name "OverlayPlayersCounter"
+             Slot FrameWidgetSlot "{60DD09FA60C60E28}" {
+              PositionX 307
+              OffsetLeft 307
+              PositionY 68
+              OffsetTop 68
+              SizeX 162
+              OffsetRight -469
+              SizeY 52
+              OffsetBottom -120
+             }
+             {
+              PanelWidgetClass "{60DD09FA511FB2EA}" {
+               Name "PanelPlayersCounter"
+               Slot OverlayWidgetSlot "{60DB65C7C43AD196}" {
+                HorizontalAlign 1
+                VerticalAlign 1
+               }
+               Color 0 0 0 0.25
+               style full
+               {
+                TextWidgetClass "{60DD09FA511FB2EC}" {
+                 Name "PlayersCounter"
+                 Slot FrameWidgetSlot "{60DB5B8A9725A903}" {
+                  OffsetLeft 0
+                  OffsetTop 0
+                  SizeX 99.999
+                  OffsetRight -100
+                  SizeY 30
+                  OffsetBottom -30
+                  SizeToContent 1
+                 }
+                 Text "0 / 128"
+                 "Font Size" 26
+                 "Min Font Size" 26
+                 "Horizontal Alignment" Center
+                 "Vertical Alignment" Center
+                }
+               }
               }
              }
             }
@@ -763,6 +763,8 @@ FrameWidgetClass {
               SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
                m_sActionName "LobbyReady"
                m_sLabel "#PS-Lobby_Ready"
+               m_bIsMouseInput 1
+               m_fHoldTimeReduction -0.2
               }
              }
             }
@@ -778,6 +780,7 @@ FrameWidgetClass {
               SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
                m_sActionName "MenuRestart"
                m_sLabel "#PS-Lobby_ForceStart"
+               m_bIsMouseInput 1
               }
              }
             }
@@ -1280,12 +1283,12 @@ FrameWidgetClass {
    Slot FrameWidgetSlot "{5CEE96372B5D270B}" {
     PositionX 0
     OffsetLeft 0
-    PositionY -1.418
-    OffsetTop -1.418
+    PositionY -1
+    OffsetTop -1
     SizeX 0
     OffsetRight 0
     SizeY 0
-    OffsetBottom 1.418
+    OffsetBottom 1
    }
    Opacity 1
    {
