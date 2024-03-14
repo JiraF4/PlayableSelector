@@ -95,6 +95,7 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 				m_wSpectatorLabelBackground.SetOpacity(0.9);
 				m_wSpectatorLabelIconBackground.SetColor(Color.Gray);
 				m_wSpectatorLabelIconBackground.SetOpacity(0.2);
+				m_wSpectatorLabelIconWounded.SetVisible(false);
 				m_bDead = true;
 			}
 		}

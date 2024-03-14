@@ -109,9 +109,26 @@ class PS_PlayableManager : ScriptComponent
 		
 		SetPlayerState(playerId, PS_EPlayableControllerState.Playing);
 		
-		RplId playableId = GetPlayableByPlayer(playerId);
+		bool dead = false;
+		RplId playableId = GetPlayableByPlayer(playerId);	
+		if (playableId != RplId.Invalid())
+		{
+			IEntity character = GetPlayableById(playableId).GetOwner();
+			if (character)
+			{
+				SCR_DamageManagerComponent damageManager = SCR_DamageManagerComponent.GetDamageManager(character);
+				if (damageManager)
+				{
+					if (damageManager.GetState() == EDamageState.DESTROYED)
+					{
+						dead = true;
+					}
+				}
+			}
+		}
+		
 		IEntity entity;
-		if (playableId == RplId.Invalid() || playableId == -1) {
+		if (dead || playableId == RplId.Invalid() || playableId == -1) {
 			// Remove group
 			SCR_AIGroup currentGroup = groupsManagerComponent.GetPlayerGroup(playableId);
 			if (currentGroup) currentGroup.RemovePlayer(playerId);
@@ -120,12 +137,16 @@ class PS_PlayableManager : ScriptComponent
 			entity = playableController.GetInitialEntity();
 			if (!entity)
 			{
-		        Resource resource = Resource.Load("{E1B415916312F029}Prefabs/InitialPlayer.et");
+				Resource resource = Resource.Load("{E1B415916312F029}Prefabs/InitialPlayer.et");
 				EntitySpawnParams params = new EntitySpawnParams();
-		        entity = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
+				entity = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
 				playableController.SetInitialEntity(entity);
 			}
-			playerController.SetInitialMainEntity(entity);
+			
+			if (!dead)
+				playerController.SetInitialMainEntity(entity);
+			else
+				playerController.SetInitialMainEntity(null);
 			
 			return;
 		} else entity = GetPlayableById(playableId).GetOwner();		 
