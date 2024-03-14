@@ -21,6 +21,8 @@ class PS_SpectatorLabelIcon : SCR_ScriptedWidgetComponent
 	
 	protected TNodeId w_iBoneIndex;
 	
+	protected float m_fDistanceToIcon;
+	
 	override void HandlerAttached(Widget w)
 	{
 		super.HandlerAttached(w);
@@ -56,29 +58,29 @@ class PS_SpectatorLabelIcon : SCR_ScriptedWidgetComponent
 		vector screenPosition = GetGame().GetWorkspace().ProjWorldToScreen(iconWorldPosition, GetGame().GetWorld());
 		
 		vector cameraPosition = GetGame().GetCameraManager().CurrentCamera().GetOrigin();
-		float distanceToIcon = vector.Distance(cameraPosition, iconWorldPosition);
+		m_fDistanceToIcon = vector.Distance(cameraPosition, iconWorldPosition);
 		
 		if (screenPosition[2] < 0)
 		{
 			m_wRoot.SetOpacity(0.0);
 			return;
 		}
-		if (distanceToIcon > m_fMaxIconDistance)
+		if (m_fDistanceToIcon > m_fMaxIconDistance)
 		{
 			m_wRoot.SetOpacity(0.0);
 			return;
 		}
 		
-		if (distanceToIcon > m_fMaxLabelDistance)
+		if (m_fDistanceToIcon > m_fMaxLabelDistance)
 			m_wSpectatorLabel.SetOpacity(0.0);
 		else
 		{
-			float opacityLabel = 1.0 - ((distanceToIcon - m_fMinLabelDistance) / (m_fMaxLabelDistance - m_fMinLabelDistance));
+			float opacityLabel = 1.0 - ((m_fDistanceToIcon - m_fMinLabelDistance) / (m_fMaxLabelDistance - m_fMinLabelDistance));
 			if (opacityLabel > 1.0) opacityLabel = 1.0;
 			m_wSpectatorLabel.SetOpacity(opacityLabel);
 		}
 		
-		float distanceScale = 1.0 - ((distanceToIcon - m_fMinIconDistance) / (m_fMaxIconDistance - m_fMinIconDistance));
+		float distanceScale = 1.0 - ((m_fDistanceToIcon - m_fMinIconDistance) / (m_fMaxIconDistance - m_fMinIconDistance));
 		
 		float currentScale = distanceScale;
 		if (currentScale > 1.0) currentScale = 1.0;

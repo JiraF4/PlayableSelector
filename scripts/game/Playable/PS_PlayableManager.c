@@ -412,6 +412,9 @@ class PS_PlayableManager : ScriptComponent
 		
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PlayerController playerController = playerManager.GetPlayerController(playerId);
+		if (!playerController)
+			return;
+		
 		SCR_FactionManager factionManager = SCR_FactionManager.Cast(GetGame().GetFactionManager());
 		SCR_PlayerFactionAffiliationComponent playerFactionAffiliation = SCR_PlayerFactionAffiliationComponent.Cast(playerController.FindComponent(SCR_PlayerFactionAffiliationComponent));
 		playerFactionAffiliation.SetAffiliatedFactionByKey(factionKey);

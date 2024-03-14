@@ -173,7 +173,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	protected override void OnPlayerConnected(int playerId)
 	{
 		// TODO: remove CallLater
+		#ifdef WORKBENCH
+		GetGame().GetCallqueue().CallLater(SpawnInitialEntity, 500, false, playerId);
+		#else
 		GetGame().GetCallqueue().CallLater(SpawnInitialEntity, 100, false, playerId);
+		#endif
 		m_OnPlayerConnected.Invoke(playerId);
 	}
 	
@@ -291,6 +295,12 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	
 	void SpawnInitialEntity(int playerId)
 	{
+		#ifdef WORKBENCH
+		IEntity WBCharacter = GetGame().GetPlayerManager().GetPlayerControlledEntity(playerId);
+		if (WBCharacter)
+			return;
+		#endif
+		
 		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
         Resource resource = Resource.Load("{E1B415916312F029}Prefabs/InitialPlayer.et");
 		EntitySpawnParams params = new EntitySpawnParams();

@@ -1,6 +1,21 @@
 FrameWidgetClass {
  Name "SpectatorMenu"
  {
+  FrameWidgetClass "{5EE8949BDE5C93EE}" {
+   Name "IconsFrame"
+   Slot FrameWidgetSlot "{5EE8949BDE5C93C5}" {
+    Anchor 0 0 1 1
+    PositionX 0
+    OffsetLeft 0
+    PositionY 0
+    OffsetTop 0
+    SizeX 0
+    OffsetRight 0
+    SizeY 0
+    OffsetBottom 0
+   }
+   Clipping True
+  }
   FrameWidgetClass "{60DB2B52C92E445E}" {
    Name "SidesRatioFrame"
    Slot FrameWidgetSlot "{60DB2B52C92E458A}" {
@@ -33,12 +48,13 @@ FrameWidgetClass {
     HorizontalLayoutWidgetClass "{60DB2B551619CC3C}" {
      Name "SidesRatio"
      Slot FrameWidgetSlot "{60B551B74785C9E5}" {
+      Anchor 0 0 1 0
       PositionX 512
       OffsetLeft 512
       PositionY 6
       OffsetTop 6
-      SizeX 896
-      OffsetRight -1408
+      SizeX -1024
+      OffsetRight 512
       SizeY 6
       OffsetBottom -12
      }
@@ -48,21 +64,6 @@ FrameWidgetClass {
      }
     }
    }
-  }
-  FrameWidgetClass "{5EE8949BDE5C93EE}" {
-   Name "IconsFrame"
-   Slot FrameWidgetSlot "{5EE8949BDE5C93C5}" {
-    Anchor 0 0 1 1
-    PositionX 0
-    OffsetLeft 0
-    PositionY 0
-    OffsetTop 0
-    SizeX 0
-    OffsetRight 0
-    SizeY 0
-    OffsetBottom 0
-   }
-   Clipping True
   }
   FrameWidgetClass "{5F34C897F439A3AE}" : "{0651202E9F2646DE}UI/layouts/Map/Map.layout" {
    Name "MapFrame"
@@ -175,8 +176,44 @@ FrameWidgetClass {
     SizeY 640
     OffsetBottom -320
    }
+   Clipping False
    "Ignore Cursor" 0
+   components {
+    PS_VoiceChatList "{5EB1176278105B6B}" {
+     m_sVoiceChatRoomPrefab "{01F7BA8E72A1A714}UI/VoiceChat/VoiceChatRoom_Spectator.layout"
+    }
+   }
    {
+    ImageWidgetClass "{60DCA2405FB6DEA0}" {
+     Name "Extender"
+     Slot FrameWidgetSlot "{60DCA24044200F5D}" {
+      Anchor 0 0 1 1
+      PositionX 0
+      OffsetLeft -25
+      PositionY 0
+      OffsetTop -25
+      SizeX 0
+      OffsetRight -25
+      SizeY 0
+      OffsetBottom -25
+     }
+     Opacity 0
+     Clipping False
+     "Ignore Cursor" 0
+    }
+    BlurWidgetClass "{60DB2B5B1B885EF3}" {
+     Prefab "{60DB2B5B1B885EF3}"
+     Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
+      PositionX 0
+      OffsetLeft 0
+      PositionY 0
+      OffsetTop 0
+      SizeX 320
+      OffsetRight -320
+      SizeY 640
+      OffsetBottom -640
+     }
+    }
     ImageWidgetClass "{5EB2900030AFF403}" {
      Prefab "{5EB2900030AFF403}"
      Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
@@ -189,6 +226,7 @@ FrameWidgetClass {
       SizeY 640
       OffsetBottom -640
      }
+     Opacity 0.9
     }
     FrameWidgetClass "{5EB2900030AFF404}" {
      Prefab "{5EB2900030AFF404}"
@@ -331,15 +369,56 @@ FrameWidgetClass {
     SizeY 640
     OffsetBottom -320
    }
+   Clipping False
    "Ignore Cursor" 0
    components {
     PS_AlivePlayerList "{5EBA416A9CB1DC7C}" {
     }
    }
    {
+    ImageWidgetClass "{60DCA240442011AC}" {
+     Name "Extender"
+     Slot FrameWidgetSlot "{60DCA24044200F5D}" {
+      Anchor 0 0 1 1
+      PositionX -15
+      OffsetLeft -25
+      PositionY -15
+      OffsetTop -25
+      SizeX 30
+      OffsetRight -25
+      SizeY 30
+      OffsetBottom -25
+     }
+     Opacity 0
+     Clipping False
+     "Ignore Cursor" 0
+    }
     BlurWidgetClass "{5EBA3C97969AD0E7}" {
      Prefab "{5EBA3C97969AD0E7}"
+     Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
+      PositionX 0
+      OffsetLeft 0
+      PositionY 0
+      OffsetTop 0
+      SizeX 320
+      OffsetRight -320
+      SizeY 640
+      OffsetBottom -640
+     }
      "Z Order" -1
+    }
+    ImageWidgetClass "{60DB2B58D743E618}" {
+     Prefab "{60DB2B58D743E618}"
+     Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
+      PositionX 0
+      OffsetLeft 0
+      PositionY 0
+      OffsetTop 0
+      SizeX 320
+      OffsetRight -320
+      SizeY 640
+      OffsetBottom -640
+     }
     }
     FrameWidgetClass "{5EBA3C97FF93DE7A}" {
      Prefab "{5EBA3C97FF93DE7A}"
@@ -414,6 +493,19 @@ FrameWidgetClass {
         }
        }
       }
+     }
+    }
+    ScrollLayoutWidgetClass "{5EBA3C972331B0F8}" {
+     Prefab "{5EBA3C972331B0F8}"
+     Slot FrameWidgetSlot "{5EB1000AD8290B3B}" {
+      PositionX 0
+      OffsetLeft 0
+      PositionY 84
+      OffsetTop 84
+      SizeX 320
+      OffsetRight -320
+      SizeY 556
+      OffsetBottom -640
      }
     }
    }

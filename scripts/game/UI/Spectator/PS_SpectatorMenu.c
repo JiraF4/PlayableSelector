@@ -194,8 +194,8 @@ class PS_SpectatorMenu: MenuBase
 		else
 		{
 			alivePlayerListX -= tDelta * 1200.0;
-			if (alivePlayerListX < -310)
-				alivePlayerListX = -310;
+			if (alivePlayerListX < -315)
+				alivePlayerListX = -315;
 		}
 		FrameSlot.SetPosX(m_wAlivePlayerList, alivePlayerListX);
 		
@@ -208,8 +208,8 @@ class PS_SpectatorMenu: MenuBase
 		else
 		{
 			voiceChatListX += tDelta * 1200.0;
-			if (voiceChatListX > -10)
-				voiceChatListX = -10;
+			if (voiceChatListX > -5)
+				voiceChatListX = -5;
 		}
 		FrameSlot.SetPosX(m_wVoiceChatList, voiceChatListX);
 		

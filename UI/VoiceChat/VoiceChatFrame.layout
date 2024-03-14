@@ -31,6 +31,7 @@ FrameWidgetClass {
     SizeY 800
     OffsetBottom -800
    }
+   Opacity 0.9
    Color 0.007 0.012 0.014 0.9
   }
   FrameWidgetClass "{5EB2900030AFF404}" {

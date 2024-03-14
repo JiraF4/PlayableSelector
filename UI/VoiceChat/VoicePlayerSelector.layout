@@ -8,6 +8,27 @@ FrameWidgetClass {
   }
  }
  {
+  ImageWidgetClass "{60DCC61ECADD1538}" {
+   Name "ImageCurrent"
+   Slot FrameWidgetSlot "{60DCC61DAC789BCF}" {
+    PositionX 14
+    OffsetLeft 14
+    PositionY 0
+    OffsetTop 0
+    SizeX 466
+    OffsetRight -480
+    SizeY 44
+    OffsetBottom -44
+   }
+   Opacity 0.4
+   Color 0.761 0.392 0.078 1
+   Texture "{E12BB5C5BD00269E}UI/Textures/Common/gradientTexture_Dither_right_512.edds"
+   Size 512 512
+   Mask "{E12BB5C5BD00269E}UI/Textures/Common/gradientTexture_Dither_right_512.edds"
+   "Transition width" 1
+   Progress 0.44
+   "Mask Mode" "Include Below"
+  }
   ImageWidgetClass "{5EBEE9F3BA2E0A63}" {
    Name "CharacterFactionColor"
    Slot FrameWidgetSlot "{5D6D1B9A2749B73B}" {

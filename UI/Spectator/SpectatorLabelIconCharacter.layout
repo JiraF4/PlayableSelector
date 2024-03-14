@@ -21,36 +21,52 @@ FrameWidgetClass : "{8A4C0D6D625BB09D}UI/Spectator/SpectatorLabelIcon.layout" {
     OffsetBottom -64
    }
    {
-    ImageWidgetClass "{60DB07187E8C4DF4}" {
-     Name "SpectatorLabelIconBackground"
-     Slot OverlayWidgetSlot "{60DB071F89457600}" {
-     }
-     Color 0 0 0 1
-     Texture "{8479B3B5347DF5CF}UI/Imagesets/MilitarySymbol/ID_D.imageset"
-     Image "Character_Bcg"
-     Size 64 64
-    }
-    ImageWidgetClass "{60DB07187FD3FDF7}" {
-     Name "SpectatorLabelIconCircle"
+    ImageWidgetClass "{60DCA24F25DC2EF8}" {
+     Name "SpectatorLabelIconCircleSmall"
      Slot OverlayWidgetSlot "{60DB07187FD3FD8A}" {
      }
+     Opacity 0.75
      Texture "{8479B3B5347DF5CF}UI/Imagesets/MilitarySymbol/ID_D.imageset"
-     Image "Character"
-     Size 64 64
+     Image "Friend_SeaSurface_Bcg"
+     Size 16 16
     }
-    ImageWidgetClass "{60DB7BB025C1EAD7}" {
-     Name "SpectatorLabelIconWounded"
-     Slot OverlayWidgetSlot "{60DB07187FD3FD8A}" {
-      HorizontalAlign 0
-      VerticalAlign 0
-      Padding -8 -8 0 0
+    OverlayWidgetClass "{60DCA2489B9D5917}" {
+     Name "OverlayCircle"
+     Slot OverlayWidgetSlot "{60DCA2489B9D597D}" {
      }
-     "Z Order" 25
-     "Is Visible" 0
-     Color 0.855 0.641 0 1
-     Texture "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset"
-     Image "Wounded"
-     Size 32 32
+     {
+      ImageWidgetClass "{60DB07187E8C4DF4}" {
+       Name "SpectatorLabelIconBackground"
+       Slot OverlayWidgetSlot "{60DB071F89457600}" {
+       }
+       Color 0 0 0 1
+       Texture "{8479B3B5347DF5CF}UI/Imagesets/MilitarySymbol/ID_D.imageset"
+       Image "Character_Bcg"
+       Size 64 64
+      }
+      ImageWidgetClass "{60DB07187FD3FDF7}" {
+       Name "SpectatorLabelIconCircle"
+       Slot OverlayWidgetSlot "{60DB07187FD3FD8A}" {
+       }
+       Texture "{8479B3B5347DF5CF}UI/Imagesets/MilitarySymbol/ID_D.imageset"
+       Image "Character"
+       Size 64 64
+      }
+      ImageWidgetClass "{60DB7BB025C1EAD7}" {
+       Name "SpectatorLabelIconWounded"
+       Slot OverlayWidgetSlot "{60DB07187FD3FD8A}" {
+        HorizontalAlign 0
+        VerticalAlign 0
+        Padding -8 -8 0 0
+       }
+       "Z Order" 25
+       "Is Visible" 0
+       Color 0.855 0.641 0 1
+       Texture "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset"
+       Image "Wounded"
+       Size 32 32
+      }
+     }
     }
    }
   }
