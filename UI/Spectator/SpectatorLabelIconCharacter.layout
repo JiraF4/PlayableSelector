@@ -38,6 +38,20 @@ FrameWidgetClass : "{8A4C0D6D625BB09D}UI/Spectator/SpectatorLabelIcon.layout" {
      Image "Character"
      Size 64 64
     }
+    ImageWidgetClass "{60DB7BB025C1EAD7}" {
+     Name "SpectatorLabelIconWounded"
+     Slot OverlayWidgetSlot "{60DB07187FD3FD8A}" {
+      HorizontalAlign 0
+      VerticalAlign 0
+      Padding -8 -8 0 0
+     }
+     "Z Order" 25
+     "Is Visible" 0
+     Color 0.855 0.641 0 1
+     Texture "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset"
+     Image "Wounded"
+     Size 32 32
+    }
    }
   }
   PanelWidgetClass "{5EE8948F20BE168B}" {

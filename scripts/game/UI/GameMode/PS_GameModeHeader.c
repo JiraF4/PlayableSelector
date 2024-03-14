@@ -80,6 +80,8 @@ class PS_GameModeHeader : ScriptedWidgetComponent
 		m_TimeAndWeatherManagerEntity = world.GetTimeAndWeatherManager();
 		
 		UpdateTimeAndWeather();
+		GetGame().GetCallqueue().Call(UpdateTimeAndWeather);
+		GetGame().GetCallqueue().CallLater(UpdateTimeAndWeather, 500);
 		GetGame().GetCallqueue().CallLater(AddOnClick, 0);
 		GetGame().GetCallqueue().Call(UpdateProgressLine);
 	}

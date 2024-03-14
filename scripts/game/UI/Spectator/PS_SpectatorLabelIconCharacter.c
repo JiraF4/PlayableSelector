@@ -9,6 +9,7 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 	
 	protected ImageWidget m_wSpectatorLabelIconBackground;
 	protected ImageWidget m_wSpectatorLabelIconCircle;
+	protected ImageWidget m_wSpectatorLabelIconWounded;
 	
 	protected ResourceName m_rIconImageSet = "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset";
 	
@@ -16,6 +17,7 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 	{
 		m_wSpectatorLabelIconBackground = ImageWidget.Cast(w.FindAnyWidget("SpectatorLabelIconBackground"));
 		m_wSpectatorLabelIconCircle = ImageWidget.Cast(w.FindAnyWidget("SpectatorLabelIconCircle"));
+		m_wSpectatorLabelIconWounded = ImageWidget.Cast(w.FindAnyWidget("SpectatorLabelIconWounded"));
 		
 		super.HandlerAttached(w);
 	}
@@ -60,17 +62,19 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 		if (!m_bDead)
 		{
 			if (!m_bWounded && m_ControllerComponent.IsUnconscious()) {
-				m_wSpectatorLabelIcon.LoadImageFromSet(0, m_rIconImageSet, "Wounded");
+				//m_wSpectatorLabelIcon.LoadImageFromSet(0, m_rIconImageSet, "Wounded");
+				m_wSpectatorLabelIconWounded.SetVisible(true);
 				m_bWounded = true;
 			}
 			if (m_bWounded && !m_ControllerComponent.IsUnconscious()) {
 				SCR_UIInfo uiInfo = m_EditableCharacterComponent.GetInfo();
 				m_wSpectatorLabelIcon.LoadImageTexture(0, uiInfo.GetIconPath());
+				m_wSpectatorLabelIconWounded.SetVisible(false);
 				m_bWounded = false;
 			}
 			
 			if (m_ControllerComponent.IsDead()) {
-				m_wSpectatorLabelIcon.LoadImageFromSet(0, m_rIconImageSet, "Dead");
+				//m_wSpectatorLabelIcon.LoadImageFromSet(0, m_rIconImageSet, "Dead");
 				m_wSpectatorLabelIcon.SetOpacity(0.9);
 				m_wSpectatorLabelBackground.SetOpacity(0.9);
 				m_wSpectatorLabelIconBackground.SetColor(Color.Gray);
