@@ -11,7 +11,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	[Attribute("120000", UIWidgets.EditBox, "Time during which disconnected players reserve role for reconnection in ms, -1 for infinity time", "", category: "Reforger Lobby")]
 	int m_iReconnectTime;
 	
-	[Attribute("300000", UIWidgets.EditBox, "Time during which disconnected players reserve role for reconnection in ms, -1 for infinity time", "", category: "Reforger Lobby")]
+	[Attribute("-1", UIWidgets.EditBox, "Time during which disconnected players reserve role for reconnection in ms, -1 for infinity time", "", category: "Reforger Lobby")]
 	int m_iReconnectTimeAfterBriefing;
 	
 	[Attribute("0", uiwidget: UIWidgets.CheckBox, "Game may be started only if admin on server.", category: "Reforger Lobby")]
@@ -23,7 +23,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	//[Attribute("0", uiwidget: UIWidgets.CheckBox, "Faction locked after selection.", category: "Reforger Lobby")]
 	protected bool m_bFactionLock;
 	
-	[Attribute("0", uiwidget: UIWidgets.CheckBox, "Markers can be placed only by commanders on briefing.", category: "Reforger Lobby")]
+	[Attribute("0", uiwidget: UIWidgets.CheckBox, "Markers can be placed only by squad leaders and only on briefing.", category: "Reforger Lobby")]
 	protected bool m_bMarkersOnlyOnBriefing;
 	
 	[Attribute("0", uiwidget: UIWidgets.CheckBox, "Remove units not occupied by players.", category: "Reforger Lobby")]
@@ -32,16 +32,16 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	[Attribute("0", uiwidget: UIWidgets.CheckBox, "Remove default markers on squad leaders.", category: "Reforger Lobby")]
 	protected bool m_bRemoveSquadMarkers;
 	
-	[Attribute("30000", UIWidgets.EditBox, "Freeze time", "Time in milliseconds before restriction zones are removed.", category: "Reforger Lobby")]
+	[Attribute("60000", UIWidgets.EditBox, "Time in milliseconds before restriction zones are removed.", category: "Reforger Lobby")]
 	int m_iFreezeTime;
 	
-	[Attribute("0", "Disables text chat for alive players on game stage. Admins can always see text chat.", category: "Reforger Lobby")]
+	[Attribute("0", UIWidgets.CheckBox, "Disables text chat for alive players on game stage. Admins can always see text chat.", category: "Reforger Lobby")]
 	protected bool m_bDisableChat;
 	
 	[RplProp()]
 	protected bool m_fCurrentFreezeTime;
 	
-	[Attribute("0", "Creates a whitelist on the server for players who have taken roles and also for players specified in $profile:PS_SlotsReserver_Config.json and kicks everyone else.", category: "Reforger Lobby")]
+	[Attribute("0", UIWidgets.CheckBox, "Creates a whitelist on the server for players who have taken roles and also for players specified in $profile:PS_SlotsReserver_Config.json and kicks everyone else.", category: "Reforger Lobby")]
 	protected bool m_bReserveSlots;
 	
 	// ------------------------------------------ Events ------------------------------------------
