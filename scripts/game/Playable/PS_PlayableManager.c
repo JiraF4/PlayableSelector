@@ -109,7 +109,6 @@ class PS_PlayableManager : ScriptComponent
 		
 		SetPlayerState(playerId, PS_EPlayableControllerState.Playing);
 		
-		bool dead = false;
 		RplId playableId = GetPlayableByPlayer(playerId);	
 		if (playableId != RplId.Invalid())
 		{
@@ -121,14 +120,14 @@ class PS_PlayableManager : ScriptComponent
 				{
 					if (damageManager.GetState() == EDamageState.DESTROYED)
 					{
-						dead = true;
+						GetGame().GetCallqueue().CallLater(WrapSwitch, 1000, false, playerId);
 					}
 				}
 			}
 		}
 		
 		IEntity entity;
-		if (dead || playableId == RplId.Invalid() || playableId == -1) {
+		if (playableId == RplId.Invalid() || playableId == -1) {
 			// Remove group
 			SCR_AIGroup currentGroup = groupsManagerComponent.GetPlayerGroup(playableId);
 			if (currentGroup) currentGroup.RemovePlayer(playerId);
@@ -143,10 +142,7 @@ class PS_PlayableManager : ScriptComponent
 				playableController.SetInitialEntity(entity);
 			}
 			
-			if (!dead)
-				playerController.SetInitialMainEntity(entity);
-			else
-				playerController.SetInitialMainEntity(null);
+			playerController.SetInitialMainEntity(entity);
 			
 			return;
 		} else entity = GetPlayableById(playableId).GetOwner();		 
@@ -164,6 +160,12 @@ class PS_PlayableManager : ScriptComponent
 		SetPlayerFactionKey(playerId, faction.GetFactionKey());
 		
 		GetGame().GetCallqueue().CallLater(ChangeGroup, 0, false, playerId, playableId);
+	}
+	
+	void WrapSwitch(int playerId)
+	{
+		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		gameModeCoop.SwitchToInitialEntity(playerId);
 	}
 	
 	void NotifyKick(int playerId)
