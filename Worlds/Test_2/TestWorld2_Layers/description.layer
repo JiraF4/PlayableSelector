@@ -44,4 +44,7 @@ $grp PS_MissionDescription : "{3136BE42592F3B1B}PrefabsEditable/MissionDescripti
   }
   m_bEmptyFactionVisibility 1
  }
+ {
+  coords 92.275 1 148.121
+ }
 }
