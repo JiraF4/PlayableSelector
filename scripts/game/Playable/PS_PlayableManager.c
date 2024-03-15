@@ -1,4 +1,11 @@
-//------------------------------------------------------------------------------------------------
+void PS_ScriptInvokerFactionChangeMethod(int playerId, FactionKey factionKey, FactionKey factionKeyOld);
+typedef func PS_ScriptInvokerFactionChangeMethod;
+typedef ScriptInvokerBase<PS_ScriptInvokerFactionChangeMethod> PS_ScriptInvokerFactionChange;
+
+void PS_ScriptInvokerPlayableMethod(RplId id, PS_PlayableComponent playableComponent);
+typedef func PS_ScriptInvokerPlayableMethod;
+typedef ScriptInvokerBase<PS_ScriptInvokerPlayableMethod> PS_ScriptInvokerPlayable;
+
 [ComponentEditorProps(category: "GameScripted/GameMode/Components", description: "", color: "0 0 255 255", icon: HYBRID_COMPONENT_ICON)]
 class PS_PlayableManagerClass: ScriptComponentClass
 {
@@ -19,9 +26,19 @@ class PS_PlayableManager : ScriptComponent
 	ref map<int, bool> m_playersPin = new map<int, bool>; // is player pined
 	ref map<int, FactionKey> m_playersFaction = new map<int, FactionKey>; // player factions
 	ref map<RplId, int> m_playablePlayerGroupId = new map<RplId, int>; // playable to player group
+	ref map<int, string> m_playersLastName = new map<int, string>; // playerid to player name (persistant)
 	
 	// Invokers
-	ref ScriptInvoker m_eOnFactionChange = new ScriptInvoker(); // int playerId, FactionKey factionKey, FactionKey factionKeyOld
+	ref PS_ScriptInvokerFactionChange m_eOnFactionChange = new PS_ScriptInvokerFactionChange(); // int playerId, FactionKey factionKey, FactionKey factionKeyOld
+	PS_ScriptInvokerFactionChange GetOnFactionChange()
+		return m_eOnFactionChange;
+	ref PS_ScriptInvokerPlayable m_eOnPlayableRegistered = new PS_ScriptInvokerPlayable(); 
+	PS_ScriptInvokerPlayable GetOnPlayableRegistered()
+		return m_eOnPlayableRegistered;
+	ref PS_ScriptInvokerPlayable m_eOnPlayableUnregistered = new PS_ScriptInvokerPlayable();
+	PS_ScriptInvokerPlayable GetOnPlayableUnregistered()
+		return m_eOnPlayableUnregistered;
+	
 	
 	[RplProp()]
 	int m_iMaxPlayersCount = 1;
@@ -307,6 +324,11 @@ class PS_PlayableManager : ScriptComponent
 		m_playersStates.Find(playerId, state);
 		return state;
 	}
+	string GetPlayerName(int playerId)
+	{
+		if (!m_playersLastName.Contains(playerId)) return "";
+		return m_playersLastName[playerId];
+	}
 	
 	RplId GetPlayableByPlayer(int playerId)
 	{
@@ -356,6 +378,8 @@ class PS_PlayableManager : ScriptComponent
 		
 		GetGame().GetCallqueue().Call(UpdatePlayablesSorted);
 		
+		GetGame().GetCallqueue().Call(OnPlayableRegisteredLateInvoke, playableId, playableComponent);
+		
 		if (Replication.IsServer())
 		{
 			SCR_ChimeraCharacter playableCharacter = SCR_ChimeraCharacter.Cast(playableComponent.GetOwner());
@@ -383,13 +407,24 @@ class PS_PlayableManager : ScriptComponent
 			GetGame().GetCallqueue().CallLater(UpdateGroupCallsigne, 0, false, playableId, playerGroup, playableGroup)
 		}
 	}
-	void RemovePlayable(RplId playableId)
+	void OnPlayableRegisteredLateInvoke(RplId playableId, PS_PlayableComponent playableComponent)
 	{
+		GetGame().GetCallqueue().Call(OnPlayableRegisteredLateInvoke2, playableId, playableComponent);
+	}
+	void OnPlayableRegisteredLateInvoke2(RplId playableId, PS_PlayableComponent playableComponent)
+	{
+		m_eOnPlayableRegistered.Invoke(playableId, playableComponent);
+	}
+	void RemovePlayable(PS_PlayableComponent playableComponent)
+	{
+		RplId playableId = playableComponent.GetId();
 		if (!m_aPlayables.Contains(playableId))
 			return;
 		m_aPlayables.Remove(playableId);
 		
 		UpdatePlayablesSorted();
+		
+		m_eOnPlayableUnregistered.Invoke(playableId, playableComponent);
 	}
 	void UpdateGroupCallsigne(RplId playableId, SCR_AIGroup playerGroup, SCR_AIGroup playableGroup)
 	{
@@ -466,10 +501,18 @@ class PS_PlayableManager : ScriptComponent
 		if (playerId > 0) {
 			RplId oldPlayable = GetPlayableByPlayer(playerId);
 			if (oldPlayable != RplId.Invalid()) m_playablePlayers[oldPlayable] = -1;
+			
+			PS_PlayableComponent playableComponent = m_aPlayables.Get(oldPlayable);
+			if (playableComponent)
+				playableComponent.InvokeOnPlayerChanged(-1);
 		}
 			
 		m_playersPlayable[playerId] = PlayableId;
 		m_playablePlayers[PlayableId] = playerId;
+		
+		PS_PlayableComponent playableComponent = m_aPlayables.Get(PlayableId);
+		if (playableComponent)
+			playableComponent.InvokeOnPlayerChanged(playerId);
 		
 		SetUpdated();
 	}
@@ -483,10 +526,20 @@ class PS_PlayableManager : ScriptComponent
 	void RPC_SetPlayerPlayable(int playerId, RplId PlayableId)
 	{		
 		RplId oldPlayable = GetPlayableByPlayer(playerId);
-		if (oldPlayable != RplId.Invalid()) m_playablePlayers[oldPlayable] = -1;
+		if (oldPlayable != RplId.Invalid()) {
+			m_playablePlayers[oldPlayable] = -1;
+			
+			PS_PlayableComponent playableComponent = m_aPlayables.Get(oldPlayable);
+			if (playableComponent)
+				playableComponent.InvokeOnPlayerChanged(-1);
+		}
 		
 		m_playersPlayable[playerId] = PlayableId;
 		m_playablePlayers[PlayableId] = playerId;
+		
+		PS_PlayableComponent playableComponent = m_aPlayables.Get(PlayableId);
+		if (playableComponent)
+			playableComponent.InvokeOnPlayerChanged(playerId);
 		
 		SetUpdated();
 	}
@@ -532,6 +585,18 @@ class PS_PlayableManager : ScriptComponent
 		SetUpdated();
 	}
 	
+	void SetPlayerName(int playerId, string playerName)
+	{
+		RPC_SetPlayerName(playerId, playerName);
+		Rpc(RPC_SetPlayerName, playerId, playerName);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RPC_SetPlayerName(int playerId, string playerName)
+	{
+		m_playersLastName[playerId] = playerName;
+		
+		SetUpdated();
+	}
 	
 	// -------------------------- Util ----------------------------
 	bool IsPlayerGroupLeader(int thisPlayerId)
@@ -631,6 +696,13 @@ class PS_PlayableManager : ScriptComponent
 			writer.WriteInt(m_playablePlayerGroupId.GetElement(i));
 		}
 		
+		int plyableLastPlayerNameCount = m_playersLastName.Count();
+		writer.WriteInt(plyableLastPlayerNameCount);
+		for (int i = 0; i < plyableLastPlayerNameCount; i++)
+		{
+			writer.WriteInt(m_playersLastName.GetKey(i));
+			writer.WriteString(m_playersLastName.GetElement(i));
+		}
 		
 		return true;
 	}
@@ -707,6 +779,18 @@ class PS_PlayableManager : ScriptComponent
 			reader.ReadInt(value);
 			
 			m_playablePlayerGroupId.Insert(key, value);
+		}
+		
+		int plyableLastPlayerNameCount;
+		reader.ReadInt(plyableLastPlayerNameCount);
+		for (int i = 0; i < plyableLastPlayerNameCount; i++)
+		{
+			int key;
+			string value;
+			reader.ReadInt(key);
+			reader.ReadString(value);
+			
+			m_playersLastName.Insert(key, value);
 		}
 		
 		m_bRplLoaded = true;

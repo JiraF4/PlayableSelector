@@ -1,6 +1,7 @@
 ButtonWidgetClass {
  Name "AliveFactionButton"
  Slot LayoutSlot "{60B71466C552F090}" {
+  Padding 2 2 2 2
   SizeMode Fill
   FillWeight 1
  }
@@ -11,10 +12,11 @@ ButtonWidgetClass {
    m_sSoundHovered ""
    m_sSoundClicked ""
    m_bCanBeToggled 1
+   m_bIsToggled 1
    m_BackgroundDefault 1 1 1 0
    m_BackgroundHovered 1 1 1 0.161
-   m_BackgroundSelected 1 1 1 0.243
-   m_BackgroundSelectedHovered 1 1 1 0.318
+   m_BackgroundSelected 0 0 0 0.8
+   m_BackgroundSelectedHovered 1 1 1 0.161
    m_BackgroundClicked 1 1 1 0.318
   }
  }
@@ -40,6 +42,7 @@ ButtonWidgetClass {
      Slot OverlayWidgetSlot "{60B71466C552F029}" {
       HorizontalAlign 3
       VerticalAlign 3
+      Padding 2 2 2 2
      }
     }
     TextWidgetClass "{60B71466AD5ED5CA}" {

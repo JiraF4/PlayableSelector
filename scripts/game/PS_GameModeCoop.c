@@ -172,6 +172,10 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	
 	protected override void OnPlayerConnected(int playerId)
 	{
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		string name = GetGame().GetPlayerManager().GetPlayerName(playerId);
+		playableManager.SetPlayerName(playerId, name);
+		
 		// TODO: remove CallLater
 		#ifdef WORKBENCH
 		GetGame().GetCallqueue().CallLater(SpawnInitialEntity, 500, false, playerId);

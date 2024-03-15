@@ -5,6 +5,16 @@ VerticalLayoutWidgetClass : "{E705A59E59B577F2}UI/VoiceChat/VoiceChatRoom.layout
   }
  }
  {
+  ImageWidgetClass "{60DCC61CC5098052}" {
+   Name "Border_spectator"
+   Slot LayoutSlot "{60DEDCD10143222D}" {
+    HorizontalAlign 3
+    VerticalAlign 3
+   }
+   "Z Order" 1
+   Color 0.761 0.392 0.078 1
+   Size 32 4
+  }
   ButtonWidgetClass "{5F0EB4E661866AAA}" {
    Prefab "{5F0EB4E661866AAA}"
    {
@@ -39,16 +49,6 @@ VerticalLayoutWidgetClass : "{E705A59E59B577F2}UI/VoiceChat/VoiceChatRoom.layout
      }
     }
    }
-  }
-  ImageWidgetClass "{60DCC61CC5098052}" {
-   Name "Border_spectator"
-   Slot LayoutSlot {
-    HorizontalAlign 3
-    VerticalAlign 3
-   }
-   "Z Order" 1
-   Color 0.761 0.392 0.078 1
-   Size 32 4
   }
   VerticalLayoutWidgetClass "{5F0EB4E6713FA830}" {
    Prefab "{5F0EB4E6713FA830}"

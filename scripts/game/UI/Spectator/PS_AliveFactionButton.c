@@ -3,7 +3,8 @@ class PS_AliveFactionButton : SCR_ButtonBaseComponent
 	ImageWidget m_wBackgroundFaction;
 	TextWidget m_wSideCount;
 	
-	FactionKey m_sFactionKey;
+	SCR_Faction m_Faction;
+	int m_iCount;
 	
 	override void HandlerAttached(Widget w)
 	{
@@ -13,26 +14,29 @@ class PS_AliveFactionButton : SCR_ButtonBaseComponent
 		m_wSideCount = TextWidget.Cast(m_wRoot.FindAnyWidget("SideCount"));
 	}
 	
-	void SetFaction(FactionKey factionKey)
+	SCR_Faction GetFaction()
 	{
-		m_sFactionKey = factionKey;
+		return m_Faction;
+	}
+	
+	void SetFaction(SCR_Faction faction)
+	{
+		m_Faction = faction;
 		
-		FactionManager factionManager = GetGame().GetFactionManager();
-		SCR_Faction faction = SCR_Faction.Cast(factionManager.GetFactionByKey(factionKey));
-		
-		Color color = faction.GetFactionColor();
-		Color colorOuter = faction.GetOutlineFactionColor();
+		Color color = m_Faction.GetFactionColor();
+		Color colorOuter = m_Faction.GetOutlineFactionColor();
 		
 		m_wBackgroundFaction.SetColor(colorOuter);
 	}
 	
 	void SetCount(int count)
 	{
-		m_wSideCount.SetText(count.ToString());
+		m_iCount = count;
+		m_wSideCount.SetText(m_iCount.ToString());
 	}
 	
-	FactionKey GetFactionKey()
+	int GetCount()
 	{
-		return m_sFactionKey;
+		return m_iCount;
 	}
 }

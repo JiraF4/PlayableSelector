@@ -28,23 +28,6 @@ ButtonWidgetClass {
       OffsetBottom -44
      }
     }
-    ImageWidgetClass "{5EBA4169D006D169}" {
-     Prefab "{5EB1176784E2EFB5}"
-     Name "LeaderIcon"
-     Slot FrameWidgetSlot "{5EB2906F65B847CB}" {
-      PositionX 170
-      OffsetLeft 170
-      PositionY 0
-      OffsetTop 0
-      SizeX 44
-      OffsetRight -214
-      SizeY 44
-      OffsetBottom -44
-     }
-     Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
-     Image "favourite"
-     Size 32 32
-    }
     FrameWidgetClass "{5EBA4169D006D2D1}" {
      Name "UnitIconFrame"
      Slot FrameWidgetSlot "{5EB1176F4695FD6B}" {
@@ -63,14 +46,14 @@ ButtonWidgetClass {
        Name "UnitIcon"
        Slot FrameWidgetSlot "{5E7CF059F272107C}" {
         Anchor 0 0 0 0
-        PositionX -27
-        OffsetLeft -27
-        PositionY -26
-        OffsetTop -26
-        SizeX 96
-        OffsetRight -69
-        SizeY 96
-        OffsetBottom -70
+        PositionX -16
+        OffsetLeft -16
+        PositionY -10
+        OffsetTop -10
+        SizeX 64
+        OffsetRight -48
+        SizeY 64
+        OffsetBottom -54
        }
        "Inherit Color" 1
        Texture "{00B30C29FAF85E1C}UI/Textures/Editor/EditableEntities/Characters/EditableEntity_Character_AntiTank.edds"
@@ -82,12 +65,12 @@ ButtonWidgetClass {
      Prefab "{5D6D1B99A45E5176}"
      Name "PlayerName"
      Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
-      PositionX 56
-      OffsetLeft 56
+      PositionX 40
+      OffsetLeft 40
       PositionY 0
       OffsetTop 0
-      SizeX 164
-      OffsetRight -220
+      SizeX 280
+      OffsetRight -320
       SizeY 44
       OffsetBottom -44
      }
@@ -96,37 +79,19 @@ ButtonWidgetClass {
      "Min Font Size" 20
      "Vertical Alignment" Center
     }
-    TextWidgetClass "{5EBA4169D0193114}" {
-     Prefab "{5D6D1B99A45E5176}"
-     Name "GroupName"
-     Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
-      PositionX 172
-      OffsetLeft 172
-      PositionY 0
-      OffsetTop 0
-      SizeX 133
-      OffsetRight -305
-      SizeY 44
-      OffsetBottom -44
-     }
-     Text "Group"
-     "Font Size" 20
-     "Min Font Size" 20
-     "Horizontal Alignment" Right
-     "Vertical Alignment" Center
-    }
     ImageWidgetClass "{5EBE323E7C895A55}" {
      Prefab "{5D6D1B9A2749B71D}"
      Name "PlayerFactionColor"
      Slot FrameWidgetSlot "{5D6D1B96C41F631C}" {
-      PositionX 0
-      OffsetLeft 0
-      PositionY 0
-      OffsetTop 0
-      SizeX 6
-      OffsetRight -6
-      SizeY 44
-      OffsetBottom -44
+      Anchor 0 0 0 0
+      PositionX 4
+      OffsetLeft 4
+      PositionY 4
+      OffsetTop 4
+      SizeX 4
+      OffsetRight -8
+      SizeY 36
+      OffsetBottom -40
      }
      Color 0.502 0 0.376 1
     }
