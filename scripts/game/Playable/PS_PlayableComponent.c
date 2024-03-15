@@ -77,7 +77,7 @@ class PS_PlayableComponent : ScriptComponent
 		if (aiComponent)
 		{
 			AIAgent agent = aiComponent.GetAIAgent();
-			if (agent) agent.DeactivateAI();
+			if (agent && m_bIsPlayable) agent.DeactivateAI();
 		}
 		
 		GetGame().GetCallqueue().CallLater(AddToListWrap, 0, false, owner) // init delay
