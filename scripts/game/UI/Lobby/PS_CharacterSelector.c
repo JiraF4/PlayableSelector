@@ -170,6 +170,7 @@ class PS_CharacterSelector : SCR_ButtonComponent
 		m_wCharacterClassName.SetText(m_PlayableComponent.GetName());
 		m_iPlayableCallsign = m_PlayableManager.GetGroupCallsignByPlayable(m_iPlayableId);
 		m_sPlayableCallsign = m_iPlayableCallsign.ToString();
+		m_bDead = m_iDamageState == EDamageState.DESTROYED;
 		
 		UpdatePlayer(m_iPlayerId);
 		UpdateStateIcon();
@@ -391,6 +392,7 @@ class PS_CharacterSelector : SCR_ButtonComponent
 	
 	void UpdateStateIcon()
 	{
+		m_wStateIcon.SetVisible(true);
 		switch (m_state)
 		{
 			case PS_ECharacterState.Pin:
@@ -412,8 +414,10 @@ class PS_CharacterSelector : SCR_ButtonComponent
 			case PS_ECharacterState.Empty:
 				if (PS_PlayersHelper.IsAdminOrServer())
 					m_wStateIcon.LoadImageFromSet(0, m_sUIWrapper, "server-unlocked");
-				else
-					m_wStateIcon.LoadImageFromSet(0, m_sUIWrapper, "careerCircleOutline");
+				else {
+					//m_wStateIcon.LoadImageFromSet(0, m_sUIWrapper, "careerCircleOutline");
+					m_wStateIcon.SetVisible(false);
+				}
 				m_wStateButton.SetVisible(PS_PlayersHelper.IsAdminOrServer());
 				break;
 			case PS_ECharacterState.Player:
@@ -461,7 +465,7 @@ class PS_CharacterSelector : SCR_ButtonComponent
 				m_PlayableControllerComponent.UnpinPlayer(playerId);
 		}
 		
-		if (!PS_PlayersHelper.IsAdminOrServer() && playerId != m_iCurrentPlayerId && gameState == SCR_EGameModeState.GAME)
+		if (PS_PlayersHelper.IsAdminOrServer() && playerId != m_iCurrentPlayerId && gameState == SCR_EGameModeState.GAME)
 			m_PlayableControllerComponent.ForceSwitch(playerId);
 		if (!PS_PlayersHelper.IsAdminOrServer() && playerId == m_iCurrentPlayerId && gameState == SCR_EGameModeState.BRIEFING)
 			m_PlayableControllerComponent.SwitchToMenuServer(SCR_EGameModeState.BRIEFING);

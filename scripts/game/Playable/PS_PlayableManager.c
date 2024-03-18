@@ -251,7 +251,7 @@ class PS_PlayableManager : ScriptComponent
 	void RPC_NotifyKick(int playerId)
 	{
 		PlayerController playerController = GetGame().GetPlayerController();
-		if (playerId == playerController.GetPlayerId())
+		if (playerController && playerId == playerController.GetPlayerId())
 		{
 			SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
 			ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("lmsg");

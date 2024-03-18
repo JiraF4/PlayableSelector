@@ -85,6 +85,11 @@ class PS_CoopLobby : MenuBase
 	
 	override void OnMenuOpen()
 	{
+		if (!PS_WaitScreen.m_bWaitEnded) {
+			Close();
+			return;
+		}
+			
 		if (RplSession.Mode() == RplMode.Dedicated) {
 			Close();
 			return;

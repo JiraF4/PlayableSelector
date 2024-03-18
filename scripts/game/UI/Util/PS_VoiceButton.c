@@ -30,18 +30,24 @@ class PS_VoiceButton : PS_HideableButton
 			return;
 		}
 		
-		//m_LobbyVoNComponent = PS_LobbyVoNComponent.Cast(entity.FindComponent(PS_LobbyVoNComponent));
-		//m_LobbyVoNComponent.GetOnReceiveStart().Insert(OnReceiveStart);
-		//m_LobbyVoNComponent.GetOnReceiveEnd().Insert(OnReceiveEnd);
+		m_LobbyVoNComponent = PS_LobbyVoNComponent.Cast(entity.FindComponent(PS_LobbyVoNComponent));
+		m_LobbyVoNComponent.GetOnReceiveStart().Insert(OnReceiveStart);
+		m_LobbyVoNComponent.GetOnReceiveEnd().Insert(OnReceiveEnd);
 		
-		//m_OnMuteStateChanged.Insert(UpdateMute);
+		m_OnMuteStateChanged.Insert(UpdateMute);
 		
 		UpdateState();
 	}
 	
 	override void HandlerDeattached(Widget w)
 	{
-		//m_OnMuteStateChanged.Remove(UpdateMute);
+		if (m_LobbyVoNComponent)
+		{
+			m_LobbyVoNComponent.GetOnReceiveStart().Remove(OnReceiveStart);
+			m_LobbyVoNComponent.GetOnReceiveEnd().Remove(OnReceiveEnd);
+		}
+		
+		m_OnMuteStateChanged.Remove(UpdateMute);
 	}
 	
 	void LateVoNInit()
