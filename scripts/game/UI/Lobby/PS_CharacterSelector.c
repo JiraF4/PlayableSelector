@@ -118,7 +118,7 @@ class PS_CharacterSelector : SCR_ButtonComponent
 			m_PlayableControllerComponent.GetOnPlayerRoleChange().Remove(OnRoleChangeCurrent);
 		if (m_PlayableManager)
 		{
-			
+			m_PlayableManager.GetOnPlayerPlayableChange().Remove(OnPlayerPlayableChange);
 		}
 		if (m_PlayableComponent)
 		{
@@ -179,7 +179,7 @@ class PS_CharacterSelector : SCR_ButtonComponent
 		m_PlayableComponent.GetOnPlayerChange().Insert(UpdatePlayer);
 		m_PlayableComponent.GetOnDamageStateChanged().Insert(UpdateDammage);
 		m_PlayableComponent.GetOnUnregister().Insert(RemoveSelf);
-		m_PlayableComponent.GetOnPlayerDisconnected().Insert(OnDisconnected);
+		//m_PlayableComponent.GetOnPlayerDisconnected().Insert(OnDisconnected);
 		m_PlayableComponent.GetOnPlayerConnected().Insert(OnConnected);
 		m_PlayableComponent.GetOnPlayerStateChange().Insert(OnStateChange);
 		m_PlayableComponent.GetOnPlayerPinChange().Insert(UpdatePined);
@@ -203,12 +203,6 @@ class PS_CharacterSelector : SCR_ButtonComponent
 	void UpdatePined(bool pined)
 	{
 		m_bPined = pined;
-		UpdateState();
-	}
-	
-	void UpdateDisconnected(bool disconnected)
-	{
-		m_bDisconnected = disconnected;
 		UpdateState();
 	}
 	
@@ -317,6 +311,7 @@ class PS_CharacterSelector : SCR_ButtonComponent
 		
 		m_wCharacterStatus.SetColor(m_DeathColor);
 		
+		UpdateColor();
 		UpdateState();
 	}
 	
@@ -331,6 +326,7 @@ class PS_CharacterSelector : SCR_ButtonComponent
 	void OnStateChange(PS_EPlayableControllerState state)
 	{
 		m_bReady = state == PS_EPlayableControllerState.Ready;
+		m_bDisconnected = state == PS_EPlayableControllerState.Disconected;
 		
 		UpdateColor();
 	}
@@ -441,6 +437,13 @@ class PS_CharacterSelector : SCR_ButtonComponent
 			return;
 		}
 		
+		int playerId = m_CoopLobby.GetSelectedPlayer();
+		if (m_iPlayerId > 0 && playerId != m_iPlayerId)
+		{
+			AudioSystem.PlaySound("{C97850E4341F0CF9}Sounds/UI/Samples/Menu/UI_Button_Fail.wav");
+			return;
+		}
+	
 		SCR_EGameModeState gameState = m_GameModeCoop.GetState();
 		if (!PS_PlayersHelper.IsAdminOrServer())
 		{
@@ -449,14 +452,15 @@ class PS_CharacterSelector : SCR_ButtonComponent
 				return;
 		}
 		
-		int playerId = m_CoopLobby.GetSelectedPlayer();
 		if (playerId != m_iPlayerId)
 		{
+			AudioSystem.PlaySound("{9500A96BBA3B0581}Sounds/UI/Samples/Menu/UI_Gadget_Select.wav");
 			m_PlayableControllerComponent.MoveToVoNRoom(playerId, m_sFactionKey, m_sPlayableCallsign);
 			m_PlayableControllerComponent.ChangeFactionKey(playerId, m_sFactionKey);
 			m_PlayableControllerComponent.SetPlayerState(playerId, PS_EPlayableControllerState.NotReady);	
 			m_PlayableControllerComponent.SetPlayerPlayable(playerId, m_iPlayableId);
 		} else {
+			AudioSystem.PlaySound("{9500A96BBA3B0581}Sounds/UI/Samples/Menu/UI_Gadget_Select.wav");
 			m_PlayableControllerComponent.MoveToVoNRoom(playerId, m_sFactionKey, "#PS-VoNRoom_Faction");
 			m_PlayableControllerComponent.ChangeFactionKey(playerId, "");
 			m_PlayableControllerComponent.SetPlayerState(playerId, PS_EPlayableControllerState.NotReady);
@@ -487,14 +491,17 @@ class PS_CharacterSelector : SCR_ButtonComponent
 		switch (m_state)
 		{
 			case PS_ECharacterState.Pin:
+				AudioSystem.PlaySound("{63DB9ACDD10DB801}Sounds/UI/Samples/Editor/UI_E_Layer_Edit_Back.wav");
 				m_PlayableControllerComponent.UnpinPlayer(m_iPlayerId);
 				break;
 			case PS_ECharacterState.Dead:
 				break;
 			case PS_ECharacterState.Lock:
+				AudioSystem.PlaySound("{E495F2DA6A44D0BB}Sounds/UI/Samples/Menu/UI_Button_Filter_Off.wav");
 				m_PlayableControllerComponent.SetPlayablePlayer(m_iPlayableId, -1);
 				break;
 			case PS_ECharacterState.Kick:
+				AudioSystem.PlaySound("{5EF75EB4A836831F}Sounds/Explosions/_SharedData/Bodies/Explosion_Body_TNT_Far_01.wav");
 				m_PlayableControllerComponent.MoveToVoNRoom(m_iPlayerId, m_sFactionKey, "#PS-VoNRoom_Faction");
 				m_PlayableControllerComponent.ChangeFactionKey(m_iPlayerId, "");
 				m_PlayableControllerComponent.SetPlayerState(m_iPlayerId, PS_EPlayableControllerState.NotReady);
@@ -503,6 +510,7 @@ class PS_CharacterSelector : SCR_ButtonComponent
 					m_PlayableControllerComponent.UnpinPlayer(m_iPlayerId);
 				break;
 			case PS_ECharacterState.Empty:
+				AudioSystem.PlaySound("{B6008DBCA565E5E1}Sounds/UI/Samples/Menu/UI_Button_Filter_On.wav");
 				if (m_iPlayerId > 0)
 					m_PlayableControllerComponent.SetPlayerState(m_iPlayerId, PS_EPlayableControllerState.NotReady);
 				m_PlayableControllerComponent.SetPlayablePlayer(m_iPlayableId, -2);
@@ -510,6 +518,7 @@ class PS_CharacterSelector : SCR_ButtonComponent
 			case PS_ECharacterState.Player:
 				break;
 			case PS_ECharacterState.Disconnected:
+				AudioSystem.PlaySound("{5EF75EB4A836831F}Sounds/Explosions/_SharedData/Bodies/Explosion_Body_TNT_Far_01.wav");
 				m_PlayableControllerComponent.MoveToVoNRoom(m_iPlayerId, m_PlayableManager.GetPlayerFactionKey(m_iPlayerId), "#PS-VoNRoom_Faction");
 				m_PlayableControllerComponent.ChangeFactionKey(m_iPlayerId, "");
 				m_PlayableControllerComponent.SetPlayerPlayable(m_iPlayerId, RplId.Invalid());

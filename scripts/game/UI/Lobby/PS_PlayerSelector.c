@@ -84,7 +84,7 @@ class PS_PlayerSelector : SCR_ButtonBaseComponent
 		
 		// Events
 		m_GameModeCoop.GetOnPlayerConnected().Insert(UpdatePlayerName);
-		m_GameModeCoop.GetOnPlayerDisconnected().Insert(RemovePlayer);
+		//m_GameModeCoop.GetOnPlayerDisconnected().Insert(RemovePlayer);
 		m_GameModeCoop.GetOnPlayerRoleChange().Insert(UpdatePlayerRole);
 		m_PlayableManager.GetOnFactionChange().Insert(UpdatePlayerFaction);
 		m_PlayableManager.GetOnPlayerPinChange().Insert(UpdatePlayerPin);
@@ -97,7 +97,7 @@ class PS_PlayerSelector : SCR_ButtonBaseComponent
 		if (m_GameModeCoop)
 		{
 			m_GameModeCoop.GetOnPlayerConnected().Remove(UpdatePlayerName);
-			m_GameModeCoop.GetOnPlayerDisconnected().Remove(RemovePlayer);
+			//m_GameModeCoop.GetOnPlayerDisconnected().Remove(RemovePlayer);
 			m_GameModeCoop.GetOnPlayerRoleChange().Remove(UpdatePlayerRole);
 		}
 		if (m_PlayableManager)
@@ -199,6 +199,9 @@ class PS_PlayerSelector : SCR_ButtonBaseComponent
 		m_iState = state;
 		
 		UpdateColor();
+		
+		if (state == PS_EPlayableControllerState.Disconected)
+			RemovePlayer(playerId);
 	}
 	
 	void UpdatePlayerPlayable(int playerId, RplId playableId)
@@ -265,17 +268,21 @@ class PS_PlayerSelector : SCR_ButtonBaseComponent
 		if (!PS_PlayersHelper.IsAdminOrServer())
 			return;
 		
+		AudioSystem.PlaySound("{5EF75EB4A836831F}Sounds/Explosions/_SharedData/Bodies/Explosion_Body_TNT_Far_01.wav");
+			
 		if (m_iPlayerId != m_CoopLobby.GetSelectedPlayer())
 			m_CoopLobby.SetSelectedPlayer(m_iPlayerId);
 	}
 	
 	void OnClickedKick(SCR_ButtonBaseComponent button)
 	{
+		AudioSystem.PlaySound("{5EF75EB4A836831F}Sounds/Explosions/_SharedData/Bodies/Explosion_Body_TNT_Far_01.wav");
 		m_PlayableControllerComponent.KickPlayer(m_iPlayerId);
 	}
 	
 	void OnClickedPin(SCR_ButtonBaseComponent button)
 	{
+		AudioSystem.PlaySound("{63DB9ACDD10DB801}Sounds/UI/Samples/Editor/UI_E_Layer_Edit_Back.wav");
 		m_PlayableControllerComponent.UnpinPlayer(m_iPlayerId);
 	}
 }
