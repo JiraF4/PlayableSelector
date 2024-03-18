@@ -5,28 +5,48 @@
 
 class PS_FactionSelector : SCR_ButtonBaseComponent
 {
-	protected int m_maxCount;
-	protected int m_currentCount;
-	protected Faction m_faction;
+	// Cache global
+	protected PS_GameModeCoop m_GameModeCoop;
+	protected PS_PlayableManager m_PlayableManager;
+	protected PlayerController m_PlayerController;
+	protected int m_iCurrentPlayerId;
 	
-	ImageWidget m_wFactionFlag;
-	TextWidget m_wFactionName;
-	ImageWidget m_wFactionColor;
-	TextWidget m_wFactionCounter;
-	ImageWidget m_wLockImage;
+	// Vars
+	protected int m_iCount;
+	protected int m_iMaxCount;
+	protected int m_iLockedCount;
+	protected SCR_Faction m_faction;
+	protected PS_CoopLobby m_CoopLobby;
 	
+	// Widgets
+	protected ImageWidget m_wFactionFlag;
+	protected TextWidget m_wFactionName;
+	protected ImageWidget m_wFactionColor;
+	protected TextWidget m_wFactionCounter;
+	protected ImageWidget m_wLockImage;
 	
 	override void HandlerAttached(Widget w)
 	{
 		super.HandlerAttached(w);
+		
+		// Cache global
+		m_GameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		m_PlayableManager = PS_PlayableManager.GetInstance();
+		m_PlayerController = GetGame().GetPlayerController();
+		m_iCurrentPlayerId = m_PlayerController.GetPlayerId();
+		
+		// Widgets
 		m_wFactionFlag = ImageWidget.Cast(w.FindAnyWidget("FactionFlag"));
 		m_wFactionName = TextWidget.Cast(w.FindAnyWidget("FactionName"));
 		m_wFactionColor = ImageWidget.Cast(w.FindAnyWidget("FactionColor"));
 		m_wFactionCounter = TextWidget.Cast(w.FindAnyWidget("FactionCounter"));
 		m_wLockImage = ImageWidget.Cast(w.FindAnyWidget("LockImage"));
+		
+		// Buttons
+		m_OnClicked.Insert(OnClicked);
 	}
 	
-	void SetFaction(Faction faction)
+	void SetFaction(SCR_Faction faction)
 	{
 		m_faction = faction;
 		
@@ -37,24 +57,49 @@ class PS_FactionSelector : SCR_ButtonBaseComponent
 		m_wFactionFlag.LoadImageTexture(0, uiInfo.GetIconPath());
 	}
 	
-	void SetCount(int current, int max)
+	void SetCount(int count)
 	{
-		m_wFactionCounter.SetText(current.ToString() + " / " + max.ToString());
+		m_iCount = count;
+		UpdateCounter();
+	}
+	
+	void SetMaxCount(int maxCount)
+	{
+		m_iMaxCount = maxCount;
 		
-		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		m_wLockImage.SetVisible(false);
-		if (gameMode.IsFactionLockMode())
-		{
-			PlayerManager playerManager = GetGame().GetPlayerManager();
-			PlayerController currentPlayerController = GetGame().GetPlayerController();
-			EPlayerRole currentPlayerRole = playerManager.GetPlayerRoles(currentPlayerController.GetPlayerId());
-			if (!PS_PlayersHelper.IsAdminOrServer())
-			{
-				PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-				FactionKey factionKey = playableManager.GetPlayerFactionKey(currentPlayerController.GetPlayerId());
-				if (factionKey != "") m_wLockImage.SetVisible(true);
-			}
-		}
+		UpdateCounter();
+	}
+	
+	void SetLockedCount(int lockedCount)
+	{
+		m_iLockedCount = lockedCount;
+		
+		UpdateCounter();
+	}
+	
+	void SetCoopLobby(PS_CoopLobby coopLobby)
+	{
+		m_CoopLobby = coopLobby;
+	}
+	
+	int GetCount()
+	{
+		return m_iCount;
+	}
+	
+	int GetMaxCount()
+	{
+		return m_iMaxCount;
+	}
+	
+	int GetLockedCount()
+	{
+		return m_iLockedCount;
+	}
+	
+	void UpdateCounter()
+	{
+		m_wFactionCounter.SetText(m_iCount.ToString() + " / " + (m_iMaxCount - m_iLockedCount).ToString());
 	}
 	
 	Faction GetFaction()
@@ -62,4 +107,14 @@ class PS_FactionSelector : SCR_ButtonBaseComponent
 		return m_faction;
 	}
 	
+	// --------------------------------------------------------------------------------------------------------------------------------
+	// Buttons
+	void OnClicked()
+	{
+		m_CoopLobby.SwitchCurrentFaction(m_faction);
+		
+		SCR_EGameModeState gameState = m_GameModeCoop.GetState();
+		if (gameState == SCR_EGameModeState.SLOTSELECTION)
+			m_CoopLobby.SwitchVoiceChatFaction(m_faction.GetFactionKey());
+	}
 }

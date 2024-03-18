@@ -2,6 +2,9 @@ class PS_GroupHelper
 {
 	static string GetGroupFullName(SCR_AIGroup group)
 	{
+		if (!group)
+			return "";
+		
 		string customName = group.GetCustomName();
 		
 		string company, platoon, squad, character, format;

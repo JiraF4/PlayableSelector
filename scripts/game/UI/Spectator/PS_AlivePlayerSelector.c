@@ -12,12 +12,12 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 	protected PS_AlivePlayerGroup m_AliveGroup;
 	protected PS_SpectatorMenu m_mSpectatorMenu;
 	protected RplId m_iPlayableId;
-	protected ResourceName m_sPlayableIcon;
 	
 	// Cache parameters
 	protected PS_AlivePlayerList m_AlivePlayerList;
 	protected PS_PlayableComponent m_PlayableComponent;
 	protected SCR_CharacterDamageManagerComponent m_CharacterDamageManagerComponent;
+	protected ResourceName m_sPlayableIcon;
 	
 	// Widgets
 	protected ImageWidget m_wPlayerFactionColor;

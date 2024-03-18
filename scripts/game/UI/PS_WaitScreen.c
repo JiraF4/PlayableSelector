@@ -98,13 +98,13 @@ class PS_WaitScreen: MenuBase
 		string roomKey = VoNRoomsManager.GetRoomName(roomId);
 		
 		
-		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-		
-		playableController.SetPlayerState(playerController.GetPlayerId(), PS_EPlayableControllerState.NotReady);
-		playableController.SwitchToMenu(gameMode.GetState());
-		playableController.MoveToVoNRoomByKey(playerController.GetPlayerId(), roomKey);
-		
 		Close();
+		
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		playableController.SetPlayerState(playerController.GetPlayerId(), PS_EPlayableControllerState.NotReady);
+		playableController.MoveToVoNRoomByKey(playerController.GetPlayerId(), roomKey);
+		playableController.SwitchToMenu(gameMode.GetState());
+		
 		GetGame().GetCallqueue().Remove(AwaitPlayerController);
 	}
 	

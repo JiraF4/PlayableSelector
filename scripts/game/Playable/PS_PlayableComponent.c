@@ -40,6 +40,21 @@ class PS_PlayableComponent : ScriptComponent
 	protected ref ScriptInvokerVoid m_eOnUnregister = new ScriptInvokerVoid();
 	ScriptInvokerVoid GetOnUnregister()
 		return m_eOnUnregister;
+	protected ref ScriptInvokerBase<SCR_BaseGameMode_OnPlayerDisconnected> m_eOnPlayerDisconnected = new ScriptInvokerBase<SCR_BaseGameMode_OnPlayerDisconnected>();
+	ScriptInvokerBase<SCR_BaseGameMode_OnPlayerDisconnected> GetOnPlayerDisconnected()
+		return m_eOnPlayerDisconnected;
+	protected ref ScriptInvokerBase<SCR_BaseGameMode_PlayerId> m_eOnPlayerConnected = new ScriptInvokerBase<SCR_BaseGameMode_PlayerId>();
+	ScriptInvokerBase<SCR_BaseGameMode_PlayerId> GetOnPlayerConnected()
+		return m_eOnPlayerConnected;
+	protected ref ScriptInvokerBase<SCR_BaseGameMode_OnPlayerRoleChanged> m_eOnPlayerRoleChange = new ScriptInvokerBase<SCR_BaseGameMode_OnPlayerRoleChanged>();
+	ScriptInvokerBase<SCR_BaseGameMode_OnPlayerRoleChanged> GetOnPlayerRoleChange()
+		return m_eOnPlayerRoleChange;
+	protected ref ScriptInvokerInt m_eOnPlayerStateChange = new ScriptInvokerInt();
+	ScriptInvokerInt GetOnPlayerStateChange()
+		return m_eOnPlayerStateChange;
+	protected ref ScriptInvokerBool m_eOnPlayerPinChange = new ScriptInvokerBool();
+	ScriptInvokerBool GetOnPlayerPinChange()
+		return m_eOnPlayerPinChange;
 	
 	override void OnPostInit(IEntity owner)
 	{
@@ -95,7 +110,7 @@ class PS_PlayableComponent : ScriptComponent
 			if (aiComponent)
 			{
 				AIAgent agent = aiComponent.GetAIAgent();
-				if (agent) agent.ActivateAI();
+				if (agent && m_bIsPlayable) agent.ActivateAI();
 			}
 
 			RplComponent rpl = RplComponent.Cast(GetOwner().FindComponent(RplComponent));

@@ -17,6 +17,11 @@ class PS_PlayableControllerComponent : ScriptComponent
 	vector m_vObserverPosition = "0 0 0";
 	vector lastCameraTransform[4];
 	
+	// Event
+	protected ref ScriptInvokerBase<SCR_BaseGameMode_OnPlayerRoleChanged> m_eOnPlayerRoleChange = new ScriptInvokerBase<SCR_BaseGameMode_OnPlayerRoleChanged>();
+	ScriptInvokerBase<SCR_BaseGameMode_OnPlayerRoleChanged> GetOnPlayerRoleChange()
+		return m_eOnPlayerRoleChange;
+	
 	// ------ MenuState ------
 	void SetMenuState(SCR_EGameModeState state)
 	{
@@ -120,6 +125,15 @@ class PS_PlayableControllerComponent : ScriptComponent
 		SetEventMask(GetOwner(), EntityEvent.POSTFIXEDFRAME);
 		SCR_PlayerController playerController = SCR_PlayerController.Cast(PlayerController.Cast(GetOwner()));
 		playerController.m_OnControlledEntityChanged.Insert(OnControlledEntityChanged);
+		
+		
+		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		gameModeCoop.GetOnPlayerRoleChange().Insert(OnPlayerRoleChange);
+	}
+	
+	void OnPlayerRoleChange(int playerId, EPlayerRole roleFlags)
+	{
+		m_eOnPlayerRoleChange.Invoke(playerId, roleFlags);
 	}
 	
 	// We change to VoN boi lets enable camera

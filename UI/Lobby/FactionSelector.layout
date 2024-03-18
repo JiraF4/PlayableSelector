@@ -175,7 +175,7 @@ ButtonWidgetClass {
     }
     FrameWidgetClass "{5EAB7805DA66D6A6}" {
      Name "Frame0"
-     Slot OverlayWidgetSlot {
+     Slot OverlayWidgetSlot "{60DF1E141E52F2BF}" {
      }
      {
       ImageWidgetClass "{5EAB7805E1887DBF}" {
@@ -190,6 +190,7 @@ ButtonWidgetClass {
         SizeY 40
         OffsetBottom -40
        }
+       "Is Visible" 0
        Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
        Image "server-locked"
        Size 32 32

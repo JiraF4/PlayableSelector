@@ -88,23 +88,27 @@ class PS_VoNRoomsManager : ScriptComponent
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		PlayerController playerController = playerManager.GetPlayerController(playerId);
-		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-		SCR_EGameModeState state = gameMode.GetState();
 		
-		// Channel VoN switch
-		if (roomName.StartsWith("#PS-VoNRoom_Local"))
+		if (playerController)
 		{
-			// We need silence
-			playableController.SetVoNKey(roomName);
-		} else if (state == SCR_EGameModeState.GAME) {
-			playableController.SetVoNKey("Menu" + factionKey + roomName);
-		} else if (state == SCR_EGameModeState.BRIEFING) { // On briefing also separate to squads
-			// May be reworked later
-			RplId playableId = playableManager.GetPlayableByPlayer(playerId);
-			int GroupCallSign = playableManager.GetGroupCallsignByPlayable(playableId);
-			playableController.SetVoNKey("Menu" + factionKey + GroupCallSign.ToString());
+			PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+			SCR_EGameModeState state = gameMode.GetState();
+			
+			// Channel VoN switch
+			if (roomName.StartsWith("#PS-VoNRoom_Local"))
+			{
+				// We need silence
+				playableController.SetVoNKey(roomName);
+			} else if (state == SCR_EGameModeState.GAME) {
+				playableController.SetVoNKey("Menu" + factionKey + roomName);
+			} else if (state == SCR_EGameModeState.BRIEFING) { // On briefing also separate to squads
+				// May be reworked later
+				RplId playableId = playableManager.GetPlayableByPlayer(playerId);
+				int GroupCallSign = playableManager.GetGroupCallsignByPlayable(playableId);
+				playableController.SetVoNKey("Menu" + factionKey + GroupCallSign.ToString());
+			}
+			else playableController.SetVoNKey("Menu" + factionKey); // Сhange VoN zone
 		}
-		else playableController.SetVoNKey("Menu" + factionKey); // Сhange VoN zone
 		
 		// Finally move client to room
 		RPC_MoveToRoom(playerId, roomId, roomPosition);

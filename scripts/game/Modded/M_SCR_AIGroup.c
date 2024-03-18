@@ -51,7 +51,7 @@ modded class SCR_AIGroup : ChimeraAIGroup
 		return m_sCustomName;
 	}
 	
-	int GetCalsignNum()
+	int GetCallsignNum()
 	{
 		SCR_CallsignGroupComponent callsignComponent = SCR_CallsignGroupComponent.Cast(FindComponent(SCR_CallsignGroupComponent));
 		int company, platoon, squad;

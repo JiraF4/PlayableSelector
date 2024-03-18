@@ -589,6 +589,10 @@ FrameWidgetClass {
               SizeY 727
               OffsetBottom -917
              }
+             components {
+              PS_PlayersList "{60E0F667AC5B2888}" {
+              }
+             }
              {
               ScrollLayoutWidgetClass "{5D6D1B97707D8F2D}" {
                Name "PlayersScroll"
@@ -597,12 +601,12 @@ FrameWidgetClass {
                 VerticalAlign 0
                 Padding 0 0 0 0
                }
+               "Is Visible" 0
                {
                 VerticalLayoutWidgetClass "{5D6D1B97707D8F23}" {
                  Name "PlayersList"
                  Slot AlignableSlot "{5D6D1B9B2EB684B4}" {
                  }
-                 "Is Visible" 0
                 }
                }
               }
@@ -795,7 +799,7 @@ FrameWidgetClass {
    }
   }
   FrameWidgetClass "{5E7B5C5AA84246F8}" : "{D89BBA18F99053D6}UI/layouts/HUD/Chat/ChatHud.layout" {
-   Name "Chat0"
+   Name "Chat"
    Slot FrameWidgetSlot "{5D4881250D202DF3}" {
     PositionX 8
     OffsetLeft 8
@@ -806,6 +810,7 @@ FrameWidgetClass {
     SizeY 1080
     OffsetBottom -1080
    }
+   "Z Order" 50
    {
     OverlayWidgetClass "{585F053862A9FD1C}" {
      Prefab "{585F053862A9FD1C}"

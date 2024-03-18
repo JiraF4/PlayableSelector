@@ -115,7 +115,7 @@ class PS_AlivePlayerList : ScriptedWidgetComponent
 	void AddFactionCount(SCR_Faction faction, int added)
 	{
 		if (!m_aFactionButtons.Contains(faction))
-			AddFactionButton(faction, 1);
+			AddFactionButton(faction, 0);
 		PS_AliveFactionButton aliveFactionButton = m_aFactionButtons.Get(faction);
 		int count = aliveFactionButton.GetCount();
 		aliveFactionButton.SetCount(count + added);

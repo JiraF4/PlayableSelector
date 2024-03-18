@@ -4,126 +4,278 @@
 
 class PS_PlayerSelector : SCR_ButtonBaseComponent
 {
-	protected int m_iPlayer;
-	
+	// Const
 	protected ResourceName m_sImageSet = "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset";
 	
-	ImageWidget m_wPlayerFactionColor;
-	TextWidget m_wPlayerName;
-	TextWidget m_wPlayerFactionName;
-	ImageWidget m_wReadyImage;
-	ButtonWidget m_wKickButton;
-	ButtonWidget m_wPinButton;
-	ImageWidget m_wPinImage;
+	protected ref Color m_DefaultColor = Color.White;
+	protected ref Color m_AdminColor = Color.FromInt(0xfff2a34b);
+	protected ref Color m_DeathColor = Color.FromInt(0xFF2c2c2c);
+	protected ref Color m_ReadyColor = Color.Green;
 	
-	PS_VoiceButton m_wVoiceHideableButton;
+	// Cache global
+	protected PS_GameModeCoop m_GameModeCoop;
+	protected PS_PlayableManager m_PlayableManager;
+	protected PlayerController m_PlayerController;
+	protected SCR_FactionManager m_FactionManager;
+	protected WorkspaceWidget m_wWorkspaceWidget;
+	protected PlayerManager m_PlayerManager;
+	protected PS_PlayableControllerComponent m_PlayableControllerComponent;
+	protected int m_iCurrentPlayerId;
+	
+	// Vars
+	protected int m_iPlayerId;
+	protected PS_PlayersList m_PlayersList;
+	protected PS_CoopLobby m_CoopLobby;
+	protected PS_ECharacterState m_iState;
+	
+	// Widgets
+	protected ImageWidget m_wPlayerFactionColor;
+	protected TextWidget m_wPlayerName;
+	protected OverlayWidget m_wVoiceHideableButton;
+	protected ButtonWidget m_wPinButton;
+	protected ImageWidget m_wPinImage;
+	protected ButtonWidget m_wKickButton;
+	protected TextWidget m_wPlayerGroupName;
+	protected ImageWidget m_wReadyImage;
+	protected ImageWidget m_wImageCurrent;
+	
+	// Handlers
+	protected PS_VoiceButton m_VoiceHideableButton;
+	protected SCR_ButtonBaseComponent m_PinButton;
+	protected SCR_ButtonBaseComponent m_KickButton;
+	
+	protected bool m_bButtonClickSkip;
 	
 	override void HandlerAttached(Widget w)
 	{
 		super.HandlerAttached(w);
+		
+		// Cache global
+		m_GameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		m_PlayableManager = PS_PlayableManager.GetInstance();
+		m_PlayerController = GetGame().GetPlayerController();
+		m_iCurrentPlayerId = m_PlayerController.GetPlayerId();
+		m_FactionManager = SCR_FactionManager.Cast(GetGame().GetFactionManager());
+		m_wWorkspaceWidget = GetGame().GetWorkspace();
+		m_PlayerManager = GetGame().GetPlayerManager();
+		m_iPlayerId = m_PlayerController.GetPlayerId();
+		m_PlayableControllerComponent = PS_PlayableControllerComponent.Cast(m_PlayerController.FindComponent(PS_PlayableControllerComponent));
+		
+		// Widgets
 		m_wPlayerFactionColor = ImageWidget.Cast(w.FindAnyWidget("PlayerFactionColor"));
 		m_wPlayerName = TextWidget.Cast(w.FindAnyWidget("PlayerName"));
-		m_wPlayerFactionName = TextWidget.Cast(w.FindAnyWidget("PlayerFactionName"));
-		m_wReadyImage = ImageWidget.Cast(w.FindAnyWidget("ReadyImage"));
-		m_wKickButton = ButtonWidget.Cast(w.FindAnyWidget("KickButton"));
+		m_wVoiceHideableButton = OverlayWidget.Cast(w.FindAnyWidget("VoiceHideableButton"));
 		m_wPinButton = ButtonWidget.Cast(w.FindAnyWidget("PinButton"));
 		m_wPinImage = ImageWidget.Cast(w.FindAnyWidget("PinImage"));
-		Widget voiceHideableButtonWidget = Widget.Cast(w.FindAnyWidget("VoiceHideableButton"));
-		m_wVoiceHideableButton = PS_VoiceButton.Cast(voiceHideableButtonWidget.FindHandler(PS_VoiceButton));
+		m_wKickButton = ButtonWidget.Cast(w.FindAnyWidget("KickButton"));
+		m_wPlayerGroupName = TextWidget.Cast(w.FindAnyWidget("PlayerGroupName"));
+		m_wReadyImage = ImageWidget.Cast(w.FindAnyWidget("ReadyImage"));
+		m_wImageCurrent = ImageWidget.Cast(w.FindAnyWidget("ImageCurrent"));
 		
-		GetGame().GetCallqueue().CallLater(AddOnClick, 0);
+		// Handlers
+		m_VoiceHideableButton = PS_VoiceButton.Cast(m_wVoiceHideableButton.FindHandler(PS_VoiceButton));
+		m_KickButton = SCR_ButtonBaseComponent.Cast(m_wKickButton.FindHandler(SCR_ButtonBaseComponent));
+		m_PinButton = SCR_ButtonBaseComponent.Cast(m_wPinButton.FindHandler(SCR_ButtonBaseComponent));
+		
+		// Buttons
+		m_OnClicked.Insert(OnClicked);
+		m_KickButton.m_OnClicked.Insert(OnClickedKick);
+		m_PinButton.m_OnClicked.Insert(OnClickedPin);
+		
+		// Events
+		m_GameModeCoop.GetOnPlayerConnected().Insert(UpdatePlayerName);
+		m_GameModeCoop.GetOnPlayerDisconnected().Insert(RemovePlayer);
+		m_GameModeCoop.GetOnPlayerRoleChange().Insert(UpdatePlayerRole);
+		m_PlayableManager.GetOnFactionChange().Insert(UpdatePlayerFaction);
+		m_PlayableManager.GetOnPlayerPinChange().Insert(UpdatePlayerPin);
+		m_PlayableManager.GetOnPlayerStateChange().Insert(UpdatePlayerState);
+		m_PlayableManager.GetOnPlayerPlayableChange().Insert(UpdatePlayerPlayable);
 	}
 	
-	void AddOnClick()
+	override void HandlerDeattached(Widget w)
 	{
-		SCR_ButtonBaseComponent kickButtonHandler = SCR_ButtonBaseComponent.Cast(m_wKickButton.FindHandler(SCR_ButtonBaseComponent));
-		kickButtonHandler.m_OnClicked.Insert(KickButtonClicked);
-		SCR_ButtonBaseComponent pinButtonHandler = SCR_ButtonBaseComponent.Cast(m_wPinButton.FindHandler(SCR_ButtonBaseComponent));
-		pinButtonHandler.m_OnClicked.Insert(PinButtonClicked);
+		if (m_GameModeCoop)
+		{
+			m_GameModeCoop.GetOnPlayerConnected().Remove(UpdatePlayerName);
+			m_GameModeCoop.GetOnPlayerDisconnected().Remove(RemovePlayer);
+			m_GameModeCoop.GetOnPlayerRoleChange().Remove(UpdatePlayerRole);
+		}
+		if (m_PlayableManager)
+		{
+			m_PlayableManager.GetOnFactionChange().Remove(UpdatePlayerFaction);
+			m_PlayableManager.GetOnPlayerPinChange().Remove(UpdatePlayerPin);
+			m_PlayableManager.GetOnPlayerStateChange().Remove(UpdatePlayerState);
+			m_PlayableManager.GetOnPlayerPlayableChange().Remove(UpdatePlayerPlayable);
+		}
 	}
 	
+	// --------------------------------------------------------------------------------------------------------------------------------
+	// Set
 	void SetPlayer(int playerId)
 	{
-		m_iPlayer = playerId;
-		m_wVoiceHideableButton.SetPlayer(playerId);
-		UpdatePlayerInfo();
+		m_iPlayerId = playerId;
+		
+		// Init
+		bool pin = m_PlayableManager.GetPlayerPin(m_iPlayerId);
+		FactionKey factionKey = m_PlayableManager.GetPlayerFactionKey(m_iPlayerId);
+		PS_EPlayableControllerState state = m_PlayableManager.GetPlayerState(m_iPlayerId);
+		RplId playableId = m_PlayableManager.GetPlayableByPlayer(m_iPlayerId);
+		m_VoiceHideableButton.SetPlayer(playerId);
+		
+		m_wImageCurrent.SetVisible(playerId == m_CoopLobby.GetSelectedPlayer());
+		m_wKickButton.SetVisible(playerId != m_iCurrentPlayerId && PS_PlayersHelper.IsAdminOrServer());
+		UpdatePlayerName(playerId);
+		UpdatePlayerFaction(playerId, factionKey, factionKey);
+		UpdatePlayerPin(playerId, pin);
+		UpdatePlayerState(playerId, state);
+		UpdatePlayerPlayable(playerId, playableId);
 	}
 	
-	int GetPlayerId()
+	void SetPlayersList(PS_PlayersList playersList)
 	{
-		return m_iPlayer;
+		m_PlayersList = playersList;
 	}
 	
-	void UpdatePlayerInfo()
+	void SetCoopLobby(PS_CoopLobby coopLobby)
 	{
-		m_wVoiceHideableButton.Update();
+		m_CoopLobby = coopLobby;
+	}
+	
+	// --------------------------------------------------------------------------------------------------------------------------------
+	// Update
+	void UpdatePlayerName(int playerId)
+	{
+		if (playerId != m_iPlayerId)
+			return;
 		
-		PlayerManager playerManager = GetGame().GetPlayerManager();
-		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		FactionKey factionKey = playableManager.GetPlayerFactionKey(m_iPlayer);
+		string playerName = m_PlayableManager.GetPlayerName(m_iPlayerId);
+		m_wPlayerName.SetText(playerName);
+	}
+	
+	void UpdatePlayerFaction(int playerId, FactionKey factionKey, FactionKey factionKeyOld)
+	{
+		if (playerId != m_iPlayerId)
+			return;
 		
-		if (factionKey != "") 
+		SCR_Faction faction = SCR_Faction.Cast(m_FactionManager.GetFactionByKey(factionKey));
+		if (!faction)
+			m_wPlayerFactionColor.SetColor(Color.Gray);
+		else
+			m_wPlayerFactionColor.SetColor(faction.GetFactionColor());
+		
+		int index = -1;
+		if (playerId == m_iCurrentPlayerId)
+			index = -100;
+		else
 		{
-			FactionManager factionManager = GetGame().GetFactionManager();
-			SCR_Faction faction = SCR_Faction.Cast(factionManager.GetFactionByKey(factionKey));
-			m_wPlayerFactionColor.SetColor(faction.GetOutlineFactionColor());
-			m_wPlayerFactionName.SetText(faction.GetFactionName());
-			
-			int factionIndex = GetGame().GetFactionManager().GetFactionIndex(faction);
-			m_wRoot.SetZOrder(factionIndex);
-		}else{
-			m_wPlayerFactionColor.SetColor(Color.FromInt(0xFF2c2c2c));
-			m_wPlayerFactionName.SetText("-");
-			
-			m_wRoot.SetZOrder(-1);
+			if (faction)
+				index = m_FactionManager.GetFactionIndex(faction);
 		}
+		m_wRoot.SetZOrder(index);
+	}
+	
+	void UpdatePlayerPin(int playerId, bool pin)
+	{
+		if (playerId != m_iPlayerId)
+			return;
 		
-		// if admin set player color
-		m_wPlayerName.SetText(playerManager.GetPlayerName(m_iPlayer));
-		EPlayerRole playerRole = playerManager.GetPlayerRoles(m_iPlayer);
-		if (SCR_Global.IsAdmin(m_iPlayer)) m_wPlayerName.SetColor(Color.FromInt(0xfff2a34b));
-		else m_wPlayerName.SetColor(Color.FromInt(0xffffffff));
-		
-		// If admin show kick button for non admins
-		PlayerController currentPlayerController = GetGame().GetPlayerController();
-		EPlayerRole currentPlayerRole = playerManager.GetPlayerRoles(currentPlayerController.GetPlayerId());
-		m_wKickButton.SetVisible(PS_PlayersHelper.IsAdminOrServer() && playerRole != EPlayerRole.ADMINISTRATOR);
-		
-		PS_EPlayableControllerState state = PS_PlayableManager.GetInstance().GetPlayerState(m_iPlayer);
-		
-		if (state == PS_EPlayableControllerState.NotReady) m_wReadyImage.LoadImageFromSet(0, m_sImageSet, "dotsMenu");
-		if (state == PS_EPlayableControllerState.Ready) m_wReadyImage.LoadImageFromSet(0, m_sImageSet, "check");
-		if (state == PS_EPlayableControllerState.Disconected) m_wReadyImage.LoadImageFromSet(0, m_sImageSet, "disconnection");
-		if (state == PS_EPlayableControllerState.Playing) m_wReadyImage.LoadImageFromSet(0, m_sImageSet, "characters");
-		
-		// If pinned show pinImage or pinButton for admins
-		if (playableManager.GetPlayerPin(m_iPlayer))
+		if (pin)
 		{
-			m_wPinImage.SetVisible(!PS_PlayersHelper.IsAdminOrServer());
-			m_wPinButton.SetVisible(PS_PlayersHelper.IsAdminOrServer());
-		} else 
-		{
+			if (PS_PlayersHelper.IsAdminOrServer())
+				m_wPinButton.SetVisible(pin);
+			else
+				m_wPinImage.SetVisible(pin);
+		} else {
 			m_wPinImage.SetVisible(false);
 			m_wPinButton.SetVisible(false);
 		}
 	}
 	
-	
-	// -------------------- Buttons events --------------------
-	// Admin may kick player
-	void KickButtonClicked(SCR_ButtonBaseComponent kickButton)
+	void UpdatePlayerState(int playerId, PS_EPlayableControllerState state)
 	{
-		PlayerController playerController = GetGame().GetPlayerController();
-		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-		playableController.KickPlayer(m_iPlayer);
+		if (playerId != m_iPlayerId)
+			return;
+		
+		m_iState = state;
+		
+		UpdateColor();
 	}
 	
-	// Admin may unpin player
-	void PinButtonClicked(SCR_ButtonBaseComponent pinButton)
+	void UpdatePlayerPlayable(int playerId, RplId playableId)
 	{
-		PlayerController playerController = GetGame().GetPlayerController();
-		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-		playableController.UnpinPlayer(m_iPlayer);
+		if (playerId != m_iPlayerId)
+			return;
+		
+		PS_PlayableComponent playableComponent = m_PlayableManager.GetPlayableById(playableId);
+		SCR_AIGroup group = m_PlayableManager.GetPlayerGroupByPlayable(playableId);
+		string groupName = PS_GroupHelper.GetGroupFullName(group);
+		
+		m_wPlayerGroupName.SetText(groupName);
 	}
 	
+	void UpdatePlayerRole(int playerId, EPlayerRole roleFlags)
+	{
+		if (playerId == m_iCurrentPlayerId)
+			m_wKickButton.SetVisible(m_iCurrentPlayerId != m_iPlayerId && PS_PlayersHelper.IsAdminOrServer());
+		
+		if (playerId != m_iPlayerId)
+			return;
+		
+		UpdateColor();
+	}
+	
+	void RemovePlayer(int playerId, KickCauseCode cause = KickCauseCode.NONE, int timeout = -1)
+	{
+		if (playerId != m_iPlayerId)
+			return;
+		
+		m_wRoot.RemoveFromHierarchy();
+		m_PlayersList.OnPlayerRemoved(m_iPlayerId);
+		m_CoopLobby.OnPlayerRemoved(m_iPlayerId);
+	}
+	
+	// --------------------------------------------------------------------------------------------------------------------------------
+	// Etc
+	void UpdateColor()
+	{
+		if (m_iState == PS_EPlayableControllerState.Disconected)
+			m_wPlayerName.SetColor(m_DeathColor);
+		else if (m_iState == PS_EPlayableControllerState.Ready)
+			m_wPlayerName.SetColor(m_ReadyColor);
+		else
+			if (SCR_Global.IsAdmin(m_iPlayerId))
+				m_wPlayerName.SetColor(m_AdminColor);
+			else
+				m_wPlayerName.SetColor(m_DefaultColor);
+	}
+	
+	void Deselect()
+	{
+		m_wImageCurrent.SetVisible(false);
+	}
+	void Select()
+	{
+		m_wImageCurrent.SetVisible(true);
+	}
+	
+	// --------------------------------------------------------------------------------------------------------------------------------
+	// Buttons
+	void OnClicked(SCR_ButtonBaseComponent button)
+	{
+		if (!PS_PlayersHelper.IsAdminOrServer())
+			return;
+		
+		if (m_iPlayerId != m_CoopLobby.GetSelectedPlayer())
+			m_CoopLobby.SetSelectedPlayer(m_iPlayerId);
+	}
+	
+	void OnClickedKick(SCR_ButtonBaseComponent button)
+	{
+		m_PlayableControllerComponent.KickPlayer(m_iPlayerId);
+	}
+	
+	void OnClickedPin(SCR_ButtonBaseComponent button)
+	{
+		m_PlayableControllerComponent.UnpinPlayer(m_iPlayerId);
+	}
 }
