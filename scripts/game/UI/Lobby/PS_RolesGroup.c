@@ -125,6 +125,9 @@ class PS_RolesGroup : SCR_ScriptedWidgetComponent
 		
 		bool unlock = m_mCharacters.Count() == m_iLockedCount;
 		
+		if (unlock) AudioSystem.PlaySound("{E495F2DA6A44D0BB}Sounds/UI/Samples/Menu/UI_Button_Filter_Off.wav");
+		else AudioSystem.PlaySound("{B6008DBCA565E5E1}Sounds/UI/Samples/Menu/UI_Button_Filter_On.wav");
+		
 		foreach (PS_PlayableComponent playable, PS_CharacterSelector characterSelector : m_mCharacters)
 		{
 			int playerId = characterSelector.GetPlayerId();

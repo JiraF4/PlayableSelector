@@ -668,7 +668,7 @@ class PS_PlayableManager : ScriptComponent
 					adminExist = SCR_Global.IsAdmin(otherPlayerId);
 				
 				PS_EPlayableControllerState playerState = m_playersStates[otherPlayerId];
-				if (playerState == PS_EPlayableControllerState.NotReady)
+				if (playerState != PS_EPlayableControllerState.Ready)
 				{
 					if (m_iStartTimerCounter != -1)
 					{
