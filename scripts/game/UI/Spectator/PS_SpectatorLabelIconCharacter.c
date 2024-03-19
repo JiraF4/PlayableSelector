@@ -14,6 +14,7 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 	protected OverlayWidget m_wOverlayCircle;
 	
 	protected ResourceName m_rIconImageSet = "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset";
+	protected PS_PlayableManager m_PlayableManager;
 	
 	override void HandlerAttached(Widget w)
 	{
@@ -22,6 +23,8 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 		m_wSpectatorLabelIconWounded = ImageWidget.Cast(w.FindAnyWidget("SpectatorLabelIconWounded"));
 		m_wSpectatorLabelIconCircleSmall = ImageWidget.Cast(w.FindAnyWidget("SpectatorLabelIconCircleSmall"));
 		m_wOverlayCircle = OverlayWidget.Cast(w.FindAnyWidget("OverlayCircle"));
+		
+		m_PlayableManager = PS_PlayableManager.GetInstance();
 		
 		super.HandlerAttached(w);
 	}
@@ -51,12 +54,10 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 	{
 		if (m_cPlayableComponent)
 		{
-			PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-			int playerId = playableManager.GetPlayerByPlayable(m_cPlayableComponent.GetId());
+			int playerId = m_PlayableManager.GetPlayerByPlayableRemembered(m_cPlayableComponent.GetId());
 			if (playerId > 0)
 			{
-				PlayerManager playerManager = GetGame().GetPlayerManager();
-				string playerName = playerManager.GetPlayerName(playerId);
+				string playerName = m_PlayableManager.GetPlayerName(playerId);
 				if (playerName != "")
 					m_wSpectatorLabelText.SetText(playerName);
 			} else {
@@ -96,6 +97,8 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 				m_wSpectatorLabelIconBackground.SetColor(Color.Gray);
 				m_wSpectatorLabelIconBackground.SetOpacity(0.2);
 				m_wSpectatorLabelIconWounded.SetVisible(false);
+				//m_wSpectatorLabelIconCircleSmall.SetColor(Color.Gray);
+				m_wSpectatorLabelIconCircleSmall.SetOpacity(0.4);
 				m_bDead = true;
 			}
 		}

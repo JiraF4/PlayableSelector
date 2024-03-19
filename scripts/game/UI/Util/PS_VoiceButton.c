@@ -31,9 +31,11 @@ class PS_VoiceButton : PS_HideableButton
 		}
 		
 		m_LobbyVoNComponent = PS_LobbyVoNComponent.Cast(entity.FindComponent(PS_LobbyVoNComponent));
+		if (!m_LobbyVoNComponent)
+			return;
+		
 		m_LobbyVoNComponent.GetOnReceiveStart().Insert(OnReceiveStart);
 		m_LobbyVoNComponent.GetOnReceiveEnd().Insert(OnReceiveEnd);
-		
 		m_OnMuteStateChanged.Insert(UpdateMute);
 		
 		UpdateState();

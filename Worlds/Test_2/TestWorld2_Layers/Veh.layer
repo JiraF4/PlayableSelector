@@ -1,3 +1,22 @@
+$grp GenericEntity {
+ Test1 {
+  coords 56.985 7.176 107.571
+  angleX -24.141
+  angleY 34.782
+ }
+ Test2 {
+  coords 119.8 5.793 97.932
+  angleX -16.374
+  angleY -20.693
+  angleZ -3.152
+ }
+ Test3 {
+  coords 136.904 7.4 137.956
+  angleX -30.125
+  angleY -79.886
+  angleZ -2.267
+ }
+}
 Vehicle BTR1 : "{C012BB3488BEA0C2}Prefabs/Vehicles/Wheeled/BTR70/BTR70.et" {
  components {
   SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {

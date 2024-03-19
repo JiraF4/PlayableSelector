@@ -187,7 +187,6 @@ $grp SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.
      }
     }
     coords 0.908 0 -1.211
-    Flags 1048579
    }
    SCR_ChimeraCharacter : "{3D67614F24B76051}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Spotter_P.et" {
     components {
@@ -199,7 +198,6 @@ $grp SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.
      }
     }
     coords -1.758 0 -0.564
-    Flags 1048579
    }
    $grp SCR_ChimeraCharacter : "{B452527EA042DFF0}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Sniper_P.et" {
     {
@@ -212,7 +210,6 @@ $grp SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.
       }
      }
      coords -1.512 0 1.865
-     Flags 1048579
     }
     {
      components {
@@ -224,7 +221,6 @@ $grp SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.
       }
      }
      coords -3.564 0 1.019
-     Flags 1048579
     }
     {
      components {
@@ -236,7 +232,6 @@ $grp SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.
       }
      }
      coords -3.564 0 1.019
-     Flags 1048579
     }
    }
    SCR_ChimeraCharacter : "{DBC177C261C93B9D}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_SL_P.et" {
@@ -249,7 +244,6 @@ $grp SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.
      }
     }
     coords 1.158 0 1.557
-    Flags 1048579
    }
   }
  }
@@ -284,7 +278,6 @@ $grp SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.
      }
     }
     coords 0.908 0 -1.211
-    Flags 1048579
    }
    SCR_ChimeraCharacter : "{3D67614F24B76051}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Spotter_P.et" {
     components {
@@ -296,7 +289,6 @@ $grp SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.
      }
     }
     coords -1.758 0 -0.564
-    Flags 1048579
    }
    $grp SCR_ChimeraCharacter : "{B452527EA042DFF0}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Sniper_P.et" {
     {
@@ -309,7 +301,6 @@ $grp SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.
       }
      }
      coords -1.512 0 1.865
-     Flags 1048579
     }
     {
      components {
@@ -321,7 +312,6 @@ $grp SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.
       }
      }
      coords -3.564 0 1.019
-     Flags 1048579
     }
     {
      components {
@@ -333,7 +323,6 @@ $grp SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.
       }
      }
      coords -3.564 0 1.019
-     Flags 1048579
     }
    }
    SCR_ChimeraCharacter : "{DBC177C261C93B9D}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_SL_P.et" {
@@ -346,7 +335,6 @@ $grp SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.
      }
     }
     coords 1.158 0 1.557
-    Flags 1048579
    }
   }
  }

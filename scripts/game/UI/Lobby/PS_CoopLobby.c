@@ -60,6 +60,8 @@ class PS_CoopLobby : MenuBase
 	protected ButtonWidget m_wNavigationChat;
 	protected ButtonWidget m_wNavigationClose;
 	protected ScrollLayoutWidget m_wRolesScroll;
+	protected OverlayWidget m_wOverlayCounter;
+	protected TextWidget m_wTextCounter;
 	
 	// Handlers
 	protected SCR_ButtonBaseComponent m_PlayersSwitchButtonComponent;
@@ -128,6 +130,8 @@ class PS_CoopLobby : MenuBase
 		m_wRolesScroll = ScrollLayoutWidget.Cast(m_wRoot.FindAnyWidget("RolesScroll"));
 		m_wNavigationChat = ButtonWidget.Cast(m_wRoot.FindAnyWidget("NavigationChat"));
 		m_wNavigationClose = ButtonWidget.Cast(m_wRoot.FindAnyWidget("NavigationClose"));
+		m_wOverlayCounter = OverlayWidget.Cast(m_wRoot.FindAnyWidget("OverlayCounter"));
+		m_wTextCounter = TextWidget.Cast(m_wRoot.FindAnyWidget("TextCounter"));
 		
 		// Handlers
 		m_GameModeHeader = PS_GameModeHeader.Cast(m_wGameModeHeader.FindHandler(PS_GameModeHeader));
@@ -156,6 +160,7 @@ class PS_CoopLobby : MenuBase
 		
 		// Events
 		m_PlayableManager.GetOnFactionChange().Insert(UpdatePlayerFaction);
+		m_PlayableManager.GetOnStartTimerCounterChanged().Insert(OnStartTimerCounterChanged);
 		m_GameModeCoop.GetOnPlayerConnected().Insert(OnPlayerConnected);
 		m_GameModeCoop.GetOnPlayerDisconnected().Insert(OnPlayerDisconnected);
 		
@@ -193,7 +198,10 @@ class PS_CoopLobby : MenuBase
 			m_InputManager.RemoveActionListener("VONChannel", EActionTrigger.UP, Action_LobbyVoNChannelOff);
 		}
 		if (m_PlayableManager)
+		{
 			m_PlayableManager.GetOnFactionChange().Remove(UpdatePlayerFaction);
+			m_PlayableManager.GetOnStartTimerCounterChanged().Remove(OnStartTimerCounterChanged);
+		}
 		if (m_GameModeCoop)
 		{
 			m_GameModeCoop.GetOnPlayerConnected().Remove(OnPlayerConnected);
@@ -420,6 +428,18 @@ class PS_CoopLobby : MenuBase
 	void OnPlayerDisconnected(int playerId)
 	{
 		m_wPlayersCounter.SetTextFormat("%1/%2", m_PlayerManager.GetPlayerCount(), m_PlayableManager.GetMaxPlayers());
+	}
+	
+	void OnStartTimerCounterChanged(int timer)
+	{
+		if (timer == -1)
+		{
+			m_wOverlayCounter.SetVisible(false);
+		} else {
+			m_wOverlayCounter.SetVisible(true);
+			m_wTextCounter.SetText(timer.ToString());
+			AudioSystem.PlaySound("{3119327F3EFCA9C6}Sounds/UI/Samples/Gadgets/UI_Radio_Frequency_Cycle.wav");
+		}
 	}
 	
 	// --------------------------------------------------------------------------------------------------------------------------------

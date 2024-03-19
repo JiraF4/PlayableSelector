@@ -268,8 +268,6 @@ class PS_PlayerSelector : SCR_ButtonBaseComponent
 		if (!PS_PlayersHelper.IsAdminOrServer())
 			return;
 		
-		AudioSystem.PlaySound("{5EF75EB4A836831F}Sounds/Explosions/_SharedData/Bodies/Explosion_Body_TNT_Far_01.wav");
-			
 		if (m_iPlayerId != m_CoopLobby.GetSelectedPlayer())
 			m_CoopLobby.SetSelectedPlayer(m_iPlayerId);
 	}

@@ -2,6 +2,7 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 {
 	// Const
 	protected const ResourceName m_sImageSet = "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset";
+	protected ref Color m_DeathColor = Color.FromInt(0xFF2c2c2c);
 	
 	// Cache global
 	protected PS_PlayableManager m_PlayableManager;
@@ -22,6 +23,7 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 	// Widgets
 	protected ImageWidget m_wPlayerFactionColor;
 	protected ImageWidget m_wUnitIcon;
+	protected ImageWidget m_wDeadIcon;
 	protected TextWidget m_wPlayerName;
 	
 	// Init
@@ -31,6 +33,7 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 		
 		// Widgets
 		m_wUnitIcon = ImageWidget.Cast(w.FindAnyWidget("UnitIcon"));
+		m_wDeadIcon = ImageWidget.Cast(w.FindAnyWidget("DeadIcon"));
 		m_wPlayerName = TextWidget.Cast(w.FindAnyWidget("PlayerName"));
 		m_wPlayerFactionColor = ImageWidget.Cast(w.FindAnyWidget("PlayerFactionColor"));
 		
@@ -67,7 +70,7 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 		m_wPlayerFactionColor.SetColor(faction.GetFactionColor());
 		EDamageState damageState = m_CharacterDamageManagerComponent.GetState();
 		UpdateDammage(damageState);
-		UpdatePlayer(m_PlayableManager.GetPlayerByPlayable(m_iPlayableId));
+		UpdatePlayer(m_PlayableManager.GetPlayerByPlayableRemembered(m_iPlayableId));
 		
 		// Events
 		m_PlayableComponent.GetOnPlayerChange().Insert(UpdatePlayer);
@@ -95,8 +98,11 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 	{
 		if (state == EDamageState.DESTROYED)
 		{
-			m_wUnitIcon.LoadImageFromSet(0, m_sImageSet, "death");
-			m_wPlayerName.SetColor(Color.Gray);
+			m_wUnitIcon.SetVisible(false);
+			m_wDeadIcon.SetVisible(true);
+			//m_wUnitIcon.LoadImageFromSet(0, m_sImageSet, "death");
+			m_wDeadIcon.SetColor(m_DeathColor);
+			m_wPlayerName.SetColor(m_DeathColor);
 		}
 		else
 		{

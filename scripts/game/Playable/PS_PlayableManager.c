@@ -37,6 +37,7 @@ class PS_PlayableManager : ScriptComponent
 	
 	// Maps for saving players staff, player controllers local to client
 	ref map<int, PS_EPlayableControllerState> m_playersStates = new map<int, PS_EPlayableControllerState>;
+	ref map<int, RplId> m_playablePlayersRemembered = new map<int, RplId>;
 	ref map<int, RplId> m_playersPlayable = new map<int, RplId>;
 	ref map<RplId, int> m_playablePlayers = new map<RplId, int>; // reversed m_playersPlayable for fast search
 	ref map<int, bool> m_playersPin = new map<int, bool>; // is player pined
@@ -66,9 +67,15 @@ class PS_PlayableManager : ScriptComponent
 	ref PS_ScriptInvokerPlayableChangeGroup m_eOnPlayableChangeGroup = new PS_ScriptInvokerPlayableChangeGroup();
 	PS_ScriptInvokerPlayableChangeGroup GetOnPlayableChangeGroup()
 		return m_eOnPlayableChangeGroup;
+	ref ScriptInvokerInt m_eOnStartTimerCounterChanged = new ScriptInvokerInt();
+	ScriptInvokerInt GetOnStartTimerCounterChanged()
+		return m_eOnStartTimerCounterChanged;
 	
 	[RplProp()]
 	int m_iMaxPlayersCount = 1;
+	
+	[RplProp(onRplName: "OnStartTimerCounterChanged")]
+	int m_iStartTimerCounter = -1;
 	
 	void PS_PlayableManager(IEntityComponentSource src, IEntity ent, IEntity parent)
 	{
@@ -399,6 +406,12 @@ class PS_PlayableManager : ScriptComponent
 		return m_playablePlayers[PlayableId];
 	}
 	
+	int GetPlayerByPlayableRemembered(RplId PlayableId)
+	{
+		if (!m_playablePlayersRemembered.Contains(PlayableId)) return -1;
+		return m_playablePlayersRemembered[PlayableId];
+	}
+	
 	SCR_AIGroup GetPlayerGroupByPlayable(RplId PlayableId)
 	{
 		if (!m_playablePlayerGroupId.Contains(PlayableId)) 
@@ -545,70 +558,136 @@ class PS_PlayableManager : ScriptComponent
 	}
 	
 	
-	void SetPlayablePlayer(RplId PlayableId, int playerId)
+	void SetPlayablePlayer(RplId playableId, int playerId)
 	{
-		RPC_SetPlayablePlayer(PlayableId, playerId);
-		Rpc(RPC_SetPlayablePlayer, PlayableId, playerId);
+		RPC_SetPlayablePlayer(playableId, playerId);
+		Rpc(RPC_SetPlayablePlayer, playableId, playerId);
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	void RPC_SetPlayablePlayer(RplId PlayableId, int playerId)
+	void RPC_SetPlayablePlayer(RplId playableId, int playerId)
 	{
 		if (playerId > 0) {
 			RplId oldPlayable = GetPlayableByPlayer(playerId);
-			if (oldPlayable != RplId.Invalid()) m_playablePlayers[oldPlayable] = -1;
+			if (oldPlayable != RplId.Invalid()) 
+			{
+				m_playablePlayers[oldPlayable] = -1;
+				if (playableId != RplId.Invalid())
+					m_playablePlayersRemembered[playableId] = -1;
+			}
 			
 			PS_PlayableComponent playableComponent = m_aPlayables.Get(oldPlayable);
 			if (playableComponent)
 				playableComponent.InvokeOnPlayerChanged(-1);
 		}
 			
-		m_playersPlayable[playerId] = PlayableId;
-		m_playablePlayers[PlayableId] = playerId;
+		m_playersPlayable[playerId] = playableId;
+		m_playablePlayers[playableId] = playerId;
 		
 		if (playerId > 0)
-			m_eOnPlayerPlayableChange.Invoke(playerId, PlayableId);
+		{
+			m_playablePlayersRemembered[playableId] = playerId;
+			m_eOnPlayerPlayableChange.Invoke(playerId, playableId);
+		}
 		
-		PS_PlayableComponent playableComponent = m_aPlayables.Get(PlayableId);
+		PS_PlayableComponent playableComponent = m_aPlayables.Get(playableId);
 		if (playableComponent)
 			playableComponent.InvokeOnPlayerChanged(playerId);
 		
 		SetUpdated();
 	}
 	
-	void SetPlayerPlayable(int playerId, RplId PlayableId)
+	void SetPlayerPlayable(int playerId, RplId playableId)
 	{
-		RPC_SetPlayerPlayable(playerId, PlayableId);
-		Rpc(RPC_SetPlayerPlayable, playerId, PlayableId);
+		RPC_SetPlayerPlayable(playerId, playableId);
+		Rpc(RPC_SetPlayerPlayable, playerId, playableId);
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	void RPC_SetPlayerPlayable(int playerId, RplId PlayableId)
+	void RPC_SetPlayerPlayable(int playerId, RplId playableId)
 	{		
 		RplId oldPlayable = GetPlayableByPlayer(playerId);
 		if (oldPlayable != RplId.Invalid()) {
 			m_playablePlayers[oldPlayable] = -1;
+			if (playableId != RplId.Invalid())
+				m_playablePlayersRemembered[playableId] = -1;
 			
 			PS_PlayableComponent playableComponent = m_aPlayables.Get(oldPlayable);
 			if (playableComponent)
 				playableComponent.InvokeOnPlayerChanged(-1);
 		}
 		
-		m_playersPlayable[playerId] = PlayableId;
-		m_playablePlayers[PlayableId] = playerId;
+		m_playersPlayable[playerId] = playableId;
+		m_playablePlayers[playableId] = playerId;
 		
 		if (playerId > 0)
-			m_eOnPlayerPlayableChange.Invoke(playerId, PlayableId);
+		{
+			m_eOnPlayerPlayableChange.Invoke(playerId, playableId);
+			m_playablePlayersRemembered[playableId] = playerId;
+		}
 		
-		PS_PlayableComponent playableComponent = m_aPlayables.Get(PlayableId);
+		PS_PlayableComponent playableComponent = m_aPlayables.Get(playableId);
 		if (playableComponent)
 			playableComponent.InvokeOnPlayerChanged(playerId);
 		
 		SetUpdated();
+	}
+	
+	void StartTime()
+	{
+		m_iStartTimerCounter -= 1;
+		Replication.BumpMe();
+		OnStartTimerCounterChanged();
+		if (m_iStartTimerCounter == 0)
+		{
+			PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+			gameModeCoop.AdvanceGameState(SCR_EGameModeState.SLOTSELECTION);
+			GetGame().GetCallqueue().Remove(StartTime);
+		}
+	}
+	
+	void OnStartTimerCounterChanged()
+	{
+		m_eOnStartTimerCounterChanged.Invoke(m_iStartTimerCounter);
 	}
 	
 	void SetPlayerState(int playerId, PS_EPlayableControllerState state)
 	{
 		RPC_SetPlayerState(playerId, state);
 		Rpc(RPC_SetPlayerState, playerId, state);
+		
+		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		SCR_EGameModeState gameModeState = gameModeCoop.GetState();
+		if (gameModeState == SCR_EGameModeState.SLOTSELECTION)
+		{
+			GetGame().GetCallqueue().Remove(StartTime);
+			bool adminExist = !gameModeCoop.IsAdminMode();
+			array<int> players = {};
+			GetGame().GetPlayerManager().GetPlayers(players);
+			foreach (int otherPlayerId : players)
+			{
+				if (!adminExist)
+					adminExist = SCR_Global.IsAdmin(otherPlayerId);
+				
+				PS_EPlayableControllerState playerState = m_playersStates[otherPlayerId];
+				if (playerState == PS_EPlayableControllerState.NotReady)
+				{
+					if (m_iStartTimerCounter != -1)
+					{
+						m_iStartTimerCounter = -1;
+						Replication.BumpMe();
+						OnStartTimerCounterChanged();
+					}
+					return;
+				}
+			}
+			
+			if (adminExist)
+			{
+				m_iStartTimerCounter = 3;
+				Replication.BumpMe();
+				OnStartTimerCounterChanged();
+				GetGame().GetCallqueue().CallLater(StartTime, 1000, true);
+			}
+		}
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void RPC_SetPlayerState(int playerId, PS_EPlayableControllerState state)
@@ -793,6 +872,14 @@ class PS_PlayableManager : ScriptComponent
 			writer.WriteString(m_playersLastName.GetElement(i));
 		}
 		
+		int playersPlayableRememberedCount = m_playablePlayersRemembered.Count();
+		writer.WriteInt(playersPlayableRememberedCount);
+		for (int i = 0; i < playersPlayableRememberedCount; i++)
+		{
+			writer.WriteInt(m_playablePlayersRemembered.GetKey(i));
+			writer.WriteInt(m_playablePlayersRemembered.GetElement(i));
+		}
+		
 		return true;
 	}
 	
@@ -880,6 +967,18 @@ class PS_PlayableManager : ScriptComponent
 			reader.ReadString(value);
 			
 			m_playersLastName.Insert(key, value);
+		}
+		
+		int playersPlayableRememberedCount;
+		reader.ReadInt(playersPlayableRememberedCount);
+		for (int i = 0; i < playersPlayableRememberedCount; i++)
+		{
+			int key;
+			int value;
+			reader.ReadInt(key);
+			reader.ReadInt(value);
+			
+			m_playablePlayersRemembered.Insert(key, value);
 		}
 		
 		m_bRplLoaded = true;

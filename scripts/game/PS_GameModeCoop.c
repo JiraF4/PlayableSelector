@@ -44,6 +44,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	[Attribute("0", UIWidgets.CheckBox, "Creates a whitelist on the server for players who have taken roles and also for players specified in $profile:PS_SlotsReserver_Config.json and kicks everyone else.", category: "Reforger Lobby")]
 	protected bool m_bReserveSlots;
 	
+	[Attribute("0", UIWidgets.CheckBox, "", category: "Reforger Lobby")]
+	protected bool m_bShowCutscene;
+	
 	// ------------------------------------------ Events ------------------------------------------
 	override void OnGameStart()
 	{
@@ -382,6 +385,15 @@ class PS_GameModeCoop : SCR_BaseGameMode
 				SetGameModeState(SCR_EGameModeState.SLOTSELECTION);
 				break;
 			case SCR_EGameModeState.SLOTSELECTION:
+				if (!m_bShowCutscene)
+					SetGameModeState(SCR_EGameModeState.BRIEFING);
+				else
+				{
+					SetGameModeState(SCR_EGameModeState.CUTSCENE);
+					GetGame().GetCallqueue().CallLater(AdvanceGameState, 7000, false, SCR_EGameModeState.CUTSCENE);
+				}
+				break;
+			case SCR_EGameModeState.CUTSCENE:
 				SetGameModeState(SCR_EGameModeState.BRIEFING);
 				break;
 			case SCR_EGameModeState.BRIEFING:

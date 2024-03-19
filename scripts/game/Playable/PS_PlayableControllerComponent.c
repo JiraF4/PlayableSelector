@@ -51,6 +51,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 			topMenu.Close();
 		GetGame().GetMenuManager().CloseMenuByPreset(ChimeraMenuPreset.PreviewMapMenu);
 		GetGame().GetMenuManager().CloseMenuByPreset(ChimeraMenuPreset.CoopLobby);
+		GetGame().GetMenuManager().CloseMenuByPreset(ChimeraMenuPreset.CutsceneMenu);
 		GetGame().GetMenuManager().CloseMenuByPreset(ChimeraMenuPreset.BriefingMapMenu);
 		GetGame().GetMenuManager().CloseMenuByPreset(ChimeraMenuPreset.FadeToGame);
 		GetGame().GetMenuManager().CloseMenuByPreset(ChimeraMenuPreset.DebriefingMenu);
@@ -61,6 +62,9 @@ class PS_PlayableControllerComponent : ScriptComponent
 				break;
 			case SCR_EGameModeState.SLOTSELECTION:
 				GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.CoopLobby);
+				break;
+			case SCR_EGameModeState.CUTSCENE:
+				GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.CutsceneMenu);
 				break;
 			case SCR_EGameModeState.BRIEFING:
 				GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.BriefingMapMenu);

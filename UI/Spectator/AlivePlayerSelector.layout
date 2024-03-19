@@ -59,6 +59,25 @@ ButtonWidgetClass {
        Texture "{00B30C29FAF85E1C}UI/Textures/Editor/EditableEntities/Characters/EditableEntity_Character_AntiTank.edds"
        Size 64 64
       }
+      ImageWidgetClass "{60E667FA34ACC5AC}" {
+       Name "DeadIcon"
+       Slot FrameWidgetSlot "{5E7CF059F272107C}" {
+        Anchor 0 0 0 0
+        PositionX -3
+        OffsetLeft -3
+        PositionY 3
+        OffsetTop 3
+        SizeX 40
+        OffsetRight -37
+        SizeY 40
+        OffsetBottom -43
+       }
+       "Is Visible" 0
+       "Inherit Color" 1
+       Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
+       Image "death"
+       Size 32 32
+      }
      }
     }
     TextWidgetClass "{5EBA4169D019317D}" {
