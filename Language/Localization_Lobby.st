@@ -7,9 +7,10 @@ StringTable {
    Target_es_es "Chat de Grupo"
    Target_ru_ru "Отрядный чат"
    Target_pt_br "Group сhat"
-   Modified 1618017906
+   Target_uk_ua "Чат загону"
+   Modified 1625890283
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EC2E46366D61D92}" {
    Id "PS-Briefing_MissionDescriptionHeader"
@@ -17,9 +18,10 @@ StringTable {
    Target_es_es "Descripcion de mision"
    Target_ru_ru "Описание сценария"
    Target_pt_br "Descrição da Missão"
-   Modified 1595448713
+   Target_uk_ua "Опис сценарію"
+   Modified 1625890274
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EC2E47F1F2FA6D1}" {
    Id "PS-Briefing_MissionDescriptionHide"
@@ -27,9 +29,10 @@ StringTable {
    Target_es_es "Ocultar descripcion de mision"
    Target_ru_ru "Скрыть описание миссии"
    Target_pt_br "Ocultar descrição da missão"
-   Modified 1595448763
+   Target_uk_ua "Сховати опис місії"
+   Modified 1625890268
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EC2E47F0691875D}" {
    Id "PS-Briefing_MissionDescriptionShow"
@@ -37,9 +40,10 @@ StringTable {
    Target_es_es "Mostrar descripcion de mision"
    Target_ru_ru "Показать описание миссии"
    Target_pt_br "Mostrar descrição da missão"
-   Modified 1595448773
+   Target_uk_ua "Показати опис місії"
+   Modified 1625890260
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5F0AFCF3D60D9339}" {
    Id "PS-Briefing_PlayableNotSelected"
@@ -51,18 +55,21 @@ StringTable {
    "На старте миссии вы станете наблюдателем!"
    Target_pt_br "A função não está selecionada!"\
    "No início da missão você se tornará um espectador!"
-   Modified 1595448824
+   Target_uk_ua "Роль не обрано!"\
+   "На старті місії ви станете спостерігачем!"
+   Modified 1625890251
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5F0AFCF3B4D7E97D}" {
    Id "PS-Briefing_Steps"
    Target_en_us "Steps"
    Target_es_es "Pasos a seguir"
    Target_pt_br "Etapas do briefing"
-   Modified 1624458354
+   Target_uk_ua "Етапи"
+   Modified 1625890208
    Author "SeskPC"
-   LastChanged "zazul"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EC5311E7A654D14}" {
    Id "PS-Briefing_VoiceChat"
@@ -70,9 +77,10 @@ StringTable {
    Target_es_es "Chat de voz"
    Target_ru_ru "Голосовой чат"
    Target_pt_br "Chat de voz"
-   Modified 1595448855
+   Target_uk_ua " Голосовий чат"
+   Modified 1625890185
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EC2E47F1C0F3895}" {
    Id "PS-Briefing_VoiceChatHide"
@@ -80,9 +88,10 @@ StringTable {
    Target_es_es "Ocultar chat de voz"
    Target_ru_ru "Скрыть голосовой чат"
    Target_pt_br "Ocultar chat de voz"
-   Modified 1595448861
+   Target_uk_ua "Сховати голосовий чат"
+   Modified 1625890177
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EC2E47F00BC0D4E}" {
    Id "PS-Briefing_VoiceChatShow"
@@ -90,9 +99,10 @@ StringTable {
    Target_es_es "Mostrar chat de voz"
    Target_ru_ru "Показать голосовой чат"
    Target_pt_br "Mostrar chat de voz"
-   Modified 1595448864
+   Target_uk_ua "Показати голосовий чат"
+   Modified 1625890164
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5F0F44E18237239B}" {
    Id "PS-Briefing_YourPlace"
@@ -100,19 +110,21 @@ StringTable {
    Target_es_es "Posición de salida"
    Target_ru_ru "Стартовая позиция"
    Target_pt_br "Posição de Inicio"
-   Modified 1596670983
+   Target_uk_ua "Стартова позиція"
+   Modified 1625890158
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EC2E474747EACEA}" {
    Id "PS-Debrief_Losses"
    Target_en_us "Faction statistic"
    Target_es_es "Estadisticas de bando"
-   Target_ru_ru "Фракционная статистика"
+   Target_ru_ru "Статистика фракции"
    Target_pt_br "Estatística da facção"
-   Modified 1595448871
+   Target_uk_ua "Статистика фракції"
+   Modified 1625890152
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EC2E4747D62E00C}" {
    Id "PS-Debrief_Objectives"
@@ -120,9 +132,10 @@ StringTable {
    Target_es_es "Objectivos"
    Target_ru_ru "Задачи"
    Target_pt_br "Objetivos"
-   Modified 1595448877
+   Target_uk_ua "Завдання"
+   Modified 1625890145
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EC27C54DBE99E97}" {
    Id "PS-Description_HeaderAboutMission"
@@ -130,9 +143,10 @@ StringTable {
    Target_es_es "Informacion general"
    Target_ru_ru "Общая информация"
    Target_pt_br "Informaçoes Gerais"
-   Modified 1595448900
+   Target_uk_ua "Загальна інформація"
+   Modified 1625890134
    Author "zazul"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EC27C54EAA8176D}" {
    Id "PS-Description_HeaderFIA"
@@ -140,9 +154,10 @@ StringTable {
    Target_es_es "Objetivos FIA"
    Target_ru_ru "Задачи FIA"
    Target_pt_br "Objetivos FIA"
-   Modified 1595448907
+   Target_uk_ua "Завдання FIA"
+   Modified 1625890125
    Author "zazul"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EC27C54DD5C222E}" {
    Id "PS-Description_HeaderObjectives"
@@ -150,9 +165,10 @@ StringTable {
    Target_es_es "Objectivos"
    Target_ru_ru "Задачи"
    Target_pt_br "Objetivos"
-   Modified 1595448914
+   Target_uk_ua "Завдання"
+   Modified 1625890050
    Author "zazul"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EC27C54E131620A}" {
    Id "PS-Description_HeaderRules"
@@ -160,9 +176,10 @@ StringTable {
    Target_es_es "Reglas"
    Target_ru_ru "Правила"
    Target_pt_br "Regras"
-   Modified 1595448924
+   Target_uk_ua "Правила"
+   Modified 1625890040
    Author "zazul"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EC27C54ED9CAFBA}" {
    Id "PS-Description_HeaderUS"
@@ -170,9 +187,10 @@ StringTable {
    Target_es_es "Objetivos US Army"
    Target_ru_ru "Задачи Армии США"
    Target_pt_br "Objetivo Exercito americano"
-   Modified 1595448929
+   Target_uk_ua "Завдання Армії США"
+   Modified 1625890034
    Author "zazul"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EC27C54F35F3D06}" {
    Id "PS-Description_HeaderUSSR"
@@ -180,9 +198,10 @@ StringTable {
    Target_es_es "Objetivos Sovieticos"
    Target_ru_ru "Задачи Советской Армии"
    Target_pt_br "Objetivo Exercito Soviético"
-   Modified 1595448969
+   Target_uk_ua "Завдання Радянської Армії"
+   Modified 1625890028
    Author "zazul"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EF96208D034F2DA}" {
    Id "PS-EditorAttribute_GameModeCoop_CanOpenLobbyInLobby"
@@ -190,9 +209,10 @@ StringTable {
    Target_es_es "Cambio de bando"
    Target_ru_ru "Смена роли"
    Target_pt_br "Troca de Times"
-   Modified 1595448988
+   Target_uk_ua "Зміна ролі"
+   Modified 1625890021
    Author "zazul"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EF96208D5FE09A6}" {
    Id "PS-EditorAttribute_GameModeCoop_CanOpenLobbyInLobby_Description"
@@ -200,9 +220,10 @@ StringTable {
    Target_es_es "Cualquier jugador tiene acceso al lobby durante la partida"
    Target_ru_ru "Любой игрок сможет получить доступ в лобби во время миссии и сменить роль"
    Target_pt_br "Qualquer jogador poderá acessar o lobby durante uma missão e mudar de função"
-   Modified 1595449005
+   Target_uk_ua "Будь-який гравець зможе отримати доступ до лобі під час місії та змінити роль"
+   Modified 1625889991
    Author "zazul"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5F0AED380F307AC1}" {
    Id "PS-EditorAttribute_GameModeCoop_DisableLeaderSquadMarkers"
@@ -210,19 +231,21 @@ StringTable {
    Target_es_es "Deshabilita marcas de lideres de escuadras"
    Target_ru_ru "Отключить маркера лидеров отрядов"
    Target_pt_br "Desativar marcadores de líder de esquadrão"
-   Modified 1595449028
+   Target_uk_ua "Вимкнути маркери лідерів загонів"
+   Modified 1625889976
    Author "zazul"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5F0AED38124D830C}" {
    Id "PS-EditorAttribute_GameModeCoop_DisableLeaderSquadMarkers_Description"
    Target_en_us "Squad leaders markers will not appear on the map."
    Target_es_es "Las marcas de lideres de escuadra no apareceran en el mapa"
-   Target_ru_ru "Маркера лидеров отделений не будут отображены на карте"
+   Target_ru_ru "Маркеры лидеров отрядов не будут отображены на карте"
    Target_pt_br "Marcaçoes de lideres de Esquadrao não irao aparecer no mapa"
-   Modified 1595449037
+   Target_uk_ua "Маркери лідерів загонів не будуть відображені на карті"
+   Modified 1625890116
    Author "zazul"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EF9620B44BDD42D}" {
    Id "PS-EditorAttribute_GameModeCoop_FreezeTime"
@@ -230,9 +253,10 @@ StringTable {
    Target_es_es "Momentos congelados"
    Target_ru_ru "Фризтайм"
    Target_pt_br "Tempo de congelamento"
-   Modified 1595449042
+   Target_uk_ua "Фризтайм"
+   Modified 1625889911
    Author "zazul"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EF9620B4932D858}" {
    Id "PS-EditorAttribute_GameModeCoop_FreezeTime_Description"
@@ -240,9 +264,10 @@ StringTable {
    Target_es_es "Tiempo para quitar las zonas de retencion"
    Target_ru_ru "Время со старта миссии до удаления зон ограничения"
    Target_pt_br "Tempo desde o início da missão até a remoção das zonas de contenção"
-   Modified 1595449590
+   Target_uk_ua "Час зі старту місії до видалення зон обмеження"
+   Modified 1625889905
    Author "zazul"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EF9620B03413635}" {
    Id "PS-EditorAttribute_GameModeCoop_ReconnectTime"
@@ -250,9 +275,10 @@ StringTable {
    Target_es_es "Tiempo de reconexion"
    Target_ru_ru "Время для переподключения"
    Target_pt_br "Tempo de reconexão"
-   Modified 1595449602
+   Target_uk_ua "Час для перепідключення"
+   Modified 1625889891
    Author "zazul"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EF9620B07CEB34C}" {
    Id "PS-EditorAttribute_GameModeCoop_ReconnectTime_Description"
@@ -260,9 +286,10 @@ StringTable {
    Target_es_es "Reserva de tiempo para la reconexion del jugador"
    Target_ru_ru "Время резервации роли игрока для переподключения"
    Target_pt_br "Tempo de reserva da função do jogador para reconexão"
-   Modified 1595449611
+   Target_uk_ua "Час резервації ролі гравця для перепідключення"
+   Modified 1625889884
    Author "zazul"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EF9620B1D5BEAA7}" {
    Id "PS-EditorAttribute_GameModeCoop_RemoveRedundantUnits"
@@ -270,9 +297,10 @@ StringTable {
    Target_es_es "Borrar unidades redundantes"
    Target_ru_ru "Удалить незанятых персонажей"
    Target_pt_br "Remova unidades redundantes"
-   Modified 1595449667
+   Target_uk_ua "Видалити незайнятих персонажів"
+   Modified 1625889875
    Author "zazul"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EF9620B20207DC0}" {
    Id "PS-EditorAttribute_GameModeCoop_RemoveRedundantUnits_Description"
@@ -280,9 +308,10 @@ StringTable {
    Target_es_es "Borra las unidades jugables sin jugador al comienzo de la partida"
    Target_ru_ru "Удалить незанятых персонажей на старте миссии"
    Target_pt_br "Exclua unidades jogáveis não utilizadas no início da missão"
-   Modified 1595449674
+   Target_uk_ua "Видалити незайнятих персонажів на старті місії"
+   Modified 1625889868
    Author "zazul"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5F0AED380A4931C1}" {
    Id "PS-EditorAttribute_GameModeCoop_ShowMarkersOnlyOnBriefing"
@@ -290,9 +319,10 @@ StringTable {
    Target_es_es "Los marcadores en el mapa solo pueden colocarlos los lideres de escuadra"
    Target_ru_ru "Маркеры на карте могут быть поставлены только на брифинге лидерами отрядов"
    Target_pt_br "Marcaçoes de mapa só podem ser colocados durante instruções dos líderes de esquadrão"
-   Modified 1595449689
+   Target_uk_ua "Маркери на карті можуть бути поставлені тільки на брифінгу лідерами загонів"
+   Modified 1625889859
    Author "zazul"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5F0AED380D9701A9}" {
    Id "PS-EditorAttribute_GameModeCoop_ShowMarkersOnlyOnBriefing_Description"
@@ -300,9 +330,10 @@ StringTable {
    Target_es_es "Evita que los jugadores coloquen marcas despues del briefing si no son lideres de escuadra"
    Target_ru_ru "Запрещает игрокам ставить маркера после брифинга а также если они не лидеры отряда"
    Target_pt_br "Impede que os jogadores coloquem marcadores após o briefing e também se não forem o líder do Squad"
-   Modified 1595449696
+   Target_uk_ua "Забороняє гравцям ставити маркера після брифінгу а також якщо вони не лідери загону"
+   Modified 1625889846
    Author "zazul"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EF9620B995D2494}" {
    Id "PS-EditorAttribute_MissionDescription_FactionEmpty"
@@ -310,9 +341,10 @@ StringTable {
    Target_es_es "Mostrar bando vacio"
    Target_ru_ru "Показать пустой фракции"
    Target_pt_br "Mostrar para facção vazia"
-   Modified 1595449719
+   Target_uk_ua "Показати порожній фракції"
+   Modified 1625889833
    Author "zazul"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EF9620B9D907696}" {
    Id "PS-EditorAttribute_MissionDescription_FactionEmpty_Description"
@@ -320,9 +352,10 @@ StringTable {
    Target_es_es "Se mostrara esta descripcion en la vista previa de la misión"
    Target_ru_ru "Будет ли описание доступно на этапе предпросмотра"
    Target_pt_br "Esta descrição será mostrada na Prévia da Missão"
-   Modified 1595449730
+   Target_uk_ua "Чи буде опис доступний на етапі попереднього перегляду"
+   Modified 1625889809
    Author "zazul"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EF9620BEE5A72E9}" {
    Id "PS-EditorAttribute_MissionDescription_Factions"
@@ -330,9 +363,10 @@ StringTable {
    Target_es_es "Mostrar a bandos"
    Target_ru_ru "Показать фракциям"
    Target_pt_br "Mostrar para as facçoes"
-   Modified 1595449736
+   Target_uk_ua "Показати фракціям"
+   Modified 1625889792
    Author "zazul"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EF9620BF214E3D0}" {
    Id "PS-EditorAttribute_MissionDescription_Factions_Description"
@@ -340,9 +374,10 @@ StringTable {
    Target_es_es "Esta descripcion se mostrara a bandos selecionados"
    Target_ru_ru "Это описание будет доступно выбранным фракциям"
    Target_pt_br "Esta descrição será mostrada para facções selecionadas"
-   Modified 1595449751
+   Target_uk_ua "Цей опис буде доступний обраним фракціям"
+   Modified 1625889778
    Author "zazul"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EF9620BCDCE1FDF}" {
    Id "PS-EditorAttribute_MissionDescription_TextData"
@@ -350,9 +385,10 @@ StringTable {
    Target_es_es "Datos de texto"
    Target_ru_ru "Текст"
    Target_pt_br "Dados de texto"
-   Modified 1595449762
+   Target_uk_ua "Текст"
+   Modified 1625889766
    Author "zazul"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EF9620BD39D1418}" {
    Id "PS-EditorAttribute_MissionDescription_TextData_Description"
@@ -360,9 +396,10 @@ StringTable {
    Target_es_es "Texto de la pestaña descripcion"
    Target_ru_ru "Текст в вкладке описания"
    Target_pt_br "Texto da guia de descrição"
-   Modified 1595449770
+   Target_uk_ua "Текст у вкладці опису"
+   Modified 1625889759
    Author "zazul"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EF9620A25565F4F}" {
    Id "PS-EditorAttribute_MissionDescription_Title"
@@ -370,9 +407,10 @@ StringTable {
    Target_es_es "Titulo"
    Target_ru_ru "Заголовок"
    Target_pt_br "Titulo"
-   Modified 1595449776
+   Target_uk_ua "Заголовок"
+   Modified 1625889745
    Author "zazul"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EF9620A2941F17B}" {
    Id "PS-EditorAttribute_MissionDescription_Title_Description"
@@ -380,9 +418,10 @@ StringTable {
    Target_es_es "Pestaña del titulo con la descripcion de la mision"
    Target_ru_ru "Заголовок вкладки с описанием миссии"
    Target_pt_br "Título da aba com descrição da missão"
-   Modified 1595449780
+   Target_uk_ua "Заголовок вкладки з описом місії"
+   Modified 1625889739
    Author "zazul"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5F0AF03B543FAF6A}" {
    Id "PS-EditorAttribute_Playable_IsPlayable"
@@ -390,9 +429,10 @@ StringTable {
    Target_es_es "Es jugable"
    Target_ru_ru "Играбельный"
    Target_pt_br "Jogavel"
-   Modified 1595449793
+   Target_uk_ua "Іграбельний"
+   Modified 1625889731
    Author "zazul"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5F0AF03B5602B638}" {
    Id "PS-EditorAttribute_Playable_IsPlayable_Description"
@@ -400,9 +440,10 @@ StringTable {
    Target_es_es "Jugadores pueden jugar como esta unidad/escuadra"
    Target_ru_ru "Игроки смогут играть за этого персонажа/группу"
    Target_pt_br "Os jogadores podem jogar como esta unidade/esquadrão"
-   Modified 1595449800
+   Target_uk_ua "Гравці зможуть грати за цього персонажа/групу"
+   Modified 1625889675
    Author "zazul"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EF9620A4444DA9C}" {
    Id "PS-EditorCategory_Lobby"
@@ -410,9 +451,10 @@ StringTable {
    Target_es_es "Reforger Lobby"
    Target_ru_ru "Рефоргер Лобби"
    Target_pt_br "Reforger Lobby"
-   Modified 1595449810
+   Target_uk_ua "Рефоргер лобі"
+   Modified 1625889652
    Author "zazul"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EF962097FA8C778}" {
    Id "PS-EditorEntity_MissionDescription_Name"
@@ -420,9 +462,10 @@ StringTable {
    Target_es_es "Descripcion de la mision"
    Target_ru_ru "Описание миссии"
    Target_pt_br "Descriçao da Missao"
-   Modified 1595449824
+   Target_uk_ua "Опис місії"
+   Modified 1625889620
    Author "zazul"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5F2B43CA207C0B28}" {
    Id "PS-Freeze_End"
@@ -430,9 +473,10 @@ StringTable {
    Target_es_es "¡La fase de preparación ha terminado!"
    Target_ru_ru "Фризтайм окончен!"
    Target_pt_br "A fase de preparaçao Terminou"
-   Modified 1617895570
+   Target_uk_ua "Фризтайм закінчився!"
+   Modified 1625889603
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EB30CD4368261A7}" {
    Id "PS-GameMaster_PlayableGroup"
@@ -440,9 +484,10 @@ StringTable {
    Target_es_es "Unidad jugable"
    Target_ru_ru "Играбельный чел"
    Target_pt_br "Unidade Jogavel"
-   Modified 1595449829
+   Target_uk_ua "Іграбельний чєл"
+   Modified 1625889567
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EB6FE506E004252}" {
    Id "PS-GameModeHeader_Advance"
@@ -450,17 +495,21 @@ StringTable {
    Target_es_es "Avanzar"
    Target_ru_ru "Далее"
    Target_pt_br "Avançar"
-   Modified 1595449833
+   Target_uk_ua "Далі"
+   Modified 1625889538
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{60D306C0DDCFA677}" {
    Id "PS-GameModeHeader_Author"
    Target_en_us "Author"
+   Target_es_es "Autor"
    Target_ru_ru "Автор"
-   Modified 1624458506
+   Target_pt_br "Autor"
+   Target_uk_ua "Автор"
+   Modified 1625890950
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5EB6FE5226347A67}" {
    Id "PS-GameModeHeader_Briefing"
@@ -468,9 +517,10 @@ StringTable {
    Target_es_es "Briefing"
    Target_ru_ru "Брифинг"
    Target_pt_br "Briefing"
-   Modified 1595449837
+   Target_uk_ua "Брифінг"
+   Modified 1625889513
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EB6FE52166ABC2A}" {
    Id "PS-GameModeHeader_Debriefing"
@@ -478,9 +528,10 @@ StringTable {
    Target_es_es "Debriefing"
    Target_ru_ru "Итоги"
    Target_pt_br "Debriefing"
-   Modified 1595449842
+   Target_uk_ua "Підсумки"
+   Modified 1625889502
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EB6FE523BA20242}" {
    Id "PS-GameModeHeader_InGame"
@@ -488,9 +539,10 @@ StringTable {
    Target_es_es "Juego"
    Target_ru_ru "Игра"
    Target_pt_br "Jogo"
-   Modified 1595449846
+   Target_uk_ua "Гра"
+   Modified 1625889494
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EB6FE5256808E8E}" {
    Id "PS-GameModeHeader_Lobby"
@@ -498,9 +550,10 @@ StringTable {
    Target_es_es "Lobby"
    Target_ru_ru "Лобби"
    Target_pt_br "Lobby"
-   Modified 1595449850
+   Target_uk_ua "Лобі"
+   Modified 1625889491
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EB6FE52778D1F25}" {
    Id "PS-GameModeHeader_Preview"
@@ -508,9 +561,10 @@ StringTable {
    Target_es_es "Previsualizado"
    Target_ru_ru "Предпросмотр"
    Target_pt_br "Preview da Missao"
-   Modified 1617894053
+   Target_uk_ua "Попередній перегляд місії"
+   Modified 1625889486
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EA73DBF40044FB3}" {
    Id "PS-Keybind_Comms_Playable_Selector"
@@ -518,9 +572,10 @@ StringTable {
    Target_es_es "Cambio de equipo"
    Target_ru_ru "Смена роли"
    Target_pt_br "Troca de Equipe"
-   Modified 1595449932
+   Target_uk_ua "Зміна ролі"
+   Modified 1625889400
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EA932C446D469ED}" {
    Id "PS-Keybind_CommsOpenLobby"
@@ -528,9 +583,10 @@ StringTable {
    Target_es_es "Abrir Lobby"
    Target_ru_ru "Открыть лобби"
    Target_pt_br "Abrir Lobby"
-   Modified 1595449926
+   Target_uk_ua "Відкрити лобі"
+   Modified 1625889453
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EC2E47EDD8EAD31}" {
    Id "PS-Keybind_MissionDescriptionSwitch"
@@ -538,9 +594,10 @@ StringTable {
    Target_es_es "Interfaz de descripcion de la mision"
    Target_ru_ru "Интерфейс описания миссии"
    Target_pt_br "Interface de descriçao da Missao"
-   Modified 1595449956
+   Target_uk_ua "Інтерфейс опису місії"
+   Modified 1625889380
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EC5311F4BC93B53}" {
    Id "PS-Keybind_SwitchSpectatorUI"
@@ -548,9 +605,10 @@ StringTable {
    Target_es_es "Ocultar/Mostrar UI"
    Target_ru_ru "Скрыть/Показать UI"
    Target_pt_br "Ocultar/Mostrar UI"
-   Modified 1595450005
+   Target_uk_ua "Сховати/Показати UI"
+   Modified 1625889336
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EC2E47EA1E2244F}" {
    Id "PS-Keybind_VoiceChatSwitch"
@@ -558,9 +616,10 @@ StringTable {
    Target_es_es "Interfaz del chat de voz"
    Target_ru_ru "Интерфейс голосового чата"
    Target_pt_br "Interface do Chat de voz"
-   Modified 1595450016
+   Target_uk_ua "Інтерфейс голосового чату"
+   Modified 1625889308
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EA75941A166E74B}" {
    Id "PS-Lobby_Chat"
@@ -568,7 +627,8 @@ StringTable {
    Target_es_es "Chat"
    Target_ru_ru "Чат"
    Target_pt_br "Chat"
-   Modified 1595450028
+   Target_uk_ua "Чат"
+   Modified 1625891051
    Author "SeskPC"
    LastChanged "SeskPC"
   }
@@ -578,9 +638,10 @@ StringTable {
    Target_es_es "Bandos"
    Target_ru_ru "Фракции"
    Target_pt_br "Facçoes"
-   Modified 1595450035
+   Target_uk_ua "Фракції"
+   Modified 1625889290
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EA932EC5F220341}" {
    Id "PS-Lobby_ForceStart"
@@ -588,9 +649,10 @@ StringTable {
    Target_es_es "Iniciar juego"
    Target_ru_ru "Начать игру"
    Target_pt_br "Iniciar jogo"
-   Modified 1595450051
+   Target_uk_ua "Почати гру"
+   Modified 1625889268
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5F2AF2E6BD2B3ADB}" {
    Id "PS-Lobby_Inventory"
@@ -598,9 +660,10 @@ StringTable {
    Target_es_es "Abrir el inventario"
    Target_ru_ru "Открыть инвентарь"
    Target_pt_br "Abrir inventario"
-   Modified 1596670977
+   Target_uk_ua "Відкрити інвентар"
+   Modified 1625889260
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EA932EA0659A8C5}" {
    Id "PS-Lobby_Join"
@@ -608,9 +671,10 @@ StringTable {
    Target_es_es "Unirse al juego"
    Target_ru_ru "Вступить в игру"
    Target_pt_br "Entrar no jogo"
-   Modified 1595450064
+   Target_uk_ua "Вступити в гру"
+   Modified 1625889246
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EA932E9950F27EF}" {
    Id "PS-Lobby_JoinAsObserver"
@@ -618,9 +682,10 @@ StringTable {
    Target_es_es "Espectador"
    Target_ru_ru "Наблюдать"
    Target_pt_br "Espectador"
-   Modified 1595450073
+   Target_uk_ua "Спостерегати"
+   Modified 1625889210
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EA73DBF46DC78AF}" {
    Id "PS-Lobby_LoadoutPreview"
@@ -628,9 +693,10 @@ StringTable {
    Target_es_es "Equipamiento"
    Target_ru_ru "Предпросмотр"
    Target_pt_br "Loadout Preview"
-   Modified 1617894153
+   Target_uk_ua "Екіпірування"
+   Modified 1625889203
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EAEBB2F34252729}" {
    Id "PS-Lobby_OpenMenu"
@@ -638,9 +704,10 @@ StringTable {
    Target_es_es "Abrir menu"
    Target_ru_ru "Открыть меню"
    Target_pt_br "Abrir menu"
-   Modified 1595450088
+   Target_uk_ua "Відкрити меню"
+   Modified 1625889126
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EA73DBF798A6D5B}" {
    Id "PS-Lobby_Players"
@@ -648,9 +715,10 @@ StringTable {
    Target_es_es "Jugadores"
    Target_ru_ru "Игроки"
    Target_pt_br "Jogadores"
-   Modified 1595450093
+   Target_uk_ua "Гравці"
+   Modified 1625889110
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EB753E7EBC5365D}" {
    Id "PS-Lobby_PlayersList"
@@ -658,9 +726,10 @@ StringTable {
    Target_es_es "Lista"
    Target_ru_ru "Список"
    Target_pt_br "Lista"
-   Modified 1595450098
+   Target_uk_ua "Список"
+   Modified 1625889103
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EA75941AE8846DA}" {
    Id "PS-Lobby_Ready"
@@ -668,9 +737,10 @@ StringTable {
    Target_es_es "Preparado"
    Target_ru_ru "Готов"
    Target_pt_br "Preparado"
-   Modified 1595450103
+   Target_uk_ua "Готовий"
+   Modified 1625889088
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5F2B43CA55192971}" {
    Id "PS-Lobby_RoleKick"
@@ -678,9 +748,10 @@ StringTable {
    Target_es_es "¡Te expulsaron del puesto!"
    Target_ru_ru "Вас выгнали с роли!"
    Target_pt_br "Te expulsaram da função"
-   Modified 1617895429
+   Target_uk_ua "Вас вигнали з ролі!"
+   Modified 1625889030
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EA73DBF7D6EDF21}" {
    Id "PS-Lobby_Roles"
@@ -688,9 +759,10 @@ StringTable {
    Target_es_es "Roles"
    Target_ru_ru "Роли"
    Target_pt_br "Funçoes"
-   Modified 1595450117
+   Target_uk_ua "Ролі"
+   Modified 1625888997
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EC2E47913C55F2C}" {
    Id "PS-Lobby_VoiceChat"
@@ -698,9 +770,10 @@ StringTable {
    Target_es_es "Chat de voz"
    Target_ru_ru "Голосовой чат"
    Target_pt_br "Chat de voz"
-   Modified 1595450121
+   Target_uk_ua "Голосовий чат"
+   Modified 1625888978
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EC2E47910530FBD}" {
    Id "PS-Lobby_VoiceChatFaction"
@@ -708,9 +781,10 @@ StringTable {
    Target_es_es "Chat de voz de bando"
    Target_ru_ru "Фракционный голосовой чат"
    Target_pt_br "Chat de voz da facçao"
-   Modified 1595450126
+   Target_uk_ua "Голосовий чат фракції"
+   Modified 1625888946
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5F0AFCF3DCDE6333}" {
    Id "PS-MissionDescription_Header"
@@ -718,49 +792,65 @@ StringTable {
    Target_es_es "Descripcion de mision"
    Target_ru_ru "Описание миссии"
    Target_pt_br "Descrição da missao"
-   Modified 1595450130
+   Target_uk_ua "Опис місії"
+   Modified 1625888968
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{60BA84375EEF27A8}" {
    Id "PS-ObjectiveLevel_Draw"
    Target_en_us "Draw"
+   Target_es_es "Dibujar"
    Target_ru_ru "Ничья"
-   Modified 1622843550
+   Target_pt_br "Empate"
+   Target_uk_ua "Нічия"
+   Modified 1625890886
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{60BA84378C867415}" {
    Id "PS-ObjectiveLevel_MajorLoss"
-   Target_en_us "Major loss"
+   Target_en_us "Major defeat"
+   Target_es_es "Gran derrota"
    Target_ru_ru "Поражение"
-   Modified 1622845264
+   Target_pt_br "Grande derrota"
+   Target_uk_ua "Поразка"
+   Modified 1625890527
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{60BA843705762142}" {
    Id "PS-ObjectiveLevel_MajorVictory"
    Target_en_us "Major victory"
+   Target_es_es "Gran victoria"
    Target_ru_ru "Победа"
-   Modified 1622845262
+   Target_pt_br "Grande vitória"
+   Target_uk_ua "Перемога"
+   Modified 1625890554
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{60BA8437AF9DA0F3}" {
    Id "PS-ObjectiveLevel_MinorLoss"
-   Target_en_us "Minor loss"
+   Target_en_us "Minor defeat"
+   Target_es_es "Derrota menor"
    Target_ru_ru "Незначительное поражение"
-   Modified 1622845239
+   Target_pt_br "Derrota menor"
+   Target_uk_ua "Мала поразка"
+   Modified 1625890853
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{60BA84377297495A}" {
    Id "PS-ObjectiveLevel_MinorVictory"
    Target_en_us "Minor victory"
+   Target_es_es "Victoria menor"
    Target_ru_ru "Незначительная победа"
-   Modified 1622845243
+   Target_pt_br "Vitória menor"
+   Target_uk_ua "Мала перемога"
+   Modified 1625890480
    Author "zazul"
-   LastChanged "zazul"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5EBE323E513FFB52}" {
    Id "PS-ObserverPlayersList"
@@ -768,9 +858,10 @@ StringTable {
    Target_es_es "Jugadores vivos"
    Target_ru_ru "Живые игроки"
    Target_pt_br "Jogadores vivos"
-   Modified 1595450145
+   Target_uk_ua "Живі гравці"
+   Modified 1625888854
    Author "zazul"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EBE323E40F74A24}" {
    Id "PS-Preview_PleaseWait"
@@ -782,9 +873,10 @@ StringTable {
    "Игра скоро начнётся"
    Target_pt_br "Por favor espere"\
    "A partida começara logo"
-   Modified 1595452013
+   Target_uk_ua "Будь ласка зачекайте Гра скоро почнеться"
+   Modified 1625888845
    Author "zazul"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EC5311F409ED937}" {
    Id "PS-Spectator_SwitchSpectatorUI"
@@ -792,19 +884,10 @@ StringTable {
    Target_es_es "Ocultar/Mostrar UI"
    Target_ru_ru "Скрыть/Показать UI"
    Target_pt_br "Ocultar/Mostrar UI"
-   Modified 1595450179
+   Target_uk_ua "Сховати/Показати UI"
+   Modified 1625888770
    Author "SeskPC"
-   LastChanged "SeskPC"
-  }
-  CustomStringTableItem "{5EC5311F46616798}" {
-   Id "PS-Spectator_VoiceChat"
-   Target_en_us "Voice Chat"
-   Target_es_es "Chat de voz"
-   Target_ru_ru "Голосовой чат"
-   Target_pt_br "Chat de voz"
-   Modified 1595450184
-   Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EB6E12BC67891C4}" {
    Id "PS-VoNRoom_Command"
@@ -812,9 +895,10 @@ StringTable {
    Target_es_es "Mando"
    Target_ru_ru "Штаб"
    Target_pt_br "Comando"
-   Modified 1595450235
+   Target_uk_ua "Штаб"
+   Modified 1625888720
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EB6E12BC05F7F27}" {
    Id "PS-VoNRoom_Faction"
@@ -822,9 +906,10 @@ StringTable {
    Target_es_es "Bando"
    Target_ru_ru "Фракция"
    Target_pt_br "Facção"
-   Modified 1595450242
+   Target_uk_ua "Фракція"
+   Modified 1625888717
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EB6E12BF9F8C213}" {
    Id "PS-VoNRoom_Global"
@@ -832,9 +917,10 @@ StringTable {
    Target_es_es "Global"
    Target_ru_ru "Глобальный"
    Target_pt_br "Global"
-   Modified 1618017831
+   Target_uk_ua "Глобальний"
+   Modified 1625888688
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5EB6FE5384337A16}" {
    Id "PS-VoNRoom_Header"
@@ -842,9 +928,10 @@ StringTable {
    Target_es_es "Canales de voz"
    Target_ru_ru "Голосовые каналы"
    Target_pt_br "Canal de voz"
-   Modified 1595450250
+   Target_uk_ua "Голосові канали"
+   Modified 1625888668
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5F0C9CB1CF9CE91D}" {
    Id "PS-VoNRoom_Local"
@@ -852,9 +939,10 @@ StringTable {
    Target_es_es "Silenciar"
    Target_ru_ru "Откл.звук"
    Target_pt_br "Silenciar"
-   Modified 1595450266
+   Target_uk_ua "Вимк.звук"
+   Modified 1625888656
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
   CustomStringTableItem "{5F0C9CB1EFDDDB2E}" {
    Id "PS-VoNRoom_Public"
@@ -862,9 +950,10 @@ StringTable {
    Target_es_es "canal publico"
    Target_ru_ru "публичный канал"
    Target_pt_br "canal publico"
-   Modified 1595450275
+   Target_uk_ua "публичний канал"
+   Modified 1625888582
    Author "SeskPC"
-   LastChanged "SeskPC"
+   LastChanged "class"
   }
  }
 }
