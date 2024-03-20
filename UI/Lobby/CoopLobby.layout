@@ -173,14 +173,17 @@ FrameWidgetClass {
                Name "FactionHeader"
                Slot OverlayWidgetSlot "{5D6F14918D6DECB2}" {
                 HorizontalAlign 0
-                Padding 48 24 48 0
+                Padding 44 28 48 0
                }
                Clipping False
                Text "#PS-Lobby_Factions"
-               "Font Size" 48
-               "Min Font Size" 48
+               "Font Size" 36
+               "Min Font Size" 36
                "Horizontal Alignment" Center
                "Vertical Alignment" Center
+               FontProperties FontProperties "{60E911F92C4FB2AA}" {
+                Font "{3E7733BAC8C831F6}UI/Fonts/RobotoCondensed/RobotoCondensed_Regular.fnt"
+               }
               }
              }
             }
@@ -237,12 +240,12 @@ FrameWidgetClass {
                Name "RolesHeader"
                Slot OverlayWidgetSlot "{5D6F14918D6DEC39}" {
                 HorizontalAlign 0
-                Padding 48 24 48 0
+                Padding 12 28 48 0
                }
                Clipping False
                Text "#PS-Lobby_Roles"
-               "Font Size" 48
-               "Min Font Size" 48
+               "Font Size" 36
+               "Min Font Size" 36
                "Horizontal Alignment" Center
                "Vertical Alignment" Center
               }
@@ -330,12 +333,12 @@ FrameWidgetClass {
                Name "LoadoutPreviewHeader"
                Slot OverlayWidgetSlot "{5D6F14918D6DEDB6}" {
                 HorizontalAlign 0
-                Padding 48 24 48 0
+                Padding 36 28 48 0
                }
                Clipping False
                Text "#PS-Lobby_LoadoutPreview"
-               "Font Size" 48
-               "Min Font Size" 48
+               "Font Size" 36
+               "Min Font Size" 36
                "Horizontal Alignment" Center
                "Vertical Alignment" Center
               }
@@ -476,9 +479,9 @@ FrameWidgetClass {
                   SizeY 40
                   OffsetBottom -40
                  }
-                 Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
+                 Texture "{FDD5423E69D007F8}UI/Textures/Icons/icons_wrapperUI-128.imageset"
                  Image "camera"
-                 Size 32 32
+                 Size 128 128
                 }
                }
               }
@@ -523,12 +526,12 @@ FrameWidgetClass {
                Name "PlayersHeader"
                Slot OverlayWidgetSlot "{5D6F14918D6DE88A}" {
                 HorizontalAlign 0
-                Padding 48 24 48 0
+                Padding 4 28 48 0
                }
                Clipping False
                Text "#PS-Lobby_Players"
-               "Font Size" 48
-               "Min Font Size" 48
+               "Font Size" 36
+               "Min Font Size" 36
                "Horizontal Alignment" Center
                "Vertical Alignment" Center
               }
@@ -537,14 +540,14 @@ FrameWidgetClass {
             OverlayWidgetClass "{60DD09FA511FB2E9}" {
              Name "OverlayPlayersCounter"
              Slot FrameWidgetSlot "{60DD09FA60C60E28}" {
-              PositionX 307
-              OffsetLeft 307
-              PositionY 68
-              OffsetTop 68
+              PositionX 306.396
+              OffsetLeft 306.396
+              PositionY 79.471
+              OffsetTop 79.471
               SizeX 162
-              OffsetRight -469
-              SizeY 52
-              OffsetBottom -120
+              OffsetRight -468.396
+              SizeY 40
+              OffsetBottom -119.471
              }
              {
               PanelWidgetClass "{60DD09FA511FB2EA}" {
@@ -559,9 +562,11 @@ FrameWidgetClass {
                 TextWidgetClass "{60DD09FA511FB2EC}" {
                  Name "PlayersCounter"
                  Slot FrameWidgetSlot "{60DB5B8A9725A903}" {
+                  Anchor 0 0 0 0
+                  PositionX 0
                   OffsetLeft 0
                   OffsetTop 0
-                  SizeX 99.999
+                  SizeX 100
                   OffsetRight -100
                   SizeY 30
                   OffsetBottom -30
