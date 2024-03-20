@@ -1,6 +1,7 @@
 $grp PS_Objective : "{A4F0B4846EF850C4}Prefabs/Objective/Objective.et" {
  {
   coords 97.116 1 88.992
+  m_sTextData "AAAAA"
  }
  {
   coords 90.749 1 89.562

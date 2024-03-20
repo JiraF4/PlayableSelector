@@ -11,9 +11,13 @@ class PS_PlayableComponent : ScriptComponent
 	protected string m_name;
 	[Attribute()]
 	protected bool m_bIsPlayable;
+	[Attribute()]
+	protected array<ResourceName> m_aRespawnPrefabs;
 	
 	// Actually just RplId from RplComponent
 	protected RplId m_id;
+	[RplProp()]
+	protected int m_iRespawnCounter = 0;
 	
 	// Cache components
 	protected SCR_ChimeraCharacter m_Owner;
@@ -62,6 +66,16 @@ class PS_PlayableComponent : ScriptComponent
 		GetGame().GetCallqueue().CallLater(AddToList, 0, false, owner); // init delay
 
 		SetEventMask(owner, EntityEvent.INIT);
+	}
+	
+	ResourceName GetNextRespawn()
+	{
+		ResourceName prefab = "";
+		if (m_aRespawnPrefabs.Count() > m_iRespawnCounter)
+			prefab = m_aRespawnPrefabs[m_iRespawnCounter];
+		m_iRespawnCounter++;
+		Replication.BumpMe();
+		return prefab;
 	}
 
 	override void EOnInit(IEntity owner)

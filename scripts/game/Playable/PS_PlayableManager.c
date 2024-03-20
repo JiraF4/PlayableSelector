@@ -46,6 +46,12 @@ class PS_PlayableManager : ScriptComponent
 	ref map<int, string> m_playersLastName = new map<int, string>; // playerid to player name (persistant)
 	
 	// Invokers
+	ref ScriptInvokerInt m_eOnPlayerConnected = new ScriptInvokerInt();
+	ScriptInvokerInt GetOnPlayerConnected()
+		return m_eOnPlayerConnected;
+	ref ScriptInvokerBase<SCR_BaseGameMode_OnPlayerDisconnected> m_eOnPlayerDisconnected = new ScriptInvokerBase<SCR_BaseGameMode_OnPlayerDisconnected>();
+	ScriptInvokerBase<SCR_BaseGameMode_OnPlayerDisconnected> GetOnPlayerDisconnected()
+		return m_eOnPlayerDisconnected;
 	ref PS_ScriptInvokerFactionChange m_eOnFactionChange = new PS_ScriptInvokerFactionChange(); // int playerId, FactionKey factionKey, FactionKey factionKeyOld
 	PS_ScriptInvokerFactionChange GetOnFactionChange()
 		return m_eOnFactionChange;
@@ -141,10 +147,17 @@ class PS_PlayableManager : ScriptComponent
 	
 	void OnPlayerDisconnected(int playerId, KickCauseCode cause = KickCauseCode.NONE, int timeout = -1)
 	{
+		Rpc(RPC_OnPlayerDisconnected, playerId, cause, timeout);
+		RPC_OnPlayerDisconnected(playerId, cause, timeout);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RPC_OnPlayerDisconnected(int playerId, KickCauseCode cause, int timeout)
+	{
 		RplId playableId = GetPlayableByPlayer(playerId);
 		PS_PlayableComponent playableComponent = GetPlayableById(playableId);
 		if (playableComponent)
 			playableComponent.GetOnPlayerDisconnected().Invoke(playerId);
+		m_eOnPlayerDisconnected.Invoke(playerId, cause, timeout);
 	}
 	
 	void OnPlayerRoleChange(int playerId, EPlayerRole roleFlags)
@@ -757,6 +770,7 @@ class PS_PlayableManager : ScriptComponent
 	void RPC_SetPlayerName(int playerId, string playerName)
 	{
 		m_playersLastName[playerId] = playerName;
+		m_eOnPlayerConnected.Invoke(playerId);
 		
 		SetUpdated();
 	}

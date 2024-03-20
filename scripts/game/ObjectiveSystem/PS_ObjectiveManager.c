@@ -22,6 +22,14 @@ class PS_ObjectiveManager : ScriptComponent
 			return null;
 	}
 	
+	void GetObjectives(out array<PS_Objective> objectivesOut)
+	{
+		foreach(PS_Objective objective: m_aObjectives)
+		{
+			objectivesOut.Insert(objective);
+		}
+	}
+	
 	void RegisterObjective(PS_Objective objective)
 	{
 		bool isInserted = false;

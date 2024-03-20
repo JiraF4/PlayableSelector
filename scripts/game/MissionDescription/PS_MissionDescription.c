@@ -69,6 +69,11 @@ class PS_MissionDescription : GenericEntity
 		m_bEmptyFactionVisibility = visible;
 	}
 	
+	void SetLayout(ResourceName layout)
+	{
+		m_sDescriptionLayout = layout;
+	}
+	
 	string GetTitle()
 	{
 		return m_sTitle;

@@ -161,8 +161,8 @@ class PS_CoopLobby : MenuBase
 		// Events
 		m_PlayableManager.GetOnFactionChange().Insert(UpdatePlayerFaction);
 		m_PlayableManager.GetOnStartTimerCounterChanged().Insert(OnStartTimerCounterChanged);
-		m_GameModeCoop.GetOnPlayerConnected().Insert(OnPlayerConnected);
-		m_GameModeCoop.GetOnPlayerDisconnected().Insert(OnPlayerDisconnected);
+		m_PlayableManager.GetOnPlayerConnected().Insert(OnPlayerConnected);
+		m_PlayableManager.GetOnPlayerDisconnected().Insert(OnPlayerDisconnected);
 		
 		// Actions
 		if (m_GameModeCoop.GetState() == SCR_EGameModeState.SLOTSELECTION)
@@ -201,11 +201,8 @@ class PS_CoopLobby : MenuBase
 		{
 			m_PlayableManager.GetOnFactionChange().Remove(UpdatePlayerFaction);
 			m_PlayableManager.GetOnStartTimerCounterChanged().Remove(OnStartTimerCounterChanged);
-		}
-		if (m_GameModeCoop)
-		{
-			m_GameModeCoop.GetOnPlayerConnected().Remove(OnPlayerConnected);
-			m_GameModeCoop.GetOnPlayerDisconnected().Remove(OnPlayerDisconnected);
+			m_PlayableManager.GetOnPlayerConnected().Remove(OnPlayerConnected);
+			m_PlayableManager.GetOnPlayerDisconnected().Remove(OnPlayerDisconnected);
 		}
 	}
 

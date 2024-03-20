@@ -1,0 +1,27 @@
+ScrollLayoutWidgetClass {
+ Name "MissionDescriptionListScroll"
+ Slot FrameWidgetSlot "{5EB1000AD8290B3B}" {
+  Anchor 0 0 0 0
+  PositionX 0
+  OffsetLeft 0
+  PositionY 0
+  OffsetTop 0
+  SizeX 480
+  OffsetRight -480
+  SizeY 601
+  OffsetBottom -601
+ }
+ components {
+  PS_MissionDescriptionObjectivesListUI "{60E708E6D50719EC}" {
+  }
+  PS_MissionDescriptionContentUI "{5EC27C7CDA5EFC49}" {
+  }
+ }
+ {
+  VerticalLayoutWidgetClass "{60E708EB71FAE6DC}" {
+   Name "MissionDescriptionList"
+   Slot AlignableSlot "{5EB11576E9D62E23}" {
+   }
+  }
+ }
+}

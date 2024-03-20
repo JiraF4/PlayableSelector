@@ -47,4 +47,15 @@ $grp PS_MissionDescription : "{3136BE42592F3B1B}PrefabsEditable/MissionDescripti
  {
   coords 92.275 1 148.121
  }
+ GeneralInfo3 {
+  coords 134.756 6.26 103.914
+  m_sTitle "#PS-Description_HeaderObjectives"
+  m_sDescriptionLayout "{AD21A53B92778373}UI/MissionDescription/MissionDescriptionObjectives.layout"
+  m_sTextData ""
+  m_aVisibleForFactions {
+   "USSR" "US"
+  }
+  m_bEmptyFactionVisibility 1
+  m_iOrder -10
+ }
 }
