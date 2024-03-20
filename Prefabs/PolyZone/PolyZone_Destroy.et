@@ -1,0 +1,25 @@
+PolylineShapeEntity : "{BD11B8FAA469D169}Prefabs/PolyZone/PolyZone.et" {
+ ID "60E902668148288E"
+ coords 69.919 1 90.433
+ {
+  PS_PolyZoneObjectiveTriggerDestroy {
+   ID "60E9062E6BABF765"
+   components {
+    Hierarchy "{60E9062E9A37C3C0}" {
+    }
+   }
+   TriggerShapeType Polyline
+   TriggerActivationType "All changes"
+   PeriodicQueries 1
+   ClassesFilter {
+    "SCR_ChimeraCharacter"
+   }
+  }
+  PS_Objective : "{A4F0B4846EF850C4}Prefabs/Objective/Objective.et" {
+   ID "60E9062E6BABF763"
+   coords 0 0 0
+   m_sTitle "Destroy all in zone"
+   m_sFactionKey ""
+  }
+ }
+}

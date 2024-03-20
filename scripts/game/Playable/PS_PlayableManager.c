@@ -282,6 +282,7 @@ class PS_PlayableManager : ScriptComponent
 	// Force ApplyPlayable through menu switch
 	void ForceSwitch(int playerId)
 	{
+		RPC_ForceSwitch(playerId);
 		Rpc(RPC_ForceSwitch, playerId);
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]

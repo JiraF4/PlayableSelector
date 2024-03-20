@@ -17,6 +17,43 @@ $grp GenericEntity {
   angleZ -2.267
  }
 }
+PolylineShapeEntity : "{1D807ABE94FE2618}Prefabs/PolyZone/PolyZone_Capture.et" {
+ components {
+  PS_PolyZone "{60E90266F25533F6}" {
+   m_aVisibleForFactions {
+    ""
+   }
+  }
+ }
+ coords 86.49 1 85.577
+ Points {
+  ShapePoint "{60E9061217EFD7B5}" {
+   Position 3.076 0 0.606
+  }
+  ShapePoint "{60E906121742C209}" {
+   Position 4.12 0 4.756
+  }
+  ShapePoint "{60E9061218EB22C3}" {
+   Position 0.515 0 7.42
+  }
+  ShapePoint "{60E9061218151DD6}" {
+   Position -3.309 0 6.111
+  }
+  ShapePoint "{60E9061219B0A4B8}" {
+   Position -3.337 0 2.205
+  }
+ }
+ {
+  PS_PolyZoneObjectiveTriggerCapture {
+   ID "60E906126F14C7A8"
+   m_aObjectiveNames {
+    "RocksFIA" "RocksUS" "RocksUSSR"
+   }
+   m_bCanRetake 1
+   m_bEasyTake 1
+  }
+ }
+}
 Vehicle BTR1 : "{C012BB3488BEA0C2}Prefabs/Vehicles/Wheeled/BTR70/BTR70.et" {
  components {
   SCR_VehicleDamageManagerComponent "{141326E9FD94FE40}" {
@@ -32,4 +69,8 @@ Vehicle M151A1 : "{F649585ABB3706C4}Prefabs/Vehicles/Wheeled/M151A2/M151A2.et" {
   }
  }
  coords 116.265 1 96.871
+}
+GenericEntity : "{FA8C2031F43C6684}Prefabs/Rocks/Granite/Granite_BeachCluster_01_waterline.et" {
+ coords 86.891 0.001 88.799
+ angleY -88.222
 }

@@ -193,7 +193,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (!Replication.IsServer()) return;
 		
 		// TODO: remove CallLater
-		GetGame().GetCallqueue().CallLater(SwitchToInitialEntity, 200, false, playerId);
+		GetGame().GetCallqueue().CallLater(TryRespawn, 200, false, playerId);
 	}
 	
 	// Update state for disconnected and start timer if need
@@ -319,6 +319,48 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		playableController.SetInitialEntity(initialEntity);
 		playerController.SetInitialMainEntity(initialEntity);
 		VoNRoomsManager.RestoreRoom(playerId);
+	}
+	
+	void TryRespawn(int playerId)
+	{
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		RplId playableId = playableManager.GetPlayableByPlayer(playerId);
+		if (playableId != RplId.Invalid())
+		{
+			PS_PlayableComponent playableComponent = playableManager.GetPlayableById(playableId);
+			ResourceName prefabToSpawn = playableComponent.GetNextRespawn();
+			if (prefabToSpawn != "")
+			{
+				Resource resource = Resource.Load(prefabToSpawn);
+				EntitySpawnParams params = new EntitySpawnParams();
+				playableComponent.GetSpawnTransform(params.Transform);
+				IEntity entity = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
+				SCR_AIGroup aiGroup = playableManager.GetPlayerGroupByPlayable(playableId);
+				aiGroup.GetSlave().AddAIEntityToGroup(entity);
+				
+				GetGame().GetCallqueue().Call(SwitchToSpawnedEntity, playerId, playableComponent, entity, 3);
+				return;
+			}
+		}
+		
+		SwitchToInitialEntity(playerId);
+	}
+	
+	void SwitchToSpawnedEntity(int playerId, PS_PlayableComponent playable, IEntity entity, int frameCounter)
+	{
+		if (frameCounter > 0) // Await three FrameSlot
+		{		
+			GetGame().GetCallqueue().Call(SwitchToSpawnedEntity, playerId, playable, entity, frameCounter - 1);
+			return;
+		}
+		
+		PS_PlayableComponent playableComponent = PS_PlayableComponent.Cast(entity.FindComponent(PS_PlayableComponent));
+		RplId playableId = playableComponent.GetId();
+		
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		playableComponent.CopyState(playable);
+		playableManager.SetPlayerPlayable(playerId, playableId);
+		playableManager.ForceSwitch(playerId);
 	}
 	
 	void SwitchToInitialEntity(int playerId)

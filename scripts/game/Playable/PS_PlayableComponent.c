@@ -12,10 +12,11 @@ class PS_PlayableComponent : ScriptComponent
 	[Attribute()]
 	protected bool m_bIsPlayable;
 	[Attribute()]
-	protected array<ResourceName> m_aRespawnPrefabs;
+	protected ref array<ResourceName> m_aRespawnPrefabs;
 	
 	// Actually just RplId from RplComponent
 	protected RplId m_id;
+	protected vector spawnTransform[4];
 	[RplProp()]
 	protected int m_iRespawnCounter = 0;
 	
@@ -60,17 +61,36 @@ class PS_PlayableComponent : ScriptComponent
 	ScriptInvokerBool GetOnPlayerPinChange()
 		return m_eOnPlayerPinChange;
 	
+	void CopyState(PS_PlayableComponent playable)
+	{
+		playable.SetPlayable(false);
+		m_iRespawnCounter = playable.m_iRespawnCounter;
+		m_aRespawnPrefabs = playable.m_aRespawnPrefabs;
+		Replication.BumpMe();
+	}
+	
 	override void OnPostInit(IEntity owner)
 	{
 		m_Owner = SCR_ChimeraCharacter.Cast(owner);
+		m_Owner.PS_SetPlayable(this);
 		GetGame().GetCallqueue().CallLater(AddToList, 0, false, owner); // init delay
-
+		
+		if (Replication.IsServer())
+			owner.GetTransform(spawnTransform);
+		
 		SetEventMask(owner, EntityEvent.INIT);
+	}
+	
+	void GetSpawnTransform(vector outMat[4])
+	{
+		Math3D.MatrixCopy(spawnTransform, outMat);
 	}
 	
 	ResourceName GetNextRespawn()
 	{
 		ResourceName prefab = "";
+		if (!m_aRespawnPrefabs)
+			return "";
 		if (m_aRespawnPrefabs.Count() > m_iRespawnCounter)
 			prefab = m_aRespawnPrefabs[m_iRespawnCounter];
 		m_iRespawnCounter++;

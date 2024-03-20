@@ -1,0 +1,146 @@
+$grp GenericEntity : "{0619993AE6CDBF85}Prefabs/Items/Equipment/Accessories/ETool_ALICE/ETool_ALICE.et" {
+ {
+  coords 65.541 1 89.435
+ }
+ {
+  coords 64.814 1 89.277
+ }
+ {
+  coords 64.403 1 89.216
+ }
+ {
+  coords 64.93 1 89.046
+ }
+ {
+  coords 65.407 1 89.06
+ }
+ {
+  coords 64.916 1 88.937
+ }
+ {
+  coords 65.331 1 88.994
+ }
+ {
+  coords 64.709 1 88.772
+ }
+ {
+  coords 65.148 1 88.818
+ }
+ {
+  coords 64.599 1 88.694
+ }
+ {
+  coords 64.985 1 88.752
+ }
+ {
+  coords 64.785 1 88.726
+ }
+ {
+  coords 65.059 1 88.706
+ }
+ {
+  coords 65.367 1 88.662
+ }
+}
+StaticModelEntity : "{6655A585AEE41E2E}Prefabs/Decals/Concrete/Damage/DecalModel_Runway_Cracks_01.et" {
+ coords 64.078 1.001 75.948
+}
+$grp PS_Objective : "{A4F0B4846EF850C4}Prefabs/Objective/Objective.et" {
+ RocksFIA {
+  coords 97.328 1 89.271
+  m_sTitle "Capture Rocks"
+  m_sTextData "Capture Rocks"
+ }
+ RocksUS {
+  coords 99.113 1 89.867
+  m_sTitle "Capture Rocks"
+  m_sTextData "Capture Rocks"
+  m_sFactionKey "US"
+ }
+ RocksUSSR {
+  coords 99.113 1 89.867
+  m_sTitle "Capture Rocks"
+  m_sTextData "Capture Rocks"
+  m_sFactionKey "USSR"
+ }
+}
+$grp GenericEntity : "{C3F1FA1E2EC2B345}Prefabs/Items/Medicine/FieldDressing_USSR_01.et" {
+ {
+  coords 67.782 1 88.725
+ }
+ {
+  coords 67.426 1 88.49
+ }
+ {
+  coords 67.198 1 88.368
+ }
+ {
+  coords 67.997 1 88.145
+ }
+ {
+  coords 67.661 1 88.147
+ }
+ {
+  coords 67.514 1 88.044
+ }
+ {
+  coords 67.637 1 88.484
+ }
+ {
+  coords 67.292 1 88.155
+ }
+ {
+  coords 67.478 1 88.391
+ }
+ {
+  coords 67.266 1 88.182
+ }
+ {
+  coords 67.743 1 88.566
+ }
+ {
+  coords 67.48 1 88.287
+ }
+ {
+  coords 67.626 1 88.473
+ }
+ {
+  coords 67.413 1 88.384
+ }
+}
+PolylineShapeEntity : "{DCA90362FBC25FB4}Prefabs/PolyZone/PolyZone_Presence.et" {
+ coords 68.584 1 84.945
+ Points {
+  ShapePoint "{60E9062B7FA7E19B}" {
+   Position -2.687 0 0.592
+  }
+  ShapePoint "{60E9062B00DAA357}" {
+   Position -6.181 -0 -2.238
+  }
+  ShapePoint "{60E9062B001B5AF8}" {
+   Position -5.08 0 -5.076
+  }
+  ShapePoint "{60E9062B01867F19}" {
+   Position 1.045 0 -6.217
+  }
+  ShapePoint "{60E9062B0127E028}" {
+   Position 4.57 0 -3.312
+  }
+ }
+ {
+  PS_Objective {
+   ID "60E9062D2F15A7F1"
+   m_sTitle "Capture lopatas"
+   m_sFactionKey "US"
+  }
+  PS_PolyZoneObjectivePresence {
+   ID "60E9062D2F15A7F9"
+   PrefabsFilter {
+    PrefabFilter "{60E9062932E0D876}" {
+     Prefab "{0619993AE6CDBF85}Prefabs/Items/Equipment/Accessories/ETool_ALICE/ETool_ALICE.et"
+    }
+   }
+   m_iNeedCount 10
+  }
+ }
+}
