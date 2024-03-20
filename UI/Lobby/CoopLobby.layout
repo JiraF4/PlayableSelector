@@ -411,6 +411,116 @@ FrameWidgetClass {
                       }
                      }
                     }
+                    OverlayWidgetClass "{5D6E8202A8F66E08}" {
+                     Prefab "{5D6E8202A8F66E08}"
+                     {
+                      VerticalLayoutWidgetClass "{5F190A86DEFC34C9}" {
+                       Prefab "{5F190A86DEFC34C9}"
+                       {
+                        HorizontalLayoutWidgetClass "{5F190A84B4C8CBFA}" {
+                         Prefab "{5F190A84B4C8CBFA}"
+                         {
+                          OverlayWidgetClass "{5F1947FA70384453}" {
+                           Prefab "{5F1947FA70384453}"
+                           {
+                            ImageWidgetClass "{5F190A8467E261FC}" {
+                             Prefab "{5F190A8467E261FC}"
+                             Color 0.242 0.235 0.242 1
+                            }
+                           }
+                          }
+                          OverlayWidgetClass "{5F1947FA75188023}" {
+                           Prefab "{5F1947FA75188023}"
+                           {
+                            ImageWidgetClass "{5F190A8467E261FC}" {
+                             Prefab "{5F190A8467E261FC}"
+                             Color 0.242 0.235 0.242 1
+                            }
+                           }
+                          }
+                          OverlayWidgetClass "{5F1947FA07FA6D02}" {
+                           Prefab "{5F1947FA07FA6D02}"
+                           {
+                            ImageWidgetClass "{5F190A8467E261FC}" {
+                             Prefab "{5F190A8467E261FC}"
+                             Color 0.242 0.235 0.242 1
+                            }
+                           }
+                          }
+                          OverlayWidgetClass "{5F1947FA09D52453}" {
+                           Prefab "{5F1947FA09D52453}"
+                           {
+                            ImageWidgetClass "{5F190A8467E261FC}" {
+                             Prefab "{5F190A8467E261FC}"
+                             Color 0.242 0.235 0.242 1
+                            }
+                           }
+                          }
+                         }
+                        }
+                        HorizontalLayoutWidgetClass "{5F190A86D08D0090}" {
+                         Prefab "{5F190A86D08D0090}"
+                         {
+                          OverlayWidgetClass "{5F1947FA2C505E4E}" {
+                           Prefab "{5F1947FA2C505E4E}"
+                           {
+                            ImageWidgetClass "{5F190A8467E261FC}" {
+                             Prefab "{5F190A8467E261FC}"
+                             Color 0.242 0.235 0.242 1
+                            }
+                           }
+                          }
+                          OverlayWidgetClass "{5F1947FA3B16D630}" {
+                           Prefab "{5F1947FA3B16D630}"
+                           {
+                            ImageWidgetClass "{5F190A8467E261FC}" {
+                             Prefab "{5F190A8467E261FC}"
+                             Color 0.242 0.235 0.242 1
+                            }
+                           }
+                          }
+                          OverlayWidgetClass "{5F1947F9D0D3AE4A}" {
+                           Prefab "{5F1947F9D0D3AE4A}"
+                           {
+                            ImageWidgetClass "{5F190A8467E261FC}" {
+                             Prefab "{5F190A8467E261FC}"
+                             Color 0.242 0.235 0.242 1
+                            }
+                           }
+                          }
+                          OverlayWidgetClass "{5F1947F9DED1BE40}" {
+                           Prefab "{5F1947F9DED1BE40}"
+                           {
+                            ImageWidgetClass "{5F190A8467E261FC}" {
+                             Prefab "{5F190A8467E261FC}"
+                             Color 0.242 0.235 0.242 1
+                            }
+                           }
+                          }
+                          OverlayWidgetClass "{5F1947F9E87C5C11}" {
+                           Prefab "{5F1947F9E87C5C11}"
+                           {
+                            ImageWidgetClass "{5F190A8467E261FC}" {
+                             Prefab "{5F190A8467E261FC}"
+                             Color 0.242 0.235 0.242 1
+                            }
+                           }
+                          }
+                          OverlayWidgetClass "{5F1947F9F786177C}" {
+                           Prefab "{5F1947F9F786177C}"
+                           {
+                            ImageWidgetClass "{5F190A8467E261FC}" {
+                             Prefab "{5F190A8467E261FC}"
+                             Color 0.242 0.235 0.242 1
+                            }
+                           }
+                          }
+                         }
+                        }
+                       }
+                      }
+                     }
+                    }
                    }
                   }
                  }
@@ -1286,15 +1396,12 @@ FrameWidgetClass {
   FrameWidgetClass "{5EB701CD0152AC68}" : "{B7A765172F0BD4D9}UI/layouts/Common/GameVersionWatermark.layout" {
    Name "EarlyAccessRoot"
    Slot FrameWidgetSlot "{5CEE96372B5D270B}" {
-    PositionX 0
-    OffsetLeft 0
-    PositionY -1
-    OffsetTop -1
+    PositionX 97.442
+    PositionY 31.041
     SizeX 0
-    OffsetRight 0
     SizeY 0
-    OffsetBottom 1
    }
+   "Is Enabled" 0
    Opacity 1
    {
     HorizontalLayoutWidgetClass "{5CEAB7C94A55AF1E}" {
