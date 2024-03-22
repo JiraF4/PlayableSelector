@@ -44,13 +44,25 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	[Attribute("0", UIWidgets.CheckBox, "Creates a whitelist on the server for players who have taken roles and also for players specified in $profile:PS_SlotsReserver_Config.json and kicks everyone else.", category: "Reforger Lobby")]
 	protected bool m_bReserveSlots;
 	
-	[Attribute("0", UIWidgets.CheckBox, "", category: "Reforger Lobby")]
+	[Attribute("", UIWidgets.Auto, "", category: "Reforger Lobby")]
+	protected ref array<ref PS_FactionRespawnCount> m_aFactionRespawnCount;
+	protected ref map<FactionKey, int> m_mFactionRespawnCount = new map<FactionKey, int>();
+	
+	[Attribute("0", UIWidgets.CheckBox, "", category: "Reforger Lobby (WIP)")]
 	protected bool m_bShowCutscene;
 	
 	// ------------------------------------------ Events ------------------------------------------
 	override void OnGameStart()
 	{
 		super.OnGameStart();
+		
+		foreach (PS_FactionRespawnCount factionRespawnCount : m_aFactionRespawnCount)
+		{
+			m_mFactionRespawnCount.Insert(
+				factionRespawnCount.m_sFactionKey,
+				factionRespawnCount.m_iCount
+			);
+		}
 		
 		string loadSave = GameSessionStorage.s_Data.Get("SCR_SaveFileManager_FileNameToLoad");
 		if (loadSave != "")
@@ -171,6 +183,15 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			SCR_EditorRestrictionZoneEntity zone = zones.Get(i);
 			SCR_EntityHelper.DeleteEntityAndChildren(zone);
 		}
+	}
+	
+	protected int GetFactionRespawnCount(FactionKey factionKey)
+	{
+		if (m_mFactionRespawnCount.Contains(factionKey))
+		{
+			return m_mFactionRespawnCount[factionKey];
+		}
+		return -1;
 	}
 	
 	protected override void OnPlayerConnected(int playerId)
@@ -328,7 +349,18 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (playableId != RplId.Invalid())
 		{
 			PS_PlayableComponent playableComponent = playableManager.GetPlayableById(playableId);
-			ResourceName prefabToSpawn = playableComponent.GetNextRespawn();
+			FactionAffiliationComponent factionAffiliationComponent = playableComponent.GetFactionAffiliationComponent();
+			Faction faction = factionAffiliationComponent.GetDefaultAffiliatedFaction();
+			FactionKey factionKey = faction.GetFactionKey();
+			int factionRespawns = GetFactionRespawnCount(factionKey);
+			if (factionRespawns == 0)
+			{
+				SwitchToInitialEntity(playerId);
+				return;
+			}
+			ResourceName prefabToSpawn = playableComponent.GetNextRespawn(factionRespawns == -1);
+			if (factionRespawns > 0)
+				m_mFactionRespawnCount[factionKey] = factionRespawns - 1;
 			if (prefabToSpawn != "")
 			{
 				Resource resource = Resource.Load(prefabToSpawn);
@@ -669,3 +701,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	}
 };
 
+[BaseContainerProps()]
+class PS_FactionRespawnCount
+{
+	[Attribute()]
+	FactionKey m_sFactionKey;
+	[Attribute()]
+	int m_iCount;
+}

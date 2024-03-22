@@ -86,8 +86,12 @@ class PS_PlayableComponent : ScriptComponent
 		Math3D.MatrixCopy(spawnTransform, outMat);
 	}
 	
-	ResourceName GetNextRespawn()
+	ResourceName GetNextRespawn(bool nextPrefab)
 	{
+		if (!nextPrefab)
+		{
+			return m_Owner.GetPrefabData().GetPrefabName();
+		}
 		ResourceName prefab = "";
 		if (!m_aRespawnPrefabs)
 			return "";

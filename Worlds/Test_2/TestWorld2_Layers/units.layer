@@ -399,5 +399,8 @@ SCR_AIGroup : "{CE41AF625D05D0F0}Prefabs/Groups/INDFOR/Group_FIA_RifleSquad.et" 
   }
  }
  coords 91.958 1 148.34
+ m_aUnitPrefabSlots {
+  "{677B515F119222C2}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_SL.et"
+ }
  m_bSetPlayable 1
 }

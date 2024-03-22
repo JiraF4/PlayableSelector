@@ -307,7 +307,7 @@ class PS_CoopLobby : MenuBase
 		factionSelector.SetCount(count + added);
 		factionSelector.SetMaxCount(maxCount + addedMax);
 		factionSelector.SetLockedCount(lockedCount + addedLocked);
-		if (maxCount <= 1)
+		if ((maxCount + addedMax) < 1)
 		{
 			factionSelector.GetRootWidget().RemoveFromHierarchy();
 			m_mFactions.Remove(faction);

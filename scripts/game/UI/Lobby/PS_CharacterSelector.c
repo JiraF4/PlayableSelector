@@ -120,6 +120,7 @@ class PS_CharacterSelector : SCR_ButtonComponent
 		{
 			m_PlayableManager.GetOnPlayerPlayableChange().Remove(OnPlayerPlayableChange);
 		}
+		/*
 		if (m_PlayableComponent)
 		{
 			m_PlayableComponent.GetOnPlayerChange().Remove(UpdatePlayer);
@@ -131,6 +132,7 @@ class PS_CharacterSelector : SCR_ButtonComponent
 			m_PlayableComponent.GetOnPlayerPinChange().Remove(UpdatePined);
 			m_PlayableComponent.GetOnPlayerRoleChange().Remove(OnRoleChange);
 		}
+		*/
 	}
 	
 	// --------------------------------------------------------------------------------------------------------------------------------
