@@ -1,0 +1,21 @@
+PolylineShapeEntity : "{BD11B8FAA469D169}Prefabs/PolyZone/PolyZone.et" {
+ ID "60E902668148288E"
+ coords 82.074 1 44.101
+ {
+  PS_PolyZoneObjectivePresence {
+   ID "60E9062D2F15A7F9"
+   components {
+    Hierarchy "{60E9062D1EAEE93E}" {
+    }
+   }
+   TriggerShapeType Polyline
+   TriggerActivationType "All changes"
+   PeriodicQueries 1
+  }
+  PS_Objective : "{A4F0B4846EF850C4}Prefabs/Objective/Objective.et" {
+   ID "60E9062D2F15A7F1"
+   m_sTitle "Bring item in zone"
+   m_sFactionKey ""
+  }
+ }
+}

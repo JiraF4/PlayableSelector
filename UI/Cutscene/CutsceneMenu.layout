@@ -1,0 +1,4 @@
+FrameWidgetClass {
+ Name "CutsceneMenu"
+ "Z Order" 9
+}

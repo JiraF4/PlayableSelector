@@ -1,4 +1,27 @@
-//------------------------------------------------------------------------------------------------
+void PS_ScriptInvokerFactionChangeMethod(int playerId, FactionKey factionKey, FactionKey factionKeyOld);
+typedef func PS_ScriptInvokerFactionChangeMethod;
+typedef ScriptInvokerBase<PS_ScriptInvokerFactionChangeMethod> PS_ScriptInvokerFactionChange;
+
+void PS_ScriptInvokerPlayableMethod(RplId id, PS_PlayableComponent playableComponent);
+typedef func PS_ScriptInvokerPlayableMethod;
+typedef ScriptInvokerBase<PS_ScriptInvokerPlayableMethod> PS_ScriptInvokerPlayable;
+
+void PS_ScriptInvokerPinChangeMethod(int playerId, bool pin);
+typedef func PS_ScriptInvokerPinChangeMethod;
+typedef ScriptInvokerBase<PS_ScriptInvokerPinChangeMethod> PS_ScriptInvokerPinChange;
+
+void PS_ScriptInvokerPlayerStateChangeMethod(int playerId, PS_EPlayableControllerState state);
+typedef func PS_ScriptInvokerPlayerStateChangeMethod;
+typedef ScriptInvokerBase<PS_ScriptInvokerPlayerStateChangeMethod> PS_ScriptInvokerPlayerStateChange;
+
+void PS_ScriptInvokerPlayerPlayableChangeMethod(int playerId, RplId playbleId);
+typedef func PS_ScriptInvokerPlayerPlayableChangeMethod;
+typedef ScriptInvokerBase<PS_ScriptInvokerPlayerPlayableChangeMethod> PS_ScriptInvokerPlayerPlayableChange;
+
+void PS_ScriptInvokerPlayableChangeGroupMethod(RplId id, PS_PlayableComponent playableComponent, SCR_AIGroup aiGroup);
+typedef func PS_ScriptInvokerPlayableChangeGroupMethod;
+typedef ScriptInvokerBase<PS_ScriptInvokerPlayableChangeGroupMethod> PS_ScriptInvokerPlayableChangeGroup;
+
 [ComponentEditorProps(category: "GameScripted/GameMode/Components", description: "", color: "0 0 255 255", icon: HYBRID_COMPONENT_ICON)]
 class PS_PlayableManagerClass: ScriptComponentClass
 {
@@ -14,17 +37,51 @@ class PS_PlayableManager : ScriptComponent
 	
 	// Maps for saving players staff, player controllers local to client
 	ref map<int, PS_EPlayableControllerState> m_playersStates = new map<int, PS_EPlayableControllerState>;
+	ref map<int, RplId> m_playablePlayersRemembered = new map<int, RplId>;
 	ref map<int, RplId> m_playersPlayable = new map<int, RplId>;
 	ref map<RplId, int> m_playablePlayers = new map<RplId, int>; // reversed m_playersPlayable for fast search
 	ref map<int, bool> m_playersPin = new map<int, bool>; // is player pined
 	ref map<int, FactionKey> m_playersFaction = new map<int, FactionKey>; // player factions
 	ref map<RplId, int> m_playablePlayerGroupId = new map<RplId, int>; // playable to player group
+	ref map<int, string> m_playersLastName = new map<int, string>; // playerid to player name (persistant)
 	
 	// Invokers
-	ref ScriptInvoker m_eOnFactionChange = new ScriptInvoker(); // int playerId, FactionKey factionKey, FactionKey factionKeyOld
+	ref ScriptInvokerInt m_eOnPlayerConnected = new ScriptInvokerInt();
+	ScriptInvokerInt GetOnPlayerConnected()
+		return m_eOnPlayerConnected;
+	ref ScriptInvokerBase<SCR_BaseGameMode_OnPlayerDisconnected> m_eOnPlayerDisconnected = new ScriptInvokerBase<SCR_BaseGameMode_OnPlayerDisconnected>();
+	ScriptInvokerBase<SCR_BaseGameMode_OnPlayerDisconnected> GetOnPlayerDisconnected()
+		return m_eOnPlayerDisconnected;
+	ref PS_ScriptInvokerFactionChange m_eOnFactionChange = new PS_ScriptInvokerFactionChange(); // int playerId, FactionKey factionKey, FactionKey factionKeyOld
+	PS_ScriptInvokerFactionChange GetOnFactionChange()
+		return m_eOnFactionChange;
+	ref PS_ScriptInvokerPlayable m_eOnPlayableRegistered = new PS_ScriptInvokerPlayable(); 
+	PS_ScriptInvokerPlayable GetOnPlayableRegistered()
+		return m_eOnPlayableRegistered;
+	ref PS_ScriptInvokerPlayable m_eOnPlayableUnregistered = new PS_ScriptInvokerPlayable();
+	PS_ScriptInvokerPlayable GetOnPlayableUnregistered()
+		return m_eOnPlayableUnregistered;
+	ref PS_ScriptInvokerPinChange m_eOnPlayerPinChange = new PS_ScriptInvokerPinChange();
+	PS_ScriptInvokerPinChange GetOnPlayerPinChange()
+		return m_eOnPlayerPinChange;
+	ref PS_ScriptInvokerPlayerStateChange m_eOnPlayerStateChange = new PS_ScriptInvokerPlayerStateChange();
+	PS_ScriptInvokerPlayerStateChange GetOnPlayerStateChange()
+		return m_eOnPlayerStateChange;
+	ref PS_ScriptInvokerPlayerPlayableChange m_eOnPlayerPlayableChange = new PS_ScriptInvokerPlayerPlayableChange();
+	PS_ScriptInvokerPlayerPlayableChange GetOnPlayerPlayableChange()
+		return m_eOnPlayerPlayableChange;
+	ref PS_ScriptInvokerPlayableChangeGroup m_eOnPlayableChangeGroup = new PS_ScriptInvokerPlayableChangeGroup();
+	PS_ScriptInvokerPlayableChangeGroup GetOnPlayableChangeGroup()
+		return m_eOnPlayableChangeGroup;
+	ref ScriptInvokerInt m_eOnStartTimerCounterChanged = new ScriptInvokerInt();
+	ScriptInvokerInt GetOnStartTimerCounterChanged()
+		return m_eOnStartTimerCounterChanged;
 	
 	[RplProp()]
 	int m_iMaxPlayersCount = 1;
+	
+	[RplProp(onRplName: "OnStartTimerCounterChanged")]
+	int m_iStartTimerCounter = -1;
 	
 	void PS_PlayableManager(IEntityComponentSource src, IEntity ent, IEntity parent)
 	{
@@ -56,6 +113,11 @@ class PS_PlayableManager : ScriptComponent
 		
 		if (RplSession.Mode() == RplMode.Dedicated)
 			GetGame().GetCallqueue().CallLater(ForceGetSessionPlyersCount, 100, true);
+		
+		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		gameModeCoop.GetOnPlayerConnected().Insert(OnPlayerConnected);
+		gameModeCoop.GetOnPlayerDisconnected().Insert(OnPlayerDisconnected);
+		gameModeCoop.GetOnPlayerRoleChange().Insert(OnPlayerRoleChange);
 	}
 	
 	void ForceGetSessionPlyersCount()
@@ -69,9 +131,41 @@ class PS_PlayableManager : ScriptComponent
 		}
 	}
 	
-	int GetMaxPlyers()
+	int GetMaxPlayers()
 	{
 		return m_iMaxPlayersCount;
+	}
+	
+	// Events
+	void OnPlayerConnected(int playerId)
+	{
+		RplId playableId = GetPlayableByPlayer(playerId);
+		PS_PlayableComponent playableComponent = GetPlayableById(playableId);
+		if (playableComponent)
+			playableComponent.GetOnPlayerConnected().Invoke(playerId);
+	}
+	
+	void OnPlayerDisconnected(int playerId, KickCauseCode cause = KickCauseCode.NONE, int timeout = -1)
+	{
+		Rpc(RPC_OnPlayerDisconnected, playerId, cause, timeout);
+		RPC_OnPlayerDisconnected(playerId, cause, timeout);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RPC_OnPlayerDisconnected(int playerId, KickCauseCode cause, int timeout)
+	{
+		RplId playableId = GetPlayableByPlayer(playerId);
+		PS_PlayableComponent playableComponent = GetPlayableById(playableId);
+		if (playableComponent)
+			playableComponent.GetOnPlayerDisconnected().Invoke(playerId);
+		m_eOnPlayerDisconnected.Invoke(playerId, cause, timeout);
+	}
+	
+	void OnPlayerRoleChange(int playerId, EPlayerRole roleFlags)
+	{
+		RplId playableId = GetPlayableByPlayer(playerId);
+		PS_PlayableComponent playableComponent = GetPlayableById(playableId);
+		if (playableComponent)
+			playableComponent.GetOnPlayerRoleChange().Invoke(playerId, roleFlags);
 	}
 	
 	// TODO: fix it please
@@ -177,7 +271,7 @@ class PS_PlayableManager : ScriptComponent
 	void RPC_NotifyKick(int playerId)
 	{
 		PlayerController playerController = GetGame().GetPlayerController();
-		if (playerId == playerController.GetPlayerId())
+		if (playerController && playerId == playerController.GetPlayerId())
 		{
 			SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
 			ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("lmsg");
@@ -188,6 +282,7 @@ class PS_PlayableManager : ScriptComponent
 	// Force ApplyPlayable through menu switch
 	void ForceSwitch(int playerId)
 	{
+		RPC_ForceSwitch(playerId);
 		Rpc(RPC_ForceSwitch, playerId);
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
@@ -262,10 +357,10 @@ class PS_PlayableManager : ScriptComponent
 	void UpdatePlayablesSorted() // sort playables by RplId AND CallSign
 	{
 		array<PS_PlayableComponent> playablesSorted = new array<PS_PlayableComponent>();
+		
 		map<RplId, PS_PlayableComponent> playables = GetPlayables();
 		
-		for (int i = 0; i < playables.Count(); i++) {
-			PS_PlayableComponent playable = playables.GetElement(i);
+		foreach (RplId playableId, PS_PlayableComponent playable : playables) {
 			if (!playable) continue;
 			int callSign = GetGroupCallsignByPlayable(playable.GetId());
 			bool isInserted = false;
@@ -274,11 +369,12 @@ class PS_PlayableManager : ScriptComponent
 				int callSignS = GetGroupCallsignByPlayable(playableS.GetId());
 				
 				bool rplIdGreater = playableS.GetId() > playable.GetId();
+				bool rankEquival = SCR_CharacterRankComponent.GetCharacterRank(playable.GetOwner()) == SCR_CharacterRankComponent.GetCharacterRank(playableS.GetOwner());
 				bool rankGreater = SCR_CharacterRankComponent.GetCharacterRank(playable.GetOwner()) > SCR_CharacterRankComponent.GetCharacterRank(playableS.GetOwner());
 				bool callSignEquival = callSignS == callSign;
 				bool callSignGreater = callSignS > callSign;
 				
-				if (((rplIdGreater || rankGreater) && callSignEquival) || callSignGreater) {
+				if ((((rplIdGreater && rankEquival) || rankGreater) && callSignEquival) || callSignGreater) {
 					playablesSorted.InsertAt(playable, s);
 					isInserted = true;
 					break;
@@ -287,7 +383,6 @@ class PS_PlayableManager : ScriptComponent
 			if (!isInserted) {
 				playablesSorted.Insert(playable);
 			}
-			//Print(playable.GetOwner().GetPrefabData().GetPrefabName());
 		}
 		
 		m_PlayablesSorted = playablesSorted;
@@ -307,6 +402,11 @@ class PS_PlayableManager : ScriptComponent
 		m_playersStates.Find(playerId, state);
 		return state;
 	}
+	string GetPlayerName(int playerId)
+	{
+		if (!m_playersLastName.Contains(playerId)) return "";
+		return m_playersLastName[playerId];
+	}
 	
 	RplId GetPlayableByPlayer(int playerId)
 	{
@@ -318,6 +418,12 @@ class PS_PlayableManager : ScriptComponent
 	{
 		if (!m_playablePlayers.Contains(PlayableId)) return -1;
 		return m_playablePlayers[PlayableId];
+	}
+	
+	int GetPlayerByPlayableRemembered(RplId PlayableId)
+	{
+		if (!m_playablePlayersRemembered.Contains(PlayableId)) return -1;
+		return m_playablePlayersRemembered[PlayableId];
 	}
 	
 	SCR_AIGroup GetPlayerGroupByPlayable(RplId PlayableId)
@@ -334,7 +440,7 @@ class PS_PlayableManager : ScriptComponent
 		SCR_AIGroup group = GetPlayerGroupByPlayable(PlayableId);
 		if (!group) return -1;
 		
-		return group.GetCalsignNum();
+		return group.GetCallsignNum();
 	}
 	
 	bool GetPlayerPin(int playerId)
@@ -354,6 +460,7 @@ class PS_PlayableManager : ScriptComponent
 			return;
 		m_aPlayables[playableId] = playableComponent;
 		
+		GetGame().GetCallqueue().Call(OnPlayableRegisteredLateInvoke, playableId, playableComponent);
 		GetGame().GetCallqueue().Call(UpdatePlayablesSorted);
 		
 		if (Replication.IsServer())
@@ -383,13 +490,23 @@ class PS_PlayableManager : ScriptComponent
 			GetGame().GetCallqueue().CallLater(UpdateGroupCallsigne, 0, false, playableId, playerGroup, playableGroup)
 		}
 	}
-	void RemovePlayable(RplId playableId)
+	void OnPlayableRegisteredLateInvoke(RplId playableId, PS_PlayableComponent playableComponent)
 	{
+		GetGame().GetCallqueue().Call(OnPlayableRegisteredLateInvoke2, playableId, playableComponent);
+	}
+	void OnPlayableRegisteredLateInvoke2(RplId playableId, PS_PlayableComponent playableComponent)
+	{
+		m_eOnPlayableRegistered.Invoke(playableId, playableComponent);
+	}
+	void RemovePlayable(PS_PlayableComponent playableComponent)
+	{
+		RplId playableId = playableComponent.GetId();
 		if (!m_aPlayables.Contains(playableId))
 			return;
 		m_aPlayables.Remove(playableId);
 		
 		UpdatePlayablesSorted();
+		m_eOnPlayableUnregistered.Invoke(playableId, playableComponent);
 	}
 	void UpdateGroupCallsigne(RplId playableId, SCR_AIGroup playerGroup, SCR_AIGroup playableGroup)
 	{
@@ -455,52 +572,151 @@ class PS_PlayableManager : ScriptComponent
 	}
 	
 	
-	void SetPlayablePlayer(RplId PlayableId, int playerId)
+	void SetPlayablePlayer(RplId playableId, int playerId)
 	{
-		RPC_SetPlayablePlayer(PlayableId, playerId);
-		Rpc(RPC_SetPlayablePlayer, PlayableId, playerId);
+		RPC_SetPlayablePlayer(playableId, playerId);
+		Rpc(RPC_SetPlayablePlayer, playableId, playerId);
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	void RPC_SetPlayablePlayer(RplId PlayableId, int playerId)
+	void RPC_SetPlayablePlayer(RplId playableId, int playerId)
 	{
 		if (playerId > 0) {
 			RplId oldPlayable = GetPlayableByPlayer(playerId);
-			if (oldPlayable != RplId.Invalid()) m_playablePlayers[oldPlayable] = -1;
+			if (oldPlayable != RplId.Invalid()) 
+			{
+				m_playablePlayers[oldPlayable] = -1;
+				if (playableId != RplId.Invalid())
+					m_playablePlayersRemembered[playableId] = -1;
+			}
+			
+			PS_PlayableComponent playableComponent = m_aPlayables.Get(oldPlayable);
+			if (playableComponent)
+				playableComponent.InvokeOnPlayerChanged(-1);
 		}
 			
-		m_playersPlayable[playerId] = PlayableId;
-		m_playablePlayers[PlayableId] = playerId;
+		m_playersPlayable[playerId] = playableId;
+		m_playablePlayers[playableId] = playerId;
+		
+		if (playerId > 0)
+		{
+			m_playablePlayersRemembered[playableId] = playerId;
+			m_eOnPlayerPlayableChange.Invoke(playerId, playableId);
+		}
+		
+		PS_PlayableComponent playableComponent = m_aPlayables.Get(playableId);
+		if (playableComponent)
+			playableComponent.InvokeOnPlayerChanged(playerId);
 		
 		SetUpdated();
 	}
 	
-	void SetPlayerPlayable(int playerId, RplId PlayableId)
+	void SetPlayerPlayable(int playerId, RplId playableId)
 	{
-		RPC_SetPlayerPlayable(playerId, PlayableId);
-		Rpc(RPC_SetPlayerPlayable, playerId, PlayableId);
+		RPC_SetPlayerPlayable(playerId, playableId);
+		Rpc(RPC_SetPlayerPlayable, playerId, playableId);
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	void RPC_SetPlayerPlayable(int playerId, RplId PlayableId)
+	void RPC_SetPlayerPlayable(int playerId, RplId playableId)
 	{		
 		RplId oldPlayable = GetPlayableByPlayer(playerId);
-		if (oldPlayable != RplId.Invalid()) m_playablePlayers[oldPlayable] = -1;
+		if (oldPlayable != RplId.Invalid()) {
+			m_playablePlayers[oldPlayable] = -1;
+			if (playableId != RplId.Invalid())
+				m_playablePlayersRemembered[playableId] = -1;
+			
+			PS_PlayableComponent playableComponent = m_aPlayables.Get(oldPlayable);
+			if (playableComponent)
+				playableComponent.InvokeOnPlayerChanged(-1);
+		}
 		
-		m_playersPlayable[playerId] = PlayableId;
-		m_playablePlayers[PlayableId] = playerId;
+		m_playersPlayable[playerId] = playableId;
+		m_playablePlayers[playableId] = playerId;
+		
+		if (playerId > 0)
+		{
+			m_eOnPlayerPlayableChange.Invoke(playerId, playableId);
+			m_playablePlayersRemembered[playableId] = playerId;
+		}
+		
+		PS_PlayableComponent playableComponent = m_aPlayables.Get(playableId);
+		if (playableComponent)
+			playableComponent.InvokeOnPlayerChanged(playerId);
 		
 		SetUpdated();
+	}
+	
+	void StartTime()
+	{
+		m_iStartTimerCounter -= 1;
+		Replication.BumpMe();
+		OnStartTimerCounterChanged();
+		if (m_iStartTimerCounter == 0)
+		{
+			PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+			gameModeCoop.AdvanceGameState(SCR_EGameModeState.SLOTSELECTION);
+			GetGame().GetCallqueue().Remove(StartTime);
+		}
+	}
+	
+	void OnStartTimerCounterChanged()
+	{
+		m_eOnStartTimerCounterChanged.Invoke(m_iStartTimerCounter);
 	}
 	
 	void SetPlayerState(int playerId, PS_EPlayableControllerState state)
 	{
 		RPC_SetPlayerState(playerId, state);
 		Rpc(RPC_SetPlayerState, playerId, state);
+		
+		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		SCR_EGameModeState gameModeState = gameModeCoop.GetState();
+		if (gameModeState == SCR_EGameModeState.SLOTSELECTION)
+		{
+			GetGame().GetCallqueue().Remove(StartTime);
+			bool adminExist = !gameModeCoop.IsAdminMode();
+			array<int> players = {};
+			GetGame().GetPlayerManager().GetPlayers(players);
+			foreach (int otherPlayerId : players)
+			{
+				if (!adminExist)
+					adminExist = SCR_Global.IsAdmin(otherPlayerId);
+				
+				PS_EPlayableControllerState playerState = m_playersStates[otherPlayerId];
+				if (playerState != PS_EPlayableControllerState.Ready)
+				{
+					if (m_iStartTimerCounter != -1)
+					{
+						m_iStartTimerCounter = -1;
+						Replication.BumpMe();
+						OnStartTimerCounterChanged();
+					}
+					return;
+				}
+			}
+			
+			if (adminExist)
+			{
+				m_iStartTimerCounter = 3;
+				Replication.BumpMe();
+				OnStartTimerCounterChanged();
+				GetGame().GetCallqueue().CallLater(StartTime, 1000, true);
+			}
+		}
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void RPC_SetPlayerState(int playerId, PS_EPlayableControllerState state)
 	{
-		//Print("RPC_SetPlayerState: " + playerId.ToString() + " - " + state.ToString());
 		m_playersStates[playerId] = state;
+		
+		m_eOnPlayerStateChange.Invoke(playerId, state);
+		
+		RplId playableId = GetPlayableByPlayer(playerId);
+		if (playableId != RplId.Invalid())
+		{
+			PS_PlayableComponent playableComponent = m_aPlayables.Get(playableId);
+			if (playableComponent)
+				playableComponent.GetOnPlayerStateChange().Invoke(state);
+		}
 		
 		SetUpdated();
 	}
@@ -516,6 +732,17 @@ class PS_PlayableManager : ScriptComponent
 		//Print("RPC_SetPlayerPin: " + playerId.ToString() + " - " + pined.ToString());
 		m_playersPin[playerId] = pined;
 		
+		m_eOnPlayerPinChange.Invoke(playerId, pined);
+		
+		RplId playableId = GetPlayableByPlayer(playerId);
+		if (playableId != RplId.Invalid())
+		{
+			PS_PlayableComponent playableComponent = m_aPlayables.Get(playableId);
+			if (playableComponent)
+				playableComponent.GetOnPlayerPinChange().Invoke(pined);
+		}
+			
+		
 		SetUpdated();
 	}
 	
@@ -529,32 +756,50 @@ class PS_PlayableManager : ScriptComponent
 	{
 		m_playablePlayerGroupId[PlayableId] = groupId;
 		
+		UpdatePlayablesSorted();
+		SCR_GroupsManagerComponent groupsManagerComponent = SCR_GroupsManagerComponent.GetInstance();
+		m_eOnPlayableChangeGroup.Invoke(PlayableId, GetPlayableById(PlayableId), groupsManagerComponent.FindGroup(groupId));
 		SetUpdated();
 	}
 	
+	void SetPlayerName(int playerId, string playerName)
+	{
+		RPC_SetPlayerName(playerId, playerName);
+		Rpc(RPC_SetPlayerName, playerId, playerName);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RPC_SetPlayerName(int playerId, string playerName)
+	{
+		m_playersLastName[playerId] = playerName;
+		m_eOnPlayerConnected.Invoke(playerId);
+		
+		SetUpdated();
+	}
 	
 	// -------------------------- Util ----------------------------
 	bool IsPlayerGroupLeader(int thisPlayerId)
 	{
 		if (thisPlayerId == -1) return false;
-		PlayerManager playerManager = GetGame().GetPlayerManager();
 		
 		RplId thisPlayableId = GetPlayableByPlayer(thisPlayerId);
 		if (thisPlayableId == RplId.Invalid()) return false;
 		
 		int thisGroupCallsign = GetGroupCallsignByPlayable(thisPlayableId);
 		
-		array<int> playerIds = new array<int>();
-		playerManager.GetPlayers(playerIds); 
-		foreach (int playerId: playerIds)
+		array<PS_PlayableComponent> playables = GetPlayablesSorted();
+		foreach (PS_PlayableComponent playable: playables)
 		{
-			if (playerId == thisPlayerId) continue;
-			if (GetPlayerFactionKey(playerId) != GetPlayerFactionKey(thisPlayerId)) continue;
-			RplId playableId = GetPlayableByPlayer(playerId);
-			if (playableId == RplId.Invalid()) continue;
-			if (playableId > thisPlayableId) continue;
+			RplId playableId = playable.GetId();
+			int playerId = GetPlayerByPlayable(playable.GetId());
+			if (playerId <= 0) 
+				continue;
+			if (playerId == thisPlayerId)
+				return true;
+			if (GetPlayerFactionKey(playerId) != GetPlayerFactionKey(thisPlayerId)) 
+				continue;
 			int groupCallsign = GetGroupCallsignByPlayable(playableId);
-			if (thisGroupCallsign != groupCallsign) continue;
+			if (thisGroupCallsign != groupCallsign) 
+				continue;
 			return false;
 		}
 		
@@ -568,6 +813,9 @@ class PS_PlayableManager : ScriptComponent
 		companyCallsignIndex = groupCallSign / 1000000;
 		platoonCallsignIndex = (groupCallSign % 1000000) / 1000;
 		squadCallsignIndex = (groupCallSign % 1000) / 1;
+		
+		if (!faction)
+			return "";
 		
 		SCR_FactionCallsignInfo callsignInfo = faction.GetCallsignInfo();
 		string company = callsignInfo.GetCompanyCallsignName(companyCallsignIndex);
@@ -631,6 +879,21 @@ class PS_PlayableManager : ScriptComponent
 			writer.WriteInt(m_playablePlayerGroupId.GetElement(i));
 		}
 		
+		int plyableLastPlayerNameCount = m_playersLastName.Count();
+		writer.WriteInt(plyableLastPlayerNameCount);
+		for (int i = 0; i < plyableLastPlayerNameCount; i++)
+		{
+			writer.WriteInt(m_playersLastName.GetKey(i));
+			writer.WriteString(m_playersLastName.GetElement(i));
+		}
+		
+		int playersPlayableRememberedCount = m_playablePlayersRemembered.Count();
+		writer.WriteInt(playersPlayableRememberedCount);
+		for (int i = 0; i < playersPlayableRememberedCount; i++)
+		{
+			writer.WriteInt(m_playablePlayersRemembered.GetKey(i));
+			writer.WriteInt(m_playablePlayersRemembered.GetElement(i));
+		}
 		
 		return true;
 	}
@@ -707,6 +970,30 @@ class PS_PlayableManager : ScriptComponent
 			reader.ReadInt(value);
 			
 			m_playablePlayerGroupId.Insert(key, value);
+		}
+		
+		int plyableLastPlayerNameCount;
+		reader.ReadInt(plyableLastPlayerNameCount);
+		for (int i = 0; i < plyableLastPlayerNameCount; i++)
+		{
+			int key;
+			string value;
+			reader.ReadInt(key);
+			reader.ReadString(value);
+			
+			m_playersLastName.Insert(key, value);
+		}
+		
+		int playersPlayableRememberedCount;
+		reader.ReadInt(playersPlayableRememberedCount);
+		for (int i = 0; i < playersPlayableRememberedCount; i++)
+		{
+			int key;
+			int value;
+			reader.ReadInt(key);
+			reader.ReadInt(value);
+			
+			m_playablePlayersRemembered.Insert(key, value);
 		}
 		
 		m_bRplLoaded = true;

@@ -60,6 +60,11 @@ class PS_VoiceChatList : SCR_ScriptedWidgetComponent
 		if (!GetGame().InPlayMode())
 			return;
 		
+		if (!m_gVoNRoomsManager)
+			return;
+		if (!m_gVoNRoomsManager.m_eOnRoomChanged)
+			return;
+		
 		m_gVoNRoomsManager.m_eOnRoomChanged.Remove(MovePlayer);
 	}
 	

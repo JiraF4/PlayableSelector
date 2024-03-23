@@ -9,7 +9,9 @@ class PS_GroupLateLinkerComponent : ScriptComponent
 	override void EOnPostFrame(IEntity owner, float timeSlice)
 	{
 		ClearEventMask(owner, EntityEvent.POSTFRAME);
-		
+		if (!Replication.IsServer())
+			return;
+			
 		SCR_AIGroup aiGroup = SCR_AIGroup.Cast(owner);
 		
 		array<IEntity> characters = {};

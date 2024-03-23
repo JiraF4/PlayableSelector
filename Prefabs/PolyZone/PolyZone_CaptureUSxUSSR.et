@@ -1,0 +1,22 @@
+PolylineShapeEntity : "{1D807ABE94FE2618}Prefabs/PolyZone/PolyZone_Capture.et" {
+ ID "60E902668148288E"
+ coords 78.379 1 83.003
+ {
+  $grp PS_Objective : "{A4F0B4846EF850C4}Prefabs/Objective/Objective.et" {
+   CaptureUSSR {
+    ID "60E90618BF26288E"
+    coords 0 0 0
+    m_sTitle "Capture Rocks"
+    m_sTextData "Capture Rocks"
+    m_sFactionKey "USSR"
+   }
+   CaptureUS {
+    ID "60E90618BF39F892"
+    coords 0 0 0
+    m_sTitle "Capture Rocks"
+    m_sTextData "Capture Rocks"
+    m_sFactionKey "US"
+   }
+  }
+ }
+}

@@ -565,7 +565,7 @@ FrameWidgetClass {
        components {
         SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
          m_sActionName "VONChannel"
-         m_sLabel "#PS-Spectator_VoiceChat"
+         m_sLabel "#PS-Lobby_VoiceChat"
         }
        }
       }

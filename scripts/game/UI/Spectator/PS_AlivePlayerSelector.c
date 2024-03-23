@@ -1,42 +1,81 @@
-// Widget displays info about player in list of alive players.
-// Path: {20DCB7288210C151}UI/Spectator/AlivePlayerSelector.layout
-// Part of alive players list PS_AlivePlayerList ({18D3CF175C9AA974}UI/Spectator/AlivePlayersList.layout)
-
 class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 {
-	protected int m_iPlayer;
+	// Const
+	protected const ResourceName m_sImageSet = "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset";
+	protected ref Color m_DeathColor = Color.FromInt(0xFF2c2c2c);
 	
-	protected ResourceName m_sImageSet = "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset";
+	// Cache global
+	protected PS_PlayableManager m_PlayableManager;
+	protected PlayerController m_PlayerController;
+	protected SCR_FactionManager m_FactionManager;
 	
-	ImageWidget m_wPlayerFactionColor;
-	ImageWidget m_wUnitIcon;
-	ImageWidget m_wLeaderIcon;
-	TextWidget m_wPlayerName;
-	TextWidget m_wGroupName;
+	// Parameters
+	protected PS_AlivePlayerGroup m_AliveGroup;
+	protected PS_SpectatorMenu m_mSpectatorMenu;
+	protected RplId m_iPlayableId;
 	
-	PS_SpectatorMenu m_mSpectatorMenu;
+	// Cache parameters
+	protected PS_AlivePlayerList m_AlivePlayerList;
+	protected PS_PlayableComponent m_PlayableComponent;
+	protected SCR_CharacterDamageManagerComponent m_CharacterDamageManagerComponent;
+	protected ResourceName m_sPlayableIcon;
 	
+	// Widgets
+	protected ImageWidget m_wPlayerFactionColor;
+	protected ImageWidget m_wUnitIcon;
+	protected ImageWidget m_wDeadIcon;
+	protected TextWidget m_wPlayerName;
+	
+	// Init
 	override void HandlerAttached(Widget w)
 	{
 		super.HandlerAttached(w);
+		
+		// Widgets
 		m_wUnitIcon = ImageWidget.Cast(w.FindAnyWidget("UnitIcon"));
-		m_wLeaderIcon = ImageWidget.Cast(w.FindAnyWidget("LeaderIcon"));
+		m_wDeadIcon = ImageWidget.Cast(w.FindAnyWidget("DeadIcon"));
 		m_wPlayerName = TextWidget.Cast(w.FindAnyWidget("PlayerName"));
-		m_wGroupName = TextWidget.Cast(w.FindAnyWidget("GroupName"));
 		m_wPlayerFactionColor = ImageWidget.Cast(w.FindAnyWidget("PlayerFactionColor"));
+		
+		// Cache global
+		m_PlayableManager = PS_PlayableManager.GetInstance();
+		m_PlayerController = GetGame().GetPlayerController();
+		m_FactionManager = SCR_FactionManager.Cast(GetGame().GetFactionManager());
 		
 		GetGame().GetCallqueue().CallLater(AddOnClick, 0);
 	}
-
 	
 	void AddOnClick()
 	{
 		m_OnClicked.Insert(AlivePlayerButtonClicked);
 	}
 	
-	void SetPlayer(int playerId)
+	// Set parameters
+	void SetPlayable(int playableId)
 	{
-		m_iPlayer = playerId;
+		m_iPlayableId = playableId;
+		
+		// Cache parameters
+		m_PlayableComponent = m_PlayableManager.GetPlayableById(playableId);
+		m_CharacterDamageManagerComponent = m_PlayableComponent.GetCharacterDamageManagerComponent();
+		
+		// Temp
+		FactionAffiliationComponent factionAffiliationComponent = m_PlayableComponent.GetFactionAffiliationComponent();
+		Faction faction = factionAffiliationComponent.GetDefaultAffiliatedFaction();
+		SCR_EditableCharacterComponent editableCharacterComponent = m_PlayableComponent.GetEditableCharacterComponent();
+		SCR_UIInfo uiInfo = editableCharacterComponent.GetInfo();
+		
+		// Initial setup
+		m_sPlayableIcon = uiInfo.GetIconPath();
+		m_wPlayerFactionColor.SetColor(faction.GetFactionColor());
+		EDamageState damageState = m_CharacterDamageManagerComponent.GetState();
+		UpdateDammage(damageState);
+		UpdatePlayer(m_PlayableManager.GetPlayerByPlayableRemembered(m_iPlayableId));
+		
+		// Events
+		m_PlayableComponent.GetOnPlayerChange().Insert(UpdatePlayer);
+		m_PlayableComponent.GetOnDamageStateChanged().Insert(UpdateDammage);
+		m_PlayableComponent.GetOnUnregister().Insert(RemoveSelf);
 	}
 	
 	void SetSpectatorMenu(PS_SpectatorMenu spectatorMenu)
@@ -44,63 +83,53 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 		m_mSpectatorMenu = spectatorMenu;
 	}
 	
-	void UpdateInfo()
+	void SetAlivePlayerList(PS_AlivePlayerList alivePlayerList)
 	{
-		// global
-		PlayerManager playerManager = GetGame().GetPlayerManager();
-		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		SCR_FactionManager factionManager = SCR_FactionManager.Cast(GetGame().GetFactionManager());
-		
-		// player data
-		RplId playableId = playableManager.GetPlayableByPlayer(m_iPlayer);
-		FactionKey factionKey = playableManager.GetPlayerFactionKey(m_iPlayer);
-		string playerName = playerManager.GetPlayerName(m_iPlayer);
-		SCR_Faction faction = SCR_Faction.Cast(factionManager.GetFactionByKey(factionKey));
-		EPlayerRole playerRole = playerManager.GetPlayerRoles(m_iPlayer);
-		
-		// current player
-		PlayerController currentPlayerController = GetGame().GetPlayerController();
-		int currentPlayerId = currentPlayerController.GetPlayerId();
-		EPlayerRole currentPlayerRole = playerManager.GetPlayerRoles(currentPlayerController.GetPlayerId());
-		PS_PlayableControllerComponent currentPlayableController = PS_PlayableControllerComponent.Cast(currentPlayerController.FindComponent(PS_PlayableControllerComponent));
-		
-		// update
-		m_wPlayerName.SetText(playerName);
-		m_wLeaderIcon.SetVisible(playableManager.IsPlayerGroupLeader(m_iPlayer));
-		m_wPlayerFactionColor.SetColor(faction.GetOutlineFactionColor());
-		
-		if (SCR_Global.IsAdmin(m_iPlayer)) m_wPlayerName.SetColor(Color.FromInt(0xfff2a34b));
-		else m_wPlayerName.SetColor(Color.FromInt(0xffffffff));
-		
-		if (playableId != RplId.Invalid()) {
-			PS_PlayableComponent playableComponent = playableManager.GetPlayableById(playableId);
-			SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(playableComponent.GetOwner());
-			SCR_EditableCharacterComponent editableCharacterComponent = SCR_EditableCharacterComponent.Cast(character.FindComponent(SCR_EditableCharacterComponent));
-			SCR_UIInfo uiInfo = editableCharacterComponent.GetInfo();
-			int groupCallSign = playableManager.GetGroupCallsignByPlayable(playableId);
-			string groupName = playableManager.GroupCallsignToGroupName(faction, groupCallSign);
-			
-			m_wUnitIcon.SetVisible(true);
-			m_wGroupName.SetVisible(true);
-			m_wUnitIcon.LoadImageTexture(0, uiInfo.GetIconPath());
-			m_wGroupName.SetText(groupName);
-		}else{
+		m_AlivePlayerList = alivePlayerList;
+	}
+	
+	void SetAliveGroup(PS_AlivePlayerGroup alivePlayerGroup)
+	{
+		m_AliveGroup = alivePlayerGroup;
+	}
+	
+	// Updates
+	void UpdateDammage(EDamageState state)
+	{
+		if (state == EDamageState.DESTROYED)
+		{
 			m_wUnitIcon.SetVisible(false);
-			m_wGroupName.SetVisible(false);
+			m_wDeadIcon.SetVisible(true);
+			//m_wUnitIcon.LoadImageFromSet(0, m_sImageSet, "death");
+			m_wDeadIcon.SetColor(m_DeathColor);
+			m_wPlayerName.SetColor(m_DeathColor);
 		}
+		else
+		{
+			m_wUnitIcon.LoadImageTexture(0, m_sPlayableIcon);
+			m_wPlayerName.SetColor(Color.White);
+		}
+	}
+	
+	void UpdatePlayer(int playerId)
+	{
+		string playerName = m_PlayableManager.GetPlayerName(playerId);
+		if (playerName == "") // No player
+			playerName = m_PlayableComponent.GetName();
+		m_wPlayerName.SetText(playerName);
+	}
+	
+	void RemoveSelf()
+	{
+		m_wRoot.RemoveFromHierarchy();
+		m_AliveGroup.OnAliveRemoved(m_PlayableComponent);
+		m_AlivePlayerList.OnAliveRemoved(m_PlayableComponent);
 	}
 	
 	// -------------------- Buttons events --------------------
 	void AlivePlayerButtonClicked(SCR_ButtonBaseComponent playerButton)
 	{
-		PlayerController playerController = GetGame().GetPlayerController();
-		SCR_CameraManager cameraManager = SCR_CameraManager.Cast(GetGame().GetCameraManager());
-		SCR_ManualCamera camera = SCR_ManualCamera.Cast(cameraManager.CurrentCamera());
-		
-		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		RplId playableId = playableManager.GetPlayableByPlayer(m_iPlayer);
-		PS_PlayableComponent playableComponent = playableManager.GetPlayableById(playableId);
-		m_mSpectatorMenu.SetCameraCharacter(playableComponent.GetOwner());
+		m_mSpectatorMenu.SetCameraCharacter(m_PlayableComponent.GetOwner());
 	}
 	
 }

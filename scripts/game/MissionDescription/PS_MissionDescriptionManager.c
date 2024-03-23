@@ -5,6 +5,7 @@ class PS_MissionDescriptionManagerClass : ScriptComponentClass
 
 class PS_MissionDescriptionManager : ScriptComponent
 {
+	PS_MissionDescription m_ObjectivesDescription;
 	ref array<PS_MissionDescription> m_aDescriptions = new array<PS_MissionDescription>();
 	
 	void RegisterDescription(PS_MissionDescription mapDescription)

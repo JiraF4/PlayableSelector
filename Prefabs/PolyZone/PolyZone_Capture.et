@@ -1,0 +1,19 @@
+PolylineShapeEntity : "{BD11B8FAA469D169}Prefabs/PolyZone/PolyZone.et" {
+ ID "60E902668148288E"
+ coords 85.777 1.001 78.911
+ {
+  PS_PolyZoneObjectiveTriggerCapture {
+   ID "60E906126F14C7A8"
+   components {
+    Hierarchy "{60E9060308EBEC26}" {
+    }
+   }
+   TriggerShapeType Polyline
+   TriggerActivationType "All changes"
+   PeriodicQueries 1
+   ClassesFilter {
+    "SCR_ChimeraCharacter"
+   }
+  }
+ }
+}

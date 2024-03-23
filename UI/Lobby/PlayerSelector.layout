@@ -1,13 +1,12 @@
 ButtonWidgetClass {
  Name "PlayerSelector"
  Slot LayoutSlot "{5D6D352AD61B75EE}" {
-  Padding 8 8 8 8
+  Padding 8 1 8 1
  }
  Color 0 1 0.019 0
  components {
   PS_PlayerSelector "{5EA716117F78313D}" {
    m_sSoundClicked ""
-   m_bCanBeToggled 1
    m_BackgroundDefault 1 1 1 0
    m_BackgroundHovered 1 1 1 0.162
    m_BackgroundSelectedHovered 0.76 0.392 0.08 0.3
@@ -20,6 +19,27 @@ ButtonWidgetClass {
    Slot ButtonWidgetSlot "{5D6D352BAC1362D8}" {
    }
    {
+    ImageWidgetClass "{60E164DF1C9BF6DF}" {
+     Name "ImageCurrent"
+     Slot FrameWidgetSlot "{60DCC61DAC789BCF}" {
+      PositionX 6
+      OffsetLeft 6
+      PositionY 0
+      OffsetTop 0
+      SizeX 474
+      OffsetRight -480
+      SizeY 40
+      OffsetBottom -40
+     }
+     Opacity 0.4
+     Color 0.761 0.392 0.078 1
+     Texture "{E12BB5C5BD00269E}UI/Textures/Common/gradientTexture_Dither_right_512.edds"
+     Size 512 512
+     Mask "{E12BB5C5BD00269E}UI/Textures/Common/gradientTexture_Dither_right_512.edds"
+     "Transition width" 1
+     Progress 0.44
+     "Mask Mode" "Include Below"
+    }
     ImageWidgetClass "{5EA8C93C82EFEDBC}" {
      Name "Background"
      Slot FrameWidgetSlot "{5D6E8206B132EE77}" {
@@ -56,8 +76,8 @@ ButtonWidgetClass {
       OffsetLeft 10
       PositionY 0
       OffsetTop 0
-      SizeX 216
-      OffsetRight -226
+      SizeX 222
+      OffsetRight -232
       SizeY 40
       OffsetBottom -40
      }
@@ -68,7 +88,7 @@ ButtonWidgetClass {
     }
     TextWidgetClass "{5D6D1B96C41F6387}" {
      Prefab "{5D6D1B99172B8829}"
-     Name "PlayerFactionName"
+     Name "PlayerGroupName"
      Slot FrameWidgetSlot "{5D6D1B96C41F633A}" {
       PositionX 192
       OffsetLeft 192

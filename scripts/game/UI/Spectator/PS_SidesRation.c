@@ -15,10 +15,10 @@ class PS_SidesRation : SCR_ScriptedWidgetComponent
 		if (playableManager)
 			playableManager.m_eOnFactionChange.Insert(UpdateInfo);
 		
-		UpdateInfo();	
+		UpdateInfo(0, "", "");	
 	}
 	
-	void UpdateInfo()
+	void UpdateInfo(int _playerId, FactionKey _factionKey, FactionKey _factionKeyOld)
 	{
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		

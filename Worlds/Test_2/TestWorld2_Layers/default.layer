@@ -5,6 +5,13 @@ PerceptionManager PerceptionManager1 : "{028DAEAD63E056BE}Prefabs/World/Game/Per
  coords 113.126 1 124.397
 }
 PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_GameMode_Lobby.et" {
+ m_iFreezeTime 20000
+ m_aFactionRespawnCount {
+  PS_FactionRespawnCount "{60ECC979A2129D60}" {
+   m_sFactionKey "USSR"
+   m_iCount 4
+  }
+ }
  {
   SCR_FactionManager "5EE8949D46B62B0A" {
    ID "5ED9088735FF2D8B"
@@ -25,5 +32,5 @@ PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_Game
 HitRegistrationManager HitRegManager1 : "{0EDA3D48791120DD}Prefabs/MP/HitRegManager.et" {
 }
 PS_MissionDescription : "{3136BE42592F3B1B}PrefabsEditable/MissionDescription/EditableMissionDescription.et" {
- coords 92.275 1 148.121
+ coords 95.586 1 151.188
 }

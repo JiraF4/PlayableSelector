@@ -1,6 +1,8 @@
 PS_GameModeCoop : "{0F307326459A1395}Prefabs/MP/Modes/GameMode_Base.et" {
  ID "56B2B479C6B96951"
  components {
+  PS_CutsceneManager "{60E6C661B81E7619}" {
+  }
   PS_MissionDataManager "{5F2B46885537B66A}" {
   }
   PS_MissionDescriptionManager "{5ED908871838D082}" {

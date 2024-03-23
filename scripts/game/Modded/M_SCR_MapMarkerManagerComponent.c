@@ -12,4 +12,10 @@ modded class SCR_MapMarkerManagerComponent
 		else
 			super.Update(timeSlice);
 	}
+	
+	override void OnMapPanEnd(float  x, float y)
+	{
+		if (m_MapEntity)
+			super.OnMapPanEnd(x, y);
+	}
 }

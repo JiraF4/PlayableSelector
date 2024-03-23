@@ -5,6 +5,8 @@ modded enum ChimeraMenuPreset : ScriptMenuPresetEnum
 
 class PS_WaitScreen: MenuBase
 {
+	static bool m_bWaitEnded;
+	
 	TextWidget m_wInfoText;
 	
 	override void OnMenuOpen()
@@ -97,14 +99,14 @@ class PS_WaitScreen: MenuBase
 		int roomId = VoNRoomsManager.GetPlayerRoom(playerController.GetPlayerId());
 		string roomKey = VoNRoomsManager.GetRoomName(roomId);
 		
+		m_bWaitEnded = true;
+		Close();
 		
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-		
 		playableController.SetPlayerState(playerController.GetPlayerId(), PS_EPlayableControllerState.NotReady);
-		playableController.SwitchToMenu(gameMode.GetState());
 		playableController.MoveToVoNRoomByKey(playerController.GetPlayerId(), roomKey);
+		playableController.SwitchToMenu(gameMode.GetState());
 		
-		Close();
 		GetGame().GetCallqueue().Remove(AwaitPlayerController);
 	}
 	

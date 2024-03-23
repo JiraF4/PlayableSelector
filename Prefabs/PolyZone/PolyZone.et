@@ -1,0 +1,14 @@
+PolylineShapeEntity {
+ ID "60E902668148288E"
+ components {
+  PS_PolyZone "{60E90266F25533F6}" {
+  }
+ }
+ coords 83.09 1 114.075
+ Points {
+  ShapePoint "{60E90266E922A02A}" {
+   Position 0 0 0
+  }
+ }
+ IsClosed 1
+}

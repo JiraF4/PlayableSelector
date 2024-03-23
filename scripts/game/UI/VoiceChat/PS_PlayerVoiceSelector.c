@@ -57,6 +57,8 @@ class PS_PlayerVoiceSelector : SCR_ButtonBaseComponent
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		SCR_FactionManager factionManager = SCR_FactionManager.Cast(GetGame().GetFactionManager());
 		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
+		if (!playableManager)
+			return;
 		
 		// player data
 		RplId playableId = playableManager.GetPlayableByPlayer(m_iPlayer);
@@ -79,7 +81,7 @@ class PS_PlayerVoiceSelector : SCR_ButtonBaseComponent
 				
 		// update
 		if (playerName != "") m_wPlayerName.SetText(playerName);
-		m_wVoiceHideableButton.Update();
+		//m_wVoiceHideableButton.Update();
 		m_wLeaderIcon.SetVisible(playableManager.IsPlayerGroupLeader(m_iPlayer));
 		if (faction) m_wCharacterFactionColor.SetColor(faction.GetFactionColor());
 		else m_wCharacterFactionColor.SetColor(Color.FromInt(0xFF2c2c2c));

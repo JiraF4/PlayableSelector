@@ -3,177 +3,159 @@
 
 class PS_AlivePlayerList : ScriptedWidgetComponent
 {
-	protected ResourceName m_sAlivePlayerSelectorPrefab = "{20DCB7288210C151}UI/Spectator/AlivePlayerSelector.layout";
+	// Const
+	protected ResourceName m_sAliveGroupPrefab = "{71DA7743CE51DABF}UI/Spectator/AlivePlayerGroup.layout";
 	protected ResourceName m_sAliveFactionButtonPrefab = "{4959360D4111DACC}UI/Spectator/AliveFactionButton.layout";
 	
+	// Cache global
+	protected PS_PlayableManager m_PlayableManager;
+	protected PlayerController m_PlayerController;
+	protected SCR_FactionManager m_FactionManager;
+	protected WorkspaceWidget m_WorkspaceWidget;
+	
+	// Widgets
 	protected VerticalLayoutWidget m_wPlayersList;
-	protected ref array<Widget> m_aPlayersListWidgets = {};
-	protected ref array<PS_AlivePlayerSelector> m_aPlayersAliveList = {};
-	
 	protected HorizontalLayoutWidget m_wHorizontalLayoutFactions;
-	protected ref array<Widget> m_aFactionButtonsWidgets = {};
-	protected ref map<FactionKey, PS_AliveFactionButton> m_aFactionButtons = new map<FactionKey, PS_AliveFactionButton>;
+	protected ScrollLayoutWidget m_wAlivePlayersListScroll;
 	
-	PS_SpectatorMenu m_mSpectatorMenu;
+	// Parameters
+	protected PS_SpectatorMenu m_mSpectatorMenu;
 	
-	FactionKey m_sSelectedFaction;
+	// Vars
+	protected ref map<SCR_AIGroup, PS_AlivePlayerGroup> m_aAlivePlayerGroups = new map<SCR_AIGroup, PS_AlivePlayerGroup>();
+	protected ref map<Faction, PS_AliveFactionButton> m_aFactionButtons = new map<Faction, PS_AliveFactionButton>();
+	protected ref array<Faction> m_aSelectedFactions = {};
 	
 	override void HandlerAttached(Widget w)
 	{
+		// Widgets
 		m_wPlayersList = VerticalLayoutWidget.Cast(w.FindAnyWidget("AlivePlayersList"));
 		m_wHorizontalLayoutFactions = HorizontalLayoutWidget.Cast(w.FindAnyWidget("HorizontalLayoutFactions"));
+		m_wAlivePlayersListScroll = ScrollLayoutWidget.Cast(w.FindAnyWidget("AlivePlayersListScroll"));
 		
-		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		map<RplId, PS_PlayableComponent> playables = playableManager.GetPlayables();
-		
-		array<FactionKey> factions = {};
-		foreach (RplId id, PS_PlayableComponent playableComponent: playables)
-		{
-			FactionAffiliationComponent factionAffiliationComponent = FactionAffiliationComponent.Cast(playableComponent.GetOwner().FindComponent(FactionAffiliationComponent));
-			Faction faction = factionAffiliationComponent.GetDefaultAffiliatedFaction();
-			FactionKey factionKey = faction.GetFactionKey();
-			if (!factions.Contains(factionKey))
-				factions.Insert(factionKey);
-		}
-		
-		foreach (FactionKey factionKey : factions)
-		{
-			Widget factionButtonWidget = GetGame().GetWorkspace().CreateWidgets(m_sAliveFactionButtonPrefab, m_wHorizontalLayoutFactions);
-			PS_AliveFactionButton aliveFactionButton = PS_AliveFactionButton.Cast(factionButtonWidget.FindHandler(PS_AliveFactionButton));
-			
-			m_aFactionButtonsWidgets.Insert(factionButtonWidget);
-			m_aFactionButtons.Insert(factionKey, aliveFactionButton);
-			
-			aliveFactionButton.SetFaction(factionKey);
-			aliveFactionButton.m_OnClicked.Insert(FactionButtonClicked);
-		}
+		// Cache global
+		m_PlayableManager = PS_PlayableManager.GetInstance();
+		m_PlayerController = GetGame().GetPlayerController();
+		m_FactionManager = SCR_FactionManager.Cast(GetGame().GetFactionManager());
+		m_WorkspaceWidget = GetGame().GetWorkspace();
 	}
 	
-	private int m_iOldPlayersCount = 0;
-	
-	// -------------------- Update content functions --------------------
-	void HardUpdate()
+	void InitList()
 	{
-		array<int> alivePlayers = new array<int>();
-		GetAlivePlayers(alivePlayers);
+		array<PS_PlayableComponent> playables = m_PlayableManager.GetPlayablesSorted();
+		map<SCR_Faction, int> factions = new map<SCR_Faction, int>();
 		
-		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		if (m_sSelectedFaction != "")
+		foreach (PS_PlayableComponent playable : playables)
 		{
-			for (int i = 0; i < alivePlayers.Count(); i++)
-			{
-				RplId playableId = playableManager.GetPlayableByPlayer(alivePlayers[i]);
-				PS_PlayableComponent playable = playableManager.GetPlayableById(playableId);
-				FactionAffiliationComponent factionAffiliationComponent = FactionAffiliationComponent.Cast(playable.GetOwner().FindComponent(FactionAffiliationComponent));
-				if (factionAffiliationComponent.GetDefaultAffiliatedFaction().GetFactionKey() != m_sSelectedFaction)
-				{
-					alivePlayers.Remove(i);
-					i--;
-				}
-			}
-		}
-		
-		if (m_iOldPlayersCount != alivePlayers.Count())
-		{
-			// Clear old widgets
-			foreach (Widget widget: m_aPlayersListWidgets)
-			{
-				m_wPlayersList.RemoveChild(widget);
-			}
-			m_aPlayersAliveList.Clear();
-			m_aPlayersListWidgets.Clear();
+			AddPlayable(playable);
 			
-			// Add new widgets
-			foreach (int playerId: alivePlayers)
-			{
-				Widget alivePlayerWidget = GetGame().GetWorkspace().CreateWidgets(m_sAlivePlayerSelectorPrefab);
-				PS_AlivePlayerSelector alivePlayerSelector = PS_AlivePlayerSelector.Cast(alivePlayerWidget.FindHandler(PS_AlivePlayerSelector));
-				
-				m_wPlayersList.AddChild(alivePlayerWidget);
-				m_aPlayersListWidgets.Insert(alivePlayerWidget);
-				m_aPlayersAliveList.Insert(alivePlayerSelector);
-				
-				alivePlayerSelector.SetPlayer(playerId);
-				alivePlayerSelector.SetSpectatorMenu(m_mSpectatorMenu);
-			}
+			FactionAffiliationComponent factionAffiliationComponent = playable.GetFactionAffiliationComponent();
+			SCR_Faction faction = SCR_Faction.Cast(factionAffiliationComponent.GetDefaultAffiliatedFaction());
+			if (!factions.Contains(faction))
+				factions.Insert(faction, 1);
+			else
+				factions.Set(faction, factions.Get(faction) + 1);
 		}
-		m_iOldPlayersCount = alivePlayers.Count();
 		
-		SoftUpdate();
+		foreach (SCR_Faction faction, int count : factions)
+		{
+			m_aSelectedFactions.Insert(faction);
+			AddFactionButton(faction, count);
+		}
+		
+		// Added in runtime
+		m_PlayableManager.GetOnPlayableRegistered().Insert(OnPlayableRegistered);
 	}
 	
-	void SoftUpdate()
+	void AddPlayable(PS_PlayableComponent playable)
 	{
-		foreach (PS_AlivePlayerSelector alivePlayerSelector: m_aPlayersAliveList)
+		SCR_AIGroup playableGroup = m_PlayableManager.GetPlayerGroupByPlayable(playable.GetId());
+		PS_AlivePlayerGroup alivePlayerGroup;
+		if (!m_aAlivePlayerGroups.Contains(playableGroup))
 		{
-			alivePlayerSelector.UpdateInfo();
+			Widget aliveGroupRoot = m_WorkspaceWidget.CreateWidgets(m_sAliveGroupPrefab, m_wPlayersList);
+			alivePlayerGroup = PS_AlivePlayerGroup.Cast(aliveGroupRoot.FindHandler(PS_AlivePlayerGroup));
+			alivePlayerGroup.SetAIGroup(playableGroup);	
+			alivePlayerGroup.SetSpectatorMenu(m_mSpectatorMenu);
+			alivePlayerGroup.SetAlivePlayerList(this);
+			m_aAlivePlayerGroups.Insert(playableGroup, alivePlayerGroup);
 		}
-		
-		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		map<FactionKey, int> factions = new map<FactionKey, int>();
-		array<int> alivePlayers = new array<int>();
-		GetAlivePlayers(alivePlayers);
-		foreach (int playerId: alivePlayers)
-		{
-			FactionKey factionKey = playableManager.GetPlayerFactionKey(playerId);
-			if (factions.Contains(factionKey))
-				factions[factionKey] = factions[factionKey] + 1;
-			else
-				factions[factionKey] = 1;
-		}
-		
-		foreach (FactionKey factionKey, PS_AliveFactionButton aliveFactionButton : m_aFactionButtons)
-		{
-			if (factions.Contains(factionKey))
-				aliveFactionButton.SetCount(factions[factionKey]);
-			else
-				aliveFactionButton.SetCount(0);
-		}
+		else alivePlayerGroup = m_aAlivePlayerGroups.Get(playableGroup);
+		alivePlayerGroup.InsertPlayable(playable);
+	}
+	
+	void AddFactionButton(SCR_Faction faction, int count)
+	{
+		Widget aliveFactionRoot = m_WorkspaceWidget.CreateWidgets(m_sAliveFactionButtonPrefab, m_wHorizontalLayoutFactions);
+		bool factionSelected = m_aSelectedFactions.Contains(faction);
+		aliveFactionRoot.SetVisible(factionSelected);
+		PS_AliveFactionButton aliveFactionButton = PS_AliveFactionButton.Cast(aliveFactionRoot.FindHandler(PS_AliveFactionButton));
+		aliveFactionButton.SetFaction(faction);
+		aliveFactionButton.SetCount(count);
+		aliveFactionButton.m_OnClicked.Insert(FactionButtonClicked);
+		m_aFactionButtons.Insert(faction, aliveFactionButton);
 	}
 	
 	void SetSpectatorMenu(PS_SpectatorMenu spectatorMenu)
 	{
 		m_mSpectatorMenu = spectatorMenu;
+		
+		InitList();
 	}
 	
-	void GetAlivePlayers(out array<int> outPlayersArray)
+	void OnPlayableRegistered(RplId playableId, PS_PlayableComponent playable)
 	{
-		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		array<PS_PlayableComponent> playablesSorted = playableManager.GetPlayablesSorted();
-		for (int i = 0; i < playablesSorted.Count(); i++) {
-			PS_PlayableComponent playable = playablesSorted[i];
-			SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(playable.GetOwner());
-			if (!character)
-				continue;
-			if (!character.GetDamageManager().IsDestroyed()) 
-			{
-				int playerId = playableManager.GetPlayerByPlayable(playable.GetId());
-				if (playerId > 0 && !outPlayersArray.Contains(playerId))
-					outPlayersArray.Insert(playerId);
-			}
+		AddPlayable(playable);
+		
+		FactionAffiliationComponent factionAffiliationComponent = playable.GetFactionAffiliationComponent();
+		SCR_Faction faction = SCR_Faction.Cast(factionAffiliationComponent.GetDefaultAffiliatedFaction());
+		AddFactionCount(faction, 1);	
+	}
+	
+	void AddFactionCount(SCR_Faction faction, int added)
+	{
+		if (!m_aFactionButtons.Contains(faction))
+			AddFactionButton(faction, 0);
+		PS_AliveFactionButton aliveFactionButton = m_aFactionButtons.Get(faction);
+		int count = aliveFactionButton.GetCount();
+		aliveFactionButton.SetCount(count + added);
+		if (count <= 1)
+		{
+			aliveFactionButton.GetRootWidget().RemoveFromHierarchy();
+			m_aFactionButtons.Remove(faction);
 		}
 	}
 	
+	void OnAliveRemoved(PS_PlayableComponent playableComponent)
+	{
+		FactionAffiliationComponent factionAffiliationComponent = playableComponent.GetFactionAffiliationComponent();
+		SCR_Faction faction = SCR_Faction.Cast(factionAffiliationComponent.GetDefaultAffiliatedFaction());
+		AddFactionCount(faction, -1);
+	}
+	
+	void OnAliveGroupRemoved(SCR_AIGroup group)
+	{
+		m_aAlivePlayerGroups.Remove(group);
+	}
 	
 	// -------------------- Buttons events --------------------
 	void FactionButtonClicked(SCR_ButtonBaseComponent playerButton)
 	{
-		foreach (FactionKey factionKey, PS_AliveFactionButton aliveFactionButton : m_aFactionButtons)
-		{
-			aliveFactionButton.SetToggled(false);
-		}
+		m_wAlivePlayersListScroll.SetSliderPos(0, 0);
 		
 		PS_AliveFactionButton aliveFactionButton = PS_AliveFactionButton.Cast(playerButton);
+		SCR_Faction faction = aliveFactionButton.GetFaction();
 		
-		FactionKey factionKey = aliveFactionButton.GetFactionKey();
-		if (factionKey == m_sSelectedFaction)
-			m_sSelectedFaction = "";
+		if (m_aSelectedFactions.Contains(faction))
+			m_aSelectedFactions.RemoveItem(faction);
 		else
+			m_aSelectedFactions.Insert(faction);
+			
+		foreach (SCR_AIGroup aiGroup, PS_AlivePlayerGroup alivePlayerGroup : m_aAlivePlayerGroups)
 		{
-			aliveFactionButton.SetToggled(true);
-			m_sSelectedFaction = factionKey;
+			SCR_Faction goupFaction = SCR_Faction.Cast(aiGroup.GetFaction());
+			bool factionSelected = m_aSelectedFactions.Contains(goupFaction);
+			alivePlayerGroup.GetRootWidget().SetVisible(factionSelected);
 		}
-		m_iOldPlayersCount = -1;
-		HardUpdate();
 	}
 }

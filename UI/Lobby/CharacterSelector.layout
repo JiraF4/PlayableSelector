@@ -1,13 +1,11 @@
 ButtonWidgetClass {
  Name "CharacterSelector"
  Slot LayoutSlot "{5D6D352925B78E4D}" {
-  Padding 16 16 16 16
  }
  Color 0 1 0.019 0
  components {
   PS_CharacterSelector "{5EA716114A6558BF}" {
    m_sSoundClicked ""
-   m_bCanBeToggled 1
    m_BackgroundDefault 0 0 0 0.314
    m_BackgroundHovered 0.051 0.051 0.051 0.314
    m_BackgroundSelectedHovered 0.76 0.392 0.08 0.3

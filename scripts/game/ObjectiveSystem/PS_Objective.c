@@ -1,18 +1,12 @@
-class PS_ObjectiveClass : GenericEntityClass
+class PS_ObjectiveClass : PS_MissionDescriptionClass
 {
 
 }
 
-class PS_Objective : GenericEntity
+class PS_Objective : PS_MissionDescription
 {
 	[Attribute("")]
 	int m_iScore;
-
-	[Attribute("")]
-	string m_sTitle;
-
-	[Attribute("")]
-	string m_sDescription;
 
 	[Attribute("")]
 	FactionKey m_sFactionKey;
@@ -46,16 +40,6 @@ class PS_Objective : GenericEntity
 	int GetScore()
 	{
 		return m_iScore;
-	}
-
-	string GetTitle()
-	{
-		return m_sTitle;
-	}
-
-	string GetDescription()
-	{
-		return m_sDescription;
 	}
 
 	bool GetCompleted()
