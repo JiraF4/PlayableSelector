@@ -162,6 +162,73 @@ FrameWidgetClass {
     VerticalLayoutWidgetClass "{5EBA3C972331B0FA}" {
      Name "AlivePlayersList"
      Slot AlignableSlot "{5EB11576E9D62E23}" {
+      HorizontalAlign 3
+     }
+    }
+   }
+  }
+  ButtonWidgetClass "{60F6F4E59464D7E7}" {
+   Name "ShowDeathButton"
+   Slot FrameWidgetSlot "{5EA8C93F5E685F59}" {
+    Anchor 0 0 0 0
+    PositionX 175
+    OffsetLeft 175
+    PositionY 4
+    OffsetTop 4
+    SizeX 32
+    OffsetRight -207
+    SizeY 32
+    OffsetBottom -36
+   }
+   Color 0 1 0.019 0
+   components {
+    SCR_ButtonBaseComponent "{5EAB239441B528D5}" {
+     m_sSoundHovered ""
+     m_sSoundClicked ""
+     m_bCanBeToggled 1
+     m_BackgroundDefault 1 1 1 0
+     m_BackgroundHovered 1 1 1 0.162
+     m_BackgroundSelected 1 1 1 0.162
+     m_BackgroundSelectedHovered 1 1 1 0.162
+     m_BackgroundClicked 1 1 1 0
+     m_bShowBorderOnFocus 0
+     m_bNoBorderAnimation 1
+    }
+   }
+   "no focus" 1
+   {
+    FrameWidgetClass "{60F6F4E59464D7E8}" {
+     Name "ShowDeathButtonFrame"
+     Slot ButtonWidgetSlot "{5EA8C93CB4241314}" {
+     }
+     {
+      ImageWidgetClass "{60F6F4E59464D7E9}" {
+       Name "Background"
+       Slot FrameWidgetSlot "{5D6E8206B132EE77}" {
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX 32
+        OffsetRight -32
+        SizeY 32
+        OffsetBottom -32
+       }
+      }
+      ImageWidgetClass "{60F6F4E59464D7EA}" {
+       Name "ShowDeathImage"
+       Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
+        OffsetLeft 0
+        OffsetTop 0
+        SizeX 32
+        OffsetRight -32
+        SizeY 32
+        OffsetBottom -32
+       }
+       Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
+       Image "death"
+       Size 32 32
+      }
      }
     }
    }

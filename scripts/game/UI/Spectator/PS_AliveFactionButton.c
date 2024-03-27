@@ -5,6 +5,7 @@ class PS_AliveFactionButton : SCR_ButtonBaseComponent
 	
 	SCR_Faction m_Faction;
 	int m_iCount;
+	int m_iCountAlive;
 	
 	override void HandlerAttached(Widget w)
 	{
@@ -32,11 +33,27 @@ class PS_AliveFactionButton : SCR_ButtonBaseComponent
 	void SetCount(int count)
 	{
 		m_iCount = count;
-		m_wSideCount.SetText(m_iCount.ToString());
+		UpdateCount();
 	}
 	
 	int GetCount()
 	{
 		return m_iCount;
+	}
+	
+	void SetCountAlive(int countAlive)
+	{
+		m_iCountAlive = countAlive;
+		UpdateCount();
+	}
+	
+	int GetCountAlive()
+	{
+		return m_iCountAlive;
+	}
+	
+	void UpdateCount()
+	{
+		m_wSideCount.SetText(m_iCountAlive.ToString() + "/" + m_iCount.ToString());
 	}
 }

@@ -19,6 +19,7 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 	protected PS_PlayableComponent m_PlayableComponent;
 	protected SCR_CharacterDamageManagerComponent m_CharacterDamageManagerComponent;
 	protected ResourceName m_sPlayableIcon;
+	protected bool m_bDead;
 	
 	// Widgets
 	protected ImageWidget m_wPlayerFactionColor;
@@ -71,6 +72,7 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 		EDamageState damageState = m_CharacterDamageManagerComponent.GetState();
 		UpdateDammage(damageState);
 		UpdatePlayer(m_PlayableManager.GetPlayerByPlayableRemembered(m_iPlayableId));
+		UpdateShowDead(m_AlivePlayerList.IsShowDead());
 		
 		// Events
 		m_PlayableComponent.GetOnPlayerChange().Insert(UpdatePlayer);
@@ -86,6 +88,7 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 	void SetAlivePlayerList(PS_AlivePlayerList alivePlayerList)
 	{
 		m_AlivePlayerList = alivePlayerList;
+		m_AlivePlayerList.GetOnShowDead().Insert(UpdateShowDead);
 	}
 	
 	void SetAliveGroup(PS_AlivePlayerGroup alivePlayerGroup)
@@ -96,8 +99,11 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 	// Updates
 	void UpdateDammage(EDamageState state)
 	{
-		if (state == EDamageState.DESTROYED)
+		m_bDead = state == EDamageState.DESTROYED;
+		if (m_bDead)
 		{
+			m_wRoot.SetVisible(m_AlivePlayerList.IsShowDead());
+			m_AlivePlayerList.OnAliveDie(m_PlayableComponent);
 			m_wUnitIcon.SetVisible(false);
 			m_wDeadIcon.SetVisible(true);
 			//m_wUnitIcon.LoadImageFromSet(0, m_sImageSet, "death");
@@ -124,6 +130,11 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 		m_wRoot.RemoveFromHierarchy();
 		m_AliveGroup.OnAliveRemoved(m_PlayableComponent);
 		m_AlivePlayerList.OnAliveRemoved(m_PlayableComponent);
+	}
+	
+	void UpdateShowDead(bool showDead)
+	{
+		m_wRoot.SetVisible(showDead || !m_bDead);
 	}
 	
 	// -------------------- Buttons events --------------------

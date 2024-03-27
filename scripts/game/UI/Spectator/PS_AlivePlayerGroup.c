@@ -7,6 +7,7 @@ class PS_AlivePlayerGroup : SCR_ScriptedWidgetComponent
 	protected VerticalLayoutWidget m_PlayersVerticalLayout;
 	protected TextWidget m_wGroupName;
 	protected ImageWidget m_wGroupFactionColor;
+	protected ButtonWidget m_wAlivePlayerGroupButton;
 	
 	// Cache global
 	protected WorkspaceWidget m_WorkspaceWidget;
@@ -16,18 +17,27 @@ class PS_AlivePlayerGroup : SCR_ScriptedWidgetComponent
 	protected PS_SpectatorMenu m_SpectatorMenu;
 	protected SCR_AIGroup m_AIGroup;
 	
+	// Handler
+	SCR_ButtonBaseComponent m_hAlivePlayerGroupButton;
+	
 	// Init
 	override void HandlerAttached(Widget w)
 	{
 		super.HandlerAttached(w);
 		
+		// Cache global
+		m_WorkspaceWidget = GetGame().GetWorkspace();
+		
 		// Widgets
 		m_PlayersVerticalLayout = VerticalLayoutWidget.Cast(w.FindWidget("PlayersVerticalLayout"));
 		m_wGroupName = TextWidget.Cast(w.FindAnyWidget("GroupName"));
 		m_wGroupFactionColor = ImageWidget.Cast(w.FindAnyWidget("GroupFactionColor"));
+		m_wAlivePlayerGroupButton = ButtonWidget.Cast(w.FindAnyWidget("AlivePlayerGroupButton"));
 		
-		// Cache global
-		m_WorkspaceWidget = GetGame().GetWorkspace();
+		// Handler
+		m_hAlivePlayerGroupButton = SCR_ButtonBaseComponent.Cast(m_wAlivePlayerGroupButton.FindHandler(SCR_ButtonBaseComponent));
+		
+		m_hAlivePlayerGroupButton.m_OnClicked.Insert(OnGroupClick);
 	}
 	
 	void SetSpectatorMenu(PS_SpectatorMenu spectatorMenu)
@@ -70,6 +80,11 @@ class PS_AlivePlayerGroup : SCR_ScriptedWidgetComponent
 			m_wRoot.RemoveFromHierarchy();
 			m_AlivePlayerList.OnAliveGroupRemoved(m_AIGroup);
 		}
+	}
+	
+	void OnGroupClick(SCR_ButtonBaseComponent button)
+	{
+		m_PlayersVerticalLayout.SetVisible(!m_PlayersVerticalLayout.IsVisible());
 	}
 }
 

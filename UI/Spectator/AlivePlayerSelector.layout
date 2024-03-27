@@ -12,107 +12,173 @@ ButtonWidgetClass {
   }
  }
  {
-  FrameWidgetClass "{5EBE323E6910214E}" {
-   Name "AlivePlayerFrame"
-   Slot ButtonWidgetSlot "{5EBE323E691022A5}" {
+  OverlayWidgetClass "{60F6F4E7ED5F6F74}" {
+   Name "Overlay"
+   Slot ButtonWidgetSlot "{60F6F4E7ED5F6F55}" {
    }
    {
-    ImageWidgetClass "{5EBA4169D006D2A6}" {
+    ImageWidgetClass "{60F6F4E7F0E57005}" {
      Name "Background"
-     Slot FrameWidgetSlot "{5EB11767D337F688}" {
-      OffsetLeft 0
-      OffsetTop 0
-      SizeX 320
-      OffsetRight -320
-      SizeY 44
-      OffsetBottom -44
+     Slot OverlayWidgetSlot "{60F6F4E8501F5D76}" {
+      HorizontalAlign 3
+      VerticalAlign 3
      }
+     Size 1 1
     }
-    FrameWidgetClass "{5EBA4169D006D2D1}" {
-     Name "UnitIconFrame"
-     Slot FrameWidgetSlot "{5EB1176F4695FD6B}" {
-      PositionX 6
-      OffsetLeft 6
-      PositionY 0
-      OffsetTop 0
-      SizeX 44
-      OffsetRight -50
-      SizeY 44
-      OffsetBottom -44
+    FrameWidgetClass "{5EBE323E6910214E}" {
+     Name "AlivePlayerFrame"
+     Slot OverlayWidgetSlot "{60F6F4E8501F5D56}" {
      }
-     "Inherit Color" 1
      {
-      ImageWidgetClass "{5EBA4169D01931BA}" {
-       Name "UnitIcon"
-       Slot FrameWidgetSlot "{5E7CF059F272107C}" {
-        Anchor 0 0 0 0
-        PositionX -16
-        OffsetLeft -16
-        PositionY -10
-        OffsetTop -10
-        SizeX 64
-        OffsetRight -48
-        SizeY 64
-        OffsetBottom -54
+      OverlayWidgetClass "{5EBA4169D006D2A6}" {
+       Name "Size"
+       Slot FrameWidgetSlot "{5EB11767D337F688}" {
+        OffsetLeft 0
+        OffsetTop 0
+        SizeX 320
+        OffsetRight -320
+        SizeY 44
+        OffsetBottom -44
        }
-       "Inherit Color" 1
-       Texture "{00B30C29FAF85E1C}UI/Textures/Editor/EditableEntities/Characters/EditableEntity_Character_AntiTank.edds"
-       Size 64 64
       }
-      ImageWidgetClass "{60E667FA34ACC5AC}" {
-       Name "DeadIcon"
-       Slot FrameWidgetSlot "{5E7CF059F272107C}" {
-        Anchor 0 0 0 0
-        PositionX -3
-        OffsetLeft -3
-        PositionY 3
-        OffsetTop 3
-        SizeX 40
-        OffsetRight -37
-        SizeY 40
-        OffsetBottom -43
+      TextWidgetClass "{60F6F4E7F0E57009}" {
+       Prefab "{5D6D1B99A45E5176}"
+       Name "PlayerName"
+       Slot FrameWidgetSlot "{60F6F4E7BF0B5461}" {
+        PositionX 40
+        OffsetLeft 40
+        PositionY 7
+        OffsetTop 7
+        SizeX 240
+        OffsetRight -280
+        SizeY 30
+        OffsetBottom -37
        }
-       "Is Visible" 0
+       Text "Player"
+       "Font Size" 20
+       "Min Font Size" 20
+       "Vertical Alignment" Center
+      }
+      FrameWidgetClass "{5EBA4169D006D2D1}" {
+       Name "UnitIconFrame"
+       Slot FrameWidgetSlot "{5EB1176F4695FD6B}" {
+        PositionX 6
+        OffsetLeft 6
+        PositionY 0
+        OffsetTop 0
+        SizeX 44
+        OffsetRight -50
+        SizeY 44
+        OffsetBottom -44
+       }
        "Inherit Color" 1
-       Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
-       Image "death"
-       Size 32 32
+       {
+        ImageWidgetClass "{5EBA4169D01931BA}" {
+         Name "UnitIcon"
+         Slot FrameWidgetSlot "{5E7CF059F272107C}" {
+          Anchor 0 0 0 0
+          PositionX -16
+          OffsetLeft -16
+          PositionY -10
+          OffsetTop -10
+          SizeX 64
+          OffsetRight -48
+          SizeY 64
+          OffsetBottom -54
+         }
+         "Inherit Color" 1
+         Texture "{00B30C29FAF85E1C}UI/Textures/Editor/EditableEntities/Characters/EditableEntity_Character_AntiTank.edds"
+         Size 64 64
+        }
+        ImageWidgetClass "{60E667FA34ACC5AC}" {
+         Name "DeadIcon"
+         Slot FrameWidgetSlot "{5E7CF059F272107C}" {
+          Anchor 0 0 0 0
+          PositionX -3
+          OffsetLeft -3
+          PositionY 3
+          OffsetTop 3
+          SizeX 40
+          OffsetRight -37
+          SizeY 40
+          OffsetBottom -43
+         }
+         "Is Visible" 0
+         "Inherit Color" 1
+         Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
+         Image "death"
+         Size 32 32
+        }
+       }
+      }
+      ImageWidgetClass "{5EBE323E7C895A55}" {
+       Prefab "{5D6D1B9A2749B71D}"
+       Name "PlayerFactionColor"
+       Slot FrameWidgetSlot "{5D6D1B96C41F631C}" {
+        Anchor 0 0 0 0
+        PositionX 4
+        OffsetLeft 4
+        PositionY 4
+        OffsetTop 4
+        SizeX 4
+        OffsetRight -8
+        SizeY 36
+        OffsetBottom -40
+       }
+       Color 0.502 0 0.376 1
       }
      }
     }
-    TextWidgetClass "{5EBA4169D019317D}" {
-     Prefab "{5D6D1B99A45E5176}"
-     Name "PlayerName"
-     Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
-      PositionX 40
-      OffsetLeft 40
-      PositionY 0
-      OffsetTop 0
-      SizeX 280
-      OffsetRight -320
-      SizeY 44
-      OffsetBottom -44
+    FrameWidgetClass "{60F6F4E7F0E57004}" {
+     Name "AlivePlayerFrameShort"
+     Slot OverlayWidgetSlot "{60F6F4E7F0E577CD}" {
      }
-     Text "Player"
-     "Font Size" 20
-     "Min Font Size" 20
-     "Vertical Alignment" Center
-    }
-    ImageWidgetClass "{5EBE323E7C895A55}" {
-     Prefab "{5D6D1B9A2749B71D}"
-     Name "PlayerFactionColor"
-     Slot FrameWidgetSlot "{5D6D1B96C41F631C}" {
-      Anchor 0 0 0 0
-      PositionX 4
-      OffsetLeft 4
-      PositionY 4
-      OffsetTop 4
-      SizeX 4
-      OffsetRight -8
-      SizeY 36
-      OffsetBottom -40
+     "Is Visible" 0
+     {
+      OverlayWidgetClass "{60F6F4E799E5BF7E}" {
+       Name "Size"
+       Slot FrameWidgetSlot "{5EB11767D337F688}" {
+        OffsetLeft 0
+        OffsetTop 0
+        SizeX 320
+        OffsetRight -320
+        SizeY 16
+        OffsetBottom -16
+       }
+      }
+      ImageWidgetClass "{60F6F4E7F0E5700A}" {
+       Prefab "{5D6D1B9A2749B71D}"
+       Name "PlayerFactionColorShort"
+       Slot FrameWidgetSlot "{5D6D1B96C41F631C}" {
+        Anchor 0 0 0 0
+        PositionX 4
+        OffsetLeft 4
+        PositionY 2
+        OffsetTop 2
+        SizeX 4
+        OffsetRight -8
+        SizeY 12
+        OffsetBottom -14
+       }
+       Color 0.502 0 0.376 1
+      }
+      TextWidgetClass "{60F6F4E7BEA6E6B1}" {
+       Name "PlayerNameShort"
+       Slot FrameWidgetSlot "{60F6F4E7BEA6E62A}" {
+        PositionX 10
+        OffsetLeft 10
+        OffsetTop 0
+        SizeX 260
+        OffsetRight -270
+        SizeY 16
+        OffsetBottom -16
+       }
+       Text "Player"
+       "Font Size" 16
+       "Min Font Size" 16
+       "Vertical Alignment" Center
+      }
      }
-     Color 0.502 0 0.376 1
     }
    }
   }

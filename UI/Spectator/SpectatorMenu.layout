@@ -493,6 +493,10 @@ FrameWidgetClass {
         }
        }
       }
+      HorizontalLayoutWidgetClass "{60B6B9E39D16176D}" {
+       Prefab "{60B6B9E39D16176D}"
+       Clipping True
+      }
      }
     }
     ScrollLayoutWidgetClass "{5EBA3C972331B0F8}" {
