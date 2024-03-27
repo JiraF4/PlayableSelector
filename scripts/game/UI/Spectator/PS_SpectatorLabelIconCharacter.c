@@ -16,6 +16,8 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 	protected ResourceName m_rIconImageSet = "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset";
 	protected PS_PlayableManager m_PlayableManager;
 	
+	protected ref Color m_cDeadColor = Color.Gray;
+	
 	override void HandlerAttached(Widget w)
 	{
 		m_wSpectatorLabelIconBackground = ImageWidget.Cast(w.FindAnyWidget("SpectatorLabelIconBackground"));
@@ -44,6 +46,9 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 			m_wSpectatorLabelIconBackground.SetColor(faction.GetFactionColor());
 			m_wSpectatorLabelIconCircle.SetColor(faction.GetOutlineFactionColor());
 			m_wSpectatorLabelIconCircleSmall.SetColor(faction.GetFactionColor());
+			
+			m_cDeadColor = PS_ColorHelper.DesaturateColor(faction.GetFactionColor(), 0.75);
+			m_cDeadColor = PS_ColorHelper.ChangeLightColor(m_cDeadColor, 0.9);
 		}
 		
 		SCR_UIInfo uiInfo = m_EditableCharacterComponent.GetInfo();
@@ -94,11 +99,12 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 				//m_wSpectatorLabelIcon.LoadImageFromSet(0, m_rIconImageSet, "Dead");
 				m_wSpectatorLabelIcon.SetOpacity(0.9);
 				m_wSpectatorLabelBackground.SetOpacity(0.9);
-				m_wSpectatorLabelIconBackground.SetColor(Color.Gray);
+				m_wSpectatorLabelIconBackground.SetColor(m_cDeadColor);
+				m_wSpectatorLabelIconCircleSmall.SetColor(m_cDeadColor);
 				m_wSpectatorLabelIconBackground.SetOpacity(0.2);
 				m_wSpectatorLabelIconWounded.SetVisible(false);
 				//m_wSpectatorLabelIconCircleSmall.SetColor(Color.Gray);
-				m_wSpectatorLabelIconCircleSmall.SetOpacity(0.4);
+				m_wSpectatorLabelIconCircleSmall.SetOpacity(0.95);
 				m_bDead = true;
 			}
 		}
