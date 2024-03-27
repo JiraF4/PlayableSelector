@@ -1,0 +1,25 @@
+FrameWidgetClass {
+ Name "rootFrame"
+ {
+  TextWidgetClass "{60F6DD58EA6C5DE5}" {
+   Name "TimerText"
+   Slot FrameWidgetSlot "{60F6DD58EA6C5DFE}" {
+    Anchor 0 0 1 1
+    PositionX 499
+    PositionY 409
+    SizeX -958
+    OffsetRight 0
+    SizeY -888
+    OffsetBottom 0
+   }
+   Text "1.9"
+   "Font Size" 42
+   "Min Font Size" 42
+   "Horizontal Alignment" Center
+   "Vertical Alignment" Center
+   FontProperties FontProperties "{60F6DD5B72D9F895}" {
+    OutlineSize 2
+   }
+  }
+ }
+}

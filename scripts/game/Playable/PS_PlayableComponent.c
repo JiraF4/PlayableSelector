@@ -20,6 +20,10 @@ class PS_PlayableComponent : ScriptComponent
 	[RplProp()]
 	protected int m_iRespawnCounter = 0;
 	
+	// Cache global
+	protected PS_GameModeCoop m_GameModeCoop;
+	protected PS_PlayableManager m_PlayableManager;
+	
 	// Cache components
 	protected SCR_ChimeraCharacter m_Owner;
 	SCR_ChimeraCharacter GetOwnerCharacter()
@@ -30,9 +34,18 @@ class PS_PlayableComponent : ScriptComponent
 	protected SCR_EditableCharacterComponent m_EditableCharacterComponent;
 	SCR_EditableCharacterComponent GetEditableCharacterComponent()
 		return m_EditableCharacterComponent;
+	protected SCR_UIInfo m_EditableUIInfo;
+	SCR_UIInfo GetEditableUIInfo()
+		return m_EditableUIInfo;
 	protected SCR_CharacterDamageManagerComponent m_CharacterDamageManagerComponent;
 	SCR_CharacterDamageManagerComponent GetCharacterDamageManagerComponent()
 		return m_CharacterDamageManagerComponent;
+	protected AIControlComponent m_AIControlComponent;
+	AIControlComponent GetAIControlComponent()
+		return m_AIControlComponent;
+	protected AIAgent m_AIAgent;
+	AIAgent GetAIAgent()
+		return m_AIAgent;
 	
 	// Events
 	protected ref ScriptInvokerInt m_eOnPlayerChange = new ScriptInvokerInt(); // int playerId
@@ -60,6 +73,9 @@ class PS_PlayableComponent : ScriptComponent
 	protected ref ScriptInvokerBool m_eOnPlayerPinChange = new ScriptInvokerBool();
 	ScriptInvokerBool GetOnPlayerPinChange()
 		return m_eOnPlayerPinChange;
+	
+	// Temporally
+	static protected int m_iRespawnTime;
 	
 	void CopyState(PS_PlayableComponent playable)
 	{
@@ -104,9 +120,20 @@ class PS_PlayableComponent : ScriptComponent
 
 	override void EOnInit(IEntity owner)
 	{
+		GetGame().GetCallqueue().Call(LateInit);
+		
 		m_FactionAffiliationComponent = FactionAffiliationComponent.Cast(owner.FindComponent(FactionAffiliationComponent));
 		m_EditableCharacterComponent = SCR_EditableCharacterComponent.Cast(owner.FindComponent(SCR_EditableCharacterComponent));
+		m_EditableUIInfo = m_EditableCharacterComponent.GetInfo();
 		m_CharacterDamageManagerComponent = SCR_CharacterDamageManagerComponent.Cast(owner.FindComponent(SCR_CharacterDamageManagerComponent));
+		m_AIControlComponent = AIControlComponent.Cast(owner.FindComponent(AIControlComponent));
+		m_AIAgent = m_AIControlComponent.GetAIAgent();
+	}
+	
+	void LateInit()
+	{
+		m_GameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		m_PlayableManager = PS_PlayableManager.GetInstance();
 	}
 
 	// Get/Set Broadcast
@@ -126,6 +153,19 @@ class PS_PlayableComponent : ScriptComponent
 		if (m_bIsPlayable) GetGame().GetCallqueue().CallLater(AddToList, 0, false, m_Owner);
 		else RemoveFromList();
 	}
+	
+	void OpenRespawnMenu(int time)
+	{
+		Rpc(RPC_OpenRespawnMenu, time);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Owner)]
+	void RPC_OpenRespawnMenu(int time)
+	{
+		m_iRespawnTime = time;
+		GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.PlayableRespawnMenu);
+	}
+	int GetRespawnTime()
+		return m_iRespawnTime;
 
 	void ResetRplStream()
 	{
@@ -163,12 +203,8 @@ class PS_PlayableComponent : ScriptComponent
 
 	private void AddToList(IEntity owner)
 	{
-		AIControlComponent aiComponent = AIControlComponent.Cast(owner.FindComponent(AIControlComponent));
-		if (aiComponent)
-		{
-			AIAgent agent = aiComponent.GetAIAgent();
-			if (agent && m_bIsPlayable) agent.DeactivateAI();
-		}
+		if (!m_bIsPlayable) return;
+		m_AIAgent.DeactivateAI();
 
 		GetGame().GetCallqueue().CallLater(AddToListWrap, 0, false, owner) // init delay
 	}
@@ -176,13 +212,7 @@ class PS_PlayableComponent : ScriptComponent
 	private void AddToListWrap(IEntity owner)
 	{
 		if (!m_bIsPlayable) return;
-
-		AIControlComponent aiComponent = AIControlComponent.Cast(owner.FindComponent(AIControlComponent));
-		if (aiComponent)
-		{
-			AIAgent agent = aiComponent.GetAIAgent();
-			if (agent) agent.DeactivateAI();
-		}
+		m_AIAgent.DeactivateAI();
 
 		RplComponent rpl = RplComponent.Cast(GetOwner().FindComponent(RplComponent));
 		rpl.EnableStreaming(false);
@@ -196,9 +226,7 @@ class PS_PlayableComponent : ScriptComponent
 	string GetName()
 	{
 		if (m_name != "") return m_name;
-		SCR_EditableCharacterComponent editableCharacterComponent = SCR_EditableCharacterComponent.Cast(m_Owner.FindComponent(SCR_EditableCharacterComponent));
-		SCR_UIInfo info = editableCharacterComponent.GetInfo();
-		return info.GetName();
+		return m_EditableUIInfo.GetName();
 	}
 
 	RplId GetId()

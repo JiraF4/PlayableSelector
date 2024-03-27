@@ -46,21 +46,26 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	
 	[Attribute("", UIWidgets.Auto, "", category: "Reforger Lobby")]
 	protected ref array<ref PS_FactionRespawnCount> m_aFactionRespawnCount;
-	protected ref map<FactionKey, int> m_mFactionRespawnCount = new map<FactionKey, int>();
+	protected ref map<FactionKey, PS_FactionRespawnCount> m_mFactionRespawnCount = new map<FactionKey, PS_FactionRespawnCount>();
 	
 	[Attribute("0", UIWidgets.CheckBox, "", category: "Reforger Lobby (WIP)")]
 	protected bool m_bShowCutscene;
+	
+	// Cache global
+	protected PS_PlayableManager m_playableManager;
 	
 	// ------------------------------------------ Events ------------------------------------------
 	override void OnGameStart()
 	{
 		super.OnGameStart();
 		
+		m_playableManager = PS_PlayableManager.GetInstance();
+		
 		foreach (PS_FactionRespawnCount factionRespawnCount : m_aFactionRespawnCount)
 		{
 			m_mFactionRespawnCount.Insert(
 				factionRespawnCount.m_sFactionKey,
-				factionRespawnCount.m_iCount
+				factionRespawnCount
 			);
 		}
 		
@@ -185,13 +190,13 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		}
 	}
 	
-	protected int GetFactionRespawnCount(FactionKey factionKey)
+	protected PS_FactionRespawnCount GetFactionRespawnCount(FactionKey factionKey)
 	{
 		if (m_mFactionRespawnCount.Contains(factionKey))
 		{
 			return m_mFactionRespawnCount[factionKey];
 		}
-		return -1;
+		return null;
 	}
 	
 	protected override void OnPlayerConnected(int playerId)
@@ -217,7 +222,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		GetGame().GetCallqueue().CallLater(TryRespawn, 200, false, playerId);
 	}
 	
-	// Update state for disconnected and start timer if need
+	// Update state for disconnected and start timer if need (DO NOT DELETE CONTROLED ENTITY)
 	protected override void OnPlayerDisconnected(int playerId, KickCauseCode cause, int timeout)
 	{
 		PlayerManager playerManager = GetGame().GetPlayerManager();
@@ -352,25 +357,22 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			FactionAffiliationComponent factionAffiliationComponent = playableComponent.GetFactionAffiliationComponent();
 			Faction faction = factionAffiliationComponent.GetDefaultAffiliatedFaction();
 			FactionKey factionKey = faction.GetFactionKey();
-			int factionRespawns = GetFactionRespawnCount(factionKey);
-			if (factionRespawns == 0)
+			PS_FactionRespawnCount factionRespawns = GetFactionRespawnCount(factionKey);
+			if (factionRespawns.m_iCount == 0)
 			{
 				SwitchToInitialEntity(playerId);
 				return;
 			}
-			ResourceName prefabToSpawn = playableComponent.GetNextRespawn(factionRespawns == -1);
-			if (factionRespawns > 0)
-				m_mFactionRespawnCount[factionKey] = factionRespawns - 1;
+			ResourceName prefabToSpawn = playableComponent.GetNextRespawn(factionRespawns.m_iCount == -1);
+			if (factionRespawns.m_iCount > 0)
+				factionRespawns.m_iCount--;
 			if (prefabToSpawn != "")
 			{
-				Resource resource = Resource.Load(prefabToSpawn);
-				EntitySpawnParams params = new EntitySpawnParams();
-				playableComponent.GetSpawnTransform(params.Transform);
-				IEntity entity = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
-				SCR_AIGroup aiGroup = playableManager.GetPlayerGroupByPlayable(playableId);
-				aiGroup.GetSlave().AddAIEntityToGroup(entity);
-				
-				GetGame().GetCallqueue().Call(SwitchToSpawnedEntity, playerId, playableComponent, entity, 3);
+				int time = factionRespawns.m_iTime;
+				if (factionRespawns.m_bWaveMode)
+					time = Math.Mod(GetWorld().GetWorldTime(), time); 
+				playableComponent.OpenRespawnMenu(time);
+				GetGame().GetCallqueue().CallLater(Respawn, time, false, playerId, playableComponent, prefabToSpawn);
 				return;
 			}
 		}
@@ -378,18 +380,35 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		SwitchToInitialEntity(playerId);
 	}
 	
+	void Respawn(int playerId, PS_PlayableComponent playableComponent, ResourceName prefabToSpawn)
+	{
+		Resource resource = Resource.Load(prefabToSpawn);
+		EntitySpawnParams params = new EntitySpawnParams();
+		playableComponent.GetSpawnTransform(params.Transform);
+		IEntity entity = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
+		SCR_AIGroup aiGroup = m_playableManager.GetPlayerGroupByPlayable(playableComponent.GetId());
+		SCR_AIGroup playabelGroup = aiGroup.GetSlave();
+		playabelGroup.AddAIEntityToGroup(entity);
+		
+		PS_PlayableComponent playableComponentNew = PS_PlayableComponent.Cast(entity.FindComponent(PS_PlayableComponent));
+		playableComponentNew.SetPlayable(true);
+		
+		GetGame().GetCallqueue().Call(SwitchToSpawnedEntity, playerId, playableComponent, entity, 4);
+	}
+	
 	void SwitchToSpawnedEntity(int playerId, PS_PlayableComponent playable, IEntity entity, int frameCounter)
 	{
-		if (frameCounter > 0) // Await three FrameSlot
+		if (frameCounter > 0) // Await four frames
 		{		
 			GetGame().GetCallqueue().Call(SwitchToSpawnedEntity, playerId, playable, entity, frameCounter - 1);
 			return;
 		}
 		
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		
 		PS_PlayableComponent playableComponent = PS_PlayableComponent.Cast(entity.FindComponent(PS_PlayableComponent));
 		RplId playableId = playableComponent.GetId();
-		
-		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+	
 		playableComponent.CopyState(playable);
 		playableManager.SetPlayerPlayable(playerId, playableId);
 		playableManager.ForceSwitch(playerId);
@@ -708,4 +727,8 @@ class PS_FactionRespawnCount
 	FactionKey m_sFactionKey;
 	[Attribute()]
 	int m_iCount;
+	[Attribute()]
+	int m_iTime;
+	[Attribute()]
+	bool m_bWaveMode;
 }

@@ -6,7 +6,7 @@ modded enum ChimeraMenuPreset : ScriptMenuPresetEnum
 }
 
 //------------------------------------------------------------------------------------------------
-//! Fullscreen map menu
+//! 
 class PS_FadeToGame: ChimeraMenuBase
 {	
 	protected float m_fFadeTime = 1.0;

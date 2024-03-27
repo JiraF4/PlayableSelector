@@ -1,10 +1,13 @@
 modded class SCR_AIGroup : ChimeraAIGroup
 {
-	[Attribute("", UIWidgets.EditBox, "Custom name", category: "Group")]
+	[Attribute("", UIWidgets.EditBox, "Custom name", category: "Reforger Lobby")]
 	string m_sCustomNameSet;
 	
-	[Attribute("", UIWidgets.CheckBox, "Set all characters playable", category: "Group")]
+	[Attribute("", UIWidgets.CheckBox, "Set all characters playable", category: "Reforger Lobby")]
 	bool m_bSetPlayable;
+	
+	[Attribute("", UIWidgets.Auto, "", category: "Reforger Lobby")]
+	vector m_vRespawnPosition;
 	
 	override void EOnInit(IEntity owner)
 	{

@@ -10,6 +10,12 @@ PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_Game
   PS_FactionRespawnCount "{60ECC979A2129D60}" {
    m_sFactionKey "USSR"
    m_iCount 4
+   m_iTime 10000
+  }
+  PS_FactionRespawnCount "{60F6DD5059F29A15}" {
+   m_sFactionKey "FIA"
+   m_iCount 3
+   m_iTime 10000
   }
  }
  {
