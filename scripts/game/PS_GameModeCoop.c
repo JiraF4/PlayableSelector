@@ -358,7 +358,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			Faction faction = factionAffiliationComponent.GetDefaultAffiliatedFaction();
 			FactionKey factionKey = faction.GetFactionKey();
 			PS_FactionRespawnCount factionRespawns = GetFactionRespawnCount(factionKey);
-			if (factionRespawns.m_iCount == 0)
+			if (!factionRespawns || factionRespawns.m_iCount == 0)
 			{
 				SwitchToInitialEntity(playerId);
 				return;
