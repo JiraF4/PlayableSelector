@@ -13,9 +13,9 @@ ButtonWidgetClass {
    m_sSoundClicked ""
    m_bCanBeToggled 1
    m_bIsToggled 1
-   m_BackgroundDefault 1 1 1 0
+   m_BackgroundDefault 0 0 0 0.667
    m_BackgroundHovered 1 1 1 0.161
-   m_BackgroundSelected 0 0 0 0.8
+   m_BackgroundSelected 0 0 0 0
    m_BackgroundSelectedHovered 1 1 1 0.161
    m_BackgroundClicked 1 1 1 0.318
   }
@@ -51,7 +51,7 @@ ButtonWidgetClass {
       HorizontalAlign 3
       VerticalAlign 3
      }
-     Text "12"
+     Text "128"
      "Horizontal Alignment" Center
      "Vertical Alignment" Center
     }
