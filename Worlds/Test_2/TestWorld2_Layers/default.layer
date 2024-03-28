@@ -40,3 +40,7 @@ HitRegistrationManager HitRegManager1 : "{0EDA3D48791120DD}Prefabs/MP/HitRegMana
 PS_MissionDescription : "{3136BE42592F3B1B}PrefabsEditable/MissionDescription/EditableMissionDescription.et" {
  coords 95.586 1 151.188
 }
+PS_ManualCameraSpectator ManualCameraSpectator1 : "{6EAA30EF620F4A2E}Prefabs/Editor/Camera/ManualCameraSpectator.et" {
+ coords 122.492 1 163.836
+ Flags 1048579
+}

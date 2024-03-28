@@ -8,6 +8,8 @@ PS_ManualCameraSpectator : "{D6DE32D1C0FCC1C7}Prefabs/Editor/Camera/ManualCamera
   SCR_RotateRollManualCameraComponent "{52CC693A99CF4271}" {
    m_bEnabled 1
   }
+  SCR_MoveToCursorManualCameraUICheckComponent "{52CC693B212FF006}" {
+  }
   SCR_ZoomManualCameraComponent "{52CC693B212FF016}" {
    m_bEnabled 1
   }
