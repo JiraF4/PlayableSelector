@@ -54,6 +54,7 @@ class PS_AliveFactionButton : SCR_ButtonBaseComponent
 	
 	void UpdateCount()
 	{
-		m_wSideCount.SetText(m_iCountAlive.ToString() + "/" + m_iCount.ToString());
+		//m_wSideCount.SetText(m_iCountAlive.ToString() + "/" + m_iCount.ToString());
+		m_wSideCount.SetText(m_iCountAlive.ToString());
 	}
 }
