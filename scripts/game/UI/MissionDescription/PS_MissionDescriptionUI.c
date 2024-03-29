@@ -7,8 +7,10 @@ class PS_MissionDescriptionUI : ScriptedWidgetComponent
 	protected Widget m_wCurrentContent;
 	protected ImageWidget m_wFolderIcon;
 	protected ButtonWidget m_wMissionDescriptionHeaderButton;
+	protected ButtonWidget m_wNavigationSwitchMissionDescription;
 	protected TextWidget m_wMissionDescriptionHeaderText;
 	
+	protected SCR_InputButtonComponent m_hNavigationSwitchMissionDescription;
 	protected PS_MissionDescription m_rPreviousMapDescription;
 	protected PS_MissionDescription m_rCurrentMapDescription;
 	
@@ -18,13 +20,17 @@ class PS_MissionDescriptionUI : ScriptedWidgetComponent
 		m_wRoot = w;
 		m_wContentFrame = FrameWidget.Cast(w.FindAnyWidget("ContentFrame"));
 		m_wMissionDescriptionHeaderButton = ButtonWidget.Cast(w.FindAnyWidget("MissionDescriptionHeaderButton"));
+		m_wNavigationSwitchMissionDescription = ButtonWidget.Cast(w.FindAnyWidget("NavigationSwitchMissionDescription"));
 		m_wMissionDescriptionHeaderText = TextWidget.Cast(w.FindAnyWidget("MissionDescriptionHeaderText"));
 		m_wFolderIcon = ImageWidget.Cast(w.FindAnyWidget("FolderIcon"));
+		
+		m_hNavigationSwitchMissionDescription = SCR_InputButtonComponent.Cast(m_wNavigationSwitchMissionDescription.FindHandler(SCR_InputButtonComponent));		
 		if (!GetGame().InPlayMode())
 			return;
 		OpenDescriptionList();
 		GetGame().GetCallqueue().CallLater(AddOnClick, 0);
 		
+		m_hNavigationSwitchMissionDescription.m_OnClicked.Insert(Action_SwitchMissionDescription);
 		GetGame().GetInputManager().AddActionListener("SwitchMissionDescription", EActionTrigger.DOWN, Action_SwitchMissionDescription);
 	}
 	
