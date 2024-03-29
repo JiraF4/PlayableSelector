@@ -20,6 +20,8 @@ class PS_SpectatorLabel : ScriptComponent
 	[Attribute()]
 	string m_sBoneName;
 	
+	protected bool m_bForceShowName;
+	
 	override void OnPostInit(IEntity owner)
 	{
 		GetGame().GetCallqueue().CallLater(AddToList, 0, false, owner);

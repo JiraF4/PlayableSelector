@@ -23,6 +23,8 @@ class PS_SpectatorLabelIcon : SCR_ScriptedWidgetComponent
 	
 	protected float m_fDistanceToIcon;
 	
+	protected bool m_bForceShowName;
+	
 	override void HandlerAttached(Widget w)
 	{
 		super.HandlerAttached(w);
@@ -31,6 +33,18 @@ class PS_SpectatorLabelIcon : SCR_ScriptedWidgetComponent
 		m_wSpectatorLabelBackground = OverlayWidget.Cast(w.FindAnyWidget("SpectatorLabelBackground"));
 		m_wSpectatorLabelText = TextWidget.Cast(w.FindAnyWidget("SpectatorLabelText"));
 		m_wSpectatorLabel = PanelWidget.Cast(w.FindAnyWidget("SpectatorLabel"));
+	}
+	
+	override bool OnMouseEnter(Widget w, int x, int y)
+	{
+		m_bForceShowName = true;
+		return true;
+	}
+	
+	override bool OnMouseLeave(Widget w, Widget enterW, int x, int y)
+	{
+		m_bForceShowName = false;
+		return true;
 	}
 	
 	void SetEntity(IEntity entity, string boneName)
@@ -106,6 +120,12 @@ class PS_SpectatorLabelIcon : SCR_ScriptedWidgetComponent
 		FrameSlot.SetPos(m_wRoot, screenPosition[0], screenPosition[1]);
 		
 		m_wRoot.SetZOrder(screenPosition[2] * -10000);
+		
+		if (m_bForceShowName)
+		{
+			m_wSpectatorLabel.SetOpacity(1.0);
+			m_wRoot.SetZOrder(100);
+		}
 	}
 	
 	void UpdateLabel()

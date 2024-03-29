@@ -20,6 +20,7 @@ FrameWidgetClass : "{8A4C0D6D625BB09D}UI/Spectator/SpectatorLabelIcon.layout" {
     SizeY 64
     OffsetBottom -64
    }
+   "Ignore Cursor" 0
    {
     ImageWidgetClass "{60DCA24F25DC2EF8}" {
      Name "SpectatorLabelIconCircleSmall"
