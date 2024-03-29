@@ -38,7 +38,7 @@ class PS_PlayersList : ScriptedWidgetComponent
 		m_iPlayerId = m_PlayerController.GetPlayerId();
 		
 		// Events
-		m_GameModeCoop.GetOnPlayerConnected().Insert(AddPlayer);
+		m_PlayableManager.GetOnPlayerConnected().Insert(AddPlayer);
 	}
 	
 	void SetLobbyMenu(PS_CoopLobby coopLobby)
