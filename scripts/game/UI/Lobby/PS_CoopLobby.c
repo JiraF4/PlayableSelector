@@ -173,6 +173,8 @@ class PS_CoopLobby : MenuBase
 			m_InputManager.AddActionListener("VONChannel", EActionTrigger.UP, Action_LobbyVoNChannelOff);
 		}
 		
+		m_LobbyLoadoutPreview.SetItemInfoWidget(m_wLobbyLittleInventoryItemInfo);
+		
 		// Init
 		Init();
 	}
