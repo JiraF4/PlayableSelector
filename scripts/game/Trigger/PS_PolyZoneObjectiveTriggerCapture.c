@@ -25,7 +25,10 @@ class PS_PolyZoneObjectiveTriggerCapture : PS_PolyZoneObjectiveTrigger
 	{
 		super.OnInit(owner);
 		if (Replication.IsServer())
+		{
 			SetEventMask(EntityEvent.FRAME);
+			SetEventMask(EntityEvent.POSTFRAME);
+		}
 	}
 	
 	override void LinkObjectives()
@@ -99,6 +102,19 @@ class PS_PolyZoneObjectiveTriggerCapture : PS_PolyZoneObjectiveTrigger
 		}
 	}
 	
+	void UpdateFactionTimers()
+	{
+		foreach (FactionKey factionKey, float timer : m_mFactionTimers)
+		{
+			Rpc(RPC_UpdateFactionTimers, factionKey, timer);
+		}
+	}
+	[RplRpc(RplChannel.Unreliable, RplRcver.Broadcast)]
+	void RPC_UpdateFactionTimers(FactionKey factionKey, float timer)
+	{
+		m_mFactionTimers[factionKey] = timer;
+	}
+	
 	override bool ScriptedEntityFilterForQuery(IEntity ent)
 	{
 		if (!super.ScriptedEntityFilterForQuery(ent))
@@ -111,13 +127,27 @@ class PS_PolyZoneObjectiveTriggerCapture : PS_PolyZoneObjectiveTrigger
 		return damageManagerComponent.GetState() != EDamageState.DESTROYED;
 	}
 	
+	bool IsCurrentFaction(FactionKey factionKey)
+	{
+		return m_sCurrentFaction == factionKey;
+	}
+	
+	float GetFactionTime(FactionKey factionKey)
+	{
+		if (!m_mFactionTimers.Contains(factionKey))
+			return m_fCaptureTime;
+		return m_fCaptureTime - m_mFactionTimers[factionKey];
+	}
+	
 	override protected void OnActivate(IEntity ent)
 	{
+		super.OnActivate(ent);
 		Count(ent, 1);
 	}
 	
 	override protected void OnDeactivate(IEntity ent)
 	{
+		super.OnDeactivate(ent);
 		Count(ent, -1);
 	}
 	

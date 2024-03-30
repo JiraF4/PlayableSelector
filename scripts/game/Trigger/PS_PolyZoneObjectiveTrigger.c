@@ -1,11 +1,10 @@
-class PS_PolyZoneObjectiveTriggerClass : SCR_BaseTriggerEntityClass
+class PS_PolyZoneObjectiveTriggerClass : PS_PolyZoneTriggerClass
 {
 
 }
 
-class PS_PolyZoneObjectiveTrigger : SCR_BaseTriggerEntity
+class PS_PolyZoneObjectiveTrigger : PS_PolyZoneTrigger
 {
-	PS_PolyZone m_PolyZone;
 	ref array<PS_Objective> m_aObjectives = {};
 
 	[Attribute()]
@@ -22,7 +21,6 @@ class PS_PolyZoneObjectiveTrigger : SCR_BaseTriggerEntity
 		gameModeCoop.GetOnGameStateChange().Insert(OnGameStateChange);
 		gameModeCoop.GetOnOnlyOneFactionAlive().Insert(OnOnlyOneFactionAlive);
 		
-		m_PolyZone = PS_PolyZone.Cast(owner.GetParent().FindComponent(PS_PolyZone));
 		GetGame().GetCallqueue().Call(LinkObjectives);
 	}
 	
@@ -59,7 +57,7 @@ class PS_PolyZoneObjectiveTrigger : SCR_BaseTriggerEntity
 	
 	override bool ScriptedEntityFilterForQuery(IEntity ent)
 	{
-		if (!m_PolyZone.IsInsidePolygon(ent.GetOrigin()))
+		if (!super.ScriptedEntityFilterForQuery(ent))
 			return false;
 		
 		return true;
