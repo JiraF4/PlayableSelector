@@ -59,6 +59,10 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	{
 		super.OnGameStart();
 		
+		Widget FreezeTimeCounterOverlay = GetGame().GetWorkspace().FindAnyWidget("FreezeTimeCounterOverlay");
+		if (FreezeTimeCounterOverlay)
+			FreezeTimeCounterOverlay.RemoveFromHierarchy();
+		
 		m_playableManager = PS_PlayableManager.GetInstance();
 		
 		foreach (PS_FactionRespawnCount factionRespawnCount : m_aFactionRespawnCount)
@@ -124,6 +128,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		invoker.Insert(ExportMissionData_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("tst");
 		invoker.Insert(Test_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("pgc");
+		invoker.Insert(PlayGameConfig_Callback);
 	}
 	
 	void Test_Callback(SCR_ChatPanel panel, string data)
@@ -164,6 +170,16 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (!PS_PlayersHelper.IsAdminOrServer()) return;
 		
 		playableController.AdvanceGameState(SCR_EGameModeState.NULL);
+	}
+	
+	void PlayGameConfig_Callback(SCR_ChatPanel panel, string data)
+	{
+		if (data == "")
+			return;
+		Resource resource = BaseContainerTools.LoadContainer(data);
+		if (!resource)
+			return;
+		GameStateTransitions.RequestScenarioChangeTransition(data, "");
 	}
 	
 	void removeRestrictedZones()
@@ -501,6 +517,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 				SetGameModeState(SCR_EGameModeState.DEBRIEFING);
 				break;
 			case SCR_EGameModeState.DEBRIEFING:
+				SetGameModeState(SCR_EGameModeState.POSTGAME);
 				break;
 			case SCR_EGameModeState.POSTGAME:
 				break;
