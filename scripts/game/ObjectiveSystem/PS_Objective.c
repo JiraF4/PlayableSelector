@@ -17,10 +17,17 @@ class PS_Objective : PS_MissionDescription
 	ref ScriptInvokerVoid m_OnObjectiveUpdate;
 
 	RplComponent m_RplComponent;
+	
+	[Attribute("")]
+	protected bool m_bAdvanceWhenTriggered;
+	
+	protected PS_GameModeCoop m_GameModeCoop;
 
 	override void EOnInit(IEntity owner)
 	{
+		super.EOnInit(owner);
 		m_RplComponent = RplComponent.Cast(owner.FindComponent(RplComponent));
+		m_GameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 	}
 	
 	// Set
@@ -51,6 +58,9 @@ class PS_Objective : PS_MissionDescription
 	{
 		if (m_OnObjectiveUpdate)
 			m_OnObjectiveUpdate.Invoke();
+		
+		if (Replication.IsServer() && m_bAdvanceWhenTriggered && m_bCompleted)
+			m_GameModeCoop.AdvanceGameState(SCR_EGameModeState.GAME);
 	}
 	
 	RplId GetRplId()

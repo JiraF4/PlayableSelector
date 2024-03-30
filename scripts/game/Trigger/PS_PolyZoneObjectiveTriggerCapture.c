@@ -36,6 +36,9 @@ class PS_PolyZoneObjectiveTriggerCapture : PS_PolyZoneObjectiveTrigger
 	
 	void UpdateObjectives()
 	{
+		if (m_bAfterGame)
+			return;
+		
 		foreach (PS_Objective objective : m_aObjectives)
 		{
 			FactionKey factionKey = objective.GetFactionKey();

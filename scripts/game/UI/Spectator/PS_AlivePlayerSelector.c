@@ -67,7 +67,8 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 		SCR_UIInfo uiInfo = editableCharacterComponent.GetInfo();
 		
 		// Initial setup
-		m_sPlayableIcon = uiInfo.GetIconPath();
+		if (uiInfo)
+			m_sPlayableIcon = uiInfo.GetIconPath();
 		m_wPlayerFactionColor.SetColor(faction.GetFactionColor());
 		EDamageState damageState = m_CharacterDamageManagerComponent.GetState();
 		UpdateDammage(damageState);

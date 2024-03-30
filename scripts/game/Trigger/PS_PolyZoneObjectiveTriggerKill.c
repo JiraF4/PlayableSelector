@@ -24,6 +24,9 @@ class PS_PolyZoneObjectiveTriggerDestroy : PS_PolyZoneObjectiveTrigger
 	
 	void UpdateObjectives()
 	{
+		if (m_bAfterGame)
+			return;
+		
 		foreach (PS_Objective objective : m_aObjectives)
 		{
 			objective.SetCompleted(m_fDestroyedPercent >= 1.0);

@@ -51,6 +51,10 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	[Attribute("0", UIWidgets.CheckBox, "", category: "Reforger Lobby (WIP)")]
 	protected bool m_bShowCutscene;
 	
+	protected ref ScriptInvokerInt m_OnGameStateChange = new ScriptInvokerInt();
+	ScriptInvokerInt GetOnGameStateChange()
+		return m_OnGameStateChange;
+	
 	// Cache global
 	protected PS_PlayableManager m_playableManager;
 	

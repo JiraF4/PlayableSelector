@@ -11,12 +11,24 @@ class PS_PolyZoneObjectiveTrigger : SCR_BaseTriggerEntity
 	[Attribute()]
 	ref array<string> m_aObjectiveNames;
 
+	protected bool m_bAfterGame;
+	
 	override void OnInit(IEntity owner)
 	{
 		if (!Replication.IsServer())
 			EnablePeriodicQueries(false);
+		
+		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		gameModeCoop.GetOnGameStateChange().Insert(OnGameStateChange);
+		
 		m_PolyZone = PS_PolyZone.Cast(owner.GetParent().FindComponent(PS_PolyZone));
 		GetGame().GetCallqueue().Call(LinkObjectives);
+	}
+	
+	void OnGameStateChange(SCR_EGameModeState state)
+	{
+		if (state == SCR_EGameModeState.DEBRIEFING)
+			m_bAfterGame = true;
 	}
 
 	void LinkObjectives()

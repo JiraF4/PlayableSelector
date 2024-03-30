@@ -171,7 +171,7 @@ class PS_AlivePlayerList : ScriptedWidgetComponent
 		SCR_Faction faction = SCR_Faction.Cast(factionAffiliationComponent.GetDefaultAffiliatedFaction());
 		SCR_CharacterDamageManagerComponent characterDamageManagerComponent = playableComponent.GetCharacterDamageManagerComponent();
 		int removeAlive = 0;
-		if (characterDamageManagerComponent.GetState() == EDamageState.DESTROYED)
+		if (characterDamageManagerComponent && characterDamageManagerComponent.GetState() == EDamageState.DESTROYED)
 			removeAlive = -1;
 		AddFactionCount(faction, -1, removeAlive);
 	}

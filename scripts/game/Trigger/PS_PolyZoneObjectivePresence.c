@@ -14,6 +14,8 @@ class PS_PolyZoneObjectivePresence : PS_PolyZoneObjectiveTrigger
 	
 	void UpdateObjectives()
 	{
+		if (m_bAfterGame)
+			return;
 		if (m_iCount >= m_iNeedCount)
 			EnablePeriodicQueries(false);
 		foreach (PS_Objective objective : m_aObjectives)

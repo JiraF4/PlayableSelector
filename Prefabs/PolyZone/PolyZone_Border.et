@@ -1,0 +1,32 @@
+PolylineShapeEntity : "{BD11B8FAA469D169}Prefabs/PolyZone/PolyZone.et" {
+ ID "60E902668148288E"
+ components {
+  PS_PolyZone "{60E90266F25533F6}" {
+   m_bReversed 1
+   m_aVisibleForFactions {
+    "" "US" "USSR"
+   }
+  }
+ }
+ coords 1662.835 39 2922.859
+ {
+  PS_PolyZoneTrigger {
+   ID "60FD050E1E83544C"
+   components {
+    Hierarchy "{60FD050E7DB5D4B9}" {
+    }
+   }
+   TriggerShapeType Sphere
+   SphereRadius 999999
+   TriggerActivationType "All changes"
+   PeriodicQueries 1
+   ClassesFilter {
+    "SCR_ChimeraCharacter"
+   }
+   m_polyZoneEffect PS_PolyZoneEffectRestricted "{60FD050E0DC2A2AB}" {
+    m_fKillTime 30
+   }
+   m_bReversed 1
+  }
+ }
+}
