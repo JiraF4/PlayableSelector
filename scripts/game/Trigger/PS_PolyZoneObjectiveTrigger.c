@@ -20,9 +20,15 @@ class PS_PolyZoneObjectiveTrigger : SCR_BaseTriggerEntity
 		
 		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		gameModeCoop.GetOnGameStateChange().Insert(OnGameStateChange);
+		gameModeCoop.GetOnOnlyOneFactionAlive().Insert(OnOnlyOneFactionAlive);
 		
 		m_PolyZone = PS_PolyZone.Cast(owner.GetParent().FindComponent(PS_PolyZone));
 		GetGame().GetCallqueue().Call(LinkObjectives);
+	}
+	
+	void OnOnlyOneFactionAlive(FactionKey aliveFaction)
+	{
+		
 	}
 	
 	void OnGameStateChange(SCR_EGameModeState state)

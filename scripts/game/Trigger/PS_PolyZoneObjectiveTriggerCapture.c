@@ -34,6 +34,12 @@ class PS_PolyZoneObjectiveTriggerCapture : PS_PolyZoneObjectiveTrigger
 		UpdateObjectives();
 	}
 	
+	override void OnOnlyOneFactionAlive(FactionKey aliveFaction)
+	{
+		m_sCurrentFaction = aliveFaction;
+		UpdateObjectives();
+	}
+	
 	void UpdateObjectives()
 	{
 		if (m_bAfterGame)

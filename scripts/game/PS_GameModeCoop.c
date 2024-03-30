@@ -55,6 +55,10 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	ScriptInvokerInt GetOnGameStateChange()
 		return m_OnGameStateChange;
 	
+	protected ref ScriptInvokerString m_OnOnlyOneFactionAlive = new ScriptInvokerString();
+	ScriptInvokerString GetOnOnlyOneFactionAlive()
+		return m_OnOnlyOneFactionAlive;
+	
 	// Cache global
 	protected PS_PlayableManager m_playableManager;
 	
