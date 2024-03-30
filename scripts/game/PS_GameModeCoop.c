@@ -494,6 +494,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	// Switch to next game state
 	void AdvanceGameState(SCR_EGameModeState oldState)
 	{
+		if (!Replication.IsServer())
+			return;
+		
 		SCR_EGameModeState state = GetState();
 		if (oldState != SCR_EGameModeState.NULL && oldState != state) return;
 		switch (state) 
@@ -517,7 +520,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 				m_iReconnectTime = m_iReconnectTimeAfterBriefing;
 				if (m_bReserveSlots)
 					ReserveSlots();
-				if (m_bRemoveRedundantUnits) PS_PlayableManager.GetInstance().KillRedundantUnits();
+				if (m_bRemoveRedundantUnits) 
+					PS_PlayableManager.GetInstance().KillRedundantUnits();
 				restrictedZonesTimer(m_iFreezeTime);
 				StartGameMode();
 				break;

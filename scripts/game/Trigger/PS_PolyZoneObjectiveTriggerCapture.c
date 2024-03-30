@@ -40,7 +40,12 @@ class PS_PolyZoneObjectiveTriggerCapture : PS_PolyZoneObjectiveTrigger
 	override void OnOnlyOneFactionAlive(FactionKey aliveFaction)
 	{
 		m_sCurrentFaction = aliveFaction;
-		UpdateObjectives();
+		
+		foreach (PS_Objective objective : m_aObjectives)
+		{
+			FactionKey factionKey = objective.GetFactionKey();
+			objective.SetCompleted(factionKey == m_sCurrentFaction);
+		}
 	}
 	
 	void UpdateObjectives()
@@ -57,6 +62,8 @@ class PS_PolyZoneObjectiveTriggerCapture : PS_PolyZoneObjectiveTrigger
 	
 	override void OnFrame(IEntity owner, float timeSlice)
 	{
+		UpdateFactionTimers();
+		
 		int maxDiff = 0;
 		int maxCount = 0;
 		FactionKey maxFaction = "";
