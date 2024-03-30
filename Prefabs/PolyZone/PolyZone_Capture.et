@@ -1,14 +1,12 @@
 PolylineShapeEntity : "{BD11B8FAA469D169}Prefabs/PolyZone/PolyZone.et" {
  ID "60E902668148288E"
- components {
-  RplComponent "{60FD404ED299CAAD}" {
-  }
- }
  coords 85.777 1.001 78.911
  {
   PS_PolyZoneObjectiveTriggerCapture {
    ID "60E906126F14C7A8"
    components {
+    RplComponent "{60FD5E8377B17233}" {
+    }
     Hierarchy "{60E9060308EBEC26}" {
     }
    }
