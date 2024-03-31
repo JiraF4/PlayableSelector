@@ -26,7 +26,11 @@ class PS_PolyZoneObjectiveTrigger : PS_PolyZoneTrigger
 	
 	void OnOnlyOneFactionAlive(FactionKey aliveFaction)
 	{
-		
+		foreach (PS_Objective objective : m_aObjectives)
+		{
+			FactionKey factionKey = objective.GetFactionKey();
+			objective.SetCompleted(factionKey == aliveFaction);
+		}
 	}
 	
 	void OnGameStateChange(SCR_EGameModeState state)

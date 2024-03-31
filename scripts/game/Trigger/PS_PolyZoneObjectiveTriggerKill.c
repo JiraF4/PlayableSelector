@@ -52,6 +52,8 @@ class PS_PolyZoneObjectiveTriggerDestroy : PS_PolyZoneObjectiveTrigger
 	
 	override protected void OnActivate(IEntity ent)
 	{
+		if (m_mEntityDamageManagers.Contains(ent))
+			return;
 		SCR_DamageManagerComponent damageManagerComponent = SCR_DamageManagerComponent.Cast(ent.FindComponent(SCR_DamageManagerComponent));
 		if (damageManagerComponent)
 		{
