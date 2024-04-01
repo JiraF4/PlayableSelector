@@ -115,7 +115,7 @@ PolylineShapeEntity : "{DCA90362FBC25FB4}Prefabs/PolyZone/PolyZone_Presence.et" 
    Position -2.687 0 0.592
   }
   ShapePoint "{60E9062B00DAA357}" {
-   Position -6.181 -0 -2.238
+   Position -6.181 0 -2.238
   }
   ShapePoint "{60E9062B001B5AF8}" {
    Position -5.08 0 -5.076
@@ -132,15 +132,6 @@ PolylineShapeEntity : "{DCA90362FBC25FB4}Prefabs/PolyZone/PolyZone_Presence.et" 
    ID "60E9062D2F15A7F1"
    m_sTitle "Capture lopatas"
    m_sFactionKey "US"
-  }
-  PS_PolyZoneObjectivePresence {
-   ID "60E9062D2F15A7F9"
-   PrefabsFilter {
-    PrefabFilter "{60E9062932E0D876}" {
-     Prefab "{0619993AE6CDBF85}Prefabs/Items/Equipment/Accessories/ETool_ALICE/ETool_ALICE.et"
-    }
-   }
-   m_iNeedCount 10
   }
  }
 }

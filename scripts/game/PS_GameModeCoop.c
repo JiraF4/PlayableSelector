@@ -153,7 +153,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	
 	void ExportMissionData_Callback(SCR_ChatPanel panel, string data)
 	{
-		PS_MissionDataManager.GetInstance().SaveData();
+		PS_MissionDataManager.GetInstance().WriteToFile();
 	}
 	
 	void LoadMap_Callback(SCR_ChatPanel panel, string data)
@@ -467,6 +467,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		GetGame().GetPlayerManager().GetPlayers(playerIds);
 	
 		SCR_EGameModeState state = GetState();
+		m_OnGameStateChange.Invoke(state);
 		switch (state)
 		{
 			case SCR_EGameModeState.BRIEFING: // Force move to voice rooms

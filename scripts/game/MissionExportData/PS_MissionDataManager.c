@@ -18,13 +18,146 @@ class PS_MissionDataManager : ScriptComponent
 			return null;
 	}
 	
-	void SaveData()
+	ref map<EntityID, RplId> m_EntityToRpl = new map<EntityID, RplId>();
+	ref map<RplId, SCR_DamageManagerComponent> m_RplToDamageManager = new map<RplId, SCR_DamageManagerComponent>();
+	ref map<int, bool> m_playerSaved = new map<int, bool>();
+	PS_PlayableManager m_PlayableManager;
+	PS_GameModeCoop m_GameModeCoop;
+	PlayerManager m_PlayerManager;
+	ref PS_MissionDataConfig m_Data = new PS_MissionDataConfig();
+	int m_iInitTimer = 20;
+	
+	override void OnPostInit(IEntity owner)
 	{
-		SCR_JsonSaveContext missionSaveContext = new SCR_JsonSaveContext();
-		PS_MissionDataConfig data = new PS_MissionDataConfig();
+		if (!Replication.IsServer())
+			return;
 		
+		GetGame().GetCallqueue().CallLater(LateInit, 0, false);
+		GetGame().GetCallqueue().CallLater(AwaitFullInit, 0, true);
+	}
+	
+	void RegisterVehicle(Vehicle vehicle)
+	{
+		RplComponent rplComponent = RplComponent.Cast(vehicle.FindComponent(RplComponent));
+		SCR_EditableVehicleComponent editableVehicleComponent = SCR_EditableVehicleComponent.Cast(vehicle.FindComponent(SCR_EditableVehicleComponent));
+		FactionAffiliationComponent factionAffiliationComponent = FactionAffiliationComponent.Cast(vehicle.FindComponent(FactionAffiliationComponent));
+		SCR_DamageManagerComponent damageManagerComponent = SCR_DamageManagerComponent.Cast(vehicle.FindComponent(SCR_DamageManagerComponent));
+		RplId vehicleId = rplComponent.Id();
+		
+		PS_MissionDataVehicle vehicleData = new PS_MissionDataVehicle();
+		vehicleData.EntityId = vehicleId;
+		vehicleData.PrefabPath = vehicle.GetPrefabData().GetPrefabName();
+		if (editableVehicleComponent)
+		{
+			SCR_UIInfo info = editableVehicleComponent.GetInfo();
+			if (info)
+				vehicleData.EditableName = info.GetName();
+		}
+		if (factionAffiliationComponent)
+		{
+			Faction faction = factionAffiliationComponent.GetDefaultAffiliatedFaction();
+			if (faction)
+			{
+				vehicleData.VehicleFactionKey = faction.GetFactionKey();
+			}
+		}
+		if (damageManagerComponent)
+		{
+			m_RplToDamageManager.Insert(vehicleId, damageManagerComponent);
+			damageManagerComponent.GetOnDamage().Insert(OnDamaged);
+		}
+		
+		m_Data.Vehicles.Insert(vehicleData);
+		m_EntityToRpl.Insert(vehicle.GetID(), vehicleId);
+	}
+	
+	void OnDamaged(BaseDamageContext damageContext)
+	{
+		IEntity target = damageContext.hitEntity;
+		Instigator instigator = damageContext.instigator;
+		if (target && instigator)
+		{
+			int playerId = instigator.GetInstigatorPlayerID();
+			if (playerId == -1)
+				return;
+			
+			EntityID entityID = target.GetID();
+			if (!m_EntityToRpl.Contains(entityID))
+				return;
+			RplId rplId = m_EntityToRpl.Get(entityID);
+			
+			GetGame().GetCallqueue().Call(SaveDamageEvent, playerId, rplId, damageContext.damageValue);
+		}
+	}
+	
+	void SaveDamageEvent(int playerId, RplId targetId, float value)
+	{
+		SCR_DamageManagerComponent damageManagerComponent = m_RplToDamageManager.Get(targetId);
+		EDamageState state = damageManagerComponent.GetState();
+		
+		PS_MissionDataDamageEvent missionDataDamageEvent = new PS_MissionDataDamageEvent();
+		missionDataDamageEvent.PlayerId = playerId;
+		missionDataDamageEvent.TargetId = targetId;
+		missionDataDamageEvent.DamageValue = value;
+		missionDataDamageEvent.TargetState = state;
+		missionDataDamageEvent.Time = GetGame().GetWorld().GetWorldTime();
+		m_Data.DamageEvents.Insert(missionDataDamageEvent);
+	}
+	
+	void LateInit()
+	{
+		m_GameModeCoop = PS_GameModeCoop.Cast(GetOwner());
+		m_PlayerManager = GetGame().GetPlayerManager();
+		m_PlayableManager = PS_PlayableManager.GetInstance();
+		
+		m_GameModeCoop.GetOnGameStateChange().Insert(OnGameStateChanged);
+		m_GameModeCoop.GetOnPlayerAuditSuccess().Insert(OnPlayerAuditSuccess);
+		if (RplSession.Mode() != RplMode.Dedicated) 
+			OnPlayerAuditSuccess(GetGame().GetPlayerController().GetPlayerId());
+	}
+	
+	void AwaitFullInit()
+	{
+		m_iInitTimer--; // Wait 20 frames, I belive everything can init in 20 frames. maybe...
+		if (m_iInitTimer <= 0)
+		{
+			GetGame().GetCallqueue().Remove(AwaitFullInit);
+			InitData();
+		}
+	}
+	
+	void OnGameStateChanged(SCR_EGameModeState state)
+	{
+		PS_MissionDataStateChangeEvent missionDataStateChangeEvent = new PS_MissionDataStateChangeEvent();
+		missionDataStateChangeEvent.State = state;
+		missionDataStateChangeEvent.Time = GetGame().GetWorld().GetWorldTime();
+		m_Data.StateEvents.Insert(missionDataStateChangeEvent);
+		if (state == SCR_EGameModeState.GAME)
+			SavePlayers();
+	}
+	
+	void OnPlayerAuditSuccess(int playerId)
+	{
+		if (m_playerSaved.Contains(playerId))
+			return;
+		
+		string GUID = GetGame().GetBackendApi().GetPlayerIdentityId(playerId);
+		string name = m_PlayerManager.GetPlayerName(playerId);
+		
+		PS_MissionDataPlayer player = new PS_MissionDataPlayer();
+		player.PlayerId = playerId;
+		player.GUID = GUID;
+		player.Name = name;
+		m_Data.Players.Insert(player);
+		
+		m_playerSaved.Insert(playerId, true);
+	}
+	
+	// Save main mission data
+	void InitData()
+	{
 		MissionHeader missionHeader = GetGame().GetMissionHeader();
-		if (missionHeader) data.MissinPath = missionHeader.GetHeaderResourcePath();
+		if (missionHeader) m_Data.MissionPath = missionHeader.GetHeaderResourcePath();
 		
 		PS_MissionDescriptionManager missionDescriptionManager = PS_MissionDescriptionManager.GetInstance();
 		array<PS_MissionDescription> descriptions = new array<PS_MissionDescription>();
@@ -32,7 +165,7 @@ class PS_MissionDataManager : ScriptComponent
 		foreach (PS_MissionDescription description : descriptions)
 		{
 			PS_MissionDataDescription descriptionData = new PS_MissionDataDescription();
-			data.Descriptions.Insert(descriptionData);
+			m_Data.Descriptions.Insert(descriptionData);
 			
 			descriptionData.Title = description.m_sTitle;
 			descriptionData.DescriptionLayout = description.m_sDescriptionLayout;
@@ -61,7 +194,7 @@ class PS_MissionDataManager : ScriptComponent
 			if (!factionsMap.Contains(faction))
 			{
 				factionData = new PS_MissionDataFaction();
-				data.Factions.Insert(factionData);
+				m_Data.Factions.Insert(factionData);
 				
 				factionData.Name = WidgetManager.Translate("%1", faction.GetFactionName());
 				factionData.Key = WidgetManager.Translate("%1", faction.GetFactionKey());
@@ -95,14 +228,42 @@ class PS_MissionDataManager : ScriptComponent
 			
 			PS_MissionDataPlayable missionDataPlayable = new PS_MissionDataPlayable();
 			
+			SCR_CharacterDamageManagerComponent damageManagerComponent = playable.GetCharacterDamageManagerComponent();
+			
+			damageManagerComponent.GetOnDamage().Insert(OnDamaged);
+			m_RplToDamageManager.Insert(playable.GetId(), damageManagerComponent);
+			missionDataPlayable.EntityId = playable.GetId();
 			missionDataPlayable.GroupOrder = outAgents.Find(agent);
 			missionDataPlayable.Name = WidgetManager.Translate("%1", playable.GetName());
 			missionDataPlayable.RoleName = WidgetManager.Translate("%1", uiInfo.GetName());
+			m_EntityToRpl.Insert(character.GetID(), playable.GetId());
 			
 			groupData.Playables.Insert(missionDataPlayable);
 		}
+	}
+	
+	void SavePlayers()
+	{
+		array<PS_PlayableComponent> playables = m_PlayableManager.GetPlayablesSorted();
 		
-		missionSaveContext.WriteValue("", data);
+		foreach (PS_PlayableComponent playable : playables)
+		{
+			IEntity character = playable.GetOwner();
+			RplId playableId = playable.GetId();
+			int playerId = m_PlayableManager.GetPlayerByPlayable(playableId);
+			
+			PS_MissionDataPlayerToEntity playerToEntity = new PS_MissionDataPlayerToEntity();
+			playerToEntity.PlayerId = playerId;
+			playerToEntity.EntityId = playableId;
+			
+			m_Data.PlayersToPlayables.Insert(playerToEntity);
+		}
+	}
+	
+	void WriteToFile()
+	{
+		SCR_JsonSaveContext missionSaveContext = new SCR_JsonSaveContext();
+		missionSaveContext.WriteValue("", m_Data);
 		missionSaveContext.SaveToFile("$profile:PS_MissionData.json");
 	}
 }

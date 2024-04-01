@@ -1,14 +1,26 @@
 class PS_MissionDataConfig : JsonApiStruct
 {
-	string MissinPath;
+	string MissionKey;
+	string MissionPath;
 	ref array<ref PS_MissionDataDescription> Descriptions = new array<ref PS_MissionDataDescription>;
 	ref array<ref PS_MissionDataFaction> Factions = new array<ref PS_MissionDataFaction>;
+	ref array<ref PS_MissionDataVehicle> Vehicles = new array<ref PS_MissionDataVehicle>;
+	ref array<ref PS_MissionDataPlayerToEntity> PlayersToPlayables = new array<ref PS_MissionDataPlayerToEntity>;
+	ref array<ref PS_MissionDataPlayer> Players = new array<ref PS_MissionDataPlayer>;
+	ref array<ref PS_MissionDataDamageEvent> DamageEvents = new array<ref PS_MissionDataDamageEvent>;
+	ref array<ref PS_MissionDataStateChangeEvent> StateEvents = new array<ref PS_MissionDataStateChangeEvent>;
 	
 	void PS_MissionDataConfig()
 	{
-		RegV("MissinPath");
+		RegV("MissionKey");
+		RegV("MissionPath");
 		RegV("Descriptions");
 		RegV("Factions");
+		RegV("Vehicles");
+		RegV("PlayersToPlayables");
+		RegV("Players");
+		RegV("DamageEvents");
+		RegV("StateEvents");
 	}
 }
 
@@ -20,7 +32,7 @@ class PS_MissionDataDescription : JsonApiStruct
 	ref array<FactionKey> VisibleForFactions;
 	bool EmptyFactionVisibility;
 	
-	void PS_MissionDataConfig()
+	void PS_MissionDataDescription()
 	{
 		RegV("Title");
 		RegV("DescriptionLayout");
@@ -36,7 +48,7 @@ class PS_MissionDataFaction : JsonApiStruct
 	string Name;
 	ref array<ref PS_MissionDataGroup> Groups = new array<ref PS_MissionDataGroup>;
 	
-	void PS_MissionDataConfig()
+	void PS_MissionDataFaction()
 	{
 		RegV("Key");
 		RegV("Name");
@@ -62,14 +74,89 @@ class PS_MissionDataGroup : JsonApiStruct
 
 class PS_MissionDataPlayable : JsonApiStruct
 {
+	int EntityId;
 	int GroupOrder;
 	string Name;
 	string RoleName;
+	string PrefabPath;
 	
-	void PS_MissionDataGroup()
+	void PS_MissionDataPlayable()
 	{
+		RegV("EntityId");
 		RegV("GroupOrder");
 		RegV("Name");
 		RegV("RoleName");
+		RegV("PrefabPath");
+	}
+}
+
+class PS_MissionDataVehicle : JsonApiStruct
+{
+	int EntityId;
+	string PrefabPath;
+	string EditableName;
+	string VehicleFactionKey;
+	
+	void PS_MissionDataVehicle()
+	{
+		RegV("EntityId");
+		RegV("PrefabPath");
+		RegV("EditableName");
+		RegV("VehicleFactionKey");
+	}
+}
+class PS_MissionDataPlayer : JsonApiStruct
+{
+	int PlayerId;
+	string GUID;
+	string Name;
+	
+	void PS_MissionDataPlayer()
+	{
+		RegV("PlayerId");
+		RegV("GUID");
+		RegV("Name");
+	}
+}
+
+class PS_MissionDataPlayerToEntity : JsonApiStruct
+{
+	int PlayerId;
+	int EntityId;
+	
+	void PS_MissionDataPlayerToEntity()
+	{
+		RegV("PlayerId");
+		RegV("EntityId");
+	}
+}
+
+class PS_MissionDataDamageEvent : JsonApiStruct
+{
+	int PlayerId;
+	int TargetId;
+	float DamageValue;
+	int TargetState;
+	int Time;
+	
+	void PS_MissionDataDamageEvent()
+	{
+		RegV("PlayerId");
+		RegV("TargetId");
+		RegV("DamageValue");
+		RegV("TargetState");
+		RegV("Time");
+	}
+}
+
+class PS_MissionDataStateChangeEvent : JsonApiStruct
+{
+	int State;
+	int Time;
+	
+	void PS_MissionDataStateChangeEvent()
+	{
+		RegV("State");
+		RegV("Time");
 	}
 }

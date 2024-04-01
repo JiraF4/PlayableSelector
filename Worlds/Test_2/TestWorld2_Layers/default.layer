@@ -37,10 +37,24 @@ PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_Game
 }
 HitRegistrationManager HitRegManager1 : "{0EDA3D48791120DD}Prefabs/MP/HitRegManager.et" {
 }
+PolylineShapeEntity : "{1D807ABE94FE2618}Prefabs/PolyZone/PolyZone_Capture.et" {
+ coords 116.268 6.202 116.792
+ {
+  PS_PolyZoneObjectiveTriggerCapture CaptureTrigger {
+   ID "60E906126F14C7A8"
+   m_polyZoneEffect PS_PolyZoneEffectTriggerCapture "{6102C7159DD62359}" {
+    m_sTriggerName "CaptureTrigger"
+   }
+  }
+ }
+}
 PS_MissionDescription : "{3136BE42592F3B1B}PrefabsEditable/MissionDescription/EditableMissionDescription.et" {
  coords 95.586 1 151.188
 }
 PS_ManualCameraSpectator ManualCameraSpectator1 : "{6EAA30EF620F4A2E}Prefabs/Editor/Camera/ManualCameraSpectator.et" {
  coords 122.492 1 163.836
  Flags 1048579
+}
+PolylineShapeEntity : "{DCA90362FBC25FB4}Prefabs/PolyZone/PolyZone_Presence.et" {
+ coords 128.302 1 102.174
 }
