@@ -9,6 +9,7 @@ class PS_MissionDataConfig : JsonApiStruct
 	ref array<ref PS_MissionDataPlayer> Players = new array<ref PS_MissionDataPlayer>;
 	ref array<ref PS_MissionDataDamageEvent> DamageEvents = new array<ref PS_MissionDataDamageEvent>;
 	ref array<ref PS_MissionDataStateChangeEvent> StateEvents = new array<ref PS_MissionDataStateChangeEvent>;
+	ref array<ref PS_MissionDataFactionResult> FactionResults = new array<ref PS_MissionDataFactionResult>;
 	
 	void PS_MissionDataConfig()
 	{
@@ -21,6 +22,7 @@ class PS_MissionDataConfig : JsonApiStruct
 		RegV("Players");
 		RegV("DamageEvents");
 		RegV("StateEvents");
+		RegV("FactionResults");
 	}
 }
 
@@ -146,6 +148,36 @@ class PS_MissionDataDamageEvent : JsonApiStruct
 		RegV("DamageValue");
 		RegV("TargetState");
 		RegV("Time");
+	}
+}
+
+class PS_MissionDataFactionResult : JsonApiStruct
+{
+	FactionKey ResultFactionKey;
+	string ResultName;
+	int ResultScore;
+	ref array<ref PS_MissionDataObjective> Objectives = new array<ref PS_MissionDataObjective>();
+	
+	void PS_MissionDataFactionResult()
+	{
+		RegV("ResultFactionKey");
+		RegV("ResultName");
+		RegV("ResultScore");
+		RegV("Objectives");
+	}
+}
+
+class PS_MissionDataObjective : JsonApiStruct
+{
+	string Name;
+	bool Completed;
+	int Score;
+	
+	void PS_MissionDataObjective()
+	{
+		RegV("Name");
+		RegV("Completed");
+		RegV("Score");
 	}
 }
 

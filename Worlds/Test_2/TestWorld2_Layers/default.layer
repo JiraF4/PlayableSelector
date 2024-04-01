@@ -55,6 +55,3 @@ PS_ManualCameraSpectator ManualCameraSpectator1 : "{6EAA30EF620F4A2E}Prefabs/Edi
  coords 122.492 1 163.836
  Flags 1048579
 }
-PolylineShapeEntity : "{DCA90362FBC25FB4}Prefabs/PolyZone/PolyZone_Presence.et" {
- coords 128.302 1 102.174
-}

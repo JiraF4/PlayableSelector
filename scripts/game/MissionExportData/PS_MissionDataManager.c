@@ -22,7 +22,9 @@ class PS_MissionDataManager : ScriptComponent
 	ref map<RplId, SCR_DamageManagerComponent> m_RplToDamageManager = new map<RplId, SCR_DamageManagerComponent>();
 	ref map<int, bool> m_playerSaved = new map<int, bool>();
 	PS_PlayableManager m_PlayableManager;
+	PS_ObjectiveManager m_ObjectiveManager;
 	PS_GameModeCoop m_GameModeCoop;
+	FactionManager m_FactionManager;
 	PlayerManager m_PlayerManager;
 	ref PS_MissionDataConfig m_Data = new PS_MissionDataConfig();
 	int m_iInitTimer = 20;
@@ -109,6 +111,8 @@ class PS_MissionDataManager : ScriptComponent
 		m_GameModeCoop = PS_GameModeCoop.Cast(GetOwner());
 		m_PlayerManager = GetGame().GetPlayerManager();
 		m_PlayableManager = PS_PlayableManager.GetInstance();
+		m_ObjectiveManager = PS_ObjectiveManager.GetInstance();
+		m_FactionManager = GetGame().GetFactionManager();
 		
 		m_GameModeCoop.GetOnGameStateChange().Insert(OnGameStateChanged);
 		m_GameModeCoop.GetOnPlayerAuditSuccess().Insert(OnPlayerAuditSuccess);
@@ -134,6 +138,11 @@ class PS_MissionDataManager : ScriptComponent
 		m_Data.StateEvents.Insert(missionDataStateChangeEvent);
 		if (state == SCR_EGameModeState.GAME)
 			SavePlayers();
+		if (state == SCR_EGameModeState.DEBRIEFING)
+		{
+			GetGame().GetCallqueue().Call(SaveObjectives);
+			GetGame().GetCallqueue().Call(WriteToFile);
+		}
 	}
 	
 	void OnPlayerAuditSuccess(int playerId)
@@ -260,10 +269,46 @@ class PS_MissionDataManager : ScriptComponent
 		}
 	}
 	
+	void SaveObjectives()
+	{
+		array<PS_Objective> objectivesOut = {};
+		m_ObjectiveManager.GetObjectives(objectivesOut);
+		array<Faction> outFactions = {};
+		m_FactionManager.GetFactionsList(outFactions);
+		foreach (Faction faction : outFactions)
+		{
+			FactionKey factionKey = faction.GetFactionKey();
+			
+			PS_MissionDataFactionResult missionDataFactionResult = new PS_MissionDataFactionResult();
+			missionDataFactionResult.ResultFactionKey = factionKey;
+			PS_ObjectiveLevel objectiveLevel = m_ObjectiveManager.GetFactionScoreLevel(factionKey);
+			if (objectiveLevel)
+			{
+				missionDataFactionResult.ResultName = objectiveLevel.GetName();
+				missionDataFactionResult.ResultScore = objectiveLevel.GetScore();
+			}
+			foreach (PS_Objective objective : objectivesOut)
+			{
+				if (objective.GetFactionKey() != factionKey)
+					continue;
+				
+				PS_MissionDataObjective missionDataObjective = new PS_MissionDataObjective();
+				
+				missionDataObjective.Name = objective.GetTitle();
+				missionDataObjective.Completed = objective.GetCompleted();
+				missionDataObjective.Score = objective.GetScore();
+				
+				missionDataFactionResult.Objectives.Insert(missionDataObjective);
+			}
+			m_Data.FactionResults.Insert(missionDataFactionResult);
+		}
+	}
+	
 	void WriteToFile()
 	{
 		SCR_JsonSaveContext missionSaveContext = new SCR_JsonSaveContext();
 		missionSaveContext.WriteValue("", m_Data);
-		missionSaveContext.SaveToFile("$profile:PS_MissionData.json");
+		string fileName = string.Format("$profile:Sessions\\PS_MissionData_%1.json", System.GetUnixTime().ToString());
+		missionSaveContext.SaveToFile(fileName);
 	}
 }

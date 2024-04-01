@@ -247,3 +247,26 @@ SplineShapeEntity {
   }
  }
 }
+PolylineShapeEntity : "{127D357736B0C350}Prefabs/PolyZone/PolyZone_Destroy.et" {
+ coords 125.628 1 105.812
+ Points {
+  ShapePoint "{6102F234572208C1}" {
+   Position 5.523 0 3.454
+  }
+  ShapePoint "{6102F23458B81CA7}" {
+   Position -0.372 0 12.701
+  }
+  ShapePoint "{6102F23458CFBF4E}" {
+   Position -9.625 0 10.31
+  }
+  ShapePoint "{6102F23458029B4E}" {
+   Position -11.808 0 4.924
+  }
+ }
+ {
+  PS_PolyZoneObjectiveTriggerDestroy {
+   ID "60E9062E6BABF765"
+   m_sFactionKey "USSR"
+  }
+ }
+}
