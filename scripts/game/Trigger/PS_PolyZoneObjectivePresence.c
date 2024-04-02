@@ -9,18 +9,19 @@ class PS_PolyZoneObjectivePresence : PS_PolyZoneObjectiveTrigger
 	
 	[Attribute("1")]
 	int m_iNeedCount;
-	[Attribute("1")]
-	int m_iOneTime;
+	[Attribute("0")]
+	bool m_bOneTime;
 	
 	void UpdateObjectives()
 	{
 		if (m_bAfterGame)
 			return;
-		if (m_iCount >= m_iNeedCount)
+		if (m_iCount >= m_iNeedCount && m_bOneTime)
 			EnablePeriodicQueries(false);
 		foreach (PS_Objective objective : m_aObjectives)
 		{
-			objective.SetCompleted(m_iCount >= m_iNeedCount);
+			if (!m_bOneTime || !objective.GetCompleted())
+				objective.SetCompleted(m_iCount >= m_iNeedCount);
 		}
 	}
 	

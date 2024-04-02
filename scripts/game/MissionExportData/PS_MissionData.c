@@ -1,7 +1,7 @@
 class PS_MissionDataConfig : JsonApiStruct
 {
-	string MissionKey;
 	string MissionPath;
+	string ReplayPath;
 	ref array<ref PS_MissionDataDescription> Descriptions = new array<ref PS_MissionDataDescription>;
 	ref array<ref PS_MissionDataFaction> Factions = new array<ref PS_MissionDataFaction>;
 	ref array<ref PS_MissionDataVehicle> Vehicles = new array<ref PS_MissionDataVehicle>;
@@ -15,6 +15,7 @@ class PS_MissionDataConfig : JsonApiStruct
 	{
 		RegV("MissionKey");
 		RegV("MissionPath");
+		RegV("ReplayFileName");
 		RegV("Descriptions");
 		RegV("Factions");
 		RegV("Vehicles");

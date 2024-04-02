@@ -14,6 +14,8 @@ class PS_PolyZoneObjectiveTrigger : PS_PolyZoneTrigger
 	
 	override void OnInit(IEntity owner)
 	{
+		super.OnInit(owner);
+		
 		if (!Replication.IsServer())
 			EnablePeriodicQueries(false);
 		

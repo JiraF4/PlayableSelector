@@ -168,6 +168,11 @@ class PS_MissionDataManager : ScriptComponent
 		MissionHeader missionHeader = GetGame().GetMissionHeader();
 		if (missionHeader) m_Data.MissionPath = missionHeader.GetHeaderResourcePath();
 		
+		#ifdef PS_REPLAYS
+		PS_ReplayWriter replayWriter = PS_ReplayWriter.GetInstance();
+		m_Data.ReplayPath = replayWriter.m_sReplayFileName;
+		#endif
+		
 		PS_MissionDescriptionManager missionDescriptionManager = PS_MissionDescriptionManager.GetInstance();
 		array<PS_MissionDescription> descriptions = new array<PS_MissionDescription>();
 		missionDescriptionManager.GetDescriptions(descriptions);
