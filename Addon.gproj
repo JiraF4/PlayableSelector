@@ -3,7 +3,7 @@ GameProject {
  GUID "596523840114E2D3"
  TITLE "ReforgerLobbyDEV"
  Dependencies {
-  "58D0FB3206B6F859" "5EDF4804D92E373B"
+  "58D0FB3206B6F859"
  }
  Configurations {
   GameProjectConfig PC {
@@ -70,6 +70,9 @@ GameProject {
   GameProjectConfig XBOX_SERIES {
   }
   GameProjectConfig PS4 {
+  }
+  GameProjectConfig PS5 : PC {
+   PlatformHardware PS5
   }
   GameProjectConfig HEADLESS {
   }

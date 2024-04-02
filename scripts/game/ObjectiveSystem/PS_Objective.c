@@ -60,6 +60,14 @@ class PS_Objective : PS_MissionDescription
 			m_OnObjectiveUpdate.Invoke();
 		
 		if (Replication.IsServer() && m_bAdvanceWhenTriggered && m_bCompleted)
+		{
+			GetGame().GetCallqueue().CallLater(LateAdvance, 1100);	
+		}
+	}
+	
+	void LateAdvance()
+	{
+		if (m_bCompleted)
 			m_GameModeCoop.AdvanceGameState(SCR_EGameModeState.GAME);
 	}
 	
