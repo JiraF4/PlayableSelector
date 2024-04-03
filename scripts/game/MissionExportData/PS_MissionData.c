@@ -1,7 +1,17 @@
 class PS_MissionDataConfig : JsonApiStruct
 {
+	string MissionName;
+	string MissionAuthor;
+	string MissionDescription;
+	
+	string MissionWeather;
+	string MissionWeatherIcon;
+	float MissionDayTime;
+	
 	string MissionPath;
+	string WorldPath;
 	string ReplayPath;
+	
 	ref array<ref PS_MissionDataDescription> Descriptions = new array<ref PS_MissionDataDescription>;
 	ref array<ref PS_MissionDataFaction> Factions = new array<ref PS_MissionDataFaction>;
 	ref array<ref PS_MissionDataVehicle> Vehicles = new array<ref PS_MissionDataVehicle>;
@@ -10,12 +20,21 @@ class PS_MissionDataConfig : JsonApiStruct
 	ref array<ref PS_MissionDataDamageEvent> DamageEvents = new array<ref PS_MissionDataDamageEvent>;
 	ref array<ref PS_MissionDataStateChangeEvent> StateEvents = new array<ref PS_MissionDataStateChangeEvent>;
 	ref array<ref PS_MissionDataFactionResult> FactionResults = new array<ref PS_MissionDataFactionResult>;
+	ref array<ref PS_MissionDataPlayerKill> Kills = new array<ref PS_MissionDataPlayerKill>;
 	
 	void PS_MissionDataConfig()
 	{
-		RegV("MissionKey");
+		RegV("MissionName");
+		RegV("MissionAuthor");
+		RegV("MissionDescription");
+		
+		RegV("MissionWeather");
+		RegV("MissionData");
+		
 		RegV("MissionPath");
-		RegV("ReplayFileName");
+		RegV("WorldPath");
+		RegV("ReplayPath");
+		
 		RegV("Descriptions");
 		RegV("Factions");
 		RegV("Vehicles");
@@ -24,6 +43,8 @@ class PS_MissionDataConfig : JsonApiStruct
 		RegV("DamageEvents");
 		RegV("StateEvents");
 		RegV("FactionResults");
+		
+		RegV("Kills");
 	}
 }
 
@@ -50,12 +71,17 @@ class PS_MissionDataFaction : JsonApiStruct
 	FactionKey Key;
 	string Name;
 	ref array<ref PS_MissionDataGroup> Groups = new array<ref PS_MissionDataGroup>;
+	Color FactionColor;
+	Color FactionOutlineColor;
 	
 	void PS_MissionDataFaction()
 	{
 		RegV("Key");
 		RegV("Name");
 		RegV("Groups");
+		
+		RegV("FactionColor");
+		RegV("FactionOutlineColor");
 	}
 }
 
@@ -186,10 +212,24 @@ class PS_MissionDataStateChangeEvent : JsonApiStruct
 {
 	int State;
 	int Time;
+	int SystemTime;
 	
 	void PS_MissionDataStateChangeEvent()
 	{
 		RegV("State");
 		RegV("Time");
+		RegV("SystemTime");
+	}
+}
+
+class PS_MissionDataPlayerKill : JsonApiStruct
+{
+	int InstigatorId;
+	int PlayerId;
+	
+	void PS_MissionDataPlayerKill()
+	{
+		RegV("InstigatorId");
+		RegV("PlayerId");
 	}
 }

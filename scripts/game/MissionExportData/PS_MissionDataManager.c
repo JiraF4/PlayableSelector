@@ -114,10 +114,21 @@ class PS_MissionDataManager : ScriptComponent
 		m_ObjectiveManager = PS_ObjectiveManager.GetInstance();
 		m_FactionManager = GetGame().GetFactionManager();
 		
+		m_GameModeCoop.GetOnPlayerKilled();
 		m_GameModeCoop.GetOnGameStateChange().Insert(OnGameStateChanged);
 		m_GameModeCoop.GetOnPlayerAuditSuccess().Insert(OnPlayerAuditSuccess);
 		if (RplSession.Mode() != RplMode.Dedicated) 
 			OnPlayerAuditSuccess(GetGame().GetPlayerController().GetPlayerId());
+	}
+	
+	void OnPlayerKilled(int playerId, IEntity playerEntity, IEntity killerEntity, notnull Instigator killer)
+	{
+		int killerId = killer.GetInstigatorPlayerID();
+		
+		PS_MissionDataPlayerKill missionDataPlayerKill = new PS_MissionDataPlayerKill();
+		missionDataPlayerKill.InstigatorId = killerId;
+		missionDataPlayerKill.PlayerId = playerId;
+		m_Data.Kills.Insert(missionDataPlayerKill);
 	}
 	
 	void AwaitFullInit()
@@ -135,6 +146,7 @@ class PS_MissionDataManager : ScriptComponent
 		PS_MissionDataStateChangeEvent missionDataStateChangeEvent = new PS_MissionDataStateChangeEvent();
 		missionDataStateChangeEvent.State = state;
 		missionDataStateChangeEvent.Time = GetGame().GetWorld().GetWorldTime();
+		missionDataStateChangeEvent.SystemTime = System.GetUnixTime();
 		m_Data.StateEvents.Insert(missionDataStateChangeEvent);
 		if (state == SCR_EGameModeState.GAME)
 			SavePlayers();
@@ -161,12 +173,34 @@ class PS_MissionDataManager : ScriptComponent
 		
 		m_playerSaved.Insert(playerId, true);
 	}
-	
+
 	// Save main mission data
 	void InitData()
 	{
-		MissionHeader missionHeader = GetGame().GetMissionHeader();
-		if (missionHeader) m_Data.MissionPath = missionHeader.GetHeaderResourcePath();
+		SCR_MissionHeader missionHeader = SCR_MissionHeader.Cast(GetGame().GetMissionHeader());
+		if (missionHeader) {
+			m_Data.MissionPath = missionHeader.GetHeaderResourcePath();
+			m_Data.WorldPath = missionHeader.GetWorldPath();
+			
+			m_Data.MissionName = missionHeader.m_sName;
+			m_Data.MissionAuthor = missionHeader.m_sAuthor;
+			m_Data.MissionDescription = missionHeader.m_sDescription;
+		}
+		
+		ChimeraWorld world = GetGame().GetWorld();
+		TimeAndWeatherManagerEntity timeAndWeatherManagerEntity = world.GetTimeAndWeatherManager();
+		float time = timeAndWeatherManagerEntity.GetTimeOfTheDay();
+		WeatherState weatherState = timeAndWeatherManagerEntity.GetCurrentWeatherState();
+		m_Data.MissionWeather = weatherState.GetStateName();
+		m_Data.MissionDayTime = time;
+		m_Data.MissionWeatherIcon = weatherState.GetIconPath();
+		
+	
+		PS_MissionDataStateChangeEvent missionDataStateChangeEvent = new PS_MissionDataStateChangeEvent();
+		missionDataStateChangeEvent.State = SCR_EGameModeState.PREGAME;
+		missionDataStateChangeEvent.Time = GetGame().GetWorld().GetWorldTime();
+		missionDataStateChangeEvent.SystemTime = System.GetUnixTime();
+		m_Data.StateEvents.Insert(missionDataStateChangeEvent);
 		
 		#ifdef PS_REPLAYS
 		PS_ReplayWriter replayWriter = PS_ReplayWriter.GetInstance();
@@ -204,7 +238,10 @@ class PS_MissionDataManager : ScriptComponent
 			AIControlComponent aiComponent = AIControlComponent.Cast(character.FindComponent(AIControlComponent));
 			AIAgent agent = aiComponent.GetAIAgent();
 			SCR_AIGroup group = SCR_AIGroup.Cast(agent.GetParentGroup());
-			Faction faction = group.GetFaction();
+			if (!group)
+				continue;
+			
+			SCR_Faction faction = SCR_Faction.Cast(group.GetFaction());
 			if (!factionsMap.Contains(faction))
 			{
 				factionData = new PS_MissionDataFaction();
@@ -212,6 +249,8 @@ class PS_MissionDataManager : ScriptComponent
 				
 				factionData.Name = WidgetManager.Translate("%1", faction.GetFactionName());
 				factionData.Key = WidgetManager.Translate("%1", faction.GetFactionKey());
+				factionData.FactionColor = faction.GetFactionColor();
+				factionData.FactionOutlineColor = faction.GetOutlineFactionColor();
 				
 				factionsMap.Insert(faction, factionData);
 			}
