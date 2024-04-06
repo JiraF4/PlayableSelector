@@ -114,7 +114,7 @@ class PS_MissionDataManager : ScriptComponent
 		m_ObjectiveManager = PS_ObjectiveManager.GetInstance();
 		m_FactionManager = GetGame().GetFactionManager();
 		
-		m_GameModeCoop.GetOnPlayerKilled();
+		m_GameModeCoop.GetOnPlayerKilled().Insert(OnPlayerKilled);
 		m_GameModeCoop.GetOnGameStateChange().Insert(OnGameStateChanged);
 		m_GameModeCoop.GetOnPlayerAuditSuccess().Insert(OnPlayerAuditSuccess);
 		if (RplSession.Mode() != RplMode.Dedicated) 
