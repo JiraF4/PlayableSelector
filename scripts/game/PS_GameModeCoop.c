@@ -240,6 +240,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	
 	protected override void OnPlayerKilled(int playerId, IEntity playerEntity, IEntity killerEntity, notnull Instigator killer)
 	{
+		m_OnPlayerKilled.Invoke(playerId, playerEntity, killerEntity, killer);
+		
 		if (!Replication.IsServer()) return;
 		
 		// TODO: remove CallLater

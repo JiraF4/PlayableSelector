@@ -24,27 +24,7 @@ class PS_MissionDataConfig : JsonApiStruct
 	
 	void PS_MissionDataConfig()
 	{
-		RegV("MissionName");
-		RegV("MissionAuthor");
-		RegV("MissionDescription");
-		
-		RegV("MissionWeather");
-		RegV("MissionData");
-		
-		RegV("MissionPath");
-		RegV("WorldPath");
-		RegV("ReplayPath");
-		
-		RegV("Descriptions");
-		RegV("Factions");
-		RegV("Vehicles");
-		RegV("PlayersToPlayables");
-		RegV("Players");
-		RegV("DamageEvents");
-		RegV("StateEvents");
-		RegV("FactionResults");
-		
-		RegV("Kills");
+		RegAll();
 	}
 }
 
@@ -58,11 +38,7 @@ class PS_MissionDataDescription : JsonApiStruct
 	
 	void PS_MissionDataDescription()
 	{
-		RegV("Title");
-		RegV("DescriptionLayout");
-		RegV("TextData");
-		RegV("VisibleForFactions");
-		RegV("EmptyFactionVisibility");
+		RegAll();
 	}
 }
 
@@ -71,17 +47,12 @@ class PS_MissionDataFaction : JsonApiStruct
 	FactionKey Key;
 	string Name;
 	ref array<ref PS_MissionDataGroup> Groups = new array<ref PS_MissionDataGroup>;
-	Color FactionColor;
-	Color FactionOutlineColor;
+	string FactionColor;
+	string FactionOutlineColor;
 	
 	void PS_MissionDataFaction()
 	{
-		RegV("Key");
-		RegV("Name");
-		RegV("Groups");
-		
-		RegV("FactionColor");
-		RegV("FactionOutlineColor");
+		RegAll();
 	}
 }
 
@@ -94,10 +65,7 @@ class PS_MissionDataGroup : JsonApiStruct
 	
 	void PS_MissionDataGroup()
 	{
-		RegV("Callsign");
-		RegV("CallsignName");
-		RegV("Name");
-		RegV("Playables");
+		RegAll();
 	}
 }
 
@@ -111,11 +79,7 @@ class PS_MissionDataPlayable : JsonApiStruct
 	
 	void PS_MissionDataPlayable()
 	{
-		RegV("EntityId");
-		RegV("GroupOrder");
-		RegV("Name");
-		RegV("RoleName");
-		RegV("PrefabPath");
+		RegAll();
 	}
 }
 
@@ -128,10 +92,7 @@ class PS_MissionDataVehicle : JsonApiStruct
 	
 	void PS_MissionDataVehicle()
 	{
-		RegV("EntityId");
-		RegV("PrefabPath");
-		RegV("EditableName");
-		RegV("VehicleFactionKey");
+		RegAll();
 	}
 }
 class PS_MissionDataPlayer : JsonApiStruct
@@ -142,9 +103,7 @@ class PS_MissionDataPlayer : JsonApiStruct
 	
 	void PS_MissionDataPlayer()
 	{
-		RegV("PlayerId");
-		RegV("GUID");
-		RegV("Name");
+		RegAll();
 	}
 }
 
@@ -155,8 +114,7 @@ class PS_MissionDataPlayerToEntity : JsonApiStruct
 	
 	void PS_MissionDataPlayerToEntity()
 	{
-		RegV("PlayerId");
-		RegV("EntityId");
+		RegAll();
 	}
 }
 
@@ -170,11 +128,7 @@ class PS_MissionDataDamageEvent : JsonApiStruct
 	
 	void PS_MissionDataDamageEvent()
 	{
-		RegV("PlayerId");
-		RegV("TargetId");
-		RegV("DamageValue");
-		RegV("TargetState");
-		RegV("Time");
+		RegAll();
 	}
 }
 
@@ -187,10 +141,7 @@ class PS_MissionDataFactionResult : JsonApiStruct
 	
 	void PS_MissionDataFactionResult()
 	{
-		RegV("ResultFactionKey");
-		RegV("ResultName");
-		RegV("ResultScore");
-		RegV("Objectives");
+		RegAll();
 	}
 }
 
@@ -202,9 +153,7 @@ class PS_MissionDataObjective : JsonApiStruct
 	
 	void PS_MissionDataObjective()
 	{
-		RegV("Name");
-		RegV("Completed");
-		RegV("Score");
+		RegAll();
 	}
 }
 
@@ -216,9 +165,7 @@ class PS_MissionDataStateChangeEvent : JsonApiStruct
 	
 	void PS_MissionDataStateChangeEvent()
 	{
-		RegV("State");
-		RegV("Time");
-		RegV("SystemTime");
+		RegAll();
 	}
 }
 
@@ -226,10 +173,11 @@ class PS_MissionDataPlayerKill : JsonApiStruct
 {
 	int InstigatorId;
 	int PlayerId;
+	int Time;
+	int SystemTime;
 	
 	void PS_MissionDataPlayerKill()
 	{
-		RegV("InstigatorId");
-		RegV("PlayerId");
+		RegAll();
 	}
 }

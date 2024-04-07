@@ -128,6 +128,8 @@ class PS_MissionDataManager : ScriptComponent
 		PS_MissionDataPlayerKill missionDataPlayerKill = new PS_MissionDataPlayerKill();
 		missionDataPlayerKill.InstigatorId = killerId;
 		missionDataPlayerKill.PlayerId = playerId;
+		missionDataPlayerKill.Time = GetGame().GetWorld().GetWorldTime();
+		missionDataPlayerKill.SystemTime = System.GetUnixTime();
 		m_Data.Kills.Insert(missionDataPlayerKill);
 	}
 	
@@ -249,8 +251,11 @@ class PS_MissionDataManager : ScriptComponent
 				
 				factionData.Name = WidgetManager.Translate("%1", faction.GetFactionName());
 				factionData.Key = WidgetManager.Translate("%1", faction.GetFactionKey());
-				factionData.FactionColor = faction.GetFactionColor();
-				factionData.FactionOutlineColor = faction.GetOutlineFactionColor();
+				
+				Color color = faction.GetFactionColor();
+				factionData.FactionColor = string.Format("%1,%2,%3,%4", color.A(), color.R(), color.G(), color.B());
+				color = faction.GetOutlineFactionColor();
+				factionData.FactionOutlineColor = string.Format("%1,%2,%3,%4", color.A(), color.R(), color.G(), color.B());
 				
 				factionsMap.Insert(faction, factionData);
 			}
