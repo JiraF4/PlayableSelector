@@ -241,6 +241,11 @@ class PS_PlayableControllerComponent : ScriptComponent
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
 		
+		// Check faction balance
+		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if (!SCR_Global.IsAdmin(thisPlayerController.GetPlayerId()) && !gameModeCoop.CanJoinFaction(factionKey, playableManager.GetPlayerFactionKey(playerId)))
+			return;
+		
 		if (thisPlayerController.GetPlayerId() != playerId && playerRole == EPlayerRole.NONE) return;
 		if (playableManager.GetPlayerPin(playerId) && playerRole == EPlayerRole.NONE) return;
 		
@@ -508,7 +513,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 			FactionAffiliationComponent factionAffiliationComponent = playableComponent.GetFactionAffiliationComponent();
 			Faction faction = factionAffiliationComponent.GetDefaultAffiliatedFaction();
 			FactionKey factionKey = faction.GetFactionKey();
-			if (playerId >= 0 && !SCR_Global.IsAdmin(playerId) && !gameModeCoop.CanJoinFaction(factionKey))
+			if (playerId >= 0 && !SCR_Global.IsAdmin(thisPlayerController.GetPlayerId()) && !gameModeCoop.CanJoinFaction(factionKey, playableManager.GetPlayerFactionKey(playerId)))
 				return;
 		}
 		
@@ -546,7 +551,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 			FactionAffiliationComponent factionAffiliationComponent = playableComponent.GetFactionAffiliationComponent();
 			Faction faction = factionAffiliationComponent.GetDefaultAffiliatedFaction();
 			FactionKey factionKey = faction.GetFactionKey();
-			if (playerId >= 0 && !SCR_Global.IsAdmin(playerId) && !gameModeCoop.CanJoinFaction(factionKey))
+			if (playerId >= 0 && !SCR_Global.IsAdmin(thisPlayerController.GetPlayerId()) && !gameModeCoop.CanJoinFaction(factionKey, playableManager.GetPlayerFactionKey(playerId)))
 				return;
 		}
 		

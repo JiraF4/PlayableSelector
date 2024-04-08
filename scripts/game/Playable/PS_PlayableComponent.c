@@ -204,7 +204,8 @@ class PS_PlayableComponent : ScriptComponent
 	private void AddToList(IEntity owner)
 	{
 		if (!m_bIsPlayable) return;
-		m_AIAgent.DeactivateAI();
+		if (m_AIAgent)
+			m_AIAgent.DeactivateAI();
 
 		GetGame().GetCallqueue().CallLater(AddToListWrap, 0, false, owner) // init delay
 	}
@@ -212,7 +213,8 @@ class PS_PlayableComponent : ScriptComponent
 	private void AddToListWrap(IEntity owner)
 	{
 		if (!m_bIsPlayable) return;
-		m_AIAgent.DeactivateAI();
+		if (m_AIAgent)
+			m_AIAgent.DeactivateAI();
 
 		RplComponent rpl = RplComponent.Cast(GetOwner().FindComponent(RplComponent));
 		rpl.EnableStreaming(false);

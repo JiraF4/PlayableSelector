@@ -324,10 +324,12 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		}
 	}
 	
-	bool CanJoinFaction(FactionKey factionKeyPlayer)
+	bool CanJoinFaction(FactionKey factionKeyPlayer, FactionKey currentFaction)
 	{
 		if (m_iFactionsBalance == -1)
-			return false;
+			return true;
+		if (factionKeyPlayer == currentFaction)
+			return true;
 		
 		map<FactionKey, int> players = new map<FactionKey, int>();
 		map<FactionKey, int> playables = new map<FactionKey, int>();
@@ -348,6 +350,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			if (playerId > 0)
 				players[factionKey] = players[factionKey] + 1;
 		}
+		if (currentFaction != "")
+			players[currentFaction] = players[currentFaction] - 1;
 		
 		float maxFaction = 0;
 		foreach (FactionKey factionKey, int count: playables)

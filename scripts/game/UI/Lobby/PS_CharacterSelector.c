@@ -456,6 +456,8 @@ class PS_CharacterSelector : SCR_ButtonComponent
 		
 		if (playerId != m_iPlayerId)
 		{
+			if (!CanJoinFaction())
+				return;
 			AudioSystem.PlaySound("{9500A96BBA3B0581}Sounds/UI/Samples/Menu/UI_Gadget_Select.wav");
 			m_PlayableControllerComponent.MoveToVoNRoom(playerId, m_sFactionKey, m_sPlayableCallsign);
 			m_PlayableControllerComponent.ChangeFactionKey(playerId, m_sFactionKey);
@@ -526,6 +528,18 @@ class PS_CharacterSelector : SCR_ButtonComponent
 				m_PlayableControllerComponent.SetPlayerPlayable(m_iPlayerId, RplId.Invalid());
 				break;
 		}
+	}
+	
+	bool CanJoinFaction()
+	{
+		// Check faction balance
+		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if (m_PlayableComponent)
+		{
+			if (!PS_PlayersHelper.IsAdminOrServer() && !gameModeCoop.CanJoinFaction(m_sFactionKey, m_PlayableManager.GetPlayerFactionKey(m_iCurrentPlayerId)))
+				return false;
+		}
+		return true;
 	}
 }
 
