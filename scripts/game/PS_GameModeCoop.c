@@ -48,6 +48,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	protected ref array<ref PS_FactionRespawnCount> m_aFactionRespawnCount;
 	protected ref map<FactionKey, PS_FactionRespawnCount> m_mFactionRespawnCount = new map<FactionKey, PS_FactionRespawnCount>();
 	
+	[Attribute("-1", UIWidgets.Auto, "", category: "Reforger Lobby")]
+	protected int m_iFactionsBalance;
+	
 	[Attribute("0", UIWidgets.CheckBox, "", category: "Reforger Lobby (WIP)")]
 	protected bool m_bShowCutscene;
 	
@@ -319,6 +322,51 @@ class PS_GameModeCoop : SCR_BaseGameMode
 				}
 			}
 		}
+	}
+	
+	bool CanJoinFaction(FactionKey factionKeyPlayer)
+	{
+		if (m_iFactionsBalance == -1)
+			return false;
+		
+		map<FactionKey, int> players = new map<FactionKey, int>();
+		map<FactionKey, int> playables = new map<FactionKey, int>();
+		array<PS_PlayableComponent> playableComponents = m_playableManager.GetPlayablesSorted();
+		foreach (PS_PlayableComponent playable : playableComponents)
+		{
+			FactionAffiliationComponent factionAffiliationComponent = playable.GetFactionAffiliationComponent();
+			Faction faction = factionAffiliationComponent.GetDefaultAffiliatedFaction();
+			FactionKey factionKey = faction.GetFactionKey();
+			
+			if (!players.Contains(factionKey))
+				players[factionKey] = 0;
+			if (!playables.Contains(factionKey))
+				playables[factionKey] = 0;
+			
+			playables[factionKey] = playables[factionKey] + 1;
+			int playerId = m_playableManager.GetPlayerByPlayable(playable.GetId());
+			if (playerId > 0)
+				players[factionKey] = players[factionKey] + 1;
+		}
+		
+		float maxFaction = 0;
+		foreach (FactionKey factionKey, int count: playables)
+			if (maxFaction < count)
+				maxFaction = count;
+		
+		// Scale
+		int minFaction = 999;
+		foreach (FactionKey factionKey, int count: players)
+		{
+			int scaledCount = players[factionKey] * (maxFaction / playables[factionKey]);
+			if (minFaction > scaledCount)
+				minFaction = scaledCount;
+		}
+		
+		int currentCount = players[factionKeyPlayer];
+		int diff = currentCount - minFaction;
+		
+		return diff <= m_iFactionsBalance;
 	}
 	
 	// ------------------------------------------ Actions ------------------------------------------

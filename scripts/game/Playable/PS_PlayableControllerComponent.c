@@ -500,6 +500,18 @@ class PS_PlayableControllerComponent : ScriptComponent
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
 		if (playableManager.GetPlayerPin(playerId) && playerRole == EPlayerRole.NONE) return;
 		
+		// Check faction balance
+		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		PS_PlayableComponent playableComponent = playableManager.GetPlayableById(playableId);
+		if (playableComponent)
+		{
+			FactionAffiliationComponent factionAffiliationComponent = playableComponent.GetFactionAffiliationComponent();
+			Faction faction = factionAffiliationComponent.GetDefaultAffiliatedFaction();
+			FactionKey factionKey = faction.GetFactionKey();
+			if (playerId >= 0 && !SCR_Global.IsAdmin(playerId) && !gameModeCoop.CanJoinFaction(factionKey))
+				return;
+		}
+		
 		playableManager.SetPlayablePlayer(playableId, playerId);
 	}
 	
@@ -526,7 +538,18 @@ class PS_PlayableControllerComponent : ScriptComponent
 			return;
 		}
 		
+		// Check faction balance
+		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		PS_PlayableComponent playableComponent = playableManager.GetPlayableById(playableId);
+		if (playableComponent)
+		{
+			FactionAffiliationComponent factionAffiliationComponent = playableComponent.GetFactionAffiliationComponent();
+			Faction faction = factionAffiliationComponent.GetDefaultAffiliatedFaction();
+			FactionKey factionKey = faction.GetFactionKey();
+			if (playerId >= 0 && !SCR_Global.IsAdmin(playerId) && !gameModeCoop.CanJoinFaction(factionKey))
+				return;
+		}
+		
 		SCR_ChimeraCharacter playableCharacter = SCR_ChimeraCharacter.Cast(playableComponent.GetOwner());
 		
 		// Check is playable already selected or dead
