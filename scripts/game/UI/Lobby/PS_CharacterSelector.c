@@ -457,7 +457,12 @@ class PS_CharacterSelector : SCR_ButtonComponent
 		if (playerId != m_iPlayerId)
 		{
 			if (!CanJoinFaction())
+			{
+				SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
+				ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("lmsg");
+				invoker.Invoke(null, "Где баланс?");
 				return;
+			}
 			AudioSystem.PlaySound("{9500A96BBA3B0581}Sounds/UI/Samples/Menu/UI_Gadget_Select.wav");
 			m_PlayableControllerComponent.MoveToVoNRoom(playerId, m_sFactionKey, m_sPlayableCallsign);
 			m_PlayableControllerComponent.ChangeFactionKey(playerId, m_sFactionKey);

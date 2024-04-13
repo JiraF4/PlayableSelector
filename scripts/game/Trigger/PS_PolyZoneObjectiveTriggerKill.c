@@ -52,6 +52,7 @@ class PS_PolyZoneObjectiveTriggerDestroy : PS_PolyZoneObjectiveTrigger
 	
 	override protected void OnActivate(IEntity ent)
 	{
+		Print(ent);
 		if (m_mEntityDamageManagers.Contains(ent))
 			return;
 		SCR_DamageManagerComponent damageManagerComponent = SCR_DamageManagerComponent.Cast(ent.FindComponent(SCR_DamageManagerComponent));
@@ -79,7 +80,7 @@ class PS_PolyZoneObjectiveTriggerDestroy : PS_PolyZoneObjectiveTrigger
 		int destroyed = 0;
 		foreach (IEntity entity, SCR_DamageManagerComponent damageManagerComponent : m_mEntityDamageManagers)
 		{
-			if (damageManagerComponent.GetState() == EDamageState.DESTROYED)
+			if (!damageManagerComponent || damageManagerComponent.GetState() == EDamageState.DESTROYED)
 				destroyed++;
 		}
 		m_fDestroyedPercent = destroyed / count;

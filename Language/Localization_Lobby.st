@@ -955,5 +955,21 @@ StringTable {
    Author "SeskPC"
    LastChanged "class"
   }
+  CustomStringTableItem "{61136A15F2E65B2D}" {
+   Id "PS-Weapon_Baton_Description"
+   Target_en_us "Device for beating people"
+   Target_ru_ru "Прибор для избеения людей"
+   Modified 1628663331
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{61136A15DDBBDCD8}" {
+   Id "PS-Weapon_Baton_Name"
+   Target_en_us "Baton"
+   Target_ru_ru "Дубинка"
+   Modified 1628663275
+   Author "zazul"
+   LastChanged "zazul"
+  }
  }
 }

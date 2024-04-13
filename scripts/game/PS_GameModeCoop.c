@@ -64,6 +64,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	
 	// Cache global
 	protected PS_PlayableManager m_playableManager;
+	protected PS_CutsceneManager m_CutsceneManager;
 	
 	// ------------------------------------------ Events ------------------------------------------
 	override void OnGameStart()
@@ -75,6 +76,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			FreezeTimeCounterOverlay.RemoveFromHierarchy();
 		
 		m_playableManager = PS_PlayableManager.GetInstance();
+		m_CutsceneManager = PS_CutsceneManager.GetInstance();
 		
 		foreach (PS_FactionRespawnCount factionRespawnCount : m_aFactionRespawnCount)
 		{
@@ -560,25 +562,21 @@ class PS_GameModeCoop : SCR_BaseGameMode
 				SetGameModeState(SCR_EGameModeState.SLOTSELECTION);
 				break;
 			case SCR_EGameModeState.SLOTSELECTION:
-				if (!m_bShowCutscene)
-					SetGameModeState(SCR_EGameModeState.BRIEFING);
-				else
-				{
-					SetGameModeState(SCR_EGameModeState.CUTSCENE);
-					GetGame().GetCallqueue().CallLater(AdvanceGameState, 7000, false, SCR_EGameModeState.CUTSCENE);
-				}
-				break;
-			case SCR_EGameModeState.CUTSCENE:
 				SetGameModeState(SCR_EGameModeState.BRIEFING);
 				break;
 			case SCR_EGameModeState.BRIEFING:
-				m_iReconnectTime = m_iReconnectTimeAfterBriefing;
-				if (m_bReserveSlots)
-					ReserveSlots();
-				if (m_bRemoveRedundantUnits) 
-					PS_PlayableManager.GetInstance().KillRedundantUnits();
-				restrictedZonesTimer(m_iFreezeTime);
-				StartGameMode();
+				if (!m_bShowCutscene)
+				{
+					StartGame();
+				}
+ 				else
+				{
+					SetGameModeState(SCR_EGameModeState.CUTSCENE);
+					GetGame().GetCallqueue().CallLater(ExitCutscene, m_CutsceneManager.GetCutsceneTime() + 400, false);
+				}
+				break;
+			case SCR_EGameModeState.CUTSCENE:
+					StartGame();
 				break;
 			case SCR_EGameModeState.GAME:
 				SetGameModeState(SCR_EGameModeState.DEBRIEFING);
@@ -590,6 +588,22 @@ class PS_GameModeCoop : SCR_BaseGameMode
 				break;
 		}
 		OpenCurrentMenuOnClients();
+	}
+	
+	void ExitCutscene()
+	{
+		AdvanceGameState(SCR_EGameModeState.CUTSCENE);
+	}
+	
+	void StartGame()
+	{
+		m_iReconnectTime = m_iReconnectTimeAfterBriefing;
+		if (m_bReserveSlots)
+			ReserveSlots();
+		if (m_bRemoveRedundantUnits) 
+			PS_PlayableManager.GetInstance().KillRedundantUnits();
+		restrictedZonesTimer(m_iFreezeTime);
+		StartGameMode();
 	}
 	
 	void ReserveSlots()

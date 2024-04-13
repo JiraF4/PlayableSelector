@@ -1,4 +1,40 @@
 FrameWidgetClass {
  Name "CutsceneMenu"
  "Z Order" 9
+ {
+  OverlayWidgetClass "{611A12BEE31E1322}" {
+   Name "BlackScreen"
+   Slot FrameWidgetSlot "{611A12BEE31E133F}" {
+    Anchor 0 0 1 1
+    PositionX 0
+    OffsetLeft 0
+    PositionY 0
+    OffsetTop 0
+    SizeX -1820
+    OffsetRight 0
+    SizeY -1050
+    OffsetBottom 0
+   }
+   {
+    ImageWidgetClass "{611A12BEE9688553}" {
+     Name "Image0"
+     Slot OverlayWidgetSlot "{611A12BEE96886AE}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+     }
+     Color 0 0 0 1
+    }
+    TextWidgetClass "{611A12BEF6A6BCC1}" {
+     Name "Text0"
+     Slot OverlayWidgetSlot "{611A12BEF6A6BC26}" {
+     }
+     Text "Загрузка"
+     "Font Size" 36
+     "Min Font Size" 36
+     "Horizontal Alignment" Center
+     "Vertical Alignment" Center
+    }
+   }
+  }
+ }
 }

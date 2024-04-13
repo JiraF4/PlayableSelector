@@ -14,13 +14,20 @@ class PS_CutsceneMenu : ChimeraMenuBase
 	float m_fStartTime;
 	float m_fPointTime;
 	float m_fNextPointTime;
-	PS_CuscenePoint m_PrevPoint;
-	PS_CuscenePoint m_NextPoint;
+	PS_CutscenePoint m_PrevPoint;
+	PS_CutscenePoint m_NextPoint;
 	int m_PrevPointNum = 1;
-	ref array<ref PS_CuscenePoint> m_aCuscenePoints = {};
+	ref array<ref PS_CutscenePoint> m_aCutscenePoints = {};
+	bool m_bSoundStarted;
+	
+	PS_CutsceneManager m_CutsceneManager;
+	
+	OverlayWidget m_wBlackScreen;
 	
 	override void OnMenuOpen()
 	{
+		m_wBlackScreen = OverlayWidget.Cast(GetRootWidget().FindAnyWidget("BlackScreen"));
+		
 		m_CameraManager = GetGame().GetCameraManager();
 		m_World = GetGame().GetWorld();
 		
@@ -33,44 +40,55 @@ class PS_CutsceneMenu : ChimeraMenuBase
 		
 		m_fStartTime = m_World.GetWorldTime() / 1000;
 		
-		PS_CuscenePoint point1 = new PS_CuscenePoint();
-		m_World.FindEntityByName("Test1").GetTransform(point1.m_Mat);
-		point1.m_fTime = 3;
-		m_aCuscenePoints.Insert(point1);
-		PS_CuscenePoint point2 = new PS_CuscenePoint();
-		m_World.FindEntityByName("Test2").GetTransform(point2.m_Mat);
-		point2.m_fTime = 3;
-		m_aCuscenePoints.Insert(point2);
-		PS_CuscenePoint point3 = new PS_CuscenePoint();
-		m_World.FindEntityByName("Test3").GetTransform(point3.m_Mat);
-		point3.m_fTime = 1;
-		m_aCuscenePoints.Insert(point3);
+		m_CutsceneManager = PS_CutsceneManager.GetInstance();
+		m_CutsceneManager.GetPoints(m_aCutscenePoints);
+		m_bSoundStarted = false;
 		
-		m_PrevPoint = m_aCuscenePoints[0];
-		m_NextPoint = m_aCuscenePoints[1];
+		m_PrevPoint = m_aCutscenePoints[0];
+		m_NextPoint = m_aCutscenePoints[1];
 		m_fNextPointTime = m_PrevPoint.m_fTime;
 		m_fPointTime = m_PrevPoint.m_fTime;
 	}
 	
 	override void OnMenuClose()
 	{
-		SCR_EntityHelper.DeleteEntityAndChildren(m_CameraBase);
-		m_CameraManager.SetCamera(m_CameraBaseOld);
+		if (m_CameraBase)
+			delete m_CameraBase;
+		m_CameraManager.SetPreviousCamera();
 	}
 	
 	override void OnMenuUpdate(float tDelta)
 	{
 		super.OnMenuUpdate(tDelta);
 		
-		float time = (m_World.GetWorldTime() / 1000) - m_fStartTime;
+		float time = (m_World.GetWorldTime() / 1000) - m_fStartTime - (m_CutsceneManager.GetPreloadTime()/1000);
+		
+		if (time < 0)
+		{
+			m_wBlackScreen.SetOpacity(Math.AbsFloat(time) * 4.0);
+			m_CameraBase.SetTransform(m_aCutscenePoints[0].m_Mat);
+			return;
+		}
+		else
+		{
+			if (!m_bSoundStarted)
+			{
+				m_wBlackScreen.SetVisible(false);
+		
+				ResourceName sound = m_CutsceneManager.GetCutsceneSound();
+				if (sound != "")
+					AudioSystem.PlaySound(sound);
+				m_bSoundStarted = true;
+			}
+		}
 		
 		if (time > m_fNextPointTime)
 		{
 			m_PrevPointNum++;
 			
 			m_PrevPoint = m_NextPoint;
-			if (m_PrevPointNum < m_aCuscenePoints.Count())
-				m_NextPoint = m_aCuscenePoints[m_PrevPointNum];
+			if (m_PrevPointNum < m_aCutscenePoints.Count())
+				m_NextPoint = m_aCutscenePoints[m_PrevPointNum];
 			
 			m_fNextPointTime += m_PrevPoint.m_fTime;
 			m_fPointTime = m_PrevPoint.m_fTime;
@@ -101,7 +119,7 @@ class PS_CutsceneMenu : ChimeraMenuBase
 	}
 }
 
-class PS_CuscenePoint
+class PS_CutscenePoint
 {
 	vector m_Mat[4];
 	float m_fTime;

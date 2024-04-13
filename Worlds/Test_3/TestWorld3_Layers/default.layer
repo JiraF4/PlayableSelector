@@ -4,10 +4,136 @@ SCR_AIWorld : "{E0A05C76552E7F58}Prefabs/AI/SCR_AIWorld.et" {
 PerceptionManager PerceptionManager1 : "{028DAEAD63E056BE}Prefabs/World/Game/PerceptionManager.et" {
  coords 113.126 1 124.397
 }
+SCR_PlayerController DefaultPlayerController1 : "{6E2BB64764E3BE9B}Prefabs/Characters/Core/DefaultPlayerController.et" {
+ coords 99.858 1 100.505
+ Flags 1048579
+ DefaultControlledEntity "{A62FA97C4EC64F14}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_HeliPilot.et"
+}
 PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_GameMode_Lobby.et" {
+ components {
+  PS_CutsceneManager "{60E6C661B81E7619}" {
+   m_sCutsceneData "-0.762809 -0.000000 -0.646624 0.208264 0.946713 -0.245685 0.612167 -0.322080 -0.722161 2868.727295 88.085594 6390.278320"\
+   "-0.762809 -0.000000 -0.646624 0.208264 0.946713 -0.245685 0.612167 -0.322080 -0.722161 2868.727295 88.085594 6390.278320"\
+   "-0.762809 -0.000000 -0.646624 0.208264 0.946713 -0.245685 0.612167 -0.322080 -0.722161 2868.727295 88.085594 6390.278320"\
+   "-0.762809 -0.000000 -0.646624 0.208264 0.946713 -0.245685 0.612167 -0.322080 -0.722161 2868.727295 88.085594 6390.278320"\
+   "-0.762809 -0.000000 -0.646624 0.208264 0.946713 -0.245685 0.612167 -0.322080 -0.722161 2868.727295 88.085594 6390.278320"\
+   "-0.762809 -0.000000 -0.646624 0.208264 0.946713 -0.245685 0.612167 -0.322080 -0.722161 2868.727295 88.085594 6390.278320"\
+   "-0.762809 -0.000000 -0.646624 0.208265 0.946712 -0.245685 0.612167 -0.322080 -0.722161 2868.727539 88.085594 6390.277832"\
+   "-0.765091 -0.000000 -0.643922 0.207394 0.946712 -0.246421 0.609609 -0.322080 -0.724321 2868.734619 88.085594 6390.268555"\
+   "-0.768839 -0.000000 -0.639443 0.205952 0.946712 -0.247628 0.605369 -0.322080 -0.727869 2868.794189 88.085594 6390.196777"\
+   "-0.768839 -0.000000 -0.639443 0.205952 0.946712 -0.247628 0.605369 -0.322080 -0.727869 2868.958252 88.085594 6389.999023"\
+   "-0.774163 -0.000000 -0.632986 0.203872 0.946712 -0.249342 0.599256 -0.322080 -0.732910 2869.192383 88.085594 6389.716797"\
+   "-0.796256 -0.000000 -0.604960 0.194846 0.946712 -0.256458 0.572724 -0.322080 -0.753825 2869.422363 88.085594 6389.431152"\
+   "-0.822020 -0.000000 -0.569459 0.183411 0.946712 -0.264756 0.539114 -0.322080 -0.778217 2869.638916 88.085594 6389.142090"\
+   "-0.846528 -0.000000 -0.532344 0.171457 0.946712 -0.272650 0.503977 -0.322080 -0.801419 2869.842773 88.085594 6388.843262"\
+   "-0.870438 -0.000000 -0.492279 0.158553 0.946712 -0.280351 0.466047 -0.322080 -0.824054 2870.129395 88.085594 6388.375488"\
+   "-0.896655 -0.000000 -0.442730 0.142594 0.946712 -0.288795 0.419138 -0.322080 -0.848875 2870.580566 88.085594 6387.562988"\
+   "-0.934633 -0.000000 -0.355614 0.114536 0.946712 -0.301027 0.336665 -0.322080 -0.884829 2870.998779 88.085594 6386.692383"\
+   "-0.974140 -0.000000 -0.225945 0.072772 0.946712 -0.313751 0.213905 -0.322080 -0.922231 2871.313232 88.085594 6385.820313"\
+   "-0.995382 -0.000000 -0.095995 0.030918 0.946712 -0.320593 0.090880 -0.322080 -0.942340 2871.501709 88.085594 6384.968750"\
+   "-0.999210 -0.000000 0.039747 -0.012802 0.946712 -0.321825 -0.037629 -0.322080 -0.945964 2871.572266 88.085594 6384.097168"\
+   "-0.981660 -0.000000 0.190641 -0.061402 0.946712 -0.316173 -0.180482 -0.322080 -0.929350 2871.523682 88.085594 6383.238770"\
+   "-0.937811 -0.000000 0.347147 -0.111809 0.946712 -0.302050 -0.328649 -0.322080 -0.887837 2871.342773 88.085594 6382.394531"\
+   "-0.870924 -0.000000 0.491418 -0.158276 0.946712 -0.280507 -0.465231 -0.322080 -0.824515 2871.032715 88.085594 6381.595703"\
+   "-0.765029 -0.000000 0.643996 -0.207418 0.946712 -0.246401 -0.609679 -0.322080 -0.724263 2870.583252 88.085594 6380.837402"\
+   "-0.623799 -0.000000 0.781585 -0.251733 0.946712 -0.200913 -0.739936 -0.322080 -0.590559 2870.014648 88.085594 6380.191895"\
+   "-0.417090 -0.000000 0.908865 -0.292727 0.946712 -0.134336 -0.860434 -0.322080 -0.394864 2869.324463 88.085594 6379.673340"\
+   "-0.150298 -0.000000 0.988641 -0.318421 0.946712 -0.048408 -0.935958 -0.322080 -0.142289 2868.525146 88.085594 6379.342285"\
+   "0.115346 -0.000000 0.993325 -0.319930 0.946712 0.037150 -0.940394 -0.322080 0.109199 2867.682617 88.086212 6379.236816"\
+   "0.382497 -0.000000 0.923957 -0.297588 0.946712 0.123195 -0.874721 -0.322080 0.362115 2866.831787 88.096558 6379.363281"\
+   "0.617375 -0.000000 0.786669 -0.253370 0.946712 0.198844 -0.744750 -0.322080 0.584476 2866.049072 88.134361 6379.710449"\
+   "0.807479 -0.000000 0.589897 -0.189994 0.946712 0.260073 -0.558463 -0.322080 0.764450 2865.386719 88.241119 6380.255371"\
+   "0.937682 -0.000000 0.347494 -0.111921 0.946712 0.302009 -0.328977 -0.322080 0.887716 2864.863770 88.416199 6380.966309"\
+   "0.994479 -0.000000 0.104932 -0.033797 0.946712 0.320302 -0.099340 -0.322080 0.941486 2864.509033 88.611061 6381.780762"\
+   "0.991324 -0.000000 -0.131444 0.042335 0.946712 0.319285 0.124439 -0.322080 0.938498 2864.317627 88.813736 6382.773926"\
+   "0.946737 -0.000000 -0.322007 0.103712 0.946712 0.304925 0.304848 -0.322080 0.896288 2864.319336 89.028130 6383.839844"\
+   "0.865694 -0.000000 -0.500574 0.161225 0.946712 0.278823 0.473900 -0.322080 0.819563 2864.495605 89.259995 6385.062012"\
+   "0.752211 -0.000000 -0.658923 0.212226 0.946712 0.242272 0.623810 -0.322080 0.712127 2864.294434 89.511467 6386.436035"\
+   "0.620806 -0.000000 -0.783964 0.252499 0.946712 0.199949 0.742188 -0.322080 0.587725 2863.547607 89.780617 6387.842285"\
+   "0.472497 -0.000000 -0.881332 0.283860 0.946712 0.152182 0.834368 -0.322080 0.447318 2862.731689 90.092857 6389.686035"\
+   "0.313296 -0.000000 -0.949655 0.305865 0.946712 0.100907 0.899051 -0.322080 0.296602 2862.399902 90.405670 6391.539063"\
+   "0.132422 -0.000000 -0.991193 0.319244 0.946712 0.042650 0.938375 -0.322080 0.125365 2862.482422 90.743149 6393.568848"\
+   "-0.051260 -0.000000 -0.998685 0.321657 0.946712 -0.016510 0.945468 -0.322080 -0.048528 2863.076172 91.103409 6395.625000"\
+   "-0.234045 -0.000000 -0.972226 0.313134 0.946712 -0.075381 0.920418 -0.322080 -0.221574 2864.175537 91.496674 6397.622559"\
+   "-0.413387 -0.000000 -0.910556 0.293272 0.946712 -0.133144 0.862034 -0.322080 -0.391358 2866.337646 91.928825 6398.872559"\
+   "-0.570016 -0.000000 -0.821634 0.264632 0.946712 -0.183591 0.777851 -0.322080 -0.539641 2869.277100 92.381935 6399.031250"\
+   "-0.710276 -0.000000 -0.703924 0.226720 0.946712 -0.228766 0.666413 -0.322080 -0.672427 2872.590576 92.833443 6398.385254"\
+   "-0.828614 -0.000000 -0.559820 0.180307 0.946712 -0.266880 0.529989 -0.322080 -0.784459 2876.005615 93.291672 6396.974609"\
+   "-0.916992 -0.000000 -0.398906 0.128480 0.946712 -0.295345 0.377650 -0.322080 -0.868127 2879.350098 93.801262 6394.848633"\
+   "-0.974916 -0.000000 -0.222573 0.071686 0.946712 -0.314001 0.210712 -0.322080 -0.922965 2882.491943 94.405884 6392.178711"\
+   "-0.999217 -0.000000 -0.039564 0.012743 0.946712 -0.321828 0.037455 -0.322080 -0.945971 2885.885498 95.038490 6390.490723"\
+   "-0.989449 -0.000000 0.144882 -0.046664 0.946712 -0.318682 -0.137161 -0.322080 -0.936724 2889.779297 95.673889 6389.210938"\
+   "-0.946332 -0.000000 0.323197 -0.104095 0.946712 -0.304794 -0.305975 -0.322080 -0.895904 2893.612061 96.354416 6387.026855"\
+   "-0.867984 -0.000000 0.496593 -0.159943 0.946712 -0.279560 -0.470131 -0.322080 -0.821731 2897.049072 97.141083 6383.824707"\
+   "-0.753976 -0.000000 0.656902 -0.211575 0.946712 -0.242841 -0.621897 -0.322080 -0.713798 2899.942627 97.957405 6379.801758"\
+   "-0.606461 -0.000000 0.795113 -0.256090 0.946712 -0.195329 -0.752743 -0.322080 -0.574145 2901.487061 99.081566 6374.813965"\
+   "-0.426549 -0.000000 0.904464 -0.291310 0.946712 -0.137383 -0.856268 -0.322080 -0.403820 2900.730713 99.998779 6369.367676"\
+   "-0.217563 -0.000000 0.976046 -0.314365 0.946712 -0.070073 -0.924035 -0.322080 -0.205969 2897.602051 100.870544 6364.112305"\
+   "-0.001521 -0.000000 0.999999 -0.322080 0.946712 -0.000490 -0.946711 -0.322080 -0.001440 2891.860596 101.575989 6359.729004"\
+   "0.246521 -0.000000 0.969137 -0.312140 0.946712 0.079400 -0.917494 -0.322080 0.233385 2884.319336 102.346741 6356.989746"\
+   "0.498560 -0.000000 0.866855 -0.279197 0.946712 0.160576 -0.820663 -0.322080 0.471993 2875.906006 103.111366 6356.670410"\
+   "0.712797 -0.000000 0.701371 -0.225897 0.946712 0.229578 -0.663996 -0.322080 0.674814 2867.327881 103.945641 6358.922363"\
+   "0.877797 -0.000000 0.479032 -0.154287 0.946712 0.282721 -0.453506 -0.322080 0.831022 2859.063477 104.650467 6364.571289"\
+   "0.966898 -0.000000 0.255164 -0.082183 0.946712 0.311418 -0.241567 -0.322080 0.915374 2852.375244 105.421318 6373.797363"\
+   "0.999050 -0.000000 -0.043567 0.014032 0.946712 0.321774 0.041246 -0.322080 0.945814 2846.011475 106.356102 6388.830566"\
+   "0.964143 -0.000000 -0.265384 0.085475 0.946712 0.310531 0.251242 -0.322080 0.912766 2844.851563 107.333450 6401.450195"\
+   "0.956516 -0.000000 -0.291679 0.094825 0.945680 0.310963 0.275835 -0.325100 0.904558 2846.226807 106.894829 6415.242676"\
+   "0.956516 -0.000000 -0.291679 0.094825 0.945680 0.310963 0.275835 -0.325100 0.904558 2849.281250 106.639038 6431.048828"\
+   "0.956516 -0.000000 -0.291679 0.094825 0.945680 0.310963 0.275835 -0.325100 0.904558 2853.064453 107.310913 6447.749512"\
+   "0.956516 -0.000000 -0.291679 0.094825 0.945680 0.310963 0.275835 -0.325100 0.904558 2857.318604 107.733788 6464.916992"\
+   "0.956516 -0.000000 -0.291679 0.094825 0.945680 0.310963 0.275835 -0.325100 0.904558 2861.970215 107.943192 6483.186035"\
+   "0.958045 -0.000000 -0.286617 0.095357 0.943033 0.318741 0.270289 -0.332699 0.903468 2866.928223 108.702698 6502.640137"\
+   "0.968262 -0.000000 -0.249938 0.098101 0.919752 0.380044 0.229881 -0.392501 0.890560 2871.848389 109.612244 6523.063965"\
+   "0.974803 -0.000000 -0.223068 0.095382 0.903972 0.416817 0.201647 -0.427592 0.881195 2876.250732 110.492645 6544.598145"\
+   "0.975959 -0.000000 -0.217952 0.093838 0.902570 0.420193 0.196717 -0.430543 0.880872 2880.464355 111.319496 6567.780762"\
+   "0.978041 -0.000000 -0.208412 0.090652 0.900446 0.425416 0.187663 -0.434968 0.880673 2884.764648 113.268318 6592.433105"\
+   "0.983223 -0.000000 -0.182406 0.080889 0.896297 0.436015 0.163490 -0.443455 0.881260 2888.692383 114.881721 6616.858887"\
+   "0.988012 -0.000000 -0.154378 0.069828 0.891857 0.446896 0.137683 -0.452318 0.881165 2892.163330 116.326897 6642.728516"\
+   "0.993075 -0.000000 -0.117481 0.054328 0.886648 0.459242 0.104164 -0.462444 0.880508 2895.044678 117.782150 6670.494629"\
+   "0.996955 -0.000000 -0.077983 0.036868 0.881185 0.471332 0.068718 -0.472772 0.878501 2897.102051 119.488739 6700.925293"\
+   "0.999227 -0.000000 -0.039307 0.018892 0.876926 0.480253 0.034469 -0.480624 0.876249 2898.269775 120.865051 6736.361328"\
+   "1.000000 -0.000000 0.000755 -0.000369 0.872781 0.488111 -0.000659 -0.488111 0.872781 2898.104004 122.272682 6776.730957"\
+   "0.998678 -0.000000 0.051401 -0.025498 0.868286 0.495408 -0.044631 -0.496063 0.867139 2896.037842 123.571884 6821.002930"\
+   "0.994653 -0.000000 0.103268 -0.052066 0.863595 0.501490 -0.089182 -0.504186 0.858978 2891.062500 123.954811 6871.975098"\
+   "0.986995 -0.000000 0.160748 -0.082813 0.857087 0.508472 -0.137775 -0.515172 0.845941 2882.644775 123.991310 6928.225586"\
+   "0.961176 -0.000000 0.275935 -0.149308 0.840960 0.520089 -0.232051 -0.541097 0.808311 2869.465820 123.993752 6987.689453"\
+   "0.914570 -0.000000 0.404428 -0.230782 0.821201 0.521889 -0.332117 -0.570639 0.751046 2848.613037 123.993927 7047.276855"\
+   "0.851350 -0.000000 0.524598 -0.314720 0.800055 0.510747 -0.419707 -0.599926 0.681127 2820.254883 123.993965 7103.104492"\
+   "0.755665 -0.000000 0.654959 -0.423928 0.762270 0.489111 -0.499256 -0.647259 0.576021 2786.513916 123.994003 7151.681152"\
+   "0.622098 -0.000000 0.782939 -0.549684 0.712101 0.436761 -0.557531 -0.702078 0.442997 2748.045166 123.994041 7191.109375"\
+   "0.439554 -0.000000 0.898216 -0.676495 0.657844 0.331052 -0.590886 -0.753154 0.289158 2704.898682 123.994080 7221.134277"\
+   "0.406538 -0.000000 0.913634 -0.692736 0.651998 0.308245 -0.595688 -0.758220 0.265062 2690.278076 123.994118 7228.964844"\
+   "0.406538 -0.000000 0.913634 -0.692736 0.651998 0.308245 -0.595688 -0.758220 0.265062 2689.256104 123.994156 7229.511230"\
+   "0.406538 -0.000000 0.913634 -0.692736 0.651998 0.308245 -0.595688 -0.758220 0.265062 2689.196289 123.994179 7229.543457"\
+   "0.388982 -0.000000 0.921245 -0.698507 0.651998 0.294934 -0.600650 -0.758220 0.253615 2689.196289 123.994179 7229.543457"\
+   "0.363324 -0.000000 0.931663 -0.706406 0.651998 0.275480 -0.607442 -0.758221 0.236887 2689.196289 123.994179 7229.543457"\
+   "0.337874 -0.000000 0.941191 -0.713631 0.651998 0.256183 -0.613655 -0.758221 0.220293 2689.196289 123.994179 7229.543457"\
+   "0.312684 -0.000000 0.949857 -0.720201 0.651998 0.237083 -0.619305 -0.758221 0.203869 2689.196289 123.994179 7229.543457"\
+   "0.302156 -0.000000 0.953259 -0.722780 0.651998 0.229101 -0.621523 -0.758221 0.197005 2689.196289 123.994179 7229.543457"\
+   "0.300986 -0.000000 0.953629 -0.723061 0.651998 0.228214 -0.621764 -0.758221 0.196242 2689.196289 123.994179 7229.543457"\
+   "0.300986 -0.000000 0.953629 -0.723061 0.651998 0.228214 -0.621764 -0.758221 0.196242 2689.196289 123.994179 7229.543457"\
+   "0.300986 -0.000000 0.953629 -0.723061 0.651998 0.228214 -0.621764 -0.758221 0.196242 2689.196289 123.994179 7229.543457"\
+   "0.300986 -0.000000 0.953629 -0.723061 0.651998 0.228214 -0.621764 -0.758221 0.196242 2689.196289 123.994179 7229.543457"\
+   "0.300986 -0.000000 0.953629 -0.723061 0.651998 0.228214 -0.621764 -0.758221 0.196242 2689.196289 123.994179 7229.543457"\
+   "0.300986 -0.000000 0.953629 -0.723061 0.651998 0.228214 -0.621764 -0.758221 0.196242 2689.196289 123.994179 7229.543457"\
+   "0.300986 -0.000000 0.953629 -0.723061 0.651998 0.228214 -0.621764 -0.758221 0.196242 2689.196289 123.994179 7229.543457"\
+   "0.300986 -0.000000 0.953629 -0.723061 0.651998 0.228214 -0.621764 -0.758221 0.196242 2689.196289 123.994179 7229.543457"\
+   "0.300986 -0.000000 0.953629 -0.723061 0.651998 0.228214 -0.621764 -0.758221 0.196242 2689.196289 123.994179 7229.543457"\
+   "0.300986 -0.000000 0.953629 -0.723061 0.651998 0.228214 -0.621764 -0.758221 0.196242 2689.196289 123.994179 7229.543457"\
+   "0.300986 -0.000000 0.953629 -0.723061 0.651998 0.228214 -0.621764 -0.758221 0.196242 2689.196289 123.994179 7229.543457"\
+   "0.300986 -0.000000 0.953629 -0.723061 0.651998 0.228214 -0.621764 -0.758221 0.196242 2689.196289 123.994179 7229.543457"\
+   "0.300986 -0.000000 0.953629 -0.723061 0.651998 0.228214 -0.621764 -0.758221 0.196242 2689.196289 123.994179 7229.543457"\
+   "0.300986 -0.000000 0.953629 -0.723061 0.651998 0.228214 -0.621764 -0.758221 0.196242 2689.196289 123.994179 7229.543457"\
+   "0.300986 -0.000000 0.953629 -0.723061 0.651998 0.228214 -0.621764 -0.758221 0.196242 2689.196289 123.994179 7229.543457"\
+   "0.300986 -0.000000 0.953629 -0.723061 0.651998 0.228214 -0.621764 -0.758221 0.196242 2689.196289 123.994179 7229.543457"\
+   ""
+   m_sCutsceneSound "{955C1174847D78C6}Audio/MegaCutscene.wav"
+  }
+ }
  m_bAutoPlayerRespawn 0
  m_bAllowFactionChange 0
  m_iFreezeTime 10000
+ m_bShowCutscene 1
  {
   SCR_FactionManager "5EE8949D46B62B0A" {
    ID "5ED9088735FF2D8B"
@@ -25,8 +151,354 @@ PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_Game
   }
  }
 }
+$grp GenericEntity {
+ {
+  coords 94.717 1.022 91.765
+  angleY 16.917
+ }
+ {
+  components {
+   SignalsManagerComponent "{611939CA1D2F6B91}" {
+   }
+   SoundComponent "{611939CA1D2F6BC8}" {
+    Filenames {
+     "{12A94705DF2BFD25}Sounds/Items/_SharedData/PickUp/Items_PickUp_Generic.acp" "{27C508007B4D4267}Sounds/Weapons/Grenades/_SharedData/Weapons_Grenade_Impacts_ANM8HC.acp" "{27E5FEBCE92BE40B}Sounds/Weapons/_SharedData/Melee/Weapons_Melee.acp" "{E93E101E7ACA2172}Sounds/Weapons/_SharedData/Drop/Weapons_Drop_Grenade.acp" "{91AEEEEE5656F9FE}Sounds/Weapons/Grenades/_SharedData/Weapons_Grenade_Pin_Unpin.acp" "{AC072A5AAF5C6923}Sounds/Weapons/Grenades/M67/Weapons_M67_Fuze.acp" "{982B12014C97FEF7}Sounds/Weapons/Grenades/SmokeGrenades/Weapons_SmokeGrenade_SmokeLoop.acp"
+    }
+   }
+   TimerTriggerComponent "{611939CA1D2F6B4C}" {
+    Enabled 0
+    PROJECTILE_EFFECTS {
+     SpawnParticleEffect "{611939CA1D2F6B78}" {
+      Enabled 0
+      AttachToParent 1
+      UseFrameEvent 1
+      ParticleEffect "{D9E301D28125234A}Particles/Weapon/Smoke_grenade_AN-M8_HC.ptc"
+      UseSoundEvent 0
+      TriggerName "Trigger"
+      StopSoundWithParticles 1
+      SoundStopOffset 5000
+     }
+    }
+    DELETE_ON_TRIGGER 0
+   }
+   GrenadeMoveComponent "{611939CA1D2F1423}" {
+    Enabled 0
+    InitSpeed 30
+    Mass 0.397
+    TimeToLive 150
+    DeleteWhenStop 0
+    TriggerWhenStop 0
+    TriggerWhenTimeout 0
+    LayerPreset "Projectile"
+    CollisionEnabled 1
+    ProjectileEffects {
+     BaseDamageEffect "{611939CA1D2F14A7}" {
+     }
+    }
+    BallisticTableConfig "{E26B2BD5B751713D}Configs/Weapons/AIBallisiticTables/AIBT_Smoke_ANM8HC.conf"
+    MinimalSpeedScale 1
+    IsDangerous 1
+   }
+   InventoryItemComponent "{611939CA1D2F1512}" {
+    Attributes SCR_ItemAttributeCollection "{611939CA1D2F1509}" {
+     ItemDisplayName WeaponUIInfo "{611939CA1D2F1413}" {
+      Name "#PS-Weapon_Baton_Name"
+      Description "#PS-Weapon_Baton_Description"
+     }
+     ItemPhysAttributes ItemPhysicalAttributes "{611939CA1D2F141F}" {
+      Weight 0.68
+      SizeSetupStrategy Manual
+      ItemDimensions 10 10 10
+      ItemVolume 200
+      RestingUP Up
+      RestingAdditiveOffsetLS 0 0 0
+     }
+     ItemAnimationAttributes ItemAnimationAttributes "{611939CA1D2F15BD}" {
+      IkSettings {
+       ItemIKSettings "{611939CA1D2F147C}" {
+        MovementSpeedRange 0 3
+        IkSettingsStand 0
+        IkSettingsCrouch 0
+        IkSettingsProne 0
+       }
+       ItemIKSettings "{611939CA1D2F1441}" {
+        Lowered 1
+        InAds 0
+        OutAds 0
+       }
+       ItemIKSettings "{611939CA1D2F1446}" {
+        Jumping 1
+        InAds 0
+        OutAds 0
+       }
+       ItemIKSettings "{611939CA1D2F145D}" {
+        ProneTurn 1
+        IkSettingsStand 0
+       }
+      }
+      AnimationInstance "{41AABAE44257A657}anims/workspaces/player/player_main_pistol.asi"
+      ExcludeBonesBlend {
+      }
+      AnimationIKPose ""
+      AllowInspection 1
+     }
+     CustomAttributes {
+      PreviewRenderAttributes "{611939CA1D2F15DD}" {
+       CameraPreset Left
+       CameraOrbitAngles -25 -25 0
+       CameraDistanceToItem 2
+       ItemRenderRotation 45 0 0
+       FOV 10
+       AnimationInstance "{CD706CDA25024989}anims/workspaces/player/player_inventory_1handed.asi"
+      }
+      CharacterModifierAttributes "{611939CA1D2F1525}" {
+      }
+      HolsteredItemAttributes "{611939CA1D2F1530}" {
+       LinearOffset 0 0 0
+       HiddenHolstered 1
+      }
+     }
+     CommonItemType "NONE"
+     m_eQuickSlotSize SLOT_2x1
+     m_bStackable 0
+    }
+    WbPlacementFromAttributes 1
+   }
+   MeshObject "{611939CA1D2F1695}" {
+    Object "{10884F8DC6A653D6}Assets/Weapons/pus/pus1.xob"
+    LODFactors {
+     1 1 1 1
+    }
+    PixelSizeScale 2
+   }
+   RigidBody "{611939CA1D2F16D0}" {
+    LayerPreset "Prop"
+    Mass 1
+    LinearDamping 0.01
+    AngularDamping 0.01
+    AngularSleepingThreashold 1
+    SimState None
+    ModelGeometry 1
+    CCDRadius 0
+   }
+   SCR_MeleeWeaponProperties "{611939CA1D2F1620}" {
+    m_fDamage 0
+    m_fResilienceDamage 40
+   }
+   SCR_WeaponAttachmentsStorageComponent "{611939CA1D2F1653}" {
+    Enabled 0
+    Attributes SCR_ItemAttributeCollection "{611939CA1D2F1670}" {
+     ItemDisplayName WeaponUIInfo "{611939CA1D2F1636}" {
+      Name "#AR-Weapon_ANM8HC_Name"
+      Description "#AR-Weapon_ANM8HC_Description"
+     }
+     ItemPhysAttributes ItemPhysicalAttributes "{611939CA1D2F163E}" {
+      Weight 0.68
+      SizeSetupStrategy Volume
+      ItemVolume 200
+     }
+     ItemAnimationAttributes ItemAnimationAttributes "{611939CA1D2F1618}" {
+      IkSettings {
+       ItemIKSettings "{611939CA1D2F160F}" {
+        Lowered 1
+        InAds 0
+        OutAds 0
+       }
+       ItemIKSettings "{611939CA1D2F1612}" {
+        MovementSpeedRange 0 4
+        IkSettingsStand 4
+        IkSettingsCrouch 4
+        IkSettingsProne 4
+       }
+       ItemIKSettings "{611939CA1D2F1617}" {
+        Jumping 1
+        InAds 0
+        OutAds 0
+        IkSettingsStand 4
+       }
+      }
+      AnimationInstance "{4FCBEA45CAEBC9C0}anims/workspaces/player/player_main_1h.asi"
+      AnimInstanceBlendDuration 0.3
+      ExcludeBonesBlend {
+       "RightHandProp"
+      }
+      AnimationIKPose "{645993D8C20DEC8B}Assets/Weapons/Grenades/ANM8HC/anims/anm/p_anm8hc_ik.anm"
+     }
+     CustomAttributes {
+      PreviewRenderAttributes "{611939CA1D2F1662}" {
+       CameraPreset Right
+       CameraDistanceToItem 1
+       FOV 8
+      }
+     }
+     m_SlotType SLOT_WEAPONS_STORAGE
+    }
+    StoragePurpose 32
+   }
+   WeaponComponent "{611939CA1D2F1082}" {
+    components {
+     BaseItemAnimationComponent "{611939CA1D2F172D}" {
+      AnimGraph "{C10E1E127E210526}Assets/Weapons/Rifles/workspaces/m16.agr"
+      AnimInstance "{278604E4583F2647}Assets/Weapons/Rifles/workspaces/m16_weapon.asi"
+      AnimInjection AnimationAttachmentInfo "{611939CA1D2F178B}" {
+       AnimGraph ""
+       AnimInstance "{E0E8C4037B3E193D}Assets/Weapons/Grenades/workspaces/Player_ANM8HC.asi"
+       BindingName "Grenade"
+      }
+      BindWithInjection 1
+      MeshVisibilityConfigurations {
+       MeshesVisibilitySwitchConfig "{611939CA1D2F179D}" {
+        Event "HidePin"
+        Meshes {
+         "SafeClip"
+        }
+       }
+       MeshesVisibilitySwitchConfig "{611939CA1D2F17E3}" {
+        Event "ShowPin"
+        Meshes {
+         "SafeClip"
+        }
+        HideMesh 0
+       }
+      }
+      DeactivationDelay 2
+     }
+    }
+    useAimingType None
+    isThrowable 1
+    AllowedRaise "Only lowered"
+    shouldHandleObstruction 0
+    SoundInt 1000000
+    UIInfo GrenadeUIInfo "{611939CA1D2F1764}" {
+     Name "#PS-Weapon_Baton_Name"
+     Description "#PS-Weapon_Baton_Description"
+     m_bShowWeaponName 1
+     m_MagIndicator SCR_MagazineIndicatorConfiguration "{611939CA1D2F1760}" {
+      m_sOutline ""
+      m_bProgressBar 0
+      m_sBackground ""
+      m_sProgress ""
+     }
+     m_sAmmoType "#PS-Weapon_Baton_Name"
+     m_bShowAmmoTypeText 0
+     m_eAmmoTypeFlags 0
+    }
+    WeaponSlotType "primary"
+   }
+   ActionsManagerComponent "{611939CA1D2F1004}" {
+    ActionContexts {
+     UserActionContext "{611939CA1D2F10E4}" {
+      ContextName "default"
+      Position PointInfo "{611939CA1D2F10E2}" {
+       Offset 0 0.025 0
+      }
+     }
+    }
+    additionalActions {
+     SCR_PickUpItemAction "{611939CA1D2F10D8}" {
+      ParentContextList {
+       "default"
+      }
+      UIInfo UIInfo "{611939CA1D2F10F6}" {
+       Name "#AR-Inventory_PickUp"
+      }
+     }
+     SCR_EquipWeaponAction "{611939CA1D2F103C}" {
+      ParentContextList {
+       "default"
+      }
+      UIInfo UIInfo "{611939CA1D2F1022}" {
+       Name "#AR-Inventory_Equip"
+      }
+      "Sort Priority" 1
+     }
+    }
+   }
+   RplComponent "{611939CA1D2F100B}" {
+    "Rpl State Override" Runtime
+   }
+   Hierarchy "{611939CA1D2F1010}" {
+   }
+  }
+  coords 99.699 1.203 98.369
+  angleY 79.944
+ }
+}
+$grp GenericEntity : "{062E2F1D7F6739D6}Prefabs/Items/Equipment/Accessories/ETool_MPL50/ETool_MPL50_FreeRoamBuilding_Gadget.et" {
+ {
+  components {
+   SCR_MeleeWeaponProperties "{611350EB5A1FA55F}" {
+   }
+  }
+  coords 85.832 1 92.899
+ }
+ {
+  coords 92.896 1 90.7
+ }
+}
 HitRegistrationManager HitRegManager1 : "{0EDA3D48791120DD}Prefabs/MP/HitRegManager.et" {
  coords 127.244 1 148.956
+}
+GenericEntity : "{0F58A05647DA1041}Prefabs/Weapons/Baton/BatonOld.et" {
+ components {
+  TimerTriggerComponent "{5934C8C5C9FDF999}" {
+   Enabled 0
+   PROJECTILE_EFFECTS {
+    SpawnParticleEffect "{5CAADB9AD0C61F3F}" {
+     Enabled 0
+    }
+   }
+  }
+  GrenadeMoveComponent "{1F80A73ADE35BFF1}" {
+   Enabled 0
+  }
+  InventoryItemComponent "{51FAA3E3CF6F087A}" {
+   Enabled 0
+   Attributes SCR_ItemAttributeCollection "{51FAA3E3C2D19BD4}" {
+    m_bVisible 0
+   }
+  }
+  MeshObject "{51EC93F29BA5F234}" {
+   Object "{10884F8DC6A653D6}Assets/Weapons/pus/pus1.xob"
+  }
+  RigidBody "{0F2AA6AEC948C9D6}" {
+   LayerPreset ""
+  }
+  SCR_MeleeWeaponProperties "{506CED7313494012}" {
+   m_fDamage 0
+   m_fResilienceDamage 40
+  }
+  SCR_WeaponAttachmentsStorageComponent "{5260C4469D03696E}" {
+   Attributes SCR_ItemAttributeCollection "{5260C447E3ACEAD0}" {
+    m_Size SLOT_2x1
+    m_SlotType SLOT_WEAPONS_STORAGE
+   }
+  }
+  WeaponComponent "{6D23670EA18BF513}" {
+   components {
+    BaseItemAnimationComponent "{5238E9EC9BC5D973}" {
+     Enabled 1
+     AnimGraph "{C10E1E127E210526}Assets/Weapons/Rifles/workspaces/m16.agr"
+     AnimInstance "{278604E4583F2647}Assets/Weapons/Rifles/workspaces/m16_weapon.asi"
+     AnimInjection AnimationAttachmentInfo "{5238BA5363FA0CA9}" {
+      AnimGraph ""
+     }
+     AnimCommandsToBind +{
+     }
+     AutoVariablesBind 0
+     AnimVariablesToBind +{
+     }
+     DeactivationDelay 2
+    }
+   }
+  }
+ }
+ coords 98.706 1.203 98.322
+ angleY 79.944
+}
+GenericEntity : "{0F58A05647DA1042}Prefabs/Weapons/Baton/Baton.et" {
+ coords 99.222 1.203 99.279
+ angleY 79.944
 }
 SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.et" {
  components {
@@ -38,84 +510,64 @@ SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.et" {
   PS_GroupLateLinkerComponent "{60B551A723F514FA}" {
   }
  }
- coords 138.982 1 62.942
+ coords 95.289 1.001 87.577
  m_aUnitPrefabSlots {
  }
  {
-  SCR_ChimeraCharacter : "{094747C4F8BE9F9F}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_TL_P.et" {
+  SCR_ChimeraCharacter : "{284E735C6C70DAD2}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_BaseLoadout.et" {
    components {
     PS_PlayableComponent "{5EFCC1946F475F15}" {
-     m_name "1"
+     m_bIsPlayable 1
     }
-    SCR_CharacterRankComponent "{528E6D4286AA2D8F}" {
-     m_iRank GENERAL
-    }
-    BaseLoadoutManagerComponent "{520EA1D2DB11821E}" {
-     Slots {
-      LoadoutSlotInfo Hat {
-       Prefab "{483A80042765275F}Prefabs/Characters/HeadGear/Helmet_SPH4_01/Helmet_SPH4_01.et"
-      }
+    CharacterWeaponSlotComponent "{520EA1D2F659CFB7}" {
+     AttachType InventoryStorageSlot "{0C3DA650B52E127A}" {
      }
+     WeaponTemplate "{0F58A05647DA1041}Prefabs/Weapons/Baton/BatonOld.et"
     }
    }
-   coords 0.908 0 -1.211
-  }
-  SCR_ChimeraCharacter : "{3D67614F24B76051}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Spotter_P.et" {
-   components {
-    PS_PlayableComponent "{5EFCC1946F475F15}" {
-     m_name "4"
-    }
-    SCR_CharacterRankComponent "{528E6D4286AA2D8F}" {
-     m_iRank CAPTAIN
-    }
-   }
-   coords -1.758 0 -0.564
-  }
-  $grp SCR_ChimeraCharacter : "{B452527EA042DFF0}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Sniper_P.et" {
-   {
-    components {
-     PS_PlayableComponent "{5EFCC1946F475F15}" {
-      m_name "2"
-     }
-     SCR_CharacterRankComponent "{528E6D4286AA2D8F}" {
-      m_iRank COLONEL
-     }
-    }
-    coords -1.512 0 1.865
-   }
-   {
-    components {
-     PS_PlayableComponent "{5EFCC1946F475F15}" {
-      m_name "3"
-     }
-     SCR_CharacterRankComponent "{528E6D4286AA2D8F}" {
-      m_iRank MAJOR
-     }
-    }
-    coords -3.564 0 1.019
-   }
-   {
-    components {
-     PS_PlayableComponent "{5EFCC1946F475F15}" {
-      m_name "6"
-     }
-     SCR_CharacterRankComponent "{528E6D4286AA2D8F}" {
-      m_iRank SERGEANT
-     }
-    }
-    coords -3.564 0 1.019
-   }
-  }
-  SCR_ChimeraCharacter : "{DBC177C261C93B9D}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_SL_P.et" {
-   components {
-    PS_PlayableComponent "{5EFCC1946F475F15}" {
-     m_name "5"
-    }
-    SCR_CharacterRankComponent "{528E6D4286AA2D8F}" {
-     m_iRank LIEUTENANT
-    }
-   }
-   coords 1.158 0 1.557
+   coords 4.051 -0.001 7.794
   }
  }
+}
+GenericEntity : "{49FFE8F373F55960}Prefabs/Weapons/Explosives/Mine_M15AT/Mine_M15AT.et" {
+ coords 101.321 1 94.295
+}
+SCR_ChimeraCharacter : "{A62FA97C4EC64F14}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_HeliPilot.et" {
+ components {
+  CharacterWeaponSlotComponent "{520EA1D2F659CFAB}" {
+   WeaponTemplate "{0F58A05647DA1041}Prefabs/Weapons/Baton/BatonOld.et"
+  }
+  CharacterWeaponSlotComponent "{520EA1D2F659CFB7}" {
+   WeaponTemplate "{0F58A05647DA1041}Prefabs/Weapons/Baton/BatonOld.et"
+  }
+ }
+ coords 97.084 1 97.001
+}
+GenericEntity : "{B1482FB64E3D2D45}Prefabs/Weapons/Rifles/M16/Rifle_M16A2_4x20.et" {
+ coords 91.851 1 90.768
+}
+GenericEntity : "{B63D38376558C9DD}PrefabsEditable/Mines/E_Mine_M15AT.et" {
+ coords 100.554 1 94.363
+}
+$grp GenericEntity : "{C0F7DD85A86B2900}Prefabs/Weapons/Handguns/PM/Handgun_PM.et" {
+ {
+  coords 100.247 1 97.869
+ }
+ {
+  coords 99.116 1 90.77
+ }
+}
+SCR_ChimeraCharacter : "{C8FABF6F093DA775}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_HeliCrew.et" {
+ coords 95.33 1 98.275
+}
+GenericEntity : "{D6EF54367CECE1D9}Prefabs/Weapons/Explosives/Mine_TM62M/Mine_TM62M.et" {
+ components {
+  SCR_MineAnimationComponent "{5A208BD25A3D8CE4}" {
+   MeshVisibilityConfigurations {
+    MeshesVisibilitySwitchConfig "{5A6CEED4B29186DA}" {
+    }
+   }
+  }
+ }
+ coords 102.362 1 93.747
 }
