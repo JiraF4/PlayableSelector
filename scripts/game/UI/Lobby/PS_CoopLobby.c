@@ -82,9 +82,6 @@ class PS_CoopLobby : MenuBase
 	protected SCR_Faction m_CurrentFaction = null;
 	protected int m_iSelectedPlayer;
 	
-	// Footer buttons
-	SCR_InputButtonComponent m_bNavigationButtonReady;
-	
 	override void OnMenuOpen()
 	{
 		if (!PS_WaitScreen.m_bWaitEnded) {
@@ -460,6 +457,13 @@ class PS_CoopLobby : MenuBase
 	// Actions
 	void Action_Ready()
 	{
+		SCR_EGameModeState gameModeState = m_GameModeCoop.GetState();
+		if (gameModeState == SCR_EGameModeState.GAME)
+		{
+			m_PlayableControllerComponent.SwitchToMenu(SCR_EGameModeState.GAME);
+			return;
+		}
+		
 		PS_EPlayableControllerState currentState = m_PlayableManager.GetPlayerState(m_iPlayerId);
 		RplId playableId = m_PlayableManager.GetPlayableByPlayer(m_iPlayerId);
 		if (currentState != PS_EPlayableControllerState.Ready && playableId != RplId.Invalid()) m_PlayableControllerComponent.SetPlayerState(m_iPlayerId, PS_EPlayableControllerState.Ready);
