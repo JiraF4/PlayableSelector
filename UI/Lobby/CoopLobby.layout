@@ -964,7 +964,7 @@ FrameWidgetClass {
      {
       ButtonWidgetClass "{5EB701CAF0B7C9C0}" {
        Name "PlayersSwitch"
-       Slot OverlayWidgetSlot {
+       Slot OverlayWidgetSlot "{611D4BEFB93CE20F}" {
        }
        Color 1 1 1 0
        components {
@@ -1049,7 +1049,7 @@ FrameWidgetClass {
      {
       ButtonWidgetClass "{5EB701CA613F7B51}" {
        Name "VoiceSwitch"
-       Slot OverlayWidgetSlot {
+       Slot OverlayWidgetSlot "{611D4BEFB93CE37A}" {
        }
        Color 1 1 1 0
        components {
@@ -1324,14 +1324,15 @@ FrameWidgetClass {
     ScrollLayoutWidgetClass "{5EB2900030AFF408}" {
      Prefab "{5EB2900030AFF408}"
      Slot FrameWidgetSlot "{5EB1000AD8290B3B}" {
+      Anchor 0 0 0 0
       PositionX 0
       OffsetLeft 0
-      PositionY 67
-      OffsetTop 67
+      PositionY 56
+      OffsetTop 56
       SizeX 480
       OffsetRight -480
       SizeY 727
-      OffsetBottom -794
+      OffsetBottom -783
      }
     }
    }

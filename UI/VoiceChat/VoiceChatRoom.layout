@@ -9,6 +9,11 @@ VerticalLayoutWidgetClass {
    Name "VoiceRoomHeader"
    Slot LayoutSlot "{5F0EB4E661866A80}" {
    }
+   components {
+    PS_VoiceRoomHeader "{5EB1458A4437EC6E}" {
+     m_BackgroundHovered 1 1 1 0.055
+    }
+   }
    {
     FrameWidgetClass "{5EB290655B7E7F5F}" {
      Prefab "{5EB290655B7E7F5F}"
