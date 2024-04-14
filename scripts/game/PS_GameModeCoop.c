@@ -48,7 +48,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	protected ref array<ref PS_FactionRespawnCount> m_aFactionRespawnCount;
 	protected ref map<FactionKey, PS_FactionRespawnCount> m_mFactionRespawnCount = new map<FactionKey, PS_FactionRespawnCount>();
 	
-	[Attribute("-1", UIWidgets.Auto, "", category: "Reforger Lobby")]
+	[Attribute("-1", UIWidgets.Auto, "", category: "Reforger Lobby (WIP)")]
 	protected int m_iFactionsBalance;
 	
 	[Attribute("0", UIWidgets.CheckBox, "", category: "Reforger Lobby (WIP)")]
