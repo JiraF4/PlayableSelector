@@ -91,204 +91,6 @@ $grp SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.
  {
   components {
    PS_GroupCallsignAssigner "{5F0B29E838442C1F}" {
-   }
-   PS_GroupLateLinkerComponent "{60B551A723F514FA}" {
-   }
-  }
-  coords 73.918 1 95.499
-  Flags 1048579
-  m_aUnitPrefabSlots {
-  }
-  m_bDeleteWhenEmpty 0
-  {
-   SCR_ChimeraCharacter : "{094747C4F8BE9F9F}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_TL_P.et" {
-    components {
-     PS_PlayableComponent "{5EFCC1946F475F15}" {
-      m_name "1"
-      m_aRespawnPrefabs {
-       "{094747C4F8BE9F9F}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_TL_P.et" "{094747C4F8BE9F9F}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_TL_P.et"
-      }
-     }
-     SCR_CharacterRankComponent "{528E6D4286AA2D8F}" {
-      m_iRank GENERAL
-     }
-     BaseLoadoutManagerComponent "{520EA1D2DB11821E}" {
-      Slots {
-       LoadoutSlotInfo Hat {
-        Prefab "{483A80042765275F}Prefabs/Characters/HeadGear/Helmet_SPH4_01/Helmet_SPH4_01.et"
-       }
-      }
-     }
-    }
-    coords 0.981 0 -0.534
-    Flags 1048579
-   }
-   SCR_ChimeraCharacter : "{3D67614F24B76051}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Spotter_P.et" {
-    components {
-     PS_PlayableComponent "{5EFCC1946F475F15}" {
-      m_name "4"
-     }
-     SCR_CharacterRankComponent "{528E6D4286AA2D8F}" {
-      m_iRank CAPTAIN
-     }
-    }
-    coords -1.758 0 -0.564
-    Flags 1048579
-   }
-   $grp SCR_ChimeraCharacter : "{B452527EA042DFF0}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Sniper_P.et" {
-    {
-     components {
-      PS_PlayableComponent "{5EFCC1946F475F15}" {
-       m_name "2"
-      }
-      SCR_CharacterRankComponent "{528E6D4286AA2D8F}" {
-       m_iRank COLONEL
-      }
-     }
-     coords -1.512 0 1.865
-     Flags 1048579
-    }
-    {
-     components {
-      PS_PlayableComponent "{5EFCC1946F475F15}" {
-       m_name "3"
-      }
-      SCR_CharacterRankComponent "{528E6D4286AA2D8F}" {
-       m_iRank MAJOR
-      }
-     }
-     coords -3.564 0 1.019
-     Flags 1048579
-    }
-    {
-     components {
-      PS_PlayableComponent "{5EFCC1946F475F15}" {
-       m_name "6"
-      }
-      SCR_CharacterRankComponent "{528E6D4286AA2D8F}" {
-       m_iRank SERGEANT
-      }
-     }
-     coords -3.564 0 1.019
-     Flags 1048579
-    }
-   }
-   SCR_ChimeraCharacter : "{DBC177C261C93B9D}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_SL_P.et" {
-    components {
-     PS_PlayableComponent "{5EFCC1946F475F15}" {
-      m_name "5"
-     }
-     SCR_CharacterRankComponent "{528E6D4286AA2D8F}" {
-      m_iRank LIEUTENANT
-     }
-    }
-    coords 1.158 0 1.557
-    Flags 1048579
-   }
-  }
- }
- {
-  components {
-   PS_GroupCallsignAssigner "{5F0B29E838442C1F}" {
-    m_iCompanyCallsign 1
-    m_iPlatoonCallsign 1
-    m_iSquadCallsign 1
-   }
-   PS_GroupLateLinkerComponent "{60B551A723F514FA}" {
-   }
-  }
-  coords 51.428 1 104.939
-  Flags 1048579
-  m_aUnitPrefabSlots {
-  }
-  m_bDeleteWhenEmpty 0
-  {
-   SCR_ChimeraCharacter : "{094747C4F8BE9F9F}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_TL_P.et" {
-    components {
-     PS_PlayableComponent "{5EFCC1946F475F15}" {
-      m_name "1"
-     }
-     SCR_CharacterRankComponent "{528E6D4286AA2D8F}" {
-      m_iRank GENERAL
-     }
-     BaseLoadoutManagerComponent "{520EA1D2DB11821E}" {
-      Slots {
-       LoadoutSlotInfo Hat {
-        Prefab "{483A80042765275F}Prefabs/Characters/HeadGear/Helmet_SPH4_01/Helmet_SPH4_01.et"
-       }
-      }
-     }
-    }
-    coords 0.908 0 -1.211
-    Flags 1048579
-   }
-   SCR_ChimeraCharacter : "{3D67614F24B76051}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Spotter_P.et" {
-    components {
-     PS_PlayableComponent "{5EFCC1946F475F15}" {
-      m_name "4"
-     }
-     SCR_CharacterRankComponent "{528E6D4286AA2D8F}" {
-      m_iRank CAPTAIN
-     }
-    }
-    coords -1.745 0 0.546
-    Flags 1048579
-   }
-   $grp SCR_ChimeraCharacter : "{B452527EA042DFF0}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Sniper_P.et" {
-    {
-     components {
-      PS_PlayableComponent "{5EFCC1946F475F15}" {
-       m_name "2"
-      }
-      SCR_CharacterRankComponent "{528E6D4286AA2D8F}" {
-       m_iRank COLONEL
-      }
-     }
-     coords -1.184 0 2.316
-     Flags 1048579
-    }
-    {
-     components {
-      PS_PlayableComponent "{5EFCC1946F475F15}" {
-       m_name "3"
-      }
-      SCR_CharacterRankComponent "{528E6D4286AA2D8F}" {
-       m_iRank MAJOR
-      }
-     }
-     coords -3.242 0 1.809
-     Flags 1048579
-    }
-    {
-     components {
-      PS_PlayableComponent "{5EFCC1946F475F15}" {
-       m_name "6"
-      }
-      SCR_CharacterRankComponent "{528E6D4286AA2D8F}" {
-       m_iRank SERGEANT
-      }
-     }
-     coords -4.494 0 1.144
-     Flags 1048579
-    }
-   }
-   SCR_ChimeraCharacter : "{DBC177C261C93B9D}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_SL_P.et" {
-    components {
-     PS_PlayableComponent "{5EFCC1946F475F15}" {
-      m_name "5"
-     }
-     SCR_CharacterRankComponent "{528E6D4286AA2D8F}" {
-      m_iRank LIEUTENANT
-     }
-    }
-    coords 1.158 0 1.557
-    Flags 1048579
-   }
-  }
- }
- {
-  components {
-   PS_GroupCallsignAssigner "{5F0B29E838442C1F}" {
     m_iCompanyCallsign 1
     m_iPlatoonCallsign 2
     m_iSquadCallsign 1
@@ -305,6 +107,9 @@ $grp SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.
     components {
      PS_PlayableComponent "{5EFCC1946F475F15}" {
       m_name "1"
+      m_aRespawnPrefabs {
+       "{547BA14003A67C04}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Medic_P.et" "{547BA14003A67C04}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Medic_P.et"
+      }
      }
      SCR_CharacterRankComponent "{528E6D4286AA2D8F}" {
       m_iRank GENERAL
@@ -317,7 +122,7 @@ $grp SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.
       }
      }
     }
-    coords 0.908 0 -1.211
+    coords 7.683 0 10.02
    }
    SCR_ChimeraCharacter : "{3D67614F24B76051}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Spotter_P.et" {
     components {
@@ -369,12 +174,15 @@ $grp SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.
     components {
      PS_PlayableComponent "{5EFCC1946F475F15}" {
       m_name "5"
+      m_aRespawnPrefabs {
+       "{DBC177C261C93B9D}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_SL_P.et" "{DBC177C261C93B9D}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_SL_P.et"
+      }
      }
      SCR_CharacterRankComponent "{528E6D4286AA2D8F}" {
       m_iRank LIEUTENANT
      }
     }
-    coords 1.158 0 1.557
+    coords -3.915 0 13.094
    }
   }
  }
