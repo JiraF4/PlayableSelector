@@ -452,7 +452,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 				int time = factionRespawns.m_iTime;
 				if (factionRespawns.m_bWaveMode)
 					time = Math.Mod(GetWorld().GetWorldTime(), time); 
-				if (playerId == GetGame().GetPlayerController().GetPlayerId())
+				if (playerId > 0)
 					playableComponent.OpenRespawnMenu(time);
 				GetGame().GetCallqueue().CallLater(Respawn, time, false, playerId, playableComponent, prefabToSpawn);
 				return;

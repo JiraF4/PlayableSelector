@@ -289,7 +289,7 @@ class PS_PlayableManager : ScriptComponent
 	void RPC_ForceSwitch(int playerId)
 	{
 		PlayerController playerController = GetGame().GetPlayerController();
-		if (playerController.GetPlayerId() != playerId) return;
+		if (!playerController || playerController.GetPlayerId() != playerId) return;
 		
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		playableController.SwitchToMenu(SCR_EGameModeState.GAME);
