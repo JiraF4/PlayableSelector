@@ -62,6 +62,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	ScriptInvokerString GetOnOnlyOneFactionAlive()
 		return m_OnOnlyOneFactionAlive;
 	
+	
+	protected ref ScriptInvoker m_OnHandlePlayerKilled = new ScriptInvoker();
+	ScriptInvoker GetOnHandlePlayerKilled()
+		return m_OnHandlePlayerKilled;
+	
 	// Cache global
 	protected PS_PlayableManager m_playableManager;
 	protected PS_CutsceneManager m_CutsceneManager;
@@ -243,14 +248,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		m_OnPlayerConnected.Invoke(playerId);
 	}
 	
-	protected override void OnPlayerKilled(int playerId, IEntity playerEntity, IEntity killerEntity, notnull Instigator killer)
+	protected override bool HandlePlayerKilled(int playerId, IEntity playerEntity, IEntity killerEntity, notnull Instigator killer)
 	{
-		m_OnPlayerKilled.Invoke(playerId, playerEntity, killerEntity, killer);
+		m_OnHandlePlayerKilled.Invoke(playerId, playerEntity, killerEntity, killer);
 		
-		if (!Replication.IsServer()) return;
-		
-		// TODO: remove CallLater
-		GetGame().GetCallqueue().CallLater(TryRespawn, 200, false, playerId);
+		return super.HandlePlayerKilled(playerId, playerEntity, killerEntity, killer);
 	}
 	
 	// Update state for disconnected and start timer if need (DO NOT DELETE CONTROLED ENTITY)
@@ -427,10 +429,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		VoNRoomsManager.RestoreRoom(playerId);
 	}
 	
-	void TryRespawn(int playerId)
+	void TryRespawn(RplId playableId, int playerId)
 	{
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		RplId playableId = playableManager.GetPlayableByPlayer(playerId);
 		if (playableId != RplId.Invalid())
 		{
 			PS_PlayableComponent playableComponent = playableManager.GetPlayableById(playableId);
@@ -451,7 +452,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 				int time = factionRespawns.m_iTime;
 				if (factionRespawns.m_bWaveMode)
 					time = Math.Mod(GetWorld().GetWorldTime(), time); 
-				playableComponent.OpenRespawnMenu(time);
+				if (playerId == GetGame().GetPlayerController().GetPlayerId())
+					playableComponent.OpenRespawnMenu(time);
 				GetGame().GetCallqueue().CallLater(Respawn, time, false, playerId, playableComponent, prefabToSpawn);
 				return;
 			}
@@ -488,14 +490,19 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		
 		PS_PlayableComponent playableComponent = PS_PlayableComponent.Cast(entity.FindComponent(PS_PlayableComponent));
 		RplId playableId = playableComponent.GetId();
-	
+		
 		playableComponent.CopyState(playable);
-		playableManager.SetPlayerPlayable(playerId, playableId);
-		playableManager.ForceSwitch(playerId);
+		if (playerId > 0)
+		{
+			playableManager.SetPlayerPlayable(playerId, playableId);
+			playableManager.ForceSwitch(playerId);
+		}
 	}
 	
 	void SwitchToInitialEntity(int playerId)
 	{
+		if (playerId <= 0)
+			return;
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		playableManager.SetPlayerPlayable(playerId, RplId.Invalid());

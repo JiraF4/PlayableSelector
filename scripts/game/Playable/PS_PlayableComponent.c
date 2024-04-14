@@ -19,6 +19,7 @@ class PS_PlayableComponent : ScriptComponent
 	protected vector spawnTransform[4];
 	[RplProp()]
 	protected int m_iRespawnCounter = 0;
+	protected bool m_bRespawned;
 	
 	// Cache global
 	protected PS_GameModeCoop m_GameModeCoop;
@@ -82,6 +83,7 @@ class PS_PlayableComponent : ScriptComponent
 		playable.SetPlayable(false);
 		m_iRespawnCounter = playable.m_iRespawnCounter;
 		m_aRespawnPrefabs = playable.m_aRespawnPrefabs;
+		Math3D.MatrixCopy(spawnTransform, playable.spawnTransform);
 		Replication.BumpMe();
 	}
 	
@@ -96,6 +98,8 @@ class PS_PlayableComponent : ScriptComponent
 		
 		SetEventMask(owner, EntityEvent.INIT);
 	}
+	
+	
 	
 	void GetSpawnTransform(vector outMat[4])
 	{
@@ -200,9 +204,26 @@ class PS_PlayableComponent : ScriptComponent
 		
 		m_eOnUnregister.Invoke();
 	}
+	
+	private void OnDamageStateChange(EDamageState state)
+	{
+		if (!m_bRespawned && state == EDamageState.DESTROYED)
+		{
+			GetGame().GetCallqueue().CallLater(TryRespawn, 200, false, m_PlayableManager.GetPlayerByPlayable(m_id));
+			m_bRespawned = true;
+		}
+	}
+	
+	private void TryRespawn(int playerId)
+	{
+		m_GameModeCoop.TryRespawn(m_id, playerId);
+	}
 
 	private void AddToList(IEntity owner)
 	{
+		if (Replication.IsServer())
+			m_CharacterDamageManagerComponent.GetOnDamageStateChanged().Insert(OnDamageStateChange);		
+		
 		if (!m_bIsPlayable) return;
 		if (m_AIAgent)
 			m_AIAgent.DeactivateAI();
