@@ -11,12 +11,11 @@ FrameWidgetClass {
   ImageWidgetClass "{60DCC61ECADD1538}" {
    Name "ImageCurrent"
    Slot FrameWidgetSlot "{60DCC61DAC789BCF}" {
-    PositionX 14
-    OffsetLeft 14
+    OffsetLeft 0
     PositionY 0
     OffsetTop 0
     SizeX 466
-    OffsetRight -480
+    OffsetRight -466
     SizeY 44
     OffsetBottom -44
    }
@@ -32,11 +31,10 @@ FrameWidgetClass {
   ImageWidgetClass "{5EBEE9F3BA2E0A63}" {
    Name "CharacterFactionColor"
    Slot FrameWidgetSlot "{5D6D1B9A2749B73B}" {
-    PositionX 8
-    OffsetLeft 8
+    OffsetLeft 0
     OffsetTop 0
     SizeX 6
-    OffsetRight -14
+    OffsetRight -6
     SizeY 44
     OffsetBottom -44
    }
@@ -89,12 +87,12 @@ FrameWidgetClass {
   FrameWidgetClass "{5EB1176F4695C767}" {
    Name "UnitIconFrame"
    Slot FrameWidgetSlot "{5EB1176F4695FD6B}" {
-    PositionX 14
-    OffsetLeft 14
+    PositionX 8
+    OffsetLeft 8
     PositionY 0
     OffsetTop 0
     SizeX 44
-    OffsetRight -58
+    OffsetRight -52
     SizeY 44
     OffsetBottom -44
    }
@@ -123,12 +121,12 @@ FrameWidgetClass {
    Prefab "{5D6D1B99A45E5176}"
    Name "PlayerName"
    Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
-    PositionX 60
-    OffsetLeft 60
+    PositionX 52
+    OffsetLeft 52
     PositionY 0
     OffsetTop 0
     SizeX 164
-    OffsetRight -224
+    OffsetRight -216
     SizeY 44
     OffsetBottom -44
    }
