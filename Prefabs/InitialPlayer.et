@@ -1,12 +1,6 @@
 SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base.et" {
  ID "520EC961A090B1EE"
  components {
-  CharacterSoundComponent "{520EA1D2F659CF84}" {
-   Enabled 0
-  }
-  SCR_CommunicationSoundComponent "{54FD05D0C92D071F}" {
-   Enabled 0
-  }
   SCR_CharacterInventoryStorageComponent "{520EA1D2DB118DAC}" {
    Enabled 1
    components {
@@ -32,15 +26,9 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
       }
      }
     }
-    SCR_SalineStorageComponent "{5C82B07DFE223090}" {
-     Enabled 0
-    }
-    SCR_TourniquetStorageComponent "{5A68C9C9DF306618}" {
-     Enabled 0
-    }
    }
   }
-  AIControlComponent "{520EA1D2DB109F34}" {
+  ChimeraAIControlComponent "{520EA1D2DB109F34}" {
    Enabled 1
    components {
     AICharacterAimingComponent "{520EA1D2DB109F0C}" {
@@ -62,9 +50,6 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
      Enabled 1
     }
    }
-  }
-  BaseFlattenGrassComponent "{520EA1D2F659CE26}" {
-   Enabled 1
   }
   ColliderHistoryComponent "{566C7EDBB7BCC719}" {
    Enabled 1
@@ -106,17 +91,17 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
   PS_PlayableComponent "{5EFCC1946F475F15}" {
    Enabled 0
   }
+  PS_PolyZoneEffectHandler "{5F389088D37FBC21}" {
+   Enabled 0
+  }
   PS_SpectatorLabel "{5F357473BDE91270}" {
-   Enabled 0
-  }
-  SCR_CharacterStaminaComponent "{520EA1D2F659C824}" {
-   Enabled 0
-  }
-  SCR_EditableCharacterComponent "{520EA1D2F659C85C}" {
    Enabled 0
   }
   SCR_VoNComponent "{520EA1D2F659C856}" {
    Enabled 0
+  }
+  BaseFlattenGrassComponent "{520EA1D2F659CE26}" {
+   Enabled 1
   }
   CharacterWeaponSlotComponent "{520EA1D2F659CFAB}" {
    WeaponSlotIndex 0

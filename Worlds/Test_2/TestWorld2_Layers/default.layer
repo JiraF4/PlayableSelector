@@ -35,8 +35,6 @@ PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_Game
   }
  }
 }
-HitRegistrationManager HitRegManager1 : "{0EDA3D48791120DD}Prefabs/MP/HitRegManager.et" {
-}
 PolylineShapeEntity : "{1D807ABE94FE2618}Prefabs/PolyZone/PolyZone_Capture.et" {
  coords 116.268 6.202 116.792
  {
@@ -54,4 +52,23 @@ PS_MissionDescription : "{3136BE42592F3B1B}PrefabsEditable/MissionDescription/Ed
 PS_ManualCameraSpectator ManualCameraSpectator1 : "{6EAA30EF620F4A2E}Prefabs/Editor/Camera/ManualCameraSpectator.et" {
  coords 122.492 1 163.836
  Flags 1048579
+}
+SCR_ChimeraCharacter : "{ADDE38E4119816AB}Prefabs/InitialPlayer_Version2.et" {
+ components {
+  SCR_CharacterInventoryStorageComponent "{520EA1D2DB118DAC}" {
+   components {
+    SCR_EquipmentStorageComponent "{56B49DA9722B635D}" {
+     InitialStorageSlots {
+      SCR_EquipmentStorageSlot WristwatchSlot {
+       Prefab "{74AA3854E16D9D56}Prefabs/MenuRadio.et"
+      }
+     }
+    }
+   }
+  }
+  SCR_VoNComponent "{520EA1D2F659C856}" {
+   Enabled 0
+  }
+ }
+ coords 154.057 1 104.954
 }

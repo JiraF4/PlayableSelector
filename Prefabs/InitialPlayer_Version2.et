@@ -1,0 +1,32 @@
+SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base.et" {
+ ID "520EC961A090B1EE"
+ components {
+  SCR_CharacterInventoryStorageComponent "{520EA1D2DB118DAC}" {
+   components {
+    SCR_EquipmentStorageComponent "{56B49DA9722B635D}" {
+     InitialStorageSlots {
+      SCR_EquipmentStorageSlot BinocularSlot {
+       Prefab "{575EA58E67448C2A}Prefabs/Items/Equipment/Flashlights/Flashlight_Soviet_01/Flashlight_Soviet_01.et"
+      }
+      SCR_EquipmentStorageSlot WristwatchSlot {
+       Prefab "{74AA3854E16D9D56}Prefabs/MenuRadio.et"
+      }
+     }
+    }
+   }
+  }
+  PS_PlayableComponent "{5EFCC1946F475F15}" {
+   Enabled 0
+  }
+  PS_PolyZoneEffectHandler "{5F389088D37FBC21}" {
+   Enabled 0
+  }
+  PS_SpectatorLabelCharacter "{5F357473BDE91270}" {
+   Enabled 0
+  }
+  SCR_VoNComponent "{520EA1D2F659C856}" {
+   Enabled 0
+  }
+ }
+ coords 152.365 0.999 106.382
+}

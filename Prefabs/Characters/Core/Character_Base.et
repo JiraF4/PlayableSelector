@@ -1,6 +1,9 @@
 SCR_ChimeraCharacter {
  ID "520EC961A090B1EE"
  components {
+  CharacterAimingComponent "{520EA1D2F659CE42}" {
+   DeployedSensitivityScaler 0.5 0.6
+  }
   PS_PlayableComponent "{5EFCC1946F475F15}" {
   }
   PS_SpectatorLabelCharacter "{5F357473BDE91270}" {

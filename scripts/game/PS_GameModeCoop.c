@@ -279,6 +279,18 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		}
 		
 		m_OnPostCompPlayerDisconnected.Invoke(playerId, cause, timeout);
+		
+		// RespawnSystemComponent is not a SCR_BaseGameModeComponent, so for now we have to
+		// propagate these events manually. 
+		if (IsMaster())
+			m_pRespawnSystemComponent.OnPlayerDisconnected_S(playerId, cause, timeout);
+
+		foreach (SCR_BaseGameModeComponent comp : m_aAdditionalGamemodeComponents)
+		{
+			comp.OnPlayerDisconnected(playerId, cause, timeout);
+		}
+		
+		m_OnPostCompPlayerDisconnected.Invoke(playerId, cause, timeout);
 
 		if (IsMaster())
 		{
@@ -300,23 +312,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 							BaseCompartmentSlot compartment = compAccess.GetCompartment();
 							if (compartment)
 							{
-								if(GetGame().GetIsClientAuthority())
+								CarControllerComponent carController = CarControllerComponent.Cast(compartment.GetVehicle().FindComponent(CarControllerComponent));
+								if (carController)
 								{
-									CarControllerComponent carController = CarControllerComponent.Cast(compartment.GetVehicle().FindComponent(CarControllerComponent));
-									if (carController)
-									{
-										carController.Shutdown();
-										carController.StopEngine(false);
-									}
-								}
-								else
-								{
-									CarControllerComponent_SA carController = CarControllerComponent_SA.Cast(compartment.GetVehicle().FindComponent(CarControllerComponent_SA));
-									if (carController)
-									{
-										carController.Shutdown();
-										carController.StopEngine(false);
-									}
+									carController.Shutdown();
+									carController.StopEngine(false);
 								}
 							}
 						}
@@ -417,10 +417,10 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		#endif
 		
 		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
-        Resource resource = Resource.Load("{E1B415916312F029}Prefabs/InitialPlayer.et");
+      Resource resource = Resource.Load("{ADDE38E4119816AB}Prefabs/InitialPlayer_Version2.et");
 		EntitySpawnParams params = new EntitySpawnParams();
 		GetTransform(params.Transform);
-        IEntity initialEntity = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
+      IEntity initialEntity = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		SCR_PlayerController playerController = SCR_PlayerController.Cast(playerManager.GetPlayerController(playerId));
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
