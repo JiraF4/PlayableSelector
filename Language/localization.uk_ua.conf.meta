@@ -1,0 +1,17 @@
+MetaFileClass {
+ Name "{E7E92E7844D0FE70}Language/localization.uk_ua.conf"
+ Configurations {
+  CONFResourceClass PC {
+  }
+  CONFResourceClass XBOX_ONE : PC {
+  }
+  CONFResourceClass XBOX_SERIES : PC {
+  }
+  CONFResourceClass PS4 : PC {
+  }
+  CONFResourceClass PS5 : PC {
+  }
+  CONFResourceClass HEADLESS : PC {
+  }
+ }
+}

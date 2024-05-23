@@ -91,7 +91,7 @@ FrameWidgetClass {
              Name "HeaderLabel"
              Slot LayoutSlot "{5EBC73415F3606EF}" {
              }
-             Text "After Action Report"
+             Text "#ps-debrief_afteraction"
              "Font Size" 42
              "Min Font Size" 42
             }
