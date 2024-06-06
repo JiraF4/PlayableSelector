@@ -60,6 +60,10 @@ GameProject {
         Code "zh_cn"
         StringTableRuntime "{7D51E306CDB6D01D}Language/Localization_Lobby.zh_cn.conf"
        }
+       LanguageDefinition "{616ED42656B50C11}" {
+        Code "uk_ua"
+        StringTableRuntime "{E7E92E7844D0FE70}Language/localization.uk_ua.conf"
+       }
       }
      }
     }

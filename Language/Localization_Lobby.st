@@ -115,6 +115,14 @@ StringTable {
    Author "SeskPC"
    LastChanged "class"
   }
+  CustomStringTableItem "{616ED424FF1D1ABC}" {
+   Id "PS-Debrief_AfterAction"
+   Target_en_us "After Action Report"
+   Target_ru_ru "Отчет о результатах"
+   Modified 1634655159
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
   CustomStringTableItem "{5EC2E474747EACEA}" {
    Id "PS-Debrief_Losses"
    Target_en_us "Faction statistic"
@@ -561,10 +569,10 @@ StringTable {
    Target_es_es "Previsualizado"
    Target_ru_ru "Предпросмотр"
    Target_pt_br "Preview da Missao"
-   Target_uk_ua "Попередній перегляд місії"
-   Modified 1625889486
+   Target_uk_ua "Передпрогляд"
+   Modified 1634654536
    Author "SeskPC"
-   LastChanged "class"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5EA73DBF40044FB3}" {
    Id "PS-Keybind_Comms_Playable_Selector"
@@ -873,10 +881,11 @@ StringTable {
    "Игра скоро начнётся"
    Target_pt_br "Por favor espere"\
    "A partida começara logo"
-   Target_uk_ua "Будь ласка зачекайте Гра скоро почнеться"
-   Modified 1625888845
+   Target_uk_ua "Будь ласка зачекайте"\
+   "Гра скоро почнеться"
+   Modified 1634654381
    Author "zazul"
-   LastChanged "class"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5EC5311F409ED937}" {
    Id "PS-Spectator_SwitchSpectatorUI"
@@ -954,22 +963,6 @@ StringTable {
    Modified 1625888582
    Author "SeskPC"
    LastChanged "class"
-  }
-  CustomStringTableItem "{61136A15F2E65B2D}" {
-   Id "PS-Weapon_Baton_Description"
-   Target_en_us "Device for beating people"
-   Target_ru_ru "Прибор для избеения людей"
-   Modified 1628663331
-   Author "zazul"
-   LastChanged "zazul"
-  }
-  CustomStringTableItem "{61136A15DDBBDCD8}" {
-   Id "PS-Weapon_Baton_Name"
-   Target_en_us "Baton"
-   Target_ru_ru "Дубинка"
-   Modified 1628663275
-   Author "zazul"
-   LastChanged "zazul"
   }
  }
 }
