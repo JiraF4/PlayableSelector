@@ -15,6 +15,10 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
     }
    }
   }
+  PS_LobbyVoNComponent "{618B054CFFD60A4C}" {
+   "Speaking Range" 50
+   Filename "{B4C3941EC8B2AD20}Sounds/VON/von.acp"
+  }
   PS_PlayableComponent "{5EFCC1946F475F15}" {
    Enabled 0
   }
@@ -26,6 +30,9 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
   }
   SCR_VoNComponent "{520EA1D2F659C856}" {
    Enabled 0
+  }
+  CharacterAnimationComponent "{520EA1D2F659C994}" {
+   AnimInstance "{B086D0CD3B9E3AB0}anims/workspaces/player/player_PS_VON.asi"
   }
  }
  coords 152.365 0.999 106.382
