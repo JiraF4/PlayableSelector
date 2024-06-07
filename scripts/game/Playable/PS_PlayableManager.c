@@ -22,6 +22,10 @@ void PS_ScriptInvokerPlayableChangeGroupMethod(RplId id, PS_PlayableComponent pl
 typedef func PS_ScriptInvokerPlayableChangeGroupMethod;
 typedef ScriptInvokerBase<PS_ScriptInvokerPlayableChangeGroupMethod> PS_ScriptInvokerPlayableChangeGroup;
 
+void PS_ScriptInvokerFactionReadyChangeMethod(FactionKey factionKey, int readyValue);
+typedef func PS_ScriptInvokerFactionReadyChangeMethod;
+typedef ScriptInvokerBase<PS_ScriptInvokerFactionReadyChangeMethod> PS_ScriptInvokerFactionReadyChangeGroup;
+
 [ComponentEditorProps(category: "GameScripted/GameMode/Components", description: "", color: "0 0 255 255", icon: HYBRID_COMPONENT_ICON)]
 class PS_PlayableManagerClass: ScriptComponentClass
 {
@@ -44,6 +48,7 @@ class PS_PlayableManager : ScriptComponent
 	ref map<int, FactionKey> m_playersFaction = new map<int, FactionKey>; // player factions
 	ref map<RplId, int> m_playablePlayerGroupId = new map<RplId, int>; // playable to player group
 	ref map<int, string> m_playersLastName = new map<int, string>; // playerid to player name (persistant)
+	ref map<FactionKey, int> m_mFactionReady = new map<FactionKey, int>; // faction ready state
 	
 	// Invokers
 	ref ScriptInvokerInt m_eOnPlayerConnected = new ScriptInvokerInt();
@@ -76,6 +81,9 @@ class PS_PlayableManager : ScriptComponent
 	ref ScriptInvokerInt m_eOnStartTimerCounterChanged = new ScriptInvokerInt();
 	ScriptInvokerInt GetOnStartTimerCounterChanged()
 		return m_eOnStartTimerCounterChanged;
+	ref PS_ScriptInvokerFactionReadyChangeGroup m_eFactionReadyChanged = new PS_ScriptInvokerFactionReadyChangeGroup();
+	PS_ScriptInvokerFactionReadyChangeGroup GetOnFactionReadyChanged()
+		return m_eFactionReadyChanged;
 	
 	[RplProp()]
 	int m_iMaxPlayersCount = 1;
@@ -408,6 +416,11 @@ class PS_PlayableManager : ScriptComponent
 		return m_playersLastName[playerId];
 	}
 	
+	int GetFactionReady(FactionKey factionKey)
+	{
+		return m_mFactionReady[factionKey];
+	}
+	
 	RplId GetPlayableByPlayer(int playerId)
 	{
 		if (!m_playersPlayable.Contains(playerId)) return RplId.Invalid();
@@ -545,6 +558,8 @@ class PS_PlayableManager : ScriptComponent
 	
 	// -------------------------- Set broadcast ----------------------------
 	// For modify from client side use PS_PlayableControllerComponent insted
+	
+	// ------ PlayerFactionKey ------
 	void SetPlayerFactionKey(int playerId, FactionKey factionKey)
 	{
 		RPC_SetPlayerFactionKey(playerId, factionKey);
@@ -571,7 +586,20 @@ class PS_PlayableManager : ScriptComponent
 		SetUpdated();
 	}
 	
+	// ------ FactionReady ------
+	void SetFactionReady(FactionKey factionKey, int readyValue)
+	{
+		RPC_SetFactionReady(factionKey, readyValue);
+		Rpc(RPC_SetFactionReady, factionKey, readyValue);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RPC_SetFactionReady(FactionKey factionKey, int readyValue)
+	{
+		m_mFactionReady[factionKey] = readyValue;
+		m_eFactionReadyChanged.Invoke(factionKey, readyValue);
+	}
 	
+	// ------ PlayablePlayer ------
 	void SetPlayablePlayer(RplId playableId, int playerId)
 	{
 		RPC_SetPlayablePlayer(playableId, playerId);
@@ -610,6 +638,7 @@ class PS_PlayableManager : ScriptComponent
 		SetUpdated();
 	}
 	
+	// ------ PlayerPlayable ------
 	void SetPlayerPlayable(int playerId, RplId playableId)
 	{
 		RPC_SetPlayerPlayable(playerId, playableId);
@@ -895,6 +924,14 @@ class PS_PlayableManager : ScriptComponent
 			writer.WriteInt(m_playablePlayersRemembered.GetElement(i));
 		}
 		
+		int factionReadyCount = m_mFactionReady.Count();
+		writer.WriteInt(factionReadyCount);
+		for (int i = 0; i < factionReadyCount; i++)
+		{
+			writer.WriteString(m_mFactionReady.GetKey(i));
+			writer.WriteInt(m_mFactionReady.GetElement(i));
+		}
+		
 		return true;
 	}
 	
@@ -994,6 +1031,18 @@ class PS_PlayableManager : ScriptComponent
 			reader.ReadInt(value);
 			
 			m_playablePlayersRemembered.Insert(key, value);
+		}
+		
+		int factionReadyCount;
+		reader.ReadInt(factionReadyCount);
+		for (int i = 0; i < factionReadyCount; i++)
+		{
+			FactionKey key;
+			int value;
+			reader.ReadString(key);
+			reader.ReadInt(value);
+			
+			m_mFactionReady.Insert(key, value);
 		}
 		
 		m_bRplLoaded = true;

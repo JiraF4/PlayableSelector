@@ -22,6 +22,18 @@ class PS_PlayableControllerComponent : ScriptComponent
 	ScriptInvokerBase<SCR_BaseGameMode_OnPlayerRoleChanged> GetOnPlayerRoleChange()
 		return m_eOnPlayerRoleChange;
 	
+	// ------ FactionReady ------
+	void SetFactionReady(FactionKey factionKey, int readyValue)
+	{
+		Rpc(RPC_SetFactionReady, factionKey, readyValue);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void RPC_SetFactionReady(FactionKey factionKey, int readyValue)
+	{
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		playableManager.SetFactionReady(factionKey, readyValue);
+	}
+	
 	// ------ MenuState ------
 	void SetMenuState(SCR_EGameModeState state)
 	{

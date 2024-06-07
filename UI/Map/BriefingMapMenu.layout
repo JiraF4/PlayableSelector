@@ -557,5 +557,27 @@ FrameWidgetClass {
     }
    }
   }
+  OverlayWidgetClass "{618EDD6BBFFD5D9C}" {
+   Name "FactionReadyOverlay"
+   Slot FrameWidgetSlot "{618EDD6BBFFD5DC7}" {
+    Anchor 0 1 1 1
+    PositionX 960
+    OffsetLeft 0
+    PositionY -84
+    OffsetTop -84
+    SizeX -1920
+    OffsetRight 0
+    SizeY 60
+    OffsetBottom 24
+    SizeToContent 1
+   }
+   {
+    PanelWidgetClass "{618EDD69E1D6B6BF}" : "{E8CE842E072EF996}UI/FactionReady/FactionReadyPanel.layout" {
+     Name "FactionReadyPanel0"
+     Slot OverlayWidgetSlot "{618EDD6838E5687F}" {
+     }
+    }
+   }
+  }
  }
 }

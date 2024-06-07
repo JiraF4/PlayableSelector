@@ -1,0 +1,44 @@
+PanelWidgetClass {
+ Name "FactionReadyPanel"
+ Slot OverlayWidgetSlot "{618EDD6838E5687F}" {
+ }
+ Color 0.007 0.012 0.014 1
+ components {
+  PS_FactionReadyListWidgetComponent "{618EDD69F0EFC6F8}" {
+  }
+ }
+ style full
+ {
+  HorizontalLayoutWidgetClass "{618EDD6A32456C1F}" {
+   Name "FactionReadyVerticalLayout"
+   Slot FrameWidgetSlot "{618EDD6A32456C76}" {
+    Anchor 0 0 0 0
+    OffsetLeft 0
+    PositionY 0
+    OffsetTop 0
+    SizeX 0
+    OffsetRight 0
+    SizeY 60
+    OffsetBottom -60
+    SizeToContent 1
+   }
+   {
+    TextWidgetClass "{618EDD68C09FC04E}" {
+     Name "FactionReadyText"
+     Slot LayoutSlot "{618EDD68C09FC020}" {
+      HorizontalAlign 1
+      VerticalAlign 1
+      Padding 16 0 18 0
+     }
+     Text "Готовность фракций:"
+    }
+    HorizontalLayoutWidgetClass "{618EDD6B3BB067C3}" {
+     Name "FactionReadyFactions"
+     Slot LayoutSlot "{618EDD6838E56826}" {
+      Padding 0 2 16 2
+     }
+    }
+   }
+  }
+ }
+}
