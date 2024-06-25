@@ -1,0 +1,154 @@
+SCR_MapEntity MapEntity_Arland1 : "{66FBC1063149819B}Prefabs/World/Game/Arland/MapEntity_Arland.et" {
+ coords 122.554 1 172.537
+}
+$grp GenericEntity : "{1353C6EAD1DCFE43}Prefabs/Weapons/Handguns/M9/Handgun_M9.et" {
+ {
+  coords 142.087 1.259 148.613
+ }
+ {
+  coords 142.896 1.248 148.796
+ }
+ {
+  coords 143.772 1.246 148.912
+ }
+ {
+  coords 142.063 1.235 150.243
+ }
+ {
+  coords 144.578 1.224 150.319
+ }
+}
+GenericEntity WeaponsCrate : "{377EB906F591E4BA}Prefabs/Props/Military/Arsenal/AmmoBoxes/US/AmmoBoxArsenal_Weapons_US.et" {
+ components {
+  SCR_ArsenalComponent "{589F01C9C8D4A475}" {
+   Enabled 0
+  }
+  SCR_ResupplySupportStationComponent "{5E2CE1BA1701C633}" {
+   Enabled 0
+  }
+  SCR_VehicleInventoryStorageManagerComponent "{58A0B19B1E191CC1}" {
+  }
+  ActionsManagerComponent "{5476B36C403D4CC0}" {
+   additionalActions {
+    SCR_OpenStorageAction "{5476DE57AA50402F}" {
+     UIInfo UIInfo "{52E6EC759A11C684}" {
+      Name "#AR-Inventory_OpenStorage"
+     }
+    }
+   }
+  }
+ }
+ coords 143.446 1.251 150.223
+}
+GenericEntity Area2 : "{C72F956E4AC6A6E7}Prefabs/ScenarioFramework/Components/Area.et" {
+ components {
+  SCR_ScenarioFrameworkArea "{59E8CDC50969206E}" {
+   m_bShowDebugShapesDuringRuntime 1
+  }
+ }
+ coords 145.813 1 158.754
+ {
+  GenericEntity LayerTaskMove2 : "{246BEC080F393398}Prefabs/ScenarioFramework/Components/LayerTaskMove.et" {
+   components {
+    SCR_ScenarioFrameworkLayerTask "{5A2283E9F84958A1}" {
+     m_bShowDebugShapesDuringRuntime 1
+     m_aTriggerActionsOnFinish {
+      SCR_ScenarioFrameworkActionRemoveItemFromInventory "{5E4C85E400641FF2}" {
+       m_Getter SCR_ScenarioFrameworkGetSpawnedEntity "{5E4C85E404F2CD69}" {
+        m_sLayerName "Slot1"
+       }
+       m_aPrefabFilter {
+        SCR_ScenarioFrameworkPrefabFilterCount "{5E4C85E438D7D365}" {
+         m_sSpecificPrefabName "{3E413771E1834D2F}Prefabs/Weapons/Rifles/M16/Rifle_M16A2.et"
+         m_iPrefabCount 10
+        }
+       }
+      }
+     }
+    }
+   }
+   coords -1.076 0.167 -4.739
+   {
+    GenericEntity SlotMoveTo1 : "{A44004A770A5D8BE}Prefabs/ScenarioFramework/Components/SlotMoveTo.et" {
+     components {
+      SCR_ScenarioFrameworkSlotExtraction "{5A1EEEC837EEA27B}" {
+       m_sFactionKey "USSR"
+       m_bShowDebugShapesDuringRuntime 1
+       m_aPlugins {
+        SCR_ScenarioFrameworkPluginTrigger "{5A6C6D099D49E4BA}" {
+         m_eActivationPresence SPECIFIC_PREFAB_NAME
+         m_aCustomTriggerConditions {
+          SCR_CustomTriggerConditionsSpecificPrefabCount "{5E08A5E0E8C1E186}" {
+           m_aPrefabFilter {
+            SCR_ScenarioFrameworkPrefabFilterCount "{5E2C864E2C9ACE06}" {
+             m_sSpecificPrefabName "{891EF8A5FB7162F1}Prefabs/Props/Military/Arsenal/AmmoBoxes/US/AmmoBoxArsenal_Medical_US.et"
+             m_iPrefabCount 10
+            }
+           }
+          }
+         }
+        }
+       }
+       m_sObjectToSpawn "{47D49EA6A216CFD5}Prefabs/ScenarioFramework/Triggers/TriggerCharacterSlow.et"
+       m_sTaskTitle "Deliver Weapons"
+       m_sTaskDescription "Deliver 5x M9 Handgun to the weapons crate"
+      }
+     }
+     coords 0.122 0.012 -0.784
+    }
+   }
+  }
+  GenericEntity Layer2 : "{5F9FFF4BF027B3A3}Prefabs/ScenarioFramework/Components/Layer.et" {
+   coords -4.796 0.17 -17.067
+   {
+    GenericEntity Slot1 : "{AA01691FDC4E9167}Prefabs/ScenarioFramework/Components/Slot.et" {
+     components {
+      SCR_ScenarioFrameworkSlotBase "{5A22E1D67E712EC8}" {
+       m_sFactionKey "USSR"
+       m_aPlugins {
+        SCR_ScenarioFrameworkPluginOnInventoryChange "{5E4CB0F9DA6201E1}" {
+         m_aActionsOnItemAdded {
+          SCR_ScenarioFrameworkActionCountInventoryItemsAndExecuteAction "{5E4CB0F9DFB9816D}" {
+           m_Getter SCR_ScenarioFrameworkGetSpawnedEntity "{5E4CB0F9D1EC5A17}" {
+            m_sLayerName "Slot1"
+           }
+           m_aPrefabFilter {
+            SCR_ScenarioFrameworkPrefabFilterCount "{5E4CB0F9CAD39175}" {
+             m_sSpecificPrefabName "{1353C6EAD1DCFE43}Prefabs/Weapons/Handguns/M9/Handgun_M9.et"
+             m_iPrefabCount 5
+            }
+           }
+           m_aActionsToExecute {
+            SCR_ScenarioFrameworkActionChangeTaskState "{5E4CB0F9F66653F1}" {
+             m_iMaxNumberOfActivations 1
+             m_Getter SCR_ScenarioFrameworkGetTask "{5E4CB0F9EFA309ED}" {
+              m_sLayerTaskName "LayerTaskMove1"
+             }
+            }
+            SCR_ScenarioFrameworkActionRemoveItemFromInventory "{5E4E679E13FA8A8C}" {
+             m_iMaxNumberOfActivations 1
+             m_Getter SCR_ScenarioFrameworkGetSpawnedEntity "{5E4E679F8661829E}" {
+              m_sLayerName "Slot1"
+             }
+             m_aPrefabFilter {
+              SCR_ScenarioFrameworkPrefabFilterCount "{5E4E679FBB57B0E8}" {
+               m_sSpecificPrefabName "{1353C6EAD1DCFE43}Prefabs/Weapons/Handguns/M9/Handgun_M9.et"
+               m_iPrefabCount 5
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+       m_sObjectToSpawn "{377EB906F591E4BA}Prefabs/Props/Military/Arsenal/AmmoBoxes/US/AmmoBoxArsenal_Weapons_US.et"
+       m_bUseExistingWorldAsset 1
+      }
+     }
+     coords 2.407 0.024 8.543
+    }
+   }
+  }
+ }
+}

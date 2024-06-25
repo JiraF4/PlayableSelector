@@ -66,6 +66,20 @@ PS_GameModeCoop : "{0F307326459A1395}Prefabs/MP/Modes/GameMode_Base.et" {
   SCR_VotingManagerComponent "{5650BB6B6089393A}" {
    Enabled 0
   }
+  SignalsManagerComponent "{61B2C57246E4B5EC}" {
+  }
+  SCR_CommunicationSoundComponent "{61B2C57246E4B51D}" {
+  }
+  SCR_GameModeSFManager "{61B2C57246E4B501}" {
+  }
+  SCR_CampaignBuildingManagerComponent "{61B2D79C2D3666D0}" {
+   m_sFreeRoamBuildingClientTrigger "{5E191CEAF4B95816}Prefabs/MP/FreeRoamBuildingClientTrigger.et"
+   m_BudgetType CAMPAIGN
+   m_iCompositionRefundPercentage 100
+   m_OutlineManager SCR_CampaignBuildingCompositionOutlineManager "{5DF6FBB5913F3245}" : "{96A8B496A076F1C0}scripts/Game/Building/CampaignBuildingCompositionOutline.conf" {
+   }
+   m_sPrefabsToBuildResource "{D2527D9AA5B4A33E}Configs/Editor/PlaceableEntities/Compositions/Compositions_FreeRoamBuilding.conf"
+  }
  }
  coords 0 0 0
  PlayerControllerPrefab "{4E5DAC62A374950F}Prefabs/Characters/Core/DefaultPlayerControllerMP_Coop.et"

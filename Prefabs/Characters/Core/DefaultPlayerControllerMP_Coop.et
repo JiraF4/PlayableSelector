@@ -5,7 +5,22 @@ SCR_PlayerController : "{225E51284CC95CFA}Prefabs/Characters/Core/DefaultPlayerC
   }
   PS_PlayableControllerComponent "{5EA7206115A83E71}" {
   }
+  SCR_FastTravelComponent "{5DAA74121E45C2EB}" {
+   m_iCooldown 0
+   m_iDistanceToTarget 5
+   m_sDestinationType "SCR_SpawnPoint"
+  }
+  SCR_HUDManagerComponent "{2FDC275D9EBCDB8B}" {
+   InfoDisplays {
+    SCR_ScenarioFrameworkTriggerCountdownDisplay "{61B2C5720492B2C9}" {
+     m_LayoutPath "{47864BB47AB0B1F4}UI/layouts/HUD/CampaignMP/CampaignMainHUD.layout"
+     m_eLayer ALWAYS_TOP
+     m_bAdaptiveOpacity 1
+    }
+   }
+  }
+  SCR_ScenarioFrameworkTriggerNetworkComponent "{61B2C5720492B2E2}" {
+  }
  }
- coords 132.656 1 149.255
  SelfRegister 0
 }
