@@ -1,6 +1,10 @@
 PS_GameModeCoop : "{0F307326459A1395}Prefabs/MP/Modes/GameMode_Base.et" {
  ID "56B2B479C6B96951"
  components {
+  SignalsManagerComponent "{61B2C57246E4B5EC}" {
+  }
+  SCR_CommunicationSoundComponent "{61B2C57246E4B51D}" {
+  }
   PS_CutsceneManager "{60E6C661B81E7619}" {
   }
   PS_MissionDataManager "{5F2B46885537B66A}" {
@@ -35,6 +39,18 @@ PS_GameModeCoop : "{0F307326459A1395}Prefabs/MP/Modes/GameMode_Base.et" {
   }
   PS_VoNRoomsManager "{5ED9088704AA8ACB}" {
   }
+  SCR_CampaignBuildingManagerComponent "{61B4DDBF56BF1B48}" {
+   m_sFreeRoamBuildingClientTrigger "{5E191CEAF4B95816}Prefabs/MP/FreeRoamBuildingClientTrigger.et"
+   m_BudgetType CAMPAIGN
+   m_iCompositionRefundPercentage 100
+   m_OutlineManager SCR_CampaignBuildingCompositionOutlineManager "{5DF6FBB5913F3245}" : "{96A8B496A076F1C0}scripts/Game/Building/CampaignBuildingCompositionOutline.conf" {
+   }
+   m_sPrefabsToBuildResource "{D2527D9AA5B4A33E}Configs/Editor/PlaceableEntities/Compositions/Compositions_FreeRoamBuilding.conf"
+  }
+  SCR_CommandingManagerComponent "{61B4DDBF56BF1B63}" {
+  }
+  SCR_GameModeSFManager "{61B2C57246E4B501}" {
+  }
   SCR_NametagConfigComponent "{571AA9E54FC9210D}" {
    m_sConfigPath "{09F7AAA14A642683}Configs/NameTags/NametagFriendlies.conf"
   }
@@ -66,20 +82,6 @@ PS_GameModeCoop : "{0F307326459A1395}Prefabs/MP/Modes/GameMode_Base.et" {
   SCR_VotingManagerComponent "{5650BB6B6089393A}" {
    Enabled 0
   }
-  SignalsManagerComponent "{61B2C57246E4B5EC}" {
-  }
-  SCR_CommunicationSoundComponent "{61B2C57246E4B51D}" {
-  }
-  SCR_GameModeSFManager "{61B2C57246E4B501}" {
-  }
-  SCR_CampaignBuildingManagerComponent "{61B2D79C2D3666D0}" {
-   m_sFreeRoamBuildingClientTrigger "{5E191CEAF4B95816}Prefabs/MP/FreeRoamBuildingClientTrigger.et"
-   m_BudgetType CAMPAIGN
-   m_iCompositionRefundPercentage 100
-   m_OutlineManager SCR_CampaignBuildingCompositionOutlineManager "{5DF6FBB5913F3245}" : "{96A8B496A076F1C0}scripts/Game/Building/CampaignBuildingCompositionOutline.conf" {
-   }
-   m_sPrefabsToBuildResource "{D2527D9AA5B4A33E}Configs/Editor/PlaceableEntities/Compositions/Compositions_FreeRoamBuilding.conf"
-  }
  }
  coords 0 0 0
  PlayerControllerPrefab "{4E5DAC62A374950F}Prefabs/Characters/Core/DefaultPlayerControllerMP_Coop.et"
@@ -94,6 +96,10 @@ PS_GameModeCoop : "{0F307326459A1395}Prefabs/MP/Modes/GameMode_Base.et" {
   }
   ScriptedChatEntity : "{F69BC912AC8236F9}Prefabs/MP/ScriptedChatEntity.et" {
    ID "5ED9088735FF2DC2"
+  }
+  SCR_EditorSettingsEntity {
+   ID "61B4E967E6C20362"
+   m_bIsUnlimitedEditorLegal 1
   }
   ItemPreviewManagerEntity "5E7AE0AB2109F297" : "{AB5D049A3AB43FC0}Prefabs/World/Game/ItemPreviewManager_PS.et" {
    ID "5ED9088735FF2DD5"
