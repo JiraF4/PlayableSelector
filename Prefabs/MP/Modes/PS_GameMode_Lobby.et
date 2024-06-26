@@ -100,6 +100,7 @@ PS_GameModeCoop : "{0F307326459A1395}Prefabs/MP/Modes/GameMode_Base.et" {
   SCR_EditorSettingsEntity {
    ID "61B4E967E6C20362"
    m_bIsUnlimitedEditorLegal 1
+   m_BaseModes BUILDING
   }
   ItemPreviewManagerEntity "5E7AE0AB2109F297" : "{AB5D049A3AB43FC0}Prefabs/World/Game/ItemPreviewManager_PS.et" {
    ID "5ED9088735FF2DD5"
