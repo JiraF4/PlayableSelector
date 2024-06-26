@@ -1,0 +1,8 @@
+SCR_ChimeraCharacter : "{48F96834C3289E04}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_Ammo.et" {
+ ID "520EC961A090B1EE"
+ components {
+  PS_PlayableComponent "{5EFCC1946F475F15}" {
+   m_bIsPlayable 1
+  }
+ }
+}

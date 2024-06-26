@@ -1,0 +1,8 @@
+SCR_ChimeraCharacter : "{CD28EE7C5690D3BB}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Ammo.et" {
+ ID "522AAC66D0A2C0DC"
+ components {
+  PS_PlayableComponent "{5EFCC1946F475F15}" {
+   m_bIsPlayable 1
+  }
+ }
+}

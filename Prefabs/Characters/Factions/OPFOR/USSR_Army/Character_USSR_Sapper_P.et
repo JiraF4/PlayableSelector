@@ -1,0 +1,8 @@
+SCR_ChimeraCharacter : "{CBF7A398FE060335}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Sapper.et" {
+ ID "200D264F0EEA1A28"
+ components {
+  PS_PlayableComponent "{5EFCC1946F475F15}" {
+   m_bIsPlayable 1
+  }
+ }
+}

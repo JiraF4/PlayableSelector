@@ -1,0 +1,8 @@
+SCR_ChimeraCharacter : "{862E3B66D0316F0A}Prefabs/Characters/Factions/OPFOR/USSR_Army/KLMK/Character_USSR_AR_KLMK.et" {
+ ID "520EC961A090BE1E"
+ components {
+  PS_PlayableComponent "{5EFCC1946F475F15}" {
+   m_bIsPlayable 1
+  }
+ }
+}
