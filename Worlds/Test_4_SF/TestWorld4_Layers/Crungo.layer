@@ -3,19 +3,19 @@ SCR_MapEntity MapEntity_Arland1 : "{66FBC1063149819B}Prefabs/World/Game/Arland/M
 }
 $grp GenericEntity : "{1353C6EAD1DCFE43}Prefabs/Weapons/Handguns/M9/Handgun_M9.et" {
  {
-  coords 142.087 1.259 148.613
+  coords 130.841 1 148.714
  }
  {
-  coords 142.896 1.248 148.796
+  coords 130.014 1 149.348
  }
  {
-  coords 143.772 1.246 148.912
+  coords 129.869 1 147.845
  }
  {
-  coords 142.063 1.235 150.243
+  coords 131.074 1 147.154
  }
  {
-  coords 144.578 1.224 150.319
+  coords 132.498 1 147.491
  }
 }
 GenericEntity WeaponsCrate : "{377EB906F591E4BA}Prefabs/Props/Military/Arsenal/AmmoBoxes/US/AmmoBoxArsenal_Weapons_US.et" {
@@ -72,7 +72,6 @@ GenericEntity Area2 : "{C72F956E4AC6A6E7}Prefabs/ScenarioFramework/Components/Ar
     GenericEntity SlotMoveTo1 : "{A44004A770A5D8BE}Prefabs/ScenarioFramework/Components/SlotMoveTo.et" {
      components {
       SCR_ScenarioFrameworkSlotExtraction "{5A1EEEC837EEA27B}" {
-       m_sFactionKey "USSR"
        m_bShowDebugShapesDuringRuntime 1
        m_aPlugins {
         SCR_ScenarioFrameworkPluginTrigger "{5A6C6D099D49E4BA}" {
@@ -104,7 +103,6 @@ GenericEntity Area2 : "{C72F956E4AC6A6E7}Prefabs/ScenarioFramework/Components/Ar
     GenericEntity Slot1 : "{AA01691FDC4E9167}Prefabs/ScenarioFramework/Components/Slot.et" {
      components {
       SCR_ScenarioFrameworkSlotBase "{5A22E1D67E712EC8}" {
-       m_sFactionKey "USSR"
        m_aPlugins {
         SCR_ScenarioFrameworkPluginOnInventoryChange "{5E4CB0F9DA6201E1}" {
          m_aActionsOnItemAdded {

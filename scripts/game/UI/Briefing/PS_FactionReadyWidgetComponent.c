@@ -1,6 +1,6 @@
 class PS_FactionReadyWidgetComponent : PS_HideableButton
 {
-	ResourceName m_sImageSet = "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset";
+	ResourceName m_sImageSet = "{2EFEA2AF1F38E7F0}UI/Textures/Icons/icons_wrapperUI-64.imageset";
 	
 	FactionManager m_FactionManager;
 	PS_PlayableManager m_PlayableManager;
@@ -89,9 +89,9 @@ class PS_FactionReadyWidgetComponent : PS_HideableButton
 		
 		m_iFactionReady = readyValue;
 		if (m_iFactionReady == 1)
-			m_wImage.LoadImageFromSet(0, m_sImageSet, "Leader");
+			m_wImage.LoadImageFromSet(0, m_sImageSet, "check");
 		else
-			m_wImage.LoadImageFromSet(0, m_sImageSet, "Wait");
+			m_wImage.LoadImageFromSet(0, m_sImageSet, "disable");
 	}
 	
 	//------------------------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
-OverlayWidgetClass "{618EDD698E996058}" : "{DAAA8D092128D446}UI/Util/HideableButton.layout" {
+OverlayWidgetClass : "{DAAA8D092128D446}UI/Util/HideableButton.layout" {
  Name "FactionReadyHideableButton"
- Slot LayoutSlot {
+ Slot LayoutSlot "{61B4C308CEBD75B8}" {
  }
  components {
   PS_FactionReadyWidgetComponent "{618EDD66FD8B5855}" {
@@ -18,12 +18,11 @@ OverlayWidgetClass "{618EDD698E996058}" : "{DAAA8D092128D446}UI/Util/HideableBut
   }
   ImageWidgetClass "{5EB1176784E2EFB5}" {
    Prefab "{5EB1176784E2EFB5}"
-   Name "Image"
    Slot OverlayWidgetSlot "{5EB117705B84CDF5}" {
    }
-   Texture "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset"
-   Image "Wait"
-   Size 48 48
+   Texture "{2EFEA2AF1F38E7F0}UI/Textures/Icons/icons_wrapperUI-64.imageset"
+   Image "disable"
+   Size 64 64
   }
   ButtonWidgetClass "{5EB1176E3DB20C7A}" {
    Prefab "{5EB1176E3DB20C7A}"
