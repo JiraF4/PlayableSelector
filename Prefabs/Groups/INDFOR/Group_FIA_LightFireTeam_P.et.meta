@@ -1,5 +1,5 @@
 MetaFileClass {
- Name "{8435E75BAC42E0FF}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P_Exp.et"
+ Name "{6AAA7C7E768CA36A}Prefabs/Groups/INDFOR/Group_FIA_LightFireTeam_P.et"
  Configurations {
   EntityTemplateResourceClass PC {
   }
@@ -8,6 +8,8 @@ MetaFileClass {
   EntityTemplateResourceClass XBOX_SERIES : PC {
   }
   EntityTemplateResourceClass PS4 : PC {
+  }
+  EntityTemplateResourceClass PS5 : PC {
   }
   EntityTemplateResourceClass HEADLESS : PC {
   }

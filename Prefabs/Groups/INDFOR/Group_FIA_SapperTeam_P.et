@@ -1,0 +1,6 @@
+SCR_AIGroup : "{A0E9B5D6EA2072C4}Prefabs/Groups/INDFOR/Group_FIA_SapperTeam.et" {
+ ID "0000000000000001"
+ m_aUnitPrefabSlots {
+  "{253AF9EE4FE937BF}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_Sapper_P.et" "{253AF9EE4FE937BF}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_Sapper_P.et"
+ }
+}

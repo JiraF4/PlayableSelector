@@ -1,0 +1,6 @@
+SCR_AIGroup : "{C1E39427E43B1E79}Prefabs/Groups/INDFOR/Group_FIA_AmmoTeam.et" {
+ ID "0000000000000001"
+ m_aUnitPrefabSlots {
+  "{E691995C5D7CD7A4}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_AMG_P.et" "{8BCADA853AA0585B}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_Ammo_P.et" "{8BCADA853AA0585B}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_Ammo_P.et" "{CE2C005A0F9D7E23}Prefabs/Characters/Factions/INDFOR/FIA/Character_FIA_AAT_P.et"
+ }
+}
