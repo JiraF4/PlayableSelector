@@ -85,6 +85,11 @@ class PS_Objective : PS_MissionDescription
 
 	void PS_Objective(IEntitySource src, IEntity parent)
 	{
+		GetGame().GetCallqueue().Call(LateRegister);
+	}
+	
+	void LateRegister()
+	{
 		if (PS_ObjectiveManager.GetInstance())
 			PS_ObjectiveManager.GetInstance().RegisterObjective(this);
 	}
