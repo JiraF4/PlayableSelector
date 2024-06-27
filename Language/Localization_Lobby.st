@@ -1,6 +1,17 @@
 StringTable {
  ItemClassName "CustomStringTableItem"
  Items {
+  CustomStringTableItem "{61B503ED7CAC5E13}" {
+   Id "PS-Briefing_FactionsReady"
+   Target_en_us "Factions ready"
+   Target_es_es "Preparación de la facción"
+   Target_ru_ru "Готовность фракций"
+   Target_pt_br "Prontidão da facção"
+   Target_uk_ua "Готовність фракцій"
+   Modified 1639253201
+   Author "SeskPC"
+   LastChanged "SeskPC"
+  }
   CustomStringTableItem "{5EC5311E4F6DC81D}" {
    Id "PS-Briefing_GroupVoiceChat"
    Target_en_us "Group сhat"

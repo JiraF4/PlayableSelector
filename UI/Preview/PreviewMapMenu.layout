@@ -26,30 +26,6 @@ FrameWidgetClass {
    Opacity 0
    Color 0 0 0 1
   }
-  FrameWidgetClass "{5EBE2C27989BB59C}" : "{2F8AEE78FF5A8104}UI/layouts/Map/ToolMenu.layout" {
-   Name "ToolMenu"
-   Slot FrameWidgetSlot "{59107CDEE98682C5}" {
-    Anchor 0.5 0 0.5 0
-    PositionX -798.097
-    OffsetLeft -798.097
-    PositionY 94.795
-    OffsetTop 94.795
-    SizeX 100
-    OffsetRight 698.097
-    SizeY 29.999
-    OffsetBottom -124.794
-   }
-   "Is Visible" 0
-   {
-    RichTextWidgetClass "{59107CD34D2BC078}" {
-     Prefab "{59107CD34D2BC078}"
-     Slot FrameWidgetSlot "{59107CC3B4EF4150}" {
-     }
-     Text "<shadow color='0,0,0' size='0' offset='1,1' opacity='0.5' mode='image'><action name=\"MapToolMenuFocus\"/></shadow>"
-     "Horizontal Alignment" Right
-    }
-   }
-  }
   FrameWidgetClass "{5EBE2C27989BB5E2}" : "{D89BBA18F99053D6}UI/layouts/HUD/Chat/ChatHud.layout" {
    Name "ChatHud"
    Slot FrameWidgetSlot "{58731DB272499DED}" {
@@ -550,6 +526,103 @@ FrameWidgetClass {
        }
       }
      }
+    }
+   }
+  }
+  FrameWidgetClass "{61B4F41DBAD5D754}" {
+   Name "ToolMenu"
+   Slot FrameWidgetSlot "{59107CDEE98682C5}" {
+    PositionX 25
+    OffsetLeft 25
+    PositionY -100
+    OffsetTop -100
+    SizeX -100
+    OffsetRight 75
+    SizeY 30
+    OffsetBottom 70
+    Alignment 0.5 0
+    SizeToContent 1
+   }
+   "Z Order" 1
+   Clipping False
+   "Ignore Cursor" 0
+   {
+    FrameWidgetClass "{61B4F41DBAD5D75A}" {
+     Name "ToolMenuBar"
+     Slot FrameWidgetSlot "{59107CC3B4EFA8B6}" {
+      OffsetLeft 0
+      OffsetTop 0
+      SizeX 30
+      OffsetRight -30
+      OffsetBottom -30
+      SizeToContent 1
+     }
+     Clipping True
+     {
+      ImageWidgetClass "{61B4F41DBAD5D759}" {
+       Name "MenuBackground"
+       Slot FrameWidgetSlot "{59107CDD6A9F6BD3}" {
+        Anchor 0 0 1 1
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX -40
+        OffsetRight 0
+        SizeY -40
+        OffsetBottom 0
+        SizeToContent 1
+       }
+       Opacity 0.98
+       Color 0 0 0 1
+       Image ""
+       Size 40 40
+      }
+      HorizontalLayoutWidgetClass "{61B4F41DBAD5D758}" {
+       Name "ToolMenuHoriz"
+       Slot FrameWidgetSlot "{59107CC3B4EFA879}" {
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX 0
+        OffsetRight 0
+        SizeY 0
+        OffsetBottom 0
+        SizeToContent 1
+       }
+      }
+     }
+    }
+    RichTextWidgetClass "{61B4F41DBAD5D75F}" {
+     Prefab "{00000000B0FD85CE}"
+     Name "Action"
+     Slot FrameWidgetSlot "{59107CC3B4EF4150}" {
+      Anchor 1 1 1 1
+      OffsetLeft 0
+      OffsetTop 0
+      SizeX 1
+      OffsetRight -1
+      SizeY 1
+      OffsetBottom -1
+      Alignment 0.5 0.5
+     }
+     Clipping False
+     Color 0.761 0.386 0.078 1
+     components {
+      SCR_DeviceSpecificComponent "{5918811AAA9B9B8D}" {
+       m_bControllerOnly 1
+      }
+     }
+     Text "<image set=\"{F7FD1672FECA05E8}UI/Textures/Icons/icons_gamepad_64.imageset\" name=\"DPAD_horizontal\" scale=\"1\"/>"
+     "Font Size" 32
+     "Min Font Size" 32
+     "Vertical Alignment" Center
+     FontProperties FontProperties "{58CE6BA0EDCA2C14}" {
+      Font "{EABA4FE9D014CCEF}UI/Fonts/RobotoCondensed/RobotoCondensed_Bold.fnt"
+     }
+     Offset -40 0
+     "Line Spacing" 0
     }
    }
   }

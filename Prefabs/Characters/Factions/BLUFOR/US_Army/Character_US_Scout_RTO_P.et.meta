@@ -1,0 +1,17 @@
+MetaFileClass {
+ Name "{F6836BCA03008E4B}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Scout_RTO_P.et"
+ Configurations {
+  EntityTemplateResourceClass PC {
+  }
+  EntityTemplateResourceClass XBOX_ONE : PC {
+  }
+  EntityTemplateResourceClass XBOX_SERIES : PC {
+  }
+  EntityTemplateResourceClass PS4 : PC {
+  }
+  EntityTemplateResourceClass PS5 : PC {
+  }
+  EntityTemplateResourceClass HEADLESS : PC {
+  }
+ }
+}

@@ -30,7 +30,7 @@ PanelWidgetClass {
       VerticalAlign 1
       Padding 16 0 18 0
      }
-     Text "Готовность фракций:"
+     Text "#ps-briefing_factionsready"
     }
     HorizontalLayoutWidgetClass "{618EDD6B3BB067C3}" {
      Name "FactionReadyFactions"

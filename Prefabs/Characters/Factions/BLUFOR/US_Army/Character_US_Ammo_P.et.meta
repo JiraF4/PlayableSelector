@@ -1,0 +1,17 @@
+MetaFileClass {
+ Name "{23CF7AD7DEB5E7E4}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Ammo_P.et"
+ Configurations {
+  EntityTemplateResourceClass PC {
+  }
+  EntityTemplateResourceClass XBOX_ONE : PC {
+  }
+  EntityTemplateResourceClass XBOX_SERIES : PC {
+  }
+  EntityTemplateResourceClass PS4 : PC {
+  }
+  EntityTemplateResourceClass PS5 : PC {
+  }
+  EntityTemplateResourceClass HEADLESS : PC {
+  }
+ }
+}

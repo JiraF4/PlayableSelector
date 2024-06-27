@@ -1,0 +1,17 @@
+MetaFileClass {
+ Name "{1440AE966CB75BE9}Prefabs/Characters/Factions/BLUFOR/US_Army/GreenBerets/Character_US_SF_GL_P.et"
+ Configurations {
+  EntityTemplateResourceClass PC {
+  }
+  EntityTemplateResourceClass XBOX_ONE : PC {
+  }
+  EntityTemplateResourceClass XBOX_SERIES : PC {
+  }
+  EntityTemplateResourceClass PS4 : PC {
+  }
+  EntityTemplateResourceClass PS5 : PC {
+  }
+  EntityTemplateResourceClass HEADLESS : PC {
+  }
+ }
+}
