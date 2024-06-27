@@ -16,3 +16,10 @@ PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_Game
 }
 SCR_BaseTaskManager : "{1AC69CD7907FB4F8}Prefabs/ScenarioFramework/Tasks/TaskManager.et" {
 }
+PS_ManualMarker : "{CD85ADE9E0F54679}PrefabsEditable/Markers/EditableMarker.et" {
+ coords 107.305 1 156.067
+ m_sQuadName "flag-2"
+ m_fWorldSize 40
+ m_bVisibleForEmptyFaction 1
+ m_bShowForAnyFaction 1
+}

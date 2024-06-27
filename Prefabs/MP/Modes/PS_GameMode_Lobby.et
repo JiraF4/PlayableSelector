@@ -51,6 +51,8 @@ PS_GameModeCoop : "{0F307326459A1395}Prefabs/MP/Modes/GameMode_Base.et" {
   }
   SCR_GameModeSFManager "{61B2C57246E4B501}" {
   }
+  SCR_InitWeatherComponent "{61B68227C35BFE9A}" {
+  }
   SCR_NametagConfigComponent "{571AA9E54FC9210D}" {
    m_sConfigPath "{09F7AAA14A642683}Configs/NameTags/NametagFriendlies.conf"
   }
@@ -67,6 +69,8 @@ PS_GameModeCoop : "{0F307326459A1395}Prefabs/MP/Modes/GameMode_Base.et" {
   SCR_RespawnSystemComponent "{56B2B4793051E7C9}" {
    m_SpawnLogic SCR_SpawnLogic "{5EDEF21803756CBB}" {
    }
+  }
+  SCR_RestoreEditorModesComponent "{61B68227D500DBF7}" {
   }
   SCR_SaveLoadComponent "{5EDF3A19778A160E}" {
    m_Struct SCR_MissionStruct "{5EDF3A19778A1611}" {
