@@ -1,0 +1,17 @@
+MetaFileClass {
+ Name "{3A70C7CFCDAD889C}Prefabs/Groups/OPFOR/KLMK/Group_USSR_SapperTeam_KLMK_P.et"
+ Configurations {
+  EntityTemplateResourceClass PC {
+  }
+  EntityTemplateResourceClass XBOX_ONE : PC {
+  }
+  EntityTemplateResourceClass XBOX_SERIES : PC {
+  }
+  EntityTemplateResourceClass PS4 : PC {
+  }
+  EntityTemplateResourceClass PS5 : PC {
+  }
+  EntityTemplateResourceClass HEADLESS : PC {
+  }
+ }
+}

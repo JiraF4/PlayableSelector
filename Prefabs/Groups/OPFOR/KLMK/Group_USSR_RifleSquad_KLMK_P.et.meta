@@ -1,0 +1,17 @@
+MetaFileClass {
+ Name "{288D5E5619568501}Prefabs/Groups/OPFOR/KLMK/Group_USSR_RifleSquad_KLMK_P.et"
+ Configurations {
+  EntityTemplateResourceClass PC {
+  }
+  EntityTemplateResourceClass XBOX_ONE : PC {
+  }
+  EntityTemplateResourceClass XBOX_SERIES : PC {
+  }
+  EntityTemplateResourceClass PS4 : PC {
+  }
+  EntityTemplateResourceClass PS5 : PC {
+  }
+  EntityTemplateResourceClass HEADLESS : PC {
+  }
+ }
+}

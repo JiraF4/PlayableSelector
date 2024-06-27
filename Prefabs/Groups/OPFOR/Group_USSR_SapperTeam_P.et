@@ -1,0 +1,6 @@
+SCR_AIGroup : "{BB2E6C2CC2755E9B}Prefabs/Groups/OPFOR/Group_USSR_SapperTeam.et" {
+ ID "0000000000000001"
+ m_aUnitPrefabSlots {
+  "{1DA21ADFF265C0BE}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Sapper_P.et" "{1DA21ADFF265C0BE}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Sapper_P.et"
+ }
+}

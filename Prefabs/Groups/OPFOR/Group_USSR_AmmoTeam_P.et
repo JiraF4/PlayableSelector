@@ -1,0 +1,6 @@
+SCR_AIGroup : "{C8622D0595B48437}Prefabs/Groups/OPFOR/Group_USSR_AmmoTeam.et" {
+ ID "0000000000000001"
+ m_aUnitPrefabSlots {
+  "{D1786D7659BC2E7C}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_AMG_P.et" "{465B3DF8BF07B900}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Ammo_P.et" "{465B3DF8BF07B900}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Ammo_P.et" "{F9C5F4700B5D87FB}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_AAT_P.et"
+ }
+}

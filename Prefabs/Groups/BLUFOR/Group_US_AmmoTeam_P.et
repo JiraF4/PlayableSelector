@@ -1,0 +1,6 @@
+SCR_AIGroup : "{F72EF3429D8C8DF5}Prefabs/Groups/BLUFOR/Group_US_AmmoTeam.et" {
+ ID "0000000000000001"
+ m_aUnitPrefabSlots {
+  "{CA2EB3A73FABC625}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_AMG_P.et" "{CA2EB3A73FABC625}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_AMG_P.et" "{23CF7AD7DEB5E7E4}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Ammo_P.et" "{23CF7AD7DEB5E7E4}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Ammo_P.et"
+ }
+}

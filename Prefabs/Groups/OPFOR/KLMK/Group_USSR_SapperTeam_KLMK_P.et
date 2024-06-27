@@ -1,0 +1,6 @@
+SCR_AIGroup : "{8EDE6E160E71ABB4}Prefabs/Groups/OPFOR/KLMK/Group_USSR_SapperTeam_KLMK.et" {
+ ID "0000000000000001"
+ m_aUnitPrefabSlots {
+  "{1D2479DB47C9078C}Prefabs/Characters/Factions/OPFOR/USSR_Army/KLMK/Character_USSR_Sapper_KLMK_P.et" "{1D2479DB47C9078C}Prefabs/Characters/Factions/OPFOR/USSR_Army/KLMK/Character_USSR_Sapper_KLMK_P.et"
+ }
+}

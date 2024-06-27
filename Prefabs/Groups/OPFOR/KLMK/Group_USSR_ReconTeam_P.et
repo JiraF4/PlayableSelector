@@ -1,0 +1,6 @@
+SCR_AIGroup : "{06F0C9675883F18A}Prefabs/Groups/OPFOR/KLMK/Group_USSR_ReconTeam.et" {
+ ID "0000000000000001"
+ m_aUnitPrefabSlots {
+  "{5D826E10FF8246B3}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Scout_P.et" "{E007220534B03D20}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Scout_RTO_P.et"
+ }
+}

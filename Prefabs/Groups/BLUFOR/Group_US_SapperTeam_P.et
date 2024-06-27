@@ -1,0 +1,6 @@
+SCR_AIGroup : "{9624D2B39397E148}Prefabs/Groups/BLUFOR/Group_US_SapperTeam.et" {
+ ID "0000000000000001"
+ m_aUnitPrefabSlots {
+  "{C095F7A0632CE65E}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Sapper_P.et" "{C095F7A0632CE65E}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Sapper_P.et"
+ }
+}

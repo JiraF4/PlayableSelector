@@ -1,0 +1,6 @@
+SCR_AIGroup : "{17F51B6521F7194A}Prefabs/Groups/OPFOR/KLMK/Group_USSR_AmmoTeam_KLMK.et" {
+ ID "0000000000000001"
+ m_aUnitPrefabSlots {
+  "{4876389B1EF1CC49}Prefabs/Characters/Factions/OPFOR/USSR_Army/KLMK/Character_USSR_AMG_KLMK_P.et" "{1973A38932DA1B6D}Prefabs/Characters/Factions/OPFOR/USSR_Army/KLMK/Character_USSR_Ammo_KLMK_P.et" "{1973A38932DA1B6D}Prefabs/Characters/Factions/OPFOR/USSR_Army/KLMK/Character_USSR_Ammo_KLMK_P.et" "{474B20F1FAE24A79}Prefabs/Characters/Factions/OPFOR/USSR_Army/KLMK/Character_USSR_AAT_KLMK_P.et"
+ }
+}

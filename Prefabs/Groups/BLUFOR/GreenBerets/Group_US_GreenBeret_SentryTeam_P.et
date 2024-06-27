@@ -1,0 +1,6 @@
+SCR_AIGroup : "{35681BE27C302FF5}Prefabs/Groups/BLUFOR/GreenBerets/Group_US_GreenBeret_SentryTeam.et" {
+ ID "0000000000000001"
+ m_aUnitPrefabSlots {
+  "{83008FD82A671A96}Prefabs/Characters/Factions/BLUFOR/US_Army/GreenBerets/Character_US_SF_P.et" "{83008FD82A671A96}Prefabs/Characters/Factions/BLUFOR/US_Army/GreenBerets/Character_US_SF_P.et"
+ }
+}

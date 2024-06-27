@@ -1,0 +1,6 @@
+SCR_AIGroup : "{4C44B4D8F2820F25}Prefabs/Groups/OPFOR/Spetsnaz/Group_USSR_Spetsnaz_SentryTeam.et" {
+ ID "0000000000000001"
+ m_aUnitPrefabSlots {
+  "{7D34858BEEBA0C31}Prefabs/Characters/Factions/OPFOR/USSR_Army/Spetsnaz/Character_USSR_SF_P.et" "{7D34858BEEBA0C31}Prefabs/Characters/Factions/OPFOR/USSR_Army/Spetsnaz/Character_USSR_SF_P.et"
+ }
+}

@@ -1,0 +1,6 @@
+SCR_AIGroup : "{F65B7BB712F46FEE}Prefabs/Groups/BLUFOR/Group_US_ReconTeam.et" {
+ ID "0000000000000001"
+ m_aUnitPrefabSlots {
+  "{D479353521DB520E}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Scout_P.et" "{F6836BCA03008E4B}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Scout_RTO_P.et"
+ }
+}
