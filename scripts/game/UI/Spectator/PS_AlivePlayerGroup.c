@@ -57,6 +57,8 @@ class PS_AlivePlayerGroup : SCR_ScriptedWidgetComponent
 		// Init
 		string groupName = PS_GroupHelper.GetGroupFullName(m_AIGroup);
 		m_wGroupName.SetText(groupName);
+		if (!m_AIGroup)
+			return;
 		Faction faction = m_AIGroup.GetFaction();
 		
 		Color factionColor = faction.GetFactionColor();

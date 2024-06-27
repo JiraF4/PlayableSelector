@@ -435,6 +435,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (playableId != RplId.Invalid())
 		{
 			PS_PlayableComponent playableComponent = playableManager.GetPlayableById(playableId);
+			if (!playableComponent)
+				return;
+			
 			FactionAffiliationComponent factionAffiliationComponent = playableComponent.GetFactionAffiliationComponent();
 			Faction faction = factionAffiliationComponent.GetDefaultAffiliatedFaction();
 			FactionKey factionKey = faction.GetFactionKey();
