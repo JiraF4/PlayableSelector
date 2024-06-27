@@ -1,6 +1,6 @@
 Vehicle M923A1_engineer1 : "{2D74C39A650A3030}Prefabs/Vehicles/Wheeled/M923A1/M923A1_engineer.et" {
  coords 119.972 1 155.599
 }
-SCR_AIGroup : "{8435E75BAC42E0FF}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P_Exp.et" {
- coords 124.012 1 140.742
+SCR_AIGroup : "{C0CBE71EB24755D9}Prefabs/Groups/BLUFOR/GreenBerets/Group_US_GreenBeret_Squad_P.et" {
+ coords 120.611 1 135.741
 }

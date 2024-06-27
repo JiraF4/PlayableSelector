@@ -53,22 +53,3 @@ PS_ManualCameraSpectator ManualCameraSpectator1 : "{6EAA30EF620F4A2E}Prefabs/Edi
  coords 122.492 1 163.836
  Flags 1048579
 }
-SCR_ChimeraCharacter : "{ADDE38E4119816AB}Prefabs/InitialPlayer_Version2.et" {
- components {
-  SCR_CharacterInventoryStorageComponent "{520EA1D2DB118DAC}" {
-   components {
-    SCR_EquipmentStorageComponent "{56B49DA9722B635D}" {
-     InitialStorageSlots {
-      SCR_EquipmentStorageSlot WristwatchSlot {
-       Prefab "{74AA3854E16D9D56}Prefabs/MenuRadio.et"
-      }
-     }
-    }
-   }
-  }
-  SCR_VoNComponent "{520EA1D2F659C856}" {
-   Enabled 0
-  }
- }
- coords 154.057 1 104.954
-}

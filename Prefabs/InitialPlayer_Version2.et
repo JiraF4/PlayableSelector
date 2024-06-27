@@ -15,26 +15,6 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
     }
    }
   }
-  MeshObject "{520EA1D2F659C81F}" {
-   Materials {
-    MaterialAssignClass "{61B6980F8662EA3F}" {
-     SourceMaterial "Basebody_01_Male_Arms"
-     AssignedMaterial "{9668A21511C6F791}Assets/_SharedData/Decals/Invisible_Material.emat"
-    }
-    MaterialAssignClass "{61B6980F8662EA2C}" {
-     SourceMaterial "Basebody_01_Male_Arms_wound"
-     AssignedMaterial "{9668A21511C6F791}Assets/_SharedData/Decals/Invisible_Material.emat"
-    }
-    MaterialAssignClass "{61B6980F8662EA56}" {
-     SourceMaterial "Basebody_01_Male_Body"
-     AssignedMaterial "{9668A21511C6F791}Assets/_SharedData/Decals/Invisible_Material.emat"
-    }
-    MaterialAssignClass "{61B6980F8662EA5A}" {
-     SourceMaterial "Basebody_01_Male_Body_wound"
-     AssignedMaterial "{9668A21511C6F791}Assets/_SharedData/Decals/Invisible_Material.emat"
-    }
-   }
-  }
   PS_LobbyVoNComponent "{618B054CFFD60A4C}" {
    "Speaking Range" 50
    Filename "{B4C3941EC8B2AD20}Sounds/VON/von.acp"
