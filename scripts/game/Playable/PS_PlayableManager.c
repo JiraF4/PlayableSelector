@@ -91,6 +91,8 @@ class PS_PlayableManager : ScriptComponent
 	[RplProp(onRplName: "OnStartTimerCounterChanged")]
 	int m_iStartTimerCounter = -1;
 	
+	bool m_bFactionsReadySended;
+	
 	void PS_PlayableManager(IEntityComponentSource src, IEntity ent, IEntity parent)
 	{
 		SetEventMask(ent, EntityEvent.FRAME);
@@ -591,6 +593,31 @@ class PS_PlayableManager : ScriptComponent
 	{
 		RPC_SetFactionReady(factionKey, readyValue);
 		Rpc(RPC_SetFactionReady, factionKey, readyValue);
+		
+		if (m_bFactionsReadySended)
+			return;
+		
+		array<int> players = {};
+		GetGame().GetPlayerManager().GetPlayers(players);
+		bool allFactionsReady = true;
+		foreach (int playerId : players)
+		{
+			factionKey = GetPlayerFactionKey(playerId);
+			if (factionKey == "")
+				continue;
+			if (m_mFactionReady[factionKey])
+				continue;
+			allFactionsReady = false;
+			break;
+		}
+		if (allFactionsReady)
+		{
+			m_bFactionsReadySended = true;
+			
+			SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
+			ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("tmsg");
+			invoker.Invoke(null, "Factions ready");
+		}
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void RPC_SetFactionReady(FactionKey factionKey, int readyValue)
