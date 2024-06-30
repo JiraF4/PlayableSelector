@@ -457,7 +457,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 					time = factionRespawns.m_iTime - Math.Mod(GetGame().GetWorld().GetWorldTime(), time); 
 				if (playerId > 0)
 					playableComponent.OpenRespawnMenu(time);
-				GetGame().GetCallqueue().CallLater(Respawn, time, false, playerId, playableComponent, prefabToSpawn);
+				
+				PS_RespawnData respawnData = new PS_RespawnData(playableComponent, prefabToSpawn);
+				GetGame().GetCallqueue().CallLater(Respawn, time, false, playerId, respawnData);
 				return;
 			}
 		}
@@ -465,27 +467,27 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		SwitchToInitialEntity(playerId);
 	}
 	
-	void Respawn(int playerId, PS_PlayableComponent playableComponent, ResourceName prefabToSpawn)
+	void Respawn(int playerId, PS_RespawnData respawnData)
 	{
-		Resource resource = Resource.Load(prefabToSpawn);
+		Resource resource = Resource.Load(respawnData.m_sPrefabName);
 		EntitySpawnParams params = new EntitySpawnParams();
-		playableComponent.GetSpawnTransform(params.Transform);
+		Math3D.MatrixCopy(respawnData.m_aSpawnTransform, params.Transform);
 		IEntity entity = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
-		SCR_AIGroup aiGroup = m_playableManager.GetPlayerGroupByPlayable(playableComponent.GetId());
+		SCR_AIGroup aiGroup = m_playableManager.GetPlayerGroupByPlayable(respawnData.m_iId);
 		SCR_AIGroup playabelGroup = aiGroup.GetSlave();
 		playabelGroup.AddAIEntityToGroup(entity);
 		
 		PS_PlayableComponent playableComponentNew = PS_PlayableComponent.Cast(entity.FindComponent(PS_PlayableComponent));
 		playableComponentNew.SetPlayable(true);
 		
-		GetGame().GetCallqueue().Call(SwitchToSpawnedEntity, playerId, playableComponent, entity, 4);
+		GetGame().GetCallqueue().Call(SwitchToSpawnedEntity, playerId, respawnData, entity, 4);
 	}
 	
-	void SwitchToSpawnedEntity(int playerId, PS_PlayableComponent playable, IEntity entity, int frameCounter)
+	void SwitchToSpawnedEntity(int playerId, PS_RespawnData respawnData, IEntity entity, int frameCounter)
 	{
 		if (frameCounter > 0) // Await four frames
 		{		
-			GetGame().GetCallqueue().Call(SwitchToSpawnedEntity, playerId, playable, entity, frameCounter - 1);
+			GetGame().GetCallqueue().Call(SwitchToSpawnedEntity, playerId, respawnData, entity, frameCounter - 1);
 			return;
 		}
 		
@@ -494,7 +496,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		PS_PlayableComponent playableComponent = PS_PlayableComponent.Cast(entity.FindComponent(PS_PlayableComponent));
 		RplId playableId = playableComponent.GetId();
 		
-		playableComponent.CopyState(playable);
+		playableComponent.CopyState(respawnData);
 		if (playerId > 0)
 		{
 			playableManager.SetPlayerPlayable(playerId, playableId);

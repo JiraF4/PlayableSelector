@@ -12,13 +12,13 @@ class PS_PlayableComponent : ScriptComponent
 	[Attribute()]
 	protected bool m_bIsPlayable;
 	[Attribute()]
-	protected ref array<ResourceName> m_aRespawnPrefabs;
+	ref array<ResourceName> m_aRespawnPrefabs;
 	
 	// Actually just RplId from RplComponent
 	protected RplId m_id;
 	protected vector spawnTransform[4];
 	[RplProp()]
-	protected int m_iRespawnCounter = 0;
+	int m_iRespawnCounter = 0;
 	protected bool m_bRespawned;
 	
 	// Cache global
@@ -78,12 +78,13 @@ class PS_PlayableComponent : ScriptComponent
 	// Temporally
 	static protected int m_iRespawnTime;
 	
-	void CopyState(PS_PlayableComponent playable)
+	void CopyState(PS_RespawnData respawnData)
 	{
-		playable.SetPlayable(false);
-		m_iRespawnCounter = playable.m_iRespawnCounter;
-		m_aRespawnPrefabs = playable.m_aRespawnPrefabs;
-		Math3D.MatrixCopy(spawnTransform, playable.spawnTransform);
+		if (respawnData.m_PlayableComponent)
+			respawnData.m_PlayableComponent.SetPlayable(false);
+		m_iRespawnCounter = respawnData.m_iRespawnCounter;
+		m_aRespawnPrefabs = respawnData.m_aRespawnPrefabs;
+		Math3D.MatrixCopy(respawnData.m_aSpawnTransform, spawnTransform);
 		Replication.BumpMe();
 	}
 	
@@ -101,7 +102,7 @@ class PS_PlayableComponent : ScriptComponent
 	
 	
 	
-	void GetSpawnTransform(vector outMat[4])
+	void GetSpawnTransform(inout vector outMat[4])
 	{
 		Math3D.MatrixCopy(spawnTransform, outMat);
 	}
@@ -279,5 +280,27 @@ class PS_PlayableComponent : ScriptComponent
 		reader.ReadString(m_name);
 		reader.ReadBool(m_bIsPlayable);
 		return true;
+	}
+}
+
+class PS_RespawnData
+{
+	PS_PlayableComponent m_PlayableComponent;
+	
+	RplId m_iId;
+	ResourceName m_sPrefabName;
+	vector m_aSpawnTransform[4];
+	int m_iRespawnCounter;
+	ref array<ResourceName> m_aRespawnPrefabs;
+	
+	void PS_RespawnData(PS_PlayableComponent playableComponent, ResourceName prefabName)
+	{
+		m_PlayableComponent = playableComponent;
+		
+		m_sPrefabName = prefabName;
+		m_iId = playableComponent.GetId();
+		playableComponent.GetSpawnTransform(m_aSpawnTransform);
+		m_iRespawnCounter = playableComponent.m_iRespawnCounter;
+		m_aRespawnPrefabs = playableComponent.m_aRespawnPrefabs;
 	}
 }
