@@ -3,6 +3,7 @@ class PS_SpectatorLabelIcon : SCR_ScriptedWidgetComponent
 	IEntity m_eEntity;
 	
 	ImageWidget m_wSpectatorLabelIcon;
+	ButtonWidget m_wLabelButton;
 	OverlayWidget m_wSpectatorLabelBackground;
 	TextWidget m_wSpectatorLabelText;
 	PanelWidget m_wSpectatorLabel;
@@ -25,11 +26,16 @@ class PS_SpectatorLabelIcon : SCR_ScriptedWidgetComponent
 	
 	protected bool m_bForceShowName;
 	
+	vector m_vWorldPosition;
+	vector GetWorldPosition()
+		return m_vWorldPosition;
+	
 	override void HandlerAttached(Widget w)
 	{
 		super.HandlerAttached(w);
 		
 		m_wSpectatorLabelIcon = ImageWidget.Cast(w.FindAnyWidget("SpectatorLabelIcon"));
+		m_wLabelButton = ButtonWidget.Cast(w.FindAnyWidget("LabelButton"));
 		m_wSpectatorLabelBackground = OverlayWidget.Cast(w.FindAnyWidget("SpectatorLabelBackground"));
 		m_wSpectatorLabelText = TextWidget.Cast(w.FindAnyWidget("SpectatorLabelText"));
 		m_wSpectatorLabel = PanelWidget.Cast(w.FindAnyWidget("SpectatorLabel"));
@@ -58,7 +64,7 @@ class PS_SpectatorLabelIcon : SCR_ScriptedWidgetComponent
 	
 	void Update()
 	{
-		vector iconWorldPosition = m_eEntity.GetOrigin();
+		m_vWorldPosition = m_eEntity.GetOrigin();
 		if (w_iBoneIndex > 0)
 		{
 			vector mat[4];
@@ -67,12 +73,12 @@ class PS_SpectatorLabelIcon : SCR_ScriptedWidgetComponent
 			m_eEntity.GetAnimation().GetBoneMatrix(w_iBoneIndex, boneMat);
 			vector resMat[4];
 			Math3D.MatrixMultiply4(mat, boneMat, resMat);
-			iconWorldPosition = resMat[3];
+			m_vWorldPosition = resMat[3];
 		}
-		vector screenPosition = GetGame().GetWorkspace().ProjWorldToScreen(iconWorldPosition, GetGame().GetWorld());
+		vector screenPosition = GetGame().GetWorkspace().ProjWorldToScreen(m_vWorldPosition, GetGame().GetWorld());
 		
 		vector cameraPosition = GetGame().GetCameraManager().CurrentCamera().GetOrigin();
-		m_fDistanceToIcon = vector.Distance(cameraPosition, iconWorldPosition);
+		m_fDistanceToIcon = vector.Distance(cameraPosition, m_vWorldPosition);
 		
 		if (screenPosition[2] < 0)
 		{
@@ -111,10 +117,10 @@ class PS_SpectatorLabelIcon : SCR_ScriptedWidgetComponent
 		
 		FrameSlot.SetSize(m_wSpectatorLabelIcon, scaledIconSize, scaledIconSize);
 		FrameSlot.SetPos(m_wSpectatorLabelIcon, -scaledIconSize/2, -scaledIconSize/2);
-		if (m_wSpectatorLabelBackground)
+		if (m_wLabelButton)
 		{
-			FrameSlot.SetSize(m_wSpectatorLabelBackground, scaledIconSize, scaledIconSize);
-			FrameSlot.SetPos(m_wSpectatorLabelBackground, -scaledIconSize/2, -scaledIconSize/2);
+			FrameSlot.SetSize(m_wLabelButton, scaledIconSize, scaledIconSize);
+			FrameSlot.SetPos(m_wLabelButton, -scaledIconSize/2, -scaledIconSize/2);
 		}
 		FrameSlot.SetPos(m_wSpectatorLabel, -LabelSizeXD/2, -scaledIconSize);
 		FrameSlot.SetPos(m_wRoot, screenPosition[0], screenPosition[1]);

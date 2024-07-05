@@ -18,6 +18,10 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 	
 	protected ref Color m_cDeadColor = Color.Gray;
 	
+	protected PS_EventHandlerComponent m_LabelEventHandler;
+	
+	protected float m_fClickIgnoreTime;
+	
 	override void HandlerAttached(Widget w)
 	{
 		m_wSpectatorLabelIconBackground = ImageWidget.Cast(w.FindAnyWidget("SpectatorLabelIconBackground"));
@@ -29,6 +33,85 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 		m_PlayableManager = PS_PlayableManager.GetInstance();
 		
 		super.HandlerAttached(w);
+		
+		m_LabelEventHandler = PS_EventHandlerComponent.Cast(m_wLabelButton.FindHandler(PS_EventHandlerComponent));
+		m_LabelEventHandler.GetOnDoubleClick().Insert(AttachCamera);
+		m_LabelEventHandler.GetOnClick().Insert(LookCamera);
+	}
+	
+	void LookCamera(Widget w, int x, int y, int button)
+	{
+		GetGame().GetCallqueue().CallLater(LateLook, 200, false, w, x, y, button);
+	}
+	
+	void LateLook(Widget w, int x, int y, int button)
+	{
+		if (m_fClickIgnoreTime > GetGame().GetWorld().GetWorldTime())
+		{
+			return;
+		}
+		
+		PS_AttachManualCameraObserverComponent attachComponent = PS_AttachManualCameraObserverComponent.m_Instance;
+		if (!attachComponent)
+			return;
+		
+		PS_SpectatorMenu spectatorMenu = PS_SpectatorMenu.Cast(GetGame().GetMenuManager().GetTopMenu());
+		if (!spectatorMenu)
+			return;
+		
+		if (button == 1)
+		{
+			spectatorMenu.SetLookTarget(this);
+		}
+		
+		if (button == 0)
+		{
+			if (attachComponent.GetTarget() != m_eChimeraCharacter)
+			{
+				attachComponent.AttachTo(m_eChimeraCharacter);
+			}
+			else
+				attachComponent.Detach();
+		}
+		
+	}
+	
+	void AttachCamera(Widget w, int x, int y, int button)
+	{
+		m_fClickIgnoreTime = GetGame().GetWorld().GetWorldTime() + 400;
+		
+		PS_AttachManualCameraObserverComponent attachComponent = PS_AttachManualCameraObserverComponent.m_Instance;
+		if (!attachComponent)
+			return;
+		
+		PS_SpectatorMenu spectatorMenu = PS_SpectatorMenu.Cast(GetGame().GetMenuManager().GetTopMenu());
+		if (!spectatorMenu)
+			return;
+		
+		if (button == 1)
+		{
+			spectatorMenu.SetLookTarget(null);
+			attachComponent.Detach();
+			
+			PS_ManualCameraSpectator camera = PS_ManualCameraSpectator.Cast(GetGame().GetCameraManager().CurrentCamera());
+			if (camera)
+				camera.SetCharacterEntity(m_eChimeraCharacter)
+		}
+		
+		if (button == 0)
+		{
+			if (attachComponent.GetTarget() != m_eChimeraCharacter)
+			{
+				SCR_TeleportToCursorManualCameraComponent teleportToCursorManualCameraComponent = SCR_TeleportToCursorManualCameraComponent.PS_m_Instance;
+				if (teleportToCursorManualCameraComponent)
+				{
+					teleportToCursorManualCameraComponent.TeleportCamera(m_eChimeraCharacter.GetOrigin(), false, false, false, false, 2);
+				}
+				attachComponent.AttachTo(m_eChimeraCharacter);
+			}
+			else
+				attachComponent.Detach();
+		}
 	}
 	
 	override void SetEntity(IEntity entity, string boneName)

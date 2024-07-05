@@ -1,9 +1,34 @@
 PS_ManualCameraSpectator : "{D6DE32D1C0FCC1C7}Prefabs/Editor/Camera/ManualCameraBase.et" {
  ID "52CC693B212FF1F9"
+ components {
+  SCR_PostProcessCameraComponent "{61CADD9E04D239C6}" {
+   m_Effects {
+    SCR_CameraPostProcessEffect "{61CADD9E661B9F3B}" {
+     m_Type DepthOfFieldBokeh
+     m_iPriority 8
+     m_MaterialPath "{F1D442085E8EF5F1}UI/Materials/Editor/DepthOfFieldBokeh.emat"
+    }
+    SCR_CameraPostProcessEffect "{61CADD9E661B9F08}" {
+     m_Type FilmGrain
+     m_iPriority 9
+     m_MaterialPath "{2519F72D6E6C1DE9}UI/Materials/Editor/FilmGrain.emat"
+    }
+    SCR_CameraPostProcessEffect "{61CADD9E661B9F0A}" {
+     m_Type Colors
+     m_iPriority 10
+     m_MaterialPath "{B18D0050792C7B8C}UI/Materials/Editor/Colors.emat"
+    }
+    SCR_CameraPostProcessEffect "{61CADD9E661B9F0B}" {
+     m_Type ChromAber
+     m_iPriority 11
+     m_MaterialPath "{C5C20C70909CD69F}UI/Materials/Editor/ChromAber.emat"
+    }
+   }
+  }
+ }
  coords 0 0 0
  m_aComponents {
-  SCR_AttachManualCameraComponent "{52CC693B212FF1E7}" {
-   m_Layout ""
+  PS_AttachManualCameraObserverComponent "{52CC693B212FF1E7}" {
   }
   SCR_RotateRollManualCameraComponent "{52CC693A99CF4271}" {
    m_bEnabled 1
@@ -25,6 +50,10 @@ PS_ManualCameraSpectator : "{D6DE32D1C0FCC1C7}Prefabs/Editor/Camera/ManualCamera
   SCR_LimitBoxManualCameraComponent "{5F34C88A889FBB1D}" {
    m_bEnabled 0
    m_iPriority 0
+  }
+  SCR_FocusManualCameraComponent "{61CADD9E434F0794}" {
+  }
+  SCR_LensFlareManualCameraComponent "{61CADD9E454AE8AF}" {
   }
  }
 }
