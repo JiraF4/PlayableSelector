@@ -9,6 +9,8 @@ class PS_SpectatorMenu: MenuBase
 	
 	InputManager m_InputManager;
 	
+	static PS_SpectatorMenu s_SpectatorMenu;
+	
 	// Voice chat menu
 	protected Widget m_wChat;
 	protected Widget m_wVoiceChatList;
@@ -22,6 +24,8 @@ class PS_SpectatorMenu: MenuBase
 	protected PS_AlivePlayerList m_hAlivePlayerList;
 	protected SCR_ButtonBaseComponent m_hAlivePlayerListPinButton;
 	
+	protected PS_SpectatorLabelIcon m_LookTarget;
+	
 	SCR_InputButtonComponent m_bNavigationSwitchSpectatorUI;
 
 	protected ResourceName m_rPlayableIconPath = "{EE28CD1CBCAED99D}UI/Spectator/SpectatorPlayableIcon.layout";
@@ -32,7 +36,13 @@ class PS_SpectatorMenu: MenuBase
 	protected SCR_MapEntity m_MapEntity;
 	
 	protected ref map<PS_SpectatorLabel, PS_SpectatorLabel> m_mIconsList = new map<PS_SpectatorLabel, PS_SpectatorLabel>();
-		
+	
+	static void ResetTarget()
+	{
+		if (s_SpectatorMenu)
+			s_SpectatorMenu.SetLookTarget(null);
+	}
+	
 	protected static void OnShowPlayerList()
 	{
 		ArmaReforgerScripted.OpenPlayerList();
@@ -41,6 +51,11 @@ class PS_SpectatorMenu: MenuBase
 	{
 		if (!GetGame().GetMenuManager().IsAnyDialogOpen() && IsFocused())
 			ArmaReforgerScripted.OpenPauseMenu();
+	}
+	
+	void SetLookTarget(PS_SpectatorLabelIcon target)
+	{
+		m_LookTarget = target;
 	}
 	
 	void SetCameraCharacter(IEntity characterEntity)
@@ -52,6 +67,8 @@ class PS_SpectatorMenu: MenuBase
 	
 	override void OnMenuOpen()
 	{
+		s_SpectatorMenu = this;
+		
 		if (RplSession.Mode() == RplMode.Dedicated) {
 			Close();
 			return;
@@ -220,6 +237,30 @@ class PS_SpectatorMenu: MenuBase
 		*/
 		
 		//GetGame().Getm_InputManager().ActivateContext("SpectatorContext", 1);
+		
+		if (m_LookTarget)
+		{
+			PS_ManualCameraSpectator camera = PS_ManualCameraSpectator.Cast(GetGame().GetCameraManager().CurrentCamera());
+			if (camera)
+			{
+				vector cameraOrigin = camera.GetOrigin();
+				vector characterOrigin = m_LookTarget.GetWorldPosition();
+				vector rotation = characterOrigin - cameraOrigin;
+				float quat[4];
+				rotation.VectorToAngles().QuatFromAngles(quat);
+				
+				float currentQuat[4];
+				vector currentMat[4];
+				camera.GetTransform(currentMat);
+				Math3D.MatrixToQuat(currentMat, currentQuat);
+				Math3D.QuatLerp(quat, currentQuat, quat, 10*tDelta);
+				
+				vector mat[4];
+				Math3D.QuatToMatrix(quat, mat);
+				mat[3] = cameraOrigin;
+				camera.SetTransform(mat);
+			}
+		}
 	}
 	
 	void UpdateIcons()
@@ -289,6 +330,11 @@ class PS_SpectatorMenu: MenuBase
 			m_wIconsFrame.SetVisible(true);
 			m_wSidesRatioFrame.SetVisible(true);
 		}
+	}
+	
+	bool IsUIVisible()
+	{
+		return m_wVoiceChatList.IsVisible();
 	}
 	
 	void Action_ToggleMap()

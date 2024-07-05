@@ -79,3 +79,4 @@ class PS_ManualCameraSpectator: SCR_ManualCamera
 		ClearCharacterEntity();
 	}
 };
+
