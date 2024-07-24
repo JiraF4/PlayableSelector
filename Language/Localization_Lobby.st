@@ -4,14 +4,15 @@ StringTable {
   CustomStringTableItem "{61B503ED7CAC5E13}" {
    Id "PS-Briefing_FactionsReady"
    Target_en_us "Factions ready"
+   Target_fr_fr "Factions prêtes"
    Target_es_es "Preparación de la facción"
    Target_pl_pl "Gotowość frakcji"
    Target_ru_ru "Готовность фракций"
    Target_pt_br "Prontidão da facção"
    Target_uk_ua "Готовність фракцій"
-   Modified 1642790473
+   Modified 1642795307
    Author "SeskPC"
-   LastChanged "Szymon"
+   LastChanged "SeskPC"
   }
   CustomStringTableItem "{5EC5311E4F6DC81D}" {
    Id "PS-Briefing_GroupVoiceChat"
@@ -90,9 +91,10 @@ StringTable {
    Target_fr_fr "Steps"
    Target_es_es "Pasos a seguir"
    Target_pl_pl "Etapy"
+   Target_ru_ru "Этапы"
    Target_pt_br "Etapas do briefing"
    Target_uk_ua "Етапи"
-   Modified 1642793318
+   Modified 1642795331
    Author "SeskPC"
    LastChanged "SeskPC"
   }
