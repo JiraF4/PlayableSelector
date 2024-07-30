@@ -314,7 +314,7 @@ class PS_SpectatorMenu: MenuBase
 	{
 		if (m_wVoiceChatList.IsVisible())
 		{
-			m_wChat.SetVisible(false);
+			//m_wChat.SetVisible(false);
 			m_wVoiceChatList.SetVisible(false);
 			m_wOverlayFooter.SetVisible(false);
 			m_wEarlyAccessRoot.SetVisible(false);
@@ -322,7 +322,7 @@ class PS_SpectatorMenu: MenuBase
 			m_wIconsFrame.SetVisible(false);
 			m_wSidesRatioFrame.SetVisible(false);
 		} else {
-			m_wChat.SetVisible(true);
+			//m_wChat.SetVisible(true);
 			m_wVoiceChatList.SetVisible(true);
 			m_wOverlayFooter.SetVisible(true);
 			m_wEarlyAccessRoot.SetVisible(true);
