@@ -117,52 +117,6 @@ FrameWidgetClass {
     }
    }
   }
-  FrameWidgetClass "{5EA90320D67E1881}" : "{D89BBA18F99053D6}UI/layouts/HUD/Chat/ChatHud.layout" {
-   Name "Chat0"
-   Slot FrameWidgetSlot "{5D4881250D202DF3}" {
-    PositionX 8
-    OffsetLeft 8
-    PositionY 0
-    OffsetTop 0
-    SizeX 1912
-    OffsetRight -1920
-    SizeY 1080
-    OffsetBottom -1080
-   }
-   {
-    OverlayWidgetClass "{585F053862A9FD1C}" {
-     Prefab "{585F053862A9FD1C}"
-     Slot FrameWidgetSlot "{56150B208158A9EF}" {
-      PositionX 0
-      OffsetLeft 0
-      PositionY 17
-      OffsetTop 17
-      SizeX -8
-      OffsetRight 8
-      SizeY 310
-      OffsetBottom -327
-     }
-     {
-      OverlayWidgetClass "{56150B2288F76A08}" {
-       Prefab "{56150B2288F76A08}"
-       {
-        VerticalLayoutWidgetClass "{00000000BC2C2020}" {
-         Prefab "{00000000BC2C2020}"
-         {
-          OverlayWidgetClass "{563296652233D952}" {
-           Prefab "{563296652233D952}"
-           Slot LayoutSlot "{563296652233D97A}" {
-            Padding 3 0 0 0
-           }
-          }
-         }
-        }
-       }
-      }
-     }
-    }
-   }
-  }
   FrameWidgetClass "{5EB701CDC06E16AD}" : "{35DB604900C55B98}UI/VoiceChat/VoiceChatFrame.layout" {
    Name "VoiceChatFrame"
    Slot FrameWidgetSlot "{5EB701CDC06E1686}" {
