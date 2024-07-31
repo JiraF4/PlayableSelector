@@ -89,7 +89,7 @@ class PS_SpectatorLabel : ScriptComponent
 		if (!mapFrame) return; // Somethig gone wrong
 		
 		// Create and init marker
-		m_wRootMarker = Widget.Cast(GetGame().GetWorkspace().CreateWidgets(m_sMarkerPrefab, mapFrame));
+		m_wRootMarker = GetGame().GetWorkspace().CreateWidgets(m_sMarkerPrefab, mapFrame);
 		m_hManualMarkerComponent = PS_ManualMarkerComponent.Cast(m_wRootMarker.FindHandler(PS_ManualMarkerComponent));
 		m_hManualMarkerComponent.SetImage(m_cMapMarkerConfig.m_sImageSet, m_cMapMarkerConfig.m_sQuadName);
 		m_hManualMarkerComponent.SetImageGlow(m_cMapMarkerConfig.m_sImageSetGlow, m_cMapMarkerConfig.m_sQuadName);

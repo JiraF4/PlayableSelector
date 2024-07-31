@@ -53,7 +53,7 @@ class PS_FactionSelector : SCR_ButtonBaseComponent
 		UIInfo uiInfo = faction.GetUIInfo();
 		
 		m_wFactionName.SetText(m_faction.GetFactionName());
-		m_wFactionColor.SetColor(SCR_Faction.Cast(m_faction).GetOutlineFactionColor());
+		m_wFactionColor.SetColor(m_faction.GetOutlineFactionColor());
 		m_wFactionFlag.LoadImageTexture(0, uiInfo.GetIconPath());
 	}
 	

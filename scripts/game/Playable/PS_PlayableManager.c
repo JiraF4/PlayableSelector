@@ -364,6 +364,10 @@ class PS_PlayableManager : ScriptComponent
 	{
 		return m_aPlayables;
 	}
+	void UpdatePlayablesSortedWrap() // sort playables by RplId AND CallSign
+	{
+		GetGame().GetCallqueue().Call(UpdatePlayablesSorted);
+	}
 	void UpdatePlayablesSorted() // sort playables by RplId AND CallSign
 	{
 		array<PS_PlayableComponent> playablesSorted = new array<PS_PlayableComponent>();
@@ -476,7 +480,9 @@ class PS_PlayableManager : ScriptComponent
 		m_aPlayables[playableId] = playableComponent;
 		
 		GetGame().GetCallqueue().Call(OnPlayableRegisteredLateInvoke, playableId, playableComponent);
-		GetGame().GetCallqueue().Call(UpdatePlayablesSorted);
+		GetGame().GetCallqueue().Remove(UpdatePlayablesSortedWrap);
+		GetGame().GetCallqueue().Remove(UpdatePlayablesSorted);
+		GetGame().GetCallqueue().Call(UpdatePlayablesSortedWrap);
 		
 		if (Replication.IsServer())
 		{

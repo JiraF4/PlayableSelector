@@ -144,9 +144,15 @@ class PS_PlayableControllerComponent : ScriptComponent
 		SCR_PlayerController playerController = SCR_PlayerController.Cast(PlayerController.Cast(GetOwner()));
 		playerController.m_OnControlledEntityChanged.Insert(OnControlledEntityChanged);
 		
-		
 		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		gameModeCoop.GetOnPlayerRoleChange().Insert(OnPlayerRoleChange);
+		if (!gameModeCoop)
+			return;
+		
+		ScriptInvokerBase<SCR_BaseGameMode_OnPlayerRoleChanged> onPlayerRoleChanged = gameModeCoop.GetOnPlayerRoleChange();
+		if (!onPlayerRoleChanged)
+			return;
+		
+		onPlayerRoleChanged.Insert(OnPlayerRoleChange);
 	}
 	
 	void OnPlayerRoleChange(int playerId, EPlayerRole roleFlags)
@@ -311,7 +317,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		radio.SetPower(true);
 		RadioTransceiver transiver = RadioTransceiver.Cast(radio.GetTransceiver(0));
 		transiver.SetFrequency(1);
-		return RadioTransceiver.Cast(transiver);
+		return transiver;
 	}
 	void LobbyVoNEnable()
 	{
