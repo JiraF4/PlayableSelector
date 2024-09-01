@@ -5,15 +5,38 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
    components {
     SCR_EquipmentStorageComponent "{56B49DA9722B635D}" {
      InitialStorageSlots {
-      SCR_EquipmentStorageSlot BinocularSlot {
-       Prefab "{575EA58E67448C2A}Prefabs/Items/Equipment/Flashlights/Flashlight_Soviet_01/Flashlight_Soviet_01.et"
-      }
       SCR_EquipmentStorageSlot WristwatchSlot {
        Prefab "{74AA3854E16D9D56}Prefabs/MenuRadio.et"
       }
      }
     }
    }
+  }
+  MeshObject "{520EA1D2F659C81F}" {
+   Materials {
+    MaterialAssignClass "{624279F27C4FDC4E}" {
+     SourceMaterial "Basebody_01_Male_Arms"
+     AssignedMaterial "{9668A21511C6F791}Assets/_SharedData/Decals/Invisible_Material.emat"
+    }
+    MaterialAssignClass "{624279F27C4FDC62}" {
+     SourceMaterial "Basebody_01_Male_Arms_wound"
+     AssignedMaterial "{9668A21511C6F791}Assets/_SharedData/Decals/Invisible_Material.emat"
+    }
+    MaterialAssignClass "{624279F27C4FDB97}" {
+     SourceMaterial "Basebody_01_Male_Body"
+     AssignedMaterial "{9668A21511C6F791}Assets/_SharedData/Decals/Invisible_Material.emat"
+    }
+    MaterialAssignClass "{624279F27C4FDB9A}" {
+     SourceMaterial "Basebody_01_Male_Body_wound"
+     AssignedMaterial "{9668A21511C6F791}Assets/_SharedData/Decals/Invisible_Material.emat"
+    }
+   }
+   LODFactors {
+    1000 0 0 0 0
+   }
+   CastShadow 0
+   CastFarShadow 0
+   ReceiveLight 0
   }
   PS_LobbyVoNComponent "{618B054CFFD60A4C}" {
    "Speaking Range" 50
@@ -34,8 +57,20 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
   SCR_VoNComponent "{520EA1D2F659C856}" {
    Enabled 0
   }
+  SCR_CharacterIdentityComponent "{5584CBC63E092DBC}" {
+   Identity Identity "{5584CBC6363C648B}" {
+    VisualIdentity VisualIdentity "{56E6D9456009D1C4}" {
+     Head ""
+     Body ""
+    }
+   }
+  }
   CharacterAnimationComponent "{520EA1D2F659C994}" {
    AnimInstance "{B086D0CD3B9E3AB0}anims/workspaces/player/player_PS_VON.asi"
+   ColliderStand PhysAgentCollisionShapeItem "{5570AA65EEDB5E11}" {
+    Size 0 0 0
+    Offset 0 0 0
+   }
   }
  }
  coords 0 0 0

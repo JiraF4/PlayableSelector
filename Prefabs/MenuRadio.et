@@ -16,8 +16,8 @@ GenericEntity : "{5879D8E9C56E358D}Prefabs/Items/Core/Radio_base.et" {
   InventoryItemComponent "{5222EB4D0C73006B}" {
    Attributes SCR_ItemAttributeCollection "{5222EB4D0A2B466B}" {
     ItemDisplayName UIInfo "{5222EB4D07D865FA}" {
-     Name "#AR-Item_ANPRC68_Name"
-     Description "#AR-Item_ANPRC68_Description"
+     Name "Meat leg of spirits"
+     Description "Enchanted meat for talking to spirits"
      Icon "{2FBD8DA665FB8AF1}UI/Textures/VON/ANPRC68-100px_UI.edds"
     }
     ItemPhysAttributes ItemPhysicalAttributes PhysicalAttributes {
@@ -36,18 +36,20 @@ GenericEntity : "{5879D8E9C56E358D}Prefabs/Items/Core/Radio_base.et" {
        BindingName "Gadget"
       }
      }
+     HandAdditiveRotation 0 90 90
+     HandAdditiveTranslation 0.05 0.25 0.05
      AllowInspection 1
     }
     CustomAttributes {
      PreviewRenderAttributes "{5EB53DCA71704DF0}" {
       CameraPreset Top
       CameraOrbitAngles 40 30 0
-      CameraDistanceToItem 0.18
+      CameraDistanceToItem 0.75
       FOV 40
      }
      SCR_VONPreviewAttributes "{5EB53DCA71704DF2}" {
       CameraOrbitAngles -30 180 45
-      CameraDistanceToItem 0.6
+      CameraDistanceToItem 1
       FOV 40
      }
     }
@@ -56,7 +58,7 @@ GenericEntity : "{5879D8E9C56E358D}Prefabs/Items/Core/Radio_base.et" {
    }
   }
   MeshObject "{5A30BAE7673C63D1}" {
-   Object "{1B8B5484D7F21A41}Assets/Items/Equipment/Radios/Radio_ANPRC68/Radio_ANPRC68_01.xob"
+   Object "{4C5DB4BC63F4D4F0}Assets/Items/Food/MeatLeg_01.xob"
   }
   RigidBody "{5A30BAE7673C63D3}" {
    CenterOfMass 0 0.1 0
