@@ -417,7 +417,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		#endif
 		
 		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
-      Resource resource = Resource.Load("{ADDE38E4119816AB}Prefabs/InitialPlayer_Version2.et");
+      Resource resource = Resource.Load("{797EC030294FAAE4}Prefabs/forbidden_Initial_Player.et");
 		EntitySpawnParams params = new EntitySpawnParams();
 		GetTransform(params.Transform);
       IEntity initialEntity = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
