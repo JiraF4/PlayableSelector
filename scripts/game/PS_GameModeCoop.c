@@ -432,7 +432,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	void TryRespawn(RplId playableId, int playerId)
 	{
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		if (playableId != RplId.Invalid())
+		if (playableManager && playableId != RplId.Invalid())
 		{
 			PS_PlayableComponent playableComponent = playableManager.GetPlayableById(playableId);
 			if (!playableComponent)

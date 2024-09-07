@@ -446,6 +446,8 @@ class PS_PlayableControllerComponent : ScriptComponent
 	{
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		if (!playableManager)
+			return;
 		if (playableManager.GetPlayableByPlayer(thisPlayerController.GetPlayerId()) == RplId.Invalid()) SwitchToObserver(null);
 		Rpc(RPC_ApplyPlayable);
 	}
