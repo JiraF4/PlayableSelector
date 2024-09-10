@@ -201,6 +201,8 @@ class PS_PlayableComponent : ScriptComponent
 		}
 
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		if (!playableManager)
+			return;
 		playableManager.RemovePlayable(this);
 		
 		m_eOnUnregister.Invoke();
@@ -208,7 +210,7 @@ class PS_PlayableComponent : ScriptComponent
 	
 	private void OnDamageStateChange(EDamageState state)
 	{
-		if (!m_bRespawned && state == EDamageState.DESTROYED)
+		if (m_PlayableManager && !m_bRespawned && state == EDamageState.DESTROYED)
 		{
 			GetGame().GetCallqueue().CallLater(TryRespawn, 200, false, m_PlayableManager.GetPlayerByPlayable(m_id));
 			m_bRespawned = true;
@@ -217,7 +219,7 @@ class PS_PlayableComponent : ScriptComponent
 	
 	private void TryRespawn(int playerId)
 	{
-		m_GameModeCoop.TryRespawn(m_id, playerId);
+		if (m_GameModeCoop) m_GameModeCoop.TryRespawn(m_id, playerId);
 	}
 
 	private void AddToList(IEntity owner)

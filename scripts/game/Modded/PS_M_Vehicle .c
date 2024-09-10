@@ -12,6 +12,8 @@ modded class Vehicle
 	void RegisterToMissionDate()
 	{
 		PS_MissionDataManager missionDataManager = PS_MissionDataManager.GetInstance();
+		if (!missionDataManager)
+			return;
 		missionDataManager.RegisterVehicle(this);
 	}
 	
