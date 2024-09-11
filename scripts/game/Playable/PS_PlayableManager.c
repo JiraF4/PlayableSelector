@@ -501,7 +501,7 @@ class PS_PlayableManager : ScriptComponent
 				SCR_GroupsManagerComponent groupsManagerComponent = SCR_GroupsManagerComponent.GetInstance();
 				playerGroup = groupsManagerComponent.CreateNewPlayableGroup(playableGroup.GetFaction());
 				playerGroup.SetSlave(playableGroup);
-				playerGroup.SetMaxMembers(12);
+				playerGroup.SetMaxMembers(playableGroup.m_aUnitPrefabSlots.Count());
 				playerGroup.SetCustomName(playableGroup.GetCustomName(), -1);
 								
 				playableGroup.SetCanDeleteIfNoPlayer(false);

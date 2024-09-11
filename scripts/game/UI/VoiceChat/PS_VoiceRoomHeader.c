@@ -79,7 +79,8 @@ class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 		// Bad hardcoded staff here
 		if (m_sRoomName == "#PS-VoNRoom_Command")
 		{
-			if (!playableManager.IsPlayerGroupLeader(playerId)) m_wJoinRoomImage.LoadImageFromSet(0, m_sImageSetPS, "Lock");
+			PS_GameModeCoop gamemode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+			if (!playableManager.IsPlayerGroupLeader(playerId) && !gamemode.m_bPublicCommandBriefing) m_wJoinRoomImage.LoadImageFromSet(0, m_sImageSetPS, "Lock");
 			else m_wJoinRoomImage.LoadImageFromSet(0, m_sImageSetPS, "RoomEnter");
 			return;
 		}
@@ -99,7 +100,8 @@ class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 		// Bad hardcoded staff here
 		if (m_sRoomName == "#PS-VoNRoom_Command")
 		{
-			if (!playableManager.IsPlayerGroupLeader(playerId))
+			PS_GameModeCoop gamemode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+			if (!playableManager.IsPlayerGroupLeader(playerId) && !gamemode.m_bPublicCommandBriefing)
 				return;
 		}
 		
