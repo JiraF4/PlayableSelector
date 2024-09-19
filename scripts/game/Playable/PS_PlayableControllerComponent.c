@@ -80,7 +80,6 @@ class PS_PlayableControllerComponent : ScriptComponent
 				GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.CutsceneMenu);
 				break;
 			case SCR_EGameModeState.BRIEFING:
-				PS_CutsceneManager.GetInstance().PreloadWorld();
 				GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.BriefingMapMenu);
 				break;
 			case SCR_EGameModeState.GAME:

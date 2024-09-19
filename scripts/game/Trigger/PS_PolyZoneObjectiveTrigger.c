@@ -10,6 +10,9 @@ class PS_PolyZoneObjectiveTrigger : PS_PolyZoneTrigger
 	[Attribute()]
 	ref array<string> m_aObjectiveNames;
 
+	[Attribute("0")]
+	bool m_bReverseObjective;
+	
 	protected bool m_bAfterGame;
 	
 	override void OnInit(IEntity owner)

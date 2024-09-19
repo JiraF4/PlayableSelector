@@ -1,0 +1,15 @@
+SCR_AIGroup : "{B50B7BF31273C2A6}Prefabs/Groups/OPFOR/RHS_AFRF/MSV/VKPO_Demiseason/Group_RHS_RF_MSV_VKPO_DS_Base.et" {
+ coords 133.882 1.913 79.448
+ m_aSpawnPosition {
+  PointInfo "{625D242AC5F119FF}" {
+  }
+  PointInfo "{625D242AC691B536}" {
+  }
+  PointInfo "{625D242AC80F8DEB}" {
+  }
+  PointInfo "{625D242AC916DF5A}" {
+  }
+  PointInfo "{625D242ACA26CC87}" {
+  }
+ }
+}

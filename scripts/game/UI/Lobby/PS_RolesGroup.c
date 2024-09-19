@@ -74,6 +74,8 @@ class PS_RolesGroup : SCR_ScriptedWidgetComponent
 	void SetAIGroup(SCR_AIGroup aiGroup)
 	{
 		m_AIGroup = aiGroup;
+		if (!aiGroup)
+			return;
 		m_iGroupCallsign = aiGroup.GetCallsignNum();
 		m_sGroupCallsign = m_iGroupCallsign.ToString();
 		m_sFactionKey = m_AIGroup.GetFaction().GetFactionKey();
