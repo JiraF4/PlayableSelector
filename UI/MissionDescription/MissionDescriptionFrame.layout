@@ -111,7 +111,7 @@ FrameWidgetClass {
         OffsetBottom -39
        }
        {
-        TextWidgetClass "{5EBEE964499F395C}" {
+        RichTextWidgetClass "{5EBEE964499F395C}" {
          Name "MissionDescriptionHeaderText"
          Slot OverlayWidgetSlot "{5EB0E9E7729FE3E7}" {
           Padding 8 0 0 0
