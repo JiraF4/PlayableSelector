@@ -19,6 +19,8 @@ class PS_MissionDescriptionHeadersListUI : ScriptedWidgetComponent
 	void FillList()
 	{
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		if (!playableManager)
+			return;
 		
 		PlayerController currentPlayerController = GetGame().GetPlayerController();
 		int currentPlayerId = currentPlayerController.GetPlayerId();

@@ -14,8 +14,34 @@ class PS_CutsceneMenu : ChimeraMenuBase
 	PS_CutsceneManager m_CutsceneManager;
 	
 	OverlayWidget m_wBlackScreen;
+	TextWidget m_wLoadText;
 	
 	CinematicEntity m_CinematicEntity;
+	bool m_bFadeOn = true;
+	
+	
+	void RaiseEvent(string eventName)
+	{
+		array<string> events = {};
+		eventName.Split("|", events, true);
+		switch (events[0])
+		{
+			case "FadeOut":
+				m_bFadeOn = true;
+				break;
+			case "FadeIn":
+				m_bFadeOn = false;
+				break;
+			case "CreateLayout":
+				CreateLayout(events[1]);
+				break;
+		}
+	}
+	
+	void CreateLayout(string layoutName)
+	{
+		GetGame().GetWorkspace().CreateWidgets(layoutName, GetRootWidget());
+	}
 	
 	override void OnMenuOpen()
 	{
@@ -23,11 +49,12 @@ class PS_CutsceneMenu : ChimeraMenuBase
 		m_Cutscene = m_CutsceneManager.GetCutscene(0);
 		
 		m_wBlackScreen = OverlayWidget.Cast(GetRootWidget().FindAnyWidget("BlackScreen"));
+		m_wLoadText = TextWidget.Cast(GetRootWidget().FindAnyWidget("LoadText"));
 		m_World = GetGame().GetWorld();
 		
 		m_CinematicEntity = CinematicEntity.Cast(GetGame().GetWorld().FindEntityByName(m_Cutscene.m_sCutsceneEntityName));
 		m_CinematicEntity.Play();
-		GetGame().GetCallqueue().Call(PreloadStop);
+		GetGame().GetCallqueue().CallLater(PreloadStop, 200, false);
 	}
 	
 	void PreloadStop()
@@ -46,7 +73,8 @@ class PS_CutsceneMenu : ChimeraMenuBase
 			entity.GetWorldTransform(mat);
 		AudioHandle handle = AudioSystem.PlayEvent(m_Cutscene.m_sCutsceneSound, "SOUND_VOICE", mat);
 		AudioSystem.SetBoundingVolumeParams(handle, AudioSystem.BV_Sphere, 9999999, 9999999, 9999999);
-		m_wBlackScreen.SetVisible(false);
+		m_bFadeOn = false;
+		m_wLoadText.SetVisible(false);
 		m_CinematicEntity.Play();
 	}
 	
@@ -58,11 +86,18 @@ class PS_CutsceneMenu : ChimeraMenuBase
 	
 	override void OnMenuUpdate(float tDelta)
 	{
+		if (!m_bFadeOn)
+			m_wBlackScreen.SetOpacity(Math.Max(0, m_wBlackScreen.GetOpacity() - tDelta*2.0));
+		else
+			m_wBlackScreen.SetOpacity(Math.Min(1, m_wBlackScreen.GetOpacity() + tDelta*2.0));
 		super.OnMenuUpdate(tDelta);
 		
 		if (m_CinematicEntity.Isfinished())
 		{
 			m_wBlackScreen.SetVisible(true);
+			m_wLoadText.SetVisible(true);
+			m_wBlackScreen.SetOpacity(1);
+			m_bFadeOn = false;
 		}
 	}
 }

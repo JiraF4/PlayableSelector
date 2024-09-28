@@ -581,6 +581,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 				{
 					SetGameModeState(SCR_EGameModeState.CUTSCENE);
 					GetGame().GetCallqueue().CallLater(AdvanceGameState, m_CutsceneManager.GetCutsceneTime() + 400, false, SCR_EGameModeState.CUTSCENE);
+					if (RplSession.Mode() == RplMode.Dedicated)
+						PS_CutsceneManager.GetInstance().RunCutscene(0);
 				}
 				else
 					SetGameModeState(SCR_EGameModeState.BRIEFING);

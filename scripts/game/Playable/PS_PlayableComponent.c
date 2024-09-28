@@ -244,7 +244,9 @@ class PS_PlayableComponent : ScriptComponent
 		rpl.EnableStreaming(false);
 
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-
+		if (!playableManager)
+			return;
+		
 		m_id = rpl.Id();
 		playableManager.RegisterPlayable(this);
 	}
