@@ -21,8 +21,13 @@ class PS_PolyZoneObjectivePresence : PS_PolyZoneObjectiveTrigger
 		foreach (PS_Objective objective : m_aObjectives)
 		{
 			if (!m_bOneTime || !objective.GetCompleted())
-				objective.SetCompleted(m_iCount >= m_iNeedCount);
+			{
+				bool completed = m_iCount >= m_iNeedCount;
+				if (m_bReverseObjective) completed = !completed;
+				objective.SetCompleted(completed);
+			}
 		}
+		m_iCount = 0;
 	}
 	
 	override protected void OnActivate(IEntity ent)

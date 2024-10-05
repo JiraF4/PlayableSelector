@@ -577,21 +577,21 @@ class PS_GameModeCoop : SCR_BaseGameMode
 				SetGameModeState(SCR_EGameModeState.SLOTSELECTION);
 				break;
 			case SCR_EGameModeState.SLOTSELECTION:
+				if (m_bShowCutscene)
+				{
+					SetGameModeState(SCR_EGameModeState.CUTSCENE);
+					GetGame().GetCallqueue().CallLater(AdvanceGameState, m_CutsceneManager.GetCutsceneTime() + 400, false, SCR_EGameModeState.CUTSCENE);
+					if (RplSession.Mode() == RplMode.Dedicated)
+						PS_CutsceneManager.GetInstance().RunCutscene(0);
+				}
+				else
+					SetGameModeState(SCR_EGameModeState.BRIEFING);
+				break;
+			case SCR_EGameModeState.CUTSCENE:
 				SetGameModeState(SCR_EGameModeState.BRIEFING);
 				break;
 			case SCR_EGameModeState.BRIEFING:
-				if (!m_bShowCutscene)
-				{
-					StartGame();
-				}
- 				else
-				{
-					SetGameModeState(SCR_EGameModeState.CUTSCENE);
-					GetGame().GetCallqueue().CallLater(ExitCutscene, m_CutsceneManager.GetCutsceneTime() + 400, false);
-				}
-				break;
-			case SCR_EGameModeState.CUTSCENE:
-					StartGame();
+				StartGame();
 				break;
 			case SCR_EGameModeState.GAME:
 				SetGameModeState(SCR_EGameModeState.DEBRIEFING);
@@ -603,11 +603,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 				break;
 		}
 		OpenCurrentMenuOnClients();
-	}
-	
-	void ExitCutscene()
-	{
-		AdvanceGameState(SCR_EGameModeState.CUTSCENE);
 	}
 	
 	void StartGame()

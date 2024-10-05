@@ -25,7 +25,7 @@ FrameWidgetClass {
      Color 0 0 0 1
     }
     TextWidgetClass "{611A12BEF6A6BCC1}" {
-     Name "Text0"
+     Name "LoadText"
      Slot OverlayWidgetSlot "{611A12BEF6A6BC26}" {
      }
      Text "Загрузка"

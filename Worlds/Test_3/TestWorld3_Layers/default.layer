@@ -145,6 +145,113 @@ PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_Game
   }
  }
 }
-HitRegistrationManager HitRegManager1 : "{0EDA3D48791120DD}Prefabs/MP/HitRegManager.et" {
- coords 127.244 1 148.956
+GenericEntity {
+ components {
+  MeshObject "{62156C0FC9B7FC0C}" {
+   Object "{7FF449DB9ED11DB4}Assets/Vehicles/Helicopters/UH1H/UH1H_base.xob"
+  }
+ }
+ coords 193.453 1.617 131.485
+}
+GenericEntity : "{1353C6EAD1DCFE43}Prefabs/Weapons/Handguns/M9/Handgun_M9.et" {
+ coords 92.972 1 85.996
+}
+$grp Vehicle : "{16A674FE31B0921C}Prefabs/Vehicles/Wheeled/UAZ469/UAZ469_uncovered.et" {
+ UAZ469_uncovered2 {
+  coords 181.744 1 204.893
+ }
+ UAZ469_uncovered1 {
+  coords 186.816 1 209.724
+ }
+}
+Vehicle UAZ1 : "{259EE7B78C51B624}Prefabs/Vehicles/Wheeled/UAZ469/UAZ469.et" {
+ coords 180.735 1 187.921
+}
+$grp GenericEntity : "{49FFE8F373F55960}Prefabs/Weapons/Explosives/Mine_M15AT/Mine_M15AT.et" {
+ {
+  coords 206.853 1 180.77
+ }
+ {
+  coords 206.905 1 181.029
+ }
+ {
+  coords 206.818 1 181.38
+ }
+ {
+  coords 206.778 1 181.542
+ }
+}
+Vehicle M1 : "{5674FAEB9AB7BDD0}Prefabs/Vehicles/Wheeled/M998/M998.et" {
+ coords 224.565 1 193.833
+}
+GenericEntity : "{58B3FB7F102A8B1B}Prefabs/Vehicles/Wheeled/Ural4320/VehParts/Ural4320_cargo.et" {
+ coords 190.071 1 164.243
+}
+GenericEntity : "{5A987A8A13763769}Prefabs/Weapons/Rifles/M16/Rifle_M16A2_M203.et" {
+ coords 194.634 1 186.337
+}
+SCR_ChimeraCharacter : "{5B1996C05B1E51A4}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_AR.et" {
+ coords 199.154 1 170.333
+}
+Turret : "{66596659FB0F645B}Prefabs/Vehicles/Wheeled/BTR70/VehParts/Turret/BTR70_Turret.et" {
+ coords 210.864 1 183.14
+}
+GenericEntity : "{780AAF0A51AEE61A}Prefabs/Vehicles/Wheeled/UAZ469/VehParts/Seats/UAZ469_seats_rear.et" {
+ coords 193.062 1 185.811
+}
+$grp GenericEntity : "{7A82FE978603F137}Prefabs/Weapons/Launchers/RPG7/Launcher_RPG7.et" {
+ {
+  coords 183.691 1 192.911
+ }
+ {
+  coords 207.879 1 179.889
+ }
+ {
+  coords 207.923 1 180.767
+ }
+ {
+  coords 208.252 1 180.868
+ }
+ {
+  coords 208.523 1 180.88
+ }
+}
+GenericEntity : "{94B79579DD7722B6}Prefabs/Vehicles/Wheeled/Ural4320/VehParts/Ural4320_cargo_CIV_Forest.et" {
+ coords 185.038 1 172.743
+}
+Vehicle UAZ469_base1 : "{99F1610551D54D17}Prefabs/Vehicles/Wheeled/UAZ469/UAZ469_base.et" {
+ coords 189.9 1 212.037
+}
+SCR_AIGroup : "{AEA052A8E4D40CFC}Prefabs/Groups/BLUFOR/Group_US_Team_GL_P.et" {
+ coords 91.925 1 86.935
+ m_aUnitPrefabSlots {
+  "{A517C72CEF150898}Prefabs/Characters/Factions/CIV/Businessman/Character_CIV_Businessman_2.et"
+ }
+}
+SCR_ChimeraCharacter : "{B452527EA042DFF0}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Sniper_P.et" {
+ coords 183.867 1 189.689
+ Flags 2097155
+}
+GenericEntity : "{B56FF8E1E075048A}Prefabs/Vehicles/Wheeled/M151A2/M151A2_bench_cargo.et" {
+ coords 192.074 1 218.486
+}
+GenericEntity : "{B63D38376558C9DD}PrefabsEditable/Mines/E_Mine_M15AT.et" {
+ coords 205.791 1 181.057
+}
+SCR_AIGroup : "{CB31D258850A3EFC}Prefabs/Groups/BLUFOR/Group_US_LightFireTeam_P.et" {
+ coords 184.112 1 191.342
+}
+GenericEntity : "{D182DCDD72BF7E34}Prefabs/Weapons/MachineGuns/M60/MG_M60.et" {
+ coords 201.201 1 182.927
+}
+Vehicle S105_base1 : "{DA79E34823120087}Prefabs/Vehicles/Wheeled/S105/S105_base.et" {
+ coords 95.968 1 85.854
+}
+$grp Vehicle : "{F649585ABB3706C4}Prefabs/Vehicles/Wheeled/M151A2/M151A2.et" {
+ M151A1 {
+  coords 194.642 1 217.927
+ }
+ M151A2 {
+  coords 186.341 1 218.513
+ }
 }

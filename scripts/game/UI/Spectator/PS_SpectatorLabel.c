@@ -30,6 +30,8 @@ class PS_SpectatorLabel : ScriptComponent
 	void AddToList(IEntity owner)
 	{
 		m_sSpectatorLabelsManager = PS_SpectatorLabelsManager.GetInstance();
+		if (!m_sSpectatorLabelsManager)
+			return;
 		m_sSpectatorLabelsManager.RegistrateLabel(this);
 		
 		if (!m_MapEntity)
