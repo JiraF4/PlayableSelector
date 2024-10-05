@@ -1,4 +1,9 @@
 modded class SCR_MapMarkerSyncComponent
 {
-	protected int m_iPlacedMarkerLimit = 100;
+	override void OnPostInit(IEntity owner)
+	{
+		super.OnPostInit(owner);
+		m_iPlacedMarkerLimit = 100;
+	}
 }
+
