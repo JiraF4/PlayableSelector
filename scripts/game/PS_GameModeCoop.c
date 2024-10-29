@@ -168,7 +168,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (characterControllerComponent.IsUnconscious())
 			return;
 		characterControllerComponent.SetUnconscious(true);
-		GetGame().GetCallqueue().CallLater(ResetUnconsious, 200, false, characterControllerComponent);
+		GetGame().GetCallqueue().CallLater(ResetUnconsious, 400, false, characterControllerComponent);
 	}
 	void ResetUnconsious(CharacterControllerComponent characterControllerComponent)
 	{

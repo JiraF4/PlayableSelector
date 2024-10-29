@@ -197,7 +197,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		int playerId = playableManager.GetPlayerByPlayableRemembered(oldPlayableComponent.GetId());
 		if (playerId > -1)
 		{
-			GetGame().GetCallqueue().CallLater(RPC_ForceRespawnPlayerLate, 100, false, playerId, playableComponent);
+			GetGame().GetCallqueue().CallLater(RPC_ForceRespawnPlayerLate, 1000, false, playerId, playableComponent);
 		}
 	}
 	void RPC_ForceRespawnPlayerLate(int playerId, PS_PlayableComponent playable)
