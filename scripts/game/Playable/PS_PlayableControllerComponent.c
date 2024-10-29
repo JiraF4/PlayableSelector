@@ -182,10 +182,15 @@ class PS_PlayableControllerComponent : ScriptComponent
 			oldPlayableComponent.GetSpawnTransform(params.Transform);
 		else
 			character.GetWorldTransform(params.Transform);
+		
 		SCR_ChimeraCharacter newCharacter = SCR_ChimeraCharacter.Cast(GetGame().SpawnEntityPrefab(Resource.Load(prefab.GetPrefabName()), GetGame().GetWorld(), params));
 		PS_PlayableComponent playableComponent = newCharacter.PS_GetPlayable();
 		playableComponent.SetPlayable(true);
 		
+		GetGame().GetCallqueue().CallLater(RPC_ForceRespawnPlayerLate, 1000, false, character, oldPlayableComponent, newCharacter, playableComponent);
+	}
+	void RPC_ForceRespawnPlayerLate(SCR_ChimeraCharacter character, PS_PlayableComponent oldPlayableComponent, SCR_ChimeraCharacter newCharacter, PS_PlayableComponent playableComponent)
+	{
 		character.GetDamageManager().Kill(Instigator.CreateInstigator(newCharacter));
 		oldPlayableComponent.SetPlayable(false);
 		
@@ -197,10 +202,10 @@ class PS_PlayableControllerComponent : ScriptComponent
 		int playerId = playableManager.GetPlayerByPlayableRemembered(oldPlayableComponent.GetId());
 		if (playerId > -1)
 		{
-			GetGame().GetCallqueue().CallLater(RPC_ForceRespawnPlayerLate, 1000, false, playerId, playableComponent);
+			GetGame().GetCallqueue().CallLater(RPC_ForceRespawnPlayerLate2, 1000, false, playerId, playableComponent);
 		}
 	}
-	void RPC_ForceRespawnPlayerLate(int playerId, PS_PlayableComponent playable)
+	void RPC_ForceRespawnPlayerLate2(int playerId, PS_PlayableComponent playable)
 	{
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		playableManager.SetPlayerPlayable(playerId, playable.GetId());
