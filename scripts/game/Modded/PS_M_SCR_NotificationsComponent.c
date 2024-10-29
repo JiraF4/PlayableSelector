@@ -20,6 +20,8 @@ modded class SCR_NotificationsComponent
 			return;
 		}
 		PlayerController playerController = GetGame().GetPlayerController();
+		if (!playerController)
+			return;
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		FactionKey factionKey = playableManager.GetPlayerFactionKey(playerController.GetPlayerId());
 		if (gameMode.GetState() == SCR_EGameModeState.SLOTSELECTION || gameMode.GetState() == SCR_EGameModeState.BRIEFING || factionKey == "" || PS_PlayersHelper.IsAdminOrServer())

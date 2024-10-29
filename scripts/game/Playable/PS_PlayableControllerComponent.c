@@ -190,6 +190,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		SCR_AIGroup aiGroup = playableManager.GetPlayerGroupByPlayable(oldPlayableComponent.GetId());
 		SCR_AIGroup playabelGroup = aiGroup.GetSlave();
 		playabelGroup.AddAIEntityToGroup(newCharacter);
+		playableManager.SetPlayablePlayerGroupId(playableComponent.GetId(), aiGroup.GetGroupID());
 		
 		playableComponent.SetPlayable(true);
 		oldPlayableComponent.SetPlayable(false);
@@ -209,7 +210,9 @@ class PS_PlayableControllerComponent : ScriptComponent
 		}
 		
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		//playableManager.SetPlayablePlayerGroupId(playableComponent.GetId(), aiGroup.GetGroupID());
+		SCR_AIGroup aiGroup = playableManager.GetPlayerGroupByPlayable(oldPlayableComponent.GetId());
+		SCR_AIGroup playabelGroup = aiGroup.GetSlave();
+		playableManager.SetPlayablePlayerGroupId(playableComponent.GetId(), aiGroup.GetGroupID());
 		int playerId = playableManager.GetPlayerByPlayableRemembered(oldPlayableComponent.GetId());
 		if (playerId > -1)
 		{
