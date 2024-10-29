@@ -5,6 +5,9 @@ modded enum ChimeraMenuPreset : ScriptMenuPresetEnum
 
 class PS_SpectatorMenu: MenuBase
 {
+	static const ResourceName SPECTATOR_PING_ENTITY = "{142A242B49F28F6A}Prefabs/Spectator/SpectatorPingEntity.et";
+	static const ResourceName SPECTATOR_PING_SOUND = "{C64C37176ED1AD1D}Sounds/Spectator/HonkSounds.acp";
+	
 	protected SCR_ChatPanel m_ChatPanel;
 	
 	InputManager m_InputManager;
@@ -37,6 +40,8 @@ class PS_SpectatorMenu: MenuBase
 	
 	protected ref map<PS_SpectatorLabel, PS_SpectatorLabel> m_mIconsList = new map<PS_SpectatorLabel, PS_SpectatorLabel>();
 	
+	protected vector m_vLastPingPosition;
+	
 	static void ResetTarget()
 	{
 		if (s_SpectatorMenu)
@@ -63,6 +68,20 @@ class PS_SpectatorMenu: MenuBase
 		PS_ManualCameraSpectator camera = PS_ManualCameraSpectator.Cast(GetGame().GetCameraManager().CurrentCamera());
 		if (camera)
 			camera.SetCharacterEntity(characterEntity);
+	}
+	
+	void ReceivePing(int reporterId, vector position, RplId targetID)
+	{
+		SCR_NotificationsComponent.SendLocal(ENotification.EDITOR_PING_PLAYER, position, reporterId);
+		vector mat[4];
+		GetGame().GetCameraManager().CurrentCamera().GetWorldTransform(mat);
+		AudioSystem.PlayEvent(SPECTATOR_PING_SOUND, "SOUND_HONK", mat);
+		
+		m_vLastPingPosition = position;
+		EntitySpawnParams params = new EntitySpawnParams();
+		Math3D.MatrixIdentity3(params.Transform);
+		params.Transform[3] = position;
+		GetGame().SpawnEntityPrefabLocal(Resource.Load(SPECTATOR_PING_ENTITY), GetGame().GetWorld(), params);
 	}
 	
 	override void OnMenuOpen()
@@ -145,6 +164,7 @@ class PS_SpectatorMenu: MenuBase
 			m_InputManager.AddActionListener("SwitchSpectatorUI", EActionTrigger.DOWN, Action_SwitchSpectatorUI);
 			m_InputManager.AddActionListener("GadgetMap", EActionTrigger.DOWN, Action_ToggleMap);
 			m_InputManager.AddActionListener("ManualCameraTeleport", EActionTrigger.DOWN, Action_ManualCameraTeleport);
+			m_InputManager.AddActionListener("EditorLastNotificationTeleport", EActionTrigger.DOWN, Action_EditorLastNotificationTeleport);
 #ifdef WORKBENCH
 			m_InputManager.AddActionListener("MenuOpenWB", EActionTrigger.DOWN, OpenPauseMenu);
 #endif
@@ -165,6 +185,7 @@ class PS_SpectatorMenu: MenuBase
 			m_InputManager.RemoveActionListener("SwitchSpectatorUI", EActionTrigger.DOWN, Action_SwitchSpectatorUI);
 			m_InputManager.RemoveActionListener("GadgetMap", EActionTrigger.DOWN, Action_ToggleMap);
 			m_InputManager.RemoveActionListener("ManualCameraTeleport", EActionTrigger.DOWN, Action_ManualCameraTeleport);
+			m_InputManager.RemoveActionListener("EditorLastNotificationTeleport", EActionTrigger.DOWN, Action_EditorLastNotificationTeleport);
 #ifdef WORKBENCH
 			m_InputManager.RemoveActionListener("MenuOpenWB", EActionTrigger.DOWN, OpenPauseMenu);
 #endif
@@ -341,6 +362,12 @@ class PS_SpectatorMenu: MenuBase
 	{
 		if (!m_MapEntity.IsOpen()) OpenMap();
 		else CloseMap();
+	}
+	
+	void Action_EditorLastNotificationTeleport()
+	{
+		if (m_vLastPingPosition != vector.Zero)
+			MoveCamera(m_vLastPingPosition);
 	}
 	
 	void Action_ManualCameraTeleport()

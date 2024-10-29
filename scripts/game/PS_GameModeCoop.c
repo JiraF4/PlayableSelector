@@ -151,6 +151,48 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		invoker.Insert(Test_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("pgc");
 		invoker.Insert(PlayGameConfig_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("res");
+		invoker.Insert(Respawn_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("rei");
+		invoker.Insert(RespawnInit_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("unc");
+		invoker.Insert(ForceUnconsious_Callback);
+	}
+	
+	void ForceUnconsious_Callback(SCR_ChatPanel panel, string data)
+	{
+		SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(SCR_PlayerController.GetLocalControlledEntity());
+		if (!character)
+			return;
+		CharacterControllerComponent characterControllerComponent = character.GetCharacterController();
+		if (characterControllerComponent.IsUnconscious())
+			return;
+		characterControllerComponent.SetUnconscious(true);
+		GetGame().GetCallqueue().CallLater(ResetUnconsious, 200, false, characterControllerComponent);
+	}
+	void ResetUnconsious(CharacterControllerComponent characterControllerComponent)
+	{
+		characterControllerComponent.SetUnconscious(false);
+	}
+	
+	void Respawn_Callback(SCR_ChatPanel panel, string data)
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		if (!playableController)
+			return;
+		
+		playableController.ForceRespawnPlayer();
+	}
+	
+	void RespawnInit_Callback(SCR_ChatPanel panel, string data)
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		if (!playableController)
+			return;
+		
+		playableController.ForceRespawnPlayer(true);
 	}
 	
 	void Test_Callback(SCR_ChatPanel panel, string data)

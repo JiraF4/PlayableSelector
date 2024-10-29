@@ -1,15 +1,6 @@
-SCR_AIGroup : "{B50B7BF31273C2A6}Prefabs/Groups/OPFOR/RHS_AFRF/MSV/VKPO_Demiseason/Group_RHS_RF_MSV_VKPO_DS_Base.et" {
- coords 133.882 1.913 79.448
- m_aSpawnPosition {
-  PointInfo "{625D242AC5F119FF}" {
-  }
-  PointInfo "{625D242AC691B536}" {
-  }
-  PointInfo "{625D242AC80F8DEB}" {
-  }
-  PointInfo "{625D242AC916DF5A}" {
-  }
-  PointInfo "{625D242ACA26CC87}" {
-  }
- }
+SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.et" {
+ coords 97.547 1 142.51
+}
+SCR_AIGroup : "{9C7902A055DDA271}Prefabs/Groups/OPFOR/Group_USSR_FireGroup_P.et" {
+ coords 129.645 1 115.906
 }

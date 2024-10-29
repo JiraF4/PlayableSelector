@@ -1,0 +1,20 @@
+FrameWidgetClass : "{8A4C0D6D625BB09D}UI/Spectator/SpectatorLabelIcon.layout" {
+ components {
+  PS_SpectatorLabelIcon "{5F34C8DE03BF1CFC}" {
+   Enabled 0
+  }
+  PS_SpectatorLabelIconPing "{62BAA1B68A3F47D0}" {
+  }
+ }
+ {
+  PanelWidgetClass "{5EE8948F20BE168B}" {
+   Prefab "{5EE8948F20BE168B}"
+   {
+    OverlayWidgetClass "{5EE89488CCB4B28D}" {
+     Prefab "{5EE89488CCB4B28D}"
+     "Is Visible" 0
+    }
+   }
+  }
+ }
+}

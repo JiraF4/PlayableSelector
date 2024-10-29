@@ -100,8 +100,6 @@ class PS_PlayableComponent : ScriptComponent
 		SetEventMask(owner, EntityEvent.INIT);
 	}
 	
-	
-	
 	void GetSpawnTransform(inout vector outMat[4])
 	{
 		Math3D.MatrixCopy(spawnTransform, outMat);

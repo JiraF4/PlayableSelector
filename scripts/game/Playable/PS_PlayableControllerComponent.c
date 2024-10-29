@@ -136,6 +136,77 @@ class PS_PlayableControllerComponent : ScriptComponent
 		gameMode.FactionLockSwitch();
 	}
 	
+	
+	// ------ ForceRespawnPlayer ------
+	void ForceRespawnPlayer(bool initPosition = false)
+	{
+		IEntity camera = GetGame().GetCameraManager().CurrentCamera();
+		if (!camera)
+			return;
+		PS_ManualCameraSpectator cameraSpectator = PS_ManualCameraSpectator.Cast(camera);
+		
+		SCR_ChimeraCharacter character;
+		if (cameraSpectator)
+			character = SCR_ChimeraCharacter.Cast(cameraSpectator.GetCharacterEntity());
+		if (!character)
+		{
+			SCR_AttachEntity attachEntity = SCR_AttachEntity.Cast(camera.GetParent());
+			if (!attachEntity)
+				return;
+			
+			character = SCR_ChimeraCharacter.Cast(attachEntity.GetTarget());
+		}
+		if (!character)
+			return;
+		
+		Rpc(RPC_ForceRespawnPlayer, Replication.FindId(character), initPosition);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void RPC_ForceRespawnPlayer(RplId respawnEntityRplId, bool initPosition)
+	{
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		if (!SCR_Global.IsAdmin(thisPlayerController.GetPlayerId()))
+			return;
+		
+		SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(Replication.FindItem(respawnEntityRplId));
+		if (!character)
+			return;
+		
+		EntityPrefabData prefab = character.GetPrefabData();
+		if (!prefab)
+			return;
+		
+		PS_PlayableComponent oldPlayableComponent = character.PS_GetPlayable();
+		EntitySpawnParams params = new EntitySpawnParams();
+		if (initPosition)
+			oldPlayableComponent.GetSpawnTransform(params.Transform);
+		else
+			character.GetWorldTransform(params.Transform);
+		SCR_ChimeraCharacter newCharacter = SCR_ChimeraCharacter.Cast(GetGame().SpawnEntityPrefab(Resource.Load(prefab.GetPrefabName()), GetGame().GetWorld(), params));
+		PS_PlayableComponent playableComponent = newCharacter.PS_GetPlayable();
+		playableComponent.SetPlayable(true);
+		
+		character.GetDamageManager().Kill(Instigator.CreateInstigator(newCharacter));
+		oldPlayableComponent.SetPlayable(false);
+		
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		SCR_AIGroup aiGroup = playableManager.GetPlayerGroupByPlayable(oldPlayableComponent.GetId());
+		SCR_AIGroup playabelGroup = aiGroup.GetSlave();
+		playabelGroup.AddAIEntityToGroup(newCharacter);
+		
+		int playerId = playableManager.GetPlayerByPlayableRemembered(oldPlayableComponent.GetId());
+		if (playerId > -1)
+		{
+			GetGame().GetCallqueue().CallLater(RPC_ForceRespawnPlayerLate, 100, false, playerId, playableComponent);
+		}
+	}
+	void RPC_ForceRespawnPlayerLate(int playerId, PS_PlayableComponent playable)
+	{
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		playableManager.SetPlayerPlayable(playerId, playable.GetId());
+		ForceSwitch(playerId);
+	}
+	
 	// Just don't look at it.
 	override protected void OnPostInit(IEntity owner)
 	{

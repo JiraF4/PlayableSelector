@@ -16,6 +16,11 @@ class PS_ManualCameraSpectator: SCR_ManualCamera
 			CameraPositionUpdate();
 	}
 	
+	IEntity GetCharacterEntity()
+	{
+		return m_eCharacterEntity;
+	}
+	
 	void SetCharacterEntity(IEntity characterEntity)
 	{
 		ClearCharacterEntity();	

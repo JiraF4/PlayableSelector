@@ -1,0 +1,15 @@
+GenericEntity {
+ ID "62BAA1B06374886F"
+ components {
+  PS_SpectatorLabelPing "{62BAA1B0D7AAA9F9}" {
+   m_cMapMarkerConfig PS_ManualMarkerConfig "{62BAA1B0D916D239}" {
+    m_sQuadName "radialCircle"
+    m_bVisibleForEmptyFaction 1
+   }
+   m_sSpectatorLabelLayout "{2ABC632223618C0F}UI/Spectator/SpectatorLabelIconPing.layout"
+  }
+  Hierarchy "{62BAA1B055D93C55}" {
+  }
+ }
+ coords 129.933 1 111.412
+}

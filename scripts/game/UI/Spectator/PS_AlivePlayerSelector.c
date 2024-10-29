@@ -76,7 +76,7 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 		UpdateShowDead(m_AlivePlayerList.IsShowDead());
 		
 		// Events
-		m_PlayableComponent.GetOnPlayerChange().Insert(UpdatePlayer);
+		m_PlayableComponent.GetOnPlayerChange().Insert(UpdatePlayerWrap);
 		m_PlayableComponent.GetOnDamageStateChanged().Insert(UpdateDammage);
 		m_PlayableComponent.GetOnUnregister().Insert(RemoveSelf);
 	}
@@ -118,6 +118,10 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 		}
 	}
 	
+	void UpdatePlayerWrap(int playerId)
+	{
+		UpdatePlayer(m_PlayableManager.GetPlayerByPlayableRemembered(m_PlayableComponent.GetId()))
+	}
 	void UpdatePlayer(int playerId)
 	{
 		string playerName = m_PlayableManager.GetPlayerName(playerId);

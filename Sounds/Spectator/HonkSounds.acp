@@ -1,0 +1,67 @@
+AudioClass {
+ sounds {
+  SoundClass {
+   id 5129
+   name "SOUND_HONK"
+   version 5
+   tl 128.571 -61.97
+   ins {
+    ConnectionsClass connections {
+     id 64
+     links {
+      ConnectionClass connection {
+       id 4100
+       port 65
+      }
+     }
+    }
+   }
+   outState 7179
+   outStatePort 26631
+   type "One shot"
+  }
+ }
+ mixers {
+  MixerClass {
+   id 7179
+   name "OutputState 18"
+   version 4
+   tl 130.501 62.126
+   res "{B764D803219C775E}Sounds/FinalMix.afm"
+   ins {
+    ConnectionsClass connections {
+     id 26631
+     links {
+      ConnectionClass connection {
+       id 5129
+       port 65
+      }
+     }
+    }
+   }
+   pi {
+    16777216 0
+   }
+   path "{B764D803219C775E}Sounds/FinalMix.afm"
+   inputs {
+    "WPN_Handling" "WPN_Shots" "WPN_Explosions" "WNP_BulletHits" "CHAR" "ENV_AMB_2D" "VEH_Animations" "Impacts" "Dialogue" "Music" "ENV_Doors" "VEH_Engine" "VEH_Tires" "VON" "SFX" "SFX_Reverb" "VON_Reverb" "Dialogue_Reverb" "Impacts_EXT" "ENV_AMB_3D" "WPN_SonicCracks" "CHAR_Gear" "PA" "SFX_Reverb_Exterior" "UI" "ENV_AMB_3D_Reverb_Exterior" "SFX_Direct" "SFX_Reverb_Small" "SFX_Reverb_Medium" "SFX_Reverb_Large"
+   }
+  }
+ }
+ banks_local {
+  BankLocalClass {
+   id 4100
+   name "HonkBank"
+   version 7
+   tl 127.671 -134.03
+   "Volume variance" 1
+   "Pitch variance" 1
+   Samples {
+    AudioBankSampleClass Sample {
+     Filename "{75061FE050A7C321}Sounds/Spectator/bikehorn.wav"
+    }
+   }
+  }
+ }
+ version 1
+}

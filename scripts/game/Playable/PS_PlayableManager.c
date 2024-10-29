@@ -41,8 +41,9 @@ class PS_PlayableManager : ScriptComponent
 	
 	// Maps for saving players staff, player controllers local to client
 	ref map<int, PS_EPlayableControllerState> m_playersStates = new map<int, PS_EPlayableControllerState>;
-	ref map<int, RplId> m_playablePlayersRemembered = new map<int, RplId>;
+	ref map<int, RplId> m_playersPlayableRemembered = new map<int, RplId>;
 	ref map<int, RplId> m_playersPlayable = new map<int, RplId>;
+	ref map<RplId, int> m_playablePlayersRemembered = new map<RplId, int>;
 	ref map<RplId, int> m_playablePlayers = new map<RplId, int>; // reversed m_playersPlayable for fast search
 	ref map<int, bool> m_playersPin = new map<int, bool>; // is player pined
 	ref map<int, FactionKey> m_playersFaction = new map<int, FactionKey>; // player factions
@@ -435,6 +436,12 @@ class PS_PlayableManager : ScriptComponent
 		return m_playersPlayable[playerId];
 	}
 	
+	RplId GetPlayableByPlayerRemembered(int playerId)
+	{
+		if (!m_playablePlayersRemembered.Contains(playerId)) return RplId.Invalid();
+		return m_playablePlayersRemembered[playerId];
+	}
+	
 	int GetPlayerByPlayable(RplId PlayableId)
 	{
 		if (!m_playablePlayers.Contains(PlayableId)) return -1;
@@ -443,8 +450,8 @@ class PS_PlayableManager : ScriptComponent
 	
 	int GetPlayerByPlayableRemembered(RplId PlayableId)
 	{
-		if (!m_playablePlayersRemembered.Contains(PlayableId)) return -1;
-		return m_playablePlayersRemembered[PlayableId];
+		if (!m_playersPlayableRemembered.Contains(PlayableId)) return -1;
+		return m_playersPlayableRemembered[PlayableId];
 	}
 	
 	SCR_AIGroup GetPlayerGroupByPlayable(RplId PlayableId)
@@ -648,8 +655,8 @@ class PS_PlayableManager : ScriptComponent
 			if (oldPlayable != RplId.Invalid()) 
 			{
 				m_playablePlayers[oldPlayable] = -1;
-				if (playableId != RplId.Invalid())
-					m_playablePlayersRemembered[playableId] = -1;
+				//if (playableId != RplId.Invalid())
+				//	m_playersPlayableRemembered[playableId] = -1;
 			}
 			
 			PS_PlayableComponent playableComponent = m_aPlayables.Get(oldPlayable);
@@ -660,9 +667,13 @@ class PS_PlayableManager : ScriptComponent
 		m_playersPlayable[playerId] = playableId;
 		m_playablePlayers[playableId] = playerId;
 		
+		if (playableId != RplId.Invalid()) {
+			m_playablePlayersRemembered[playerId] = playableId;
+		}
+		
 		if (playerId > 0)
 		{
-			m_playablePlayersRemembered[playableId] = playerId;
+			m_playersPlayableRemembered[playableId] = playerId;
 			m_eOnPlayerPlayableChange.Invoke(playerId, playableId);
 		}
 		
@@ -685,8 +696,8 @@ class PS_PlayableManager : ScriptComponent
 		RplId oldPlayable = GetPlayableByPlayer(playerId);
 		if (oldPlayable != RplId.Invalid()) {
 			m_playablePlayers[oldPlayable] = -1;
-			if (playableId != RplId.Invalid())
-				m_playablePlayersRemembered[playableId] = -1;
+			//if (playableId != RplId.Invalid())
+			//	m_playersPlayableRemembered[playableId] = -1;
 			
 			PS_PlayableComponent playableComponent = m_aPlayables.Get(oldPlayable);
 			if (playableComponent)
@@ -696,10 +707,14 @@ class PS_PlayableManager : ScriptComponent
 		m_playersPlayable[playerId] = playableId;
 		m_playablePlayers[playableId] = playerId;
 		
+		if (playableId != RplId.Invalid()) {
+			m_playablePlayersRemembered[playerId] = playableId;
+		}
+		
 		if (playerId > 0)
 		{
 			m_eOnPlayerPlayableChange.Invoke(playerId, playableId);
-			m_playablePlayersRemembered[playableId] = playerId;
+			m_playersPlayableRemembered[playableId] = playerId;
 		}
 		
 		PS_PlayableComponent playableComponent = m_aPlayables.Get(playableId);
@@ -951,9 +966,17 @@ class PS_PlayableManager : ScriptComponent
 			writer.WriteString(m_playersLastName.GetElement(i));
 		}
 		
-		int playersPlayableRememberedCount = m_playablePlayersRemembered.Count();
+		int playersPlayableRememberedCount = m_playersPlayableRemembered.Count();
 		writer.WriteInt(playersPlayableRememberedCount);
 		for (int i = 0; i < playersPlayableRememberedCount; i++)
+		{
+			writer.WriteInt(m_playersPlayableRemembered.GetKey(i));
+			writer.WriteInt(m_playersPlayableRemembered.GetElement(i));
+		}
+		
+		int playablePlayersRememberedCount = m_playablePlayersRemembered.Count();
+		writer.WriteInt(playablePlayersRememberedCount);
+		for (int i = 0; i < playablePlayersRememberedCount; i++)
 		{
 			writer.WriteInt(m_playablePlayersRemembered.GetKey(i));
 			writer.WriteInt(m_playablePlayersRemembered.GetElement(i));
@@ -1059,6 +1082,18 @@ class PS_PlayableManager : ScriptComponent
 		int playersPlayableRememberedCount;
 		reader.ReadInt(playersPlayableRememberedCount);
 		for (int i = 0; i < playersPlayableRememberedCount; i++)
+		{
+			int key;
+			int value;
+			reader.ReadInt(key);
+			reader.ReadInt(value);
+			
+			m_playersPlayableRemembered.Insert(key, value);
+		}
+		
+		int playablePlayersRememberedCount;
+		reader.ReadInt(playablePlayersRememberedCount);
+		for (int i = 0; i < playablePlayersRememberedCount; i++)
 		{
 			int key;
 			int value;
