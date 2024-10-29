@@ -192,21 +192,28 @@ class PS_PlayableControllerComponent : ScriptComponent
 		playabelGroup.AddAIEntityToGroup(newCharacter);
 		
 		playableComponent.SetPlayable(true);
+		oldPlayableComponent.SetPlayable(false);
 		
-		GetGame().GetCallqueue().CallLater(RPC_ForceRespawnPlayerLate, 100, false, character, oldPlayableComponent, newCharacter, playableComponent);
+		character.GetDamageManager().Kill(Instigator.CreateInstigator(newCharacter));
+		character.GetDamageManager().SetHealthScaled(0);
+		GetGame().GetCallqueue().CallLater(RPC_ForceRespawnPlayerLate, 300, false, character, oldPlayableComponent, newCharacter, playableComponent);
 	}
 	void RPC_ForceRespawnPlayerLate(SCR_ChimeraCharacter character, PS_PlayableComponent oldPlayableComponent, SCR_ChimeraCharacter newCharacter, PS_PlayableComponent playableComponent)
 	{
 		character.GetDamageManager().Kill(Instigator.CreateInstigator(newCharacter));
-		oldPlayableComponent.SetPlayable(false);
+		character.GetDamageManager().SetHealthScaled(0);
+		if (!character.GetDamageManager().IsDestroyed())
+		{
+			GetGame().GetCallqueue().CallLater(RPC_ForceRespawnPlayerLate, 300, false, character, oldPlayableComponent, newCharacter, playableComponent);
+			return;
+		}
 		
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		//playableManager.SetPlayablePlayerGroupId(playableComponent.GetId(), aiGroup.GetGroupID());
-		
 		int playerId = playableManager.GetPlayerByPlayableRemembered(oldPlayableComponent.GetId());
 		if (playerId > -1)
 		{
-			GetGame().GetCallqueue().CallLater(RPC_ForceRespawnPlayerLate2, 100, false, playerId, playableComponent);
+			GetGame().GetCallqueue().CallLater(RPC_ForceRespawnPlayerLate2, 500, false, playerId, playableComponent);
 		}
 	}
 	void RPC_ForceRespawnPlayerLate2(int playerId, PS_PlayableComponent playable)
