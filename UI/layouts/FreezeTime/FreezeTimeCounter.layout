@@ -23,17 +23,85 @@ OverlayWidgetClass {
     VerticalAlign 0
     Padding 0 128 0 0
    }
-   Color 0 0 0 0.188
+   Color 0.007 0.012 0.014 1
    style full
    {
-    TextWidgetClass "{5F0EB4D5FBCA212F}" {
-     Name "FreezeTimeCounterText"
-     Slot FrameWidgetSlot "{5F0EB4D54F5D0865}" {
+    OverlayWidgetClass "{62BACE8266210F73}" {
+     Name "Overlay"
+     Slot FrameWidgetSlot "{62BACE82662108A1}" {
+      OffsetLeft 0
+      PositionY 0
+      OffsetTop 0
+      SizeX 100
+      OffsetRight -100
+      SizeY 30
+      OffsetBottom -30
       SizeToContent 1
      }
-     Text "00:00"
-     "Font Size" 48
-     "Min Font Size" 48
+     {
+      VerticalLayoutWidgetClass "{62BACE82160710FE}" {
+       Name "VerticalLayout0"
+       Slot OverlayWidgetSlot "{62BACE8216071025}" {
+        Padding 30 10 30 10
+       }
+       {
+        TextWidgetClass "{62BACE8217DA068F}" {
+         Name "FreezeTimeText"
+         Slot LayoutSlot "{62BACE8217DA06A5}" {
+          Padding 0 0 0 6
+         }
+         Color 0.761 0.761 0.761 1
+         Text "#PS-Freeze_time"
+         "Min Font Size" 24
+        }
+        TextWidgetClass "{5F0EB4D5FBCA212F}" {
+         Name "FreezeTimeCounterText"
+         Slot LayoutSlot {
+         }
+         Color 0.761 0.386 0.078 1
+         Text "00:00"
+         "Font Size" 48
+         "Min Font Size" 48
+         "Horizontal Alignment" Center
+        }
+       }
+      }
+     }
+    }
+    HorizontalLayoutWidgetClass "{62BACE828578E395}" {
+     Name "HorizontalLayout0"
+     Slot FrameWidgetSlot "{62BACE8285788420}" {
+      Anchor 0 0 1 1
+      PositionX 0
+      OffsetLeft 0
+      PositionY 0
+      OffsetTop 0
+      SizeX -7.401
+      OffsetRight 0
+      SizeY -18
+      OffsetBottom 0
+     }
+     {
+      ImageWidgetClass "{62BACE8287638BFB}" {
+       Name "Fill"
+       Slot LayoutSlot {
+        VerticalAlign 0
+        SizeMode Fill
+       }
+       Color 0.761 0.386 0.078 1
+       Size 6 6
+      }
+      ImageWidgetClass "{62BACE829D8E87E7}" {
+       Name "Empty"
+       Slot LayoutSlot {
+        VerticalAlign 0
+        SizeMode Fill
+        FillWeight 0
+       }
+       Color 1 1 1 0
+       Size 6 6
+      }
+     }
     }
    }
   }

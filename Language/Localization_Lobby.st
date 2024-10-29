@@ -591,6 +591,14 @@ StringTable {
    Author "SeskPC"
    LastChanged "SeskPC"
   }
+  CustomStringTableItem "{62BACE83CFDBF464}" {
+   Id "PS-Freeze_time"
+   Target_en_us "Preparing for battle"
+   Target_ru_ru "Подготовка к бою"
+   Modified 1656410513
+   Author "zazul"
+   LastChanged "zazul"
+  }
   CustomStringTableItem "{5EB30CD4368261A7}" {
    Id "PS-GameMaster_PlayableGroup"
    Target_en_us "Playable Unit"
