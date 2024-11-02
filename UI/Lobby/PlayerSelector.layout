@@ -68,7 +68,7 @@ ButtonWidgetClass {
      }
      Color 0.376 0.749 0.749 1
     }
-    TextWidgetClass "{5D6D1B96C41F639B}" {
+    RichTextWidgetClass "{5D6D1B96C41F639B}" {
      Prefab "{5D6D1B99A45E5176}"
      Name "PlayerName"
      Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {

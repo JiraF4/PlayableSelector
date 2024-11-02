@@ -10,7 +10,7 @@ class PS_PlayerVoiceSelector : SCR_ButtonBaseComponent
 	
 	ImageWidget m_wUnitIcon;
 	ImageWidget m_wLeaderIcon;
-	TextWidget m_wPlayerName;
+	RichTextWidget m_wPlayerName;
 	PS_VoiceButton m_wVoiceHideableButton;
 	TextWidget m_wGroupName;
 	ImageWidget m_wCharacterFactionColor;
@@ -23,7 +23,7 @@ class PS_PlayerVoiceSelector : SCR_ButtonBaseComponent
 		m_wCharacterFactionColor = ImageWidget.Cast(w.FindAnyWidget("CharacterFactionColor"));
 		m_wUnitIcon = ImageWidget.Cast(w.FindAnyWidget("UnitIcon"));
 		m_wLeaderIcon = ImageWidget.Cast(w.FindAnyWidget("LeaderIcon"));
-		m_wPlayerName = TextWidget.Cast(w.FindAnyWidget("PlayerName"));
+		m_wPlayerName = RichTextWidget.Cast(w.FindAnyWidget("PlayerName"));
 		m_wVoiceHideableButton = PS_VoiceButton.Cast(w.FindAnyWidget("VoiceHideableButton").FindHandler(PS_VoiceButton));
 		m_wGroupName = TextWidget.Cast(w.FindAnyWidget("GroupName"));
 		m_wKickButton = ButtonWidget.Cast(w.FindAnyWidget("KickButton"));
@@ -63,7 +63,7 @@ class PS_PlayerVoiceSelector : SCR_ButtonBaseComponent
 		// player data
 		RplId playableId = playableManager.GetPlayableByPlayer(m_iPlayer);
 		FactionKey factionKey = playableManager.GetPlayerFactionKey(m_iPlayer);
-		string playerName = playerManager.GetPlayerName(m_iPlayer);
+		string playerName = playableManager.GetPlayerName(m_iPlayer);
 		SCR_Faction faction = SCR_Faction.Cast(factionManager.GetFactionByKey(factionKey));
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(m_iPlayer);
 		int playerRoomId = VoNRoomsManager.GetPlayerRoom(m_iPlayer);

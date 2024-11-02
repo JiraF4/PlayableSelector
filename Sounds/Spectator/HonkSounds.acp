@@ -53,7 +53,8 @@ AudioClass {
    id 4100
    name "HonkBank"
    version 7
-   tl 127.671 -134.03
+   tl 128.385 -134.744
+   Volume -39
    "Volume variance" 1
    "Pitch variance" 1
    Samples {

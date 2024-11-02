@@ -40,7 +40,7 @@ class PS_CharacterSelector : SCR_ButtonComponent
 	protected TextWidget m_wCharacterClassName;
 	protected ImageWidget m_wStateIcon;
 	protected ButtonWidget m_wStateButton;
-	protected TextWidget m_wCharacterStatus;
+	protected RichTextWidget m_wCharacterStatus;
 	protected OverlayWidget m_wVoiceHideableButton;
 	
 	// Handlers
@@ -94,7 +94,7 @@ class PS_CharacterSelector : SCR_ButtonComponent
 		m_wCharacterClassName = TextWidget.Cast(w.FindAnyWidget("CharacterClassName"));
 		m_wStateIcon = ImageWidget.Cast(w.FindAnyWidget("StateIcon"));
 		m_wStateButton = ButtonWidget.Cast(w.FindAnyWidget("StateButton"));
-		m_wCharacterStatus = TextWidget.Cast(w.FindAnyWidget("CharacterStatus"));
+		m_wCharacterStatus = RichTextWidget.Cast(w.FindAnyWidget("CharacterStatus"));
 		m_wVoiceHideableButton = OverlayWidget.Cast(w.FindAnyWidget("VoiceHideableButton"));
 		
 		// Handlers

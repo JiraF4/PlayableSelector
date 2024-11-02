@@ -60,6 +60,9 @@ class PS_VoiceChatRoom : SCR_ScriptedWidgetComponent
 	
 	void AddPlayer(int playerId)
 	{
+		if (m_mPlayers.Contains(playerId))
+			return;
+		
 		Widget playerSelector = GetGame().GetWorkspace().CreateWidgets(m_sPlayerVoiceSelectorPrefab);
 		PS_PlayerVoiceSelector handler = PS_PlayerVoiceSelector.Cast(playerSelector.FindHandler(PS_PlayerVoiceSelector));
 		

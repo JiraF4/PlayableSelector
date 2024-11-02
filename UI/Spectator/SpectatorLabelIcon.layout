@@ -26,7 +26,7 @@ FrameWidgetClass {
       SizeToContent 1
      }
      {
-      TextWidgetClass "{5EE8948EAC337C76}" {
+      RichTextWidgetClass "{5EE8948EAC337C76}" {
        Name "SpectatorLabelText"
        Slot OverlayWidgetSlot "{5EE89488FD3D84DE}" {
         Padding 4 4 4 4

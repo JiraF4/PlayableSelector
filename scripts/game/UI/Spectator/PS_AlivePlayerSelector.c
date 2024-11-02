@@ -25,7 +25,7 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 	protected ImageWidget m_wPlayerFactionColor;
 	protected ImageWidget m_wUnitIcon;
 	protected ImageWidget m_wDeadIcon;
-	protected TextWidget m_wPlayerName;
+	protected RichTextWidget m_wPlayerName;
 	
 	// Init
 	override void HandlerAttached(Widget w)
@@ -35,7 +35,7 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 		// Widgets
 		m_wUnitIcon = ImageWidget.Cast(w.FindAnyWidget("UnitIcon"));
 		m_wDeadIcon = ImageWidget.Cast(w.FindAnyWidget("DeadIcon"));
-		m_wPlayerName = TextWidget.Cast(w.FindAnyWidget("PlayerName"));
+		m_wPlayerName = RichTextWidget.Cast(w.FindAnyWidget("PlayerName"));
 		m_wPlayerFactionColor = ImageWidget.Cast(w.FindAnyWidget("PlayerFactionColor"));
 		
 		// Cache global

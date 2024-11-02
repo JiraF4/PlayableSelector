@@ -5,7 +5,7 @@ class PS_SpectatorLabelIcon : SCR_ScriptedWidgetComponent
 	ImageWidget m_wSpectatorLabelIcon;
 	ButtonWidget m_wLabelButton;
 	OverlayWidget m_wSpectatorLabelBackground;
-	TextWidget m_wSpectatorLabelText;
+	RichTextWidget m_wSpectatorLabelText;
 	PanelWidget m_wSpectatorLabel;
 	
 	protected float m_fMaxIconDistance = 800.0;
@@ -37,7 +37,7 @@ class PS_SpectatorLabelIcon : SCR_ScriptedWidgetComponent
 		m_wSpectatorLabelIcon = ImageWidget.Cast(w.FindAnyWidget("SpectatorLabelIcon"));
 		m_wLabelButton = ButtonWidget.Cast(w.FindAnyWidget("LabelButton"));
 		m_wSpectatorLabelBackground = OverlayWidget.Cast(w.FindAnyWidget("SpectatorLabelBackground"));
-		m_wSpectatorLabelText = TextWidget.Cast(w.FindAnyWidget("SpectatorLabelText"));
+		m_wSpectatorLabelText = RichTextWidget.Cast(w.FindAnyWidget("SpectatorLabelText"));
 		m_wSpectatorLabel = PanelWidget.Cast(w.FindAnyWidget("SpectatorLabel"));
 	}
 	

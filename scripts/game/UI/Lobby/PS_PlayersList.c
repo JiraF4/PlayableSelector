@@ -60,6 +60,8 @@ class PS_PlayersList : ScriptedWidgetComponent
 	
 	void AddPlayer(int playerId)
 	{
+		if (m_mPlayers.Contains(playerId))
+			return;
 		Widget playerSelectorRoot = m_wWorkspaceWidget.CreateWidgets(m_sPlayerSelectorPrefab, m_wPlayersList);
 		PS_PlayerSelector playerSelector = PS_PlayerSelector.Cast(playerSelectorRoot.FindHandler(PS_PlayerSelector));
 		playerSelector.SetCoopLobby(m_CoopLobby);

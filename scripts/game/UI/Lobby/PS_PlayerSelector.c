@@ -30,7 +30,7 @@ class PS_PlayerSelector : SCR_ButtonBaseComponent
 	
 	// Widgets
 	protected ImageWidget m_wPlayerFactionColor;
-	protected TextWidget m_wPlayerName;
+	protected RichTextWidget m_wPlayerName;
 	protected OverlayWidget m_wVoiceHideableButton;
 	protected ButtonWidget m_wPinButton;
 	protected ImageWidget m_wPinImage;
@@ -63,7 +63,7 @@ class PS_PlayerSelector : SCR_ButtonBaseComponent
 		
 		// Widgets
 		m_wPlayerFactionColor = ImageWidget.Cast(w.FindAnyWidget("PlayerFactionColor"));
-		m_wPlayerName = TextWidget.Cast(w.FindAnyWidget("PlayerName"));
+		m_wPlayerName = RichTextWidget.Cast(w.FindAnyWidget("PlayerName"));
 		m_wVoiceHideableButton = OverlayWidget.Cast(w.FindAnyWidget("VoiceHideableButton"));
 		m_wPinButton = ButtonWidget.Cast(w.FindAnyWidget("PinButton"));
 		m_wPinImage = ImageWidget.Cast(w.FindAnyWidget("PinImage"));
