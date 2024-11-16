@@ -275,6 +275,18 @@ class PS_PlayableManager : ScriptComponent
 		gameModeCoop.SwitchToInitialEntity(playerId);
 	}
 	
+	// Holster weapon on all playables
+	void HolsterWeapons()
+	{
+		if (!Replication.IsServer())
+			return;
+		
+		foreach (RplId id, PS_PlayableComponent playable: m_aPlayables)
+		{
+			playable.HolsterWeapon();
+		}
+	}
+	
 	void NotifyKick(int playerId)
 	{
 		RPC_NotifyKick(playerId);

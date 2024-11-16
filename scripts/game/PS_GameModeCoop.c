@@ -57,6 +57,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	[Attribute("0", UIWidgets.CheckBox, "", category: "Reforger Lobby (WIP)")]
 	protected bool m_bShowCutscene;
 	
+	[Attribute("1", UIWidgets.CheckBox, "", category: "Reforger Lobby (WIP)")]
+	protected bool m_bHolsterWeapon;
+	
 	protected ref ScriptInvokerInt m_OnGameStateChange = new ScriptInvokerInt();
 	ScriptInvokerInt GetOnGameStateChange()
 		return m_OnGameStateChange;
@@ -601,6 +604,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 						}
 					}
 				}
+				if (m_bHolsterWeapon)
+					playableManager.HolsterWeapons();
 				break;
 		}
 	}

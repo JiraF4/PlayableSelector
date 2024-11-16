@@ -248,6 +248,11 @@ class PS_PlayableComponent : ScriptComponent
 		m_id = rpl.Id();
 		playableManager.RegisterPlayable(this);
 	}
+	
+	void HolsterWeapon()
+	{
+		m_Owner.GetCharacterController().TryEquipRightHandItem(null, EEquipItemType.EEquipTypeUnarmedContextual);
+	}
 
 	string GetName()
 	{
