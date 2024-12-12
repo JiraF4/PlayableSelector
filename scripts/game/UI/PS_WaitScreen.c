@@ -25,7 +25,7 @@ class PS_WaitScreen: MenuBase
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		if (!gameMode)
 		{
-			m_wInfoText.SetText("Await gamemode entity.");
+			m_wInfoText.SetText("Awaiting gamemode entity.");
 			return;
 		}
 		
@@ -51,40 +51,40 @@ class PS_WaitScreen: MenuBase
 		PlayerController playerController = GetGame().GetPlayerController();
 		if (!playerController)
 		{
-			m_wInfoText.SetText("Await player controller.");
+			m_wInfoText.SetText("Awaiting player controller.");
 			return;
 		}
 		
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		if (!playableManager.IsReplicated())
 		{
-			m_wInfoText.SetText("Await playableManager replication.");
+			m_wInfoText.SetText("Awaiting playableManager replication.");
 			return;
 		}
 		
 		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
 		if (!VoNRoomsManager.IsReplicated())
 		{
-			m_wInfoText.SetText("Await VoNRoomsManager replication.");
+			m_wInfoText.SetText("Awaiting VoNRoomsManager replication.");
 			return;
 		}
 		
 		if (playerController.GetPlayerId() == 0)
 		{
-			m_wInfoText.SetText("Await player id.");
+			m_wInfoText.SetText("Awaiting player id.");
 			return;
 		}
 		
 		if (!playerController.GetControlledEntity())
 		{
-			m_wInfoText.SetText("Await initial character.");
+			m_wInfoText.SetText("Awaiting initial character.");
 			return;
 		}
 		
 		PS_PlayableControllerComponent playableControllerComponent = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		if (!playableControllerComponent.isVonInit())
 		{
-			m_wInfoText.SetText("Await VoN Initialization.");
+			m_wInfoText.SetText("Awaiting VoN Initialization.");
 			return;
 		}
 		
@@ -92,7 +92,7 @@ class PS_WaitScreen: MenuBase
 		int globalRoomId = VoNRoomsManager.GetRoomWithFaction("", "#PS-VoNRoom_Global");
 		if (publicRoomId == -1 || globalRoomId == -1)
 		{
-			m_wInfoText.SetText("Await VoN room creation.");
+			m_wInfoText.SetText("Awaiting VoN room creation.");
 			return;
 		}
 		
