@@ -1,10 +1,10 @@
-[WorkbenchToolAttribute("Mission maker Tool", "", "", awesomeFontCode: 0xf5ee)]
+[WorkbenchToolAttribute("Mission maker Tool", "", "", awesomeFontCode: 0xf794)]
 class PS_MissionMakerTool: WorldEditorTool
 {
-	[Attribute()]
+	//[Attribute()]
 	ref PS_LoadoutInspector m_inventoryInspector;
 	
-	[ButtonAttribute("Inventory apply")]
+	//[ButtonAttribute("Inventory apply")]
 	void InventoryApply()
 	{
 		if (!m_inventoryInspector)
@@ -18,7 +18,7 @@ class PS_MissionMakerTool: WorldEditorTool
 		m_inventoryInspector.SetItems(m_API, entitySource);
 	}
 		
-	[ButtonAttribute("Inventory errors")]
+	//[ButtonAttribute("Inventory errors")]
 	void InventoryErrors()
 	{
 		if (m_inventoryInspector)
@@ -26,7 +26,7 @@ class PS_MissionMakerTool: WorldEditorTool
 		UpdatePropertyPanel();
 	}
 	
-	[ButtonAttribute("Inventory inspector")]
+	//[ButtonAttribute("Inventory inspector")]
 	void InventoryInspector()
 	{
 		if (m_API.GetSelectedEntitiesCount() != 1)
@@ -138,6 +138,70 @@ class PS_MissionMakerTool: WorldEditorTool
 		}
 		m_API.EndEntityAction();
 	}
+	
+	[ButtonAttribute("Calculate factions")]
+	void CalculateFactions()
+	{
+		int selectedCount = m_API.GetSelectedEntitiesCount();
+		if (selectedCount == 0) return;
+		map<FactionKey, int> factionCounter = new map<FactionKey, int>();
+		for (int i = 0; i < selectedCount; i++)
+		{
+			IEntitySource entitySource = m_API.GetSelectedEntity(i);
+			if (entitySource.GetClassName() == "SCR_AIGroup")
+			{
+				IEntity entity = m_API.SourceToEntity(entitySource);
+				if (!entity)
+					continue;
+				
+				SCR_AIGroup group = SCR_AIGroup.Cast(entity);
+				if (!group)
+					continue;
+				
+				SCR_Faction faction = SCR_Faction.Cast(group.GetFaction());
+				if (!faction)
+					continue;
+				
+				array<ResourceName> units;
+				entitySource.Get("m_aUnitPrefabSlots", units);
+				int count = units.Count();
+				
+				FactionKey factionKey = faction.GetFactionKey();
+				if (!factionCounter.Contains(factionKey))
+					factionCounter[factionKey] = 0;
+				factionCounter[factionKey] = factionCounter[factionKey] + count;
+			}
+			
+			if (entitySource.GetClassName() == "SCR_ChimeraCharacter")
+			{
+				
+				IEntity entity = m_API.SourceToEntity(entitySource);
+				if (!entity)
+					continue;
+				
+				SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(entity);
+				if (!character)
+					continue;
+				
+				SCR_Faction faction = SCR_Faction.Cast(character.GetFaction());
+				if (!faction)
+					continue;
+				
+				int count = 1;
+				
+				FactionKey factionKey = faction.GetFactionKey();
+				if (!factionCounter.Contains(factionKey))
+					factionCounter[factionKey] = 0;
+				factionCounter[factionKey] = factionCounter[factionKey] + count;
+			}
+		}
+		PrintFormat("----------------------");
+		foreach (FactionKey factionKey, int count : factionCounter)
+		{
+			PrintFormat("%1: %2", factionKey, count);
+		}
+	}
+	
 	
 	void GetNextFreeCallSign(IEntity excludeEntity, Faction factionCurrent, out bool currentAssigned, out int companyCallsignIndex, out int platoonCallsignIndex, out int squadCallsignIndex)
 	{

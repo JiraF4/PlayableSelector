@@ -15,6 +15,29 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
     }
    }
   }
+  ChimeraAIControlComponent "{520EA1D2DB109F34}" {
+   Enabled 0
+   components {
+    AICharacterAimingComponent "{520EA1D2DB109F0C}" {
+     Enabled 0
+    }
+    AICharacterHeadAimingComponent "{520EA1D2DB109F04}" {
+     Enabled 0
+    }
+    AICharacterMovementComponent "{520EA1D2DB109F01}" {
+     Enabled 0
+    }
+    AIPathfindingComponent "{56349A6F9C02E7A1}" {
+     Enabled 0
+    }
+    PerceptionComponent "{54A2CBC75F06064B}" {
+     Enabled 0
+    }
+    SCR_AICombatComponent "{55A2C9BE343B2EA1}" {
+     Enabled 0
+    }
+   }
+  }
   MeshObject "{520EA1D2F659C81F}" {
    Materials {
     MaterialAssignClass "{624279F27C4FDC4E}" {
@@ -42,7 +65,7 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
    ReceiveLight 0
   }
   PS_LobbyVoNComponent "{618B054CFFD60A4C}" {
-   "Speaking Range" 50
+   "Speaking Range" 1
    Filename "{B4C3941EC8B2AD20}Sounds/VON/von.acp"
   }
   PS_PlayableComponent "{5EFCC1946F475F15}" {
@@ -69,6 +92,7 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
    }
   }
   CharacterAnimationComponent "{520EA1D2F659C994}" {
+   AnimGraph "{BD1FFB356D76A384}anims/workspaces/player/player_main_PS_VON.agr"
    AnimInstance "{B086D0CD3B9E3AB0}anims/workspaces/player/player_PS_VON.asi"
    ColliderStand PhysAgentCollisionShapeItem "{5570AA65EEDB5E11}" {
     Size 0 0 0

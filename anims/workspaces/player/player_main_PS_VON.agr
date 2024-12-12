@@ -1,0 +1,794 @@
+AnimSrcGraph {
+ AnimSetTemplate "{AFED9D355AB37777}anims/workspaces/player/player_main_PS_VON.ast"
+ AnimSyncTable "{DC61978ADAAEB032}anims/workspaces/player/Player_SyncTable_PS_VON.asy"
+ ControlTemplate AnimSrcGCT "{5190AC4BE1BF436F}" {
+  Variables {
+   AnimSrcGCTVarFloat MovementSpeed {
+    DefaultValue 0
+    MinValue 0
+    MaxValue 3
+    Synchronized 0
+   }
+   AnimSrcGCTVarFloat MovementSpeedReal {
+    DefaultValue 0
+    MinValue 0
+    MaxValue 10
+    Synchronized 0
+   }
+   AnimSrcGCTVarFloat MovementDirection {
+    DefaultValue 0
+    MinValue -180
+    MaxValue 180
+    Synchronized 0
+   }
+   AnimSrcGCTVarBool HasLocomotionInput {
+    Synchronized 0
+   }
+   AnimSrcGCTVarInt Stance {
+    DefaultValue 0
+    MinValue 0
+    MaxValue 2
+    Synchronized 0
+   }
+   AnimSrcGCTVarFloat LookX {
+    DefaultValue 0
+    MinValue -180
+    MaxValue 180
+   }
+   AnimSrcGCTVarFloat LookY {
+    DefaultValue 0
+    MinValue -90
+    MaxValue 90
+   }
+   AnimSrcGCTVarFloat WaterLevel {
+    DefaultValue 0
+    MinValue 0
+    MaxValue 1.5
+    Synchronized 0
+   }
+   AnimSrcGCTVarBool TriggerPulled {
+    DefaultValue 0
+   }
+   AnimSrcGCTVarBool WeaponRaised {
+    DefaultValue 0
+   }
+   AnimSrcGCTVarFloat ADSAdjust {
+    DefaultValue 1
+    MinValue 0
+    MaxValue 1
+   }
+   AnimSrcGCTVarBool ADS {
+    DefaultValue 0
+   }
+   AnimSrcGCTVarFloat AimX {
+    DefaultValue 0
+    MinValue -180
+    MaxValue 180
+    Synchronized 0
+   }
+   AnimSrcGCTVarFloat AimY {
+    DefaultValue 0
+    MinValue -90
+    MaxValue 90
+    Synchronized 0
+   }
+   AnimSrcGCTVarFloat LeanForward {
+    DefaultValue 0
+    MinValue -90
+    MaxValue 90
+   }
+   AnimSrcGCTVarFloat TurnAmount {
+    DefaultValue 0
+    MinValue -180
+    MaxValue 180
+   }
+   AnimSrcGCTVarFloat Lean {
+    DefaultValue 0
+    MinValue -1
+    MaxValue 1
+   }
+   AnimSrcGCTVarBool Low {
+   }
+   AnimSrcGCTVarFloat AimIKX {
+    DefaultValue 0
+    MinValue -180
+    MaxValue 180
+    Synchronized 0
+   }
+   AnimSrcGCTVarInt ArmIK {
+    MinValue 0
+    MaxValue 7
+    Synchronized 1
+   }
+   AnimSrcGCTVarFloat DamageDirection {
+    DefaultValue 0
+    MinValue -180
+    MaxValue 180
+   }
+   AnimSrcGCTVarFloat AimIKZ {
+    DefaultValue 0
+    MinValue -180
+    MaxValue 180
+    Synchronized 0
+   }
+   AnimSrcGCTVarFloat AimIKY {
+    MinValue -180
+    MaxValue 180
+    Synchronized 0
+   }
+   AnimSrcGCTVarFloat AimTransX {
+    DefaultValue 0
+    MinValue -100
+    MaxValue 100
+    Synchronized 0
+   }
+   AnimSrcGCTVarFloat AimTransY {
+    DefaultValue 0
+    MinValue -100
+    MaxValue 100
+    Synchronized 0
+   }
+   AnimSrcGCTVarFloat AimTransZ {
+    DefaultValue 0
+    MinValue -100
+    MaxValue 100
+    Synchronized 0
+   }
+   AnimSrcGCTVarInt VehicleType {
+    DefaultValue 0
+    MinValue 0
+    MaxValue 7
+   }
+   AnimSrcGCTVarFloat VehicleSteering {
+    DefaultValue 0
+    MinValue -1
+    MaxValue 1
+    Synchronized 0
+   }
+   AnimSrcGCTVarFloat VehicleThrottle {
+    DefaultValue 0
+    MinValue 0
+    MaxValue 1
+    Synchronized 0
+   }
+   AnimSrcGCTVarFloat VehicleClutch {
+    DefaultValue 0
+    MinValue 0
+    MaxValue 1
+    Synchronized 0
+   }
+   AnimSrcGCTVarFloat VehicleBrake {
+    DefaultValue 0
+    MinValue 0
+    MaxValue 1
+    Synchronized 0
+   }
+   AnimSrcGCTVarFloat VehicleAccelerationFB {
+    DefaultValue 0
+    MinValue -1
+    MaxValue 1
+    Synchronized 0
+   }
+   AnimSrcGCTVarFloat VehicleAccelerationLR {
+    DefaultValue 0
+    MinValue -1
+    MaxValue 1
+    Synchronized 0
+   }
+   AnimSrcGCTVarFloat Recoil {
+    DefaultValue 0
+    MinValue 0
+    MaxValue 1
+   }
+   AnimSrcGCTVarInt LadderMovement {
+    DefaultValue 0
+    MinValue -2
+    MaxValue 2
+    Synchronized 1
+   }
+   AnimSrcGCTVarBool Look {
+    DefaultValue 0
+   }
+   AnimSrcGCTVarBool Firing {
+    DefaultValue 0
+   }
+   AnimSrcGCTVarInt SeatPositionType {
+    DefaultValue 0
+    MinValue 0
+    MaxValue 15
+   }
+   AnimSrcGCTVarBool DebugNewAimTurns {
+    DefaultValue 0
+   }
+   AnimSrcGCTVarFloat AimTurnX {
+    DefaultValue 0
+    MinValue -90
+    MaxValue 90
+    Synchronized 0
+   }
+   AnimSrcGCTVarBool Horn {
+    Synchronized 0
+   }
+   AnimSrcGCTVarInt LeftHandGadget {
+    MaxValue 9
+   }
+   AnimSrcGCTVarFloat SightElevation {
+    DefaultValue 0.1
+    MaxValue 1
+   }
+   AnimSrcGCTVarBool Bipod {
+   }
+   AnimSrcGCTVarBool LastBullet {
+   }
+   AnimSrcGCTVarBool Empty {
+   }
+   AnimSrcGCTVarBool Cocked {
+   }
+   AnimSrcGCTVarBool Focused {
+   }
+   AnimSrcGCTVarInt State {
+    MinValue -1
+    MaxValue 2
+    Synchronized 0
+   }
+   AnimSrcGCTVarInt WeaponType {
+    MaxValue 20
+    Synchronized 1
+   }
+   AnimSrcGCTVarBool BandageSelf {
+    DefaultValue 0
+   }
+   AnimSrcGCTVarBool FreeLook {
+   }
+   AnimSrcGCTVarFloat ObstacleHeight {
+    MaxValue 210
+   }
+   AnimSrcGCTVarString caca {
+   }
+   AnimSrcGCTVarFloat ObstructionTEST {
+    MaxValue 2
+   }
+   AnimSrcGCTVarInt BodyPart {
+    DefaultValue 0
+    MinValue 0
+    MaxValue 8
+   }
+   AnimSrcGCTVarFloat BankAmount {
+    MinValue -1
+    MaxValue 1
+    Synchronized 0
+   }
+   AnimSrcGCTVarBool NewTurns {
+    DefaultValue 1
+   }
+   AnimSrcGCTVarBool IsDriver {
+    Synchronized 0
+   }
+   AnimSrcGCTVarFloat WeaponObstructionFloat {
+    MaxValue 1
+   }
+   AnimSrcGCTVarFloat FloorAngle {
+    MinValue -30
+    MaxValue 30
+   }
+   AnimSrcGCTVarFloat FloorAngleLateral {
+    MinValue -60
+    MaxValue 60
+   }
+   AnimSrcGCTVarBool UGL {
+   }
+   AnimSrcGCTVarFloat ADSTime {
+    MaxValue 2
+    Synchronized 0
+   }
+   AnimSrcGCTVarBool IdlesOff {
+   }
+   AnimSrcGCTVarFloat TargetYOffset {
+    MinValue -180
+    MaxValue 180
+   }
+   AnimSrcGCTVarFloat SpineAccelerationFB {
+    MinValue -1
+    MaxValue 1
+    Synchronized 0
+   }
+   AnimSrcGCTVarFloat SpineAccelerationLR {
+    MinValue -1
+    MaxValue 1
+    Synchronized 0
+   }
+   AnimSrcGCTVarFloat CrankX {
+    MaxValue 1
+   }
+   AnimSrcGCTVarFloat CrankY {
+    MaxValue 1
+   }
+   AnimSrcGCTVarFloat WeaponHeight {
+    MinValue 50
+    MaxValue 120
+   }
+   AnimSrcGCTVarFloat StepSize {
+    DefaultValue 1
+    MaxValue 1
+   }
+   AnimSrcGCTVarBool WeaponDeployed {
+   }
+   AnimSrcGCTVarBool IsSimulatedIK {
+    Synchronized 0
+   }
+   AnimSrcGCTVarInt WeaponInspectionState {
+    MinValue -2
+    MaxValue 2
+   }
+   AnimSrcGCTVarInt ItemInspectionState {
+    MaxValue 1
+   }
+   AnimSrcGCTVarFloat Vehicle_Wobble {
+    DefaultValue 0
+    MaxValue 1
+    Synchronized 0
+   }
+   AnimSrcGCTVarBool GetInNoBlending {
+   }
+   AnimSrcGCTVarFloat CyclicAside {
+    MinValue -1
+    MaxValue 1
+   }
+   AnimSrcGCTVarFloat Collective {
+    DefaultValue 0
+    MinValue -1
+    MaxValue 1
+   }
+   AnimSrcGCTVarFloat CyclicForward {
+    MinValue -1
+    MaxValue 1
+   }
+   AnimSrcGCTVarFloat AntiTorque {
+    MinValue -1
+    MaxValue 1
+   }
+   AnimSrcGCTVarFloat GearFB {
+    DefaultValue 0
+    MaxValue 0.09
+    Synchronized 0
+   }
+   AnimSrcGCTVarFloat GearLR {
+    DefaultValue 0
+    MaxValue 0.08
+    Synchronized 0
+   }
+   AnimSrcGCTVarFloat Facial {
+    MaxValue 1
+   }
+   AnimSrcGCTVarInt UnconsciousPose {
+    DefaultValue 1
+    MinValue 1
+    MaxValue 5
+   }
+   AnimSrcGCTVarFloat VehicleSpeed {
+    MaxValue 100
+   }
+   AnimSrcGCTVarFloat ADSOffsetHorizontal {
+    MinValue -10
+    MaxValue 10
+    Synchronized 0
+   }
+   AnimSrcGCTVarFloat ADSOffsetVertical {
+    MinValue -10
+    MaxValue 10
+    Synchronized 0
+   }
+   AnimSrcGCTVarFloat Stamina {
+    DefaultValue 1
+    MaxValue 1
+   }
+   AnimSrcGCTVarBool IsControlledByPlayer {
+    Synchronized 0
+   }
+   AnimSrcGCTVarInt IsPilot {
+    MaxValue 1
+   }
+  }
+  Commands {
+   AnimSrcGCTCmd CMD_Locomotion_Fall {
+   }
+   AnimSrcGCTCmd CMD_Locomotion_Land {
+   }
+   AnimSrcGCTCmd CMD_Locomotion_Jump {
+   }
+   AnimSrcGCTCmd CMD_Locomotion_Turn {
+   }
+   AnimSrcGCTCmd CMD_Locomotion_StopTurn {
+   }
+   AnimSrcGCTCmd CMD_Locomotion_Stop {
+   }
+   AnimSrcGCTCmd CMD_Combat_Evade {
+   }
+   AnimSrcGCTCmd CMD_Combat_DamageLight {
+   }
+   AnimSrcGCTCmd CMD_Combat_DamageHeavy {
+   }
+   AnimSrcGCTCmd CMD_Combat_WeaponObstruction {
+   }
+   AnimSrcGCTCmd CMD_Weapon_Change_Hide {
+   }
+   AnimSrcGCTCmd CMD_Weapon_Change_Show {
+   }
+   AnimSrcGCTCmd CMD_Weapon_Reload {
+   }
+   AnimSrcGCTCmd CMD_Weapon_Fire {
+   }
+   AnimSrcGCTCmd CMD_Vehicle_GetIn {
+   }
+   AnimSrcGCTCmd CMD_Vehicle_GetOut {
+   }
+   AnimSrcGCTCmd CMD_Vehicle_SwitchSeat {
+   }
+   AnimSrcGCTCmd CMD_Vehicle_JumpOut {
+   }
+   AnimSrcGCTCmd CMD_Vehicle_CrawlOut {
+   }
+   AnimSrcGCTCmd CMD_Vehicle_ClimbOut {
+   }
+   AnimSrcGCTCmd CMD_Unconscious {
+   }
+   AnimSrcGCTCmd CMD_Unconscious_Exit {
+   }
+   AnimSrcGCTCmd CMD_Revive {
+   }
+   AnimSrcGCTCmd CMD_Death {
+   }
+   AnimSrcGCTCmd CMD_ClimbOver {
+   }
+   AnimSrcGCTCmd CMD_Locomotion_TurnFast {
+   }
+   AnimSrcGCTCmd CMD_Climb {
+   }
+   AnimSrcGCTCmd CMD_Melee_Attack {
+   }
+   AnimSrcGCTCmd CMD_Melee_Exit {
+   }
+   AnimSrcGCTCmd CMD_LandImmediate {
+   }
+   AnimSrcGCTCmd CMD_Pin_Action {
+   }
+   AnimSrcGCTCmd CMD_Throw {
+   }
+   AnimSrcGCTCmd CMD_DoorFL_Action {
+   }
+   AnimSrcGCTCmd CMD_DoorFR_Action {
+   }
+   AnimSrcGCTCmd CMD_DoorBR_Action {
+   }
+   AnimSrcGCTCmd CMD_DoorBL_Action {
+   }
+   AnimSrcGCTCmd CMD_Exit_Teleport {
+   }
+   AnimSrcGCTCmd CMD_Weapon_Reload_Test {
+   }
+   AnimSrcGCTCmd CMD_Ladder_Enter {
+   }
+   AnimSrcGCTCmd CMD_Ladder_Exit {
+   }
+   AnimSrcGCTCmd CMD_Ladder_Exit_Left {
+   }
+   AnimSrcGCTCmd CMD_Ladder_Exit_Right {
+   }
+   AnimSrcGCTCmd CMD_Swim {
+   }
+   AnimSrcGCTCmd CMD_Weapon_Action_Interrupt {
+   }
+   AnimSrcGCTCmd CMD_Vehicle_Engine_StartStop {
+   }
+   AnimSrcGCTCmd CMD_Vehicle_GearSwitch {
+   }
+   AnimSrcGCTCmd CMD_Weapon_Unfold {
+   }
+   AnimSrcGCTCmd CMD_Lights {
+   }
+   AnimSrcGCTCmd CMD_Item_Change_Show {
+   }
+   AnimSrcGCTCmd CMD_Item_Change_Hide {
+   }
+   AnimSrcGCTCmd CMD_RItemAction_Interrupt {
+   }
+   AnimSrcGCTCmd CMD_HandBrake {
+   }
+   AnimSrcGCTCmd CMD_ClimbOut {
+   }
+   AnimSrcGCTCmd CMD_PickUp {
+   }
+   AnimSrcGCTCmd CMD_Gestures {
+   }
+   AnimSrcGCTCmd CMD_Item_Action {
+   }
+   AnimSrcGCTCmd CMD_Step {
+   }
+   AnimSrcGCTCmd CMD_HealSelf {
+   }
+   AnimSrcGCTCmd CMD_HealOther {
+   }
+   AnimSrcGCTCmd CMD_Flare {
+   }
+   AnimSrcGCTCmd CMD_Vehicle_OpenDoor {
+   }
+   AnimSrcGCTCmd CMD_Vehicle_CloseDoor {
+   }
+   AnimSrcGCTCmd CMD_Vehicle_StartControl {
+   }
+   AnimSrcGCTCmd CMD_Vehicle_EndControl {
+   }
+   AnimSrcGCTCmd CMD_Vehicle_FinishActionQueue {
+   }
+  }
+  IkChains {
+   AnimSrcGCTIkChain LeftLeg {
+    Joints {
+     "leftleg"
+     "leftlegtwist"
+     "leftknee"
+     "leftkneetwist"
+     "leftfoot"
+    }
+    MiddleJoint "leftknee"
+    ChainAxis "+y"
+   }
+   AnimSrcGCTIkChain RightLeg {
+    Joints {
+     "rightleg"
+     "rightlegtwist"
+     "rightknee"
+     "rightkneetwist"
+     "rightfoot"
+    }
+    MiddleJoint "rightknee"
+    ChainAxis "-y"
+   }
+   AnimSrcGCTIkChain LeftArm {
+    Joints {
+     "leftarm"
+     "leftarmtwist"
+     "leftforearm"
+     "leftforearmtwist"
+     "lefthand"
+    }
+    MiddleJoint "leftforearm"
+    ChainAxis "+y"
+   }
+   AnimSrcGCTIkChain RightArm {
+    Joints {
+     "rightarm"
+     "rightarmtwist"
+     "rightforearm"
+     "rightforearmtwist"
+     "righthand"
+    }
+    MiddleJoint "rightforearm"
+    ChainAxis "-y"
+   }
+   AnimSrcGCTIkChain Head {
+    Joints {
+     "neck2"
+     "neck3"
+     "head"
+    }
+    MiddleJoint "neck3"
+    ChainAxis "+y"
+   }
+   AnimSrcGCTIkChain RightArmProp {
+    Joints {
+     "rightarm"
+     "rightarmtwist"
+     "rightforearm"
+     "rightforearmtwist"
+     "righthand"
+     "righthandprop"
+    }
+    MiddleJoint "rightforearm"
+    ChainAxis "-y"
+   }
+   AnimSrcGCTIkChain Spine {
+    Joints {
+     "Spine1"
+     "Spine2"
+     "Spine3"
+     "Spine4"
+     "Spine5"
+    }
+    MiddleJoint "Spine3"
+    ChainAxis "+y"
+   }
+   AnimSrcGCTIkChain LeftFootIK {
+    Joints {
+     "leftfoot_ik_target"
+    }
+    MiddleJoint "leftfoot_ik_target"
+   }
+   AnimSrcGCTIkChain RightFootIK {
+    Joints {
+     "rightfoot_ik_target"
+    }
+    MiddleJoint "rightfoot_ik_target"
+   }
+  }
+  BoneMasks {
+   AnimSrcGCTBoneMask RProp {
+    Bones {
+     "RightHandProp"
+    }
+   }
+   AnimSrcGCTBoneMask Camera {
+    Bones {
+     "Camera"
+     "RightHandProp"
+    }
+   }
+   AnimSrcGCTBoneMask Root {
+    Bones {
+     "Root"
+    }
+   }
+  }
+ }
+ Debug AnimSrcGD "{51ACB873B2BAF8A4}" {
+  DebugControlGroups {
+   AnimSrcDebugCtlGroup Turns {
+    DebugControls {
+     AnimSrcDebugCtlVar TurnR90 {
+      Binding "TurnAmount"
+      FloatVal 1
+     }
+     AnimSrcDebugCtlCmd Turn {
+      Binding "CMD_Locomotion_Turn"
+      FloatVal 0
+      IntVal 0
+     }
+     AnimSrcDebugCtlVar TurnL90 {
+      Binding "TurnAmount"
+      FloatVal -1
+     }
+     AnimSrcDebugCtlVar TurnL180 {
+      Binding "TurnAmount"
+      FloatVal 2
+     }
+     AnimSrcDebugCtlVar TurnR180 {
+      Binding "TurnAmount"
+      FloatVal -2
+     }
+    }
+   }
+   AnimSrcDebugCtlGroup Stance {
+    DebugControls {
+     AnimSrcDebugCtlVar Erected {
+      Binding "Stance"
+      IntVal 0
+     }
+     AnimSrcDebugCtlVar Crouch {
+      Binding "Stance"
+      IntVal 1
+     }
+     AnimSrcDebugCtlVar Prone {
+      Binding "Stance"
+      IntVal 2
+     }
+     AnimSrcDebugCtlVar ADS {
+      Binding "ADS"
+      BoolVal 1
+     }
+     AnimSrcDebugCtlVar RAS {
+      Binding "ADS"
+      BoolVal 0
+     }
+     AnimSrcDebugCtlVar "ADSAdjust 1" {
+      Binding "ADSAdjust"
+      FloatVal 1
+     }
+     AnimSrcDebugCtlVar "ADSAdjust 0" {
+      Binding "ADSAdjust"
+      FloatVal 0
+     }
+    }
+   }
+   AnimSrcDebugCtlGroup Movement_Speed {
+    DebugControls {
+     AnimSrcDebugCtlVar Idle {
+      Binding "MovementSpeed"
+      FloatVal 0
+     }
+     AnimSrcDebugCtlVar Walk {
+      Binding "MovementSpeed"
+      FloatVal 1
+     }
+     AnimSrcDebugCtlVar Run {
+      Binding "MovementSpeed"
+      FloatVal 2
+     }
+     AnimSrcDebugCtlVar Sprint {
+      Binding "MovementSpeed"
+      FloatVal 3
+     }
+    }
+   }
+   AnimSrcDebugCtlGroup AttachmentNode {
+    DebugControls {
+     AnimSrcDebugCtlCmd Unpin {
+      Binding "CMD_Pin_Action"
+      FloatVal 0
+      IntVal 0
+     }
+     AnimSrcDebugCtlCmd Repin {
+      Binding "CMD_Pin_Action"
+      FloatVal 0
+      IntVal 1
+     }
+    }
+   }
+   AnimSrcDebugCtlGroup Throwing {
+    DebugControls {
+     AnimSrcDebugCtlCmd Throw {
+      Binding "CMD_Throw"
+      FloatVal 0
+      IntVal 0
+     }
+    }
+   }
+   AnimSrcDebugCtlGroup "Movement Direction" {
+    DebugControls {
+     AnimSrcDebugCtlVar Front {
+      Binding "MovementDirection"
+      FloatVal 0
+     }
+     AnimSrcDebugCtlVar Back {
+      Binding "MovementDirection"
+      FloatVal -180
+     }
+     AnimSrcDebugCtlVar Left {
+      Binding "MovementDirection"
+      FloatVal -90
+     }
+     AnimSrcDebugCtlVar Right {
+      Binding "MovementDirection"
+      FloatVal 90
+     }
+     AnimSrcDebugCtlVar "Front Left" {
+      Binding "MovementDirection"
+      FloatVal -45
+     }
+     AnimSrcDebugCtlVar "Front Right" {
+      Binding "MovementDirection"
+      FloatVal 45
+     }
+     AnimSrcDebugCtlVar "Back Left" {
+      Binding "MovementDirection"
+      FloatVal 135
+     }
+     AnimSrcDebugCtlVar "Back Right" {
+      Binding "MovementDirection"
+      FloatVal -135
+     }
+    }
+   }
+   AnimSrcDebugCtlGroup Jump {
+    DebugControls {
+     AnimSrcDebugCtlCmd Jump_in {
+      Binding "CMD_Locomotion_Jump"
+     }
+     AnimSrcDebugCtlCmd Jump_out {
+      Binding "CMD_Locomotion_Land"
+     }
+    }
+   }
+   AnimSrcDebugCtlGroup PickUp {
+    DebugControls {
+     AnimSrcDebugCtlCmd PickUp {
+      Binding "CMD_PickUp"
+     }
+    }
+   }
+  }
+ }
+ GraphFilesResourceNames {
+  "{81F19FC2B9B2130B}anims/workspaces/player/Idle_PS_VON.agf"
+ }
+ DefaultRunNode "MasterControl"
+}

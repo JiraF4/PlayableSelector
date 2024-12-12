@@ -60,6 +60,13 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	[Attribute("1", UIWidgets.CheckBox, "", category: "Reforger Lobby (WIP)")]
 	protected bool m_bHolsterWeapon;
 	
+	[Attribute("0", UIWidgets.Auto, "", category: "Reforger Lobby (WIP)")]
+	protected int m_iForceMenuFramerate;
+	protected static int m_iOldMenuFramerate;
+	
+	[Attribute("0", UIWidgets.CheckBox, "", category: "Reforger Lobby (WIP)")]
+	protected bool m_bResetPlayableReplication;
+	
 	protected ref ScriptInvokerInt m_OnGameStateChange = new ScriptInvokerInt();
 	ScriptInvokerInt GetOnGameStateChange()
 		return m_OnGameStateChange;
@@ -120,6 +127,30 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		GetGame().GetCallqueue().CallLater(AddAdvanceAction, 0, false);
 		
 		GetGame().GetCallqueue().CallLater(RegisterEditorClosed, 100, false);
+		
+		if (!Replication.IsServer() && m_iForceMenuFramerate != 0)
+		{
+			BaseContainer video = GetGame().GetEngineUserSettings().GetModule("VideoUserSettings");
+			video.Get("MaxFps", m_iOldMenuFramerate);
+			video.Set("MaxFps", m_iForceMenuFramerate);
+			GetGame().GetCallqueue().CallLater(ForceFramerate, 1000, true);
+		}
+	}
+	void ForceFramerate()
+	{
+		BaseContainer video = GetGame().GetEngineUserSettings().GetModule("VideoUserSettings");
+		if (PS_GameModeCoop.Cast(GetGame().GetGameMode()).GetState() == SCR_EGameModeState.GAME)
+		{
+			video.Set("MaxFps", m_iOldMenuFramerate);
+			GetGame().UserSettingsChanged();
+			
+			GetGame().GetCallqueue().Remove(ForceFramerate);
+		}
+		else
+		{
+			video.Set("MaxFps", m_iForceMenuFramerate);
+			GetGame().UserSettingsChanged();
+		}
 	}
 	
 	void RegisterEditorClosed()
@@ -587,6 +618,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		switch (state)
 		{
 			case SCR_EGameModeState.BRIEFING: // Force move to voice rooms
+				if (m_bResetPlayableReplication)
+					playableManager.ResetRplStream();
 				foreach (int playerId: playerIds)
 				{
 					RplId playableId = playableManager.GetPlayableByPlayer(playerId);

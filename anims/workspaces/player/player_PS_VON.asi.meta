@@ -11,5 +11,7 @@ MetaFileClass {
   }
   AnimSetInstanceResourceClass HEADLESS : PC {
   }
+  AnimSetInstanceResourceClass PS5 : PC {
+  }
  }
 }

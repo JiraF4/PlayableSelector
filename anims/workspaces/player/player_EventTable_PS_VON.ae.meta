@@ -1,0 +1,17 @@
+MetaFileClass {
+ Name "{CCF5B98AA120E569}anims/workspaces/player/player_EventTable_PS_VON.ae"
+ Configurations {
+  AnimEventListResourceClass PC {
+  }
+  AnimEventListResourceClass XBOX_ONE : PC {
+  }
+  AnimEventListResourceClass XBOX_SERIES : PC {
+  }
+  AnimEventListResourceClass PS4 : PC {
+  }
+  AnimEventListResourceClass PS5 : PC {
+  }
+  AnimEventListResourceClass HEADLESS : PC {
+  }
+ }
+}

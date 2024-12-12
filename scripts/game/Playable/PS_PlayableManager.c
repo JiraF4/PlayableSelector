@@ -178,8 +178,7 @@ class PS_PlayableManager : ScriptComponent
 		if (playableComponent)
 			playableComponent.GetOnPlayerRoleChange().Invoke(playerId, roleFlags);
 	}
-	
-	// TODO: fix it please
+		
 	void ResetRplStream()
 	{
 		GetGame().GetCallqueue().CallLater(ResetRplStreamWrap, 1000);
@@ -525,6 +524,8 @@ class PS_PlayableManager : ScriptComponent
 								
 				playableGroup.SetCanDeleteIfNoPlayer(false);
 				playerGroup.SetCanDeleteIfNoPlayer(false);
+				playableGroup.SetDeleteWhenEmpty(false);
+				playerGroup.SetDeleteWhenEmpty(false);
 			} else {
 				playerGroup = playableGroup.GetMaster();
 			}

@@ -199,7 +199,7 @@ class PS_SpectatorMenu: MenuBase
 		if (m_ChatPanel)
 			m_ChatPanel.OnUpdateChat(tDelta);
 		
-		if (m_MapEntity.IsOpen())
+		if (m_MapEntity && m_MapEntity.IsOpen())
 			m_InputManager.ActivateContext("MapContext");
 		
 		UpdateIcons();

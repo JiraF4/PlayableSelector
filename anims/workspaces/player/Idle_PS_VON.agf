@@ -1,0 +1,15 @@
+AnimSrcGraphFile {
+ Sheets {
+  AnimSrcGraphSheet Master {
+   Nodes {
+    AnimSrcNodeProcTransform MasterControl {
+     EditorPos -7.9 -8.6
+     Child "ThatAll"
+    }
+    AnimSrcNodeBindPose ThatAll {
+     EditorPos -7.9 -7.9
+    }
+   }
+  }
+ }
+}

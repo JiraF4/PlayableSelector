@@ -1,0 +1,17 @@
+MetaFileClass {
+ Name "{DC61978ADAAEB032}anims/workspaces/player/Player_SyncTable_PS_VON.asy"
+ Configurations {
+  AnimSyncTableResourceClass PC {
+  }
+  AnimSyncTableResourceClass XBOX_ONE : PC {
+  }
+  AnimSyncTableResourceClass XBOX_SERIES : PC {
+  }
+  AnimSyncTableResourceClass PS4 : PC {
+  }
+  AnimSyncTableResourceClass PS5 : PC {
+  }
+  AnimSyncTableResourceClass HEADLESS : PC {
+  }
+ }
+}

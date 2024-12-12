@@ -113,7 +113,8 @@ class PS_VoiceButton : PS_HideableButton
 		
 		// Check OUR VoN is WE listen this player?
 		PermissionState mute = PermissionState.DISALLOWED;
-		if (m_iPlayerId > 0) mute = m_PlayerController.GetPlayerMutedState(m_iPlayerId);
+		SocialComponent socialComp = SocialComponent.Cast(GetGame().GetPlayerController().FindComponent(SocialComponent));
+		if (m_iPlayerId > 0) mute = socialComp.IsMuted(m_iPlayerId);
 		if (m_LobbyVoNComponent && mute != PermissionState.DISALLOWED)
 		{
 			if (m_LobbyVoNComponent.IsPlayerSpeech(m_iPlayerId)) {
@@ -129,9 +130,9 @@ class PS_VoiceButton : PS_HideableButton
 	void VoiceMuteSwitch(Widget button)
 	{
 		if (m_iCurrentPlayerId == m_iPlayerId) return;
-		PermissionState mute = m_PlayerController.GetPlayerMutedState(m_iPlayerId);
-		if (mute == PermissionState.ALLOWED) m_PlayerController.SetPlayerMutedState(m_iPlayerId, PermissionState.DISALLOWED);
-		else m_PlayerController.SetPlayerMutedState(m_iPlayerId, PermissionState.ALLOWED);
+		SocialComponent socialComp = SocialComponent.Cast(GetGame().GetPlayerController().FindComponent(SocialComponent));
+		bool mute = socialComp.IsMuted(m_iPlayerId);
+		socialComp.SetMuted(m_iPlayerId, !mute);
 		
 		m_OnMuteStateChanged.Invoke(m_iPlayerId);
 	}
