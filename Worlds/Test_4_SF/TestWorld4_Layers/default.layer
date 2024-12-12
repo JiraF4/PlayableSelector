@@ -3,6 +3,7 @@ SCR_AIWorld : "{E0A05C76552E7F58}Prefabs/AI/SCR_AIWorld.et" {
 PerceptionManager PerceptionManager1 : "{028DAEAD63E056BE}Prefabs/World/Game/PerceptionManager.et" {
 }
 PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_GameMode_Lobby.et" {
+ m_bMarkersOnlyOnBriefing 1
  {
   SCR_FactionManager "61B4C3089202C7A7" {
    ID "5ED9088735FF2D8B"
@@ -15,11 +16,4 @@ PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_Game
  }
 }
 SCR_BaseTaskManager : "{1AC69CD7907FB4F8}Prefabs/ScenarioFramework/Tasks/TaskManager.et" {
-}
-PS_ManualMarker : "{CD85ADE9E0F54679}PrefabsEditable/Markers/EditableMarker.et" {
- coords 107.305 1 156.067
- m_sQuadName "flag-2"
- m_fWorldSize 40
- m_bVisibleForEmptyFaction 1
- m_bShowForAnyFaction 1
 }

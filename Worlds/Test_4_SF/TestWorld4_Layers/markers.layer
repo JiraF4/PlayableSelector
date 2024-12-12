@@ -1,17 +1,26 @@
-PS_ManualMarker US_G_000_M : "{CD85ADE9E0F54679}PrefabsEditable/Markers/EditableMarker.et" {
- coords 120.611 1 135.741
- m_sImageSet "{1228936E5DB30403}UI/Textures/GroupManagement/FlagIcons/GroupFlagsBlufor.imageset"
- m_sImageSetGlow ""
- m_MarkerColor 1 1 1 1
- m_sQuadName "undefined"
- m_fWorldSize 50
- m_sDescription "Atlas Red 1"
- m_bUseWorldScale 0
- m_aVisibleForFactions {
-  "FIA" "US" "USSR"
+$grp PS_ManualMarker : "{CD85ADE9E0F54679}PrefabsEditable/Markers/EditableMarker.et" {
+ US_G_000_M {
+  coords 120.611 1 135.741
+  m_sImageSet "{1228936E5DB30403}UI/Textures/GroupManagement/FlagIcons/GroupFlagsBlufor.imageset"
+  m_sImageSetGlow ""
+  m_MarkerColor 1 1 1 1
+  m_sQuadName "undefined"
+  m_fWorldSize 50
+  m_sDescription "Atlas Red 1"
+  m_bUseWorldScale 0
+  m_aVisibleForFactions {
+   "FIA" "US" "USSR"
+  }
+  m_bVisibleForEmptyFaction 1
+  m_aHideOnGameModeStates {
+  }
+  m_iZOrder 10
  }
- m_bVisibleForEmptyFaction 1
- m_aHideOnGameModeStates {
+ {
+  coords 107.305 1 156.067
+  m_sQuadName "flag-2"
+  m_fWorldSize 40
+  m_bVisibleForEmptyFaction 1
+  m_bShowForAnyFaction 1
  }
- m_iZOrder 10
 }
