@@ -1,0 +1,30 @@
+$grp Projectile : "{98EC9C526AFBA282}Prefabs/Weapons/Ammo/Ammo_Shell_82mm_HE_O832DU.et" {
+ {
+  coords 4771.708 23.381 12049.58
+ }
+ {
+  coords 4771.689 23.381 12049.577
+ }
+ {
+  coords 4771.746 23.381 12049.592
+ }
+ {
+  coords 4771.788 23.381 12049.599
+ }
+ {
+  coords 4771.769 23.381 12049.6
+ }
+ {
+  coords 4771.674 23.381 12049.578
+ }
+ {
+  coords 4771.667 23.381 12049.583
+ }
+ {
+  coords 4771.727 23.381 12049.584
+ }
+}
+Turret : "{D1FFE458E8AC4BDB}Prefabs/Weapons/Mortars/2B14/Mortar_2B14.et" {
+ coords 4773.606 23.378 12049.826
+ angleY 180
+}

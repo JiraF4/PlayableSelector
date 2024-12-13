@@ -20,7 +20,9 @@ class PS_AttachManualCameraObserverComponent : SCR_BaseManualCameraComponent
 	static PS_AttachManualCameraObserverComponent m_Instance;
 	
 	IEntity GetTarget()
+	{
 		return m_Target;
+	}
 	
 	//------------------------------------------------------------------------------------------------
 	//!

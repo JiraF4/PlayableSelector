@@ -40,19 +40,19 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
   }
   MeshObject "{520EA1D2F659C81F}" {
    Materials {
-    MaterialAssignClass "{624279F27C4FDC4E}" {
+    MaterialAssignClass "{631AEBB5B7397AFE}" {
      SourceMaterial "Basebody_01_Male_Arms"
      AssignedMaterial "{9668A21511C6F791}Assets/_SharedData/Decals/Invisible_Material.emat"
     }
-    MaterialAssignClass "{624279F27C4FDC62}" {
+    MaterialAssignClass "{631AEBB5B7397A20}" {
      SourceMaterial "Basebody_01_Male_Arms_wound"
      AssignedMaterial "{9668A21511C6F791}Assets/_SharedData/Decals/Invisible_Material.emat"
     }
-    MaterialAssignClass "{624279F27C4FDB97}" {
+    MaterialAssignClass "{631AEBB5B7397A26}" {
      SourceMaterial "Basebody_01_Male_Body"
      AssignedMaterial "{9668A21511C6F791}Assets/_SharedData/Decals/Invisible_Material.emat"
     }
-    MaterialAssignClass "{624279F27C4FDB9A}" {
+    MaterialAssignClass "{631AEBB5B7397A2A}" {
      SourceMaterial "Basebody_01_Male_Body_wound"
      AssignedMaterial "{9668A21511C6F791}Assets/_SharedData/Decals/Invisible_Material.emat"
     }
@@ -92,7 +92,6 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
    }
   }
   CharacterAnimationComponent "{520EA1D2F659C994}" {
-   AnimGraph "{BD1FFB356D76A384}anims/workspaces/player/player_main_PS_VON.agr"
    AnimInstance "{B086D0CD3B9E3AB0}anims/workspaces/player/player_PS_VON.asi"
    ColliderStand PhysAgentCollisionShapeItem "{5570AA65EEDB5E11}" {
     Size 0 0 0

@@ -28,52 +28,84 @@ class PS_PlayableComponent : ScriptComponent
 	// Cache components
 	protected SCR_ChimeraCharacter m_Owner;
 	SCR_ChimeraCharacter GetOwnerCharacter()
+	{
 		return m_Owner;
+	}
 	protected FactionAffiliationComponent m_FactionAffiliationComponent;
 	FactionAffiliationComponent GetFactionAffiliationComponent()
+	{
 		return m_FactionAffiliationComponent;
+	}
 	protected SCR_EditableCharacterComponent m_EditableCharacterComponent;
 	SCR_EditableCharacterComponent GetEditableCharacterComponent()
+	{
 		return m_EditableCharacterComponent;
+	}
 	protected SCR_UIInfo m_EditableUIInfo;
 	SCR_UIInfo GetEditableUIInfo()
+	{
 		return m_EditableUIInfo;
+	}
 	protected SCR_CharacterDamageManagerComponent m_CharacterDamageManagerComponent;
 	SCR_CharacterDamageManagerComponent GetCharacterDamageManagerComponent()
+	{
 		return m_CharacterDamageManagerComponent;
+	}
 	protected AIControlComponent m_AIControlComponent;
 	AIControlComponent GetAIControlComponent()
+	{
 		return m_AIControlComponent;
+	}
 	protected AIAgent m_AIAgent;
 	AIAgent GetAIAgent()
+	{
 		return m_AIAgent;
+	}
 	
 	// Events
 	protected ref ScriptInvokerInt m_eOnPlayerChange = new ScriptInvokerInt(); // int playerId
 	ScriptInvokerInt GetOnPlayerChange()
+	{
 		return m_eOnPlayerChange;
+	}
 	void InvokeOnPlayerChanged(int playerId)
+	{
 		m_eOnPlayerChange.Invoke(playerId);
+	}
 	ScriptInvoker GetOnDamageStateChanged()
+	{
 		return GetCharacterDamageManagerComponent().GetOnDamageStateChanged();
+	}
 	protected ref ScriptInvokerVoid m_eOnUnregister = new ScriptInvokerVoid();
 	ScriptInvokerVoid GetOnUnregister()
+	{
 		return m_eOnUnregister;
+	}
 	protected ref ScriptInvokerBase<SCR_BaseGameMode_OnPlayerDisconnected> m_eOnPlayerDisconnected = new ScriptInvokerBase<SCR_BaseGameMode_OnPlayerDisconnected>();
 	ScriptInvokerBase<SCR_BaseGameMode_OnPlayerDisconnected> GetOnPlayerDisconnected()
+	{
 		return m_eOnPlayerDisconnected;
+	}
 	protected ref ScriptInvokerBase<SCR_BaseGameMode_PlayerId> m_eOnPlayerConnected = new ScriptInvokerBase<SCR_BaseGameMode_PlayerId>();
 	ScriptInvokerBase<SCR_BaseGameMode_PlayerId> GetOnPlayerConnected()
+	{
 		return m_eOnPlayerConnected;
+	}
 	protected ref ScriptInvokerBase<SCR_BaseGameMode_OnPlayerRoleChanged> m_eOnPlayerRoleChange = new ScriptInvokerBase<SCR_BaseGameMode_OnPlayerRoleChanged>();
 	ScriptInvokerBase<SCR_BaseGameMode_OnPlayerRoleChanged> GetOnPlayerRoleChange()
+	{
 		return m_eOnPlayerRoleChange;
+	}
 	protected ref ScriptInvokerInt m_eOnPlayerStateChange = new ScriptInvokerInt();
 	ScriptInvokerInt GetOnPlayerStateChange()
+	{
 		return m_eOnPlayerStateChange;
+	}
 	protected ref ScriptInvokerBool m_eOnPlayerPinChange = new ScriptInvokerBool();
 	ScriptInvokerBool GetOnPlayerPinChange()
+	{
 		return m_eOnPlayerPinChange;
+	}
 	
 	// Temporally
 	static protected int m_iRespawnTime;
@@ -168,7 +200,9 @@ class PS_PlayableComponent : ScriptComponent
 		GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.PlayableRespawnMenu);
 	}
 	int GetRespawnTime()
+	{
 		return m_iRespawnTime;
+	}
 
 	void ResetRplStream()
 	{

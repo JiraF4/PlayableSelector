@@ -54,37 +54,59 @@ class PS_PlayableManager : ScriptComponent
 	// Invokers
 	ref ScriptInvokerInt m_eOnPlayerConnected = new ScriptInvokerInt();
 	ScriptInvokerInt GetOnPlayerConnected()
+	{
 		return m_eOnPlayerConnected;
+	}
 	ref ScriptInvokerBase<SCR_BaseGameMode_OnPlayerDisconnected> m_eOnPlayerDisconnected = new ScriptInvokerBase<SCR_BaseGameMode_OnPlayerDisconnected>();
 	ScriptInvokerBase<SCR_BaseGameMode_OnPlayerDisconnected> GetOnPlayerDisconnected()
+	{
 		return m_eOnPlayerDisconnected;
+	}
 	ref PS_ScriptInvokerFactionChange m_eOnFactionChange = new PS_ScriptInvokerFactionChange(); // int playerId, FactionKey factionKey, FactionKey factionKeyOld
 	PS_ScriptInvokerFactionChange GetOnFactionChange()
+	{
 		return m_eOnFactionChange;
+	}
 	ref PS_ScriptInvokerPlayable m_eOnPlayableRegistered = new PS_ScriptInvokerPlayable(); 
 	PS_ScriptInvokerPlayable GetOnPlayableRegistered()
+	{
 		return m_eOnPlayableRegistered;
+	}
 	ref PS_ScriptInvokerPlayable m_eOnPlayableUnregistered = new PS_ScriptInvokerPlayable();
 	PS_ScriptInvokerPlayable GetOnPlayableUnregistered()
+	{
 		return m_eOnPlayableUnregistered;
+	}
 	ref PS_ScriptInvokerPinChange m_eOnPlayerPinChange = new PS_ScriptInvokerPinChange();
 	PS_ScriptInvokerPinChange GetOnPlayerPinChange()
+	{
 		return m_eOnPlayerPinChange;
+	}
 	ref PS_ScriptInvokerPlayerStateChange m_eOnPlayerStateChange = new PS_ScriptInvokerPlayerStateChange();
 	PS_ScriptInvokerPlayerStateChange GetOnPlayerStateChange()
+	{
 		return m_eOnPlayerStateChange;
+	}
 	ref PS_ScriptInvokerPlayerPlayableChange m_eOnPlayerPlayableChange = new PS_ScriptInvokerPlayerPlayableChange();
 	PS_ScriptInvokerPlayerPlayableChange GetOnPlayerPlayableChange()
+	{
 		return m_eOnPlayerPlayableChange;
+	}
 	ref PS_ScriptInvokerPlayableChangeGroup m_eOnPlayableChangeGroup = new PS_ScriptInvokerPlayableChangeGroup();
 	PS_ScriptInvokerPlayableChangeGroup GetOnPlayableChangeGroup()
+	{
 		return m_eOnPlayableChangeGroup;
+	}
 	ref ScriptInvokerInt m_eOnStartTimerCounterChanged = new ScriptInvokerInt();
 	ScriptInvokerInt GetOnStartTimerCounterChanged()
+	{
 		return m_eOnStartTimerCounterChanged;
+	}
 	ref PS_ScriptInvokerFactionReadyChangeGroup m_eFactionReadyChanged = new PS_ScriptInvokerFactionReadyChangeGroup();
 	PS_ScriptInvokerFactionReadyChangeGroup GetOnFactionReadyChanged()
+	{
 		return m_eFactionReadyChanged;
+	}
 	
 	[RplProp()]
 	int m_iMaxPlayersCount = 1;

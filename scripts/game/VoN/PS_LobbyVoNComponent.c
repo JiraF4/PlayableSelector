@@ -20,13 +20,19 @@ class PS_LobbyVoNComponent : VoNComponent
 	
 	ref PS_ScriptInvokerOnReceive m_ScriptInvokerOnReceiveStart = new PS_ScriptInvokerOnReceive();
 	PS_ScriptInvokerOnReceive GetOnReceiveStart()
+	{
 		return m_ScriptInvokerOnReceiveStart;
+	}
 	ref ScriptInvokerInt m_ScriptInvokerOnReceiveEnd = new ScriptInvokerInt();
 	ScriptInvokerInt GetOnReceiveEnd()
+	{
 		return m_ScriptInvokerOnReceiveEnd;
+	}
 	ref PS_ScriptInvokerOnCapture m_ScriptInvokerOnCaptured = new PS_ScriptInvokerOnCapture();
 	PS_ScriptInvokerOnCapture GetOnCaptured()
+	{
 		return m_ScriptInvokerOnCaptured;
+	}
 	
 	void PS_LobbyVoNComponent(IEntityComponentSource src, IEntity ent, IEntity parent)
 	{
