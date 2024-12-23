@@ -54,7 +54,7 @@ class PS_ManualCameraSpectator: SCR_ManualCamera
 		characterCameraHandlerComponent.OnAlphatestChange(255);
 		
 		int boneHead = m_eCharacterEntity.GetAnimation().GetBoneIndex("Head");
-		int boneEyeLeft = m_eCharacterEntity.GetAnimation().GetBoneIndex("EyeLeft");
+		int boneEyeLeft = m_eCharacterEntity.GetAnimation().GetBoneIndex("leftEye");
 		vector mat[4];
 		m_eCharacterEntity.GetTransform(mat);
 		vector matHead[4];
