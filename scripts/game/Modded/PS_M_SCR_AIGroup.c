@@ -48,9 +48,11 @@ modded class SCR_AIGroup : ChimeraAIGroup
 		// WHY? THIS IS STUPID...
 		
 		if (RplSession.Mode() != RplMode.Dedicated)
+		{
 			SocialComponent socialComp = SocialComponent.Cast(GetGame().GetPlayerController().FindComponent(SocialComponent));
 			if (!socialComp.IsRestricted(m_iNameAuthorID, EUserInteraction.UserGeneratedContent) && m_iNameAuthorID != -1 /* -1 is server "player" since 0 = invalide*/)
 				return string.Empty;
+		}
 		
 		return m_sCustomName;
 	}
