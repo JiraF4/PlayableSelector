@@ -50,6 +50,7 @@ class PS_PlayableManager : ScriptComponent
 	ref map<RplId, int> m_playablePlayerGroupId = new map<RplId, int>; // playable to player group
 	ref map<int, string> m_playersLastName = new map<int, string>; // playerid to player name (persistant)
 	ref map<FactionKey, int> m_mFactionReady = new map<FactionKey, int>; // faction ready state
+	ref map<RplId, string> m_mPlayablePrefabs = new map<RplId, string>;
 	
 	// Invokers
 	ref ScriptInvokerInt m_eOnPlayerConnected = new ScriptInvokerInt();
@@ -498,6 +499,7 @@ class PS_PlayableManager : ScriptComponent
 		if (m_aPlayables.Contains(playableId))
 			return;
 		m_aPlayables[playableId] = playableComponent;
+		m_mPlayablePrefabs[playableId] = playableComponent.GetOwner().GetPrefabData().GetPrefabName();
 		
 		GetGame().GetCallqueue().Call(OnPlayableRegisteredLateInvoke, playableId, playableComponent);
 		GetGame().GetCallqueue().Remove(UpdatePlayablesSortedWrap);
@@ -1004,6 +1006,14 @@ class PS_PlayableManager : ScriptComponent
 			writer.WriteInt(m_mFactionReady.GetElement(i));
 		}
 		
+		int playablePrefabsCount = m_mPlayablePrefabs.Count();
+		writer.WriteInt(playablePrefabsCount);
+		for (int i = 0; i < playablePrefabsCount; i++)
+		{
+			writer.WriteInt(m_mPlayablePrefabs.GetKey(i));
+			writer.WriteString(m_mPlayablePrefabs.GetElement(i));
+		}
+		
 		return true;
 	}
 	
@@ -1127,6 +1137,18 @@ class PS_PlayableManager : ScriptComponent
 			reader.ReadInt(value);
 			
 			m_mFactionReady.Insert(key, value);
+		}
+		
+		int playablePrefabsCount;
+		reader.ReadInt(playablePrefabsCount);
+		for (int i = 0; i < playablePrefabsCount; i++)
+		{
+			int key;
+			string value;
+			reader.ReadInt(key);
+			reader.ReadString(value);
+			
+			m_mPlayablePrefabs.Insert(key, value);
 		}
 		
 		m_bRplLoaded = true;

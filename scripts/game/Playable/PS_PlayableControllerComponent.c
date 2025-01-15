@@ -136,6 +136,29 @@ class PS_PlayableControllerComponent : ScriptComponent
 		gameMode.FactionLockSwitch();
 	}
 	
+	// ------ SpawnPrefab ------
+	void SpawnPrefab(string GUID)
+	{
+		IEntity camera = GetGame().GetCameraManager().CurrentCamera();
+		Rpc(RPC_SpawnPrefab, camera.GetOrigin(), GUID);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void RPC_SpawnPrefab(vector position, string GUID)
+	{
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		if (!SCR_Global.IsAdmin(thisPlayerController.GetPlayerId()))
+			return;
+		
+		Resource resource = Resource.Load(GUID);
+		EntitySpawnParams entitySpawnParams = new EntitySpawnParams();
+		Math3D.MatrixIdentity4(entitySpawnParams.Transform);
+		entitySpawnParams.Transform[3] = position;
+		
+		IEntity entity = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), entitySpawnParams);
+		Physics physics = entity.GetPhysics();
+		if (physics)
+			physics.SetActive(ActiveState.ACTIVE);
+	}
 	
 	// ------ ForceRespawnPlayer ------
 	void ForceRespawnPlayer(bool initPosition = false)
@@ -199,6 +222,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		character.GetDamageManager().SetHealthScaled(0);
 		GetGame().GetCallqueue().CallLater(RPC_ForceRespawnPlayerLate, 300, false, character, oldPlayableComponent, newCharacter, playableComponent);
 	}
+	
 	void RPC_ForceRespawnPlayerLate(SCR_ChimeraCharacter character, PS_PlayableComponent oldPlayableComponent, SCR_ChimeraCharacter newCharacter, PS_PlayableComponent playableComponent)
 	{
 		character.GetDamageManager().Kill(Instigator.CreateInstigator(newCharacter));
@@ -210,17 +234,20 @@ class PS_PlayableControllerComponent : ScriptComponent
 		}
 		
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
 		SCR_AIGroup aiGroup = playableManager.GetPlayerGroupByPlayable(oldPlayableComponent.GetId());
 		SCR_AIGroup playabelGroup = aiGroup.GetSlave();
+		playabelGroup.AddAIEntityToGroup(character);
 		playableManager.SetPlayablePlayerGroupId(playableComponent.GetId(), aiGroup.GetGroupID());
 		int playerId = playableManager.GetPlayerByPlayableRemembered(oldPlayableComponent.GetId());
+		VoNRoomsManager.MoveToRoom(playerId, "", "");
 		if (playerId > -1)
 		{
 			GetGame().GetCallqueue().CallLater(RPC_ForceRespawnPlayerLate2, 500, false, playerId, playableComponent);
 		}
 	}
 	void RPC_ForceRespawnPlayerLate2(int playerId, PS_PlayableComponent playable)
-	{
+	{		
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		playableManager.SetPlayerPlayable(playerId, playable.GetId());
 		ForceSwitch(playerId);

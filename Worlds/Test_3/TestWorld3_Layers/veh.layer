@@ -1,15 +1,26 @@
-Vehicle UAZ1 : "{259EE7B78C51B624}Prefabs/Vehicles/Wheeled/UAZ469/UAZ469.et" {
- coords 163.788 1 100.356
+SCR_AIGroup Test : "{126BE8C46FA39581}Prefabs/Groups/INDFOR/Group_FIA_FireTeam_P.et" {
+ coords 118.322 1 107.925
 }
-Vehicle APC_K17_Berezok1 : "{31F0866273C46D76}Prefabs/Vehicles/Wheeled/K17/APC_K17_Berezok.et" {
- coords 146.786 1 100.907
-}
-Vehicle M2 : "{4A71F755A4513227}Prefabs/Vehicles/Wheeled/M998/M1025.et" {
- coords 163.619 1 108.934
-}
-Vehicle M1 : "{5674FAEB9AB7BDD0}Prefabs/Vehicles/Wheeled/M998/M998.et" {
- coords 139.972 1 117.161
-}
-SCR_AIGroup : "{B8A93A079D9D29A7}Prefabs/Groups/OPFOR/RHS_AFRF/MSV/VKPO3_MC_SPN/Group_RHS_RF_MSV_VKPO3_SPN_S_PlatoonHQ.et" {
- coords 136.133 5.19 96.838
+PolylineShapeEntity : "{7019844BAD5C4DD8}Prefabs/PolyZone/PolyZone_Border.et" {
+ coords 117.101 1 92.769
+ Points {
+  ShapePoint "{645EFC7FFD583EBD}" {
+   Position 11.972 -0 6.362
+  }
+  ShapePoint "{645EFC7FFE9A421E}" {
+   Position 8.925 -0 19.956
+  }
+  ShapePoint "{645EFC7FFEC5BE58}" {
+   Position -9.361 -0 23.434
+  }
+  ShapePoint "{645EFC7FFE082B22}" {
+   Position -6.641 -0 1.661
+  }
+ }
+ {
+  PS_PolyZoneTrigger {
+   ID "60FD050E1E83544C"
+   m_sGroupKey "Test"
+  }
+ }
 }

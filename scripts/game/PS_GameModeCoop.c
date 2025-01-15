@@ -191,6 +191,18 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		invoker.Insert(RespawnInit_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("unc");
 		invoker.Insert(ForceUnconsious_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("spw");
+		invoker.Insert(SpawnInit_Callback);
+	}
+	
+	void SpawnInit_Callback(SCR_ChatPanel panel, string data)
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		if (!playableController)
+			return;
+		
+		playableController.SpawnPrefab(data);
 	}
 	
 	void ForceUnconsious_Callback(SCR_ChatPanel panel, string data)
