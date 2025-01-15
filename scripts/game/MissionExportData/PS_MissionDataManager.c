@@ -227,16 +227,16 @@ class PS_MissionDataManager : ScriptComponent
 		
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		
-		array<PS_PlayableComponent> playables = playableManager.GetPlayablesSorted();
+		array<PS_PlayableContainer> playables = playableManager.GetPlayablesSorted();
 		
 		PS_MissionDataGroup groupData = new PS_MissionDataGroup();
 		PS_MissionDataFaction factionData = new PS_MissionDataFaction();
 		
 		map<Faction, PS_MissionDataFaction> factionsMap = new map<Faction, PS_MissionDataFaction>();
 		map<SCR_AIGroup, PS_MissionDataGroup> groupsMap = new map<SCR_AIGroup, PS_MissionDataGroup>();
-		foreach (PS_PlayableComponent playable : playables)
+		foreach (PS_PlayableContainer playable : playables)
 		{
-			IEntity character = playable.GetOwner();
+			IEntity character = playable.GetPlayableComponent().GetOwner();
 			AIControlComponent aiComponent = AIControlComponent.Cast(character.FindComponent(AIControlComponent));
 			AIAgent agent = aiComponent.GetAIAgent();
 			SCR_AIGroup group = SCR_AIGroup.Cast(agent.GetParentGroup());
@@ -271,7 +271,7 @@ class PS_MissionDataManager : ScriptComponent
 				string callsign;
 				callsign = WidgetManager.Translate(format, company, platoon, squad, "");
 				
-				groupData.Callsign = playableManager.GetGroupCallsignByPlayable(playable.GetId());
+				groupData.Callsign = playableManager.GetGroupCallsignByPlayable(playable.GetRplId());
 				groupData.CallsignName = callsign;
 				groupData.Name = customName;
 				
@@ -281,20 +281,18 @@ class PS_MissionDataManager : ScriptComponent
 			
 			array<AIAgent> outAgents = new array<AIAgent>();
 			group.GetAgents(outAgents);
-			SCR_EditableCharacterComponent editableCharacterComponent = SCR_EditableCharacterComponent.Cast(character.FindComponent(SCR_EditableCharacterComponent));
-			SCR_UIInfo uiInfo = editableCharacterComponent.GetInfo();
 			
 			PS_MissionDataPlayable missionDataPlayable = new PS_MissionDataPlayable();
 			
-			SCR_CharacterDamageManagerComponent damageManagerComponent = playable.GetCharacterDamageManagerComponent();
+			SCR_CharacterDamageManagerComponent damageManagerComponent = playable.GetPlayableComponent().GetCharacterDamageManagerComponent();
 			
 			damageManagerComponent.GetOnDamage().Insert(OnDamaged);
-			m_RplToDamageManager.Insert(playable.GetId(), damageManagerComponent);
-			missionDataPlayable.EntityId = playable.GetId();
+			m_RplToDamageManager.Insert(playable.GetRplId(), damageManagerComponent);
+			missionDataPlayable.EntityId = playable.GetRplId();
 			missionDataPlayable.GroupOrder = outAgents.Find(agent);
 			missionDataPlayable.Name = WidgetManager.Translate("%1", playable.GetName());
-			missionDataPlayable.RoleName = WidgetManager.Translate("%1", uiInfo.GetName());
-			m_EntityToRpl.Insert(character.GetID(), playable.GetId());
+			missionDataPlayable.RoleName = WidgetManager.Translate("%1", playable.GetRoleName());
+			m_EntityToRpl.Insert(character.GetID(), playable.GetRplId());
 			
 			groupData.Playables.Insert(missionDataPlayable);
 		}
@@ -302,12 +300,12 @@ class PS_MissionDataManager : ScriptComponent
 	
 	void SavePlayers()
 	{
-		array<PS_PlayableComponent> playables = m_PlayableManager.GetPlayablesSorted();
+		array<PS_PlayableContainer> playables = m_PlayableManager.GetPlayablesSorted();
 		
-		foreach (PS_PlayableComponent playable : playables)
+		foreach (PS_PlayableContainer playable : playables)
 		{
-			IEntity character = playable.GetOwner();
-			RplId playableId = playable.GetId();
+			IEntity character = playable.GetPlayableComponent().GetOwner();
+			RplId playableId = playable.GetRplId();
 			int playerId = m_PlayableManager.GetPlayerByPlayable(playableId);
 			
 			PS_MissionDataPlayerToEntity playerToEntity = new PS_MissionDataPlayerToEntity();

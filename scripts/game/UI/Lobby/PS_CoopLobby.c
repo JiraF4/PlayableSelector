@@ -181,8 +181,8 @@ class PS_CoopLobby : MenuBase
 		m_ChatPanel.OnUpdateChat(tDelta);
 		
 		// Force refreash
-		if (m_wLoadoutPreviewBody.IsVisible())
-			m_wPreview.SetRefresh(1, 1);
+		//if (m_wLoadoutPreviewBody.IsVisible())
+		//	m_wPreview.SetRefresh(1, 1);
 		
 		m_GameModeHeader.TryUpdate();
 	};
@@ -217,33 +217,37 @@ class PS_CoopLobby : MenuBase
 	
 	void InitPlayables()
 	{
-		array<PS_PlayableComponent> playables = m_PlayableManager.GetPlayablesSorted();
-		map<SCR_Faction, ref Tuple2<int, int>> factions = new map<SCR_Faction, ref Tuple2<int, int>>();
+		array<PS_PlayableContainer> playables = m_PlayableManager.GetPlayablesSorted();
+		map<SCR_Faction, ref Tuple3<int, int, int>> factions = new map<SCR_Faction, ref Tuple3<int, int, int>>();
 		
-		foreach (PS_PlayableComponent playable : playables)
+		foreach (PS_PlayableContainer playable : playables)
 		{
 			AddPlayable(playable);
 			
-			int playerId = m_PlayableManager.GetPlayerByPlayable(playable.GetId());
+			int playerId = m_PlayableManager.GetPlayerByPlayable(playable.GetRplId());
 			int playerAdded = 0;
+			int playerAddedMax = 1;
+			int playerAddedLocked = 0;
 			if (playerId >= 0)
 				playerAdded = 1;
+			if (playerId == -2)
+				playerAddedLocked = 1;
 			
-			FactionAffiliationComponent factionAffiliationComponent = playable.GetFactionAffiliationComponent();
-			SCR_Faction faction = SCR_Faction.Cast(factionAffiliationComponent.GetDefaultAffiliatedFaction());
+			SCR_Faction faction = playable.GetFaction();
 			if (!factions.Contains(faction))
-				factions.Insert(faction, new Tuple2<int, int>(playerAdded, 1));
+				factions.Insert(faction, new Tuple3<int, int, int>(playerAdded, playerAddedMax, playerAddedLocked));
 			else
 			{
-				Tuple2<int, int> tuple = factions.Get(faction);
+				Tuple3<int, int, int> tuple = factions.Get(faction);
 				tuple.param1 += playerAdded;
-				tuple.param2 += 1;
+				tuple.param2 += playerAddedMax;
+				tuple.param3 += playerAddedLocked;
 			}
 		}
 		
-		foreach (SCR_Faction faction, Tuple2<int, int> count : factions)
+		foreach (SCR_Faction faction, Tuple3<int, int, int> count : factions)
 		{
-			AddFaction(faction, count.param1, count.param2);
+			AddFaction(faction, count.param1, count.param2, count.param3);
 		}
 		
 		// Added in runtime
@@ -258,21 +262,22 @@ class PS_CoopLobby : MenuBase
 	
 	// --------------------------------------------------------------------------------------------------------------------------------
 	// Add
-	void AddFaction(SCR_Faction faction, int count, int maxCount)
+	void AddFaction(SCR_Faction faction, int count, int maxCount, int lockedCount)
 	{
 		Widget factionSelectorRoot = m_wWorkspaceWidget.CreateWidgets(m_sFactionSelectorPrefab, m_wFactionList);
 		PS_FactionSelector factionSelector = PS_FactionSelector.Cast(factionSelectorRoot.FindHandler(PS_FactionSelector));
 		factionSelector.SetFaction(faction);
 		factionSelector.SetCount(count);
 		factionSelector.SetMaxCount(maxCount);
+		factionSelector.SetLockedCount(lockedCount);
 		factionSelector.SetCoopLobby(this);
 		factionSelector.SetToggled(m_CurrentFaction == faction);
 		m_mFactions.Insert(faction, factionSelector);
 	}
 	
-	void AddPlayable(PS_PlayableComponent playable)
+	void AddPlayable(PS_PlayableContainer playable)
 	{
-		SCR_AIGroup playableGroup = m_PlayableManager.GetPlayerGroupByPlayable(playable.GetId());
+		SCR_AIGroup playableGroup = m_PlayableManager.GetPlayerGroupByPlayable(playable.GetRplId());
 		PS_RolesGroup rolesGroup;
 		if (!m_mGroups.Contains(playableGroup))
 		{
@@ -282,8 +287,7 @@ class PS_CoopLobby : MenuBase
 			rolesGroup.SetAIGroup(playableGroup);
 			m_mGroups.Insert(playableGroup, rolesGroup);
 		
-			FactionAffiliationComponent factionAffiliationComponent = playable.GetFactionAffiliationComponent();
-			SCR_Faction faction = SCR_Faction.Cast(factionAffiliationComponent.GetDefaultAffiliatedFaction());
+			SCR_Faction faction = playable.GetFaction();
 			rolesGroupRoot.SetVisible(m_CurrentFaction == faction);
 		}
 		else rolesGroup = m_mGroups.Get(playableGroup);
@@ -298,7 +302,7 @@ class PS_CoopLobby : MenuBase
 	void AddFactionCount(SCR_Faction faction, int added, int addedMax, int addedLocked = 0)
 	{
 		if (!m_mFactions.Contains(faction))
-			AddFaction(faction, 0, 0);
+			AddFaction(faction, 0, 0, 0);
 		PS_FactionSelector factionSelector = m_mFactions.Get(faction);
 		int count = factionSelector.GetCount();
 		int maxCount = factionSelector.GetMaxCount();
@@ -336,8 +340,13 @@ class PS_CoopLobby : MenuBase
 	
 	// --------------------------------------------------------------------------------------------------------------------------------
 	// Events
-	void OnPlayableRegistered(RplId playableId, PS_PlayableComponent playable)
+	void OnPlayableRegistered(RplId playableId, PS_PlayableContainer playable)
 	{
+		SCR_Faction faction = playable.GetFaction();
+		if (!m_mFactions.Contains(faction))
+		{
+			AddFaction(faction, 0, 1, 0);
+		}
 		AddPlayable(playable);
 	}
 	
@@ -346,12 +355,11 @@ class PS_CoopLobby : MenuBase
 		
 	}
 	
-	void OnPlayableRemoved(PS_PlayableComponent playable)
+	void OnPlayableRemoved(PS_PlayableContainer playable)
 	{
-		FactionAffiliationComponent factionAffiliationComponent = playable.GetFactionAffiliationComponent();
-		SCR_Faction faction = SCR_Faction.Cast(factionAffiliationComponent.GetDefaultAffiliatedFaction());
+		SCR_Faction faction = playable.GetFaction();
 		
-		int playerId = m_PlayableManager.GetPlayerByPlayable(playable.GetId());
+		int playerId = m_PlayableManager.GetPlayerByPlayable(playable.GetRplId());
 		int playerAdded = 0;
 		int lockedAdded = 0;
 		if (playerId >= 0)
@@ -394,14 +402,14 @@ class PS_CoopLobby : MenuBase
 		m_wRolesScroll.SetSliderPos(0, 0);
 	}
 	
-	void SetPreviewPlayable(PS_PlayableComponent playable)
+	void SetPreviewPlayable(RplId playableId)
 	{
-		if (!playable)
+		if (!playableId.IsValid())
 		{
-			RplId playableId = m_PlayableManager.GetPlayableByPlayer(m_iPlayerId);
-			playable = m_PlayableManager.GetPlayableById(playableId);
+			playableId = m_PlayableManager.GetPlayableByPlayer(m_iPlayerId);
 		}
-		m_LobbyLoadoutPreview.SetPlayable(playable);
+		string prefabName = m_PlayableManager.GetPlayablePrefab(playableId);
+		m_LobbyLoadoutPreview.SetPreviewPlayable(playableId, prefabName);
 	}
 	
 	void UpdatePlayerFaction(int playerId, FactionKey factionKey, FactionKey factionKeyOld)

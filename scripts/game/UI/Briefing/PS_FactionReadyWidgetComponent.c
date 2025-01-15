@@ -58,14 +58,13 @@ class PS_FactionReadyWidgetComponent : PS_HideableButton
 		if (m_sFactionKey != m_sCurrentFactionKey)
 			return;
 		
-		array<PS_PlayableComponent> playables = m_PlayableManager.GetPlayablesSorted();
-		foreach (PS_PlayableComponent playableComponent: playables)
+		array<PS_PlayableContainer> playables = m_PlayableManager.GetPlayablesSorted();
+		foreach (PS_PlayableContainer playableContainer: playables)
 		{
-			FactionAffiliationComponent factionAffiliationComponent = playableComponent.GetFactionAffiliationComponent();
-			if (factionAffiliationComponent.GetDefaultFactionKey() != m_sFactionKey)
+			if (playableContainer.GetFactionKey() != m_sFactionKey)
 				continue;
 			
-			int playerId = m_PlayableManager.GetPlayerByPlayable(playableComponent.GetId());
+			int playerId = m_PlayableManager.GetPlayerByPlayable(playableContainer.GetRplId());
 			if (playerId <= 0)
 				continue;
 			

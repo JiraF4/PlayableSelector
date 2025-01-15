@@ -1,14 +1,12 @@
 class PS_PlayableHelper
 {
-	static string GetPlayableGroupKey(PS_PlayableComponent playableComponent)
+	static string GetPlayableGroupKey(PS_PlayableContainer playableContainer)
 	{
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		
-		FactionAffiliationComponent factionAffiliationComponent = playableComponent.GetFactionAffiliationComponent();
-		Faction faction = factionAffiliationComponent.GetDefaultAffiliatedFaction();
-		FactionKey factionKey = faction.GetFactionKey();
+		FactionKey factionKey = playableContainer.GetFactionKey();
 		
-		int callsign = playableManager.GetGroupCallsignByPlayable(playableComponent.GetId());
+		int callsign = playableManager.GetGroupCallsignByPlayable(playableContainer.GetRplId());
 		
 		return factionKey + callsign.ToString();
 	}

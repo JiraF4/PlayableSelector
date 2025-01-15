@@ -24,20 +24,14 @@ class PS_SidesRation : SCR_ScriptedWidgetComponent
 		
 		map<FactionKey, int> factionsCount = new map<FactionKey, int>();
 		
-		map<RplId, PS_PlayableComponent> playables = playableManager.GetPlayables();
-		foreach (RplId id, PS_PlayableComponent playableComponent : playables)
+		map<RplId, ref PS_PlayableContainer> playables = playableManager.GetPlayables();
+		foreach (RplId id, PS_PlayableContainer playableComponent : playables)
 		{
-			SCR_ChimeraCharacter chimeraCharacter = SCR_ChimeraCharacter.Cast(playableComponent.GetOwner());
-			if (!chimeraCharacter)
-				continue;
-			SCR_CharacterDamageManagerComponent characterDamageManagerComponent = SCR_CharacterDamageManagerComponent.Cast(chimeraCharacter.FindComponent(SCR_CharacterDamageManagerComponent));
-			if (!characterDamageManagerComponent)
-				continue;
-			if (characterDamageManagerComponent.IsDestroyed())
+			if (playableComponent.GetDamageState() == EDamageState.DESTROYED)
 				continue;
 			
-			FactionAffiliationComponent factionAffiliationComponent = FactionAffiliationComponent.Cast(chimeraCharacter.FindComponent(FactionAffiliationComponent));
-			Faction faction = factionAffiliationComponent.GetDefaultAffiliatedFaction();
+			
+			Faction faction = playableComponent.GetFaction();
 			FactionKey factionKey = faction.GetFactionKey();
 			if (factionsCount.Contains(factionKey))
 				factionsCount[factionKey] = factionsCount[factionKey] + 1;

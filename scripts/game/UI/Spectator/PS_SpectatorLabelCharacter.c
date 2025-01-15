@@ -11,7 +11,7 @@ class PS_SpectatorLabelCharacter : PS_SpectatorLabel
 	protected bool m_bWounded = false;
 	protected SCR_ChimeraCharacter m_eChimeraCharacter;
 	protected SCR_CharacterControllerComponent m_ControllerComponent;
-	protected PS_PlayableComponent m_cPlayableComponent;
+	protected PS_PlayableContainer m_cPlayableComponent;
 	
 	protected ResourceName m_rIconImageSet = "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset";
 	
@@ -20,7 +20,7 @@ class PS_SpectatorLabelCharacter : PS_SpectatorLabel
 		super.AddToList(owner);
 		
 		m_eChimeraCharacter = SCR_ChimeraCharacter.Cast(owner);
-		m_cPlayableComponent = PS_PlayableComponent.Cast(m_eChimeraCharacter.FindComponent(PS_PlayableComponent));
+		m_cPlayableComponent = PS_PlayableContainer.Cast(m_eChimeraCharacter.FindComponent(PS_PlayableContainer));
 		m_ControllerComponent = SCR_CharacterControllerComponent.Cast(m_eChimeraCharacter.FindComponent(SCR_CharacterControllerComponent));
 	}
 	

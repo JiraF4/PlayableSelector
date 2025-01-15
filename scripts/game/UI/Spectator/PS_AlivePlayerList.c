@@ -57,18 +57,16 @@ class PS_AlivePlayerList : ScriptedWidgetComponent
 	
 	void InitList()
 	{
-		array<PS_PlayableComponent> playables = m_PlayableManager.GetPlayablesSorted();
+		array<PS_PlayableContainer> playables = m_PlayableManager.GetPlayablesSorted();
 		map<SCR_Faction, ref Tuple2<int, int>> factions = new map<SCR_Faction, ref Tuple2<int, int>>();
 		
-		foreach (PS_PlayableComponent playable : playables)
+		foreach (PS_PlayableContainer playable : playables)
 		{
 			AddPlayable(playable);
 			
-			FactionAffiliationComponent factionAffiliationComponent = playable.GetFactionAffiliationComponent();
-			SCR_Faction faction = SCR_Faction.Cast(factionAffiliationComponent.GetDefaultAffiliatedFaction());
+			SCR_Faction faction = playable.GetFaction();
 			int alive = 0;
-			SCR_CharacterDamageManagerComponent characterDamageManagerComponent = playable.GetCharacterDamageManagerComponent();
-			if (characterDamageManagerComponent.GetState() != EDamageState.DESTROYED)
+			if (playable.GetDamageState() != EDamageState.DESTROYED)
 				alive = 1;
 			if (!factions.Contains(faction))
 			{
@@ -92,9 +90,9 @@ class PS_AlivePlayerList : ScriptedWidgetComponent
 		m_PlayableManager.GetOnPlayableRegistered().Insert(OnPlayableRegistered);
 	}
 	
-	void AddPlayable(PS_PlayableComponent playable)
+	void AddPlayable(PS_PlayableContainer playable)
 	{
-		SCR_AIGroup playableGroup = m_PlayableManager.GetPlayerGroupByPlayable(playable.GetId());
+		SCR_AIGroup playableGroup = m_PlayableManager.GetPlayerGroupByPlayable(playable.GetRplId());
 		PS_AlivePlayerGroup alivePlayerGroup;
 		if (!m_aAlivePlayerGroups.Contains(playableGroup))
 		{
@@ -129,15 +127,13 @@ class PS_AlivePlayerList : ScriptedWidgetComponent
 		InitList();
 	}
 	
-	void OnPlayableRegistered(RplId playableId, PS_PlayableComponent playable)
+	void OnPlayableRegistered(RplId playableId, PS_PlayableContainer playable)
 	{
 		AddPlayable(playable);
 		
-		FactionAffiliationComponent factionAffiliationComponent = playable.GetFactionAffiliationComponent();
-		SCR_Faction faction = SCR_Faction.Cast(factionAffiliationComponent.GetDefaultAffiliatedFaction());
-		SCR_CharacterDamageManagerComponent characterDamageManagerComponent = playable.GetCharacterDamageManagerComponent();
+		SCR_Faction faction = playable.GetFaction();
 		int addAlive = 0;
-		if (characterDamageManagerComponent.GetState() != EDamageState.DESTROYED)
+		if (playable.GetDamageState() != EDamageState.DESTROYED)
 			addAlive = 1;
 		AddFactionCount(faction, 1, addAlive);	
 	}
@@ -158,20 +154,17 @@ class PS_AlivePlayerList : ScriptedWidgetComponent
 		}
 	}
 	
-	void OnAliveDie(PS_PlayableComponent playableComponent)
+	void OnAliveDie(PS_PlayableContainer playableContainer)
 	{
-		FactionAffiliationComponent factionAffiliationComponent = playableComponent.GetFactionAffiliationComponent();
-		SCR_Faction faction = SCR_Faction.Cast(factionAffiliationComponent.GetDefaultAffiliatedFaction());
+		SCR_Faction faction = playableContainer.GetFaction();
 		AddFactionCount(faction, 0, -1);
 	}
 	
-	void OnAliveRemoved(PS_PlayableComponent playableComponent)
+	void OnAliveRemoved(PS_PlayableContainer playableContainer)
 	{
-		FactionAffiliationComponent factionAffiliationComponent = playableComponent.GetFactionAffiliationComponent();
-		SCR_Faction faction = SCR_Faction.Cast(factionAffiliationComponent.GetDefaultAffiliatedFaction());
-		SCR_CharacterDamageManagerComponent characterDamageManagerComponent = playableComponent.GetCharacterDamageManagerComponent();
+		SCR_Faction faction = playableContainer.GetFaction();
 		int removeAlive = 0;
-		if (characterDamageManagerComponent && characterDamageManagerComponent.GetState() == EDamageState.DESTROYED)
+		if (playableContainer.GetDamageState() == EDamageState.DESTROYED)
 			removeAlive = -1;
 		AddFactionCount(faction, -1, removeAlive);
 	}

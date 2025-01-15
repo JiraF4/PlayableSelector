@@ -142,7 +142,7 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 	{
 		if (m_cPlayableComponent)
 		{
-			int playerId = m_PlayableManager.GetPlayerByPlayableRemembered(m_cPlayableComponent.GetId());
+			int playerId = m_PlayableManager.GetPlayerByPlayableRemembered(m_cPlayableComponent.GetRplId());
 			if (playerId > 0)
 			{
 				string playerName = m_PlayableManager.GetPlayerName(playerId);

@@ -37,7 +37,7 @@ class PS_RolesGroup : SCR_ScriptedWidgetComponent
 	protected string m_sGroupCallsign;
 	protected FactionKey m_sFactionKey;
 	
-	ref map<PS_PlayableComponent, PS_CharacterSelector> m_mCharacters = new map<PS_PlayableComponent, PS_CharacterSelector>();
+	ref map<PS_PlayableContainer, PS_CharacterSelector> m_mCharacters = new map<PS_PlayableContainer, PS_CharacterSelector>();
 		
 	// --------------------------------------------------------------------------------------------------------------------------------
 	// Init
@@ -107,15 +107,21 @@ class PS_RolesGroup : SCR_ScriptedWidgetComponent
 	
 	// --------------------------------------------------------------------------------------------------------------------------------
 	// Add
-	void InsertPlayable(PS_PlayableComponent playable)
+	void InsertPlayable(PS_PlayableContainer playable)
 	{
 		Widget characterSelectorRoot = m_wWorkspaceWidget.CreateWidgets(m_sCharacterSelectorPrefab, m_wCharactersList);
 		PS_CharacterSelector characterSelector = PS_CharacterSelector.Cast(characterSelectorRoot.FindHandler(PS_CharacterSelector));
 		characterSelector.SetLobbyMenu(m_CoopLobby);
 		characterSelector.SetRolesGroup(this);
 		characterSelector.SetPlayable(playable);
-		
 		m_mCharacters.Insert(playable, characterSelector);
+		
+		if (m_PlayableManager.GetPlayerByPlayable(playable.GetRplId()) == -2)
+			m_iLockedCount++;
+		if (m_mCharacters.Count() == m_iLockedCount)
+			m_wLockImage.LoadImageFromSet(0, m_sImageSet, "server-locked");
+		else
+			m_wLockImage.LoadImageFromSet(0, m_sImageSet, "server-unlocked");
 	}
 	
 	// --------------------------------------------------------------------------------------------------------------------------------
@@ -127,17 +133,14 @@ class PS_RolesGroup : SCR_ScriptedWidgetComponent
 		
 		bool unlock = m_mCharacters.Count() == m_iLockedCount;
 		
-		if (unlock) AudioSystem.PlaySound("{E495F2DA6A44D0BB}Sounds/UI/Samples/Menu/UI_Button_Filter_Off.wav");
-		else AudioSystem.PlaySound("{B6008DBCA565E5E1}Sounds/UI/Samples/Menu/UI_Button_Filter_On.wav");
-		
-		foreach (PS_PlayableComponent playable, PS_CharacterSelector characterSelector : m_mCharacters)
+		foreach (PS_PlayableContainer playable, PS_CharacterSelector characterSelector : m_mCharacters)
 		{
 			int playerId = characterSelector.GetPlayerId();
 			if (unlock)
 			{
 				if (playerId == -2)
 				{
-					m_PlayableControllerComponent.SetPlayablePlayer(playable.GetId(), -1);
+					m_PlayableControllerComponent.SetPlayablePlayer(playable.GetRplId(), -1);
 				}
 			}
 			else
@@ -147,9 +150,19 @@ class PS_RolesGroup : SCR_ScriptedWidgetComponent
 					PS_EPlayableControllerState state = m_PlayableManager.GetPlayerState(playerId);
 					if (state == PS_EPlayableControllerState.Ready)
 						m_PlayableControllerComponent.SetPlayerState(playerId, PS_EPlayableControllerState.NotReady);
-					m_PlayableControllerComponent.SetPlayablePlayer(playable.GetId(), -2);
+					m_PlayableControllerComponent.SetPlayablePlayer(playable.GetRplId(), -2);
 				}
 			}
+		}
+		
+		if (unlock) {
+			m_wLockImage.LoadImageFromSet(0, m_sImageSet, "server-unlocked");
+			m_iLockedCount = 0;
+			AudioSystem.PlaySound("{E495F2DA6A44D0BB}Sounds/UI/Samples/Menu/UI_Button_Filter_Off.wav");
+		} else {
+			m_wLockImage.LoadImageFromSet(0, m_sImageSet, "server-locked");
+			m_iLockedCount = m_mCharacters.Count();
+			AudioSystem.PlaySound("{B6008DBCA565E5E1}Sounds/UI/Samples/Menu/UI_Button_Filter_On.wav");
 		}
 	}
 	
@@ -162,7 +175,7 @@ class PS_RolesGroup : SCR_ScriptedWidgetComponent
 	
 	// --------------------------------------------------------------------------------------------------------------------------------
 	// Removed
-	void OnPlayableRemoved(PS_PlayableComponent playable)
+	void OnPlayableRemoved(PS_PlayableContainer playable)
 	{
 		m_mCharacters.Remove(playable);
 		if (!m_wCharactersList.GetChildren())

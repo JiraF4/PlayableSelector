@@ -231,18 +231,15 @@ class PS_VoiceChatList : SCR_ScriptedWidgetComponent
 			}
 			
 			// Room for each group
-			array<PS_PlayableComponent> playables = playableManager.GetPlayablesSorted();
+			array<PS_PlayableContainer> playables = playableManager.GetPlayablesSorted();
 			for (int i = 0; i < playables.Count(); i++) {
-				PS_PlayableComponent playable = playables[i];
-				SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(playable.GetOwner());
-				if (!character)
-					continue;
-				SCR_Faction faction = SCR_Faction.Cast(character.GetFaction());
+				PS_PlayableContainer playable = playables[i];
+				SCR_Faction faction = playable.GetFaction();
 				FactionKey factionKey = faction.GetFactionKey();
 				
 				if (currentPlayerFactionKey != factionKey) continue; // not our faction, skip
 				
-				int groupCallSign = playableManager.GetGroupCallsignByPlayable(playable.GetId());
+				int groupCallSign = playableManager.GetGroupCallsignByPlayable(playable.GetRplId());
 				int groupRoom = VoNRoomsManager.GetRoomWithFaction(currentPlayerFactionKey, groupCallSign.ToString()); // No creation here :[
 				if (!outRoomsArray.Contains(groupRoom))
 					outRoomsArray.Insert(groupRoom);
@@ -273,16 +270,14 @@ class PS_VoiceChatList : SCR_ScriptedWidgetComponent
 			{
 				// TODO: separate to method
 				// Room for each group
-				array<PS_PlayableComponent> playables = playableManager.GetPlayablesSorted();
+				array<PS_PlayableContainer> playables = playableManager.GetPlayablesSorted();
 				for (int i = 0; i < playables.Count(); i++) {
-					PS_PlayableComponent playable = playables[i];
-					SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(playable.GetOwner());
-					SCR_Faction faction = SCR_Faction.Cast(character.GetFaction());
-					FactionKey factionKey = faction.GetFactionKey();
+					PS_PlayableContainer playable = playables[i];
+					FactionKey factionKey = playable.GetFactionKey();
 					
 					if (currentPlayerFactionKey != factionKey) continue; // not our faction, skip
 					
-					int groupCallSign = playableManager.GetGroupCallsignByPlayable(playable.GetId());
+					int groupCallSign = playableManager.GetGroupCallsignByPlayable(playable.GetRplId());
 					int groupRoom = VoNRoomsManager.GetRoomWithFaction(currentPlayerFactionKey, groupCallSign.ToString()); // No creation here :[
 					if (!outRoomsArray.Contains(groupRoom))
 						outRoomsArray.Insert(groupRoom);
@@ -291,8 +286,8 @@ class PS_VoiceChatList : SCR_ScriptedWidgetComponent
 				RplId playableId = playableManager.GetPlayableByPlayer(currentPlayerId);
 				if (playableId != RplId.Invalid())
 				{
-					PS_PlayableComponent playable = playableManager.GetPlayableById(playableId);
-					int groupCallSign = playableManager.GetGroupCallsignByPlayable(playable.GetId());
+					PS_PlayableContainer playable = playableManager.GetPlayableById(playableId);
+					int groupCallSign = playableManager.GetGroupCallsignByPlayable(playable.GetRplId());
 					int groupRoom = VoNRoomsManager.GetRoomWithFaction(currentPlayerFactionKey, groupCallSign.ToString());
 					outRoomsArray.Insert(groupRoom);
 				}

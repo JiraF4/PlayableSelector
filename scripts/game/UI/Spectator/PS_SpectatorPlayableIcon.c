@@ -5,7 +5,7 @@ class PS_SpectatorPlayableIcon : SCR_ScriptedWidgetComponent
 	protected TextWidget m_wPlayableLabel;
 	protected PanelWidget m_wPanelLabel;
 	protected SCR_ChimeraCharacter m_eChimeraCharacter;
-	protected PS_PlayableComponent m_cPlayableComponent;
+	protected PS_PlayableContainer m_cPlayableComponent;
 	
 	protected float m_fMaxIconDistance = 800.0;
 	protected float m_fMinIconDistance = 10.0;
@@ -33,10 +33,10 @@ class PS_SpectatorPlayableIcon : SCR_ScriptedWidgetComponent
 		m_wPanelLabel = PanelWidget.Cast(w.FindAnyWidget("PanelLabel"));
 	}
 	
-	void SetCharacter(PS_PlayableComponent playableComponent)
+	void SetCharacter(PS_PlayableContainer playableComponent)
 	{
 		m_cPlayableComponent = playableComponent;
-		SCR_ChimeraCharacter chimeraCharacter = SCR_ChimeraCharacter.Cast(playableComponent.GetOwner());
+		SCR_ChimeraCharacter chimeraCharacter = SCR_ChimeraCharacter.Cast(playableComponent.GetPlayableComponentTemp().GetOwner());
 		m_eChimeraCharacter = chimeraCharacter;
 		
 		w_iBodyBoneIndex = m_eChimeraCharacter.GetAnimation().GetBoneIndex("Spine3");
@@ -70,7 +70,7 @@ class PS_SpectatorPlayableIcon : SCR_ScriptedWidgetComponent
 		}
 		
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		int playerId = playableManager.GetPlayerByPlayable(m_cPlayableComponent.GetId());
+		int playerId = playableManager.GetPlayerByPlayable(m_cPlayableComponent.GetRplId());
 		if (playerId > 0)
 		{
 			string playerName = GetGame().GetPlayerManager().GetPlayerName(playerId);

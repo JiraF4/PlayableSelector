@@ -65,17 +65,17 @@ class PS_AlivePlayerGroup : SCR_ScriptedWidgetComponent
 		m_wGroupFactionColor.SetColor(factionColor);
 	}
 	
-	void InsertPlayable(PS_PlayableComponent playable)
+	void InsertPlayable(PS_PlayableContainer playable)
 	{
 		Widget alivePlayerRoot = m_WorkspaceWidget.CreateWidgets(m_sAlivePlayerSelectorPrefab, m_PlayersVerticalLayout);
 		PS_AlivePlayerSelector alivePlayerSelector = PS_AlivePlayerSelector.Cast(alivePlayerRoot.FindHandler(PS_AlivePlayerSelector));
 		alivePlayerSelector.SetAliveGroup(this);
 		alivePlayerSelector.SetSpectatorMenu(m_SpectatorMenu);
 		alivePlayerSelector.SetAlivePlayerList(m_AlivePlayerList);
-		alivePlayerSelector.SetPlayable(playable.GetId());
+		alivePlayerSelector.SetPlayable(playable.GetRplId());
 	}
 	
-	void OnAliveRemoved(PS_PlayableComponent playableComponent)
+	void OnAliveRemoved(PS_PlayableContainer playableComponent)
 	{
 		if (!m_PlayersVerticalLayout.GetChildren())
 		{

@@ -14,7 +14,7 @@ modded class SCR_PlayersRestrictionZoneManagerComponent
 		if (!playerEntity)
 			return;
 		
-		PS_PlayableComponent playableComponent = PS_PlayableComponent.Cast(playerEntity.FindComponent(PS_PlayableComponent));
+		PS_PlayableContainer playableComponent = PS_PlayableContainer.Cast(playerEntity.FindComponent(PS_PlayableContainer));
 		if (!playableComponent)
 			return;
 		

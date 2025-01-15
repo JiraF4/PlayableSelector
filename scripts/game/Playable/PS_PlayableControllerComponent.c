@@ -207,49 +207,49 @@ class PS_PlayableControllerComponent : ScriptComponent
 			character.GetWorldTransform(params.Transform);
 		
 		SCR_ChimeraCharacter newCharacter = SCR_ChimeraCharacter.Cast(GetGame().SpawnEntityPrefab(Resource.Load(prefab.GetPrefabName()), GetGame().GetWorld(), params));
-		PS_PlayableComponent playableComponent = newCharacter.PS_GetPlayable();
+		PS_PlayableComponent playableContainer = newCharacter.PS_GetPlayable();
 		
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		SCR_AIGroup aiGroup = playableManager.GetPlayerGroupByPlayable(oldPlayableComponent.GetId());
+		SCR_AIGroup aiGroup = playableManager.GetPlayerGroupByPlayable(oldPlayableComponent.GetRplId());
 		SCR_AIGroup playabelGroup = aiGroup.GetSlave();
 		playabelGroup.AddAIEntityToGroup(newCharacter);
-		playableManager.SetPlayablePlayerGroupId(playableComponent.GetId(), aiGroup.GetGroupID());
+		playableManager.SetPlayablePlayerGroupId(playableContainer.GetRplId(), aiGroup.GetGroupID());
 		
-		playableComponent.SetPlayable(true);
+		playableContainer.SetPlayable(true);
 		oldPlayableComponent.SetPlayable(false);
 		
 		character.GetDamageManager().Kill(Instigator.CreateInstigator(newCharacter));
 		character.GetDamageManager().SetHealthScaled(0);
-		GetGame().GetCallqueue().CallLater(RPC_ForceRespawnPlayerLate, 300, false, character, oldPlayableComponent, newCharacter, playableComponent);
+		GetGame().GetCallqueue().CallLater(RPC_ForceRespawnPlayerLate, 300, false, character, oldPlayableComponent, newCharacter, playableContainer);
 	}
 	
-	void RPC_ForceRespawnPlayerLate(SCR_ChimeraCharacter character, PS_PlayableComponent oldPlayableComponent, SCR_ChimeraCharacter newCharacter, PS_PlayableComponent playableComponent)
+	void RPC_ForceRespawnPlayerLate(SCR_ChimeraCharacter character, PS_PlayableComponent oldPlayableComponent, SCR_ChimeraCharacter newCharacter, PS_PlayableComponent playableContainer)
 	{
 		character.GetDamageManager().Kill(Instigator.CreateInstigator(newCharacter));
 		character.GetDamageManager().SetHealthScaled(0);
 		if (!character.GetDamageManager().IsDestroyed())
 		{
-			GetGame().GetCallqueue().CallLater(RPC_ForceRespawnPlayerLate, 300, false, character, oldPlayableComponent, newCharacter, playableComponent);
+			GetGame().GetCallqueue().CallLater(RPC_ForceRespawnPlayerLate, 300, false, character, oldPlayableComponent, newCharacter, playableContainer);
 			return;
 		}
 		
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
-		SCR_AIGroup aiGroup = playableManager.GetPlayerGroupByPlayable(oldPlayableComponent.GetId());
+		SCR_AIGroup aiGroup = playableManager.GetPlayerGroupByPlayable(oldPlayableComponent.GetRplId());
 		SCR_AIGroup playabelGroup = aiGroup.GetSlave();
 		playabelGroup.AddAIEntityToGroup(character);
-		playableManager.SetPlayablePlayerGroupId(playableComponent.GetId(), aiGroup.GetGroupID());
-		int playerId = playableManager.GetPlayerByPlayableRemembered(oldPlayableComponent.GetId());
+		playableManager.SetPlayablePlayerGroupId(playableContainer.GetRplId(), aiGroup.GetGroupID());
+		int playerId = playableManager.GetPlayerByPlayableRemembered(oldPlayableComponent.GetRplId());
 		VoNRoomsManager.MoveToRoom(playerId, "", "");
 		if (playerId > -1)
 		{
-			GetGame().GetCallqueue().CallLater(RPC_ForceRespawnPlayerLate2, 500, false, playerId, playableComponent);
+			GetGame().GetCallqueue().CallLater(RPC_ForceRespawnPlayerLate2, 500, false, playerId, playableContainer);
 		}
 	}
 	void RPC_ForceRespawnPlayerLate2(int playerId, PS_PlayableComponent playable)
 	{		
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		playableManager.SetPlayerPlayable(playerId, playable.GetId());
+		playableManager.SetPlayerPlayable(playerId, playable.GetRplId());
 		ForceSwitch(playerId);
 	}
 	
@@ -644,12 +644,10 @@ class PS_PlayableControllerComponent : ScriptComponent
 		
 		// Check faction balance
 		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		PS_PlayableComponent playableComponent = playableManager.GetPlayableById(playableId);
-		if (playableComponent)
+		PS_PlayableContainer playableContainer = playableManager.GetPlayableById(playableId);
+		if (playableContainer)
 		{
-			FactionAffiliationComponent factionAffiliationComponent = playableComponent.GetFactionAffiliationComponent();
-			Faction faction = factionAffiliationComponent.GetDefaultAffiliatedFaction();
-			FactionKey factionKey = faction.GetFactionKey();
+			FactionKey factionKey = playableContainer.GetFactionKey();
 			if (playerId >= 0 && !SCR_Global.IsAdmin(thisPlayerController.GetPlayerId()) && !gameModeCoop.CanJoinFaction(factionKey, playableManager.GetPlayerFactionKey(playerId)))
 				return;
 		}
@@ -682,17 +680,15 @@ class PS_PlayableControllerComponent : ScriptComponent
 		
 		// Check faction balance
 		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		PS_PlayableComponent playableComponent = playableManager.GetPlayableById(playableId);
-		if (playableComponent)
+		PS_PlayableContainer playableContainer = playableManager.GetPlayableById(playableId);
+		if (playableContainer)
 		{
-			FactionAffiliationComponent factionAffiliationComponent = playableComponent.GetFactionAffiliationComponent();
-			Faction faction = factionAffiliationComponent.GetDefaultAffiliatedFaction();
-			FactionKey factionKey = faction.GetFactionKey();
+			FactionKey factionKey = playableContainer.GetFactionKey();
 			if (playerId >= 0 && !SCR_Global.IsAdmin(thisPlayerController.GetPlayerId()) && !gameModeCoop.CanJoinFaction(factionKey, playableManager.GetPlayerFactionKey(playerId)))
 				return;
 		}
 		
-		SCR_ChimeraCharacter playableCharacter = SCR_ChimeraCharacter.Cast(playableComponent.GetOwner());
+		SCR_ChimeraCharacter playableCharacter = SCR_ChimeraCharacter.Cast(playableContainer.GetPlayableComponent().GetOwner());
 		
 		// Check is playable already selected or dead
 		int curretPlayerId = playableManager.GetPlayerByPlayable(playableId);

@@ -54,6 +54,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	[Attribute("0", UIWidgets.CheckBox, "", category: "Reforger Lobby")]
 	protected bool m_bDisableVanillaGroupMenu;
 	
+	[Attribute("0", UIWidgets.CheckBox, "", category: "Reforger Lobby")]
+	protected bool m_bDisablePlayablesStreaming;
+	
 	[Attribute("-1", UIWidgets.Auto, "", category: "Reforger Lobby (WIP)")]
 	protected int m_iFactionsBalance;
 	
@@ -66,9 +69,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	[Attribute("0", UIWidgets.Auto, "", category: "Reforger Lobby (WIP)")]
 	protected int m_iForceMenuFramerate;
 	protected static int m_iOldMenuFramerate;
-	
-	[Attribute("0", UIWidgets.CheckBox, "", category: "Reforger Lobby (WIP)")]
-	protected bool m_bResetPlayableReplication;
 	
 	protected ref ScriptInvokerInt m_OnGameStateChange = new ScriptInvokerInt();
 	ScriptInvokerInt GetOnGameStateChange()
@@ -91,6 +91,13 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	override void OnGameStart()
 	{
 		super.OnGameStart();
+		
+		InputManager inputManager = GetGame().GetInputManager();
+		if (inputManager && m_bDisableVanillaGroupMenu)
+		{
+			inputManager.RemoveActionListener("ShowScoreboard", EActionTrigger.DOWN, ArmaReforgerScripted.OnShowPlayerList);
+			inputManager.RemoveActionListener("ShowGroupMenu", EActionTrigger.DOWN, ArmaReforgerScripted.OnShowGroupMenu);
+		}
 		
 		Widget FreezeTimeCounterOverlay = GetGame().GetWorkspace().FindAnyWidget("FreezeTimeCounterOverlay");
 		if (FreezeTimeCounterOverlay)
@@ -333,13 +340,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		string name = GetGame().GetPlayerManager().GetPlayerName(playerId);
 		playableManager.SetPlayerName(playerId, name);
 		
-		InputManager inputManager = GetGame().GetInputManager();
-		if (inputManager && m_bDisableVanillaGroupMenu)
-		{
-			inputManager.RemoveActionListener("ShowScoreboard", EActionTrigger.DOWN, ArmaReforgerScripted.OnShowPlayerList);
-			inputManager.RemoveActionListener("ShowGroupMenu", EActionTrigger.DOWN, ArmaReforgerScripted.OnShowGroupMenu);
-		}
-		
 		// TODO: remove CallLater
 		#ifdef WORKBENCH
 		GetGame().GetCallqueue().CallLater(SpawnInitialEntity, 500, false, playerId);
@@ -438,12 +438,10 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		
 		map<FactionKey, int> players = new map<FactionKey, int>();
 		map<FactionKey, int> playables = new map<FactionKey, int>();
-		array<PS_PlayableComponent> playableComponents = m_playableManager.GetPlayablesSorted();
-		foreach (PS_PlayableComponent playable : playableComponents)
+		array<PS_PlayableContainer> playableComponents = m_playableManager.GetPlayablesSorted();
+		foreach (PS_PlayableContainer playable : playableComponents)
 		{
-			FactionAffiliationComponent factionAffiliationComponent = playable.GetFactionAffiliationComponent();
-			Faction faction = factionAffiliationComponent.GetDefaultAffiliatedFaction();
-			FactionKey factionKey = faction.GetFactionKey();
+			FactionKey factionKey = playable.GetFactionKey();
 			
 			if (!players.Contains(factionKey))
 				players[factionKey] = 0;
@@ -451,7 +449,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 				playables[factionKey] = 0;
 			
 			playables[factionKey] = playables[factionKey] + 1;
-			int playerId = m_playableManager.GetPlayerByPlayable(playable.GetId());
+			int playerId = m_playableManager.GetPlayerByPlayable(playable.GetRplId());
 			if (playerId > 0)
 				players[factionKey] = players[factionKey] + 1;
 		}
@@ -533,9 +531,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	void TryRespawn(RplId playableId, int playerId)
 	{
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		if (playableManager && playableId != RplId.Invalid())
+		if (playableManager && playableId != RplId.Invalid() && playableManager.GetPlayableById(playableId))
 		{
-			PS_PlayableComponent playableComponent = playableManager.GetPlayableById(playableId);
+			PS_PlayableComponent playableComponent = playableManager.GetPlayableById(playableId).GetPlayableComponent();
 			if (!playableComponent)
 				return;
 			
@@ -595,7 +593,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		
 		PS_PlayableComponent playableComponent = PS_PlayableComponent.Cast(entity.FindComponent(PS_PlayableComponent));
-		RplId playableId = playableComponent.GetId();
+		RplId playableId = playableComponent.GetRplId();
 		
 		playableComponent.CopyState(respawnData);
 		if (playerId > 0)
@@ -640,8 +638,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		switch (state)
 		{
 			case SCR_EGameModeState.BRIEFING: // Force move to voice rooms
-				if (m_bResetPlayableReplication)
-					playableManager.ResetRplStream();
 				foreach (int playerId: playerIds)
 				{
 					RplId playableId = playableManager.GetPlayableByPlayer(playerId);
@@ -727,8 +723,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		
 		array<string> GUIDs = {};
-		map<RplId, PS_PlayableComponent> playables = playableManager.GetPlayables();
-		foreach (RplId id, PS_PlayableComponent playable : playables)
+		map<RplId, ref PS_PlayableContainer> playables = playableManager.GetPlayables();
+		foreach (RplId id, PS_PlayableContainer playable : playables)
 		{
 			int playerId = playableManager.GetPlayerByPlayable(id);
 			if (playerId <= 0)
@@ -795,6 +791,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	bool IsAdminMode()
 	{
 		return m_bAdminMode;
+	}
+	
+	bool GetDisablePlayablesStreaming()
+	{
+		return m_bDisablePlayablesStreaming;
 	}
 	
 	bool IsChatDisabled()

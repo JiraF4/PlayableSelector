@@ -209,7 +209,7 @@ class PS_PlayerSelector : SCR_ButtonBaseComponent
 		if (playerId != m_iPlayerId)
 			return;
 		
-		PS_PlayableComponent playableComponent = m_PlayableManager.GetPlayableById(playableId);
+		PS_PlayableContainer playableComponent = m_PlayableManager.GetPlayableById(playableId);
 		SCR_AIGroup group = m_PlayableManager.GetPlayerGroupByPlayable(playableId);
 		string groupName = PS_GroupHelper.GetGroupFullName(group);
 		

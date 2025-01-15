@@ -63,8 +63,12 @@ class PS_SpectatorMenu: MenuBase
 		m_LookTarget = target;
 	}
 	
-	void SetCameraCharacter(IEntity characterEntity)
+	void SetCameraCharacter(RplId rplId)
 	{
+		RplComponent rplComponent = RplComponent.Cast(Replication.FindItem(rplId));
+		if (!rplComponent)
+			return;
+		IEntity characterEntity = rplComponent.GetEntity();
 		PS_ManualCameraSpectator camera = PS_ManualCameraSpectator.Cast(GetGame().GetCameraManager().CurrentCamera());
 		if (camera)
 			camera.SetCharacterEntity(characterEntity);
@@ -447,7 +451,7 @@ class PS_SpectatorMenu: MenuBase
 		m_wMapFrame.SetVisible(true);
 		
 		// WUT?
-		SCR_WidgetHelper.RemoveAllChildren(GetRootWidget().FindAnyWidget("ToolMenuHoriz"));
+		SCR_WidgetHelper.RemoveAllChildren(m_wMapFrame.FindAnyWidget("ToolMenuHoriz"));
 		
 		BaseGameMode gameMode = GetGame().GetGameMode();
 		if (!gameMode)
@@ -457,7 +461,11 @@ class PS_SpectatorMenu: MenuBase
 		if (!configComp)
 			return;
 		
-		MapConfiguration mapConfigFullscreen = m_MapEntity.SetupMapConfig(EMapEntityMode.FULLSCREEN, configComp.GetEditorMapConfig(), m_wMapFrame);
+		MapConfiguration mapConfigFullscreen = m_MapEntity.SetupMapConfig(EMapEntityMode.FULLSCREEN, configComp.GetEditorMapConfig(), m_wMapFrame); // MAP MADED BY RETARD, so reload it twice
+		mapConfigFullscreen.MapEntityMode = EMapEntityMode.PLAIN;
+		m_MapEntity.OpenMap(mapConfigFullscreen);
+		m_MapEntity.CloseMap();
+		mapConfigFullscreen.MapEntityMode = EMapEntityMode.FULLSCREEN;
 		m_MapEntity.OpenMap(mapConfigFullscreen);
 	}
 	

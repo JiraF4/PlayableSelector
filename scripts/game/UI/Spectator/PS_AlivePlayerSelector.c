@@ -16,7 +16,7 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 	
 	// Cache parameters
 	protected PS_AlivePlayerList m_AlivePlayerList;
-	protected PS_PlayableComponent m_PlayableComponent;
+	protected PS_PlayableContainer m_PlayableComponent;
 	protected SCR_CharacterDamageManagerComponent m_CharacterDamageManagerComponent;
 	protected ResourceName m_sPlayableIcon;
 	protected bool m_bDead;
@@ -58,19 +58,14 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 		
 		// Cache parameters
 		m_PlayableComponent = m_PlayableManager.GetPlayableById(playableId);
-		m_CharacterDamageManagerComponent = m_PlayableComponent.GetCharacterDamageManagerComponent();
 		
 		// Temp
-		FactionAffiliationComponent factionAffiliationComponent = m_PlayableComponent.GetFactionAffiliationComponent();
-		Faction faction = factionAffiliationComponent.GetDefaultAffiliatedFaction();
-		SCR_EditableCharacterComponent editableCharacterComponent = m_PlayableComponent.GetEditableCharacterComponent();
-		SCR_UIInfo uiInfo = editableCharacterComponent.GetInfo();
+		Faction faction = m_PlayableComponent.GetFaction();
 		
 		// Initial setup
-		if (uiInfo)
-			m_sPlayableIcon = uiInfo.GetIconPath();
+		m_sPlayableIcon = m_PlayableComponent.GetRoleIconPath();
 		m_wPlayerFactionColor.SetColor(faction.GetFactionColor());
-		EDamageState damageState = m_CharacterDamageManagerComponent.GetState();
+		EDamageState damageState = m_PlayableComponent.GetDamageState();
 		UpdateDammage(damageState);
 		UpdatePlayer(m_PlayableManager.GetPlayerByPlayableRemembered(m_iPlayableId));
 		UpdateShowDead(m_AlivePlayerList.IsShowDead());
@@ -120,7 +115,7 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 	
 	void UpdatePlayerWrap(int playerId)
 	{
-		UpdatePlayer(m_PlayableManager.GetPlayerByPlayableRemembered(m_PlayableComponent.GetId()))
+		UpdatePlayer(m_PlayableManager.GetPlayerByPlayableRemembered(m_PlayableComponent.GetRplId()))
 	}
 	void UpdatePlayer(int playerId)
 	{
@@ -145,7 +140,7 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 	// -------------------- Buttons events --------------------
 	void AlivePlayerButtonClicked(SCR_ButtonBaseComponent playerButton)
 	{
-		m_mSpectatorMenu.SetCameraCharacter(m_PlayableComponent.GetOwner());
+		m_mSpectatorMenu.SetCameraCharacter(m_PlayableComponent.GetRplId());
 	}
 	
 }

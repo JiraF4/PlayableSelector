@@ -51,7 +51,7 @@ class PS_CharacterSelector : SCR_ButtonComponent
 	protected PS_ECharacterState m_state;
 	protected PS_CoopLobby m_CoopLobby;
 	protected PS_RolesGroup m_RolesGroup;
-	protected PS_PlayableComponent m_PlayableComponent;
+	protected PS_PlayableContainer m_PlayableContainer;
 	protected RplId m_iPlayableId;
 	protected int m_iPlayableCallsign;
 	protected string m_sPlayableCallsign;
@@ -121,16 +121,16 @@ class PS_CharacterSelector : SCR_ButtonComponent
 			m_PlayableManager.GetOnPlayerPlayableChange().Remove(OnPlayerPlayableChange);
 		}
 		/*
-		if (m_PlayableComponent)
+		if (m_PlayableContainer)
 		{
-			m_PlayableComponent.GetOnPlayerChange().Remove(UpdatePlayer);
-			m_PlayableComponent.GetOnDamageStateChanged().Remove(UpdateDammage);
-			m_PlayableComponent.GetOnUnregister().Remove(RemoveSelf);
-			m_PlayableComponent.GetOnPlayerDisconnected().Remove(OnDisconnected);
-			m_PlayableComponent.GetOnPlayerConnected().Remove(OnConnected);
-			m_PlayableComponent.GetOnPlayerStateChange().Remove(OnStateChange);
-			m_PlayableComponent.GetOnPlayerPinChange().Remove(UpdatePined);
-			m_PlayableComponent.GetOnPlayerRoleChange().Remove(OnRoleChange);
+			m_PlayableContainer.GetOnPlayerChange().Remove(UpdatePlayer);
+			m_PlayableContainer.GetOnDamageStateChanged().Remove(UpdateDammage);
+			m_PlayableContainer.GetOnUnregister().Remove(RemoveSelf);
+			m_PlayableContainer.GetOnPlayerDisconnected().Remove(OnDisconnected);
+			m_PlayableContainer.GetOnPlayerConnected().Remove(OnConnected);
+			m_PlayableContainer.GetOnPlayerStateChange().Remove(OnStateChange);
+			m_PlayableContainer.GetOnPlayerPinChange().Remove(UpdatePined);
+			m_PlayableContainer.GetOnPlayerRoleChange().Remove(OnRoleChange);
 		}
 		*/
 	}
@@ -147,29 +147,24 @@ class PS_CharacterSelector : SCR_ButtonComponent
 		m_RolesGroup = rolesGroup;
 	}
 	
-	void SetPlayable(PS_PlayableComponent playableComponent)
+	void SetPlayable(PS_PlayableContainer playableContainer)
 	{
-		m_PlayableComponent = playableComponent;
-		m_iPlayableId = playableComponent.GetId();
-		
-		m_CharacterDamageManagerComponent = playableComponent.GetCharacterDamageManagerComponent();
+		m_PlayableContainer = playableContainer;
+		m_iPlayableId = playableContainer.GetRplId();
 		
 		// Temp
-		FactionAffiliationComponent factionAffiliationComponent = m_PlayableComponent.GetFactionAffiliationComponent();
-		m_Faction = SCR_Faction.Cast(factionAffiliationComponent.GetDefaultAffiliatedFaction());
-		SCR_EditableCharacterComponent editableCharacterComponent = m_PlayableComponent.GetEditableCharacterComponent();
-		SCR_UIInfo uiInfo = editableCharacterComponent.GetInfo();
+		m_Faction = m_PlayableContainer.GetFaction();
 		m_sFactionKey = m_Faction.GetFactionKey();
 		
 		// Initial setup
-		m_sPlayableIcon = uiInfo.GetIconPath();
+		m_sPlayableIcon = m_PlayableContainer.GetRoleIconPath();
 		m_wCharacterFactionColor.SetColor(m_Faction.GetFactionColor());
 		m_wUnitIcon.LoadImageTexture(0, m_sPlayableIcon);
 		m_iPlayerId = m_PlayableManager.GetPlayerByPlayable(m_iPlayableId);
 		if (m_iPlayerId > 0)
 			m_bDisconnected = !m_PlayerManager.IsPlayerConnected(m_iPlayerId);
-		m_iDamageState = m_CharacterDamageManagerComponent.GetState();
-		m_wCharacterClassName.SetText(m_PlayableComponent.GetName());
+		m_iDamageState = playableContainer.GetDamageState();
+		m_wCharacterClassName.SetText(m_PlayableContainer.GetName());
 		m_iPlayableCallsign = m_PlayableManager.GetGroupCallsignByPlayable(m_iPlayableId);
 		m_sPlayableCallsign = m_iPlayableCallsign.ToString();
 		m_bDead = m_iDamageState == EDamageState.DESTROYED;
@@ -178,19 +173,19 @@ class PS_CharacterSelector : SCR_ButtonComponent
 		UpdateStateIcon();
 		
 		// Events
-		m_PlayableComponent.GetOnPlayerChange().Insert(UpdatePlayer);
-		m_PlayableComponent.GetOnDamageStateChanged().Insert(UpdateDammage);
-		m_PlayableComponent.GetOnUnregister().Insert(RemoveSelf);
-		//m_PlayableComponent.GetOnPlayerDisconnected().Insert(OnDisconnected);
-		m_PlayableComponent.GetOnPlayerConnected().Insert(OnConnected);
-		m_PlayableComponent.GetOnPlayerStateChange().Insert(OnStateChange);
-		m_PlayableComponent.GetOnPlayerPinChange().Insert(UpdatePined);
-		m_PlayableComponent.GetOnPlayerRoleChange().Insert(OnRoleChange);
+		m_PlayableContainer.GetOnPlayerChange().Insert(UpdatePlayer);
+		m_PlayableContainer.GetOnDamageStateChanged().Insert(UpdateDammage);
+		m_PlayableContainer.GetOnUnregister().Insert(RemoveSelf);
+		//m_PlayableContainer.GetOnPlayerDisconnected().Insert(OnDisconnected);
+		m_PlayableContainer.GetOnPlayerConnected().Insert(OnConnected);
+		m_PlayableContainer.GetOnPlayerStateChange().Insert(OnStateChange);
+		m_PlayableContainer.GetOnPlayerPinChange().Insert(UpdatePined);
+		m_PlayableContainer.GetOnPlayerRoleChange().Insert(OnRoleChange);
 	}
 	
-	PS_PlayableComponent GetPlayable()
+	PS_PlayableContainer GetPlayable()
 	{
-		return m_PlayableComponent;
+		return m_PlayableContainer;
 	}
 	
 	// --------------------------------------------------------------------------------------------------------------------------------
@@ -253,8 +248,8 @@ class PS_CharacterSelector : SCR_ButtonComponent
 	void RemoveSelf()
 	{
 		m_wRoot.RemoveFromHierarchy();
-		m_RolesGroup.OnPlayableRemoved(m_PlayableComponent);
-		m_CoopLobby.OnPlayableRemoved(m_PlayableComponent);
+		m_RolesGroup.OnPlayableRemoved(m_PlayableContainer);
+		m_CoopLobby.OnPlayableRemoved(m_PlayableContainer);
 		if (m_iPlayerId == -2)
 			m_RolesGroup.UpdateLockedState(false);
 	}
@@ -486,12 +481,12 @@ class PS_CharacterSelector : SCR_ButtonComponent
 	
 	void OnHover()
 	{
-		m_CoopLobby.SetPreviewPlayable(m_PlayableComponent);
+		m_CoopLobby.SetPreviewPlayable(m_PlayableContainer.GetRplId());
 	}
 	
 	void OnHoverLeave()
 	{
-		m_CoopLobby.SetPreviewPlayable(null);
+		m_CoopLobby.SetPreviewPlayable(RplId.Invalid());
 	}
 	
 	void OnStateClicked(SCR_ButtonBaseComponent button)
@@ -539,7 +534,7 @@ class PS_CharacterSelector : SCR_ButtonComponent
 	{
 		// Check faction balance
 		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		if (m_PlayableComponent)
+		if (m_PlayableContainer)
 		{
 			if (!PS_PlayersHelper.IsAdminOrServer() && !gameModeCoop.CanJoinFaction(m_sFactionKey, m_PlayableManager.GetPlayerFactionKey(m_iCurrentPlayerId)))
 				return false;

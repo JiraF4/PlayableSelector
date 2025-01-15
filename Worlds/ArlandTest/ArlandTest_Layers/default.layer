@@ -1,3 +1,6 @@
+SCR_MapEntity MapEntity_Arland1 : "{66FBC1063149819B}Prefabs/World/Game/Arland/MapEntity_Arland.et" {
+ coords 1292.495 38 2891.181
+}
 SCR_AIWorld : "{01DC74137CFDDB6A}Prefabs/AI/SCR_AIWorld_Arland.et" {
  components {
   NavmeshWorldComponent "{5584F30E67F617AD}" {
@@ -22,6 +25,6 @@ PerceptionManager PerceptionManager1 : "{028DAEAD63E056BE}Prefabs/World/Game/Per
 PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_GameMode_Lobby.et" {
  coords 1769.74 39.01 2872.059
 }
-MusicManager : "{359452CCDBDD03F5}Prefabs/Sounds/Music/MusicManager_Base.et" {
+MusicManager : "{359452CCDBDD03F5}Prefabs/Sounds/Music/MusicManager_Campaign.et" {
  coords 0 0 0
 }

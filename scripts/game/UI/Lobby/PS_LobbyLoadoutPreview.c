@@ -14,7 +14,8 @@ class PS_LobbyLoadoutPreview : SCR_WLibComponentBase
 	protected SCR_LoadoutPreviewComponent m_Preview;
 	protected SCR_ButtonBaseComponent m_hOpenInventoryButton;
 	
-	protected PS_PlayableComponent m_playable;
+	protected RplId m_iPlayableId;
+	protected ResourceName m_sPrefabName;
 	
 	protected PS_ImportantItemsDisplay m_hImportantItemsDisplay;
 	
@@ -50,12 +51,14 @@ class PS_LobbyLoadoutPreview : SCR_WLibComponentBase
 		m_hLittleInventory.SetExternalItemInfoWidget(itemInfoWidget)
 	}
 	
-	void SetPlayable(PS_PlayableComponent playable)
+	void SetPreviewPlayable(RplId playableId, ResourceName prefabName)
 	{
-		m_playable = playable;
+		m_iPlayableId = playableId;
+		m_sPrefabName = prefabName;
 		UpdatePreviewInfo();
 		IEntity entity = null;
-		if (playable) entity = playable.GetOwner();
+		ItemPreviewManagerEntity previewManager = ChimeraWorld.CastFrom(GetGame().GetWorld()).GetItemPreviewManager();
+		if (prefabName != "") entity = previewManager.ResolvePreviewEntityForPrefab(prefabName);
 		m_hImportantItemsDisplay.SetEntity(entity);
 		CloseInventory();
 	}
@@ -93,7 +96,8 @@ class PS_LobbyLoadoutPreview : SCR_WLibComponentBase
 	{
 		m_hLittleInventory.GetRootWidget().SetVisible(true);
 		IEntity entity = null;
-		if (m_playable) entity = m_playable.GetOwner();
+		ItemPreviewManagerEntity previewManager = ChimeraWorld.CastFrom(GetGame().GetWorld()).GetItemPreviewManager();
+		if (m_sPrefabName != "") entity = previewManager.ResolvePreviewEntityForPrefab(m_sPrefabName);
 		if (entity) m_hLittleInventory.OpenEntity(entity);
 	}
 	
@@ -107,20 +111,20 @@ class PS_LobbyLoadoutPreview : SCR_WLibComponentBase
 	
 	void UpdatePreviewInfo()
 	{
-		ItemPreviewManagerEntity m_PreviewManager = ChimeraWorld.CastFrom(GetGame().GetWorld()).GetItemPreviewManager();
+		ItemPreviewManagerEntity previewManager = ChimeraWorld.CastFrom(GetGame().GetWorld()).GetItemPreviewManager();
 		
 		// Clear all data if playable is null and stop update
-		if (m_playable == null) {
+		if (m_sPrefabName == "") {
 			m_WStateOverlay.SetVisible(false);
 			m_WLoadoutOverlay.SetVisible(false);
-			m_PreviewManager.SetPreviewItem(m_Preview.GetItemPreviewWidget(), null);
+			previewManager.SetPreviewItemFromPrefab(m_Preview.GetItemPreviewWidget(), m_sPrefabName);
 			return;
 		}
 		
 		// Show preview
 		m_WLoadoutOverlay.SetVisible(true);
 		
-		SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(m_playable.GetOwner());
+		SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(previewManager.ResolvePreviewEntityForPrefab(m_sPrefabName));
 		SCR_Faction faction = SCR_Faction.Cast(character.GetFaction());
 		
 		// Extract all? items
@@ -196,18 +200,19 @@ class PS_LobbyLoadoutPreview : SCR_WLibComponentBase
 			magazines = magazines + line + "\n";
 		}
 		
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		
 		// Set character preview. 
 		// LODs for some reason start rave party if you to far from character. 
 		// Yes it's performance issue but then why it switch between LODs? :<
-		m_PreviewManager.SetPreviewItem(m_Preview.GetItemPreviewWidget(), character);
-		m_wLoadoutText.SetText(m_playable.GetName());
+		previewManager.SetPreviewItemFromPrefab(m_Preview.GetItemPreviewWidget(), m_sPrefabName);
+		m_wLoadoutText.SetText(playableManager.GetPlayableName(m_iPlayableId));
 		
 		// Faction data
 		m_wLoadoutBackgroundImage.SetColor(faction.GetOutlineFactionColor());
 		
 		// Current playable player, or dead if playable already dead.
-		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		int playerId = playableManager.GetPlayerByPlayable(m_playable.GetId());
+		int playerId = playableManager.GetPlayerByPlayable(m_iPlayableId);
 		if (character.GetDamageManager().IsDestroyed()) 
 		{
 			m_WStateOverlay.SetVisible(true);

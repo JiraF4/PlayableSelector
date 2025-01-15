@@ -93,11 +93,27 @@ FrameWidgetClass {
       SizeY 29.999
       OffsetBottom -124.794
      }
+     "Is Visible" 0
      {
+      FrameWidgetClass "{590E7E6C0F9CBE13}" {
+       Prefab "{590E7E6C0F9CBE13}"
+       "Is Visible" 0
+       {
+        ImageWidgetClass "{590E7E6F8F36A661}" {
+         Prefab "{590E7E6F8F36A661}"
+         "Is Visible" 0
+        }
+        VerticalLayoutWidgetClass "{59107CDD977698D2}" {
+         Prefab "{59107CDD977698D2}"
+         "Is Visible" 0
+        }
+       }
+      }
       RichTextWidgetClass "{59107CD34D2BC078}" {
        Prefab "{59107CD34D2BC078}"
        Slot FrameWidgetSlot "{59107CC3B4EF4150}" {
        }
+       "Is Visible" 0
        Text "<shadow color='0,0,0' size='0' offset='1,1' opacity='0.5' mode='image'><action name=\"MapToolMenuFocus\"/></shadow>"
        "Horizontal Alignment" Right
       }

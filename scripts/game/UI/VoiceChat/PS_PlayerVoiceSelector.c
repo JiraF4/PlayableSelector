@@ -101,15 +101,12 @@ class PS_PlayerVoiceSelector : SCR_ButtonBaseComponent
 		else m_wPlayerName.SetColor(Color.FromInt(0xffffffff));
 		
 		if (playableId != RplId.Invalid()) {
-			PS_PlayableComponent playableComponent = playableManager.GetPlayableById(playableId);
-			SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(playableComponent.GetOwner());
-			SCR_EditableCharacterComponent editableCharacterComponent = SCR_EditableCharacterComponent.Cast(character.FindComponent(SCR_EditableCharacterComponent));
-			SCR_UIInfo uiInfo = editableCharacterComponent.GetInfo();
+			PS_PlayableContainer playableComponent = playableManager.GetPlayableById(playableId);
 			string groupName = playableManager.GroupCallsignToGroupName(faction, groupCallSign);
 			
 			m_wUnitIcon.SetVisible(true);
 			m_wGroupName.SetVisible(true);
-			m_wUnitIcon.LoadImageTexture(0, uiInfo.GetIconPath());
+			m_wUnitIcon.LoadImageTexture(0, playableComponent.GetRoleIconPath());
 			m_wGroupName.SetText(groupName);
 		}else{
 			m_wUnitIcon.SetVisible(false);

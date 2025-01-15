@@ -137,6 +137,7 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 			playableControllerComponent.SwitchToMenu(SCR_EGameModeState.BRIEFING);
 		
 		// Update playable marker
+		/*
 		if (m_hPlayableMarkerComponent)
 		{
 			
@@ -148,7 +149,7 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 				return;
 			}
 			
-			PS_PlayableComponent playableComponent = playableManager.GetPlayableById(currentPlayableId);
+			PS_PlayableContainer playableComponent = playableManager.GetPlayableById(currentPlayableId);
 			IEntity entity = playableComponent.GetOwner();
 			
 			float wX, wY, screenX, screenY, screenXEnd, screenYEnd;
@@ -165,6 +166,7 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 			m_hPlayableMarkerComponent.SetSlot(screenXD, screenYD, sizeXD, sizeYD, 0.0);
 			m_hPlayableMarkerComponent.SetColor(new Color(1, 1, 1, 1));
 		}
+		*/
 	}
 	
 	override void OnMenuClose()
