@@ -514,11 +514,12 @@ class PS_PlayableManager : ScriptComponent
 			if (!playableGroup)
 				return;
 			
-			if (!playableGroup.IsSlave())
+			if (!playableGroup.m_PlayersGroup)
 			{
 				SCR_GroupsManagerComponent groupsManagerComponent = SCR_GroupsManagerComponent.GetInstance();
 				playerGroup = groupsManagerComponent.CreateNewPlayableGroup(playableGroup.GetFaction());
-				playerGroup.SetSlave(playableGroup);
+				playerGroup.m_BotsGroup = playableGroup;
+				playableGroup.m_PlayersGroup = playerGroup;
 				playerGroup.SetMaxMembers(playableGroup.m_aUnitPrefabSlots.Count());
 				playerGroup.SetCustomName(playableGroup.GetCustomName(), -1);
 								
@@ -527,7 +528,7 @@ class PS_PlayableManager : ScriptComponent
 				playableGroup.SetDeleteWhenEmpty(false);
 				playerGroup.SetDeleteWhenEmpty(false);
 			} else {
-				playerGroup = playableGroup.GetMaster();
+				playerGroup = playableGroup.m_PlayersGroup;
 			}
 			SetPlayablePlayerGroupId(playableId, playerGroup.GetGroupID());
 			GetGame().GetCallqueue().CallLater(UpdateGroupCallsigne, 0, false, playableId, playerGroup, playableGroup)

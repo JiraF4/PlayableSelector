@@ -384,6 +384,8 @@ class PS_CoopLobby : MenuBase
 		
 		foreach (SCR_AIGroup aiGroup, PS_RolesGroup rolesGroup : m_mGroups)
 		{
+			if (!aiGroup)
+				continue;
 			SCR_Faction groupFaction = SCR_Faction.Cast(aiGroup.GetFaction());
 			bool factionSelected = m_CurrentFaction == groupFaction;
 			rolesGroup.GetRootWidget().SetVisible(factionSelected);

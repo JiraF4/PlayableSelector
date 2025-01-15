@@ -1,6 +1,0 @@
-SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.et" {
- coords 97.547 1 142.51
-}
-SCR_AIGroup : "{9C7902A055DDA271}Prefabs/Groups/OPFOR/Group_USSR_FireGroup_P.et" {
- coords 129.645 1 115.906
-}

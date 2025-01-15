@@ -1,3 +1,15 @@
-Vehicle M1025_armed_M2HB1 : "{3EA6F47D95867114}Prefabs/Vehicles/Wheeled/M998/M1025_armed_M2HB.et" {
- coords 138.176 1 120.854
+Vehicle UAZ1 : "{259EE7B78C51B624}Prefabs/Vehicles/Wheeled/UAZ469/UAZ469.et" {
+ coords 163.788 1 100.356
+}
+Vehicle APC_K17_Berezok1 : "{31F0866273C46D76}Prefabs/Vehicles/Wheeled/K17/APC_K17_Berezok.et" {
+ coords 146.786 1 100.907
+}
+Vehicle M2 : "{4A71F755A4513227}Prefabs/Vehicles/Wheeled/M998/M1025.et" {
+ coords 163.619 1 108.934
+}
+Vehicle M1 : "{5674FAEB9AB7BDD0}Prefabs/Vehicles/Wheeled/M998/M998.et" {
+ coords 139.972 1 117.161
+}
+SCR_AIGroup : "{B8A93A079D9D29A7}Prefabs/Groups/OPFOR/RHS_AFRF/MSV/VKPO3_MC_SPN/Group_RHS_RF_MSV_VKPO3_SPN_S_PlatoonHQ.et" {
+ coords 136.133 5.19 96.838
 }

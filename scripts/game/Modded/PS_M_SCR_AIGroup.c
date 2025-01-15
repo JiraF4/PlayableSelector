@@ -9,6 +9,9 @@ modded class SCR_AIGroup : ChimeraAIGroup
 	[Attribute("", UIWidgets.Auto, "", category: "Reforger Lobby")]
 	vector m_vRespawnPosition;
 	
+	SCR_AIGroup m_BotsGroup;
+	SCR_AIGroup m_PlayersGroup;
+	
 	override void EOnInit(IEntity owner)
 	{
 		// WHY ther's no way to set it in group directly without this stupid injection?

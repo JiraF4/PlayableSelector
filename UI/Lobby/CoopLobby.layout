@@ -267,8 +267,10 @@ FrameWidgetClass {
               ScrollLayoutWidgetClass "{5D6D1B9B238445DF}" {
                Name "RolesScroll"
                Slot OverlayWidgetSlot "{5D6D1B9B238445FB}" {
-                VerticalAlign 0
+                HorizontalAlign 3
+                VerticalAlign 3
                }
+               "Scrollbar Always Visible" 1
                {
                 VerticalLayoutWidgetClass "{5D6D1B9B2EB68480}" {
                  Name "RolesList"
@@ -713,10 +715,11 @@ FrameWidgetClass {
                Name "PlayersScroll"
                Slot OverlayWidgetSlot "{5D6D1B9B238445FB}" {
                 HorizontalAlign 3
-                VerticalAlign 0
+                VerticalAlign 3
                 Padding 0 0 0 0
                }
                "Is Visible" 0
+               "Scrollbar Always Visible" 1
                {
                 VerticalLayoutWidgetClass "{5D6D1B97707D8F23}" {
                  Name "PlayersList"

@@ -7,15 +7,4 @@ PolylineShapeEntity : "{DCA90362FBC25FB4}Prefabs/PolyZone/PolyZone_Presence.et" 
   }
  }
  coords 94.265 1 102.066
- {
-  PS_PolyZoneObjectivePresence {
-   ID "6114FBAF543CBBC1"
-   TriggerShapeType Polyline
-   TriggerActivationType "All changes"
-   PeriodicQueries 1
-   ClassesFilter {
-    "SCR_ChimeraCharacter"
-   }
-  }
- }
 }
