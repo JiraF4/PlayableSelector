@@ -51,6 +51,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	protected ref array<ref PS_FactionRespawnCount> m_aFactionRespawnCount;
 	protected ref map<FactionKey, PS_FactionRespawnCount> m_mFactionRespawnCount = new map<FactionKey, PS_FactionRespawnCount>();
 	
+	[Attribute("0", UIWidgets.CheckBox, "", category: "Reforger Lobby")]
+	protected bool m_bDisableVanillaGroupMenu;
+	
 	[Attribute("-1", UIWidgets.Auto, "", category: "Reforger Lobby (WIP)")]
 	protected int m_iFactionsBalance;
 	
@@ -329,6 +332,13 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		string name = GetGame().GetPlayerManager().GetPlayerName(playerId);
 		playableManager.SetPlayerName(playerId, name);
+		
+		InputManager inputManager = GetGame().GetInputManager();
+		if (inputManager && m_bDisableVanillaGroupMenu)
+		{
+			inputManager.RemoveActionListener("ShowScoreboard", EActionTrigger.DOWN, ArmaReforgerScripted.OnShowPlayerList);
+			inputManager.RemoveActionListener("ShowGroupMenu", EActionTrigger.DOWN, ArmaReforgerScripted.OnShowGroupMenu);
+		}
 		
 		// TODO: remove CallLater
 		#ifdef WORKBENCH
