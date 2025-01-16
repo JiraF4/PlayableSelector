@@ -277,6 +277,11 @@ class PS_PlayableComponent : ScriptComponent
 		return m_EditableUIInfo.GetName();
 	}
 
+	[Obsolete("Use GetRplId() instead")]
+	RplId GetId()
+	{
+		return GetRplId();
+	}
 	RplId GetRplId()
 	{
 		return m_iRplId;
