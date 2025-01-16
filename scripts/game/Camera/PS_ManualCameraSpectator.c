@@ -16,6 +16,15 @@ class PS_ManualCameraSpectator: SCR_ManualCamera
 			CameraPositionUpdate();
 	}
 	
+	
+	override protected bool IsDisabledByMenu()
+	{
+		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if (gameModeCoop.GetFriendliesSpectatorOnly())
+			return true;
+		return super.IsDisabledByMenu();
+	}
+	
 	IEntity GetCharacterEntity()
 	{
 		return m_eCharacterEntity;
@@ -27,6 +36,7 @@ class PS_ManualCameraSpectator: SCR_ManualCamera
 		m_eCharacterEntity = characterEntity;
 		
 		GetTransform(oldTransform);
+		
 	}
 	
 	void ClearCharacterEntity()
@@ -43,7 +53,8 @@ class PS_ManualCameraSpectator: SCR_ManualCamera
 	{
 		vector newTransform[4];
 		GetTransform(newTransform);
-		if (!SCR_Math3D.MatrixEqual(newTransform, oldTransform))
+		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if (!SCR_Math3D.MatrixEqual(newTransform, oldTransform) && !gameModeCoop.GetFriendliesSpectatorOnly())
 		{
 			SetCharacterEntity(null);
 			return;

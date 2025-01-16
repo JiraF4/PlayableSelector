@@ -5,16 +5,16 @@ PolylineShapeEntity : "{7019844BAD5C4DD8}Prefabs/PolyZone/PolyZone_Border.et" {
  coords 117.101 1 92.769
  Points {
   ShapePoint "{645EFC7FFD583EBD}" {
-   Position 11.972 -0 6.362
+   Position 11.972 0 6.362
   }
   ShapePoint "{645EFC7FFE9A421E}" {
-   Position 8.925 -0 19.956
+   Position 8.925 0 19.956
   }
   ShapePoint "{645EFC7FFEC5BE58}" {
-   Position -9.361 -0 23.434
+   Position -9.361 0 23.434
   }
   ShapePoint "{645EFC7FFE082B22}" {
-   Position -6.641 -0 1.661
+   Position -6.641 0 1.661
   }
  }
  {
@@ -23,4 +23,10 @@ PolylineShapeEntity : "{7019844BAD5C4DD8}Prefabs/PolyZone/PolyZone_Border.et" {
    m_sGroupKey "Test"
   }
  }
+}
+SCR_AIGroup : "{70323274E7899BD1}Prefabs/Groups/INDFOR/Group_FIA_MedicalSection_p.et" {
+ coords 120.713 1 151.396
+}
+SCR_AIGroup : "{9C7902A055DDA271}Prefabs/Groups/OPFOR/Group_USSR_FireGroup_P.et" {
+ coords 110.222 1 118.409
 }

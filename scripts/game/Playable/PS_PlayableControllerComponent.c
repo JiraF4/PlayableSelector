@@ -516,6 +516,10 @@ class PS_PlayableControllerComponent : ScriptComponent
 			m_eCamera.SetOrigin(mapEntity.Size() / 2.0 + vector.Up * 100);
 		}
 		GetGame().GetCameraManager().SetCamera(CameraBase.Cast(m_eCamera));
+		
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if (gameMode.GetFriendliesSpectatorOnly())
+			PS_ManualCameraSpectator.Cast(m_eCamera).SetCharacterEntity(from);
 	}
 	
 	void SwitchFromObserver()

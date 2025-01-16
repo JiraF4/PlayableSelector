@@ -57,6 +57,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	[Attribute("0", UIWidgets.CheckBox, "", category: "Reforger Lobby")]
 	protected bool m_bDisablePlayablesStreaming;
 	
+	[Attribute("0", UIWidgets.CheckBox, "", category: "Reforger Lobby")]
+	protected bool m_bFriendliesSpectatorOnly;
+	
 	[Attribute("-1", UIWidgets.Auto, "", category: "Reforger Lobby (WIP)")]
 	protected int m_iFactionsBalance;
 	
@@ -791,6 +794,12 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	bool IsAdminMode()
 	{
 		return m_bAdminMode;
+	}
+	
+	bool GetFriendliesSpectatorOnly()
+	{
+		if (SCR_Global.IsAdmin(GetGame().GetPlayerController().GetPlayerId())) return false;
+		return m_bFriendliesSpectatorOnly;
 	}
 	
 	bool GetDisablePlayablesStreaming()

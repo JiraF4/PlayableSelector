@@ -47,6 +47,7 @@ class PS_PlayableManager : ScriptComponent
 	ref map<RplId, int> m_playablePlayers = new map<RplId, int>; // reversed m_playersPlayable for fast search
 	ref map<int, bool> m_playersPin = new map<int, bool>; // is player pined
 	ref map<int, FactionKey> m_playersFaction = new map<int, FactionKey>; // player factions
+	ref map<int, FactionKey> m_playersFactionRemembered = new map<int, FactionKey>; // player factions persistant
 	ref map<RplId, int> m_playablePlayerGroupId = new map<RplId, int>; // playable to player group
 	ref map<int, string> m_playersLastName = new map<int, string>; // playerid to player name (persistant)
 	ref map<FactionKey, int> m_mFactionReady = new map<FactionKey, int>; // faction ready state
@@ -416,6 +417,11 @@ class PS_PlayableManager : ScriptComponent
 	{
 		return m_PlayablesSorted;
 	}
+	FactionKey GetPlayerFactionKeyRemembered(int playerId)
+	{
+		if (!m_playersFactionRemembered.Contains(playerId)) return "";
+		return m_playersFactionRemembered[playerId];
+	}
 	FactionKey GetPlayerFactionKey(int playerId)
 	{
 		if (!m_playersFaction.Contains(playerId)) return "";
@@ -633,6 +639,8 @@ class PS_PlayableManager : ScriptComponent
 	{
 		FactionKey factionKeyOld = GetPlayerFactionKey(playerId);
 		m_playersFaction[playerId] = factionKey;
+		if (factionKey != "")
+			m_playersFactionRemembered[playerId] = factionKey;
 		
 		m_eOnFactionChange.Invoke(playerId, factionKey, factionKeyOld);
 		
@@ -1008,6 +1016,14 @@ class PS_PlayableManager : ScriptComponent
 			writer.WriteString(m_playersFaction.GetElement(i));
 		}
 		
+		int playersFactionRememberedCount = m_playersFactionRemembered.Count();
+		writer.WriteInt(playersFactionRememberedCount);
+		for (int i = 0; i < playersFactionRememberedCount; i++)
+		{
+			writer.WriteInt(m_playersFactionRemembered.GetKey(i));
+			writer.WriteString(m_playersFactionRemembered.GetElement(i));
+		}
+		
 		int playablePlayerGroupIdCount = m_playablePlayerGroupId.Count();
 		writer.WriteInt(playablePlayerGroupIdCount);
 		for (int i = 0; i < playablePlayerGroupIdCount; i++)
@@ -1135,6 +1151,18 @@ class PS_PlayableManager : ScriptComponent
 			reader.ReadString(value);
 			
 			m_playersFaction.Insert(key, value);
+		}
+		
+		int playersFactionRememberedCount;
+		reader.ReadInt(playersFactionRememberedCount);
+		for (int i = 0; i < playersFactionRememberedCount; i++)
+		{
+			int key;
+			string value;
+			reader.ReadInt(key);
+			reader.ReadString(value);
+			
+			m_playersFactionRemembered.Insert(key, value);
 		}
 		
 		int playablePlayerGroupIdCount;

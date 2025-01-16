@@ -387,6 +387,19 @@ FrameWidgetClass {
                         }
                        }
                       }
+                      VerticalLayoutWidgetClass "{5D6E821750628966}" {
+                       Prefab "{5D6E821750628966}"
+                       {
+                        OverlayWidgetClass "{5F190A8CAF7D46C8}" {
+                         Prefab "{5F190A8CAF7D46C8}"
+                         "Is Visible" 0
+                        }
+                        OverlayWidgetClass "{5F190A8A3BF0ED29}" {
+                         Prefab "{5F190A8A3BF0ED29}"
+                         "Is Visible" 0
+                        }
+                       }
+                      }
                      }
                     }
                    }

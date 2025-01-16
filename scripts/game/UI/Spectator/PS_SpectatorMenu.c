@@ -11,6 +11,8 @@ class PS_SpectatorMenu: MenuBase
 	protected SCR_ChatPanel m_ChatPanel;
 	
 	InputManager m_InputManager;
+	PS_GameModeCoop m_GameMode;
+	PS_PlayableManager m_PlayableManager;
 	
 	static PS_SpectatorMenu s_SpectatorMenu;
 	
@@ -63,15 +65,24 @@ class PS_SpectatorMenu: MenuBase
 		m_LookTarget = target;
 	}
 	
-	void SetCameraCharacter(RplId rplId)
+	bool SetCameraCharacter(RplId rplId)
 	{
 		RplComponent rplComponent = RplComponent.Cast(Replication.FindItem(rplId));
 		if (!rplComponent)
-			return;
+			return false;
 		IEntity characterEntity = rplComponent.GetEntity();
+		if (m_GameMode.GetFriendliesSpectatorOnly())
+		{
+			PS_PlayableContainer playableContainer = m_PlayableManager.GetPlayableById(rplId);
+			FactionKey playableFactionKey = playableContainer.GetFactionKey();
+			FactionKey lastPlayerFaction = m_PlayableManager.GetPlayerFactionKeyRemembered(GetGame().GetPlayerController().GetPlayerId());
+			if (playableFactionKey != lastPlayerFaction)
+				return false;
+		}
 		PS_ManualCameraSpectator camera = PS_ManualCameraSpectator.Cast(GetGame().GetCameraManager().CurrentCamera());
 		if (camera)
 			camera.SetCharacterEntity(characterEntity);
+		return true;
 	}
 	
 	void ReceivePing(int reporterId, vector position, RplId targetID)
@@ -96,6 +107,9 @@ class PS_SpectatorMenu: MenuBase
 			Close();
 			return;
 		}
+		m_GameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		m_PlayableManager = PS_PlayableManager.GetInstance();
+		
 		m_wVoiceChatList = GetRootWidget().FindAnyWidget("VoiceChatFrame");
 		m_hVoiceChatList = PS_VoiceChatList.Cast(m_wVoiceChatList.FindHandler(PS_VoiceChatList));
 		m_hVoiceChatListPinButton = SCR_ButtonBaseComponent.Cast(m_wVoiceChatList.FindAnyWidget("PinButton").FindHandler(SCR_ButtonBaseComponent));
@@ -199,6 +213,21 @@ class PS_SpectatorMenu: MenuBase
 	override void OnMenuUpdate(float tDelta)
 	{
 		super.OnMenuUpdate(tDelta);
+		
+		
+		if (m_GameMode.GetFriendliesSpectatorOnly())
+		{
+			PS_ManualCameraSpectator camera = PS_ManualCameraSpectator.Cast(GetGame().GetCameraManager().CurrentCamera());
+			if (!camera.GetCharacterEntity())
+			{
+				array<PS_PlayableContainer> playables = m_PlayableManager.GetPlayablesSorted();
+				foreach (PS_PlayableContainer playable : playables)
+				{
+					if (playable.GetDamageState() != EDamageState.DESTROYED)
+						SetCameraCharacter(playable.GetRplId());
+				}
+			}
+		}
 		
 		if (m_ChatPanel)
 			m_ChatPanel.OnUpdateChat(tDelta);

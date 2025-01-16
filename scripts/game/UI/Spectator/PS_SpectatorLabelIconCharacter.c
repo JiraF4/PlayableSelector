@@ -34,7 +34,14 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 		
 		super.HandlerAttached(w);
 		
+		
 		m_LabelEventHandler = PS_EventHandlerComponent.Cast(m_wLabelButton.FindHandler(PS_EventHandlerComponent));
+		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if (gameModeCoop.GetFriendliesSpectatorOnly())
+		{
+			return;
+		}
+		
 		m_LabelEventHandler.GetOnDoubleClick().Insert(AttachCamera);
 		m_LabelEventHandler.GetOnClick().Insert(LookCamera);
 	}
@@ -121,6 +128,16 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 		m_cPlayableComponent = PS_PlayableComponent.Cast(m_eChimeraCharacter.FindComponent(PS_PlayableComponent));
 		m_ControllerComponent = SCR_CharacterControllerComponent.Cast(m_eChimeraCharacter.FindComponent(SCR_CharacterControllerComponent));
 		m_EditableCharacterComponent = SCR_EditableCharacterComponent.Cast(m_eChimeraCharacter.FindComponent(SCR_EditableCharacterComponent));
+		
+		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if (gameModeCoop.GetFriendliesSpectatorOnly())
+		{
+			if (m_cPlayableComponent.GetFactionKey() != m_PlayableManager.GetPlayerFactionKeyRemembered(GetGame().GetPlayerController().GetPlayerId()))
+			{
+				m_wRoot.SetVisible(false);
+				return;
+			}
+		}
 		
 		SCR_Faction faction = SCR_Faction.Cast(m_eChimeraCharacter.GetFaction());
 		if (faction)
