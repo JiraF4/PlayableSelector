@@ -257,7 +257,7 @@ class PS_PlayableManager : ScriptComponent
 		
 		// Delete VoN
 		IEntity vonEntity = playableController.GetInitialEntity();
-		if (vonEntity) SCR_EntityHelper.DeleteEntityAndChildren(vonEntity);
+		if (vonEntity) GetGame().GetCallqueue().Call(SCR_EntityHelper.DeleteEntityAndChildren, vonEntity);
 	
 		playerController.SetInitialMainEntity(entity);
 		
