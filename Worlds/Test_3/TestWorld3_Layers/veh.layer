@@ -1,6 +1,14 @@
 SCR_AIGroup Test : "{126BE8C46FA39581}Prefabs/Groups/INDFOR/Group_FIA_FireTeam_P.et" {
  coords 118.322 1 107.925
 }
+Vehicle UAZ1 : "{259EE7B78C51B624}Prefabs/Vehicles/Wheeled/UAZ469/UAZ469.et" {
+ coords 134.551 1 111.901
+ m_sAttachmentGroupName "Test3"
+}
+Vehicle S1203_transport_beige1 : "{543799AC5C52989C}Prefabs/Vehicles/Wheeled/S1203/S1203_transport_beige.et" {
+ coords 128.185 1 121.382
+ m_sAttachmentGroupName "Test3"
+}
 PolylineShapeEntity : "{7019844BAD5C4DD8}Prefabs/PolyZone/PolyZone_Border.et" {
  coords 117.101 1 92.769
  Points {
@@ -27,6 +35,55 @@ PolylineShapeEntity : "{7019844BAD5C4DD8}Prefabs/PolyZone/PolyZone_Border.et" {
 SCR_AIGroup : "{70323274E7899BD1}Prefabs/Groups/INDFOR/Group_FIA_MedicalSection_p.et" {
  coords 120.713 1 151.396
 }
-SCR_AIGroup : "{9C7902A055DDA271}Prefabs/Groups/OPFOR/Group_USSR_FireGroup_P.et" {
- coords 110.222 1 118.409
+Vehicle M923A1 : "{9A0D72816DFFDB7F}Prefabs/Vehicles/Wheeled/M923A1/M923A1.et" {
+ coords 140.1 1 90.548
+ m_sAttachmentGroupName "Test2"
+}
+$grp SCR_AIGroup : "{9C7902A055DDA271}Prefabs/Groups/OPFOR/Group_USSR_FireGroup_P.et" {
+ Test2 {
+  coords 110.222 1 118.409
+ }
+ Test3 {
+  coords 110.222 1 118.409
+ }
+ Test4 {
+  coords 110.222 1 118.409
+ }
+ Test5 {
+  coords 110.222 1 118.409
+ }
+}
+$grp Vehicle : "{C012BB3488BEA0C2}Prefabs/Vehicles/Wheeled/BTR70/BTR70.et" {
+ BTR1 {
+  coords 117.848 1 116.135
+  m_sAttachmentGroupName "Test2"
+ }
+ BTR2 {
+  coords 117.848 1 116.135
+  m_sAttachmentGroupName "Test2"
+ }
+ BTR3 {
+  coords 117.848 1 116.135
+  m_sAttachmentGroupName "Test2"
+ }
+ BTR4 {
+  coords 117.848 1 116.135
+  m_sAttachmentGroupName "Test3"
+ }
+ BTR5 {
+  coords 117.848 1 116.135
+  m_sAttachmentGroupName "Test3"
+ }
+ BTR6 {
+  coords 117.848 1 116.135
+  m_sAttachmentGroupName "Test3"
+ }
+ BTR7 {
+  coords 117.848 1 116.135
+  m_sAttachmentGroupName "Test5"
+ }
+ BTR8 {
+  coords 128.399 1 113.345
+  m_sAttachmentGroupName "Test5"
+ }
 }

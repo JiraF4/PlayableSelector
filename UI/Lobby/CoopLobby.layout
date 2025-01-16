@@ -291,6 +291,7 @@ FrameWidgetClass {
             ImageWidgetClass "{5D6E8203A11BCB77}" {
              Name "Background"
              Slot FrameWidgetSlot "{5D6E820228641944}" {
+              PositionX 0
               OffsetLeft 0
               PositionY 128
               OffsetTop 128
@@ -298,21 +299,6 @@ FrameWidgetClass {
               OffsetRight -480
               SizeY 824
               OffsetBottom -952
-             }
-             Opacity 0.3
-             Color 0 0 0 1
-            }
-            ImageWidgetClass "{60DB5B88D8D001BA}" {
-             Name "Background2"
-             Slot FrameWidgetSlot "{5D6E820228641944}" {
-              PositionX 29
-              OffsetLeft 29
-              PositionY 155
-              OffsetTop 155
-              SizeX 442
-              OffsetRight -471
-              SizeY 774
-              OffsetBottom -929
              }
              Opacity 0.3
              Color 0 0 0 1
@@ -349,54 +335,58 @@ FrameWidgetClass {
             OverlayWidgetClass "{5D6D141636047EF6}" {
              Name "LoadoutPreviewBody"
              Slot FrameWidgetSlot "{5D6D141612AB133D}" {
-              PositionX 0
-              OffsetLeft 0
-              PositionY 128
-              OffsetTop 128
-              SizeX 480
-              OffsetRight -480
-              SizeY 824
-              OffsetBottom -952
+              PositionX 14
+              OffsetLeft 14
+              PositionY 135
+              OffsetTop 135
+              SizeX 450
+              OffsetRight -464
+              SizeY 810
+              OffsetBottom -945
              }
              {
-              FrameWidgetClass "{5EAB2399481EEBFF}" : "{FE42694A25ACA734}UI/Lobby/LoadoutPreview.layout" {
+              VerticalLayoutWidgetClass "{5EAB2399481EEBFF}" : "{FE42694A25ACA734}UI/Lobby/LoadoutPreview.layout" {
                Name "MainLoadoutPreview"
                Slot OverlayWidgetSlot "{5D6D1B985B1E5269}" {
+                VerticalAlign 3
                }
                {
-                FrameWidgetClass "{5D6D1B9826675364}" {
-                 Prefab "{5D6D1B9826675364}"
+                OverlayWidgetClass "{6460D6E1FFB419C2}" {
+                 Prefab "{6460D6E1FFB419C2}"
                  {
-                  ButtonWidgetClass "{5D6E820114D3BC73}" {
-                   Prefab "{5D6E820114D3BC73}"
+                  FrameWidgetClass "{5D6D1B9826675364}" {
+                   Prefab "{5D6D1B9826675364}"
                    {
-                    OverlayWidgetClass "{5D6E820286BE9FB3}" {
-                     Prefab "{5D6E820286BE9FB3}"
+                    ButtonWidgetClass "{5D6E820114D3BC73}" {
+                     Prefab "{5D6E820114D3BC73}"
+                     Slot FrameWidgetSlot "{5D6E820114D380FC}" {
+                      OffsetRight 0
+                     }
                      {
-                      FrameWidgetClass "{5D6E820286BE9FB5}" {
-                       Prefab "{5D6E820286BE9FB5}"
+                      OverlayWidgetClass "{5D6E820286BE9FB3}" {
+                       Prefab "{5D6E820286BE9FB3}"
                        {
-                        OverlayWidgetClass "{552068607D1612DA}" {
-                         Prefab "{552068607D1612DA}"
+                        VerticalLayoutWidgetClass "{5D6E821750628966}" {
+                         Prefab "{5D6E821750628966}"
                          {
-                          ItemPreviewWidgetClass "{552068601B16C353}" {
-                           Prefab "{552068601B16C353}"
-                           camera 1
+                          FrameWidgetClass "{5F231C322F09CFC5}" {
+                           Prefab "{5F231C322F09CFC5}"
+                           {
+                            FrameWidgetClass "{5F1EE66556AD2C37}" {
+                             Prefab "{5F1EE66556AD2C37}"
+                             "Is Visible" 0
+                            }
+                           }
+                          }
+                          OverlayWidgetClass "{5F190A8CAF7D46C8}" {
+                           Prefab "{5F190A8CAF7D46C8}"
+                           "Is Visible" 0
+                          }
+                          OverlayWidgetClass "{5F190A8A3BF0ED29}" {
+                           Prefab "{5F190A8A3BF0ED29}"
+                           "Is Visible" 0
                           }
                          }
-                        }
-                       }
-                      }
-                      VerticalLayoutWidgetClass "{5D6E821750628966}" {
-                       Prefab "{5D6E821750628966}"
-                       {
-                        OverlayWidgetClass "{5F190A8CAF7D46C8}" {
-                         Prefab "{5F190A8CAF7D46C8}"
-                         "Is Visible" 0
-                        }
-                        OverlayWidgetClass "{5F190A8A3BF0ED29}" {
-                         Prefab "{5F190A8A3BF0ED29}"
-                         "Is Visible" 0
                         }
                        }
                       }
@@ -936,8 +926,8 @@ FrameWidgetClass {
     OffsetLeft 7.541
     PositionY 0
     OffsetTop 0
-    SizeX 1920
-    OffsetRight -1927.54
+    SizeX 1954.46
+    OffsetRight -1962
     SizeY 1080
     OffsetBottom -1080
    }

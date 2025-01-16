@@ -13,7 +13,7 @@ VerticalLayoutWidgetClass {
    Slot LayoutSlot "{5F1147E2ED9CBB3B}" {
     SizeMode Fill
    }
-   Color 0 0 0 1
+   Color 0.008 0.012 0.016 1
    style full
    {
     HorizontalLayoutWidgetClass "{5F1147E3611C4AF6}" {
@@ -38,6 +38,8 @@ VerticalLayoutWidgetClass {
         SizeMode Fill
        }
        Text "Entity name"
+       "Font Size" 18
+       "Min Font Size" 16
        "Vertical Alignment" Center
       }
       TextWidgetClass "{5F1147E36CE3A906}" {
@@ -46,6 +48,8 @@ VerticalLayoutWidgetClass {
         Padding 0 0 4 0
        }
        Text "12kg"
+       "Font Size" 18
+       "Min Font Size" 16
        "Vertical Alignment" Center
       }
       TextWidgetClass "{5F1147E36CDAD8AA}" {
@@ -53,7 +57,10 @@ VerticalLayoutWidgetClass {
        Slot LayoutSlot "{5F1147E36BD97A92}" {
         Padding 0 0 4 0
        }
+       "Is Visible" 0
        Text "75%"
+       "Font Size" 18
+       "Min Font Size" 16
        "Vertical Alignment" Center
       }
       ButtonWidgetClass "{5F140D727A627BB3}" {

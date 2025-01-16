@@ -57,6 +57,7 @@ class PS_LittleInventoryItemCell : SCR_ScriptedWidgetComponent
 			previewManager = world.GetItemPreviewManager();
 		}
 		previewManager.SetPreviewItem(m_iItemPreview, itemEntity);
+		m_iItemPreview.SetVisible(itemEntity != null);
 	}
 	
 	IEntity GetItem()

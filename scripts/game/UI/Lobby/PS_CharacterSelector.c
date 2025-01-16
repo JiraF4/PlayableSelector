@@ -102,7 +102,7 @@ class PS_CharacterSelector : SCR_ButtonComponent
 		m_VoiceHideableButton = PS_VoiceButton.Cast(m_wVoiceHideableButton.FindHandler(PS_VoiceButton));
 		
 		// Buttons
-		m_OnClicked.Insert(OnClicked);
+		//m_OnClicked.Insert(OnClicked);
 		m_OnHover.Insert(OnHover);
 		m_OnHoverLeave.Insert(OnHoverLeave);
 		m_StateButtonBaseComponent.m_OnClicked.Insert(OnStateClicked);
@@ -426,6 +426,20 @@ class PS_CharacterSelector : SCR_ButtonComponent
 	
 	// --------------------------------------------------------------------------------------------------------------------------------
 	// Buttons
+	override bool OnClick(Widget w, int x, int y, int button)
+	{
+		super.OnClick(w, x, y, button);
+		if (button == 1)
+		{
+			m_CoopLobby.SetPreviewPlayable(m_iPlayableId, true);
+			return false;
+		}
+		if (button != 0)
+			return false;
+		
+		OnClicked(this);
+		return false;
+	}
 	void OnClicked(SCR_ButtonBaseComponent button)
 	{
 		if (m_bStateClickSkip)
@@ -435,8 +449,22 @@ class PS_CharacterSelector : SCR_ButtonComponent
 		}
 		
 		int playerId = m_CoopLobby.GetSelectedPlayer();
+		if (m_iPlayerId == -2)
+		{
+			m_CoopLobby.SetPreviewPlayable(m_iPlayableId, true);
+			AudioSystem.PlaySound("{C97850E4341F0CF9}Sounds/UI/Samples/Menu/UI_Button_Fail.wav");
+			return;
+		}
 		if (m_iPlayerId > 0 && playerId != m_iPlayerId)
 		{
+			m_CoopLobby.SetPreviewPlayable(m_iPlayableId, true);
+			AudioSystem.PlaySound("{C97850E4341F0CF9}Sounds/UI/Samples/Menu/UI_Button_Fail.wav");
+			return;
+		}
+		PS_PlayableContainer playableContainer = m_PlayableManager.GetPlayableById(m_iPlayableId);
+		if (playableContainer.GetDamageState() == EDamageState.DESTROYED)
+		{
+			m_CoopLobby.SetPreviewPlayable(m_iPlayableId, true);
 			AudioSystem.PlaySound("{C97850E4341F0CF9}Sounds/UI/Samples/Menu/UI_Button_Fail.wav");
 			return;
 		}
@@ -446,7 +474,10 @@ class PS_CharacterSelector : SCR_ButtonComponent
 		{
 			RplId playableId = m_PlayableManager.GetPlayableByPlayer(m_iCurrentPlayerId);
 			if (gameState == SCR_EGameModeState.BRIEFING && playableId != RplId.Invalid())
+			{
+				m_CoopLobby.SetPreviewPlayable(m_iPlayableId, true);
 				return;
+			}
 		}
 		
 		if (playerId != m_iPlayerId)
@@ -456,8 +487,10 @@ class PS_CharacterSelector : SCR_ButtonComponent
 				SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
 				ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("lmsg");
 				invoker.Invoke(null, "Где баланс?");
+				m_CoopLobby.SetPreviewPlayable(m_iPlayableId, true);
 				return;
 			}
+			
 			AudioSystem.PlaySound("{9500A96BBA3B0581}Sounds/UI/Samples/Menu/UI_Gadget_Select.wav");
 			m_PlayableControllerComponent.MoveToVoNRoom(playerId, m_sFactionKey, m_sPlayableCallsign);
 			m_PlayableControllerComponent.ChangeFactionKey(playerId, m_sFactionKey);
@@ -481,12 +514,12 @@ class PS_CharacterSelector : SCR_ButtonComponent
 	
 	void OnHover()
 	{
-		m_CoopLobby.SetPreviewPlayable(m_PlayableContainer.GetRplId());
+		m_CoopLobby.SetPreviewPlayable(m_PlayableContainer.GetRplId(), false);
 	}
 	
 	void OnHoverLeave()
 	{
-		m_CoopLobby.SetPreviewPlayable(RplId.Invalid());
+		m_CoopLobby.SetPreviewPlayable(RplId.Invalid(), false);
 	}
 	
 	void OnStateClicked(SCR_ButtonBaseComponent button)

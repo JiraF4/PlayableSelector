@@ -4,8 +4,6 @@ VerticalLayoutWidgetClass {
  }
  components {
   PS_RolesGroup "{5EA716101FDA15F1}" {
-   m_sSoundHovered ""
-   m_sSoundClicked ""
   }
  }
  {
@@ -169,6 +167,12 @@ VerticalLayoutWidgetClass {
   VerticalLayoutWidgetClass "{5D6D1B9A91E996ED}" {
    Name "CharactersList"
    Slot LayoutSlot "{5D6D1B9A91E9960E}" {
+   }
+  }
+  HorizontalLayoutWidgetClass "{6460D6E9B63EB29F}" {
+   Name "VehiclesList"
+   Slot LayoutSlot "{5D6D1B9A91E9960E}" {
+    Padding 3 0 0 0
    }
   }
  }

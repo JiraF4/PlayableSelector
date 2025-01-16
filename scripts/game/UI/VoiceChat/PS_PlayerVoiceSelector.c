@@ -106,7 +106,8 @@ class PS_PlayerVoiceSelector : SCR_ButtonBaseComponent
 			
 			m_wUnitIcon.SetVisible(true);
 			m_wGroupName.SetVisible(true);
-			m_wUnitIcon.LoadImageTexture(0, playableComponent.GetRoleIconPath());
+			if (playableComponent)
+				m_wUnitIcon.LoadImageTexture(0, playableComponent.GetRoleIconPath());
 			m_wGroupName.SetText(groupName);
 		}else{
 			m_wUnitIcon.SetVisible(false);

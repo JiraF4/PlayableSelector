@@ -1,0 +1,139 @@
+ButtonWidgetClass {
+ Name "VehicleSelector"
+ Slot LayoutSlot "{5D6D352925B78E4D}" {
+ }
+ Color 0 1 0.019 0
+ components {
+  PS_VehicleSelector "{6460D6EC432CDD81}" {
+   m_sSoundClicked ""
+   m_BackgroundDefault 0 0 0 0.314
+   m_BackgroundHovered 0.051 0.051 0.051 0.314
+   m_BackgroundSelected 0.76 0.392 0.08 0.3
+   m_BackgroundSelectedHovered 0.76 0.392 0.08 0.3
+   m_BackgroundClicked 0.76 0.392 0.08 0.3
+  }
+ }
+ {
+  OverlayWidgetClass "{6460D6E805CDD8B3}" {
+   Name "Overlay"
+   Slot ButtonWidgetSlot "{5D6E8206FB6C11F3}" {
+    Padding 8 8 4 8
+   }
+   {
+    FrameWidgetClass "{6460D6E805CDD8B5}" {
+     Name "FVehicleSelector"
+     Slot OverlayWidgetSlot "{5D6E820833F19127}" {
+     }
+     {
+      PanelWidgetClass "{6460D6E805D2374E}" {
+       Name "Border"
+       Slot FrameWidgetSlot "{5D6F1490EBB9691E}" {
+        PositionX 2
+        OffsetLeft 2
+        PositionY 0
+        OffsetTop 0
+        SizeX 64
+        OffsetRight -66
+        SizeY 40
+        OffsetBottom -40
+       }
+       Color 0.761 0.392 0.078 1
+       style outline_2px
+      }
+      ImageWidgetClass "{6460D6E805D23743}" {
+       Name "Background"
+       Slot FrameWidgetSlot "{5D6E8206B132EE77}" {
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX 66
+        OffsetRight -66
+        SizeY 40
+        OffsetBottom -40
+       }
+      }
+      ImageWidgetClass "{6460D6E805D23742}" {
+       Name "VehicleFactionColor"
+       Slot FrameWidgetSlot "{5D6D1B9A2749B73B}" {
+        Anchor 0 0 0 0
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX 6
+        OffsetRight -6
+        SizeY 40
+        OffsetBottom -40
+       }
+       "Is Visible" 0
+       IsPixelPerfect 0
+       Color 0.552 0.552 0.552 0.106
+      }
+      ScaleWidgetClass "{6460D6E805D23741}" {
+       Name "Scale0"
+       Slot FrameWidgetSlot "{5E7CF0582185DC43}" {
+        PositionX 3
+        OffsetLeft 3
+        PositionY 0
+        OffsetTop 0
+        SizeX 60
+        OffsetRight -63
+        SizeY 40
+        OffsetBottom -40
+       }
+       "Inherit Color" 1
+       "Scale Mode" "Scale to fill"
+       {
+        FrameWidgetClass "{6460D6E805D244A4}" {
+         Name "Frame0"
+         Slot AlignableSlot "{5E7CF059F21E7098}" {
+         }
+         "Inherit Color" 1
+         {
+          ImageWidgetClass "{6460D6E805D244A5}" {
+           Name "UnitIcon"
+           Slot FrameWidgetSlot "{5E7CF059F272107C}" {
+            Anchor 0 0 0 0
+            PositionX -15
+            OffsetLeft -15
+            PositionY -11.785
+            OffsetTop -11.785
+            SizeX 90
+            OffsetRight -75
+            SizeY 90
+            OffsetBottom -78.215
+           }
+           "Inherit Color" 1
+           Texture "{95F49CBE9FF7A0CB}UI/Textures/Editor/EditableEntities/Vehicles/EditableEntity_Vehicle_Apc.edds"
+           Size 64 64
+          }
+         }
+        }
+       }
+      }
+      TextWidgetClass "{6460D6E805D244A2}" {
+       Name "VehicleClassName"
+       Slot FrameWidgetSlot "{5D6D1B99A45E509C}" {
+        PositionX 66
+        OffsetLeft 66
+        PositionY 0
+        OffsetTop 0
+        SizeX 0.672
+        OffsetRight -66.672
+        SizeY 40
+        OffsetBottom -40
+       }
+       "Is Visible" 0
+       Color 0.552 0.552 0.552 1
+       Text "Rifleman"
+       "Font Size" 18
+       "Min Font Size" 16
+       "Vertical Alignment" Center
+      }
+     }
+    }
+   }
+  }
+ }
+}

@@ -52,7 +52,7 @@ class PS_CoopLobby : MenuBase
 	protected OverlayWidget m_wLobbyLittleInventoryItemInfo;
 	protected ButtonWidget m_wPlayersSwitch;
 	protected ButtonWidget m_wVoiceSwitch;
-	protected FrameWidget m_wMainLoadoutPreview;
+	protected VerticalLayoutWidget m_wMainLoadoutPreview;
 	protected OverlayWidget m_wLoadoutPreviewBody;
 	protected OverlayWidget m_wPlayersBody;
 	protected ItemPreviewWidget m_wPreview;
@@ -119,7 +119,7 @@ class PS_CoopLobby : MenuBase
 		m_wLobbyLittleInventoryItemInfo = OverlayWidget.Cast(m_wRoot.FindAnyWidget("LobbyLittleInventoryItemInfo"));
 		m_wPlayersSwitch = ButtonWidget.Cast(m_wRoot.FindAnyWidget("PlayersSwitch"));
 		m_wVoiceSwitch = ButtonWidget.Cast(m_wRoot.FindAnyWidget("VoiceSwitch"));
-		m_wMainLoadoutPreview = FrameWidget.Cast(m_wRoot.FindAnyWidget("MainLoadoutPreview"));
+		m_wMainLoadoutPreview = VerticalLayoutWidget.Cast(m_wRoot.FindAnyWidget("MainLoadoutPreview"));
 		m_wLoadoutPreviewBody = OverlayWidget.Cast(m_wRoot.FindAnyWidget("LoadoutPreviewBody"));
 		m_wPlayersBody = OverlayWidget.Cast(m_wRoot.FindAnyWidget("PlayersBody"));
 		m_wPreview = ItemPreviewWidget.Cast(m_wRoot.FindAnyWidget("Preview"));
@@ -218,6 +218,7 @@ class PS_CoopLobby : MenuBase
 	void InitPlayables()
 	{
 		array<PS_PlayableContainer> playables = m_PlayableManager.GetPlayablesSorted();
+		map<RplId, ref PS_PlayableVehicleContainer> playableVehicles = m_PlayableManager.GetPlayableVehicles();
 		map<SCR_Faction, ref Tuple3<int, int, int>> factions = new map<SCR_Faction, ref Tuple3<int, int, int>>();
 		
 		foreach (PS_PlayableContainer playable : playables)
@@ -245,12 +246,18 @@ class PS_CoopLobby : MenuBase
 			}
 		}
 		
+		foreach (RplId rplId, PS_PlayableVehicleContainer playableVehicleContainer : playableVehicles)
+		{
+			AddPlayableVehicle(playableVehicleContainer);
+		}
+		
 		foreach (SCR_Faction faction, Tuple3<int, int, int> count : factions)
 		{
 			AddFaction(faction, count.param1, count.param2, count.param3);
 		}
 		
 		// Added in runtime
+		m_PlayableManager.GetOnPlayableRegistered().Remove(OnPlayableRegistered);
 		m_PlayableManager.GetOnPlayableRegistered().Insert(OnPlayableRegistered);
 	}
 	
@@ -273,6 +280,18 @@ class PS_CoopLobby : MenuBase
 		factionSelector.SetCoopLobby(this);
 		factionSelector.SetToggled(m_CurrentFaction == faction);
 		m_mFactions.Insert(faction, factionSelector);
+	}
+	
+	void AddPlayableVehicle(PS_PlayableVehicleContainer playableVehicleContainer)
+	{
+		SCR_AIGroup playableGroup = m_PlayableManager.GetPlayerGroupByVehicle(playableVehicleContainer);
+		PS_RolesGroup rolesGroup;
+		if (!m_mGroups.Contains(playableGroup))
+		{
+			return;
+		}
+		else rolesGroup = m_mGroups.Get(playableGroup);
+		rolesGroup.InsertVehicle(playableVehicleContainer);
 	}
 	
 	void AddPlayable(PS_PlayableContainer playable)
@@ -347,12 +366,14 @@ class PS_CoopLobby : MenuBase
 		{
 			AddFaction(faction, 0, 1, 0);
 		}
+		else
+			AddFactionCount(faction, 0, 1, 0);
 		AddPlayable(playable);
 	}
 	
 	void OnRolesGroupRemoved(PS_RolesGroup rolesGroup)
 	{
-		
+		m_mGroups.Remove(m_mGroups.GetKeyByValue(rolesGroup));
 	}
 	
 	void OnPlayableRemoved(PS_PlayableContainer playable)
@@ -383,7 +404,7 @@ class PS_CoopLobby : MenuBase
 	{
 		if (m_CurrentFaction != faction)
 		{
-			if (m_CurrentFaction)
+			if (m_CurrentFaction && m_mFactions.Get(m_CurrentFaction))
 				m_mFactions.Get(m_CurrentFaction).SetToggled(false);
 			m_CurrentFaction = faction;
 		}
@@ -402,14 +423,20 @@ class PS_CoopLobby : MenuBase
 		m_wRolesScroll.SetSliderPos(0, 0);
 	}
 	
-	void SetPreviewPlayable(RplId playableId)
+	void SetPreviewPlayableVehicle(PS_PlayableVehicleContainer playableVehicleContainer, bool openInventory)
+	{
+		m_LobbyLoadoutPreview.SetPreviewPlayableVehicle(playableVehicleContainer, openInventory);
+	}
+	void SetPreviewPlayable(RplId playableId, bool openInventory)
 	{
 		if (!playableId.IsValid())
 		{
 			playableId = m_PlayableManager.GetPlayableByPlayer(m_iPlayerId);
+			if (playableId == RplId.Invalid())
+				return;
 		}
 		string prefabName = m_PlayableManager.GetPlayablePrefab(playableId);
-		m_LobbyLoadoutPreview.SetPreviewPlayable(playableId, prefabName);
+		m_LobbyLoadoutPreview.SetPreviewPlayable(playableId, prefabName, openInventory);
 	}
 	
 	void UpdatePlayerFaction(int playerId, FactionKey factionKey, FactionKey factionKeyOld)

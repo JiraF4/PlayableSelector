@@ -7,6 +7,7 @@ class PS_RolesGroup : SCR_ScriptedWidgetComponent
 {
 	// Const
 	protected ResourceName m_sCharacterSelectorPrefab = "{3F761F63F1DF29D1}UI/Lobby/CharacterSelector.layout";
+	protected ResourceName m_sVehicleSelectorPrefab = "{1B4B23FBA92940C9}UI/Lobby/VehicleSelector.layout";
 	protected ResourceName m_sImageSet = "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset";
 	protected ResourceName m_sImageSetPS = "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset";
 	
@@ -20,6 +21,7 @@ class PS_RolesGroup : SCR_ScriptedWidgetComponent
 	
 	// Widgets
 	protected VerticalLayoutWidget m_wCharactersList;
+	protected HorizontalLayoutWidget m_wVehiclesList;
 	protected ButtonWidget m_wLockButton;
 	protected ImageWidget m_wLockImage;
 	protected ButtonWidget m_wVoiceJoinButton;
@@ -55,6 +57,7 @@ class PS_RolesGroup : SCR_ScriptedWidgetComponent
 		
 		// Widgets
 		m_wCharactersList = VerticalLayoutWidget.Cast(w.FindAnyWidget("CharactersList"));
+		m_wVehiclesList = HorizontalLayoutWidget.Cast(w.FindAnyWidget("VehiclesList"));
 		m_wLockButton = ButtonWidget.Cast(w.FindAnyWidget("LockButton"));
 		m_wLockImage = ImageWidget.Cast(w.FindAnyWidget("LockImage"));
 		m_wVoiceJoinButton = ButtonWidget.Cast(w.FindAnyWidget("VoiceJoinButton"));
@@ -107,6 +110,14 @@ class PS_RolesGroup : SCR_ScriptedWidgetComponent
 	
 	// --------------------------------------------------------------------------------------------------------------------------------
 	// Add
+	void InsertVehicle(PS_PlayableVehicleContainer vehicle)
+	{
+		Widget vehicleSelectorRoot = m_wWorkspaceWidget.CreateWidgets(m_sVehicleSelectorPrefab, m_wVehiclesList);
+		PS_VehicleSelector vehicleSelector = PS_VehicleSelector.Cast(vehicleSelectorRoot.FindHandler(PS_VehicleSelector));
+		vehicleSelector.SetLobbyMenu(m_CoopLobby);
+		vehicleSelector.SetVehicle(vehicle);
+	}
+	
 	void InsertPlayable(PS_PlayableContainer playable)
 	{
 		Widget characterSelectorRoot = m_wWorkspaceWidget.CreateWidgets(m_sCharacterSelectorPrefab, m_wCharactersList);

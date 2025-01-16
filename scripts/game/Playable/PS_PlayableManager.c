@@ -38,6 +38,7 @@ class PS_PlayableManager : ScriptComponent
 	// Map of our playables
 	ref map<RplId, ref PS_PlayableContainer> m_aPlayables = new map<RplId, ref PS_PlayableContainer>(); // We NOW sync it!
 	ref array<PS_PlayableContainer> m_PlayablesSorted = {};
+	ref map<RplId, ref PS_PlayableVehicleContainer> m_mPlayableVehicles = new map<RplId, ref PS_PlayableVehicleContainer>;
 	
 	// Maps for saving players staff, player controllers local to client
 	ref map<int, PS_EPlayableControllerState> m_playersStates = new map<int, PS_EPlayableControllerState>;
@@ -53,6 +54,7 @@ class PS_PlayableManager : ScriptComponent
 	ref map<FactionKey, int> m_mFactionReady = new map<FactionKey, int>; // faction ready state
 	ref map<RplId, string> m_mPlayablePrefabs = new map<RplId, string>;
 	ref map<RplId, string> m_mPlayableNames = new map<RplId, string>;
+	
 	
 	// Invokers
 	ref ScriptInvokerInt m_eOnPlayerConnected = new ScriptInvokerInt();
@@ -288,6 +290,39 @@ class PS_PlayableManager : ScriptComponent
 		}
 	}
 	
+	void RegisterGroupVehicle(RplId rplId, SCR_AIGroup group, Vehicle vehicle)
+	{
+		if (!Replication.IsServer())
+			return;
+		if (!group.m_PlayersGroup)
+		{
+			GetGame().GetCallqueue().Call(RegisterGroupVehicle, rplId, group, vehicle);
+			return;
+		}
+		int groupCallsign = group.GetCallsignNum();
+		PS_PlayableVehicleContainer playableVehicleContainer = new PS_PlayableVehicleContainer();
+		playableVehicleContainer.Init(rplId, vehicle.GetPrefabData().GetPrefabName(), groupCallsign, group.m_PlayersGroup.GetGroupID(), vehicle.GetFactionAffiliation().GetDefaultFactionKey());
+		Rpc(RPC_RegisterGroupVehicle, playableVehicleContainer);
+		RPC_RegisterGroupVehicle(playableVehicleContainer);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RPC_RegisterGroupVehicle(PS_PlayableVehicleContainer playableVehicleContainer)
+	{
+		m_mPlayableVehicles[playableVehicleContainer.m_iRplId] = playableVehicleContainer;
+	}
+	void UnRegisterGroupVehicle(RplId rplId)
+	{
+		if (!Replication.IsServer())
+			return;
+		Rpc(RPC_UnRegisterGroupVehicle, rplId);
+		RPC_UnRegisterGroupVehicle(rplId);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RPC_UnRegisterGroupVehicle(RplId rplId)
+	{
+		m_mPlayableVehicles.Remove(rplId);
+	}
+	
 	void NotifyKick(int playerId)
 	{
 		RPC_NotifyKick(playerId);
@@ -417,6 +452,10 @@ class PS_PlayableManager : ScriptComponent
 	{
 		return m_PlayablesSorted;
 	}
+	ref map<RplId, ref PS_PlayableVehicleContainer> GetPlayableVehicles()
+	{
+		return m_mPlayableVehicles;
+	}
 	FactionKey GetPlayerFactionKeyRemembered(int playerId)
 	{
 		if (!m_playersFactionRemembered.Contains(playerId)) return "";
@@ -487,6 +526,12 @@ class PS_PlayableManager : ScriptComponent
 		
 		SCR_GroupsManagerComponent groupsManagerComponent = SCR_GroupsManagerComponent.GetInstance();
 		return groupsManagerComponent.FindGroup(m_playablePlayerGroupId[PlayableId]);
+	}
+	
+	SCR_AIGroup GetPlayerGroupByVehicle(PS_PlayableVehicleContainer playableVehicleContainer)
+	{
+		SCR_GroupsManagerComponent groupsManagerComponent = SCR_GroupsManagerComponent.GetInstance();
+		return groupsManagerComponent.FindGroup(playableVehicleContainer.m_iGroupId);
 	}
 	
 	int GetGroupCallsignByPlayable(RplId PlayableId)
@@ -1087,6 +1132,12 @@ class PS_PlayableManager : ScriptComponent
 			container.Save(writer);
 		}
 		
+		int playableVehiclessCount = m_mPlayableVehicles.Count();
+		writer.WriteInt(playableVehiclessCount);
+		foreach (RplId id, PS_PlayableVehicleContainer container : m_mPlayableVehicles)
+		{
+			container.Save(writer);
+		}
 		
 		return true;
 	}
@@ -1256,6 +1307,15 @@ class PS_PlayableManager : ScriptComponent
 			PS_PlayableContainer container = new PS_PlayableContainer();
 			container.Load(reader);
 			RPC_RegisterPlayable(container);
+		}
+		
+		int playableVehiclesCount;
+		reader.ReadInt(playableVehiclesCount);
+		for (int i = 0; i < playableVehiclesCount; i++)
+		{
+			PS_PlayableVehicleContainer container = new PS_PlayableVehicleContainer();
+			container.Load(reader);
+			RPC_RegisterGroupVehicle(container);
 		}
 		
 		m_bRplLoaded = true;

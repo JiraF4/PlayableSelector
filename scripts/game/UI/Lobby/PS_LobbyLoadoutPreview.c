@@ -10,16 +10,20 @@ class PS_LobbyLoadoutPreview : SCR_WLibComponentBase
 	protected OverlayWidget m_WLoadoutOverlay;
 	protected TextWidget m_wStateText;
 	protected TextWidget m_wLoadoutText;
+	protected FrameWidget m_wLoadoutPreviewDescription;
 	
 	protected SCR_LoadoutPreviewComponent m_Preview;
 	protected SCR_ButtonBaseComponent m_hOpenInventoryButton;
 	
 	protected RplId m_iPlayableId;
+	protected RplId m_iPlayableIdInventory;
 	protected ResourceName m_sPrefabName;
 	
 	protected PS_ImportantItemsDisplay m_hImportantItemsDisplay;
 	
 	protected PS_LittleInventory m_hLittleInventory;
+	protected PS_PlayableVehicleContainer m_PlayableVehicleContainer;
+	protected PS_PlayableVehicleContainer m_PlayableVehicleContainerInventory;
 	
 	override void HandlerAttached(Widget w)
 	{
@@ -30,6 +34,7 @@ class PS_LobbyLoadoutPreview : SCR_WLibComponentBase
 		m_wLoadoutText = TextWidget.Cast(w.FindAnyWidget("LoadoutText"));
 		m_WStateOverlay = OverlayWidget.Cast(w.FindAnyWidget("StateOverlay"));
 		m_WLoadoutOverlay = OverlayWidget.Cast(w.FindAnyWidget("LoadoutOverlay"));
+		m_wLoadoutPreviewDescription = FrameWidget.Cast(w.FindAnyWidget("LoadoutPreviewDescription"));
 		
 		Widget widget = w.FindAnyWidget("LoadoutPreview");
 		m_Preview = SCR_LoadoutPreviewComponent.Cast(widget.FindHandler(SCR_LoadoutPreviewComponent));
@@ -51,8 +56,50 @@ class PS_LobbyLoadoutPreview : SCR_WLibComponentBase
 		m_hLittleInventory.SetExternalItemInfoWidget(itemInfoWidget)
 	}
 	
-	void SetPreviewPlayable(RplId playableId, ResourceName prefabName)
+	void SetPreviewPlayableVehicle(PS_PlayableVehicleContainer playableVehicleContainer, bool openInventory)
 	{
+		if (m_hLittleInventory.GetRootWidget().IsVisible() && !openInventory)
+			return;
+		SetPreviewPlayable(RplId.Invalid(), "", false);
+		m_PlayableVehicleContainer = playableVehicleContainer;
+		
+		ItemPreviewManagerEntity previewManager = ChimeraWorld.CastFrom(GetGame().GetWorld()).GetItemPreviewManager();
+		previewManager.SetPreviewItemFromPrefab(m_Preview.GetItemPreviewWidget(), playableVehicleContainer.m_sPrefabName);
+		IEntity entity = previewManager.ResolvePreviewEntityForPrefab(playableVehicleContainer.m_sPrefabName);
+		
+		m_WLoadoutOverlay.SetVisible(true);
+		SCR_Faction faction = playableVehicleContainer.GetFaction();
+		SCR_EditableVehicleComponent editableVehicleComponent = SCR_EditableVehicleComponent.Cast(entity.FindComponent(SCR_EditableVehicleComponent));
+		SCR_UIInfo uIInfo = editableVehicleComponent.GetInfo();
+		m_wLoadoutBackgroundImage.SetColor(faction.GetOutlineFactionColor());
+		m_wLoadoutText.SetText(uIInfo.GetName());
+		//m_wLoadoutPreviewDescription.SetVisible(false);
+		
+		if (openInventory)
+		{
+			if (m_PlayableVehicleContainerInventory == playableVehicleContainer)
+			{
+				CloseInventory();
+				m_PlayableVehicleContainerInventory = null;
+			}
+			else {
+				CloseInventory();
+				m_hLittleInventory.GetRootWidget().SetVisible(true);
+				m_hLittleInventory.OpenEntity(entity);
+				m_PlayableVehicleContainerInventory = playableVehicleContainer;
+			}
+		}
+	}
+	
+	void SetPreviewPlayable(RplId playableId, ResourceName prefabName, bool openInventory)
+	{
+		if (m_hLittleInventory.GetRootWidget().IsVisible() && !openInventory)
+			return;
+		if (prefabName != "")
+		{
+			m_wLoadoutPreviewDescription.SetVisible(true);
+			m_PlayableVehicleContainer = null;
+		}
 		m_iPlayableId = playableId;
 		m_sPrefabName = prefabName;
 		UpdatePreviewInfo();
@@ -60,7 +107,21 @@ class PS_LobbyLoadoutPreview : SCR_WLibComponentBase
 		ItemPreviewManagerEntity previewManager = ChimeraWorld.CastFrom(GetGame().GetWorld()).GetItemPreviewManager();
 		if (prefabName != "") entity = previewManager.ResolvePreviewEntityForPrefab(prefabName);
 		m_hImportantItemsDisplay.SetEntity(entity);
-		CloseInventory();
+		
+		if (openInventory)
+		{
+			if (playableId == m_iPlayableIdInventory)
+			{
+				CloseInventory();
+				m_iPlayableIdInventory = RplId.Invalid();
+			}
+			else {
+				CloseInventory();
+				m_hLittleInventory.GetRootWidget().SetVisible(true);
+				m_hLittleInventory.OpenEntity(entity);
+				m_iPlayableIdInventory = playableId;
+			}
+		}
 	}
 	
 	// Return all items recursive (If item is inventory)
@@ -88,6 +149,8 @@ class PS_LobbyLoadoutPreview : SCR_WLibComponentBase
 	
 	void CloseInventory()
 	{
+		m_PlayableVehicleContainerInventory = null;
+		m_iPlayableIdInventory = null;
 		m_hLittleInventory.Clear();
 		m_hLittleInventory.GetRootWidget().SetVisible(false);
 	}
@@ -98,6 +161,7 @@ class PS_LobbyLoadoutPreview : SCR_WLibComponentBase
 		IEntity entity = null;
 		ItemPreviewManagerEntity previewManager = ChimeraWorld.CastFrom(GetGame().GetWorld()).GetItemPreviewManager();
 		if (m_sPrefabName != "") entity = previewManager.ResolvePreviewEntityForPrefab(m_sPrefabName);
+		if (m_PlayableVehicleContainer != null) entity = previewManager.ResolvePreviewEntityForPrefab(m_PlayableVehicleContainer.m_sPrefabName);
 		if (entity) m_hLittleInventory.OpenEntity(entity);
 	}
 	
