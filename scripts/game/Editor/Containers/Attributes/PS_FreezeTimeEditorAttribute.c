@@ -1,32 +1,36 @@
 [BaseContainerProps()]
 class PS_FreezeTimeEditorAttribute : SCR_BaseValueListEditorAttribute
-{	
+{
 	override SCR_BaseEditorAttributeVar ReadVariable(Managed item, SCR_AttributesManagerEditorComponent manager)
 	{
 		//If opened in global attributes
-		if (!IsGameMode(item)) return null;
-		
+		if (!IsGameMode(item))
+			return null;
+
 		PS_GameModeCoop coopMode = PS_GameModeCoop.Cast(item);
-		if (!coopMode) return null;
-		
+		if (!coopMode)
+			return null;
+
 		float value = coopMode.GetFreezeTime();
-		return SCR_BaseEditorAttributeVar.CreateFloat(((float) value) / 1000);
+		return SCR_BaseEditorAttributeVar.CreateFloat(((float) value) * 0.001);
 	}
-	
+
 	override void WriteVariable(Managed item, SCR_BaseEditorAttributeVar var, SCR_AttributesManagerEditorComponent manager, int playerID)
 	{
-		if (!var) 
+		if (!var)
 			return;
-		
+
 		PS_GameModeCoop coopMode = PS_GameModeCoop.Cast(item);
-		if (!coopMode) return;
-		
+		if (!coopMode)
+			return;
+
 		int value = var.GetFloat() * 1000;
 		coopMode.SetFreezeTime(value);
 	}
-	
+
 	override int GetEntries(notnull array<ref SCR_BaseEditorAttributeEntry> outEntries)
 	{
-		return super.GetEntries(outEntries);
+		return
+			super.GetEntries(outEntries);
 	}
-};
+}

@@ -1,5 +1,5 @@
 [BaseContainerProps()]
-class PS_MissionDescriptionTitleEditorAttribute: SCR_BaseEditorAttribute
+class PS_MissionDescriptionTitleEditorAttribute : SCR_BaseEditorAttribute
 {
 	override SCR_BaseEditorAttributeVar ReadVariable(Managed item, SCR_AttributesManagerEditorComponent manager)
 	{
@@ -13,11 +13,11 @@ class PS_MissionDescriptionTitleEditorAttribute: SCR_BaseEditorAttribute
 		PS_EditableMissionDescriptionComponent missionDescription = PS_EditableMissionDescriptionComponent.Cast(item);
 		if (!missionDescription)
 			return;
-		
+
 		missionDescription.SetMissionTitle(var.GetString());
 	}
 	override int GetEntries(notnull array<ref SCR_BaseEditorAttributeEntry> outEntries)
 	{
 		return super.GetEntries(outEntries);
 	}
-};
+}

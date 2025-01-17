@@ -102,7 +102,7 @@ class PS_PlayerVoiceSelector : SCR_ButtonBaseComponent
 		
 		if (playableId != RplId.Invalid()) {
 			PS_PlayableContainer playableComponent = playableManager.GetPlayableById(playableId);
-			string groupName = playableManager.GroupCallsignToGroupName(faction, groupCallSign);
+			string groupName = PS_GroupHelper.GroupCallsignToGroupName(faction, groupCallSign);
 			
 			m_wUnitIcon.SetVisible(true);
 			m_wGroupName.SetVisible(true);

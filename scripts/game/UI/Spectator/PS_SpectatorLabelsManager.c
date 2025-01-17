@@ -5,7 +5,7 @@ class PS_SpectatorLabelsManagerClass: ScriptComponentClass
 	
 };
 
-[ComponentEditorProps(icon: HYBRID_COMPONENT_ICON)]
+
 class PS_SpectatorLabelsManager : ScriptComponent
 {
 	ref array<PS_SpectatorLabel> m_aSpectatorLabels = new array<PS_SpectatorLabel>();

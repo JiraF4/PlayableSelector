@@ -1,49 +1,48 @@
 // Playable replicatable container
 class PS_PlayableContainer
 {
-	protected RplId m_iRplId;
+	protected RplId m_RplId;
 	protected string m_sName;
-	protected FactionKey m_sFactionKey;
-	protected SCR_ECharacterRank m_iCharacterRank;
+	protected FactionKey m_FactionKey;
+	protected SCR_ECharacterRank m_eCharacterRank;
 	protected string m_sRoleIconPath;
 	protected string m_sRoleName;
-	protected EDamageState m_iDamageState;
-	
+	protected EDamageState m_eDamageState;
+
 	void Init(PS_PlayableComponent playableComponent) // Rpc workaround
 	{
 		m_PlayableComponent = playableComponent;
-		m_iRplId = playableComponent.GetRplId();
+		m_RplId = playableComponent.GetRplId();
 		m_sName = playableComponent.GetName();
-		m_sFactionKey = playableComponent.GetFactionKey();
-		m_iCharacterRank = playableComponent.GetCharacterRank();
+		m_FactionKey = playableComponent.GetFactionKey();
+		m_eCharacterRank = playableComponent.GetCharacterRank();
 		m_sRoleIconPath = playableComponent.GetRoleIconPath();
 		m_sRoleName = playableComponent.GetRoleName();
-		m_iDamageState = playableComponent.GetDamageState();
+		m_eDamageState = playableComponent.GetDamageState();
 	}
-	
-	
+
 	// -------------------------- Replication ----------------------------
 	static bool Extract(PS_PlayableContainer instance, ScriptCtx ctx, SSnapSerializerBase snapshot)
 	{
-		snapshot.SerializeInt(instance.m_iRplId);
+		snapshot.SerializeInt(instance.m_RplId);
 		snapshot.SerializeString(instance.m_sName);
-		snapshot.SerializeString(instance.m_sFactionKey);
-		snapshot.SerializeInt(instance.m_iCharacterRank);
+		snapshot.SerializeString(instance.m_FactionKey);
+		snapshot.SerializeInt(instance.m_eCharacterRank);
 		snapshot.SerializeString(instance.m_sRoleIconPath);
 		snapshot.SerializeString(instance.m_sRoleName);
-		snapshot.SerializeInt(instance.m_iDamageState);
+		snapshot.SerializeInt(instance.m_eDamageState);
 		return true;
 	}
 
 	static bool Inject(SSnapSerializerBase snapshot, ScriptCtx ctx, PS_PlayableContainer instance)
 	{
-		snapshot.SerializeInt(instance.m_iRplId);
+		snapshot.SerializeInt(instance.m_RplId);
 		snapshot.SerializeString(instance.m_sName);
-		snapshot.SerializeString(instance.m_sFactionKey);
-		snapshot.SerializeInt(instance.m_iCharacterRank);
+		snapshot.SerializeString(instance.m_FactionKey);
+		snapshot.SerializeInt(instance.m_eCharacterRank);
 		snapshot.SerializeString(instance.m_sRoleIconPath);
 		snapshot.SerializeString(instance.m_sRoleName);
-		snapshot.SerializeInt(instance.m_iDamageState);
+		snapshot.SerializeInt(instance.m_eDamageState);
 		return true;
 	}
 
@@ -70,50 +69,50 @@ class PS_PlayableContainer
 		return true;
 	}
 
-	static bool SnapCompare(SSnapSerializerBase lhs, SSnapSerializerBase rhs , ScriptCtx ctx)
+	static bool SnapCompare(SSnapSerializerBase lhs, SSnapSerializerBase rhs, ScriptCtx ctx)
 	{
 		return lhs.CompareSnapshots(rhs, 4)
-		    && lhs.CompareStringSnapshots(rhs)
-		    && lhs.CompareStringSnapshots(rhs)
-		    && lhs.CompareSnapshots(rhs, 4)
-		    && lhs.CompareStringSnapshots(rhs)
-		    && lhs.CompareStringSnapshots(rhs)
-		    && lhs.CompareSnapshots(rhs, 4);
+			&& lhs.CompareStringSnapshots(rhs)
+			&& lhs.CompareStringSnapshots(rhs)
+			&& lhs.CompareSnapshots(rhs, 4)
+			&& lhs.CompareStringSnapshots(rhs)
+			&& lhs.CompareStringSnapshots(rhs)
+			&& lhs.CompareSnapshots(rhs, 4);
 	}
 
 	static bool PropCompare(PS_PlayableContainer instance, SSnapSerializerBase snapshot, ScriptCtx ctx)
 	{
-		return snapshot.CompareInt(instance.m_iRplId)
-		    && snapshot.CompareString(instance.m_sName)
-		    && snapshot.CompareString(instance.m_sFactionKey)
-		    && snapshot.CompareInt(instance.m_iCharacterRank)
-		    && snapshot.CompareString(instance.m_sRoleIconPath)
-		    && snapshot.CompareString(instance.m_sRoleName)
-		    && snapshot.CompareInt(instance.m_iDamageState);
+		return snapshot.CompareInt(instance.m_RplId)
+			&& snapshot.CompareString(instance.m_sName)
+			&& snapshot.CompareString(instance.m_FactionKey)
+			&& snapshot.CompareInt(instance.m_eCharacterRank)
+			&& snapshot.CompareString(instance.m_sRoleIconPath)
+			&& snapshot.CompareString(instance.m_sRoleName)
+			&& snapshot.CompareInt(instance.m_eDamageState);
 	}
-	
+
 	void Save(ScriptBitWriter writer)
 	{
-		writer.WriteInt(m_iRplId);
+		writer.WriteInt(m_RplId);
 		writer.WriteString(m_sName);
-		writer.WriteString(m_sFactionKey);
-		writer.WriteInt(m_iCharacterRank);
+		writer.WriteString(m_FactionKey);
+		writer.WriteInt(m_eCharacterRank);
 		writer.WriteString(m_sRoleIconPath);
 		writer.WriteString(m_sRoleName);
-		writer.WriteInt(m_iDamageState);
+		writer.WriteInt(m_eDamageState);
 	}
-	
+
 	void Load(ScriptBitReader reader)
 	{
-		reader.ReadInt(m_iRplId);
+		reader.ReadInt(m_RplId);
 		reader.ReadString(m_sName);
-		reader.ReadString(m_sFactionKey);
-		reader.ReadInt(m_iCharacterRank);
+		reader.ReadString(m_FactionKey);
+		reader.ReadInt(m_eCharacterRank);
 		reader.ReadString(m_sRoleIconPath);
 		reader.ReadString(m_sRoleName);
-		reader.ReadInt(m_iDamageState);
+		reader.ReadInt(m_eDamageState);
 	}
-	
+
 	// -------------------------- Get server ----------------------------
 	protected PS_PlayableComponent m_PlayableComponent;
 	PS_PlayableComponent GetPlayableComponent()
@@ -124,14 +123,14 @@ class PS_PlayableContainer
 	{
 		return m_PlayableComponent;
 	}
-	
+
 	// ---------------------------- Events ------------------------------
 	protected ref ScriptInvokerInt m_eOnPlayerChange = new ScriptInvokerInt(); // int playerId
 	ScriptInvokerInt GetOnPlayerChange()
 		return m_eOnPlayerChange;
 	void InvokeOnPlayerChanged(int playerId)
 		m_eOnPlayerChange.Invoke(playerId);
-	
+
 	ref ScriptInvokerInt m_eOnDamageStateChanged = new ScriptInvokerInt();
 	ScriptInvokerInt GetOnDamageStateChanged()
 		return m_eOnDamageStateChanged;
@@ -153,17 +152,17 @@ class PS_PlayableContainer
 	protected ref ScriptInvokerBool m_eOnPlayerPinChange = new ScriptInvokerBool();
 	ScriptInvokerBool GetOnPlayerPinChange()
 		return m_eOnPlayerPinChange;
-	
+
 	void OnDamageStateChanged(EDamageState damageState)
 	{
-		m_iDamageState = damageState;
+		m_eDamageState = damageState;
 		m_eOnDamageStateChanged.Invoke(damageState);
 	}
 
 	// -------------------------- Get client ----------------------------
 	RplId GetRplId()
 	{
-		return m_iRplId;
+		return m_RplId;
 	}
 	string GetName()
 	{
@@ -171,7 +170,7 @@ class PS_PlayableContainer
 	}
 	FactionKey GetFactionKey()
 	{
-		return m_sFactionKey;
+		return m_FactionKey;
 	}
 	SCR_Faction GetFaction()
 	{
@@ -182,15 +181,15 @@ class PS_PlayableContainer
 		return m_sRoleIconPath;
 	}
 	string GetRoleName()
-	{	
+	{
 		return m_sRoleName;
 	}
 	SCR_ECharacterRank GetCharacterRank()
 	{
-		return m_iCharacterRank;
+		return m_eCharacterRank;
 	}
 	EDamageState GetDamageState()
 	{
-		return m_iDamageState;
+		return m_eDamageState;
 	}
 }

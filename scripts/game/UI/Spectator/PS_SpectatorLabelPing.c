@@ -1,7 +1,7 @@
 class PS_SpectatorLabelPingClass : PS_SpectatorLabelClass
 {
 }
-[ComponentEditorProps(icon: HYBRID_COMPONENT_ICON)]
+
 class PS_SpectatorLabelPing : PS_SpectatorLabel
 {
 	override void OnPostInit(IEntity owner)

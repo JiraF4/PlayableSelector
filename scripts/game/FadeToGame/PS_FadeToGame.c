@@ -5,25 +5,25 @@ modded enum ChimeraMenuPreset : ScriptMenuPresetEnum
 	FadeToGame
 }
 
-//------------------------------------------------------------------------------------------------
-//! 
-class PS_FadeToGame: ChimeraMenuBase
-{	
+class PS_FadeToGame : ChimeraMenuBase
+{
 	protected float m_fFadeTime = 1.0;
 	protected float m_fFadeMaxTime = 1.0;
-	
+
 	protected ImageWidget m_wFade;
-	
+
+	//------------------------------------------------------------------------------------------------
 	override void OnMenuOpen()
 	{
 		m_wFade = ImageWidget.Cast(GetRootWidget().FindAnyWidget("Fade"));
 	}
-	
+
+	//------------------------------------------------------------------------------------------------
 	override void OnMenuUpdate(float tDelta)
 	{
 		m_fFadeTime = m_fFadeTime - tDelta;
 		m_wFade.SetOpacity(0.8 * (m_fFadeTime / m_fFadeMaxTime) + 0.5);
-		if (m_fFadeTime <= 0) 
+		if (m_fFadeTime <= 0)
 			Close();
 	}
-};
+}

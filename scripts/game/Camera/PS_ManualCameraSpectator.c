@@ -1,22 +1,21 @@
 [EntityEditorProps(category: "GameScripted/Camera", description: "Manual camera", color: "0 255 255 255")]
-class PS_ManualCameraSpectatorClass: SCR_ManualCameraClass
+class PS_ManualCameraSpectatorClass : SCR_ManualCameraClass
 {
-};
+}
 
-class PS_ManualCameraSpectator: SCR_ManualCamera
+class PS_ManualCameraSpectator : SCR_ManualCamera
 {
-	protected IEntity m_eCharacterEntity;
+	protected IEntity m_CharacterEntity;
 	protected vector oldTransform[4];
-	
+
 	override protected void EOnPostFrame(IEntity owner, float timeSlice)
 	{
 		super.EOnPostFrame(owner, timeSlice);
-		
-		if (m_eCharacterEntity)
+
+		if (m_CharacterEntity)
 			CameraPositionUpdate();
 	}
-	
-	
+
 	override protected bool IsDisabledByMenu()
 	{
 		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
@@ -24,31 +23,30 @@ class PS_ManualCameraSpectator: SCR_ManualCamera
 			return true;
 		return super.IsDisabledByMenu();
 	}
-	
+
 	IEntity GetCharacterEntity()
 	{
-		return m_eCharacterEntity;
+		return m_CharacterEntity;
 	}
-	
+
 	void SetCharacterEntity(IEntity characterEntity)
 	{
-		ClearCharacterEntity();	
-		m_eCharacterEntity = characterEntity;
-		
+		ClearCharacterEntity();
+		m_CharacterEntity = characterEntity;
+
 		GetTransform(oldTransform);
-		
 	}
-	
+
 	void ClearCharacterEntity()
 	{
-		if (!m_eCharacterEntity)
+		if (!m_CharacterEntity)
 			return;
-		
-		SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(m_eCharacterEntity);
+
+		SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(m_CharacterEntity);
 		SCR_CharacterCameraHandlerComponent characterCameraHandlerComponent = SCR_CharacterCameraHandlerComponent.Cast(character.FindComponent(SCR_CharacterCameraHandlerComponent));
 		characterCameraHandlerComponent.OnAlphatestChange(0);
 	}
-	
+
 	void CameraPositionUpdate()
 	{
 		vector newTransform[4];
@@ -59,19 +57,19 @@ class PS_ManualCameraSpectator: SCR_ManualCamera
 			SetCharacterEntity(null);
 			return;
 		}
-		
-		SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(m_eCharacterEntity);
+
+		SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(m_CharacterEntity);
 		SCR_CharacterCameraHandlerComponent characterCameraHandlerComponent = SCR_CharacterCameraHandlerComponent.Cast(character.FindComponent(SCR_CharacterCameraHandlerComponent));
 		characterCameraHandlerComponent.OnAlphatestChange(255);
-		
-		int boneHead = m_eCharacterEntity.GetAnimation().GetBoneIndex("Head");
-		int boneEyeLeft = m_eCharacterEntity.GetAnimation().GetBoneIndex("leftEye");
+
+		int boneHead = m_CharacterEntity.GetAnimation().GetBoneIndex("Head");
+		int boneEyeLeft = m_CharacterEntity.GetAnimation().GetBoneIndex("leftEye");
 		vector mat[4];
-		m_eCharacterEntity.GetTransform(mat);
+		m_CharacterEntity.GetTransform(mat);
 		vector matHead[4];
-		m_eCharacterEntity.GetAnimation().GetBoneMatrix(boneHead, matHead);
+		m_CharacterEntity.GetAnimation().GetBoneMatrix(boneHead, matHead);
 		vector matEyeLeft[4];
-		m_eCharacterEntity.GetAnimation().GetBoneMatrix(boneEyeLeft, matEyeLeft);
+		m_CharacterEntity.GetAnimation().GetBoneMatrix(boneEyeLeft, matEyeLeft);
 		vector matRes[4];
 		Math3D.MatrixMultiply4(mat, matHead, matRes);
 		vector matResEye[4];
@@ -86,13 +84,12 @@ class PS_ManualCameraSpectator: SCR_ManualCamera
 		Math3D.AnglesToMatrix(angles, matRes2);
 		matRes2[3] = matResEye[3];
 		SetTransform(matRes2);
-		
+
 		GetTransform(oldTransform);
 	}
-	
+
 	void ~PS_ManualCameraSpectator()
 	{
 		ClearCharacterEntity();
 	}
-};
-
+}

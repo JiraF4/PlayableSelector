@@ -5,7 +5,7 @@ class PS_MissionDataManagerClass: ScriptComponentClass
 	
 };
 
-[ComponentEditorProps(icon: HYBRID_COMPONENT_ICON)]
+
 class PS_MissionDataManager : ScriptComponent
 {
 	// more singletons for singletons god, make our spagetie kingdom great

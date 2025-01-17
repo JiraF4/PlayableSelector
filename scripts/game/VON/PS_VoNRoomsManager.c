@@ -11,7 +11,7 @@ typedef string VoNRoomKey;
 
 // Manage VoN "Rooms"
 // Flying wallles rooms for naked VoN bois.
-[ComponentEditorProps(icon: HYBRID_COMPONENT_ICON)]
+
 class PS_VoNRoomsManager : ScriptComponent
 {
 	// server data
@@ -128,7 +128,7 @@ class PS_VoNRoomsManager : ScriptComponent
 		if (playerController.GetPlayerId() != playerId) return;
 		
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-		playableController.VoNPosition = position;
+		playableController.SetVoNPosition(position);
 	}
 	void RestoreRoom(int playerId)
 	{

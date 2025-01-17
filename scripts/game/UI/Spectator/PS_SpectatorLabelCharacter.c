@@ -4,7 +4,7 @@ class PS_SpectatorLabelCharacterClass : PS_SpectatorLabelClass
 	
 };
 
-[ComponentEditorProps(icon: HYBRID_COMPONENT_ICON)]
+
 class PS_SpectatorLabelCharacter : PS_SpectatorLabel
 {
 	protected bool m_bDead = false;

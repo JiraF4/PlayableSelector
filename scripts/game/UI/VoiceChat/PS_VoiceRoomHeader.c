@@ -41,7 +41,7 @@ class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 		string name = roomName;
 		if (name != "" && name.IsDigitAt(0)) {
 			int CallSign = roomName.ToInt();
-			name = playableManager.GroupCallsignToGroupName(faction, CallSign);
+			name = PS_GroupHelper.GroupCallsignToGroupName(faction, CallSign);
 		}
 		if (name.StartsWith("#PS-VoNRoom_Local")) name = "#PS-VoNRoom_Local";
 		if (name.StartsWith("#PS-VoNRoom_Public")) {

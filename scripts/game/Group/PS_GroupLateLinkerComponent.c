@@ -11,9 +11,9 @@ class PS_GroupLateLinkerComponent : ScriptComponent
 		ClearEventMask(owner, EntityEvent.POSTFRAME);
 		if (!Replication.IsServer())
 			return;
-			
+
 		SCR_AIGroup aiGroup = SCR_AIGroup.Cast(owner);
-		
+
 		array<IEntity> characters = {};
 		IEntity characterChild = owner.GetChildren();
 		while (characterChild)
@@ -22,12 +22,12 @@ class PS_GroupLateLinkerComponent : ScriptComponent
 				characters.Insert(characterChild);
 			characterChild = characterChild.GetSibling();
 		}
-		
+
 		array<IEntity> charactersSorted = {};
 		foreach (IEntity character : characters)
 		{
 			aiGroup.RemoveChild(character);
-			
+
 			bool added = false;
 			for (int i = 0; i < charactersSorted.Count(); i++)
 			{
@@ -42,7 +42,7 @@ class PS_GroupLateLinkerComponent : ScriptComponent
 			if (!added)
 				charactersSorted.Insert(character);
 		}
-		
+
 		foreach (IEntity character : charactersSorted)
 		{
 			aiGroup.AddAIEntityToGroup(character);

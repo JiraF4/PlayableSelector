@@ -1,37 +1,36 @@
-//------------------------------------------------------------------------------------------------
 [ComponentEditorProps(category: "GameScripted/Character", description: "Set character playable", color: "0 0 255 255", icon: HYBRID_COMPONENT_ICON)]
 class PS_PlayableComponentClass : ScriptComponentClass
 {
 }
 
-[ComponentEditorProps(icon: HYBRID_COMPONENT_ICON)]
+
 class PS_PlayableComponent : ScriptComponent
 {
 	[Attribute()]
-	protected string m_name;
+	protected string m_sName;
 	[Attribute()]
 	protected bool m_bIsPlayable;
 	[Attribute()]
 	ref array<ResourceName> m_aRespawnPrefabs;
-	
+
 	// Actually just RplId from RplComponent
-	protected RplId m_iRplId;
+	protected RplId m_RplId;
 	protected vector spawnTransform[4];
 	[RplProp()]
 	int m_iRespawnCounter = 0;
 	protected bool m_bRespawned;
-	
+
 	// Server only
 	protected ref PS_PlayableContainer m_PlayableContainer;
 	PS_PlayableContainer GetPlayableContainer()
 	{
 		return m_PlayableContainer;
 	}
-	
+
 	// Cache global
 	protected PS_GameModeCoop m_GameModeCoop;
 	protected PS_PlayableManager m_PlayableManager;
-	
+
 	// Cache components
 	protected SCR_ChimeraCharacter m_Owner;
 	SCR_ChimeraCharacter GetOwnerCharacter()
@@ -54,10 +53,10 @@ class PS_PlayableComponent : ScriptComponent
 	protected AIAgent m_AIAgent;
 	AIAgent GetAIAgent()
 		return m_AIAgent;
-	
+
 	// Temporally
-	static protected int m_iRespawnTime;
-	
+	static protected int s_iRespawnTime;
+
 	void CopyState(PS_RespawnData respawnData)
 	{
 		if (respawnData.m_PlayableComponent)
@@ -67,23 +66,23 @@ class PS_PlayableComponent : ScriptComponent
 		Math3D.MatrixCopy(respawnData.m_aSpawnTransform, spawnTransform);
 		Replication.BumpMe();
 	}
-	
+
 	override void OnPostInit(IEntity owner)
 	{
 		m_Owner = SCR_ChimeraCharacter.Cast(owner);
 		m_Owner.PS_SetPlayable(this);
-		
+
 		if (Replication.IsServer())
 			owner.GetTransform(spawnTransform);
-		
+
 		SetEventMask(owner, EntityEvent.INIT);
 	}
-	
+
 	void GetSpawnTransform(inout vector outMat[4])
 	{
 		Math3D.MatrixCopy(spawnTransform, outMat);
 	}
-	
+
 	ResourceName GetNextRespawn(bool nextPrefab)
 	{
 		if (!nextPrefab)
@@ -110,14 +109,14 @@ class PS_PlayableComponent : ScriptComponent
 		m_AIAgent = m_AIControlComponent.GetAIAgent();
 		GetGame().GetCallqueue().Call(LateInit);
 	}
-	
+
 	void LateInit()
 	{
 		RplComponent rpl = RplComponent.Cast(GetOwner().FindComponent(RplComponent));
-		m_iRplId = rpl.Id();
+		m_RplId = rpl.Id();
 		m_GameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		m_PlayableManager = PS_PlayableManager.GetInstance();
-		
+
 		m_PlayableContainer = new PS_PlayableContainer();
 		m_PlayableContainer.Init(this);
 		if (Replication.IsServer())
@@ -138,10 +137,11 @@ class PS_PlayableComponent : ScriptComponent
 	void RPC_SetPlayable(bool isPlayable)
 	{
 		m_bIsPlayable = isPlayable;
-		if (m_bIsPlayable) GetGame().GetCallqueue().CallLater(AddToList, 0, false, m_Owner);
+		if (m_bIsPlayable)
+			GetGame().GetCallqueue().CallLater(AddToList, 0, false, m_Owner);
 		else RemoveFromList();
 	}
-	
+
 	void OpenRespawnMenu(int time)
 	{
 		Rpc(RPC_OpenRespawnMenu, time);
@@ -149,11 +149,11 @@ class PS_PlayableComponent : ScriptComponent
 	[RplRpc(RplChannel.Reliable, RplRcver.Owner)]
 	void RPC_OpenRespawnMenu(int time)
 	{
-		m_iRespawnTime = time;
+		s_iRespawnTime = time;
 		GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.PlayableRespawnMenu);
 	}
 	int GetRespawnTime()
-		return m_iRespawnTime;
+		return s_iRespawnTime;
 
 	void ResetRplStream()
 	{
@@ -177,7 +177,7 @@ class PS_PlayableComponent : ScriptComponent
 			if (aiComponent)
 			{
 				AIAgent agent = aiComponent.GetAIAgent();
-				if (agent) 
+				if (agent)
 				{
 					agent.ActivateAI();
 				}
@@ -190,22 +190,23 @@ class PS_PlayableComponent : ScriptComponent
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		if (!playableManager)
 			return;
-		playableManager.RemovePlayable(GetRplId());
+		playableManager.UnRegisterPlayable(GetRplId());
 	}
-	
+
 	private void OnDamageStateChange(EDamageState state)
 	{
 		if (m_PlayableManager && !m_bRespawned && state == EDamageState.DESTROYED)
 		{
-			GetGame().GetCallqueue().CallLater(TryRespawn, 200, false, m_PlayableManager.GetPlayerByPlayable(m_iRplId));
+			GetGame().GetCallqueue().CallLater(TryRespawn, 200, false, m_PlayableManager.GetPlayerByPlayable(m_RplId));
 			m_bRespawned = true;
 		}
-		PS_PlayableManager.GetInstance().OnPlayableDamageStateChanged(m_iRplId, state);
+		PS_PlayableManager.GetInstance().OnPlayableDamageStateChanged(m_RplId, state);
 	}
-	
+
 	private void TryRespawn(int playerId)
 	{
-		if (m_GameModeCoop) m_GameModeCoop.TryRespawn(m_iRplId, playerId);
+		if (m_GameModeCoop)
+			m_GameModeCoop.TryRespawn(m_RplId, playerId);
 	}
 
 	private void AddToList(IEntity owner)
@@ -214,35 +215,37 @@ class PS_PlayableComponent : ScriptComponent
 		if (GetOwner().GetWorld() != GetGame().GetWorld())
 			return;
 		if (Replication.IsServer())
-			m_CharacterDamageManagerComponent.GetOnDamageStateChanged().Insert(OnDamageStateChange);		
-		
-		if (!m_bIsPlayable) return;
+			m_CharacterDamageManagerComponent.GetOnDamageStateChanged().Insert(OnDamageStateChange);
+
+		if (!m_bIsPlayable)
+			return;
 
 		GetGame().GetCallqueue().CallLater(AddToListWrap, 0, false, owner) // init delay
 	}
 
 	private void AddToListWrap(IEntity owner)
 	{
-		if (!m_bIsPlayable) return;
-		
+		if (!m_bIsPlayable)
+			return;
+
 		// Why it's activating randomly?
 		// Retarded shit.
 		if (GetGame().GetAIWorld().CanAIBeActivated())
-			GetGame().GetCallqueue().CallLater(ForceDeactivateAI, 500, true); 
+			GetGame().GetCallqueue().CallLater(ForceDeactivateAI, 500, true);
 
 		if (PS_GameModeCoop.Cast(GetGame().GetGameMode()).GetDisablePlayablesStreaming())
 		{
 			RplComponent rpl = RplComponent.Cast(GetOwner().FindComponent(RplComponent));
 			rpl.EnableStreaming(false);
 		}
-		
+
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		if (!playableManager)
 			return;
-		
+
 		playableManager.RegisterPlayable(this);
 	}
-	
+
 	void ForceActivateAI()
 	{
 		if (!m_AIAgent)
@@ -265,7 +268,7 @@ class PS_PlayableComponent : ScriptComponent
 		if (m_AIAgent.IsAIActivated())
 			m_AIAgent.DeactivateAI();
 	}
-	
+
 	void HolsterWeapon()
 	{
 		m_Owner.GetCharacterController().TryEquipRightHandItem(null, EEquipItemType.EEquipTypeUnarmedContextual);
@@ -273,7 +276,8 @@ class PS_PlayableComponent : ScriptComponent
 
 	string GetName()
 	{
-		if (m_name != "") return m_name;
+		if (m_sName != "")
+			return m_sName;
 		return m_EditableUIInfo.GetName();
 	}
 
@@ -284,9 +288,9 @@ class PS_PlayableComponent : ScriptComponent
 	}
 	RplId GetRplId()
 	{
-		return m_iRplId;
+		return m_RplId;
 	}
-	
+
 	FactionKey GetFactionKey()
 	{
 		return GetFactionAffiliationComponent().GetDefaultFactionKey();
@@ -298,7 +302,7 @@ class PS_PlayableComponent : ScriptComponent
 		return uiInfo.GetIconPath();
 	}
 	string GetRoleName()
-	{	
+	{
 		SCR_EditableCharacterComponent editableCharacterComponent = SCR_EditableCharacterComponent.Cast(GetOwner().FindComponent(SCR_EditableCharacterComponent));
 		SCR_UIInfo uiInfo = editableCharacterComponent.GetInfo();
 		return uiInfo.GetName();
@@ -314,7 +318,7 @@ class PS_PlayableComponent : ScriptComponent
 
 	void PS_PlayableComponent(IEntityComponentSource src, IEntity ent, IEntity parent)
 	{
-		
+
 	}
 
 	void ~PS_PlayableComponent()
@@ -326,34 +330,39 @@ class PS_PlayableComponent : ScriptComponent
 	// Send our precision data, we need it on clients
 	override bool RplSave(ScriptBitWriter writer)
 	{
-		writer.WriteString(m_name);
+		writer.WriteString(m_sName);
 		writer.WriteBool(m_bIsPlayable);
 		return true;
 	}
 	override bool RplLoad(ScriptBitReader reader)
 	{
-		reader.ReadString(m_name);
+		reader.ReadString(m_sName);
 		reader.ReadBool(m_bIsPlayable);
 		return true;
+	}
+	
+	SCR_ChimeraCharacter GetCharacter()
+	{
+		return SCR_ChimeraCharacter.Cast(GetOwner());
 	}
 }
 
 class PS_RespawnData
 {
 	PS_PlayableComponent m_PlayableComponent;
-	
-	RplId m_iId;
+
+	RplId m_Id;
 	ResourceName m_sPrefabName;
 	vector m_aSpawnTransform[4];
 	int m_iRespawnCounter;
 	ref array<ResourceName> m_aRespawnPrefabs;
-	
+
 	void PS_RespawnData(PS_PlayableComponent playableComponent, ResourceName prefabName)
 	{
 		m_PlayableComponent = playableComponent;
-		
+
 		m_sPrefabName = prefabName;
-		m_iId = playableComponent.GetRplId();
+		m_Id = playableComponent.GetRplId();
 		playableComponent.GetSpawnTransform(m_aSpawnTransform);
 		m_iRespawnCounter = playableComponent.m_iRespawnCounter;
 		m_aRespawnPrefabs = playableComponent.m_aRespawnPrefabs;

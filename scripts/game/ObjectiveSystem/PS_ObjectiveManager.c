@@ -5,7 +5,7 @@ class PS_ObjectiveManagerClass: ScriptComponentClass
 	
 };
 
-[ComponentEditorProps(icon: HYBRID_COMPONENT_ICON)]
+
 class PS_ObjectiveManager : ScriptComponent
 {
 	[Attribute()]

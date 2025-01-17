@@ -77,6 +77,8 @@ class PS_GameModeHeader : ScriptedWidgetComponent
 		}
 		
 		ChimeraWorld world = GetGame().GetWorld();
+		if (!world)
+			return;
 		m_TimeAndWeatherManagerEntity = world.GetTimeAndWeatherManager();
 		
 		UpdateTimeAndWeather();

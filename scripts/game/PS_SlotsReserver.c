@@ -14,7 +14,7 @@ class PS_ReservedPlayerIdentitiesConfig: JsonApiStruct
 	}
 }
 
-[ComponentEditorProps(icon: HYBRID_COMPONENT_ICON)]
+
 class PS_SlotsReserver : ScriptComponent
 {
 	static string m_configFilePath = "$profile:PS_SlotsReserver_Config.json";

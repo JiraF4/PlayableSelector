@@ -58,7 +58,7 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 			return;
 		}
 		
-		PS_AttachManualCameraObserverComponent attachComponent = PS_AttachManualCameraObserverComponent.m_Instance;
+		PS_AttachManualCameraObserverComponent attachComponent = PS_AttachManualCameraObserverComponent.s_Instance;
 		if (!attachComponent)
 			return;
 		
@@ -87,7 +87,7 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 	{
 		m_fClickIgnoreTime = GetGame().GetWorld().GetWorldTime() + 400;
 		
-		PS_AttachManualCameraObserverComponent attachComponent = PS_AttachManualCameraObserverComponent.m_Instance;
+		PS_AttachManualCameraObserverComponent attachComponent = PS_AttachManualCameraObserverComponent.s_Instance;
 		if (!attachComponent)
 			return;
 		
@@ -109,7 +109,7 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 		{
 			if (attachComponent.GetTarget() != m_eChimeraCharacter)
 			{
-				SCR_TeleportToCursorManualCameraComponent teleportToCursorManualCameraComponent = SCR_TeleportToCursorManualCameraComponent.PS_m_Instance;
+				SCR_TeleportToCursorManualCameraComponent teleportToCursorManualCameraComponent = SCR_TeleportToCursorManualCameraComponent.s_PS_Instance;
 				if (teleportToCursorManualCameraComponent)
 				{
 					teleportToCursorManualCameraComponent.TeleportCamera(m_eChimeraCharacter.GetOrigin(), false, false, false, false, 2);

@@ -3,7 +3,7 @@ class PS_SpectatorLabelClass: ScriptComponentClass
 {
 };
 
-[ComponentEditorProps(icon: HYBRID_COMPONENT_ICON)]
+
 class PS_SpectatorLabel : ScriptComponent
 {
 	PS_SpectatorLabelsManager m_sSpectatorLabelsManager;

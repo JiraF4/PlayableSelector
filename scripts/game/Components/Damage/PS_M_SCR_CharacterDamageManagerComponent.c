@@ -5,11 +5,11 @@ modded class SCR_CharacterDamageManagerComponent
 		ChimeraCharacter character = ChimeraCharacter.Cast(GetOwner());
 		if (!character)
 			return;
-		
+
 		CharacterControllerComponent controller = character.GetCharacterController();
 		if (!controller)
 			return;
-		
+
 		bool unconscious = ShouldBeUnconscious();
 		controller.SetUnconscious(unconscious);
 		if (!unconscious)
@@ -31,7 +31,7 @@ modded class SCR_CharacterDamageManagerComponent
 			return;
 		}
 	}
-	
+
 	void ForceDisableAI(ChimeraCharacter character)
 	{
 		PS_PlayableComponent playableComponent = PS_PlayableComponent.Cast(character.FindComponent(PS_PlayableComponent));
@@ -41,7 +41,7 @@ modded class SCR_CharacterDamageManagerComponent
 			if (aiComponent)
 			{
 				AIAgent agent = aiComponent.GetAIAgent();
-				if (agent) 
+				if (agent)
 					agent.DeactivateAI();
 			}
 		}
