@@ -20,7 +20,7 @@ VerticalLayoutWidgetClass {
    {
     FrameWidgetClass "{5D6D1B9826675364}" {
      Name "LoadoutPreviewTile"
-     Slot OverlayWidgetSlot {
+     Slot OverlayWidgetSlot "{6469104DCAF7E78D}" {
       HorizontalAlign 3
       VerticalAlign 3
      }
@@ -205,7 +205,7 @@ VerticalLayoutWidgetClass {
   }
   FrameWidgetClass "{5D6D1B978889C476}" {
    Name "LoadoutPreviewDescription"
-   Slot LayoutSlot {
+   Slot LayoutSlot "{6469104DCAF7E1DC}" {
     HorizontalAlign 3
     Padding 4 0 4 0
    }
@@ -231,8 +231,14 @@ VerticalLayoutWidgetClass {
        Color 0.162 0.162 0.162 1
        components {
         SCR_ButtonBaseComponent "{5F1EE66674AFCBE2}" {
+         m_BackgroundDefault 0.027 0.027 0.027 1
+         m_BackgroundHovered 0.063 0.061 0.061 1
+         m_BackgroundSelected 0.761 0.386 0.078 1
+         m_BackgroundSelectedHovered 0.93 0.361 0.016 1
+         m_BackgroundClicked 0.761 0.386 0.078 1
         }
        }
+       "no focus" 1
        {
         OverlayWidgetClass "{5F1EE666819D1BD8}" {
          Name "OpenInventoryOverlay"
@@ -259,7 +265,7 @@ VerticalLayoutWidgetClass {
            "Z Order" 9
            Clipping False
            Color 0.761 0.386 0.078 1
-           style outline_2px
+           style pixel_outline
           }
           PanelWidgetClass "{5F1EE6667DA0FE2B}" {
            Name "Outline"

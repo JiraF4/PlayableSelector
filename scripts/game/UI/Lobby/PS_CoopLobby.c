@@ -23,6 +23,8 @@ modded enum ChimeraMenuPreset : ScriptMenuPresetEnum
 class PS_CoopLobby : MenuBase
 {
 	// Const
+	const static ResourceName IMAGESET_PS = "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset";
+	
 	protected ResourceName m_sRolesGroupPrefab = "{B45A0FA6883A7A0E}UI/Lobby/RolesGroup.layout"; // Handler: PS_RolesGroup
 	protected ResourceName m_sCharacterSelectorPrefab = "{3F761F63F1DF29D1}UI/Lobby/CharacterSelector.layout"; // Handler: PS_CharacterSelector
 	protected ResourceName m_sFactionSelectorPrefab = "{DA22ED7112FA8028}UI/Lobby/FactionSelector.layout"; // Handler: PS_FactionSelector
@@ -44,7 +46,9 @@ class PS_CoopLobby : MenuBase
 	protected OverlayWidget m_wChatPanel;
 	protected VerticalLayoutWidget m_wFactionList;
 	protected VerticalLayoutWidget m_wRolesList;
+	protected VerticalLayoutWidget m_wPlayersSearch;
 	protected ScrollLayoutWidget m_wPlayersScroll;
+	protected OverlayWidget m_wPlayersSearchBox;
 	protected VerticalLayoutWidget m_wPlayersList;
 	protected ButtonWidget m_wPreviewHideButton;
 	protected TextWidget m_wPlayersCounter;
@@ -62,6 +66,9 @@ class PS_CoopLobby : MenuBase
 	protected ScrollLayoutWidget m_wRolesScroll;
 	protected OverlayWidget m_wOverlayCounter;
 	protected TextWidget m_wTextCounter;
+	protected ButtonWidget m_wScreenButton;
+	protected ButtonWidget m_wRolesFoldButton;
+	protected ImageWidget m_wRolesFoldButtonImage;
 	
 	// Handlers
 	protected SCR_ButtonBaseComponent m_PlayersSwitchButtonComponent;
@@ -75,6 +82,8 @@ class PS_CoopLobby : MenuBase
 	protected SCR_InputButtonComponent m_NavigationChat;
 	protected SCR_InputButtonComponent m_NavigationClose;
 	protected PS_VoiceChatList m_VoiceChatList;
+	protected SCR_EditBoxComponent m_PlayersSearchBox;
+	protected SCR_ButtonBaseComponent m_RolesFoldButtonComponent;
 	
 	// Vars
 	protected ref map<SCR_Faction, PS_FactionSelector> m_mFactions = new map<SCR_Faction, PS_FactionSelector>();
@@ -112,7 +121,9 @@ class PS_CoopLobby : MenuBase
 		m_wChatPanel = OverlayWidget.Cast(m_wRoot.FindAnyWidget("ChatPanel"));
 		m_wFactionList = VerticalLayoutWidget.Cast(m_wRoot.FindAnyWidget("FactionList"));
 		m_wRolesList = VerticalLayoutWidget.Cast(m_wRoot.FindAnyWidget("RolesList"));
+		m_wPlayersSearch = VerticalLayoutWidget.Cast(m_wRoot.FindAnyWidget("PlayersSearch"));
 		m_wPlayersScroll = ScrollLayoutWidget.Cast(m_wRoot.FindAnyWidget("PlayersScroll"));
+		m_wPlayersSearchBox = OverlayWidget.Cast(m_wRoot.FindAnyWidget("PlayersSearchBox"));
 		m_wPreviewHideButton = ButtonWidget.Cast(m_wRoot.FindAnyWidget("PreviewHideButton"));
 		m_wPlayersCounter = TextWidget.Cast(m_wRoot.FindAnyWidget("PlayersCounter"));
 		m_wVoiceChatFrame = FrameWidget.Cast(m_wRoot.FindAnyWidget("VoiceChatFrame"));
@@ -129,6 +140,9 @@ class PS_CoopLobby : MenuBase
 		m_wNavigationClose = ButtonWidget.Cast(m_wRoot.FindAnyWidget("NavigationClose"));
 		m_wOverlayCounter = OverlayWidget.Cast(m_wRoot.FindAnyWidget("OverlayCounter"));
 		m_wTextCounter = TextWidget.Cast(m_wRoot.FindAnyWidget("TextCounter"));
+		m_wScreenButton = ButtonWidget.Cast(m_wRoot.FindAnyWidget("ScreenButton"));
+		m_wRolesFoldButton = ButtonWidget.Cast(m_wRoot.FindAnyWidget("RolesFoldButton"));
+		m_wRolesFoldButtonImage = ImageWidget.Cast(m_wRoot.FindAnyWidget("RolesFoldButtonImage"));
 		
 		// Handlers
 		m_GameModeHeader = PS_GameModeHeader.Cast(m_wGameModeHeader.FindHandler(PS_GameModeHeader));
@@ -142,6 +156,8 @@ class PS_CoopLobby : MenuBase
 		m_PlayersList = PS_PlayersList.Cast(m_wPlayersBody.FindHandler(PS_PlayersList));
 		m_NavigationStart = SCR_InputButtonComponent.Cast(m_wNavigationStart.FindHandler(SCR_InputButtonComponent));
 		m_VoiceChatList = PS_VoiceChatList.Cast(m_wVoiceChatFrame.FindHandler(PS_VoiceChatList));
+		m_PlayersSearchBox = SCR_EditBoxComponent.Cast(m_wPlayersSearchBox.FindHandler(SCR_EditBoxComponent));
+		m_RolesFoldButtonComponent = SCR_ButtonBaseComponent.Cast(m_wRolesFoldButton.FindHandler(SCR_ButtonBaseComponent));
 		
 		FactionKey factionKey = m_PlayableManager.GetPlayerFactionKey(m_iPlayerId);
 		m_CurrentFaction = SCR_Faction.Cast(m_FactionManager.GetFactionByKey(factionKey));
@@ -154,12 +170,16 @@ class PS_CoopLobby : MenuBase
 		m_NavigationStart.m_OnActivated.Insert(Action_Ready);
 		m_NavigationChat.m_OnActivated.Insert(Action_ChatOpen);
 		m_NavigationClose.m_OnActivated.Insert(Action_Exit);
+		m_RolesFoldButtonComponent.m_OnClicked.Insert(OnClickedRolesFold);
 		
 		// Events
 		m_PlayableManager.GetOnFactionChange().Insert(UpdatePlayerFaction);
 		m_PlayableManager.GetOnStartTimerCounterChanged().Insert(OnStartTimerCounterChanged);
 		m_PlayableManager.GetOnPlayerConnected().Insert(OnPlayerConnected);
 		m_PlayableManager.GetOnPlayerDisconnected().Insert(OnPlayerDisconnected);
+		m_PlayersSearchBox.m_OnChanged.Insert(OnPlayersSearchChanged);
+		m_PlayersSearchBox.m_OnWriteModeEnter.Insert(OnPlayersSearchWriteModeEnter);
+		m_PlayersSearchBox.m_OnWriteModeLeave.Insert(OnPlayersSearchWriteModeLeave);
 		
 		// Actions
 		if (m_GameModeCoop.GetState() == SCR_EGameModeState.SLOTSELECTION)
@@ -346,19 +366,56 @@ class PS_CoopLobby : MenuBase
 	void OnClickedPlayersSwitch(SCR_ButtonBaseComponent factionButton)
 	{
 		m_wVoiceChatFrame.SetVisible(false);
-		m_wPlayersScroll.SetVisible(true);
+		m_wPlayersSearch.SetVisible(true);
 		m_VoiceSwitchButtonComponent.SetToggled(false);
 	}
 	
 	void OnClickedVoiceSwitch(SCR_ButtonBaseComponent factionButton)
 	{
 		m_wVoiceChatFrame.SetVisible(true);
-		m_wPlayersScroll.SetVisible(false);
+		m_wPlayersSearch.SetVisible(false);
 		m_PlayersSwitchButtonComponent.SetToggled(false);
 	}
 	
-	// --------------------------------------------------------------------------------------------------------------------------------
-	// Events
+	void OnClickedRolesFold(SCR_ButtonBaseComponent rolesFold)
+	{
+		bool fold = false;
+		foreach (SCR_AIGroup aIGroup, PS_RolesGroup rolesGroup : m_mGroups)
+		{
+			if (!rolesGroup.GetRootWidget().IsVisible())
+				continue;
+			if (!rolesGroup.IsFolded())
+			{
+				fold = true;
+				break;
+			}
+		}
+		foreach (SCR_AIGroup aIGroup, PS_RolesGroup rolesGroup : m_mGroups)
+		{
+			if (!rolesGroup.GetRootWidget().IsVisible())
+				continue;
+			rolesGroup.SetFolded(fold);
+		}
+	}
+	void OnRolesFold(PS_RolesGroup _rolesGroup)
+	{
+		bool fold = false;
+		foreach (SCR_AIGroup aIGroup, PS_RolesGroup rolesGroup : m_mGroups)
+		{
+			if (!rolesGroup.GetRootWidget().IsVisible())
+				continue;
+			if (!rolesGroup.IsFolded())
+			{
+				fold = true;
+				break;
+			}
+		}
+		if (fold)
+			m_wRolesFoldButtonImage.LoadImageFromSet(0, IMAGESET_PS, "Fold");
+		else
+			m_wRolesFoldButtonImage.LoadImageFromSet(0, IMAGESET_PS, "Unfold");
+	}
+	
 	void OnPlayableRegistered(RplId playableId, PS_PlayableContainer playable)
 	{
 		SCR_Faction faction = playable.GetFaction();
@@ -400,6 +457,22 @@ class PS_CoopLobby : MenuBase
 		m_PlayersList.SetSelectedPlayer(m_iPlayerId);
 	}
 	
+	void OnPlayersSearchChanged(SCR_EditBoxComponent editBoxComponent, string text)
+	{
+		m_PlayersList.SetSearchText(text);
+	}
+	
+	void OnPlayersSearchWriteModeEnter()
+	{
+		m_wScreenButton.SetVisible(true);
+	}
+	
+	void OnPlayersSearchWriteModeLeave(string searchText)
+	{
+		m_wScreenButton.SetVisible(false);
+	}
+	
+	
 	void SwitchCurrentFaction(SCR_Faction faction)
 	{
 		if (m_CurrentFaction != faction)
@@ -421,6 +494,7 @@ class PS_CoopLobby : MenuBase
 		}
 		
 		m_wRolesScroll.SetSliderPos(0, 0);
+		OnRolesFold(null);
 	}
 	
 	void SetPreviewPlayableVehicle(PS_PlayableVehicleContainer playableVehicleContainer, bool openInventory)
@@ -471,7 +545,7 @@ class PS_CoopLobby : MenuBase
 		} else {
 			m_wOverlayCounter.SetVisible(true);
 			m_wTextCounter.SetText(timer.ToString());
-			AudioSystem.PlaySound("{3119327F3EFCA9C6}Sounds/UI/Samples/Gadgets/UI_Radio_Frequency_Cycle.wav");
+			SCR_UISoundEntity.SoundEvent("SOUND_RADIO_FREQUENCY_CYCLE");
 		}
 	}
 	

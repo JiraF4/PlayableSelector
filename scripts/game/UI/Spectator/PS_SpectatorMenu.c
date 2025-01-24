@@ -24,10 +24,12 @@ class PS_SpectatorMenu: MenuBase
 	protected Widget m_wAlivePlayerList;
 	protected Widget m_wSidesRatio;
 	protected Widget m_wSidesRatioFrame;
+	protected Widget m_wScreenButton;
 	protected PS_VoiceChatList m_hVoiceChatList;
 	protected SCR_ButtonBaseComponent m_hVoiceChatListPinButton;
 	protected PS_AlivePlayerList m_hAlivePlayerList;
 	protected SCR_ButtonBaseComponent m_hAlivePlayerListPinButton;
+	protected PS_EventHandlerComponent m_ScreenButton;
 	
 	protected PS_SpectatorLabelIcon m_LookTarget;
 	
@@ -88,9 +90,7 @@ class PS_SpectatorMenu: MenuBase
 	void ReceivePing(int reporterId, vector position, RplId targetID)
 	{
 		SCR_NotificationsComponent.SendLocal(ENotification.EDITOR_PING_PLAYER, position, reporterId);
-		vector mat[4];
-		GetGame().GetCameraManager().CurrentCamera().GetWorldTransform(mat);
-		AudioSystem.PlayEvent(SPECTATOR_PING_SOUND, "SOUND_HONK", mat);
+		SCR_UISoundEntity.SoundEvent("SOUND_LOBBY_HONK");
 		
 		m_vLastPingPosition = position;
 		EntitySpawnParams params = new EntitySpawnParams();
@@ -124,16 +124,115 @@ class PS_SpectatorMenu: MenuBase
 		m_wIconsFrame = FrameWidget.Cast(GetRootWidget().FindAnyWidget("IconsFrame"));
 		m_wMapFrame = FrameWidget.Cast(GetRootWidget().FindAnyWidget("MapFrame"));
 		m_wSidesRatioFrame = GetRootWidget().FindAnyWidget("SidesRatioFrame");
+		m_wScreenButton = GetRootWidget().FindAnyWidget("ScreenButton");
 		m_wSidesRatio = GetRootWidget().FindAnyWidget("SidesRatio");
 		
 		m_bNavigationSwitchSpectatorUI = SCR_InputButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationSwitchSpectatorUI").FindHandler(SCR_InputButtonComponent));
 		m_bNavigationSwitchSpectatorUI.m_OnClicked.Insert(Action_SwitchSpectatorUI);
 		
+		m_ScreenButton = PS_EventHandlerComponent.Cast(m_wScreenButton.FindHandler(PS_EventHandlerComponent));
+		
 		super.OnMenuOpen();
 		InitChat();
 		
-		GetGame().GetCallqueue().CallLater(UpdateCycle, 0);
 		GetGame().GetCallqueue().CallLater(RoomSwitchToGlobal, 0);
+		m_ScreenButton.GetOnClick().Insert(OnClickScreen);
+	}
+	
+	void OnClickScreen(Widget w, int x, int y, int button)
+	{
+		if (button == 0)
+		{
+			int xs, ys;
+			WidgetManager.GetMousePos(xs, ys);
+			float xr = GetGame().GetWorkspace().DPIUnscale(xs);
+			float yr = GetGame().GetWorkspace().DPIUnscale(ys);
+			vector outDir;
+			vector origin = GetGame().GetWorkspace().ProjScreenToWorld(xr, yr, outDir, GetGame().GetWorld());
+				
+			TraceParam trace = new TraceParam();
+			trace.Start = origin;
+			trace.End = origin + outDir * 1000;
+			trace.Flags = TraceFlags.ANY_CONTACT | TraceFlags.WORLD | TraceFlags.ENTS | TraceFlags.OCEAN; 
+			trace.LayerMask = EPhysicsLayerPresets.Projectile;
+			
+			GetGame().GetWorld().TraceMove(trace, TraceClick);
+		}
+	}
+	bool TraceClick(IEntity e, vector start, vector dir)
+	{
+		SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(e);
+		if (character)
+		{
+			OpenContext(character);
+			return true;
+		}
+		
+		return false;
+	}
+	
+	// --------------------------------------------------------------------------------------------------------------------------------
+	// Context menu
+	void OpenContext(SCR_ChimeraCharacter character)
+	{
+		MenuBase menu = GetGame().GetMenuManager().GetTopMenu();
+		if (!menu)
+			return;
+		
+		PS_PlayableComponent playableComponent = character.PS_GetPlayable();
+		
+		PS_ContextMenu contextMenu = PS_ContextMenu.CreateContextMenuOnMousePosition(menu.GetRootWidget());
+		int playerId = PS_PlayableManager.GetInstance().GetPlayerByPlayable(playableComponent.GetRplId());
+		
+		PS_AttachManualCameraObserverComponent attachComponent = PS_AttachManualCameraObserverComponent.s_Instance;
+		if (!attachComponent.GetTarget())
+			contextMenu.ActionAttachTo(character).Insert(OnActionAttachTo);
+		else
+			contextMenu.ActionDetachFrom(character).Insert(OnActionDetachFrom);
+		contextMenu.ActionLookAt(character).Insert(OnActionLookAt);
+		contextMenu.ActionFirstPersonView(character).Insert(OnActionFirstPersonView);
+		contextMenu.ActionRespawnInPlace(playableComponent.GetId(), playerId);
+		if (playerId > 0)
+			contextMenu.ActionKick(playerId);
+	}
+	void OnActionAttachTo(PS_ContextAction contextAction, PS_ContextActionDataCharacter contextActionDataCharacter)
+	{
+		PS_AttachManualCameraObserverComponent attachComponent = PS_AttachManualCameraObserverComponent.s_Instance;
+		if (!attachComponent)
+			return;
+		
+		SCR_ChimeraCharacter character = contextActionDataCharacter.GetCharacter();
+		attachComponent.AttachTo(character);
+	}
+	void OnActionDetachFrom(PS_ContextAction contextAction, PS_ContextActionDataCharacter contextActionDataCharacter)
+	{
+		PS_AttachManualCameraObserverComponent attachComponent = PS_AttachManualCameraObserverComponent.s_Instance;
+		if (!attachComponent)
+			return;
+		
+		attachComponent.Detach();
+	}
+	void OnActionLookAt(PS_ContextAction contextAction, PS_ContextActionDataCharacter contextActionDataCharacter)
+	{
+		SCR_ChimeraCharacter character = contextActionDataCharacter.GetCharacter();
+		PS_SpectatorLabel spectatorLabel = PS_SpectatorLabel.Cast(character.FindComponent(PS_SpectatorLabel));
+		if (!spectatorLabel)
+			return;
+		SetLookTarget(spectatorLabel.GetLabelIcon());
+	}
+	void OnActionFirstPersonView(PS_ContextAction contextAction, PS_ContextActionDataCharacter contextActionDataCharacter)
+	{
+		PS_AttachManualCameraObserverComponent attachComponent = PS_AttachManualCameraObserverComponent.s_Instance;
+		if (!attachComponent)
+			return;
+		
+		SetLookTarget(null);
+		attachComponent.Detach();
+		
+		SCR_ChimeraCharacter character = contextActionDataCharacter.GetCharacter();
+		PS_ManualCameraSpectator camera = PS_ManualCameraSpectator.Cast(GetGame().GetCameraManager().CurrentCamera());
+		if (camera)
+			camera.SetCharacterEntity(character)
 	}
 	
 	void RoomSwitchToGlobal()
@@ -141,17 +240,6 @@ class PS_SpectatorMenu: MenuBase
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		playableController.MoveToVoNRoom(playerController.GetPlayerId(), "", "#PS-VoNRoom_Global");
-	}
-	
-	void UpdateCycle() 
-	{
-		Update();
-		GetGame().GetCallqueue().CallLater(UpdateCycle, 100);
-	}
-	
-	void Update()
-	{
-		
 	}
 	
 	void InitChat()

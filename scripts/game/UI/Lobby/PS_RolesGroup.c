@@ -8,7 +8,8 @@ class PS_RolesGroup : SCR_ScriptedWidgetComponent
 	// Const
 	protected ResourceName m_sCharacterSelectorPrefab = "{3F761F63F1DF29D1}UI/Lobby/CharacterSelector.layout";
 	protected ResourceName m_sVehicleSelectorPrefab = "{1B4B23FBA92940C9}UI/Lobby/VehicleSelector.layout";
-	protected ResourceName m_sImageSet = "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset";
+	protected ResourceName m_sMembersCounterPrefab = "{6C1B127A14DD2C58}UI/Lobby/MemberCounterLabel.layout";
+	protected ResourceName m_sImageSet = "{2EFEA2AF1F38E7F0}UI/Textures/Icons/icons_wrapperUI-64.imageset";
 	protected ResourceName m_sImageSetPS = "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset";
 	
 	// Cache global
@@ -26,26 +27,41 @@ class PS_RolesGroup : SCR_ScriptedWidgetComponent
 	protected ImageWidget m_wLockImage;
 	protected ButtonWidget m_wVoiceJoinButton;
 	protected TextWidget m_wRolesGroupName;
+	protected TextWidget m_wRolesGroupNameCustom;
+	protected ImageWidget m_wGroupFactionColor;
+	protected VerticalLayoutWidget m_wList;
+	protected ButtonWidget m_wRolesGroupButton;
+	protected HorizontalLayoutWidget m_wMembersHorizontalLayout;
 	
 	// Handlers
 	SCR_ButtonBaseComponent m_LockButtonBaseComponent;
 	SCR_ButtonBaseComponent m_VoiceJoinButton;
+	PS_ButtonComponent m_RolesGroupButton;
 	
 	// Vars
 	protected PS_CoopLobby m_CoopLobby;
 	protected SCR_AIGroup m_AIGroup;
-	protected int m_iLockedCount;
 	protected int m_iGroupCallsign;
 	protected string m_sGroupCallsign;
 	protected FactionKey m_sFactionKey;
+	protected bool m_bInnerButtonClicked;
+	
+	protected int m_iCharactersCount;
+	protected int m_iLockedCount;
+	protected int m_iPlayersCount;
 	
 	ref map<PS_PlayableContainer, PS_CharacterSelector> m_mCharacters = new map<PS_PlayableContainer, PS_CharacterSelector>();
+	ref map<ResourceName, PS_MembersCounter> m_mMembers = new map<ResourceName, PS_MembersCounter>();
+	ref map<PS_PlayableVehicleContainer, PS_VehicleSelector> m_mVehicles = new map<PS_PlayableVehicleContainer, PS_VehicleSelector>();
 		
 	// --------------------------------------------------------------------------------------------------------------------------------
 	// Init
 	override void HandlerAttached(Widget w)
 	{
 		super.HandlerAttached(w);
+		
+		if (!GetGame().InPlayMode())
+			return;
 		
 		// Cache global
 		m_GameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
@@ -62,14 +78,18 @@ class PS_RolesGroup : SCR_ScriptedWidgetComponent
 		m_wLockImage = ImageWidget.Cast(w.FindAnyWidget("LockImage"));
 		m_wVoiceJoinButton = ButtonWidget.Cast(w.FindAnyWidget("VoiceJoinButton"));
 		m_wRolesGroupName = TextWidget.Cast(w.FindAnyWidget("RolesGroupName"));
+		m_wRolesGroupNameCustom = TextWidget.Cast(w.FindAnyWidget("RolesGroupNameCustom"));
+		m_wGroupFactionColor = ImageWidget.Cast(w.FindAnyWidget("GroupFactionColor"));
+		m_wList = VerticalLayoutWidget.Cast(w.FindAnyWidget("List"));
+		m_wRolesGroupButton = ButtonWidget.Cast(w.FindAnyWidget("RolesGroupButton"));
+		m_wMembersHorizontalLayout = HorizontalLayoutWidget	.Cast(w.FindAnyWidget("MembersHorizontalLayout"));
 		
 		// Handlers
 		m_LockButtonBaseComponent = SCR_ButtonBaseComponent.Cast(m_wLockButton.FindHandler(SCR_ButtonBaseComponent));
 		m_VoiceJoinButton = SCR_ButtonBaseComponent.Cast(m_wVoiceJoinButton.FindHandler(SCR_ButtonBaseComponent));
+		m_RolesGroupButton = PS_ButtonComponent.Cast(m_wRolesGroupButton.FindHandler(PS_ButtonComponent));
 		
-		// Buttons
-		m_LockButtonBaseComponent.m_OnClicked.Insert(OnClickedLock);
-		m_VoiceJoinButton.m_OnClicked.Insert(OnClickedVoiceJoin);
+		m_RolesGroupButton.GetOnClick_PS().Insert(OnClicked);
 	}
 	
 	// --------------------------------------------------------------------------------------------------------------------------------
@@ -81,13 +101,30 @@ class PS_RolesGroup : SCR_ScriptedWidgetComponent
 			return;
 		m_iGroupCallsign = aiGroup.GetCallsignNum();
 		m_sGroupCallsign = m_iGroupCallsign.ToString();
-		m_sFactionKey = m_AIGroup.GetFaction().GetFactionKey();
+		SCR_Faction faction = SCR_Faction.Cast(aiGroup.GetFaction());
+		m_sFactionKey = faction.GetFactionKey();
 		
 		// Init
-		string groupName = PS_GroupHelper.GetGroupFullName(m_AIGroup);
-		m_wRolesGroupName.SetText(groupName);
+		m_wRolesGroupName.SetText(PS_GroupHelper.GetGroupName(m_AIGroup));
+		UpdateCustomName();
+		
+		m_wGroupFactionColor.SetColor(faction.GetFactionColor());
 	}
 	
+	// --------------------------------------------------------------------------------------------------------------------------------
+	void UpdateCustomName()
+	{
+		string customName = PS_GroupHelper.GetGroupNameCustom(m_AIGroup);
+		if (customName == "")
+			customName = "#PS_Lobby_DefaultSquadCustom";
+		if (m_iCharactersCount - m_iLockedCount == 0)
+			customName += " (#PS_Lobby_Locked)";
+		else
+			customName += " (" + (m_iPlayersCount) + "/" + (m_iCharactersCount - m_iLockedCount) + ")";
+		m_wRolesGroupNameCustom.SetText(customName);
+	}
+	
+	// --------------------------------------------------------------------------------------------------------------------------------
 	void SetLobbyMenu(PS_CoopLobby coopLobby)
 	{
 		m_CoopLobby = coopLobby;
@@ -106,6 +143,8 @@ class PS_RolesGroup : SCR_ScriptedWidgetComponent
 			m_wLockImage.LoadImageFromSet(0, m_sImageSet, "server-locked");
 		else
 			m_wLockImage.LoadImageFromSet(0, m_sImageSet, "server-unlocked");
+		
+		UpdateCustomName();
 	}
 	
 	// --------------------------------------------------------------------------------------------------------------------------------
@@ -115,7 +154,10 @@ class PS_RolesGroup : SCR_ScriptedWidgetComponent
 		Widget vehicleSelectorRoot = m_wWorkspaceWidget.CreateWidgets(m_sVehicleSelectorPrefab, m_wVehiclesList);
 		PS_VehicleSelector vehicleSelector = PS_VehicleSelector.Cast(vehicleSelectorRoot.FindHandler(PS_VehicleSelector));
 		vehicleSelector.SetLobbyMenu(m_CoopLobby);
+		vehicleSelector.SetRolesGroup(this);
+		vehicleSelector.SetMembersCounter(AddMember(vehicle.GetIconPath()));
 		vehicleSelector.SetVehicle(vehicle);
+		m_mVehicles.Insert(vehicle, vehicleSelector);
 	}
 	
 	void InsertPlayable(PS_PlayableContainer playable)
@@ -127,22 +169,93 @@ class PS_RolesGroup : SCR_ScriptedWidgetComponent
 		characterSelector.SetPlayable(playable);
 		m_mCharacters.Insert(playable, characterSelector);
 		
+		//AddMember("{66C8FC843E6E3F49}UI/Textures/Icons/Infantry.edds");
+		
 		if (m_PlayableManager.GetPlayerByPlayable(playable.GetRplId()) == -2)
 			m_iLockedCount++;
+		else if (m_PlayableManager.GetPlayerByPlayable(playable.GetRplId()) > 0)
+			m_iPlayersCount++;
 		if (m_mCharacters.Count() == m_iLockedCount)
 			m_wLockImage.LoadImageFromSet(0, m_sImageSet, "server-locked");
 		else
 			m_wLockImage.LoadImageFromSet(0, m_sImageSet, "server-unlocked");
+		
+		playable.GetOnPlayerChange().Insert(OnPlayablePlayerChange);
+		m_iCharactersCount++;
+		UpdateCustomName();
+	}
+	
+	PS_MembersCounter AddMember(ResourceName memberIcon)
+	{
+		if (!m_mMembers.Contains(memberIcon))
+		{
+			Widget membersWidget = m_wWorkspaceWidget.CreateWidgets(m_sMembersCounterPrefab, m_wMembersHorizontalLayout);
+			PS_MembersCounter membersCounter = PS_MembersCounter.Cast(membersWidget.FindHandler(PS_MembersCounter));
+			membersCounter.SetIcon(memberIcon);
+			m_mMembers[memberIcon] = membersCounter;
+		}
+		return m_mMembers[memberIcon];
+	}
+	
+	// --------------------------------------------------------------------------------------------------------------------------------
+	bool IsFolded()
+	{
+		return !m_wList.IsVisible();
+	}
+	void SetFolded(bool folded)
+	{
+		m_wList.SetVisible(!folded);
+		m_CoopLobby.OnRolesFold(this);
+	}
+	
+	// --------------------------------------------------------------------------------------------------------------------------------
+	void OnPlayablePlayerChange(int oldPlayerId, int playerId)
+	{
+		if (playerId <= 0 && oldPlayerId > 0)
+			m_iPlayersCount--;
+		else if (playerId > 0 && oldPlayerId <= 0)
+			m_iPlayersCount++;
+		UpdateCustomName();
 	}
 	
 	// --------------------------------------------------------------------------------------------------------------------------------
 	// Buttons
-	void OnClickedLock(SCR_ButtonBaseComponent button)
+	void OnClicked(PS_ButtonComponent buttonComponent, int x, int y, int button)
 	{
+		if (button == 1)
+		{
+			OpenContext();
+			return;
+		}
+		if (button != 0)
+			return;
+		
+		OnClickedLeft();
+		return;
+	}
+	void OpenContext()
+	{
+		PS_ContextMenu contextMenu = PS_ContextMenu.CreateContextMenuOnMousePosition(m_CoopLobby.GetRootWidget());
+		
+		contextMenu.ActionJoinVoice().Insert(OnClickedVoiceJoin);
+		if (PS_PlayersHelper.IsAdminOrServer())
+		{
+			if (m_iLockedCount != m_mCharacters.Count())
+				contextMenu.ActionLock(0).Insert(OnClickedLock);
+			else
+				contextMenu.ActionUnlock(1).Insert(OnClickedLock);
+		}
+	}
+	
+	// --------------------------------------------------------------------------------------------------------------------------------
+	// Buttons
+	void OnClickedLock(PS_ContextAction contextAction, PS_ContextActionDataPlayable contextActionDataPlayable)
+	{
+		m_bInnerButtonClicked = true;
 		if (!PS_PlayersHelper.IsAdminOrServer())
 			return;
 		
-		bool unlock = m_mCharacters.Count() == m_iLockedCount;
+		bool unlock = contextActionDataPlayable.GetPlayableId();
 		
 		foreach (PS_PlayableContainer playable, PS_CharacterSelector characterSelector : m_mCharacters)
 		{
@@ -166,22 +279,43 @@ class PS_RolesGroup : SCR_ScriptedWidgetComponent
 			}
 		}
 		
+		foreach (PS_PlayableVehicleContainer vehicle, PS_VehicleSelector vehicleSelector : m_mVehicles)
+		{
+			if (unlock)
+				vehicleSelector.UnlockVehicle(null, new PS_ContextActionDataPlayable(vehicle.GetRplId()));
+			else
+				vehicleSelector.LockVehicle(null, new PS_ContextActionDataPlayable(vehicle.GetRplId()));
+		}
+		
 		if (unlock) {
 			m_wLockImage.LoadImageFromSet(0, m_sImageSet, "server-unlocked");
 			m_iLockedCount = 0;
-			AudioSystem.PlaySound("{E495F2DA6A44D0BB}Sounds/UI/Samples/Menu/UI_Button_Filter_Off.wav");
+			SCR_UISoundEntity.SoundEvent("SOUND_FE_BUTTON_FILTER_OFF");
 		} else {
 			m_wLockImage.LoadImageFromSet(0, m_sImageSet, "server-locked");
 			m_iLockedCount = m_mCharacters.Count();
-			AudioSystem.PlaySound("{B6008DBCA565E5E1}Sounds/UI/Samples/Menu/UI_Button_Filter_On.wav");
+			SCR_UISoundEntity.SoundEvent("SOUND_FE_BUTTON_FILTER_ON");
 		}
 	}
 	
-	void OnClickedVoiceJoin(SCR_ButtonBaseComponent button)
+	// --------------------------------------------------------------------------------------------------------------------------------
+	void OnClickedVoiceJoin(PS_ContextAction contextAction, PS_ContextActionData contextActionData)
 	{
+		m_bInnerButtonClicked = true;
 		SCR_EGameModeState gameState = m_GameModeCoop.GetState();
 		if (gameState == SCR_EGameModeState.SLOTSELECTION)
 			m_PlayableControllerComponent.MoveToVoNRoom(m_iCurrentPlayerId, m_sFactionKey, m_sGroupCallsign);
+	}
+	
+	// --------------------------------------------------------------------------------------------------------------------------------
+	void OnClickedLeft()
+	{
+		if (m_bInnerButtonClicked)
+		{
+			m_bInnerButtonClicked = false;
+			return;
+		}
+		SetFolded(!IsFolded());
 	}
 	
 	// --------------------------------------------------------------------------------------------------------------------------------
@@ -194,6 +328,10 @@ class PS_RolesGroup : SCR_ScriptedWidgetComponent
 			m_wRoot.RemoveFromHierarchy();
 			m_CoopLobby.OnRolesGroupRemoved(this);
 		}
+		playable.GetOnPlayerChange().Remove(OnPlayablePlayerChange);
+		
+		m_iCharactersCount--;
+		UpdateCustomName();
 	}
 }
 

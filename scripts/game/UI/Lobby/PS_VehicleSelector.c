@@ -16,6 +16,7 @@ class PS_VehicleSelector : SCR_ButtonComponent
 	protected ImageWidget m_wVehicleFactionColor;
 	protected ImageWidget m_wUnitIcon;
 	protected TextWidget m_wVehicleClassName;
+	protected ImageWidget m_wLockedIcon;
 	
 	// Parameters
 	protected PS_CoopLobby m_CoopLobby;
@@ -25,6 +26,8 @@ class PS_VehicleSelector : SCR_ButtonComponent
 	// Cache parameters
 	protected SCR_Faction m_Faction;
 	protected FactionKey m_sFactionKey;
+	
+	protected PS_MembersCounter m_MembersCounter;
 	
 	// --------------------------------------------------------------------------------------------------------------------------------
 	// Init
@@ -45,13 +48,12 @@ class PS_VehicleSelector : SCR_ButtonComponent
 		m_wVehicleFactionColor = ImageWidget.Cast(w.FindAnyWidget("VehicleFactionColor"));
 		m_wUnitIcon = ImageWidget.Cast(w.FindAnyWidget("UnitIcon"));
 		m_wVehicleClassName = TextWidget.Cast(w.FindAnyWidget("VehicleClassName"));
+		m_wLockedIcon = ImageWidget.Cast(w.FindAnyWidget("LockedIcon"));
 		
 		// Buttons
-		m_OnClicked.Insert(OnClicked);
+		//m_OnClicked.Insert(OnClicked);
 		m_OnHover.Insert(OnHover);
 		m_OnHoverLeave.Insert(OnHoverLeave);
-		
-		// Events
 	}
 	
 	override void HandlerDeattached(Widget w)
@@ -69,6 +71,11 @@ class PS_VehicleSelector : SCR_ButtonComponent
 	void SetRolesGroup(PS_RolesGroup rolesGroup)
 	{
 		m_RolesGroup = rolesGroup;
+	}
+	
+	void SetMembersCounter(PS_MembersCounter membersCounter)
+	{
+		m_MembersCounter = membersCounter;
 	}
 	
 	void SetVehicle(PS_PlayableVehicleContainer playableVehicleContainer)
@@ -90,6 +97,22 @@ class PS_VehicleSelector : SCR_ButtonComponent
 		m_wVehicleClassName.SetText(uIInfo.GetName());
 		
 		// Events
+		playableVehicleContainer.GetOnLockChange().Insert(OnLockChange);
+		OnLockChange(playableVehicleContainer.GetLock());
+	}
+	
+	// --------------------------------------------------------------------------------------------------------------------------------
+	void OnLockChange(bool lock)
+	{
+		if (lock) {
+			m_wUnitIcon.SetColorInt(ARGB(255, 32, 32, 32));
+			m_wLockedIcon.SetVisible(1);
+			m_MembersCounter.Add(-1);
+		} else {
+			m_wUnitIcon.SetColorInt(ARGB(255, 255, 255, 255));
+			m_wLockedIcon.SetVisible(0);
+			m_MembersCounter.Add(1);
+		}
 	}
 	
 	// --------------------------------------------------------------------------------------------------------------------------------
@@ -103,6 +126,46 @@ class PS_VehicleSelector : SCR_ButtonComponent
 	
 	// --------------------------------------------------------------------------------------------------------------------------------
 	// Buttons
+	override bool OnClick(Widget w, int x, int y, int button)
+	{
+		super.OnClick(w, x, y, button);
+		if (button == 1)
+		{
+			OpenContext();
+			return false;
+		}
+		if (button != 0)
+			return false;
+		
+		OnClicked(this);
+		return false;
+	}
+	void OpenContext()
+	{
+		PS_ContextMenu contextMenu = PS_ContextMenu.CreateContextMenuOnMousePosition(m_CoopLobby.GetRootWidget());
+		contextMenu.ActionOpenInventory(m_PlayableVehicleContainer.GetRplId()).Insert(OnActionOpenInventory);
+		
+		if (PS_PlayersHelper.IsAdminOrServer())
+		{
+			bool locked = m_PlayableVehicleContainer.GetLock();
+			if (locked)
+				contextMenu.ActionUnlock(m_PlayableVehicleContainer.GetRplId()).Insert(UnlockVehicle);
+			else
+				contextMenu.ActionLock(m_PlayableVehicleContainer.GetRplId()).Insert(LockVehicle);
+		}
+	}
+	void UnlockVehicle(PS_ContextAction contextAction, PS_ContextActionDataPlayable contextActionDataPlayable)
+	{
+		m_PlayableControllerComponent.SetPlayableVehicleLocked(contextActionDataPlayable.GetPlayableId(), 0);
+	}
+	void LockVehicle(PS_ContextAction contextAction, PS_ContextActionDataPlayable contextActionDataPlayable)
+	{
+		m_PlayableControllerComponent.SetPlayableVehicleLocked(contextActionDataPlayable.GetPlayableId(), 1);
+	}
+	void OnActionOpenInventory(PS_ContextAction contextAction, PS_ContextActionDataPlayable contextActionDataPlayable)
+	{
+		m_CoopLobby.SetPreviewPlayableVehicle(m_PlayableVehicleContainer, true);
+	}
 	void OnClicked(SCR_ButtonBaseComponent button)
 	{
 		m_CoopLobby.SetPreviewPlayableVehicle(m_PlayableVehicleContainer, true);

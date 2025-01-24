@@ -1,0 +1,22 @@
+ButtonWidgetClass {
+ Name "ContextActionSeparator"
+ Color 1 1 1 0
+ {
+  OverlayWidgetClass "{6461461389811F8F}" {
+   Name "ContextActionOverlay"
+   Slot ButtonWidgetSlot "{6461461389811D55}" {
+   }
+   {
+    ImageWidgetClass "{6461461389811F8D}" {
+     Name "Background"
+     Slot OverlayWidgetSlot "{6461461D681A170E}" {
+      Padding 0 2 0 2
+     }
+     IsPixelPerfect 0
+     Color 0.275 0.275 0.275 1
+     Size 262 3
+    }
+   }
+  }
+ }
+}

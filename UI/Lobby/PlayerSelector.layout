@@ -1,7 +1,6 @@
 ButtonWidgetClass {
  Name "PlayerSelector"
  Slot LayoutSlot "{5D6D352AD61B75EE}" {
-  Padding 8 1 8 1
  }
  Color 0 1 0.019 0
  components {
@@ -94,8 +93,8 @@ ButtonWidgetClass {
       OffsetLeft 192
       PositionY 0
       OffsetTop 0
-      SizeX 208
-      OffsetRight -400
+      SizeX 215
+      OffsetRight -407
       SizeY 40
       OffsetBottom -40
      }
@@ -117,23 +116,10 @@ ButtonWidgetClass {
       SizeY 40
       OffsetBottom -40
      }
+     "Is Visible" 0
      Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
      Image "check"
      Size 32 32
-    }
-    ImageWidgetClass "{5EA8C92152DB446E}" {
-     Name "Border"
-     Slot FrameWidgetSlot "{5D6F1490EBB9691E}" {
-      PositionX 0
-      OffsetLeft 0
-      PositionY 0
-      OffsetTop 0
-      SizeX 480
-      OffsetRight -480
-      SizeY 40
-      OffsetBottom -40
-     }
-     Color 1 1 1 0.3
     }
     ImageWidgetClass "{5EA8C93C2D1DC41F}" {
      Name "PinImage"
@@ -176,6 +162,7 @@ ButtonWidgetClass {
       }
       ButtonWidgetClass "{5EB1176E3DB20C7A}" {
        Prefab "{5EB1176E3DB20C7A}"
+       "Ignore Cursor" 1
        {
         FrameWidgetClass "{5EB1176E3DB20C7C}" {
          Prefab "{5EB1176E3DB20C7C}"
@@ -210,6 +197,7 @@ ButtonWidgetClass {
       SizeY 40
       OffsetBottom -40
      }
+     "Ignore Cursor" 1
      Color 0 1 0.019 0
      components {
       SCR_ButtonBaseComponent "{5EAB2394A927C221}" {
@@ -267,15 +255,16 @@ ButtonWidgetClass {
      Name "KickButton"
      Slot FrameWidgetSlot "{5EA8C93F5E685F59}" {
       Anchor 0 0 0 0
-      PositionX 232
-      OffsetLeft 232
+      PositionX 407
+      OffsetLeft 407
       PositionY 0
       OffsetTop 0
       SizeX 40
-      OffsetRight -272
+      OffsetRight -447
       SizeY 40
       OffsetBottom -40
      }
+     "Ignore Cursor" 1
      Color 0 1 0.019 0
      components {
       SCR_ButtonBaseComponent "{5EAB239441B528D5}" {
@@ -313,7 +302,10 @@ ButtonWidgetClass {
         ImageWidgetClass "{5EA8C93CC41CCBA0}" {
          Name "KickImage"
          Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
+          Anchor 0 0 0 0
+          PositionX 0
           OffsetLeft 0
+          PositionY 0
           OffsetTop 0
           SizeX 40
           OffsetRight -40
@@ -327,6 +319,21 @@ ButtonWidgetClass {
        }
       }
      }
+    }
+    PanelWidgetClass "{6469104D2DD6A671}" {
+     Name "Border"
+     Slot FrameWidgetSlot "{5D6F1490EBB9691E}" {
+      PositionX 0.4
+      OffsetLeft 0.4
+      PositionY 0
+      OffsetTop 0
+      SizeX 479.6
+      OffsetRight -480
+      SizeY 40
+      OffsetBottom -40
+     }
+     Color 0.761 0.392 0.078 1
+     style pixel_outline
     }
    }
   }

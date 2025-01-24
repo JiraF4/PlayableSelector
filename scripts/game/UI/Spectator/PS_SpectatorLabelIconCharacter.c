@@ -48,7 +48,7 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 	
 	void LookCamera(Widget w, int x, int y, int button)
 	{
-		GetGame().GetCallqueue().CallLater(LateLook, 200, false, w, x, y, button);
+		GetGame().GetCallqueue().CallLater(LateLook, 50, false, w, x, y, button);
 	}
 	
 	void LateLook(Widget w, int x, int y, int button)
@@ -80,7 +80,6 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 			else
 				attachComponent.Detach();
 		}
-		
 	}
 	
 	void AttachCamera(Widget w, int x, int y, int button)
@@ -121,6 +120,7 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 		}
 	}
 	
+	// --------------------------------------------------------------------------------------------------------------------------------
 	override void SetEntity(IEntity entity, string boneName)
 	{
 		super.SetEntity(entity, boneName);

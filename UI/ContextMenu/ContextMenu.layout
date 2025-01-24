@@ -1,0 +1,66 @@
+OverlayWidgetClass {
+ Name "ContextMenu"
+ Slot FrameWidgetSlot "{64614610D45BB7EC}" {
+  SizeToContent 1
+ }
+ "Z Order" 10000
+ components {
+  PS_ContextMenu "{6463492B967C7877}" {
+  }
+ }
+ {
+  OverlayWidgetClass "{64614612C8EA57A6}" {
+   Name "Overlay"
+   Slot OverlayWidgetSlot "{64614612C8EA5678}" {
+    Padding 0 4 0 4
+   }
+   {
+    BlurWidgetClass "{64614612CE4F063C}" {
+     Name "Blur"
+     Slot OverlayWidgetSlot "{64614612CE4F0624}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+     }
+     "Ignore Cursor" 0
+     Intensity 0.8
+    }
+    ImageWidgetClass "{646365F52D9860B4}" {
+     Name "Background"
+     Slot OverlayWidgetSlot "{6461461D681A170E}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+     }
+     Color 0.008 0.012 0.016 0.9
+     Size 262 24
+    }
+    VerticalLayoutWidgetClass "{6461461E6945560E}" {
+     Name "ActionsVerticalLayout"
+     Slot OverlayWidgetSlot "{6461461E69455633}" {
+      Padding 4 4 4 4
+     }
+     {
+      OverlayWidgetClass "{64648C840C3EBDE2}" {
+       Name "NoActions"
+       Slot LayoutSlot "{64693319AF9BA36D}" {
+        Padding 4 4 4 4
+       }
+       {
+        TextWidgetClass "{64648C840C3EBD9E}" {
+         Name "Text"
+         Slot OverlayWidgetSlot "{64614612DD7BF937}" {
+          HorizontalAlign 3
+          VerticalAlign 3
+         }
+         Text "No avaliable actions"
+         "Font Size" 19
+         "Min Font Size" 19
+         "Vertical Alignment" Center
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}

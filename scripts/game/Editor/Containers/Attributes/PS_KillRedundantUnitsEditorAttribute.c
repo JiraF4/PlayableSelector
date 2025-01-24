@@ -11,7 +11,7 @@ class PS_KillRedundantUnitsEditorAttribute : SCR_BaseEditorAttribute
 		if (!coopMode)
 			return null;
 
-		bool value = coopMode.GetKillRedundantUnits();
+		bool value = coopMode.GetRemoveRedundantUnits();
 		return SCR_BaseEditorAttributeVar.CreateBool(value);
 	}
 
@@ -25,6 +25,6 @@ class PS_KillRedundantUnitsEditorAttribute : SCR_BaseEditorAttribute
 			return;
 
 		int value = var.GetBool();
-		coopMode.SetKillRedundantUnits(value);
+		coopMode.SetRemoveRedundantUnits(value);
 	}
 }

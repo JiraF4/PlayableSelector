@@ -711,8 +711,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		m_iReconnectTime = m_iReconnectTimeAfterBriefing;
 		if (m_bReserveSlots)
 			ReserveSlots();
-		if (m_bRemoveRedundantUnits)
-			PS_PlayableManager.GetInstance().RemoveRedundantUnits();
+		PS_PlayableManager.GetInstance().RemoveRedundantUnits();
 		restrictedZonesTimer(m_iFreezeTime);
 		StartGameMode();
 	}
@@ -890,17 +889,17 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		m_iReconnectTime = availableReconnectTime;
 	}
 
-	bool GetKillRedundantUnits()
+	bool GetRemoveRedundantUnits()
 	{
 		return m_bRemoveRedundantUnits;
 	}
-	void SetKillRedundantUnits(bool killRedundantUnits)
+	void SetRemoveRedundantUnits(bool killRedundantUnits)
 	{
-		RPC_SetKillRedundantUnits(killRedundantUnits);
-		Rpc(RPC_SetKillRedundantUnits, killRedundantUnits);
+		RPC_SetRemoveRedundantUnits(killRedundantUnits);
+		Rpc(RPC_SetRemoveRedundantUnits, killRedundantUnits);
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	void RPC_SetKillRedundantUnits(bool killRedundantUnits)
+	void RPC_SetRemoveRedundantUnits(bool killRedundantUnits)
 	{
 		m_bRemoveRedundantUnits = killRedundantUnits;
 	}

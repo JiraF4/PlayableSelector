@@ -125,11 +125,11 @@ class PS_PlayableContainer
 	}
 
 	// ---------------------------- Events ------------------------------
-	protected ref ScriptInvokerInt m_eOnPlayerChange = new ScriptInvokerInt(); // int playerId
-	ScriptInvokerInt GetOnPlayerChange()
+	protected ref ScriptInvokerInt2 m_eOnPlayerChange = new ScriptInvokerInt2(); // int playerId
+	ScriptInvokerInt2 GetOnPlayerChange()
 		return m_eOnPlayerChange;
-	void InvokeOnPlayerChanged(int playerId)
-		m_eOnPlayerChange.Invoke(playerId);
+	void InvokeOnPlayerChanged(int oldPlayerId, int playerId)
+		m_eOnPlayerChange.Invoke(oldPlayerId, playerId);
 
 	ref ScriptInvokerInt m_eOnDamageStateChanged = new ScriptInvokerInt();
 	ScriptInvokerInt GetOnDamageStateChanged()

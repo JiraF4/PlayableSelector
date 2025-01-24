@@ -21,6 +21,8 @@ class PS_VoiceButton : PS_HideableButton
 		
 		// Cache global
 		m_PlayerController = GetGame().GetPlayerController();
+		if (!m_PlayerController)
+			return;
 		m_iCurrentPlayerId = m_PlayerController.GetPlayerId();
 		IEntity entity = m_PlayerController.GetControlledEntity();
 		if (!entity)

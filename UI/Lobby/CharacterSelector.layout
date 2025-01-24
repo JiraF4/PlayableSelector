@@ -16,7 +16,7 @@ ButtonWidgetClass {
   OverlayWidgetClass "{5D6E8206FB6C118E}" {
    Name "Overlay"
    Slot ButtonWidgetSlot "{5D6E8206FB6C11F3}" {
-    Padding 8 8 8 8
+    Padding 8 8 8 0
    }
    {
     FrameWidgetClass "{5D6D352B99AEE9BB}" {
@@ -24,20 +24,6 @@ ButtonWidgetClass {
      Slot OverlayWidgetSlot "{5D6E820833F19127}" {
      }
      {
-      PanelWidgetClass "{5D6F14915F970C15}" {
-       Name "Border"
-       Slot FrameWidgetSlot "{5D6F1490EBB9691E}" {
-        PositionX 2
-        OffsetLeft 2
-        OffsetTop 0
-        SizeX 606
-        OffsetRight -608
-        SizeY 40
-        OffsetBottom -40
-       }
-       Color 0.761 0.392 0.078 1
-       style outline_2px
-      }
       ImageWidgetClass "{5D6E820689F956E2}" {
        Name "Background"
        Slot FrameWidgetSlot "{5D6E8206B132EE77}" {
@@ -114,11 +100,14 @@ ButtonWidgetClass {
         SizeY 40
         OffsetBottom -40
        }
-       Color 0.855 0.855 0.855 1
+       Color 0.855 0.855 0.855 0.819
        Text "Rifleman"
        "Font Size" 18
        "Min Font Size" 16
        "Vertical Alignment" Center
+       FontProperties FontProperties "{646146441C8D15FF}" {
+        Font "{3E7733BAC8C831F6}UI/Fonts/RobotoCondensed/RobotoCondensed_Regular.fnt"
+       }
       }
       ImageWidgetClass "{5D6D1B995C4BBFB9}" {
        Name "StateIcon"
@@ -165,6 +154,7 @@ ButtonWidgetClass {
         SizeY 40
         OffsetBottom -40
        }
+       "Ignore Cursor" 1
        Color 0 1 0.019 0
        "Inherit Color" 1
        components {
@@ -228,6 +218,7 @@ ButtonWidgetClass {
         }
         ButtonWidgetClass "{5EB1176E3DB20C7A}" {
          Prefab "{5EB1176E3DB20C7A}"
+         "Ignore Cursor" 1
          {
           FrameWidgetClass "{5EB1176E3DB20C7C}" {
            Prefab "{5EB1176E3DB20C7C}"
@@ -248,6 +239,21 @@ ButtonWidgetClass {
          }
         }
        }
+      }
+      PanelWidgetClass "{5D6F14915F970C15}" {
+       Name "Border"
+       Slot FrameWidgetSlot "{5D6F1490EBB9691E}" {
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX 608
+        OffsetRight -608
+        SizeY 40
+        OffsetBottom -40
+       }
+       Color 0.761 0.392 0.078 1
+       style pixel_outline
       }
      }
     }

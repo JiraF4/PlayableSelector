@@ -51,6 +51,11 @@ class PS_SpectatorLabel : ScriptComponent
 		m_hLabelIcon.SetEntity(GetOwner(), m_sBoneName);
 	}
 	
+	PS_SpectatorLabelIcon GetLabelIcon()
+	{
+		return m_hLabelIcon;
+	}
+	
 	void UpdateLabel()
 	{
 		if (!m_wRootLabel) return;

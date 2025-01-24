@@ -1,9 +1,9 @@
 ImageSetClass {
- RefSize 2048 2049
+ RefSize 2048 2048
  Textures {
   ImageSetTextureClass {
    screenSize FHD
-   size 2048 2049
+   size 2048 2048
    path "{1F96246B326BCE75}UI/Textures/Icons/PS_Atlas_x64.edds"
   }
  }
@@ -305,6 +305,48 @@ ImageSetClass {
   ImageSetDefClass Truck2 {
    Name "Truck2"
    Pos 1856 64
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass Backpack {
+   Name "Backpack"
+   Pos 832 0
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass Locked {
+   Name "Locked"
+   Pos 1024 128
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass Unlocked {
+   Name "Unlocked"
+   Pos 960 128
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass Crate {
+   Name "Crate"
+   Pos 1088 128
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass Unfold {
+   Name "Unfold"
+   Pos 1152 128
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass Fold {
+   Name "Fold"
+   Pos 1216 128
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass Medicine {
+   Name "Medicine"
+   Pos 448 0
    Size 64 64
    Flags 0
   }

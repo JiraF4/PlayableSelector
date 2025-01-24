@@ -163,6 +163,54 @@ class PS_PlayableControllerComponent : ScriptComponent
 		if (physics)
 			physics.SetActive(ActiveState.ACTIVE);
 	}
+	
+	// ------ RespawnPlayable ------
+	void RespawnPlayable(RplId playableId, bool useInitPosition)
+	{
+		Rpc(RPC_RespawnPlayable, playableId, useInitPosition);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void RPC_RespawnPlayable(RplId playableId, bool useInitPosition)
+	{
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		if (!SCR_Global.IsAdmin(thisPlayerController.GetPlayerId()))
+			return;
+		
+		RplComponent rplComponent = RplComponent.Cast(Replication.FindItem(playableId));
+		if (!rplComponent)
+			return;
+		
+		SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(rplComponent.GetEntity());
+		if (!character)
+			return;
+
+		EntityPrefabData prefab = character.GetPrefabData();
+		if (!prefab)
+			return;
+		
+		PS_PlayableComponent oldPlayableComponent = character.PS_GetPlayable();
+		EntitySpawnParams params = new EntitySpawnParams();
+		if (useInitPosition)
+			oldPlayableComponent.GetSpawnTransform(params.Transform);
+		else
+			character.GetWorldTransform(params.Transform);
+		
+		SCR_ChimeraCharacter newCharacter = SCR_ChimeraCharacter.Cast(GetGame().SpawnEntityPrefab(Resource.Load(prefab.GetPrefabName()), GetGame().GetWorld(), params));
+		PS_PlayableComponent playableContainer = newCharacter.PS_GetPlayable();
+
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		SCR_AIGroup aiGroup = playableManager.GetPlayerGroupByPlayable(oldPlayableComponent.GetRplId());
+		SCR_AIGroup playabelGroup = aiGroup.GetSlave();
+		playabelGroup.AddAIEntityToGroup(newCharacter);
+		playableManager.SetPlayablePlayerGroupId(playableContainer.GetRplId(), aiGroup.GetGroupID());
+
+		playableContainer.SetPlayable(true);
+		oldPlayableComponent.SetPlayable(false);
+
+		character.GetDamageManager().Kill(Instigator.CreateInstigator(newCharacter));
+		character.GetDamageManager().SetHealthScaled(0);
+		GetGame().GetCallqueue().CallLater(RPC_ForceRespawnPlayerLate, 300, false, character, oldPlayableComponent, newCharacter, playableContainer);
+	}
 
 	// ------ ForceRespawnPlayer ------
 	void ForceRespawnPlayer(bool initPosition = false)
@@ -559,7 +607,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
-		if (SCR_Global.IsAdmin(thisPlayerController.GetPlayerId()))
+		if (!SCR_Global.IsAdmin(thisPlayerController.GetPlayerId()))
 			return;
 
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
@@ -606,11 +654,28 @@ class PS_PlayableControllerComponent : ScriptComponent
 	protected void RPC_UnpinPlayer(int playerId)
 	{
 		PlayerManager playerManager = GetGame().GetPlayerManager();
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		if (!SCR_Global.IsAdmin(thisPlayerController.GetPlayerId()))
+			return;
+
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-
-		// If not admin you can change only herself
-
 		playableManager.SetPlayerPin(playerId, false);
+	}
+
+	void PinPlayer(int playerId)
+	{
+		Rpc(RPC_UnpinPlayer, playerId)
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	protected void RPC_PinPlayer(int playerId)
+	{
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		if (!SCR_Global.IsAdmin(thisPlayerController.GetPlayerId()))
+			return;
+
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		playableManager.SetPlayerPin(playerId, true);
 	}
 
 	void KickPlayer(int playerId)
@@ -680,6 +745,22 @@ class PS_PlayableControllerComponent : ScriptComponent
 		playableManager.SetPlayablePlayer(playableId, playerId);
 	}
 
+	void SetPlayableVehicleLocked(RplId vehicleId, bool lock)
+	{
+		Rpc(RPC_SetPlayableVehicleLocked, vehicleId, lock);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	protected void RPC_SetPlayableVehicleLocked(RplId vehicleId, bool lock)
+	{
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		if (!SCR_Global.IsAdmin(thisPlayerController.GetPlayerId()))
+			return;
+		
+		playableManager.SetPlayableVehicleLocked(vehicleId, lock);
+	}
+	
 	void SetPlayerPlayable(int playerId, RplId playableId)
 	{
 		Rpc(RPC_SetPlayerPlayable, playerId, playableId);

@@ -95,7 +95,7 @@ class PS_PlayableManager : ScriptComponent
 	protected PlayerManager m_PlayerManager;
 
 	protected SCR_PlayerController m_CurrentPlayerController;
-	protected PS_PlayableControllerComponent m_CurrentPlayableController;
+	static protected PS_PlayableControllerComponent s_CurrentPlayableController;
 
 	protected static PS_PlayableManager s_Instance;
 
@@ -161,8 +161,16 @@ class PS_PlayableManager : ScriptComponent
 	}
 	protected void LateInit(IEntity owner)
 	{
+		if (RplSession.Mode() == RplMode.Dedicated)
+			return;
+		
 		m_CurrentPlayerController = SCR_PlayerController.Cast(GetGame().GetPlayerController());
-		m_CurrentPlayableController = m_CurrentPlayerController.PS_GetPLayableComponent();
+		if (!m_CurrentPlayerController)
+		{
+			m_CallQueue.Call(LateInit, owner);
+			return;
+		}
+		s_CurrentPlayableController = m_CurrentPlayerController.PS_GetPLayableComponent();
 	}
 	// --------------------------------------------------------------------------------------------
 	// Read max players count from server config
@@ -298,6 +306,9 @@ class PS_PlayableManager : ScriptComponent
 		RplId playableId = playableComponent.GetRplId();
 		if (m_aPlayables.Contains(playableId)) // Already registered
 			return;
+		SCR_ChimeraCharacter playableCharacter = playableComponent.GetCharacter();
+		if (!playableCharacter.PS_GetChimeraAIControlComponent())
+			return;
 
 		// Save and replicate data
 		PS_PlayableContainer container = playableComponent.GetPlayableContainer();
@@ -309,7 +320,6 @@ class PS_PlayableManager : ScriptComponent
 		// Server side
 		if (Replication.IsServer())
 		{
-			SCR_ChimeraCharacter playableCharacter = playableComponent.GetCharacter();
 			AIControlComponent aiControl = playableCharacter.PS_GetChimeraAIControlComponent();
 			SCR_AIGroup playableGroup = SCR_AIGroup.Cast(aiControl.GetControlAIAgent().GetParentGroup());
 			SCR_AIGroup playerGroup;
@@ -424,7 +434,9 @@ class PS_PlayableManager : ScriptComponent
 		}
 		int groupCallsign = group.GetCallsignNum();
 		PS_PlayableVehicleContainer playableVehicleContainer = new PS_PlayableVehicleContainer();
-		playableVehicleContainer.Init(rplId, vehicle.GetPrefabData().GetPrefabName(), groupCallsign, group.m_PlayersGroup.GetGroupID(), vehicle.GetFactionAffiliation().GetDefaultFactionKey());
+		SCR_EditableVehicleComponent editableVehicleComponent = SCR_EditableVehicleComponent.Cast(vehicle.FindComponent(SCR_EditableVehicleComponent));
+		SCR_UIInfo uIInfo = editableVehicleComponent.GetInfo();
+		playableVehicleContainer.Init(rplId, vehicle.GetPrefabData().GetPrefabName(), uIInfo.GetIconPath(), groupCallsign, group.m_PlayersGroup.GetGroupID(), vehicle.GetFactionAffiliation().GetDefaultFactionKey());
 		Rpc(RPC_RegisterGroupVehicle, playableVehicleContainer);
 		RPC_RegisterGroupVehicle(playableVehicleContainer);
 	}
@@ -747,11 +759,12 @@ class PS_PlayableManager : ScriptComponent
 			}
 			PS_PlayableContainer playableComponent = m_aPlayables.Get(oldPlayable);
 			if (playableComponent)
-				playableComponent.InvokeOnPlayerChanged(-1);
+				playableComponent.InvokeOnPlayerChanged(playerId, -1);
 		}
 
 		// Update both maps
 		m_playersPlayable[playerId] = playableId;
+		int oldPlayerId = m_playablePlayers[playableId];
 		m_playablePlayers[playableId] = playerId;
 		
 		// Remember last valid
@@ -769,7 +782,7 @@ class PS_PlayableManager : ScriptComponent
 		// Invoke container event
 		PS_PlayableContainer playableContainer = m_aPlayables.Get(playableId);
 		if (playableContainer)
-			playableContainer.InvokeOnPlayerChanged(playerId);
+			playableContainer.InvokeOnPlayerChanged(oldPlayerId, playerId);
 	}
 
 	// Playable -> Player link
@@ -805,11 +818,12 @@ class PS_PlayableManager : ScriptComponent
 			m_playablePlayers[oldPlayable] = -1;
 			PS_PlayableContainer playableComponent = m_aPlayables.Get(oldPlayable);
 			if (playableComponent)
-				playableComponent.InvokeOnPlayerChanged(-1);
+				playableComponent.InvokeOnPlayerChanged(playerId, -1);
 		}
 
 		// Update both maps
 		m_playersPlayable[playerId] = playableId;
+		int oldPlayerId = m_playablePlayers[playableId];
 		m_playablePlayers[playableId] = playerId;
 
 		// Remember last valid
@@ -827,7 +841,13 @@ class PS_PlayableManager : ScriptComponent
 		// Invoke container event
 		PS_PlayableContainer playableComponent = m_aPlayables.Get(playableId);
 		if (playableComponent)
-			playableComponent.InvokeOnPlayerChanged(playerId);
+			playableComponent.InvokeOnPlayerChanged(oldPlayerId, playerId);
+	}
+	
+	// ------------------------------ Current playable controller ----------------------------------
+	static PS_PlayableControllerComponent GetPlayableController()
+	{
+		return s_CurrentPlayableController;
 	}
 
 	// ----------------------------- Playable to players group link --------------------------------
@@ -874,6 +894,20 @@ class PS_PlayableManager : ScriptComponent
 	{
 		SCR_GroupsManagerComponent groupsManagerComponent = SCR_GroupsManagerComponent.GetInstance();
 		return groupsManagerComponent.FindGroup(playableVehicleContainer.m_iGroupId);
+	}
+	
+	// -------------------------------- Vehicle lock state ----------------------------------------
+	void SetPlayableVehicleLocked(RplId vehicleId, bool lock)
+	{
+		RPC_SetPlayableVehicleLocked(vehicleId, lock);
+		Rpc(RPC_SetPlayableVehicleLocked, vehicleId, lock);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RPC_SetPlayableVehicleLocked(RplId vehicleId, bool lock)
+	{
+		if (!m_mPlayableVehicles.Contains(vehicleId))
+			return;
+		m_mPlayableVehicles[vehicleId].SetLock(lock);
 	}
 
 	// ---------------------------------- Player pin state ----------------------------------------
@@ -953,7 +987,7 @@ class PS_PlayableManager : ScriptComponent
 			return;
 
 		// Do full GAME state enter logic
-		m_CurrentPlayableController.SwitchToMenu(SCR_EGameModeState.GAME);
+		s_CurrentPlayableController.SwitchToMenu(SCR_EGameModeState.GAME);
 	}
 
 
@@ -1018,14 +1052,23 @@ class PS_PlayableManager : ScriptComponent
 	// Remove playable entities without link to player
 	void RemoveRedundantUnits()
 	{
-		map<RplId, ref PS_PlayableContainer> playables = GetPlayables();
-		for (int i = 0; i < playables.Count(); i++)
+		for (int i = 0; i < m_aPlayables.Count(); i++)
 		{
-			PS_PlayableContainer playable = playables.GetElement(i);
-			if (GetPlayerByPlayable(playable.GetRplId()) <= 0)
+			PS_PlayableContainer playable = m_aPlayables.GetElement(i);
+			if (GetPlayerByPlayable(playable.GetRplId()) == -2 || (GetPlayerByPlayable(playable.GetRplId()) <= 0 && m_GameModeCoop.GetRemoveRedundantUnits()))
 			{
 				SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(playable.GetPlayableComponent().GetOwner());
 				SCR_EntityHelper.DeleteEntityAndChildren(character);
+			}
+		}
+		
+		foreach (RplId vehicleId, PS_PlayableVehicleContainer playableVehicleContainer : m_mPlayableVehicles)
+		{
+			if (playableVehicleContainer.GetLock())
+			{
+				IEntity entity = IEntity.Cast(Replication.FindItem(playableVehicleContainer.GetRplId()));
+				if (entity)
+					SCR_EntityHelper.DeleteEntityAndChildren(entity);
 			}
 		}
 	}

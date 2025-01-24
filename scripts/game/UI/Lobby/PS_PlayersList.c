@@ -11,6 +11,7 @@ class PS_PlayersList : ScriptedWidgetComponent
 	protected WorkspaceWidget m_wWorkspaceWidget;
 	protected PlayerManager m_PlayerManager;
 	protected int m_iPlayerId;
+	protected string m_sSearchText;
 	
 	// Widgets
 	protected VerticalLayoutWidget m_wPlayersList;
@@ -35,6 +36,9 @@ class PS_PlayersList : ScriptedWidgetComponent
 		m_FactionManager = SCR_FactionManager.Cast(GetGame().GetFactionManager());
 		m_wWorkspaceWidget = GetGame().GetWorkspace();
 		m_PlayerManager = GetGame().GetPlayerManager();
+		if (!m_PlayerController)
+			return;
+		
 		m_iPlayerId = m_PlayerController.GetPlayerId();
 		
 		// Events
@@ -68,6 +72,7 @@ class PS_PlayersList : ScriptedWidgetComponent
 		playerSelector.SetPlayersList(this);
 		playerSelector.SetPlayer(playerId);
 		m_mPlayers.Insert(playerId, playerSelector);
+		playerSelector.SetSearchText(m_sSearchText);
 	}
 	
 	void SetSelectedPlayer(int playerId)
@@ -84,6 +89,15 @@ class PS_PlayersList : ScriptedWidgetComponent
 	void OnPlayerRemoved(int playerId)
 	{
 		m_mPlayers.Remove(playerId);
+	}
+	
+	void SetSearchText(string searchText)
+	{
+		m_sSearchText = searchText;
+		foreach (PS_PlayerSelector playerSelector : m_mPlayers)
+		{
+			playerSelector.SetSearchText(m_sSearchText);
+		}
 	}
 }
 

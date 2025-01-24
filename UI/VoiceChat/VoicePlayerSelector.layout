@@ -1,238 +1,257 @@
-FrameWidgetClass {
+ButtonWidgetClass {
  Name "VoicePlayerSelector"
- Slot LayoutSlot "{5EB11767C21ECF59}" {
+ Slot LayoutSlot "{64648C887DE138C8}" {
  }
+ Color 1 1 1 0
  components {
-  PS_PlayerVoiceSelector "{5EB11765575D4DCE}" {
+  PS_PlayerVoiceSelector "{64648C87E5A9D423}" {
    m_sSoundClicked ""
+   m_BackgroundDefault 0 0 0 0.314
+   m_BackgroundHovered 0.051 0.051 0.051 0.314
+   m_BackgroundSelected 0.76 0.392 0.08 0.3
+   m_BackgroundSelectedHovered 0.76 0.392 0.08 0.3
+   m_BackgroundClicked 0.76 0.392 0.08 0.3
   }
  }
  {
-  ImageWidgetClass "{60DCC61ECADD1538}" {
-   Name "ImageCurrent"
-   Slot FrameWidgetSlot "{60DCC61DAC789BCF}" {
-    OffsetLeft 0
-    PositionY 0
-    OffsetTop 0
-    SizeX 466
-    OffsetRight -466
-    SizeY 44
-    OffsetBottom -44
+  FrameWidgetClass "{64648C878B4FD9DA}" {
+   Name "VoicePlayerSelector"
+   Slot ButtonWidgetSlot "{64648C878B4FD92B}" {
    }
-   Opacity 0.4
-   Color 0.761 0.392 0.078 1
-   Texture "{E12BB5C5BD00269E}UI/Textures/Common/gradientTexture_Dither_right_512.edds"
-   Size 512 512
-   Mask "{E12BB5C5BD00269E}UI/Textures/Common/gradientTexture_Dither_right_512.edds"
-   "Transition width" 1
-   Progress 0.44
-   "Mask Mode" "Include Below"
-  }
-  ImageWidgetClass "{5EBEE9F3BA2E0A63}" {
-   Name "CharacterFactionColor"
-   Slot FrameWidgetSlot "{5D6D1B9A2749B73B}" {
-    OffsetLeft 0
-    OffsetTop 0
-    SizeX 6
-    OffsetRight -6
-    SizeY 44
-    OffsetBottom -44
-   }
-   Color 0.376 0.749 0.749 1
-  }
-  ImageWidgetClass "{5EB2906F65B84659}" {
-   Prefab "{5EB1176784E2EFB5}"
-   Name "LeaderIcon"
-   Slot FrameWidgetSlot "{5EB2906F65B847CB}" {
-    PositionX 224
-    OffsetLeft 224
-    PositionY 0
-    OffsetTop 0
-    SizeX 44
-    OffsetRight -268
-    SizeY 44
-    OffsetBottom -44
-   }
-   Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
-   Image "favourite"
-   Size 32 32
-  }
-  ImageWidgetClass "{5EB11767D337F6AE}" {
-   Name "Background"
-   Slot FrameWidgetSlot "{5EB11767D337F688}" {
-    OffsetLeft 0
-    OffsetTop 0
-    SizeX 480
-    OffsetRight -480
-    SizeY 44
-    OffsetBottom -44
-   }
-   Opacity 0
-  }
-  ImageWidgetClass "{5EC2F2F06BFCCFB6}" {
-   Name "Border"
-   Slot FrameWidgetSlot "{5D6F1490EBB9691E}" {
-    Anchor 0 0 0 0
-    PositionX 0
-    OffsetLeft 0
-    PositionY 0
-    OffsetTop 0
-    SizeX 480
-    OffsetRight -480
-    SizeY 44
-    OffsetBottom -44
-   }
-   Color 0.761 0.392 0.078 1
-  }
-  FrameWidgetClass "{5EB1176F4695C767}" {
-   Name "UnitIconFrame"
-   Slot FrameWidgetSlot "{5EB1176F4695FD6B}" {
-    PositionX 8
-    OffsetLeft 8
-    PositionY 0
-    OffsetTop 0
-    SizeX 44
-    OffsetRight -52
-    SizeY 44
-    OffsetBottom -44
-   }
-   "Inherit Color" 1
    {
-    ImageWidgetClass "{5EB1176F4695C768}" {
-     Name "UnitIcon"
-     Slot FrameWidgetSlot "{5E7CF059F272107C}" {
-      Anchor 0 0 0 0
-      PositionX -26
-      OffsetLeft -26
-      PositionY -26
-      OffsetTop -26
-      SizeX 96
-      OffsetRight -70
-      SizeY 96
-      OffsetBottom -70
+    ImageWidgetClass "{5EB11767D337F6AE}" {
+     Name "Background"
+     Slot FrameWidgetSlot "{5EB11767D337F688}" {
+      OffsetLeft 0
+      OffsetTop 0
+      SizeX 480
+      OffsetRight -480
+      SizeY 44
+      OffsetBottom -44
+     }
+    }
+    ImageWidgetClass "{60DCC61ECADD1538}" {
+     Name "ImageCurrent"
+     Slot FrameWidgetSlot "{60DCC61DAC789BCF}" {
+      OffsetLeft 0
+      PositionY 0
+      OffsetTop 0
+      SizeX 466
+      OffsetRight -466
+      SizeY 44
+      OffsetBottom -44
+     }
+     Opacity 0.4
+     Color 0.761 0.392 0.078 1
+     Texture "{E12BB5C5BD00269E}UI/Textures/Common/gradientTexture_Dither_right_512.edds"
+     Size 512 512
+     Mask "{E12BB5C5BD00269E}UI/Textures/Common/gradientTexture_Dither_right_512.edds"
+     "Transition width" 1
+     Progress 0.44
+     "Mask Mode" "Include Below"
+    }
+    ImageWidgetClass "{5EBEE9F3BA2E0A63}" {
+     Name "CharacterFactionColor"
+     Slot FrameWidgetSlot "{5D6D1B9A2749B73B}" {
+      OffsetLeft 0
+      OffsetTop 0
+      SizeX 6
+      OffsetRight -6
+      SizeY 44
+      OffsetBottom -44
+     }
+     Color 0.376 0.749 0.749 1
+    }
+    ImageWidgetClass "{5EB2906F65B84659}" {
+     Prefab "{5EB1176784E2EFB5}"
+     Name "LeaderIcon"
+     Slot FrameWidgetSlot "{5EB2906F65B847CB}" {
+      PositionX 224
+      OffsetLeft 224
+      PositionY 0
+      OffsetTop 0
+      SizeX 44
+      OffsetRight -268
+      SizeY 44
+      OffsetBottom -44
+     }
+     Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
+     Image "favourite"
+     Size 32 32
+    }
+    FrameWidgetClass "{5EB1176F4695C767}" {
+     Name "UnitIconFrame"
+     Slot FrameWidgetSlot "{5EB1176F4695FD6B}" {
+      PositionX 8
+      OffsetLeft 8
+      PositionY 0
+      OffsetTop 0
+      SizeX 44
+      OffsetRight -52
+      SizeY 44
+      OffsetBottom -44
      }
      "Inherit Color" 1
-     Texture "{00B30C29FAF85E1C}UI/Textures/Editor/EditableEntities/Characters/EditableEntity_Character_AntiTank.edds"
-     Size 64 64
+     {
+      ImageWidgetClass "{5EB1176F4695C768}" {
+       Name "UnitIcon"
+       Slot FrameWidgetSlot "{5E7CF059F272107C}" {
+        Anchor 0 0 0 0
+        PositionX -26
+        OffsetLeft -26
+        PositionY -26
+        OffsetTop -26
+        SizeX 96
+        OffsetRight -70
+        SizeY 96
+        OffsetBottom -70
+       }
+       "Inherit Color" 1
+       Texture "{00B30C29FAF85E1C}UI/Textures/Editor/EditableEntities/Characters/EditableEntity_Character_AntiTank.edds"
+       Size 64 64
+      }
+     }
     }
-   }
-  }
-  RichTextWidgetClass "{5EB11767AA8586F0}" {
-   Prefab "{5D6D1B99A45E5176}"
-   Name "PlayerName"
-   Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
-    PositionX 52
-    OffsetLeft 52
-    PositionY 0
-    OffsetTop 0
-    SizeX 164
-    OffsetRight -216
-    SizeY 44
-    OffsetBottom -44
-   }
-   Text "Player"
-   "Font Size" 20
-   "Min Font Size" 20
-   "Vertical Alignment" Center
-  }
-  TextWidgetClass "{5EB1157657D3947D}" {
-   Prefab "{5D6D1B99A45E5176}"
-   Name "GroupName"
-   Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
-    PositionX 330
-    OffsetLeft 330
-    PositionY 0
-    OffsetTop 0
-    SizeX 123
-    OffsetRight -453
-    SizeY 44
-    OffsetBottom -44
-   }
-   Text "Player"
-   "Font Size" 20
-   "Min Font Size" 20
-   "Horizontal Alignment" Right
-   "Vertical Alignment" Center
-  }
-  OverlayWidgetClass "{5EB1176D2E673C6D}" : "{DAAA8D092128D446}UI/Util/HideableButton.layout" {
-   Name "VoiceHideableButton"
-   Slot FrameWidgetSlot "{5EB1176DC507EF2D}" {
-    PositionX 268
-    OffsetLeft 268
-    PositionY 0
-    OffsetTop 0
-    SizeX 44
-    OffsetRight -312
-    SizeY 44
-    OffsetBottom -44
-   }
-   components {
-    PS_VoiceButton "{5EB11770B0438906}" {
+    RichTextWidgetClass "{5EB11767AA8586F0}" {
+     Prefab "{5D6D1B99A45E5176}"
+     Name "PlayerName"
+     Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
+      PositionX 52
+      OffsetLeft 52
+      PositionY 0
+      OffsetTop 0
+      SizeX 164
+      OffsetRight -216
+      SizeY 44
+      OffsetBottom -44
+     }
+     Text "Player"
+     "Font Size" 20
+     "Min Font Size" 20
+     "Vertical Alignment" Center
     }
-   }
-  }
-  ButtonWidgetClass "{5EBEE9F517B20AEA}" {
-   Name "KickButton"
-   Slot FrameWidgetSlot "{5EA8C93F5E685F59}" {
-    Anchor 0 0 0 0
-    PositionX 180
-    OffsetLeft 180
-    PositionY 0
-    OffsetTop 0
-    SizeX 44
-    OffsetRight -224
-    SizeY 44
-    OffsetBottom -44
-   }
-   Color 0 1 0.019 0
-   components {
-    SCR_ButtonBaseComponent "{5EAB239441B528D5}" {
-     m_sSoundHovered ""
-     m_sSoundClicked ""
-     m_BackgroundDefault 1 1 1 0
-     m_BackgroundHovered 1 1 1 0.162
-     m_BackgroundSelected 1 1 1 0
-     m_BackgroundSelectedHovered 1 1 1 0.162
-     m_BackgroundClicked 1 1 1 0
-     m_bShowBorderOnFocus 0
-     m_bNoBorderAnimation 1
+    TextWidgetClass "{5EB1157657D3947D}" {
+     Prefab "{5D6D1B99A45E5176}"
+     Name "GroupName"
+     Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
+      PositionX 330
+      OffsetLeft 330
+      PositionY 0
+      OffsetTop 0
+      SizeX 123
+      OffsetRight -453
+      SizeY 44
+      OffsetBottom -44
+     }
+     Text "Alpha Red 1"
+     "Font Size" 20
+     "Min Font Size" 20
+     "Horizontal Alignment" Right
+     "Vertical Alignment" Center
     }
-   }
-   "no focus" 1
-   {
-    FrameWidgetClass "{5EBEE9F517B20AEC}" {
-     Name "KickButtonFrame"
-     Slot ButtonWidgetSlot "{5EA8C93CB4241314}" {
+    OverlayWidgetClass "{5EB1176D2E673C6D}" : "{DAAA8D092128D446}UI/Util/HideableButton.layout" {
+     Name "VoiceHideableButton"
+     Slot FrameWidgetSlot "{5EB1176DC507EF2D}" {
+      PositionX 268
+      OffsetLeft 268
+      PositionY 0
+      OffsetTop 0
+      SizeX 44
+      OffsetRight -312
+      SizeY 44
+      OffsetBottom -44
+     }
+     components {
+      PS_VoiceButton "{5EB11770B0438906}" {
+      }
      }
      {
-      ImageWidgetClass "{5EBEE9F517B20AEE}" {
-       Name "Background"
-       Slot FrameWidgetSlot "{5D6E8206B132EE77}" {
-        PositionX 0
-        OffsetLeft 0
-        PositionY 0
-        OffsetTop 0
-        SizeX 44
-        OffsetRight -44
-        SizeY 44
-        OffsetBottom -44
-       }
-      }
-      ImageWidgetClass "{5EBEE9F517B20AEF}" {
-       Name "KickImage"
-       Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
-        OffsetLeft 0
-        OffsetTop 0
-        SizeX 44
-        OffsetRight -44
-        SizeY 44
-        OffsetBottom -44
-       }
-       Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
-       Image "kickCommandAlt"
-       Size 32 32
+      ButtonWidgetClass "{5EB1176E3DB20C7A}" {
+       Prefab "{5EB1176E3DB20C7A}"
+       "Is Visible" 0
       }
      }
+    }
+    ButtonWidgetClass "{5EBEE9F517B20AEA}" {
+     Name "KickButton"
+     Slot FrameWidgetSlot "{5EA8C93F5E685F59}" {
+      Anchor 0 0 0 0
+      PositionX 180
+      OffsetLeft 180
+      PositionY 0
+      OffsetTop 0
+      SizeX 44
+      OffsetRight -224
+      SizeY 44
+      OffsetBottom -44
+     }
+     "Is Visible" 0
+     Color 0 1 0.019 0
+     components {
+      SCR_ButtonBaseComponent "{5EAB239441B528D5}" {
+       m_sSoundHovered ""
+       m_sSoundClicked ""
+       m_BackgroundDefault 1 1 1 0
+       m_BackgroundHovered 1 1 1 0.162
+       m_BackgroundSelected 1 1 1 0
+       m_BackgroundSelectedHovered 1 1 1 0.162
+       m_BackgroundClicked 1 1 1 0
+       m_bShowBorderOnFocus 0
+       m_bNoBorderAnimation 1
+      }
+     }
+     "no focus" 1
+     {
+      FrameWidgetClass "{5EBEE9F517B20AEC}" {
+       Name "KickButtonFrame"
+       Slot ButtonWidgetSlot "{5EA8C93CB4241314}" {
+       }
+       {
+        ImageWidgetClass "{5EBEE9F517B20AEE}" {
+         Name "Background"
+         Slot FrameWidgetSlot "{5D6E8206B132EE77}" {
+          PositionX 0
+          OffsetLeft 0
+          PositionY 0
+          OffsetTop 0
+          SizeX 44
+          OffsetRight -44
+          SizeY 44
+          OffsetBottom -44
+         }
+        }
+        ImageWidgetClass "{5EBEE9F517B20AEF}" {
+         Name "KickImage"
+         Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
+          OffsetLeft 0
+          OffsetTop 0
+          SizeX 44
+          OffsetRight -44
+          SizeY 44
+          OffsetBottom -44
+         }
+         Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
+         Image "kickCommandAlt"
+         Size 32 32
+        }
+       }
+      }
+     }
+    }
+    PanelWidgetClass "{64648C87682CF4CE}" {
+     Name "Border"
+     Slot FrameWidgetSlot "{5D6F1490EBB9691E}" {
+      Anchor 0 0 1 1
+      PositionX 2
+      PositionY 0
+      OffsetTop 0
+      SizeX -2
+      OffsetRight 0
+      SizeY -4
+      OffsetBottom 0
+     }
+     Color 0.761 0.392 0.078 1
+     style pixel_outline
     }
    }
   }

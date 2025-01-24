@@ -99,6 +99,11 @@ class PS_FactionSelector : SCR_ButtonBaseComponent
 	
 	void UpdateCounter()
 	{
+		if (m_iMaxCount - m_iLockedCount == 0)
+		{
+			m_wFactionCounter.SetText("#PS_Lobby_Locked");
+			return;
+		}
 		m_wFactionCounter.SetText(m_iCount.ToString() + " / " + (m_iMaxCount - m_iLockedCount).ToString());
 	}
 	

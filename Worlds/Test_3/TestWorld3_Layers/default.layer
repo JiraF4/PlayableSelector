@@ -7,6 +7,7 @@ PerceptionManager PerceptionManager1 : "{028DAEAD63E056BE}Prefabs/World/Game/Per
 PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_GameMode_Lobby.et" {
  m_bAutoPlayerRespawn 0
  m_bAllowFactionChange 0
+ m_bMarkersOnlyOnBriefing 1
  m_iFreezeTime 10000
  m_bDisableChat 1
  m_bDisableVanillaGroupMenu 1

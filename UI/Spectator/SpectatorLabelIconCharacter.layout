@@ -20,6 +20,7 @@ FrameWidgetClass : "{8A4C0D6D625BB09D}UI/Spectator/SpectatorLabelIcon.layout" {
     SizeY 64
     OffsetBottom -64
    }
+   "Ignore Cursor" 1
    Color 1 1 1 0
    components {
     PS_EventHandlerComponent "{61CB0492910B3020}" {
@@ -28,7 +29,7 @@ FrameWidgetClass : "{8A4C0D6D625BB09D}UI/Spectator/SpectatorLabelIcon.layout" {
    {
     OverlayWidgetClass "{60DB071976551894}" {
      Name "SpectatorLabelBackground"
-     Slot ButtonWidgetSlot {
+     Slot ButtonWidgetSlot "{646933DC04B37065}" {
      }
      components {
       PS_EventHandlerComponent "{61CB0492EBB48943}" {
@@ -92,7 +93,7 @@ FrameWidgetClass : "{8A4C0D6D625BB09D}UI/Spectator/SpectatorLabelIcon.layout" {
     OverlayWidgetClass "{5EE89488CCB4B28D}" {
      Prefab "{5EE89488CCB4B28D}"
      {
-      TextWidgetClass "{5EE8948EAC337C76}" {
+      RichTextWidgetClass "{5EE8948EAC337C76}" {
        Prefab "{5EE8948EAC337C76}"
        "Font Size" 16
        "Min Font Size" 16

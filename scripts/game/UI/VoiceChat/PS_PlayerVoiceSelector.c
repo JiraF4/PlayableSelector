@@ -2,9 +2,9 @@
 // Path: {086F282C8CE692F1}UI/VoiceChat/VoicePlayerSelector.layout
 // Part of voice chat list PS_VoiceChatList ({35DB604900C55B98}UI/VoiceChat/VoiceChatFrame.layout)
 
-class PS_PlayerVoiceSelector : SCR_ButtonBaseComponent
+class PS_PlayerVoiceSelector : SCR_ButtonComponent
 {
-	protected int m_iPlayer;
+	protected int m_iPlayerId;
 	
 	protected ResourceName m_sImageSet = "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset";
 	
@@ -28,26 +28,18 @@ class PS_PlayerVoiceSelector : SCR_ButtonBaseComponent
 		m_wGroupName = TextWidget.Cast(w.FindAnyWidget("GroupName"));
 		m_wKickButton = ButtonWidget.Cast(w.FindAnyWidget("KickButton"));
 		m_wImageCurrent = ImageWidget.Cast(w.FindAnyWidget("ImageCurrent"));
-		
-		GetGame().GetCallqueue().CallLater(AddOnClick, 0);
-	}
-	
-	void AddOnClick()
-	{
-		SCR_ButtonBaseComponent kickButtonHandler = SCR_ButtonBaseComponent.Cast(m_wKickButton.FindHandler(SCR_ButtonBaseComponent));
-		kickButtonHandler.m_OnClicked.Insert(KickButtonClicked);
 	}
 	
 	void SetPlayer(int playerId)
 	{
-		m_iPlayer = playerId;
+		m_iPlayerId = playerId;
 		m_wVoiceHideableButton.SetPlayer(playerId);
 		UpdateInfo();
 	}
 	
 	int GetPlayerId()
 	{
-		return m_iPlayer;
+		return m_iPlayerId;
 	}
 	
 	void UpdateInfo()
@@ -61,12 +53,12 @@ class PS_PlayerVoiceSelector : SCR_ButtonBaseComponent
 			return;
 		
 		// player data
-		RplId playableId = playableManager.GetPlayableByPlayer(m_iPlayer);
-		FactionKey factionKey = playableManager.GetPlayerFactionKey(m_iPlayer);
-		string playerName = playableManager.GetPlayerName(m_iPlayer);
+		RplId playableId = playableManager.GetPlayableByPlayer(m_iPlayerId);
+		FactionKey factionKey = playableManager.GetPlayerFactionKey(m_iPlayerId);
+		string playerName = playableManager.GetPlayerName(m_iPlayerId);
 		SCR_Faction faction = SCR_Faction.Cast(factionManager.GetFactionByKey(factionKey));
-		EPlayerRole playerRole = playerManager.GetPlayerRoles(m_iPlayer);
-		int playerRoomId = VoNRoomsManager.GetPlayerRoom(m_iPlayer);
+		EPlayerRole playerRole = playerManager.GetPlayerRoles(m_iPlayerId);
+		int playerRoomId = VoNRoomsManager.GetPlayerRoom(m_iPlayerId);
 		string playerRoom = VoNRoomsManager.GetRoomName(playerRoomId);
 		int groupCallSign = playableManager.GetGroupCallsignByPlayable(playableId);
 		 
@@ -77,12 +69,12 @@ class PS_PlayerVoiceSelector : SCR_ButtonBaseComponent
 		PS_PlayableControllerComponent currentPlayableController = PS_PlayableControllerComponent.Cast(currentPlayerController.FindComponent(PS_PlayableControllerComponent));
 		int currentPlayerRoomId = VoNRoomsManager.GetPlayerRoom(currentPlayerId);
 		string currentPlayerRoom = VoNRoomsManager.GetRoomName(currentPlayerRoomId);
-		int currentGroupCallSign = playableManager.GetGroupCallsignByPlayable(m_iPlayer);
+		int currentGroupCallSign = playableManager.GetGroupCallsignByPlayable(m_iPlayerId);
 				
 		// update
 		if (playerName != "") m_wPlayerName.SetText(playerName);
 		//m_wVoiceHideableButton.Update();
-		m_wLeaderIcon.SetVisible(playableManager.IsPlayerGroupLeader(m_iPlayer));
+		m_wLeaderIcon.SetVisible(playableManager.IsPlayerGroupLeader(m_iPlayerId));
 		if (faction) m_wCharacterFactionColor.SetColor(faction.GetFactionColor());
 		else m_wCharacterFactionColor.SetColor(Color.FromInt(0xFF2c2c2c));
 		
@@ -91,12 +83,12 @@ class PS_PlayerVoiceSelector : SCR_ButtonBaseComponent
 			if (currentPlayerRoom.Contains(currentGroupCallSign.ToString())) {
 				if (!showKick) showKick = groupCallSign != currentGroupCallSign;
 			}
-			if (!showKick && currentPlayerRoom.Contains("#PS-VoNRoom_Command")) showKick = !playableManager.IsPlayerGroupLeader(m_iPlayer) && playableManager.IsPlayerGroupLeader(currentPlayerId);
+			if (!showKick && currentPlayerRoom.Contains("#PS-VoNRoom_Command")) showKick = !playableManager.IsPlayerGroupLeader(m_iPlayerId) && playableManager.IsPlayerGroupLeader(currentPlayerId);
 		}
 		m_wKickButton.SetVisible(showKick);
-		m_wImageCurrent.SetVisible(currentPlayerId == m_iPlayer);
+		m_wImageCurrent.SetVisible(currentPlayerId == m_iPlayerId);
 		
-		if (SCR_Global.IsAdmin(m_iPlayer)) m_wPlayerName.SetColor(Color.FromInt(0xfff2a34b));
+		if (SCR_Global.IsAdmin(m_iPlayerId)) m_wPlayerName.SetColor(Color.FromInt(0xfff2a34b));
 		else if (playerName == "") m_wPlayerName.SetColor(Color.FromInt(0xff999999));
 		else m_wPlayerName.SetColor(Color.FromInt(0xffffffff));
 		
@@ -115,9 +107,91 @@ class PS_PlayerVoiceSelector : SCR_ButtonBaseComponent
 		}
 	}
 	
-	// -------------------- Buttons events --------------------
+	// --------------------------------------------------------------------------------------------------------------------------------
+	// Context menu
+	override bool OnClick(Widget w, int x, int y, int button)
+	{
+		super.OnClick(w, x, y, button);
+		if (button == 1)
+		{
+			OpenContext();
+			return false;
+		}
+		if (button != 0)
+			return false;
+		
+		return false;
+	}
 	
-	void KickButtonClicked(SCR_ButtonBaseComponent roomButton)
+	void OpenContext()
+	{
+		MenuBase menu = GetGame().GetMenuManager().GetTopMenu();
+		if (!menu)
+			return;
+		
+		PS_ContextMenu contextMenu = PS_ContextMenu.CreateContextMenuOnMousePosition(menu.GetRootWidget());
+		// Well that suck...
+		if (menu.IsInherited(PS_CoopLobby) && PS_PlayersHelper.IsAdminOrServer())
+		{
+			contextMenu.ActionPlayerSelect(m_iPlayerId);
+			if (PS_PlayableManager.GetInstance().GetPlayerPin(m_iPlayerId))
+				contextMenu.ActionUnpin(m_iPlayerId);
+		}
+		
+		if (m_iPlayerId == GetGame().GetPlayerController().GetPlayerId())
+			return;
+		PermissionState mute = PermissionState.DISALLOWED;
+		SocialComponent socialComp = SocialComponent.Cast(GetGame().GetPlayerController().FindComponent(SocialComponent));
+		if (socialComp.IsMuted(m_iPlayerId))
+			contextMenu.ActionUnmute(m_iPlayerId);
+		else
+			contextMenu.ActionMute(m_iPlayerId);
+		if (PS_PlayersHelper.IsAdminOrServer())
+		{
+			contextMenu.ActionKick(m_iPlayerId);
+		}
+		
+		
+		 // TODO: simplify and protect
+		
+		// global
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		SCR_FactionManager factionManager = SCR_FactionManager.Cast(GetGame().GetFactionManager());
+		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
+		
+		// player data
+		RplId playableId = playableManager.GetPlayableByPlayer(m_iPlayerId);
+		FactionKey factionKey = playableManager.GetPlayerFactionKey(m_iPlayerId);
+		string playerName = playableManager.GetPlayerName(m_iPlayerId);
+		SCR_Faction faction = SCR_Faction.Cast(factionManager.GetFactionByKey(factionKey));
+		EPlayerRole playerRole = playerManager.GetPlayerRoles(m_iPlayerId);
+		int playerRoomId = VoNRoomsManager.GetPlayerRoom(m_iPlayerId);
+		string playerRoom = VoNRoomsManager.GetRoomName(playerRoomId);
+		int groupCallSign = playableManager.GetGroupCallsignByPlayable(playableId);
+		
+		// current player
+		PlayerController currentPlayerController = GetGame().GetPlayerController();
+		int currentPlayerId = currentPlayerController.GetPlayerId();
+		EPlayerRole currentPlayerRole = playerManager.GetPlayerRoles(currentPlayerController.GetPlayerId());
+		PS_PlayableControllerComponent currentPlayableController = PS_PlayableControllerComponent.Cast(currentPlayerController.FindComponent(PS_PlayableControllerComponent));
+		int currentPlayerRoomId = VoNRoomsManager.GetPlayerRoom(currentPlayerId);
+		string currentPlayerRoom = VoNRoomsManager.GetRoomName(currentPlayerRoomId);
+		int currentGroupCallSign = playableManager.GetGroupCallsignByPlayable(m_iPlayerId);
+		
+		bool showKick = PS_PlayersHelper.IsAdminOrServer();
+		if (playerRoomId == currentPlayerRoomId) {
+			if (currentPlayerRoom.Contains(currentGroupCallSign.ToString())) {
+				if (!showKick) showKick = groupCallSign != currentGroupCallSign;
+			}
+			if (!showKick && currentPlayerRoom.Contains("#PS-VoNRoom_Command")) showKick = !playableManager.IsPlayerGroupLeader(m_iPlayerId) && playableManager.IsPlayerGroupLeader(currentPlayerId);
+		}
+		if (showKick)
+			contextMenu.ActionVoiceKick(m_iPlayerId).Insert(OnActionVoiceKick);	
+	}
+	
+	// -------------------- Buttons events --------------------
+	void OnActionVoiceKick(PS_ContextAction contextAction, PS_ContextActionDataPlayer contextActionDataPlayer)
 	{
 		// global
 		PlayerManager playerManager = GetGame().GetPlayerManager();
@@ -133,11 +207,11 @@ class PS_PlayerVoiceSelector : SCR_ButtonBaseComponent
 		
 		if (gameState == SCR_EGameModeState.BRIEFING)
 		{
-			RplId playableId = playableManager.GetPlayableByPlayer(m_iPlayer);
+			RplId playableId = playableManager.GetPlayableByPlayer(contextActionDataPlayer.GetPlayerId());
 			string groupName = playableManager.GetGroupCallsignByPlayable(playableId).ToString();
-			currentPlayableController.MoveToVoNRoom(m_iPlayer, playableManager.GetPlayerFactionKey(m_iPlayer), groupName);
+			currentPlayableController.MoveToVoNRoom(contextActionDataPlayer.GetPlayerId(), playableManager.GetPlayerFactionKey(contextActionDataPlayer.GetPlayerId()), groupName);
 		} else {
-			currentPlayableController.MoveToVoNRoom(m_iPlayer, playableManager.GetPlayerFactionKey(m_iPlayer), "#PS-VoNRoom_Faction");
+			currentPlayableController.MoveToVoNRoom(contextActionDataPlayer.GetPlayerId(), playableManager.GetPlayerFactionKey(contextActionDataPlayer.GetPlayerId()), "#PS-VoNRoom_Faction");
 		}
 	}
 }

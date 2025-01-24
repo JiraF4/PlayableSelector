@@ -113,7 +113,7 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 		}
 	}
 	
-	void UpdatePlayerWrap(int playerId)
+	void UpdatePlayerWrap(int oldPlayerId, int playerId)
 	{
 		UpdatePlayer(m_PlayableManager.GetPlayerByPlayableRemembered(m_PlayableComponent.GetRplId()))
 	}
@@ -135,6 +135,97 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 	void UpdateShowDead(bool showDead)
 	{
 		m_wRoot.SetVisible(showDead || !m_bDead);
+	}
+	
+	// --------------------------------------------------------------------------------------------------------------------------------
+	// Buttons
+	override bool OnClick(Widget w, int x, int y, int button)
+	{
+		super.OnClick(w, x, y, button);
+		if (button == 1)
+		{
+			RplComponent rplComponent = RplComponent.Cast(Replication.FindItem(m_iPlayableId));
+			if (rplComponent)
+			{
+				SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(rplComponent.GetEntity());
+				OpenContext(character);
+			}
+			return false;
+		}
+		if (button != 0)
+			return false;
+		
+		AlivePlayerButtonClicked(this);
+		return false;
+	}
+	// --------------------------------------------------------------------------------------------------------------------------------
+	void OpenContext(SCR_ChimeraCharacter character)
+	{
+		MenuBase menu = GetGame().GetMenuManager().GetTopMenu();
+		if (!menu)
+			return;
+		
+		PS_PlayableComponent playableComponent = character.PS_GetPlayable();
+		
+		PS_ContextMenu contextMenu = PS_ContextMenu.CreateContextMenuOnMousePosition(menu.GetRootWidget());
+		int playerId = PS_PlayableManager.GetInstance().GetPlayerByPlayable(playableComponent.GetRplId());
+		
+		PS_AttachManualCameraObserverComponent attachComponent = PS_AttachManualCameraObserverComponent.s_Instance;
+		if (!attachComponent.GetTarget())
+			contextMenu.ActionAttachTo(character).Insert(OnActionAttachTo);
+		else
+			contextMenu.ActionDetachFrom(character).Insert(OnActionDetachFrom);
+		contextMenu.ActionLookAt(character).Insert(OnActionLookAt);
+		contextMenu.ActionFirstPersonView(character).Insert(OnActionFirstPersonView);
+		contextMenu.ActionRespawnInPlace(playableComponent.GetId(), playerId);
+		if (playerId > 0)
+			contextMenu.ActionKick(playerId);
+	}
+	void OnActionAttachTo(PS_ContextAction contextAction, PS_ContextActionDataCharacter contextActionDataCharacter)
+	{
+		PS_AttachManualCameraObserverComponent attachComponent = PS_AttachManualCameraObserverComponent.s_Instance;
+		if (!attachComponent)
+			return;
+		
+		SCR_ChimeraCharacter character = contextActionDataCharacter.GetCharacter();
+		attachComponent.AttachTo(character);
+	}
+	void OnActionDetachFrom(PS_ContextAction contextAction, PS_ContextActionDataCharacter contextActionDataCharacter)
+	{
+		PS_AttachManualCameraObserverComponent attachComponent = PS_AttachManualCameraObserverComponent.s_Instance;
+		if (!attachComponent)
+			return;
+		
+		attachComponent.Detach();
+	}
+	void OnActionLookAt(PS_ContextAction contextAction, PS_ContextActionDataCharacter contextActionDataCharacter)
+	{
+		SCR_ChimeraCharacter character = contextActionDataCharacter.GetCharacter();
+		PS_SpectatorLabel spectatorLabel = PS_SpectatorLabel.Cast(character.FindComponent(PS_SpectatorLabel));
+		if (!spectatorLabel)
+			return;
+		PS_SpectatorMenu spectatorMenu = PS_SpectatorMenu.Cast(GetGame().GetMenuManager().GetTopMenu());
+		if (!spectatorMenu)
+			return;
+		spectatorMenu.SetLookTarget(spectatorLabel.GetLabelIcon());
+	}
+	void OnActionFirstPersonView(PS_ContextAction contextAction, PS_ContextActionDataCharacter contextActionDataCharacter)
+	{
+		PS_AttachManualCameraObserverComponent attachComponent = PS_AttachManualCameraObserverComponent.s_Instance;
+		if (!attachComponent)
+			return;
+		
+		PS_SpectatorMenu spectatorMenu = PS_SpectatorMenu.Cast(GetGame().GetMenuManager().GetTopMenu());
+		if (!spectatorMenu)
+			return;
+		
+		spectatorMenu.SetLookTarget(null);
+		attachComponent.Detach();
+		
+		SCR_ChimeraCharacter character = contextActionDataCharacter.GetCharacter();
+		PS_ManualCameraSpectator camera = PS_ManualCameraSpectator.Cast(GetGame().GetCameraManager().CurrentCamera());
+		if (camera)
+			camera.SetCharacterEntity(character)
 	}
 	
 	// -------------------- Buttons events --------------------

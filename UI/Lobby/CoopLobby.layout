@@ -75,11 +75,12 @@ FrameWidgetClass {
             ImageWidgetClass "{5D6E820228641952}" {
              Name "Background"
              Slot FrameWidgetSlot "{5D6E820228641944}" {
+              PositionX 0
               OffsetLeft 0
               PositionY 128
               OffsetTop 128
-              SizeX 320
-              OffsetRight -320
+              SizeX 280
+              OffsetRight -280
               SizeY 824
               OffsetBottom -952
              }
@@ -163,8 +164,8 @@ FrameWidgetClass {
               OffsetLeft 0
               PositionY 33
               OffsetTop 33
-              SizeX 320
-              OffsetRight -320
+              SizeX 289
+              OffsetRight -289
               SizeY 95
               OffsetBottom -128
              }
@@ -173,7 +174,7 @@ FrameWidgetClass {
                Name "FactionHeader"
                Slot OverlayWidgetSlot "{5D6F14918D6DECB2}" {
                 HorizontalAlign 0
-                Padding 44 28 48 0
+                Padding 24 28 48 0
                }
                Clipping False
                Text "#PS-Lobby_Factions"
@@ -194,8 +195,8 @@ FrameWidgetClass {
               OffsetLeft 0
               PositionY 128
               OffsetTop 128
-              SizeX 320
-              OffsetRight -320
+              SizeX 289
+              OffsetRight -289
               SizeY 824
               OffsetBottom -952
              }
@@ -256,12 +257,12 @@ FrameWidgetClass {
              Slot FrameWidgetSlot "{5D6D141612AB133D}" {
               PositionX 0
               OffsetLeft 0
-              PositionY 128
-              OffsetTop 128
+              PositionY 139
+              OffsetTop 139
               SizeX 640
               OffsetRight -640
-              SizeY 824
-              OffsetBottom -952
+              SizeY 806
+              OffsetBottom -945
              }
              {
               ScrollLayoutWidgetClass "{5D6D1B9B238445DF}" {
@@ -270,12 +271,81 @@ FrameWidgetClass {
                 HorizontalAlign 3
                 VerticalAlign 3
                }
+               "Inherit Color" 1
                "Scrollbar Always Visible" 1
                {
                 VerticalLayoutWidgetClass "{5D6D1B9B2EB68480}" {
                  Name "RolesList"
                  Slot AlignableSlot "{5D6D1B9B2EB684B4}" {
                  }
+                }
+               }
+              }
+             }
+            }
+            ButtonWidgetClass "{64691041E4D4D49B}" {
+             Name "RolesFoldButton"
+             Slot FrameWidgetSlot "{5EA8C93F5E685F59}" {
+              Anchor 0 0 0 0
+              PositionX 583
+              OffsetLeft 583
+              PositionY 75
+              OffsetTop 75
+              SizeX 40
+              OffsetRight -623
+              SizeY 40
+              OffsetBottom -115
+             }
+             Color 0 1 0.019 0
+             components {
+              SCR_ButtonBaseComponent "{5EAB2394A927C221}" {
+               m_sSoundHovered ""
+               m_sSoundClicked ""
+               m_BackgroundDefault 1 1 1 0
+               m_BackgroundHovered 1 1 1 0.162
+               m_BackgroundSelected 1 1 1 0
+               m_BackgroundSelectedHovered 1 1 1 0.162
+               m_BackgroundClicked 1 1 1 0
+               m_bShowBorderOnFocus 0
+               m_bNoBorderAnimation 1
+              }
+             }
+             "no focus" 1
+             {
+              FrameWidgetClass "{64691041E4D4D49C}" {
+               Name "RolesFoldButtonFrame"
+               Slot ButtonWidgetSlot "{5EA8C93CB4241314}" {
+               }
+               {
+                ImageWidgetClass "{64691041E4D4D49E}" {
+                 Name "Background"
+                 Slot FrameWidgetSlot "{5D6E8206B132EE77}" {
+                  PositionX 0
+                  OffsetLeft 0
+                  PositionY 0
+                  OffsetTop 0
+                  SizeX 40
+                  OffsetRight -40
+                  SizeY 40
+                  OffsetBottom -40
+                 }
+                 Color 1 1 1 0
+                }
+                ImageWidgetClass "{64691041E4D4D49F}" {
+                 Name "RolesFoldButtonImage"
+                 Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
+                  PositionX 0
+                  OffsetLeft 0
+                  PositionY 0
+                  OffsetTop 0
+                  SizeX 40
+                  OffsetRight -40
+                  SizeY 40
+                  OffsetBottom -40
+                 }
+                 Texture "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset"
+                 Image "Fold"
+                 Size 64 64
                 }
                }
               }
@@ -291,11 +361,11 @@ FrameWidgetClass {
             ImageWidgetClass "{5D6E8203A11BCB77}" {
              Name "Background"
              Slot FrameWidgetSlot "{5D6E820228641944}" {
-              PositionX 0
-              OffsetLeft 0
+              PositionX 4
+              OffsetLeft 4
               PositionY 128
               OffsetTop 128
-              SizeX 480
+              SizeX 476
               OffsetRight -480
               SizeY 824
               OffsetBottom -952
@@ -321,7 +391,7 @@ FrameWidgetClass {
                Name "LoadoutPreviewHeader"
                Slot OverlayWidgetSlot "{5D6F14918D6DEDB6}" {
                 HorizontalAlign 0
-                Padding 36 28 48 0
+                Padding 24 28 48 0
                }
                Clipping False
                Text "#PS-Lobby_LoadoutPreview"
@@ -335,12 +405,12 @@ FrameWidgetClass {
             OverlayWidgetClass "{5D6D141636047EF6}" {
              Name "LoadoutPreviewBody"
              Slot FrameWidgetSlot "{5D6D141612AB133D}" {
-              PositionX 14
-              OffsetLeft 14
+              PositionX 23
+              OffsetLeft 23
               PositionY 135
               OffsetTop 135
               SizeX 450
-              OffsetRight -464
+              OffsetRight -473
               SizeY 810
               OffsetBottom -945
              }
@@ -612,16 +682,218 @@ FrameWidgetClass {
             ImageWidgetClass "{5D6E8203E04D2031}" {
              Name "Background"
              Slot FrameWidgetSlot "{5D6E820228641944}" {
+              PositionX 0
               OffsetLeft 0
               PositionY 128
               OffsetTop 128
-              SizeX 480
-              OffsetRight -480
+              SizeX 510
+              OffsetRight -510
               SizeY 824
               OffsetBottom -952
              }
              Opacity 0.3
              Color 0 0 0 1
+            }
+            FrameWidgetClass "{5EB701C9697A67C6}" {
+             Name "PlayersSwitchFrame"
+             Slot FrameWidgetSlot "{5EB701C9697A6723}" {
+              PositionX 16
+              OffsetLeft 16
+              PositionY 139
+              OffsetTop 139
+              SizeX 480
+              OffsetRight -496
+              SizeY 42
+              OffsetBottom -181
+             }
+             {
+              OverlayWidgetClass "{611D348B867A39CB}" {
+               Name "Overlay0"
+               Slot FrameWidgetSlot "{611D348B867A39B1}" {
+                OffsetLeft 0
+                OffsetTop 0
+                SizeX 240
+                OffsetRight -240
+                SizeY 34
+                OffsetBottom -34
+               }
+               {
+                ButtonWidgetClass "{5EB701CAF0B7C9C0}" {
+                 Name "PlayersSwitch"
+                 Slot OverlayWidgetSlot "{611D4BEFB93CE20F}" {
+                 }
+                 Color 1 1 1 0
+                 components {
+                  SCR_ButtonBaseComponent "{5EB701CA8A36B4A7}" {
+                   m_bCanBeToggled 1
+                   m_BackgroundDefault 0.027 0.027 0.027 1
+                   m_BackgroundHovered 0.063 0.061 0.061 1
+                   m_BackgroundSelected 0.761 0.386 0.078 1
+                   m_BackgroundSelectedHovered 0.93 0.361 0.016 1
+                   m_BackgroundClicked 0.761 0.386 0.078 1
+                  }
+                 }
+                 "no focus" 1
+                 {
+                  FrameWidgetClass "{5EB701CAB29B7D47}" {
+                   Name "ButtonPlayersFrame"
+                   Slot ButtonWidgetSlot "{5EB701CAB29B7EA8}" {
+                   }
+                   {
+                    OverlayWidgetClass "{5EB701CABF2C93FF}" {
+                     Name "Overlay"
+                     Slot FrameWidgetSlot "{5EB701CABF2C93D5}" {
+                      OffsetLeft 0
+                      OffsetTop 0
+                      SizeX 240
+                      OffsetRight -240
+                      SizeY 34
+                      OffsetBottom -34
+                     }
+                    }
+                    ImageWidgetClass "{5EB701CA9F3C8B4A}" {
+                     Prefab "{5EB10001224C7F50}"
+                     Name "Background"
+                     Slot FrameWidgetSlot "{5EB701CAB2EE0FA2}" {
+                      OffsetLeft 0
+                      OffsetTop 0
+                      SizeX 240
+                      OffsetRight -240
+                      SizeY 34
+                      OffsetBottom -34
+                     }
+                    }
+                    ImageWidgetClass "{5EC2F2E5E6BF5292}" {
+                     Name "Border"
+                     Slot FrameWidgetSlot "{5D6F1490EBB9691E}" {
+                      Anchor 0 0 0 0
+                      PositionX 0
+                      OffsetLeft 0
+                      PositionY 0
+                      OffsetTop 0
+                      SizeX 240
+                      OffsetRight -240
+                      SizeY 34
+                      OffsetBottom -34
+                     }
+                     Color 1 1 1 0
+                    }
+                   }
+                  }
+                 }
+                }
+                TextWidgetClass "{611D348B8ED88C4A}" {
+                 Name "Text"
+                 Slot OverlayWidgetSlot "{5EB701CA45F4D6F1}" {
+                  HorizontalAlign 0
+                  Padding 8 0 0 0
+                 }
+                 Text "#PS-Lobby_PlayersList"
+                }
+               }
+              }
+              OverlayWidgetClass "{611D348427A0F0A8}" {
+               Name "Overlay1"
+               Slot FrameWidgetSlot "{611D348427A0F066}" {
+                PositionX 240
+                OffsetLeft 240
+                OffsetTop 0
+                SizeX 229
+                OffsetRight -469
+                SizeY 34
+                OffsetBottom -34
+               }
+               {
+                ButtonWidgetClass "{5EB701CA613F7B51}" {
+                 Name "VoiceSwitch"
+                 Slot OverlayWidgetSlot "{611D4BEFB93CE37A}" {
+                 }
+                 Color 1 1 1 0
+                 components {
+                  SCR_ButtonBaseComponent "{5EB701CA8A36B4A7}" {
+                   m_bCanBeToggled 1
+                   m_bIsToggled 1
+                   m_BackgroundDefault 0.027 0.027 0.027 1
+                   m_BackgroundHovered 0.063 0.061 0.061 1
+                   m_BackgroundSelected 0.761 0.386 0.078 1
+                   m_BackgroundSelectedHovered 0.93 0.361 0.016 1
+                   m_BackgroundClicked 0.761 0.386 0.078 1
+                  }
+                 }
+                 "no focus" 1
+                 {
+                  FrameWidgetClass "{5EB701CA613F7B53}" {
+                   Name "ButtonPlayersFrame"
+                   Slot ButtonWidgetSlot "{5EB701CAB29B7EA8}" {
+                   }
+                   {
+                    OverlayWidgetClass "{5EB701CA613F7B54}" {
+                     Name "Overlay"
+                     Slot FrameWidgetSlot "{5EB701CABF2C93D5}" {
+                      OffsetLeft 0
+                      OffsetTop 0
+                      SizeX 240
+                      OffsetRight -240
+                      SizeY 34
+                      OffsetBottom -34
+                     }
+                    }
+                    ImageWidgetClass "{5EB701CA613F7B56}" {
+                     Prefab "{5EB10001224C7F50}"
+                     Name "Background"
+                     Slot FrameWidgetSlot "{5EB701CAB2EE0FA2}" {
+                      OffsetLeft 0
+                      OffsetTop 0
+                      SizeX 240
+                      OffsetRight -240
+                      SizeY 34
+                      OffsetBottom -34
+                     }
+                    }
+                    ImageWidgetClass "{5EC2F2E5F37EE26B}" {
+                     Name "Border"
+                     Slot FrameWidgetSlot "{5D6F1490EBB9691E}" {
+                      Anchor 0 0 0 0
+                      PositionX 0
+                      OffsetLeft 0
+                      PositionY 0
+                      OffsetTop 0
+                      SizeX 240
+                      OffsetRight -240
+                      SizeY 34
+                      OffsetBottom -34
+                     }
+                     Color 1 1 1 0
+                    }
+                   }
+                  }
+                 }
+                }
+                TextWidgetClass "{611D3484289CDF7D}" {
+                 Name "Text"
+                 Slot OverlayWidgetSlot "{5EB701CA45F4D6F1}" {
+                  HorizontalAlign 0
+                  Padding 8 0 0 0
+                 }
+                 Text "#PS-VoNRoom_Header"
+                }
+               }
+              }
+              ImageWidgetClass "{5F18ED135236DF92}" {
+               Name "Background"
+               Slot FrameWidgetSlot "{5EB701CAB2EE0FA2}" {
+                PositionX 0
+                OffsetLeft 0
+                PositionY 34
+                OffsetTop 34
+                SizeX 469
+                OffsetRight -469
+                SizeY 8
+                OffsetBottom -42
+               }
+               Color 0.761 0.386 0.078 1
+              }
+             }
             }
             OverlayWidgetClass "{5D6F149FE4E8E67C}" {
              Name "PlayersHeaderOverlay"
@@ -641,7 +913,7 @@ FrameWidgetClass {
                Name "PlayersHeader"
                Slot OverlayWidgetSlot "{5D6F14918D6DE88A}" {
                 HorizontalAlign 0
-                Padding 4 28 48 0
+                Padding 16 28 48 0
                }
                Clipping False
                Text "#PS-Lobby_Players"
@@ -655,21 +927,22 @@ FrameWidgetClass {
             OverlayWidgetClass "{60DD09FA511FB2E9}" {
              Name "OverlayPlayersCounter"
              Slot FrameWidgetSlot "{60DD09FA60C60E28}" {
-              PositionX 306.396
-              OffsetLeft 306.396
-              PositionY 79.471
-              OffsetTop 79.471
-              SizeX 162
-              OffsetRight -468.396
-              SizeY 40
-              OffsetBottom -119.471
+              PositionX 393
+              OffsetLeft 393
+              PositionY 71
+              OffsetTop 71
+              SizeX 92
+              OffsetRight -485
+              SizeY 47
+              OffsetBottom -118
              }
              {
               PanelWidgetClass "{60DD09FA511FB2EA}" {
                Name "PanelPlayersCounter"
                Slot OverlayWidgetSlot "{60DB65C7C43AD196}" {
-                HorizontalAlign 1
+                HorizontalAlign 2
                 VerticalAlign 1
+                Padding 0 0 4 0
                }
                Color 0 0 0 0.25
                style full
@@ -700,13 +973,13 @@ FrameWidgetClass {
             OverlayWidgetClass "{5D6D14163B852F5F}" {
              Name "PlayersBody"
              Slot FrameWidgetSlot "{5D6D141612AB133D}" {
-              PositionX 0
-              OffsetLeft 0
-              PositionY 190
-              OffsetTop 190
-              SizeX 480
-              OffsetRight -480
-              SizeY 727
+              PositionX 16
+              OffsetLeft 16
+              PositionY 181
+              OffsetTop 181
+              SizeX 469
+              OffsetRight -485
+              SizeY 736
               OffsetBottom -917
              }
              components {
@@ -714,19 +987,70 @@ FrameWidgetClass {
               }
              }
              {
-              ScrollLayoutWidgetClass "{5D6D1B97707D8F2D}" {
-               Name "PlayersScroll"
-               Slot OverlayWidgetSlot "{5D6D1B9B238445FB}" {
+              VerticalLayoutWidgetClass "{6461466018C2B4B7}" {
+               Name "PlayersSearch"
+               Slot OverlayWidgetSlot "{6461466018C2B751}" {
                 HorizontalAlign 3
-                VerticalAlign 3
-                Padding 0 0 0 0
+                VerticalAlign 0
                }
                "Is Visible" 0
-               "Scrollbar Always Visible" 1
                {
-                VerticalLayoutWidgetClass "{5D6D1B97707D8F23}" {
-                 Name "PlayersList"
-                 Slot AlignableSlot "{5D6D1B9B2EB684B4}" {
+                OverlayWidgetClass "{6461466067D0368F}" {
+                 Name "PlayersSearchBox"
+                 Slot LayoutSlot "{64614667F68BBA1F}" {
+                 }
+                 components {
+                  SCR_EditBoxComponent "{646146676EF296B5}" {
+                  }
+                 }
+                 {
+                  ImageWidgetClass "{6461466075236C62}" {
+                   Name "Background"
+                   Slot OverlayWidgetSlot "{6461466075236C16}" {
+                    HorizontalAlign 3
+                   }
+                   Color 0.014 0.016 0.016 1
+                   Size 32 40
+                  }
+                  EditBoxWidgetClass "{6461466175BFB52A}" {
+                   Name "EditBox"
+                   Slot OverlayWidgetSlot "{6461466175BFB5D0}" {
+                    HorizontalAlign 3
+                    VerticalAlign 3
+                    Padding 8 0 8 0
+                   }
+                   components {
+                    EditBoxFilterComponent "{64614665357BDED2}" {
+                    }
+                   }
+                   "Font Size" 20
+                   "Use placeholder text" 1
+                   "Placeholder color" 0.216 0.216 0.216 1
+                   "Placeholder text" "Search"
+                  }
+                  ImageWidgetClass "{64614666DD77A0FC}" {
+                   Name "Icon"
+                   Slot OverlayWidgetSlot "{6461466075236C16}" {
+                    HorizontalAlign 2
+                    Padding 0 0 8 0
+                   }
+                   Texture "{A2738F1A7C0902C1}UI/Textures/Workshop/SearchIcon.edds"
+                   Size 20 20
+                  }
+                 }
+                }
+                ScrollLayoutWidgetClass "{5D6D1B97707D8F2D}" {
+                 Name "PlayersScroll"
+                 Slot LayoutSlot "{64614667F68BBA8D}" {
+                  SizeMode Fill
+                 }
+                 style Blank
+                 {
+                  VerticalLayoutWidgetClass "{5D6D1B97707D8F23}" {
+                   Name "PlayersList"
+                   Slot AlignableSlot "{5D6D1B9B2EB684B4}" {
+                   }
+                  }
                  }
                 }
                }
@@ -948,207 +1272,6 @@ FrameWidgetClass {
     }
    }
   }
-  FrameWidgetClass "{5EB701C9697A67C6}" {
-   Name "PlayersSwitchFrame"
-   Slot FrameWidgetSlot "{5EB701C9697A6723}" {
-    Anchor 0.5 0.5 0.5 0.5
-    PositionX 480
-    OffsetLeft 480
-    PositionY -355
-    OffsetTop -355
-    SizeX 480
-    OffsetRight -960
-    SizeY 34
-    OffsetBottom 321
-   }
-   {
-    OverlayWidgetClass "{611D348B867A39CB}" {
-     Name "Overlay0"
-     Slot FrameWidgetSlot "{611D348B867A39B1}" {
-      OffsetLeft 0
-      OffsetTop 0
-      SizeX 240
-      OffsetRight -240
-      SizeY 34
-      OffsetBottom -34
-     }
-     {
-      ButtonWidgetClass "{5EB701CAF0B7C9C0}" {
-       Name "PlayersSwitch"
-       Slot OverlayWidgetSlot "{611D4BEFB93CE20F}" {
-       }
-       Color 1 1 1 0
-       components {
-        SCR_ButtonBaseComponent "{5EB701CA8A36B4A7}" {
-         m_bCanBeToggled 1
-         m_BackgroundDefault 0.027 0.027 0.027 1
-         m_BackgroundHovered 0.063 0.061 0.061 1
-         m_BackgroundSelected 0.761 0.386 0.078 1
-         m_BackgroundSelectedHovered 0.93 0.361 0.016 1
-         m_BackgroundClicked 0.761 0.386 0.078 1
-        }
-       }
-       {
-        FrameWidgetClass "{5EB701CAB29B7D47}" {
-         Name "ButtonPlayersFrame"
-         Slot ButtonWidgetSlot "{5EB701CAB29B7EA8}" {
-         }
-         {
-          OverlayWidgetClass "{5EB701CABF2C93FF}" {
-           Name "Overlay"
-           Slot FrameWidgetSlot "{5EB701CABF2C93D5}" {
-            OffsetLeft 0
-            OffsetTop 0
-            SizeX 240
-            OffsetRight -240
-            SizeY 34
-            OffsetBottom -34
-           }
-          }
-          ImageWidgetClass "{5EB701CA9F3C8B4A}" {
-           Prefab "{5EB10001224C7F50}"
-           Name "Background"
-           Slot FrameWidgetSlot "{5EB701CAB2EE0FA2}" {
-            OffsetLeft 0
-            OffsetTop 0
-            SizeX 240
-            OffsetRight -240
-            SizeY 34
-            OffsetBottom -34
-           }
-          }
-          ImageWidgetClass "{5EC2F2E5E6BF5292}" {
-           Name "Border"
-           Slot FrameWidgetSlot "{5D6F1490EBB9691E}" {
-            Anchor 0 0 0 0
-            PositionX 0
-            OffsetLeft 0
-            PositionY 0
-            OffsetTop 0
-            SizeX 240
-            OffsetRight -240
-            SizeY 34
-            OffsetBottom -34
-           }
-           Color 1 1 1 0
-          }
-         }
-        }
-       }
-      }
-      TextWidgetClass "{611D348B8ED88C4A}" {
-       Name "Text"
-       Slot OverlayWidgetSlot "{5EB701CA45F4D6F1}" {
-        HorizontalAlign 0
-        Padding 8 0 0 0
-       }
-       Text "#PS-Lobby_PlayersList"
-      }
-     }
-    }
-    OverlayWidgetClass "{611D348427A0F0A8}" {
-     Name "Overlay1"
-     Slot FrameWidgetSlot "{611D348427A0F066}" {
-      PositionX 240
-      OffsetLeft 240
-      OffsetTop 0
-      SizeX 229
-      OffsetRight -469
-      SizeY 34
-      OffsetBottom -34
-     }
-     {
-      ButtonWidgetClass "{5EB701CA613F7B51}" {
-       Name "VoiceSwitch"
-       Slot OverlayWidgetSlot "{611D4BEFB93CE37A}" {
-       }
-       Color 1 1 1 0
-       components {
-        SCR_ButtonBaseComponent "{5EB701CA8A36B4A7}" {
-         m_bCanBeToggled 1
-         m_bIsToggled 1
-         m_BackgroundDefault 0.027 0.027 0.027 1
-         m_BackgroundHovered 0.063 0.061 0.061 1
-         m_BackgroundSelected 0.761 0.386 0.078 1
-         m_BackgroundSelectedHovered 0.93 0.361 0.016 1
-         m_BackgroundClicked 0.761 0.386 0.078 1
-        }
-       }
-       {
-        FrameWidgetClass "{5EB701CA613F7B53}" {
-         Name "ButtonPlayersFrame"
-         Slot ButtonWidgetSlot "{5EB701CAB29B7EA8}" {
-         }
-         {
-          OverlayWidgetClass "{5EB701CA613F7B54}" {
-           Name "Overlay"
-           Slot FrameWidgetSlot "{5EB701CABF2C93D5}" {
-            OffsetLeft 0
-            OffsetTop 0
-            SizeX 240
-            OffsetRight -240
-            SizeY 34
-            OffsetBottom -34
-           }
-          }
-          ImageWidgetClass "{5EB701CA613F7B56}" {
-           Prefab "{5EB10001224C7F50}"
-           Name "Background"
-           Slot FrameWidgetSlot "{5EB701CAB2EE0FA2}" {
-            OffsetLeft 0
-            OffsetTop 0
-            SizeX 240
-            OffsetRight -240
-            SizeY 34
-            OffsetBottom -34
-           }
-          }
-          ImageWidgetClass "{5EC2F2E5F37EE26B}" {
-           Name "Border"
-           Slot FrameWidgetSlot "{5D6F1490EBB9691E}" {
-            Anchor 0 0 0 0
-            PositionX 0
-            OffsetLeft 0
-            PositionY 0
-            OffsetTop 0
-            SizeX 240
-            OffsetRight -240
-            SizeY 34
-            OffsetBottom -34
-           }
-           Color 1 1 1 0
-          }
-         }
-        }
-       }
-      }
-      TextWidgetClass "{611D3484289CDF7D}" {
-       Name "Text"
-       Slot OverlayWidgetSlot "{5EB701CA45F4D6F1}" {
-        HorizontalAlign 0
-        Padding 8 0 0 0
-       }
-       Text "#PS-VoNRoom_Header"
-      }
-     }
-    }
-    ImageWidgetClass "{5F18ED135236DF92}" {
-     Name "Background"
-     Slot FrameWidgetSlot "{5EB701CAB2EE0FA2}" {
-      PositionX 0
-      OffsetLeft 0
-      PositionY 28
-      OffsetTop 28
-      SizeX 469
-      OffsetRight -469
-      SizeY 2
-      OffsetBottom -30
-     }
-     "Is Visible" 0
-     Color 1 1 1 0.078
-    }
-   }
-  }
   FrameWidgetClass "{5EB1000713ADA290}" : "{F43237F55B38B45C}UI/GameModeHeader/GameModeHeader.layout" {
    Name "GameModeHeader"
    Slot FrameWidgetSlot "{5EB10000F5F77EA0}" {
@@ -1299,14 +1422,14 @@ FrameWidgetClass {
    Name "VoiceChatFrame"
    Slot FrameWidgetSlot "{5EAF56867198CBEE}" {
     Anchor 0.5 0.5 0.5 0.5
-    PositionX 480
-    OffsetLeft 480
-    PositionY -378
-    OffsetTop -378
+    PositionX 465
+    OffsetLeft 465
+    PositionY -377
+    OffsetTop -377
     SizeX 480
-    OffsetRight -960
+    OffsetRight -945
     SizeY 800
-    OffsetBottom -422
+    OffsetBottom -423
    }
    {
     BlurWidgetClass "{60DB2B5B1B885EF3}" {
@@ -1457,6 +1580,23 @@ FrameWidgetClass {
      }
     }
    }
+  }
+  ButtonWidgetClass "{64614619B5658889}" {
+   Name "ScreenButton"
+   Slot FrameWidgetSlot "{64614619B56588A3}" {
+    Anchor 0 0 1 1
+    PositionX 0
+    OffsetLeft 0
+    PositionY 0
+    OffsetTop 0
+    SizeX -1820
+    OffsetRight 0
+    SizeY -1050
+    OffsetBottom 0
+   }
+   "Z Order" 10000
+   "Is Visible" 0
+   Color 1 1 1 0
   }
  }
 }

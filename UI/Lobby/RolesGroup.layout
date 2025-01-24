@@ -1,178 +1,287 @@
 VerticalLayoutWidgetClass {
  Name "RolesGroup"
- Slot LayoutSlot "{5D6D1B9ADEF28AD1}" {
- }
  components {
   PS_RolesGroup "{5EA716101FDA15F1}" {
   }
  }
  {
-  FrameWidgetClass "{5D6D1B9A9C46FE7F}" {
-   Name "RolesGroupNameFrame"
-   Slot LayoutSlot "{5D6D1B9A9C46FD9A}" {
-    Padding 15 15 15 15
+  ButtonWidgetClass "{64614647EECC165D}" {
+   Name "RolesGroupButton"
+   Slot LayoutSlot "{64614647EECC17B9}" {
+    HorizontalAlign 0
+    Padding 11 8 12 0
+   }
+   Color 1 1 1 0
+   components {
+    PS_ButtonComponent "{64648C826FBCB9AB}" {
+     m_sSoundClicked ""
+     m_BackgroundDefault 0 0 0 0.314
+     m_BackgroundHovered 0.051 0.051 0.051 0.314
+     m_BackgroundSelected 0.76 0.392 0.08 0.3
+     m_BackgroundSelectedHovered 0.76 0.392 0.08 0.3
+     m_BackgroundClicked 0.76 0.392 0.08 0.3
+    }
    }
    {
-    ButtonWidgetClass "{5F0F444E4ACD42B0}" {
-     Name "LockButton"
-     Slot FrameWidgetSlot "{5F0F444E4EDB94DB}" {
-      PositionX 520
-      OffsetLeft 520
-      PositionY -3
-      OffsetTop -3
-      SizeX 40
-      OffsetRight -560
-      SizeY 40
-      OffsetBottom -37
+    FrameWidgetClass "{5D6D1B9A9C46FE7F}" {
+     Name "RolesGroupNameFrame"
+     Slot ButtonWidgetSlot "{646146474C67C82C}" {
      }
-     Color 0 1 0.019 0
-     components {
-      SCR_ButtonBaseComponent "{5EAB239441B528D5}" {
-       m_sSoundHovered ""
-       m_sSoundClicked ""
-       m_BackgroundDefault 1 1 1 0
-       m_BackgroundHovered 1 1 1 0.162
-       m_BackgroundSelected 1 1 1 0
-       m_BackgroundSelectedHovered 1 1 1 0.162
-       m_BackgroundClicked 1 1 1 0
-       m_bShowBorderOnFocus 0
-       m_bNoBorderAnimation 1
-      }
-     }
-     "no focus" 1
      {
-      FrameWidgetClass "{5F0F444E4AD28CD7}" {
-       Name "LockButtonFrame"
-       Slot ButtonWidgetSlot "{5EA8C93CB4241314}" {
+      ImageWidgetClass "{6461464B184B413C}" {
+       Name "Background"
+       Slot FrameWidgetSlot "{6461464B24EC10AD}" {
+        Anchor 0 0 1 1
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX -1790
+        OffsetRight 0
+        SizeY -2
+        OffsetBottom 0
        }
+       Color 0 0 0 0.314
+      }
+      ButtonWidgetClass "{5F0F444E4ACD42B0}" {
+       Name "LockButton"
+       Slot FrameWidgetSlot "{5F0F444E4EDB94DB}" {
+        PositionX 539
+        OffsetLeft 539
+        PositionY 8
+        OffsetTop 8
+        SizeX 32
+        OffsetRight -571
+        SizeY 32
+        OffsetBottom -40
+       }
+       "Is Visible" 0
+       Color 0 1 0.019 0
+       components {
+        SCR_ButtonBaseComponent "{5EAB239441B528D5}" {
+         m_sSoundHovered ""
+         m_sSoundClicked ""
+         m_BackgroundDefault 1 1 1 0
+         m_BackgroundHovered 1 1 1 0.162
+         m_BackgroundSelected 1 1 1 0
+         m_BackgroundSelectedHovered 1 1 1 0.162
+         m_BackgroundClicked 1 1 1 0
+         m_bShowBorderOnFocus 0
+         m_bNoBorderAnimation 1
+        }
+       }
+       "no focus" 1
        {
-        ImageWidgetClass "{5F0F444E4AD28CD5}" {
-         Name "Background"
-         Slot FrameWidgetSlot "{5D6E8206B132EE77}" {
-          PositionX 0
-          OffsetLeft 0
-          PositionY 0
-          OffsetTop 0
-          SizeX 40
-          OffsetRight -40
-          SizeY 40
-          OffsetBottom -40
+        FrameWidgetClass "{5F0F444E4AD28CD7}" {
+         Name "LockButtonFrame"
+         Slot ButtonWidgetSlot "{5EA8C93CB4241314}" {
          }
-        }
-        ImageWidgetClass "{5F0F444E4AD28CD4}" {
-         Name "LockImage"
-         Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
-          OffsetLeft 0
-          OffsetTop 0
-          SizeX 40
-          OffsetRight -40
-          SizeY 40
-          OffsetBottom -40
+         {
+          ImageWidgetClass "{5F0F444E4AD28CD5}" {
+           Name "Background"
+           Slot FrameWidgetSlot "{5D6E8206B132EE77}" {
+            PositionX 0
+            OffsetLeft 0
+            PositionY 0
+            OffsetTop 0
+            SizeX 32
+            OffsetRight -32
+            SizeY 32
+            OffsetBottom -32
+           }
+          }
+          ImageWidgetClass "{5F0F444E4AD28CD4}" {
+           Name "LockImage"
+           Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
+            OffsetLeft 0
+            OffsetTop 0
+            SizeX 32
+            OffsetRight -32
+            SizeY 32
+            OffsetBottom -32
+           }
+           Texture "{2EFEA2AF1F38E7F0}UI/Textures/Icons/icons_wrapperUI-64.imageset"
+           Image "server-unlocked"
+           Size 64 64
+          }
          }
-         Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
-         Image "server-unlocked"
-         Size 32 32
         }
        }
       }
-     }
-    }
-    ButtonWidgetClass "{5EB29010477A3F42}" {
-     Name "VoiceJoinButton"
-     Slot FrameWidgetSlot "{5EB290104D9C8F6B}" {
-      PositionX 560
-      OffsetLeft 560
-      PositionY -3
-      OffsetTop -3
-      SizeX 40
-      OffsetRight -600
-      SizeY 40
-      OffsetBottom -37
-     }
-     Color 0 1 0.019 0
-     components {
-      SCR_ButtonBaseComponent "{5EAB2394A927C221}" {
-       m_sSoundHovered ""
-       m_sSoundClicked ""
-       m_BackgroundDefault 1 1 1 0
-       m_BackgroundHovered 1 1 1 0.162
-       m_BackgroundSelected 1 1 1 0
-       m_BackgroundSelectedHovered 1 1 1 0.162
-       m_BackgroundClicked 1 1 1 0
-       m_bShowBorderOnFocus 0
-       m_bNoBorderAnimation 1
-      }
-     }
-     "no focus" 1
-     {
-      FrameWidgetClass "{5EB29010477A3F45}" {
-       Name "VoiceJoinButtonFrame"
-       Slot ButtonWidgetSlot "{5EA8C93CB4241314}" {
+      ButtonWidgetClass "{5EB29010477A3F42}" {
+       Name "VoiceJoinButton"
+       Slot FrameWidgetSlot "{5EB290104D9C8F6B}" {
+        PositionX 571
+        OffsetLeft 571
+        PositionY 8
+        OffsetTop 8
+        SizeX 32
+        OffsetRight -603
+        SizeY 32
+        OffsetBottom -40
        }
+       "Is Visible" 0
+       Color 0 1 0.019 0
+       components {
+        SCR_ButtonBaseComponent "{5EAB2394A927C221}" {
+         m_sSoundHovered ""
+         m_sSoundClicked ""
+         m_BackgroundDefault 1 1 1 0
+         m_BackgroundHovered 1 1 1 0.162
+         m_BackgroundSelected 1 1 1 0
+         m_BackgroundSelectedHovered 1 1 1 0.162
+         m_BackgroundClicked 1 1 1 0
+         m_bShowBorderOnFocus 0
+         m_bNoBorderAnimation 1
+        }
+       }
+       "no focus" 1
        {
-        ImageWidgetClass "{5EB29010477A3F46}" {
-         Name "Background"
-         Slot FrameWidgetSlot "{5D6E8206B132EE77}" {
-          PositionX 0
-          OffsetLeft 0
-          PositionY 0
-          OffsetTop 0
-          SizeX 40
-          OffsetRight -40
-          SizeY 40
-          OffsetBottom -40
+        FrameWidgetClass "{5EB29010477A3F45}" {
+         Name "VoiceJoinButtonFrame"
+         Slot ButtonWidgetSlot "{5EA8C93CB4241314}" {
          }
-         Color 1 1 1 0
-        }
-        ImageWidgetClass "{5EB29010477A3F47}" {
-         Name "VoiceJoinImage"
-         Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
-          PositionX 0
-          OffsetLeft 0
-          PositionY 0
-          OffsetTop 0
-          SizeX 40
-          OffsetRight -40
-          SizeY 40
-          OffsetBottom -40
+         {
+          ImageWidgetClass "{5EB29010477A3F46}" {
+           Name "Background"
+           Slot FrameWidgetSlot "{5D6E8206B132EE77}" {
+            PositionX 0
+            OffsetLeft 0
+            PositionY 0
+            OffsetTop 0
+            SizeX 32
+            OffsetRight -32
+            SizeY 32
+            OffsetBottom -32
+           }
+           Color 1 1 1 0
+          }
+          ImageWidgetClass "{5EB29010477A3F47}" {
+           Name "VoiceJoinImage"
+           Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
+            Anchor 0 0 0 0
+            PositionX -2
+            OffsetLeft -2
+            PositionY 1
+            OffsetTop 1
+            SizeX 32
+            OffsetRight -30
+            SizeY 32
+            OffsetBottom -33
+           }
+           Texture "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset"
+           Image "RoomEnter"
+           Size 64 64
+          }
          }
-         Texture "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset"
-         Image "RoomEnter"
-         Size 64 64
         }
        }
       }
-     }
-    }
-    TextWidgetClass "{5D6D1B9AE656F765}" {
-     Name "RolesGroupName"
-     Slot FrameWidgetSlot "{5D6D1B9AA160592D}" {
-      OffsetLeft 0
-      OffsetTop 0
-      SizeX 620
-      OffsetRight -620
-      SizeY 32
-      OffsetBottom -32
-     }
-     Text "Alpha 1-1"
-     "Font Size" 32
-     "Min Font Size" 2
-     FontProperties FontProperties "{5E7CF04D9FE8FF4E}" {
-      Font "{3E7733BAC8C831F6}UI/Fonts/RobotoCondensed/RobotoCondensed_Regular.fnt"
-      Bold 1
+      TextWidgetClass "{5D6D1B9AE656F765}" {
+       Name "RolesGroupName"
+       Slot FrameWidgetSlot "{5D6D1B9AA160592D}" {
+        PositionX 12
+        OffsetLeft 12
+        PositionY 0
+        OffsetTop 0
+        SizeX 595
+        OffsetRight -607
+        SizeY 48
+        OffsetBottom -48
+       }
+       Text "Alpha 1-1"
+       "Font Size" 32
+       "Min Font Size" 2
+       "Vertical Alignment" Center
+       FontProperties FontProperties "{5E7CF04D9FE8FF4E}" {
+        Font "{3E7733BAC8C831F6}UI/Fonts/RobotoCondensed/RobotoCondensed_Regular.fnt"
+        Bold 1
+       }
+      }
+      RichTextWidgetClass "{6461464FFE7C132D}" {
+       Name "RolesGroupNameCustom"
+       Slot FrameWidgetSlot "{5D6D1B9AA160592D}" {
+        PositionX 12
+        OffsetLeft 12
+        PositionY 44
+        OffsetTop 44
+        SizeX 591
+        OffsetRight -603
+        SizeY 40
+        OffsetBottom -84
+       }
+       Color 0.349 0.349 0.349 1
+       Text "Rifle squad"
+       "Font Size" 18
+       "Min Font Size" 2
+       "Vertical Alignment" Center
+       FontProperties FontProperties "{5E7CF04D9FE8FF4E}" {
+        Font "{3E7733BAC8C831F6}UI/Fonts/RobotoCondensed/RobotoCondensed_Regular.fnt"
+       }
+      }
+      ImageWidgetClass "{64614640C0426835}" {
+       Name "GroupFactionColor"
+       Slot FrameWidgetSlot "{5D6D1B9A2749B73B}" {
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX 6
+        OffsetRight -6
+        SizeY 84
+        OffsetBottom -84
+       }
+       Color 0.502 0 0 1
+      }
+      HorizontalLayoutWidgetClass "{64614672F7F41B99}" {
+       Name "MembersHorizontalLayout"
+       Slot FrameWidgetSlot "{64614672F7F41B82}" {
+        PositionX 11
+        OffsetLeft 11
+        PositionY 36
+        OffsetTop 36
+        SizeX 588
+        OffsetRight -599
+        SizeY 48
+        OffsetBottom -84
+       }
+       "Fill Origin" Right
+      }
+      PanelWidgetClass "{6469104D73FA7330}" {
+       Name "Border"
+       Slot FrameWidgetSlot "{5D6F1490EBB9691E}" {
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX 607
+        OffsetRight -607
+        SizeY 84
+        OffsetBottom -84
+       }
+       Color 0.761 0.392 0.078 1
+       style pixel_outline
+      }
      }
     }
    }
   }
-  VerticalLayoutWidgetClass "{5D6D1B9A91E996ED}" {
-   Name "CharactersList"
-   Slot LayoutSlot "{5D6D1B9A91E9960E}" {
+  VerticalLayoutWidgetClass "{64614646C38806B4}" {
+   Name "List"
+   Slot LayoutSlot "{64614646C3880696}" {
    }
-  }
-  HorizontalLayoutWidgetClass "{6460D6E9B63EB29F}" {
-   Name "VehiclesList"
-   Slot LayoutSlot "{5D6D1B9A91E9960E}" {
-    Padding 3 0 0 0
+   {
+    VerticalLayoutWidgetClass "{5D6D1B9A91E996ED}" {
+     Name "CharactersList"
+     Slot LayoutSlot "{64614646247F5356}" {
+     }
+    }
+    HorizontalLayoutWidgetClass "{6460D6E9B63EB29F}" {
+     Name "VehiclesList"
+     Slot LayoutSlot "{64614646247F5CA7}" {
+      Padding 6 0 0 6
+     }
+    }
    }
   }
  }

@@ -1165,5 +1165,21 @@ StringTable {
    Author "SeskPC"
    LastChanged "SeskPC"
   }
+  CustomStringTableItem "{6461467B3A1EE049}" {
+   Id "PS_Lobby_DefaultSquadCustom"
+   Target_en_us "Squad"
+   Target_ru_ru "Отряд"
+   Modified 1684208584
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{6461467CBF9676FA}" {
+   Id "PS_Lobby_Locked"
+   Target_en_us "Locked"
+   Target_ru_ru "Закрыт"
+   Modified 1684210906
+   Author "zazul"
+   LastChanged "zazul"
+  }
  }
 }

@@ -1,0 +1,63 @@
+ButtonWidgetClass {
+ Name "ContextAction"
+ Color 1 1 1 0
+ components {
+  PS_ContextAction "{64614613EF807BC0}" {
+   m_sSoundClicked ""
+   m_BackgroundDefault 0 0 0 0
+   m_BackgroundHovered 0.051 0.051 0.051 0.314
+   m_BackgroundSelected 0.76 0.392 0.08 0.3
+   m_BackgroundSelectedHovered 0.76 0.392 0.08 0.3
+   m_BackgroundClicked 0.76 0.392 0.08 0.3
+  }
+ }
+ {
+  OverlayWidgetClass "{64634928C805E667}" {
+   Name "ContextActionOverlay"
+   Slot ButtonWidgetSlot "{64634928C805E649}" {
+   }
+   {
+    ImageWidgetClass "{6461461D681A1760}" {
+     Name "Background"
+     Slot OverlayWidgetSlot "{6461461D681A170E}" {
+     }
+     Color 1 1 1 0
+     Size 262 24
+    }
+    ImageWidgetClass "{6461461D7A4BF5E8}" {
+     Name "Icon"
+     Slot OverlayWidgetSlot "{6461461D681A170E}" {
+      HorizontalAlign 0
+     }
+     Texture "{A4D40440E48CC7CC}UI/Textures/Editor/ContextMenu/ContextAction_BanPlayer.edds"
+     Size 24 24
+    }
+    TextWidgetClass "{64614612DD7BF91F}" {
+     Name "Text"
+     Slot OverlayWidgetSlot "{64614612DD7BF937}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+      Padding 24 0 0 0
+     }
+     Text "Test action"
+     "Font Size" 19
+     "Min Font Size" 19
+     "Vertical Alignment" Center
+    }
+    ButtonWidgetClass "{64614612B5F3EBF6}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
+     Name "ActionHotkey"
+     Slot OverlayWidgetSlot "{64634928C805E771}" {
+      HorizontalAlign 2
+     }
+     components {
+      SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
+       m_sActionName "MenuTabLeft"
+       m_sLabel ""
+       m_iHeightInPixel 32
+      }
+     }
+    }
+   }
+  }
+ }
+}

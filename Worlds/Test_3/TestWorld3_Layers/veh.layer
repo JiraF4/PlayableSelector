@@ -1,5 +1,5 @@
 SCR_AIGroup Test : "{126BE8C46FA39581}Prefabs/Groups/INDFOR/Group_FIA_FireTeam_P.et" {
- coords 76.893 1 95.535
+ coords 74.554 1 89.132
 }
 Vehicle UAZ1 : "{259EE7B78C51B624}Prefabs/Vehicles/Wheeled/UAZ469/UAZ469.et" {
  coords 134.551 1 111.901
@@ -33,7 +33,7 @@ PolylineShapeEntity : "{7019844BAD5C4DD8}Prefabs/PolyZone/PolyZone_Border.et" {
  }
 }
 SCR_AIGroup : "{70323274E7899BD1}Prefabs/Groups/INDFOR/Group_FIA_MedicalSection_p.et" {
- coords 120.713 1 151.396
+ coords 92.253 1 157.198
 }
 Vehicle M923A1 : "{9A0D72816DFFDB7F}Prefabs/Vehicles/Wheeled/M923A1/M923A1.et" {
  coords 140.1 1 90.548
@@ -41,10 +41,11 @@ Vehicle M923A1 : "{9A0D72816DFFDB7F}Prefabs/Vehicles/Wheeled/M923A1/M923A1.et" {
 }
 $grp SCR_AIGroup : "{9C7902A055DDA271}Prefabs/Groups/OPFOR/Group_USSR_FireGroup_P.et" {
  Test2 {
-  coords 68.793 1 106.019
+  coords 56.263 1 107.561
  }
  Test3 {
   coords 68.793 1 106.019
+  m_sCustomNameSet "Тестовый отряд"
  }
  Test4 {
   coords 68.793 1 106.019

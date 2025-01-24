@@ -1,0 +1,99 @@
+ButtonWidgetClass {
+ Name "MembersCounter"
+ Slot LayoutSlot "{5D6D352925B78E4D}" {
+  HorizontalAlign 0
+  VerticalAlign 0
+ }
+ Color 0 1 0.019 0
+ components {
+  PS_MembersCounter "{64614670290AB54F}" {
+  }
+ }
+ {
+  OverlayWidgetClass "{6461467DD349C9D5}" {
+   Name "Overlay"
+   Slot ButtonWidgetSlot "{5D6E8206FB6C11F3}" {
+    Padding 4 8 0 0
+   }
+   {
+    FrameWidgetClass "{6461467DD349C9D3}" {
+     Name "FVehicleSelector"
+     Slot OverlayWidgetSlot "{5D6E820833F19127}" {
+     }
+     {
+      ScaleWidgetClass "{6461467DD349C9DF}" {
+       Name "Scale0"
+       Slot FrameWidgetSlot "{5E7CF0582185DC43}" {
+        Anchor 0 0 0 0
+        PositionX -2
+        OffsetLeft -2
+        OffsetTop 0
+        SizeX 36.2
+        OffsetRight -34.2
+        SizeY 40
+        OffsetBottom -40
+       }
+       "Inherit Color" 1
+       "Scale Mode" "Scale to fill"
+       {
+        FrameWidgetClass "{6461467DD3562B62}" {
+         Name "Frame0"
+         Slot AlignableSlot "{5E7CF059F21E7098}" {
+         }
+         "Inherit Color" 1
+         {
+          ImageWidgetClass "{6461467DD3562B61}" {
+           Name "UnitIcon"
+           Slot FrameWidgetSlot "{5E7CF059F272107C}" {
+            Anchor 0 0 0 0
+            PositionX -7.042
+            OffsetLeft -7.042
+            PositionY -13
+            OffsetTop -13
+            SizeX 64
+            OffsetRight -56.958
+            SizeY 64
+            OffsetBottom -51
+           }
+           Color 0.349 0.349 0.349 1
+           "Inherit Color" 1
+           Texture "{95F49CBE9FF7A0CB}UI/Textures/Editor/EditableEntities/Vehicles/EditableEntity_Vehicle_Apc.edds"
+           Size 64 64
+          }
+         }
+        }
+       }
+      }
+      OverlayWidgetClass "{6461467D572079AA}" {
+       Name "Overlay0"
+       Slot FrameWidgetSlot "{6461467D57207846}" {
+        PositionX 33
+        OffsetLeft 33
+        PositionY 9
+        OffsetTop 9
+        SizeX 36
+        OffsetRight -69
+        SizeY 40
+        OffsetBottom -49
+        SizeToContent 1
+       }
+       {
+        TextWidgetClass "{6461467DD3562B66}" {
+         Name "Counter"
+         Slot OverlayWidgetSlot "{6461467024B5E1B6}" {
+          Padding 0 0 2 0
+         }
+         Color 0.349 0.349 0.349 1
+         Text "x9"
+         "Font Size" 18
+         "Min Font Size" 18
+         "Vertical Alignment" Center
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}

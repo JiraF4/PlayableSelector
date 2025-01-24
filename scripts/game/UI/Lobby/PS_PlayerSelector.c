@@ -77,11 +77,6 @@ class PS_PlayerSelector : SCR_ButtonBaseComponent
 		m_KickButton = SCR_ButtonBaseComponent.Cast(m_wKickButton.FindHandler(SCR_ButtonBaseComponent));
 		m_PinButton = SCR_ButtonBaseComponent.Cast(m_wPinButton.FindHandler(SCR_ButtonBaseComponent));
 		
-		// Buttons
-		m_OnClicked.Insert(OnClicked);
-		m_KickButton.m_OnClicked.Insert(OnClickedKick);
-		m_PinButton.m_OnClicked.Insert(OnClickedPin);
-		
 		// Events
 		m_GameModeCoop.GetOnPlayerConnected().Insert(UpdatePlayerName);
 		//m_GameModeCoop.GetOnPlayerDisconnected().Insert(RemovePlayer);
@@ -139,6 +134,14 @@ class PS_PlayerSelector : SCR_ButtonBaseComponent
 	void SetCoopLobby(PS_CoopLobby coopLobby)
 	{
 		m_CoopLobby = coopLobby;
+	}
+	
+	void SetSearchText(string searchText)
+	{
+		searchText.ToLower();
+		string name = m_wPlayerName.GetText();
+		name.ToLower();
+		m_wRoot.SetVisible(name.Contains(searchText))
 	}
 	
 	// --------------------------------------------------------------------------------------------------------------------------------
@@ -211,7 +214,7 @@ class PS_PlayerSelector : SCR_ButtonBaseComponent
 		
 		PS_PlayableContainer playableComponent = m_PlayableManager.GetPlayableById(playableId);
 		SCR_AIGroup group = m_PlayableManager.GetPlayerGroupByPlayable(playableId);
-		string groupName = PS_GroupHelper.GetGroupFullName(group);
+		string groupName = PS_GroupHelper.GetGroupName(group);
 		
 		m_wPlayerGroupName.SetText(groupName);
 	}
@@ -263,6 +266,20 @@ class PS_PlayerSelector : SCR_ButtonBaseComponent
 	
 	// --------------------------------------------------------------------------------------------------------------------------------
 	// Buttons
+	override bool OnClick(Widget w, int x, int y, int button)
+	{
+		super.OnClick(w, x, y, button);
+		if (button == 1)
+		{
+			OpenContext();
+			return false;
+		}
+		if (button != 0)
+			return false;
+		
+		OnClicked(this);
+		return false;
+	}
 	void OnClicked(SCR_ButtonBaseComponent button)
 	{
 		if (!PS_PlayersHelper.IsAdminOrServer())
@@ -272,15 +289,17 @@ class PS_PlayerSelector : SCR_ButtonBaseComponent
 			m_CoopLobby.SetSelectedPlayer(m_iPlayerId);
 	}
 	
-	void OnClickedKick(SCR_ButtonBaseComponent button)
+	void OpenContext()
 	{
-		AudioSystem.PlaySound("{5EF75EB4A836831F}Sounds/Explosions/_SharedData/Bodies/Explosion_Body_TNT_Far_01.wav");
-		m_PlayableControllerComponent.KickPlayer(m_iPlayerId);
+		PS_ContextMenu contextMenu = PS_ContextMenu.CreateContextMenuOnMousePosition(m_CoopLobby.GetRootWidget());
+		contextMenu.ActionPlayerSelect(m_iPlayerId);
+		contextMenu.ActionKick(m_iPlayerId);
+		if (m_PlayableManager.GetPlayerPin(m_iPlayerId))
+			contextMenu.ActionUnpin(m_iPlayerId);
 	}
-	
-	void OnClickedPin(SCR_ButtonBaseComponent button)
+	void OnContextKick(PS_ContextAction contextAction, PS_ContextActionDataPlayer contextActionDataPlayer)
 	{
-		AudioSystem.PlaySound("{63DB9ACDD10DB801}Sounds/UI/Samples/Editor/UI_E_Layer_Edit_Back.wav");
-		m_PlayableControllerComponent.UnpinPlayer(m_iPlayerId);
+		SCR_UISoundEntity.SoundEvent("SOUND_LOBBY_KICK");
+		m_PlayableControllerComponent.KickPlayer(m_iPlayerId);
 	}
 }

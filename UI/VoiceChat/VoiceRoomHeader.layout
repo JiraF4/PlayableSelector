@@ -30,21 +30,6 @@ ButtonWidgetClass {
      }
      Color 0.205 0.205 0.205 1
     }
-    ImageWidgetClass "{5EC2F2E639BEBE9C}" {
-     Name "Border"
-     Slot FrameWidgetSlot "{5D6F1490EBB9691E}" {
-      Anchor 0 0 0 0
-      PositionX 0
-      OffsetLeft 0
-      PositionY 0
-      OffsetTop 0
-      SizeX 480
-      OffsetRight -480
-      SizeY 44
-      OffsetBottom -44
-     }
-     Color 1 1 1 0.3
-    }
     ImageWidgetClass "{5EB1458B279C077B}" {
      Name "Background"
      Slot FrameWidgetSlot "{5EB11767D337F688}" {
@@ -96,6 +81,21 @@ ButtonWidgetClass {
      FontProperties FontProperties "{5EBC73752A65320C}" {
       Font "{CD2634D279AB011A}UI/Fonts/Roboto/Roboto_Bold.fnt"
      }
+    }
+    PanelWidgetClass "{6469104EB0401D6A}" {
+     Name "Border"
+     Slot FrameWidgetSlot "{5D6F1490EBB9691E}" {
+      PositionX 0
+      OffsetLeft 0
+      PositionY 0
+      OffsetTop 0
+      SizeX 480
+      OffsetRight -480
+      SizeY 44
+      OffsetBottom -44
+     }
+     Color 0.761 0.392 0.078 1
+     style pixel_outline
     }
    }
   }

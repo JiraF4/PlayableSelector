@@ -9,6 +9,17 @@ modded class SCR_MapRadialUI
 		if (m_RadialMenu && m_RadialMenu.IsOpened())
 			return;
 		
+		// Check widget
+		int mouseX, mouseY;
+		WidgetManager.GetMousePos(mouseX, mouseY);
+		array<Widget> outWidgets = {};
+		WidgetManager.TraceWidgets(mouseX, mouseY, GetGame().GetWorkspace(), outWidgets);			
+		foreach (Widget widget : outWidgets)
+		{
+			if (widget.IsInherited(ScrollLayoutWidget) || widget.IsInherited(ButtonWidget))
+				return;
+		}
+		
 		m_RadialController.OnInputOpen();
 	}
 }

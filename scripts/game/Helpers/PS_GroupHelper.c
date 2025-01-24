@@ -23,6 +23,27 @@ class PS_GroupHelper
 
 		return callsign;
 	}
+	
+	static string GetGroupName(SCR_AIGroup group)
+	{
+		if (!group)
+			return "";
+
+		string company, platoon, squad, character, format;
+		group.GetCallsigns(company, platoon, squad, character, format);
+		string callsign;
+		callsign = WidgetManager.Translate(format, company, platoon, squad, "");
+
+		return callsign;
+	}
+	
+	static string GetGroupNameCustom(SCR_AIGroup group)
+	{
+		if (!group)
+			return "";
+
+		return group.GetCustomName();
+	}
 
 	// Use only in UI
 	static string GroupCallsignToGroupName(SCR_Faction faction, int groupCallSign)

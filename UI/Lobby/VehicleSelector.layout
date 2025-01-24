@@ -17,7 +17,7 @@ ButtonWidgetClass {
   OverlayWidgetClass "{6460D6E805CDD8B3}" {
    Name "Overlay"
    Slot ButtonWidgetSlot "{5D6E8206FB6C11F3}" {
-    Padding 8 8 4 8
+    Padding 4 8 4 0
    }
    {
     FrameWidgetClass "{6460D6E805CDD8B5}" {
@@ -25,21 +25,6 @@ ButtonWidgetClass {
      Slot OverlayWidgetSlot "{5D6E820833F19127}" {
      }
      {
-      PanelWidgetClass "{6460D6E805D2374E}" {
-       Name "Border"
-       Slot FrameWidgetSlot "{5D6F1490EBB9691E}" {
-        PositionX 2
-        OffsetLeft 2
-        PositionY 0
-        OffsetTop 0
-        SizeX 64
-        OffsetRight -66
-        SizeY 40
-        OffsetBottom -40
-       }
-       Color 0.761 0.392 0.078 1
-       style outline_2px
-      }
       ImageWidgetClass "{6460D6E805D23743}" {
        Name "Background"
        Slot FrameWidgetSlot "{5D6E8206B132EE77}" {
@@ -130,6 +115,39 @@ ButtonWidgetClass {
        "Font Size" 18
        "Min Font Size" 16
        "Vertical Alignment" Center
+      }
+      PanelWidgetClass "{6460D6E805D2374E}" {
+       Name "Border"
+       Slot FrameWidgetSlot "{5D6F1490EBB9691E}" {
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX 66
+        OffsetRight -66
+        SizeY 40
+        OffsetBottom -40
+       }
+       Color 0.761 0.392 0.078 1
+       style pixel_outline
+      }
+      ImageWidgetClass "{6469105449FE1FF3}" {
+       Name "LockedIcon"
+       Slot FrameWidgetSlot "{64691054605ABACB}" {
+        Anchor 0 0 0 0
+        PositionX 13
+        OffsetLeft 13
+        OffsetTop 0
+        SizeX 40
+        OffsetRight -53
+        SizeY 40
+        OffsetBottom -40
+       }
+       "Is Visible" 0
+       "Inherit Color" 1
+       Texture "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset"
+       Image "Locked"
+       Size 64 64
       }
      }
     }

@@ -285,7 +285,7 @@ class PS_LobbyLoadoutPreview : SCR_WLibComponentBase
 		}
 		else 
 		{
-			if (playerId != -1) 
+			if (playerId > 0) 
 			{
 				PlayerManager playerManager = GetGame().GetPlayerManager();
 				m_WStateOverlay.SetVisible(true);
