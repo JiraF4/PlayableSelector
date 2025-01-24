@@ -134,12 +134,12 @@ ButtonWidgetClass {
      Prefab "{5D6D1B99A45E5176}"
      Name "GroupName"
      Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
-      PositionX 330
-      OffsetLeft 330
+      PositionX 299
+      OffsetLeft 299
       PositionY 0
       OffsetTop 0
       SizeX 123
-      OffsetRight -453
+      OffsetRight -422
       SizeY 44
       OffsetBottom -44
      }
@@ -152,12 +152,12 @@ ButtonWidgetClass {
     OverlayWidgetClass "{5EB1176D2E673C6D}" : "{DAAA8D092128D446}UI/Util/HideableButton.layout" {
      Name "VoiceHideableButton"
      Slot FrameWidgetSlot "{5EB1176DC507EF2D}" {
-      PositionX 268
-      OffsetLeft 268
+      PositionX 422
+      OffsetLeft 422
       PositionY 0
       OffsetTop 0
       SizeX 44
-      OffsetRight -312
+      OffsetRight -466
       SizeY 44
       OffsetBottom -44
      }

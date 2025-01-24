@@ -15,7 +15,7 @@ class PS_PlayerVoiceSelector : SCR_ButtonComponent
 	TextWidget m_wGroupName;
 	ImageWidget m_wCharacterFactionColor;
 	ButtonWidget m_wKickButton;
-	ImageWidget m_wImageCurrent
+	ImageWidget m_wImageCurrent;
 	
 	override void HandlerAttached(Widget w)
 	{
@@ -85,8 +85,12 @@ class PS_PlayerVoiceSelector : SCR_ButtonComponent
 			}
 			if (!showKick && currentPlayerRoom.Contains("#PS-VoNRoom_Command")) showKick = !playableManager.IsPlayerGroupLeader(m_iPlayerId) && playableManager.IsPlayerGroupLeader(currentPlayerId);
 		}
-		m_wKickButton.SetVisible(showKick);
-		m_wImageCurrent.SetVisible(currentPlayerId == m_iPlayerId);
+		//m_wKickButton.SetVisible(showKick);
+		int currentPlayerIdInt = currentPlayerId;
+		PS_CoopLobby coopLobby = PS_CoopLobby.Cast(GetGame().GetMenuManager().FindMenuByPreset(ChimeraMenuPreset.CoopLobby));
+		if (coopLobby)
+			currentPlayerIdInt = coopLobby.GetSelectedPlayer();
+		m_wImageCurrent.SetVisible(currentPlayerIdInt == m_iPlayerId);
 		
 		if (SCR_Global.IsAdmin(m_iPlayerId)) m_wPlayerName.SetColor(Color.FromInt(0xfff2a34b));
 		else if (playerName == "") m_wPlayerName.SetColor(Color.FromInt(0xff999999));
@@ -129,7 +133,8 @@ class PS_PlayerVoiceSelector : SCR_ButtonComponent
 		if (!menu)
 			return;
 		
-		PS_ContextMenu contextMenu = PS_ContextMenu.CreateContextMenuOnMousePosition(menu.GetRootWidget());
+		string playerName = PS_PlayableManager.GetInstance().GetPlayerName(m_iPlayerId);
+		PS_ContextMenu contextMenu = PS_ContextMenu.CreateContextMenuOnMousePosition(menu.GetRootWidget(), playerName);
 		// Well that suck...
 		if (menu.IsInherited(PS_CoopLobby) && PS_PlayersHelper.IsAdminOrServer())
 		{
@@ -140,6 +145,9 @@ class PS_PlayerVoiceSelector : SCR_ButtonComponent
 		
 		if (m_iPlayerId == GetGame().GetPlayerController().GetPlayerId())
 			return;
+		
+		contextMenu.ActionDirectMessage(m_iPlayerId);
+		
 		PermissionState mute = PermissionState.DISALLOWED;
 		SocialComponent socialComp = SocialComponent.Cast(GetGame().GetPlayerController().FindComponent(SocialComponent));
 		if (socialComp.IsMuted(m_iPlayerId))
@@ -151,8 +159,7 @@ class PS_PlayerVoiceSelector : SCR_ButtonComponent
 			contextMenu.ActionKick(m_iPlayerId);
 		}
 		
-		
-		 // TODO: simplify and protect
+		// TODO: simplify and protect
 		
 		// global
 		PlayerManager playerManager = GetGame().GetPlayerManager();
@@ -163,7 +170,7 @@ class PS_PlayerVoiceSelector : SCR_ButtonComponent
 		// player data
 		RplId playableId = playableManager.GetPlayableByPlayer(m_iPlayerId);
 		FactionKey factionKey = playableManager.GetPlayerFactionKey(m_iPlayerId);
-		string playerName = playableManager.GetPlayerName(m_iPlayerId);
+		//string playerName = playableManager.GetPlayerName(m_iPlayerId);
 		SCR_Faction faction = SCR_Faction.Cast(factionManager.GetFactionByKey(factionKey));
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(m_iPlayerId);
 		int playerRoomId = VoNRoomsManager.GetPlayerRoom(m_iPlayerId);
@@ -213,6 +220,18 @@ class PS_PlayerVoiceSelector : SCR_ButtonComponent
 		} else {
 			currentPlayableController.MoveToVoNRoom(contextActionDataPlayer.GetPlayerId(), playableManager.GetPlayerFactionKey(contextActionDataPlayer.GetPlayerId()), "#PS-VoNRoom_Faction");
 		}
+	}
+	
+	// --------------------------------------------------------------------------------------------------------------------------------
+	void Deselect()
+	{
+		m_wImageCurrent.SetVisible(false);
+	}
+	
+	// --------------------------------------------------------------------------------------------------------------------------------
+	void Select()
+	{
+		m_wImageCurrent.SetVisible(true);
 	}
 }
 

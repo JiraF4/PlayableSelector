@@ -219,7 +219,7 @@ class PS_PlayableComponent : ScriptComponent
 
 		if (!m_bIsPlayable)
 			return;
-
+		
 		GetGame().GetCallqueue().CallLater(AddToListWrap, 0, false, owner) // init delay
 	}
 

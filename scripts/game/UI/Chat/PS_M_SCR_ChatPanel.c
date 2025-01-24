@@ -26,4 +26,9 @@ modded class SCR_ChatPanel : ScriptedWidgetComponent
 			}
 		}
 	}
+	
+	SCR_ChatPanelWidgets PS_GetWidgets()
+	{
+		return m_Widgets;
+	}
 }

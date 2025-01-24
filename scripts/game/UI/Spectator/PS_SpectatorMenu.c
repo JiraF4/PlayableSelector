@@ -164,6 +164,10 @@ class PS_SpectatorMenu: MenuBase
 		SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(e);
 		if (character)
 		{
+			PS_AttachManualCameraObserverComponent attachComponent = PS_AttachManualCameraObserverComponent.s_Instance;
+			if (attachComponent)
+				attachComponent.AttachTo(character);
+				
 			OpenContext(character);
 			return true;
 		}
@@ -181,8 +185,9 @@ class PS_SpectatorMenu: MenuBase
 		
 		PS_PlayableComponent playableComponent = character.PS_GetPlayable();
 		
-		PS_ContextMenu contextMenu = PS_ContextMenu.CreateContextMenuOnMousePosition(menu.GetRootWidget());
 		int playerId = PS_PlayableManager.GetInstance().GetPlayerByPlayable(playableComponent.GetRplId());
+		string playerName = PS_PlayableManager.GetInstance().GetPlayerName(playerId);
+		PS_ContextMenu contextMenu = PS_ContextMenu.CreateContextMenuOnMousePosition(menu.GetRootWidget(), playerName);
 		
 		PS_AttachManualCameraObserverComponent attachComponent = PS_AttachManualCameraObserverComponent.s_Instance;
 		if (!attachComponent.GetTarget())
@@ -436,6 +441,17 @@ class PS_SpectatorMenu: MenuBase
 	void ChatWrap()
 	{
 		SCR_ChatPanelManager.GetInstance().OpenChatPanel(m_ChatPanel);
+	}
+	
+	void OpenChat(string msg)
+	{
+		GetGame().GetCallqueue().CallLater(OpenChatWrap, 0, false, msg);
+	}
+	void OpenChatWrap(string msg)
+	{
+		SCR_ChatPanelManager.GetInstance().OpenChatPanel(m_ChatPanel);
+		EditBoxWidget editBoxWidget = m_ChatPanel.PS_GetWidgets().m_MessageEditBox;
+		editBoxWidget.SetText(msg);
 	}
 	
 	void Action_LobbyVoNOn()

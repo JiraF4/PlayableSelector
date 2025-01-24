@@ -14,6 +14,8 @@ class PS_VoiceChatRoom : SCR_ScriptedWidgetComponent
 	VerticalLayoutWidget m_wPlayersVerticalLayout;
 	ref map<int, PS_PlayerVoiceSelector> m_mPlayers = new map<int, PS_PlayerVoiceSelector>;
 	
+	int m_iSelectedPlayer = -1;
+	
 	override void HandlerAttached(Widget w)
 	{
 		super.HandlerAttached(w);
@@ -79,6 +81,17 @@ class PS_VoiceChatRoom : SCR_ScriptedWidgetComponent
 		PS_PlayerVoiceSelector handler = m_mPlayers[playerId];
 		handler.GetRootWidget().RemoveFromHierarchy();
 		m_mPlayers.Remove(playerId);
+	}
+	
+	void SetSelectedPlayer(int playerId)
+	{
+		PS_PlayerVoiceSelector playerSelectorOld = m_mPlayers.Get(m_iSelectedPlayer);
+		PS_PlayerVoiceSelector playerSelectorNew = m_mPlayers.Get(playerId);
+		if (playerSelectorOld)
+			playerSelectorOld.Deselect();
+		if (playerSelectorNew)
+			playerSelectorNew.Select();
+		m_iSelectedPlayer = playerId;
 	}
 }
 

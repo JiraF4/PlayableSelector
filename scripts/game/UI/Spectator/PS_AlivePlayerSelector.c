@@ -167,8 +167,9 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 		
 		PS_PlayableComponent playableComponent = character.PS_GetPlayable();
 		
-		PS_ContextMenu contextMenu = PS_ContextMenu.CreateContextMenuOnMousePosition(menu.GetRootWidget());
 		int playerId = PS_PlayableManager.GetInstance().GetPlayerByPlayable(playableComponent.GetRplId());
+		string playerName = PS_PlayableManager.GetInstance().GetPlayerName(playerId);
+		PS_ContextMenu contextMenu = PS_ContextMenu.CreateContextMenuOnMousePosition(menu.GetRootWidget(), playerName);
 		
 		PS_AttachManualCameraObserverComponent attachComponent = PS_AttachManualCameraObserverComponent.s_Instance;
 		if (!attachComponent.GetTarget())
@@ -179,7 +180,10 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 		contextMenu.ActionFirstPersonView(character).Insert(OnActionFirstPersonView);
 		contextMenu.ActionRespawnInPlace(playableComponent.GetId(), playerId);
 		if (playerId > 0)
+		{
+			contextMenu.ActionDirectMessage(playerId);
 			contextMenu.ActionKick(playerId);
+		}
 	}
 	void OnActionAttachTo(PS_ContextAction contextAction, PS_ContextActionDataCharacter contextActionDataCharacter)
 	{

@@ -1,5 +1,6 @@
 FrameWidgetClass {
  Name "SpectatorMenu"
+ "Z Order" 10
  {
   ButtonWidgetClass "{646933DDC1AA7E0B}" {
    Name "ScreenButton"

@@ -511,7 +511,8 @@ class PS_CharacterSelector : SCR_ButtonComponent
 	// Context menu
 	void OpenContext()
 	{
-		PS_ContextMenu contextMenu = PS_ContextMenu.CreateContextMenuOnMousePosition(m_CoopLobby.GetRootWidget());
+		string playerName = PS_PlayableManager.GetInstance().GetPlayerName(m_iPlayerId);
+		PS_ContextMenu contextMenu = PS_ContextMenu.CreateContextMenuOnMousePosition(m_CoopLobby.GetRootWidget(), playerName);
 		contextMenu.ActionOpenInventory(m_iPlayableId).Insert(OnActionOpenInventory);
 		
 		if (PS_PlayersHelper.IsAdminOrServer())
@@ -536,7 +537,7 @@ class PS_CharacterSelector : SCR_ButtonComponent
 				
 				if (PS_PlayersHelper.IsAdminOrServer())
 				{
-					contextMenu.ActionPlayerSelect(m_iPlayerId);
+					contextMenu.ActionDirectMessage(m_iPlayerId);
 					contextMenu.ActionKick(m_iPlayerId);
 					
 					if (m_PlayableManager.GetPlayerPin(m_iPlayerId))
@@ -544,6 +545,10 @@ class PS_CharacterSelector : SCR_ButtonComponent
 					else
 						contextMenu.ActionPin(m_iPlayerId);
 				}
+			}
+			if (m_CoopLobby.GetSelectedPlayer() != m_iPlayerId && PS_PlayersHelper.IsAdminOrServer())
+			{
+				contextMenu.ActionPlayerSelect(m_iPlayerId);
 			}
 		}
 	}

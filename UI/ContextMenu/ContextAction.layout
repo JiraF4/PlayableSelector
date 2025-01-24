@@ -5,7 +5,7 @@ ButtonWidgetClass {
   PS_ContextAction "{64614613EF807BC0}" {
    m_sSoundClicked ""
    m_BackgroundDefault 0 0 0 0
-   m_BackgroundHovered 0.051 0.051 0.051 0.314
+   m_BackgroundHovered 0.171 0.171 0.171 0.481
    m_BackgroundSelected 0.76 0.392 0.08 0.3
    m_BackgroundSelectedHovered 0.76 0.392 0.08 0.3
    m_BackgroundClicked 0.76 0.392 0.08 0.3
@@ -21,7 +21,7 @@ ButtonWidgetClass {
      Name "Background"
      Slot OverlayWidgetSlot "{6461461D681A170E}" {
      }
-     Color 1 1 1 0
+     Color 0 0 0 0
      Size 262 24
     }
     ImageWidgetClass "{6461461D7A4BF5E8}" {

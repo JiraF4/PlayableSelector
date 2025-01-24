@@ -235,7 +235,7 @@ class PS_RolesGroup : SCR_ScriptedWidgetComponent
 	}
 	void OpenContext()
 	{
-		PS_ContextMenu contextMenu = PS_ContextMenu.CreateContextMenuOnMousePosition(m_CoopLobby.GetRootWidget());
+		PS_ContextMenu contextMenu = PS_ContextMenu.CreateContextMenuOnMousePosition(m_CoopLobby.GetRootWidget(), m_wRolesGroupName.GetText());
 		
 		contextMenu.ActionJoinVoice().Insert(OnClickedVoiceJoin);
 		if (PS_PlayersHelper.IsAdminOrServer())

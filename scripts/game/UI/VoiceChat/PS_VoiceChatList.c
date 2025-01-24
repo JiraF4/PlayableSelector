@@ -300,6 +300,14 @@ class PS_VoiceChatList : SCR_ScriptedWidgetComponent
 			outRoomsArray.Insert(currentRoom);
 		
 	}
+	
+	void SetSelectedPlayer(int playerId)
+	{
+		foreach (PS_VoiceChatRoom room : m_wRooms)
+		{
+			room.SetSelectedPlayer(playerId);
+		}
+	}
 };
 
 

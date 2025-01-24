@@ -13,7 +13,7 @@ ButtonWidgetClass {
       Padding 0 2 0 2
      }
      IsPixelPerfect 0
-     Color 0.275 0.275 0.275 1
+     Color 0.275 0.275 0.275 0
      Size 262 3
     }
    }

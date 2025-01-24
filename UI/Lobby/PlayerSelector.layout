@@ -93,8 +93,8 @@ ButtonWidgetClass {
       OffsetLeft 192
       PositionY 0
       OffsetTop 0
-      SizeX 215
-      OffsetRight -407
+      SizeX 239
+      OffsetRight -431
       SizeY 40
       OffsetBottom -40
      }
@@ -140,12 +140,12 @@ ButtonWidgetClass {
     OverlayWidgetClass "{5EB69C731F2DA9F2}" : "{DAAA8D092128D446}UI/Util/HideableButton.layout" {
      Name "VoiceHideableButton"
      Slot FrameWidgetSlot "{5EB1176DC507EF2D}" {
-      PositionX 152
-      OffsetLeft 152
+      PositionX 431
+      OffsetLeft 431
       PositionY 0
       OffsetTop 0
       SizeX 40
-      OffsetRight -192
+      OffsetRight -471
       SizeY 40
       OffsetBottom -40
      }
@@ -264,6 +264,7 @@ ButtonWidgetClass {
       SizeY 40
       OffsetBottom -40
      }
+     "Is Visible" 0
      "Ignore Cursor" 1
      Color 0 1 0.019 0
      components {

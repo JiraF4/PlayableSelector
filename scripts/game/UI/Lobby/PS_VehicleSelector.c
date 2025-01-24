@@ -142,7 +142,7 @@ class PS_VehicleSelector : SCR_ButtonComponent
 	}
 	void OpenContext()
 	{
-		PS_ContextMenu contextMenu = PS_ContextMenu.CreateContextMenuOnMousePosition(m_CoopLobby.GetRootWidget());
+		PS_ContextMenu contextMenu = PS_ContextMenu.CreateContextMenuOnMousePosition(m_CoopLobby.GetRootWidget(), "");
 		contextMenu.ActionOpenInventory(m_PlayableVehicleContainer.GetRplId()).Insert(OnActionOpenInventory);
 		
 		if (PS_PlayersHelper.IsAdminOrServer())

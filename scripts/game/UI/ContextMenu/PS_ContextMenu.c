@@ -10,6 +10,8 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 	// Widgets
 	protected VerticalLayoutWidget m_wActionsVerticalLayout;
 	protected OverlayWidget m_wNoActions;
+	protected ButtonWidget m_wHeader;
+	protected TextWidget m_wHeaderText;
 	
 	override void HandlerAttached(Widget w)
 	{
@@ -17,12 +19,14 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 	
 		m_wActionsVerticalLayout = VerticalLayoutWidget.Cast(w.FindAnyWidget("ActionsVerticalLayout"));
 		m_wNoActions = OverlayWidget.Cast(w.FindAnyWidget("NoActions"));
+		m_wHeaderText = TextWidget.Cast(w.FindAnyWidget("HeaderText"));
+		m_wHeader = ButtonWidget.Cast(w.FindAnyWidget("Header"));
 		
 		GetGame().GetInputManager().AddActionListener("MouseLeft", EActionTrigger.UP, CloseMenu);
 		GetGame().GetInputManager().AddActionListener("MouseRight", EActionTrigger.DOWN, CloseMenu);
 	}
 	
-	static PS_ContextMenu CreateContextMenuOnMousePosition(Widget rootWidget)
+	static PS_ContextMenu CreateContextMenuOnMousePosition(Widget rootWidget, string contextName)
 	{
 		if (s_wContextMenuWidget)
 			s_wContextMenuWidget.RemoveFromHierarchy();
@@ -33,6 +37,10 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 		y = GetGame().GetWorkspace().DPIUnscale(y);
 		FrameSlot.SetPos(s_wContextMenuWidget, x, y);
 		PS_ContextMenu contextMenu = PS_ContextMenu.Cast(s_wContextMenuWidget.FindHandler(PS_ContextMenu));
+		if (contextName != "")
+			contextMenu.m_wHeaderText.SetText(contextName);
+		else
+			contextMenu.m_wHeader.SetVisible(false);
 		return contextMenu;
 	}
 	
@@ -40,7 +48,7 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 	{
 		if (m_wNoActions)
 			m_wNoActions.RemoveFromHierarchy();
-		if (m_wActionsVerticalLayout.GetChildren())
+		if (m_wActionsVerticalLayout.GetChildren().IsVisible())
 		{
 			GetGame().GetWorkspace().CreateWidgets(CONTEXT_SEPARATOR_PREFAB, m_wActionsVerticalLayout);
 		}
@@ -69,7 +77,7 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 		if (coopLobby.GetSelectedPlayer() == playerId)
 			return;
 		
-		string name = "Select player (" + GetPlayerName(playerId) + ")";
+		string name = "Select player";
 		return AddAction(IMAGESET, "exit", name, "",
 			new PS_ContextActionDataPlayer(playerId)
 		).GetOnOnContextAction().Insert(OnActionPlayerSelect);
@@ -88,7 +96,7 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 		if (GetGame().GetPlayerController().GetPlayerId() == playerId)
 			return;
 		
-		string name = "Kick (" + GetPlayerName(playerId) + ")";
+		string name = "Kick";
 		return AddAction(IMAGESET, "kickCommandAlt", name, "",
 			new PS_ContextActionDataPlayer(playerId)
 		).GetOnOnContextAction().Insert(OnActionKick);
@@ -101,7 +109,7 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 	
 	void ActionMute(int playerId)
 	{
-		string name = "Mute player (" + GetPlayerName(playerId) + ")";
+		string name = "Mute player";
 		return AddAction(IMAGESET_PS, "VoNDisabled", name, "",
 			new PS_ContextActionDataPlayer(playerId)
 		).GetOnOnContextAction().Insert(OnActionMute);
@@ -116,7 +124,7 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 	
 	void ActionUnmute(int playerId)
 	{
-		string name = "Unmute player (" + GetPlayerName(playerId) + ")";
+		string name = "Unmute player";
 		return AddAction(IMAGESET_PS, "VoNDirect", name, "",
 			new PS_ContextActionDataPlayer(playerId)
 		).GetOnOnContextAction().Insert(OnActionUnmute);
@@ -131,7 +139,7 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 	
 	void ActionUnpin(int playerId)
 	{
-		string name = "Unpin player (" + GetPlayerName(playerId) + ")";
+		string name = "Unpin player";
 		return AddAction(IMAGESET, "pinPlay", name, "",
 			new PS_ContextActionDataPlayer(playerId)
 		).GetOnOnContextAction().Insert(OnActionUnpin);
@@ -144,7 +152,7 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 	
 	void ActionPin(int playerId)
 	{
-		string name = "Pin player (" + GetPlayerName(playerId) + ")";
+		string name = "Pin player";
 		return AddAction(IMAGESET, "pinPlay", name, "",
 			new PS_ContextActionDataPlayer(playerId)
 		).GetOnOnContextAction().Insert(OnActionPin);
@@ -158,12 +166,35 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 	PS_ScriptInvokerOnContextAction ActionVoiceKick(int playerId)
 	{
 		SCR_UISoundEntity.SoundEvent("SOUND_LOBBY_KICK");
-		string name = "Kick from voice room (" + GetPlayerName(playerId) + ")";
+		string name = "Kick from voice room";
 		return AddAction(IMAGESET, "kickCommandAlt", name, "",
 			new PS_ContextActionDataPlayer(playerId)
 		).GetOnOnContextAction();
 	}
 	
+	void ActionDirectMessage(int playerId)
+	{
+		string name = "Direct message";
+		AddAction(IMAGESET, "kickCommandAlt", name, "",
+			new PS_ContextActionDataPlayer(playerId)
+		).GetOnOnContextAction().Insert(OnContextDirectMessage);
+	}
+	void OnContextDirectMessage(PS_ContextAction contextAction, PS_ContextActionDataPlayer contextActionDataPlayer)
+	{
+		int playerId = contextActionDataPlayer.GetPlayerId();
+		MenuBase menuBase = GetGame().GetMenuManager().GetTopMenu();
+		
+		Widget chat = menuBase.GetRootWidget().FindAnyWidget("ChatPanel");
+		if (!chat)
+			chat = GetGame().GetWorkspace().FindAnyWidget("ChatPanel");
+		if (!chat)
+			return;
+		
+		SCR_ChatPanel chatPanel = SCR_ChatPanel.Cast(chat.FindHandler(SCR_ChatPanel));
+		SCR_ChatPanelManager.GetInstance().OpenChatPanel(chatPanel);
+		EditBoxWidget editBoxWidget = chatPanel.PS_GetWidgets().m_MessageEditBox;
+		editBoxWidget.SetText("/dmsg " + playerId.ToString() + " ");
+	}
 	
 	// Actions playable
 	PS_ScriptInvokerOnContextAction ActionFreeSlot(RplId playableId)
@@ -194,7 +225,7 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 	{
 		string name = "Respawn";
 		if (playerId > 0)
-			name += " (" + GetPlayerName(playerId) + ")";
+			name += "";
 		return AddAction(IMAGESET_PS, "Medicine", name, "",
 			new PS_ContextActionDataPlayable(playableId)
 		).GetOnOnContextAction().Insert(OnRespawnInPlace);

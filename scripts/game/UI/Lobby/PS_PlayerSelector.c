@@ -118,7 +118,7 @@ class PS_PlayerSelector : SCR_ButtonBaseComponent
 		m_VoiceHideableButton.SetPlayer(playerId);
 		
 		m_wImageCurrent.SetVisible(playerId == m_CoopLobby.GetSelectedPlayer());
-		m_wKickButton.SetVisible(playerId != m_iCurrentPlayerId && PS_PlayersHelper.IsAdminOrServer());
+		//m_wKickButton.SetVisible(playerId != m_iCurrentPlayerId && PS_PlayersHelper.IsAdminOrServer());
 		UpdatePlayerName(playerId);
 		UpdatePlayerFaction(playerId, factionKey, factionKey);
 		UpdatePlayerPin(playerId, pin);
@@ -221,8 +221,8 @@ class PS_PlayerSelector : SCR_ButtonBaseComponent
 	
 	void UpdatePlayerRole(int playerId, EPlayerRole roleFlags)
 	{
-		if (playerId == m_iCurrentPlayerId)
-			m_wKickButton.SetVisible(m_iCurrentPlayerId != m_iPlayerId && PS_PlayersHelper.IsAdminOrServer());
+		//if (playerId == m_iCurrentPlayerId)
+		//	m_wKickButton.SetVisible(m_iCurrentPlayerId != m_iPlayerId && PS_PlayersHelper.IsAdminOrServer());
 		
 		if (playerId != m_iPlayerId)
 			return;
@@ -291,11 +291,17 @@ class PS_PlayerSelector : SCR_ButtonBaseComponent
 	
 	void OpenContext()
 	{
-		PS_ContextMenu contextMenu = PS_ContextMenu.CreateContextMenuOnMousePosition(m_CoopLobby.GetRootWidget());
+		string playerName = PS_PlayableManager.GetInstance().GetPlayerName(m_iPlayerId);
+		PS_ContextMenu contextMenu = PS_ContextMenu.CreateContextMenuOnMousePosition(m_CoopLobby.GetRootWidget(), playerName);
 		contextMenu.ActionPlayerSelect(m_iPlayerId);
+		
+		if (m_iPlayerId == m_iCurrentPlayerId)
+			return;
+		
 		contextMenu.ActionKick(m_iPlayerId);
 		if (m_PlayableManager.GetPlayerPin(m_iPlayerId))
 			contextMenu.ActionUnpin(m_iPlayerId);
+		contextMenu.ActionDirectMessage(m_iPlayerId);
 	}
 	void OnContextKick(PS_ContextAction contextAction, PS_ContextActionDataPlayer contextActionDataPlayer)
 	{
@@ -303,3 +309,13 @@ class PS_PlayerSelector : SCR_ButtonBaseComponent
 		m_PlayableControllerComponent.KickPlayer(m_iPlayerId);
 	}
 }
+
+
+
+
+
+
+
+
+
+

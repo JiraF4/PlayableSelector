@@ -555,6 +555,7 @@ class PS_CoopLobby : MenuBase
 	{
 		m_iSelectedPlayer = playerId;
 		m_PlayersList.SetSelectedPlayer(playerId);
+		m_VoiceChatList.SetSelectedPlayer(playerId);
 	}
 	
 	// --------------------------------------------------------------------------------------------------------------------------------

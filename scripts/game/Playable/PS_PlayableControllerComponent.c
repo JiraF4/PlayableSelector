@@ -664,7 +664,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 
 	void PinPlayer(int playerId)
 	{
-		Rpc(RPC_UnpinPlayer, playerId)
+		Rpc(RPC_PinPlayer, playerId)
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	protected void RPC_PinPlayer(int playerId)

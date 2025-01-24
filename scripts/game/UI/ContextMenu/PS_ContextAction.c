@@ -30,6 +30,8 @@ class PS_ContextAction : SCR_ButtonComponent
 		m_wText.SetText(name);
 		m_wActionHotkey.SetVisible(false);
 		m_ContextActionData = contextActionData;
+		
+		m_wBackground.SetColor(m_BackgroundDefault); // WTF?
 	}
 	
 	//------------------------------------------------------------------------------------------------

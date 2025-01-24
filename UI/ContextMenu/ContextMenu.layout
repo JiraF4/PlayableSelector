@@ -39,6 +39,41 @@ OverlayWidgetClass {
       Padding 4 4 4 4
      }
      {
+      ButtonWidgetClass "{6470E23351A3FD38}" {
+       Name "Header"
+       Slot LayoutSlot "{6470E236A87DD970}" {
+       }
+       Color 1 1 1 0
+       {
+        OverlayWidgetClass "{6470E23351A3FD39}" {
+         Name "HeaderOverlay"
+         Slot ButtonWidgetSlot "{64634928C805E649}" {
+         }
+         {
+          ImageWidgetClass "{6470E23351A3FD3B}" {
+           Name "Background"
+           Slot OverlayWidgetSlot "{6461461D681A170E}" {
+           }
+           Color 0.761 0.386 0.078 1
+           Size 262 24
+          }
+          TextWidgetClass "{6470E23351BC6BE2}" {
+           Name "HeaderText"
+           Slot OverlayWidgetSlot "{64614612DD7BF937}" {
+            HorizontalAlign 3
+            VerticalAlign 3
+            Padding 5 0 0 0
+           }
+           Color 0 0 0 1
+           Text "Test action"
+           "Font Size" 19
+           "Min Font Size" 19
+           "Vertical Alignment" Center
+          }
+         }
+        }
+       }
+      }
       OverlayWidgetClass "{64648C840C3EBDE2}" {
        Name "NoActions"
        Slot LayoutSlot "{64693319AF9BA36D}" {
