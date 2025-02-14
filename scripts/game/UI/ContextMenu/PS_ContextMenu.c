@@ -71,6 +71,9 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 	// Actions player
 	void ActionPlayerSelect(int playerId)
 	{
+		if (!PS_PlayersHelper.IsAdminOrServer())
+			return;
+		
 		PS_CoopLobby coopLobby = PS_CoopLobby.Cast(GetGame().GetMenuManager().FindMenuByPreset(ChimeraMenuPreset.CoopLobby));
 		if (!coopLobby)
 			return;
@@ -139,6 +142,9 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 	
 	void ActionUnpin(int playerId)
 	{
+		if (!PS_PlayersHelper.IsAdminOrServer())
+			return;
+		
 		string name = "Unpin player";
 		return AddAction(IMAGESET, "pinPlay", name, "",
 			new PS_ContextActionDataPlayer(playerId)
@@ -152,6 +158,9 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 	
 	void ActionPin(int playerId)
 	{
+		if (!PS_PlayersHelper.IsAdminOrServer())
+			return;
+		
 		string name = "Pin player";
 		return AddAction(IMAGESET, "pinPlay", name, "",
 			new PS_ContextActionDataPlayer(playerId)
@@ -174,6 +183,9 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 	
 	void ActionDirectMessage(int playerId)
 	{
+		if (!PS_PlayersHelper.IsAdminOrServer())
+			return;
+		
 		string name = "Direct message";
 		AddAction(IMAGESET, "kickCommandAlt", name, "",
 			new PS_ContextActionDataPlayer(playerId)
@@ -223,6 +235,9 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 	}
 	void ActionRespawnInPlace(RplId playableId, int playerId)
 	{
+		if (!PS_PlayersHelper.IsAdminOrServer())
+			return;
+		
 		string name = "Respawn";
 		if (playerId > 0)
 			name += "";

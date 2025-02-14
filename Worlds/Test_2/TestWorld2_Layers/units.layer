@@ -69,7 +69,7 @@ PolylineShapeEntity {
  }
 }
 $grp SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.et" {
- {
+ US1 {
   components {
    PS_GroupCallsignAssigner "{5F0B29E838442C1F}" {
    }
@@ -106,7 +106,6 @@ $grp SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.
    SCR_ChimeraCharacter : "{094747C4F8BE9F9F}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_TL_P.et" {
     components {
      PS_PlayableComponent "{5EFCC1946F475F15}" {
-      m_name "1"
       m_aRespawnPrefabs {
        "{547BA14003A67C04}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Medic_P.et" "{547BA14003A67C04}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Medic_P.et"
       }
@@ -126,9 +125,6 @@ $grp SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.
    }
    SCR_ChimeraCharacter : "{3D67614F24B76051}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Spotter_P.et" {
     components {
-     PS_PlayableComponent "{5EFCC1946F475F15}" {
-      m_name "4"
-     }
      SCR_CharacterRankComponent "{528E6D4286AA2D8F}" {
       m_iRank CAPTAIN
      }
@@ -138,9 +134,6 @@ $grp SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.
    $grp SCR_ChimeraCharacter : "{B452527EA042DFF0}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Sniper_P.et" {
     {
      components {
-      PS_PlayableComponent "{5EFCC1946F475F15}" {
-       m_name "2"
-      }
       SCR_CharacterRankComponent "{528E6D4286AA2D8F}" {
        m_iRank COLONEL
       }
@@ -149,9 +142,6 @@ $grp SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.
     }
     {
      components {
-      PS_PlayableComponent "{5EFCC1946F475F15}" {
-       m_name "3"
-      }
       SCR_CharacterRankComponent "{528E6D4286AA2D8F}" {
        m_iRank MAJOR
       }
@@ -160,9 +150,6 @@ $grp SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.
     }
     {
      components {
-      PS_PlayableComponent "{5EFCC1946F475F15}" {
-       m_name "6"
-      }
       SCR_CharacterRankComponent "{528E6D4286AA2D8F}" {
        m_iRank SERGEANT
       }
@@ -173,7 +160,6 @@ $grp SCR_AIGroup : "{47EADE5E4E07076C}Prefabs/Groups/BLUFOR/Group_US_FireTeam_P.
    SCR_ChimeraCharacter : "{DBC177C261C93B9D}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_SL_P.et" {
     components {
      PS_PlayableComponent "{5EFCC1946F475F15}" {
-      m_name "5"
       m_aRespawnPrefabs {
        "{DBC177C261C93B9D}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_SL_P.et" "{DBC177C261C93B9D}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_SL_P.et"
       }

@@ -37,6 +37,11 @@ class PS_DebriefingMenu : ChimeraMenuBase
 		FillFactions();
 		Update();
 		GetGame().GetCallqueue().CallLater(UpdateCycle, 100);
+		
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		if (playableController)
+			playableController.LobbyVoNDisable();
 	}
 	
 	void UpdateCycle() 

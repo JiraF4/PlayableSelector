@@ -164,10 +164,12 @@ class PS_SpectatorMenu: MenuBase
 		SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(e);
 		if (character)
 		{
+			/*
 			PS_AttachManualCameraObserverComponent attachComponent = PS_AttachManualCameraObserverComponent.s_Instance;
 			if (attachComponent)
 				attachComponent.AttachTo(character);
-				
+			*/
+			
 			OpenContext(character);
 			return true;
 		}
@@ -198,7 +200,10 @@ class PS_SpectatorMenu: MenuBase
 		contextMenu.ActionFirstPersonView(character).Insert(OnActionFirstPersonView);
 		contextMenu.ActionRespawnInPlace(playableComponent.GetId(), playerId);
 		if (playerId > 0)
+		{
 			contextMenu.ActionKick(playerId);
+			contextMenu.ActionDirectMessage(playerId);
+		}
 	}
 	void OnActionAttachTo(PS_ContextAction contextAction, PS_ContextActionDataCharacter contextActionDataCharacter)
 	{

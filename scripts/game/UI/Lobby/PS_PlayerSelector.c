@@ -297,11 +297,18 @@ class PS_PlayerSelector : SCR_ButtonBaseComponent
 		
 		if (m_iPlayerId == m_iCurrentPlayerId)
 			return;
-		
-		contextMenu.ActionKick(m_iPlayerId);
+		if (PS_PlayersHelper.IsAdminOrServer())
+			contextMenu.ActionKick(m_iPlayerId);
 		if (m_PlayableManager.GetPlayerPin(m_iPlayerId))
 			contextMenu.ActionUnpin(m_iPlayerId);
 		contextMenu.ActionDirectMessage(m_iPlayerId);
+		
+		PermissionState mute = PermissionState.DISALLOWED;
+		SocialComponent socialComp = SocialComponent.Cast(GetGame().GetPlayerController().FindComponent(SocialComponent));
+		if (socialComp.IsMuted(m_iPlayerId))
+			contextMenu.ActionUnmute(m_iPlayerId);
+		else
+			contextMenu.ActionMute(m_iPlayerId);
 	}
 	void OnContextKick(PS_ContextAction contextAction, PS_ContextActionDataPlayer contextActionDataPlayer)
 	{

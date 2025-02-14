@@ -148,6 +148,14 @@ class PS_PlayerVoiceSelector : SCR_ButtonComponent
 		
 		contextMenu.ActionDirectMessage(m_iPlayerId);
 		
+		// TODO: simplify and protect
+		
+		// global
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		SCR_FactionManager factionManager = SCR_FactionManager.Cast(GetGame().GetFactionManager());
+		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
+		
 		PermissionState mute = PermissionState.DISALLOWED;
 		SocialComponent socialComp = SocialComponent.Cast(GetGame().GetPlayerController().FindComponent(SocialComponent));
 		if (socialComp.IsMuted(m_iPlayerId))
@@ -157,15 +165,15 @@ class PS_PlayerVoiceSelector : SCR_ButtonComponent
 		if (PS_PlayersHelper.IsAdminOrServer())
 		{
 			contextMenu.ActionKick(m_iPlayerId);
+			contextMenu.ActionPlayerSelect(m_iPlayerId);
+			
+			PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+			RplId playableId = playableManager.GetPlayableByPlayerRemembered(m_iPlayerId);
+			if (playableId != RplId.Invalid() && gameMode.GetState() == SCR_EGameModeState.GAME)
+			{
+				contextMenu.ActionRespawnInPlace(playableId, m_iPlayerId);
+			}
 		}
-		
-		// TODO: simplify and protect
-		
-		// global
-		PlayerManager playerManager = GetGame().GetPlayerManager();
-		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		SCR_FactionManager factionManager = SCR_FactionManager.Cast(GetGame().GetFactionManager());
-		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
 		
 		// player data
 		RplId playableId = playableManager.GetPlayableByPlayer(m_iPlayerId);

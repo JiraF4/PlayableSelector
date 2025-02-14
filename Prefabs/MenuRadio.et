@@ -66,6 +66,7 @@ GenericEntity : "{5879D8E9C56E358D}Prefabs/Items/Core/Radio_base.et" {
    CCDRadius 0.015
   }
   ProcAnimComponent "{5EB53DCA71704DF9}" {
+   Enabled 0
    Parameters {
     ProcAnimParams "{5EB53DCA71704DFB}" {
      ResourceName "{F335B90D4353B9A4}Assets/Items/Equipment/Radios/Radio_ANPRC68/Radio_ANPRC68_01.pap"

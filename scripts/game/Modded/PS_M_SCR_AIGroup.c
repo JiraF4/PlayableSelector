@@ -47,10 +47,13 @@ modded class SCR_AIGroup : ChimeraAIGroup
 		// THERE IS NO WAY TO MAKE GROUP NAME FROM SERVER
 		// WHY? THIS IS STUPID...
 		
-		SocialComponent socialComp = SocialComponent.Cast(GetGame().GetPlayerController().FindComponent(SocialComponent));
-		if (RplSession.Mode() != RplMode.Dedicated)
-			if (!socialComp.IsRestricted(m_iNameAuthorID, EUserInteraction.UserGeneratedContent) && m_iNameAuthorID != -1 /* -1 is server "player" since 0 = invalide*/)
-				return string.Empty;
+		if (GetGame().GetPlayerController())
+		{
+			SocialComponent socialComp = SocialComponent.Cast(GetGame().GetPlayerController().FindComponent(SocialComponent));
+			if (RplSession.Mode() != RplMode.Dedicated)
+				if (!socialComp.IsRestricted(m_iNameAuthorID, EUserInteraction.UserGeneratedContent) && m_iNameAuthorID != -1 /* -1 is server "player" since 0 = invalide*/)
+					return string.Empty;
+		}
 		
 		return m_sCustomName;
 	}
