@@ -37,7 +37,7 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 		
 		m_LabelEventHandler = PS_EventHandlerComponent.Cast(m_wLabelButton.FindHandler(PS_EventHandlerComponent));
 		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		if (gameModeCoop.GetFriendliesSpectatorOnly())
+		if (gameModeCoop && gameModeCoop.GetFriendliesSpectatorOnly())
 		{
 			return;
 		}
@@ -170,15 +170,17 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 			}
 		}
 		
-		if (m_fDistanceToIcon > 120)
+		if (m_fDistanceToIcon > 120 && !m_bSelected)
 		{
 			m_wOverlayCircle.SetVisible(false);
 			m_wSpectatorLabelIcon.SetVisible(false);
+			m_wSpectatorLabelIconSelected.SetVisible(false);
 		}
 		else
 		{
 			m_wOverlayCircle.SetVisible(true);
 			m_wSpectatorLabelIcon.SetVisible(true);
+			m_wSpectatorLabelIconSelected.SetVisible(true);
 		}
 		
 		if (!m_bDead)

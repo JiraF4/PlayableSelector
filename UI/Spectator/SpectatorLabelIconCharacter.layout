@@ -41,6 +41,7 @@ FrameWidgetClass : "{8A4C0D6D625BB09D}UI/Spectator/SpectatorLabelIcon.layout" {
        Slot OverlayWidgetSlot "{60DB07187FD3FD8A}" {
        }
        Opacity 0.75
+       "Ignore Cursor" 0
        Texture "{8479B3B5347DF5CF}UI/Imagesets/MilitarySymbol/ID_D.imageset"
        Image "Friend_SeaSurface_Bcg"
        Size 16 16

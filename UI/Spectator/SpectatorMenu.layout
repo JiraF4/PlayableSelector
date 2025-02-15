@@ -2,25 +2,6 @@ FrameWidgetClass {
  Name "SpectatorMenu"
  "Z Order" 10
  {
-  ButtonWidgetClass "{646933DDC1AA7E0B}" {
-   Name "ScreenButton"
-   Slot FrameWidgetSlot "{646933DDC1AA7E65}" {
-    Anchor 0 0 1 1
-    PositionX 0
-    OffsetLeft 0
-    PositionY 0
-    OffsetTop 0
-    SizeX -1820
-    OffsetRight 0
-    SizeY -1050
-    OffsetBottom 0
-   }
-   Color 1 1 1 0
-   components {
-    PS_EventHandlerComponent "{646933DDD36BC5C8}" {
-    }
-   }
-  }
   FrameWidgetClass "{5EE8949BDE5C93EE}" {
    Name "IconsFrame"
    Slot FrameWidgetSlot "{5EE8949BDE5C93C5}" {

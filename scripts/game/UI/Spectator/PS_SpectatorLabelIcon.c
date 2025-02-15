@@ -3,6 +3,7 @@ class PS_SpectatorLabelIcon : SCR_ScriptedWidgetComponent
 	IEntity m_eEntity;
 	
 	ImageWidget m_wSpectatorLabelIcon;
+	ImageWidget m_wSpectatorLabelIconSelected;
 	ButtonWidget m_wLabelButton;
 	OverlayWidget m_wSpectatorLabelBackground;
 	RichTextWidget m_wSpectatorLabelText;
@@ -25,6 +26,7 @@ class PS_SpectatorLabelIcon : SCR_ScriptedWidgetComponent
 	protected float m_fDistanceToIcon;
 	
 	protected bool m_bForceShowName;
+	protected bool m_bSelected;
 	
 	vector m_vWorldPosition;
 	vector GetWorldPosition()
@@ -35,6 +37,7 @@ class PS_SpectatorLabelIcon : SCR_ScriptedWidgetComponent
 		super.HandlerAttached(w);
 		
 		m_wSpectatorLabelIcon = ImageWidget.Cast(w.FindAnyWidget("SpectatorLabelIcon"));
+		m_wSpectatorLabelIconSelected = ImageWidget.Cast(w.FindAnyWidget("SpectatorLabelIconSelected"));
 		m_wLabelButton = ButtonWidget.Cast(w.FindAnyWidget("LabelButton"));
 		m_wSpectatorLabelBackground = OverlayWidget.Cast(w.FindAnyWidget("SpectatorLabelBackground"));
 		m_wSpectatorLabelText = RichTextWidget.Cast(w.FindAnyWidget("SpectatorLabelText"));
@@ -53,6 +56,11 @@ class PS_SpectatorLabelIcon : SCR_ScriptedWidgetComponent
 		return true;
 	}
 	
+	void SetSelected(bool selected)
+	{
+		m_bSelected = selected;
+	}
+	
 	void SetEntity(IEntity entity, string boneName)
 	{
 		m_eEntity = entity;
@@ -60,6 +68,11 @@ class PS_SpectatorLabelIcon : SCR_ScriptedWidgetComponent
 		{
 			w_iBoneIndex = entity.GetAnimation().GetBoneIndex(boneName);
 		}
+	}
+	
+	IEntity GetEntity()
+	{
+		return m_eEntity;
 	}
 	
 	void Update()
@@ -115,6 +128,16 @@ class PS_SpectatorLabelIcon : SCR_ScriptedWidgetComponent
 		m_wRoot.SetOpacity(1.0);
 		UpdateLabel();
 		
+		float selectOpacity = m_wSpectatorLabelIconSelected.GetOpacity();
+		if (m_bSelected)
+			selectOpacity += GetGame().GetWorld().GetTimeSlice() * 5.0;
+		else
+			selectOpacity -= GetGame().GetWorld().GetTimeSlice() * 5.0;
+		selectOpacity = Math.Clamp(selectOpacity, 0, 1);
+		m_wSpectatorLabelIconSelected.SetOpacity(selectOpacity);
+		
+		FrameSlot.SetSize(m_wSpectatorLabelIconSelected, scaledIconSize, scaledIconSize);
+		FrameSlot.SetPos(m_wSpectatorLabelIconSelected, -scaledIconSize/2, -scaledIconSize/2);
 		FrameSlot.SetSize(m_wSpectatorLabelIcon, scaledIconSize, scaledIconSize);
 		FrameSlot.SetPos(m_wSpectatorLabelIcon, -scaledIconSize/2, -scaledIconSize/2);
 		if (m_wLabelButton)
@@ -127,7 +150,7 @@ class PS_SpectatorLabelIcon : SCR_ScriptedWidgetComponent
 		
 		m_wRoot.SetZOrder(screenPosition[2] * -10000);
 		
-		if (m_bForceShowName)
+		if (m_bForceShowName || m_bSelected)
 		{
 			m_wSpectatorLabel.SetOpacity(1.0);
 			m_wRoot.SetZOrder(100);

@@ -24,12 +24,10 @@ class PS_SpectatorMenu: MenuBase
 	protected Widget m_wAlivePlayerList;
 	protected Widget m_wSidesRatio;
 	protected Widget m_wSidesRatioFrame;
-	protected Widget m_wScreenButton;
 	protected PS_VoiceChatList m_hVoiceChatList;
 	protected SCR_ButtonBaseComponent m_hVoiceChatListPinButton;
 	protected PS_AlivePlayerList m_hAlivePlayerList;
 	protected SCR_ButtonBaseComponent m_hAlivePlayerListPinButton;
-	protected PS_EventHandlerComponent m_ScreenButton;
 	
 	protected PS_SpectatorLabelIcon m_LookTarget;
 	
@@ -45,6 +43,9 @@ class PS_SpectatorMenu: MenuBase
 	protected ref map<PS_SpectatorLabel, PS_SpectatorLabel> m_mIconsList = new map<PS_SpectatorLabel, PS_SpectatorLabel>();
 	
 	protected vector m_vLastPingPosition;
+	
+	
+	protected PS_SpectatorLabelIcon m_SelectedLabel;
 	
 	static void ResetTarget()
 	{
@@ -65,6 +66,15 @@ class PS_SpectatorMenu: MenuBase
 	void SetLookTarget(PS_SpectatorLabelIcon target)
 	{
 		m_LookTarget = target;
+	}
+	
+	void SetSelectedTarget(PS_SpectatorLabelIcon target)
+	{
+		if (m_SelectedLabel)
+			m_SelectedLabel.SetSelected(false);
+		m_SelectedLabel = target;
+		if (m_SelectedLabel)
+			m_SelectedLabel.SetSelected(true);
 	}
 	
 	bool SetCameraCharacter(RplId rplId)
@@ -124,27 +134,45 @@ class PS_SpectatorMenu: MenuBase
 		m_wIconsFrame = FrameWidget.Cast(GetRootWidget().FindAnyWidget("IconsFrame"));
 		m_wMapFrame = FrameWidget.Cast(GetRootWidget().FindAnyWidget("MapFrame"));
 		m_wSidesRatioFrame = GetRootWidget().FindAnyWidget("SidesRatioFrame");
-		m_wScreenButton = GetRootWidget().FindAnyWidget("ScreenButton");
 		m_wSidesRatio = GetRootWidget().FindAnyWidget("SidesRatio");
 		
 		m_bNavigationSwitchSpectatorUI = SCR_InputButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationSwitchSpectatorUI").FindHandler(SCR_InputButtonComponent));
 		m_bNavigationSwitchSpectatorUI.m_OnClicked.Insert(Action_SwitchSpectatorUI);
 		
-		m_ScreenButton = PS_EventHandlerComponent.Cast(m_wScreenButton.FindHandler(PS_EventHandlerComponent));
-		
 		super.OnMenuOpen();
 		InitChat();
 		
 		GetGame().GetCallqueue().CallLater(RoomSwitchToGlobal, 0);
-		m_ScreenButton.GetOnClick().Insert(OnClickScreen);
 	}
 	
-	void OnClickScreen(Widget w, int x, int y, int button)
+	void UpdateCursorTarget()
 	{
-		if (button == 0)
+		int xs, ys;
+		WidgetManager.GetMousePos(xs, ys);
+		
+		// Check icon under cursor
+		array<Widget> outWidgets = {};
+		WidgetManager.TraceWidgets(xs, ys, GetRootWidget(), outWidgets);
+		PS_SpectatorLabelIcon spectatorLabelIcon; 
+		if (outWidgets.Count() > 0)
 		{
-			int xs, ys;
-			WidgetManager.GetMousePos(xs, ys);
+			Widget widget = outWidgets[0];
+			while (!spectatorLabelIcon && widget)
+			{
+				spectatorLabelIcon = PS_SpectatorLabelIcon.Cast(widget.FindHandler(PS_SpectatorLabelIcon));
+				widget = widget.GetParent();
+			}
+			if (spectatorLabelIcon)
+			{
+				SetSelectedTarget(spectatorLabelIcon);
+				return;
+			}
+			SetSelectedTarget(null);
+			return;
+		}
+		// Check physic trace
+		else
+		{
 			float xr = GetGame().GetWorkspace().DPIUnscale(xs);
 			float yr = GetGame().GetWorkspace().DPIUnscale(ys);
 			vector outDir;
@@ -156,25 +184,28 @@ class PS_SpectatorMenu: MenuBase
 			trace.Flags = TraceFlags.ANY_CONTACT | TraceFlags.WORLD | TraceFlags.ENTS | TraceFlags.OCEAN; 
 			trace.LayerMask = EPhysicsLayerPresets.Projectile;
 			
-			GetGame().GetWorld().TraceMove(trace, TraceClick);
-		}
-	}
-	bool TraceClick(IEntity e, vector start, vector dir)
-	{
-		SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(e);
-		if (character)
-		{
-			/*
-			PS_AttachManualCameraObserverComponent attachComponent = PS_AttachManualCameraObserverComponent.s_Instance;
-			if (attachComponent)
-				attachComponent.AttachTo(character);
-			*/
+			GetGame().GetWorld().TraceMove(trace, null);
 			
-			OpenContext(character);
-			return true;
+			SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(trace.TraceEnt);
+			if (character)
+			{
+				PS_SpectatorLabel spectatorLabel = PS_SpectatorLabel.Cast(character.FindComponent(PS_SpectatorLabel));
+				if (spectatorLabel)
+				{
+					SetSelectedTarget(spectatorLabel.GetLabelIcon());
+					return;
+				}
+			}
 		}
-		
-		return false;
+		SetSelectedTarget(null);
+	}
+	
+	void OpenContextClick()
+	{
+		if (!m_SelectedLabel)
+			return;
+		SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(m_SelectedLabel.GetEntity());
+		OpenContext(character);
 	}
 	
 	// --------------------------------------------------------------------------------------------------------------------------------
@@ -284,6 +315,7 @@ class PS_SpectatorMenu: MenuBase
 #ifdef WORKBENCH
 			m_InputManager.AddActionListener("MenuOpenWB", EActionTrigger.DOWN, OpenPauseMenu);
 #endif
+			m_InputManager.AddActionListener("MouseLeft", EActionTrigger.UP, OpenContextClick);
 		}
 	}
 	
@@ -305,6 +337,7 @@ class PS_SpectatorMenu: MenuBase
 #ifdef WORKBENCH
 			m_InputManager.RemoveActionListener("MenuOpenWB", EActionTrigger.DOWN, OpenPauseMenu);
 #endif
+			m_InputManager.RemoveActionListener("MouseLeft", EActionTrigger.UP, OpenContextClick);
 		}
 	}
 	
@@ -312,6 +345,7 @@ class PS_SpectatorMenu: MenuBase
 	{
 		super.OnMenuUpdate(tDelta);
 		
+		UpdateCursorTarget();
 		
 		if (m_GameMode.GetFriendliesSpectatorOnly())
 		{
@@ -560,7 +594,8 @@ class PS_SpectatorMenu: MenuBase
 		autoptr TraceParam trace = new TraceParam();
 		trace.Start = startPos;
 		trace.End = startPos + outDir;
-		trace.Flags = TraceFlags.ANY_CONTACT | TraceFlags.WORLD | TraceFlags.ENTS | TraceFlags.OCEAN; 
+		trace.Flags = TraceFlags.ANY_CONTACT | TraceFlags.WORLD | TraceFlags.ENTS | TraceFlags.OCEAN;
+		trace.LayerMask = EPhysicsLayerPresets.Projectile;
 		
 		float traceDis = world.TraceMove(trace, null);
 		worldPos = startPos + outDir * traceDis;

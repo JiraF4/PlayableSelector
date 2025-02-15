@@ -13,6 +13,8 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 	protected ButtonWidget m_wHeader;
 	protected TextWidget m_wHeaderText;
 	
+	protected int height = 32;
+	
 	override void HandlerAttached(Widget w)
 	{
 		super.HandlerAttached(w);
@@ -40,8 +42,31 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 		if (contextName != "")
 			contextMenu.m_wHeaderText.SetText(contextName);
 		else
+		{
 			contextMenu.m_wHeader.SetVisible(false);
+			contextMenu.height -= 24;
+		}
+		GetGame().GetCallqueue().Call(contextMenu.MoveFromOffscreen);
 		return contextMenu;
+	}
+	
+	void MoveFromOffscreen()
+	{
+		int x = FrameSlot.GetPosX(m_wRoot);
+		int y = FrameSlot.GetPosY(m_wRoot);
+		int width = 268;
+		
+		float screenWidth, screenHeight;
+		GetGame().GetWorkspace().GetScreenSize(screenWidth, screenHeight);
+		screenWidth = GetGame().GetWorkspace().DPIUnscale(screenWidth);
+		screenHeight = GetGame().GetWorkspace().DPIUnscale(screenHeight);
+		
+		if (x + width > screenWidth)
+			x = x - width;
+		if (y + height > screenHeight)
+			y = y - height;
+		
+		FrameSlot.SetPos(m_wRoot, x, y);
 	}
 	
 	PS_ContextAction AddAction(ResourceName icon, string quad, string name, string actionName, PS_ContextActionData contextActionData)
@@ -55,6 +80,7 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 		Widget contextActionWidget = GetGame().GetWorkspace().CreateWidgets(CONTEXT_ACTION_PREFAB, m_wActionsVerticalLayout);
 		PS_ContextAction contextAction = PS_ContextAction.Cast(contextActionWidget.FindHandler(PS_ContextAction));
 		contextAction.Init(icon, quad, name, actionName, contextActionData);
+		height += 24;
 		return contextAction;
 	}
 	

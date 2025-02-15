@@ -42,7 +42,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	protected bool m_bDisableChat;
 
 	[RplProp()]
-	protected bool m_fCurrentFreezeTime;
+	protected float m_fCurrentFreezeTime;
 
 	[Attribute("0", UIWidgets.CheckBox, "Creates a whitelist on the server for players who have taken roles and also for players specified in $profile:PS_SlotsReserver_Config.json and kicks everyone else.", category: "Reforger Lobby")]
 	protected bool m_bReserveSlots;
@@ -174,6 +174,31 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		else
 			GetGame().GetCallqueue().CallLater(RegisterEditorClosed, 100, false);
 	}
+	
+	void FreezeTimerAdvance(int time)
+	{
+		Rpc(RPC_FreezeTimerAdvance, time);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void RPC_FreezeTimerAdvance(int time)
+	{
+		time = time * 1000;
+		m_iFreezeTime += time;
+		m_fCurrentFreezeTime += time;
+		GetGame().GetCallqueue().Remove(restrictedZonesTimer);
+		restrictedZonesTimer(m_fCurrentFreezeTime + time);
+	}
+	
+	void FreezeTimerEnd()
+	{
+		Rpc(RPC_FreezeTimerEnd);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void RPC_FreezeTimerEnd()
+	{
+		GetGame().GetCallqueue().Remove(restrictedZonesTimer);
+		restrictedZonesTimer(5000);
+	}
 
 	void EditorClosed()
 	{
@@ -206,6 +231,30 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		invoker.Insert(ForceUnconsious_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("spw");
 		invoker.Insert(SpawnInit_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("fta");
+		invoker.Insert(FreezeTimerAdvance_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("fte");
+		invoker.Insert(FreezeTimerEnd_Callback);
+	}
+	
+	void FreezeTimerAdvance_Callback(SCR_ChatPanel panel, string data)
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		if (!playableController)
+			return;
+		
+		playableController.FreezeTimerAdvance(data.ToInt());
+	}
+	
+	void FreezeTimerEnd_Callback(SCR_ChatPanel panel, string data)
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		if (!playableController)
+			return;
+		
+		playableController.FreezeTimerEnd();
 	}
 
 	void SpawnInit_Callback(SCR_ChatPanel panel, string data)
@@ -797,6 +846,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 	bool GetFriendliesSpectatorOnly()
 	{
+		if (!GetGame().GetPlayerController()) return true;
 		if (SCR_Global.IsAdmin(GetGame().GetPlayerController().GetPlayerId())) return false;
 		return m_bFriendliesSpectatorOnly;
 	}

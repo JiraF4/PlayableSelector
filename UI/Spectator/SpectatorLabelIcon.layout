@@ -51,6 +51,24 @@ FrameWidgetClass {
     SizeY 64
     OffsetBottom -64
    }
+   "Ignore Cursor" 0
+   Texture "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset"
+   Image "Circle"
+   Size 64 64
+  }
+  ImageWidgetClass "{649EF2A1B610A1A3}" {
+   Name "SpectatorLabelIconSelected"
+   Slot FrameWidgetSlot "{5EE8948CA93791EA}" {
+    OffsetLeft 0
+    OffsetTop 0
+    SizeX 64
+    OffsetRight -64
+    SizeY 64
+    OffsetBottom -64
+   }
+   Opacity 0
+   "Ignore Cursor" 0
+   Color 0.761 0.386 0.078 1
    Texture "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset"
    Image "Circle"
    Size 64 64

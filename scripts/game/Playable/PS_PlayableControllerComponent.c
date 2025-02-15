@@ -140,6 +140,30 @@ class PS_PlayableControllerComponent : ScriptComponent
 		gameMode.FactionLockSwitch();
 	}
 
+	// ------ FreezeTimer ------
+	void FreezeTimerAdvance(int time)
+	{
+		Rpc(RPC_FreezeTimerAdvance, time);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void RPC_FreezeTimerAdvance(int time)
+	{
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if (gameMode)
+			gameMode.FreezeTimerAdvance(time);
+	}
+	void FreezeTimerEnd()
+	{
+		Rpc(RPC_FreezeTimerEnd);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void RPC_FreezeTimerEnd()
+	{
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if (gameMode)
+			gameMode.FreezeTimerEnd();
+	}
+	
 	// ------ SpawnPrefab ------
 	void SpawnPrefab(string GUID)
 	{
@@ -200,7 +224,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		SCR_AIGroup aiGroup = playableManager.GetPlayerGroupByPlayable(oldPlayableComponent.GetRplId());
-		SCR_AIGroup playabelGroup = aiGroup.GetSlave();
+		SCR_AIGroup playabelGroup = aiGroup.m_BotsGroup;
 		playabelGroup.AddAIEntityToGroup(newCharacter);
 		playableManager.SetPlayablePlayerGroupId(playableContainer.GetRplId(), aiGroup.GetGroupID());
 
@@ -263,7 +287,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		SCR_AIGroup aiGroup = playableManager.GetPlayerGroupByPlayable(oldPlayableComponent.GetRplId());
-		SCR_AIGroup playabelGroup = aiGroup.GetSlave();
+		SCR_AIGroup playabelGroup = aiGroup.m_BotsGroup;
 		playabelGroup.AddAIEntityToGroup(newCharacter);
 		playableManager.SetPlayablePlayerGroupId(playableContainer.GetRplId(), aiGroup.GetGroupID());
 

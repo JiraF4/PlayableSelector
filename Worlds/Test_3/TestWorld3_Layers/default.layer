@@ -8,7 +8,7 @@ PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_Game
  m_bAutoPlayerRespawn 0
  m_bAllowFactionChange 0
  m_bMarkersOnlyOnBriefing 1
- m_iFreezeTime 10000
+ m_iFreezeTime 100000
  m_bDisableChat 1
  m_bDisableVanillaGroupMenu 1
  m_bFriendliesSpectatorOnly 1
