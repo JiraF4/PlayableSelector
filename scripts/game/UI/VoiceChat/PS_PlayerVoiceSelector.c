@@ -144,7 +144,13 @@ class PS_PlayerVoiceSelector : SCR_ButtonComponent
 		}
 		
 		if (m_iPlayerId == GetGame().GetPlayerController().GetPlayerId())
+		{
+			if (PS_PlayersHelper.IsAdminOrServer())
+			{
+				contextMenu.ActionGetArmaId(m_iPlayerId);
+			}
 			return;
+		}
 		
 		contextMenu.ActionDirectMessage(m_iPlayerId);
 		
@@ -202,7 +208,12 @@ class PS_PlayerVoiceSelector : SCR_ButtonComponent
 			if (!showKick && currentPlayerRoom.Contains("#PS-VoNRoom_Command")) showKick = !playableManager.IsPlayerGroupLeader(m_iPlayerId) && playableManager.IsPlayerGroupLeader(currentPlayerId);
 		}
 		if (showKick)
-			contextMenu.ActionVoiceKick(m_iPlayerId).Insert(OnActionVoiceKick);	
+			contextMenu.ActionVoiceKick(m_iPlayerId).Insert(OnActionVoiceKick);
+		
+		if (PS_PlayersHelper.IsAdminOrServer())
+		{
+			contextMenu.ActionGetArmaId(m_iPlayerId);
+		}
 	}
 	
 	// -------------------- Buttons events --------------------

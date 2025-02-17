@@ -9,7 +9,7 @@ SCR_EditorModeEntity : "{E56F54E533ACE527}Prefabs/Editor/Modes/EditorModeBase.et
        m_Info SCR_UIInfo "{547A6A52C50F5C37}" {
         Name "#PS-Editor_ContextAction_RespawnEntity_Name"
         Description "#PS-Editor_ContextAction_RespawnEntity_Name"
-        Icon "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset"
+        Icon "{F680C0AF2011FA1F}UI/Textures/Icons/PS_Respawn_x64.edds"
         IconSetName "Respawn"
        }
        m_iOrder 170
@@ -36,5 +36,5 @@ SCR_EditorModeEntity : "{E56F54E533ACE527}Prefabs/Editor/Modes/EditorModeBase.et
    }
   }
  }
- coords 115.602 1 84.23
+ coords 110.651 1 86.238
 }

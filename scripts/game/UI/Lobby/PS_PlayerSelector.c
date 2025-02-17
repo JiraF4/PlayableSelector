@@ -295,10 +295,16 @@ class PS_PlayerSelector : SCR_ButtonBaseComponent
 		PS_ContextMenu contextMenu = PS_ContextMenu.CreateContextMenuOnMousePosition(m_CoopLobby.GetRootWidget(), playerName);
 		contextMenu.ActionPlayerSelect(m_iPlayerId);
 		
+		if (PS_PlayersHelper.IsAdminOrServer())
+		{
+			contextMenu.ActionGetArmaId(m_iPlayerId);
+		}
 		if (m_iPlayerId == m_iCurrentPlayerId)
 			return;
 		if (PS_PlayersHelper.IsAdminOrServer())
+		{
 			contextMenu.ActionKick(m_iPlayerId);
+		}
 		if (m_PlayableManager.GetPlayerPin(m_iPlayerId))
 			contextMenu.ActionUnpin(m_iPlayerId);
 		contextMenu.ActionDirectMessage(m_iPlayerId);

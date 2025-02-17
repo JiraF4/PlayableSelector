@@ -550,6 +550,10 @@ class PS_CharacterSelector : SCR_ButtonComponent
 			{
 				contextMenu.ActionPlayerSelect(m_iPlayerId);
 			}
+			if (PS_PlayersHelper.IsAdminOrServer())
+			{
+				contextMenu.ActionGetArmaId(m_iPlayerId);
+			}
 		}
 	}
 	void OnActionOpenInventory(PS_ContextAction contextAction, PS_ContextActionDataPlayable contextActionDataPlayable)

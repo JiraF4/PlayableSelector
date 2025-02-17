@@ -169,6 +169,10 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 		
 		int playerId = PS_PlayableManager.GetInstance().GetPlayerByPlayable(playableComponent.GetRplId());
 		string playerName = PS_PlayableManager.GetInstance().GetPlayerName(playerId);
+		if (playerName == "")
+		{
+			playerName = playableComponent.GetName();
+		}
 		PS_ContextMenu contextMenu = PS_ContextMenu.CreateContextMenuOnMousePosition(menu.GetRootWidget(), playerName);
 		
 		PS_AttachManualCameraObserverComponent attachComponent = PS_AttachManualCameraObserverComponent.s_Instance;
@@ -183,6 +187,11 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 		{
 			contextMenu.ActionDirectMessage(playerId);
 			contextMenu.ActionKick(playerId);
+			
+			if (PS_PlayersHelper.IsAdminOrServer())
+			{
+				contextMenu.ActionGetArmaId(playerId);
+			}
 		}
 	}
 	void OnActionAttachTo(PS_ContextAction contextAction, PS_ContextActionDataCharacter contextActionDataCharacter)

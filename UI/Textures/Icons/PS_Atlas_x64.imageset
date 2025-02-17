@@ -356,5 +356,11 @@ ImageSetClass {
    Size 64 64
    Flags 0
   }
+  ImageSetDefClass Arma {
+   Name "Arma"
+   Pos 1472 128
+   Size 64 64
+   Flags 0
+  }
  }
 }

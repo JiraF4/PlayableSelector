@@ -136,6 +136,19 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 		PS_PlayableManager.GetPlayableController().KickPlayer(contextActionDataPlayer.GetPlayerId());
 	}
 	
+	void ActionGetArmaId(int playerId)
+	{
+		string name = "Copy arma Id";
+		return AddAction(IMAGESET_PS, "Arma", name, "",
+			new PS_ContextActionDataPlayer(playerId)
+		).GetOnOnContextAction().Insert(OnActionCopyArmaId);
+	}
+	void OnActionCopyArmaId(PS_ContextAction contextAction, PS_ContextActionDataPlayer contextActionDataPlayer)
+	{
+		string playerUUID = GetGame().GetBackendApi().GetPlayerUID(contextActionDataPlayer.GetPlayerId());
+		System.ExportToClipboard(playerUUID);
+	}
+	
 	void ActionMute(int playerId)
 	{
 		string name = "Mute player";
