@@ -350,5 +350,11 @@ ImageSetClass {
    Size 64 64
    Flags 0
   }
+  ImageSetDefClass Respawn {
+   Name "Respawn"
+   Pos 1792 128
+   Size 64 64
+   Flags 0
+  }
  }
 }

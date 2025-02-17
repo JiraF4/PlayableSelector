@@ -264,6 +264,14 @@ StringTable {
    Author "zazul"
    LastChanged "SeskPC"
   }
+  CustomStringTableItem "{64A33B842940A2A4}" {
+   Id "PS-Editor_ContextAction_RespawnEntity_Name"
+   Target_en_us "Respawn entity"
+   Target_ru_ru "Воскресить"
+   Modified 1688422291
+   Author "zazul"
+   LastChanged "zazul"
+  }
   CustomStringTableItem "{5EF96208D034F2DA}" {
    Id "PS-EditorAttribute_GameModeCoop_CanOpenLobbyInLobby"
    Target_en_us "Team Switch"
@@ -602,14 +610,16 @@ StringTable {
   CustomStringTableItem "{64A31A3A9D99C14A}" {
    Id "PS-Freeze_time_advanced"
    Target_en_us "Freeze time advanced"
-   Modified 1688419146
+   Target_ru_ru "Фризтайм сдвинут"
+   Modified 1688422260
    Author "zazul"
    LastChanged "zazul"
   }
   CustomStringTableItem "{64A31A3AA5151141}" {
    Id "PS-Freeze_time_force_end"
    Target_en_us "Freeze time force ended"
-   Modified 1688419161
+   Target_ru_ru "Фризтайм завершен"
+   Modified 1688422246
    Author "zazul"
    LastChanged "zazul"
   }

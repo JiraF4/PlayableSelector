@@ -1,6 +1,24 @@
 SCR_EditorModeEntity : "{E56F54E533ACE527}Prefabs/Editor/Modes/EditorModeBase.et" {
  ID "54F0A77282A3AA3B"
  components {
+  SCR_ContextActionsEditorComponent "{518AEC2A62FE8325}" {
+   m_ActionsLists {
+    SCR_EditorActionList "{54B2AA71F2ECD6D7}" {
+     m_Actions {
+      PS_RespawnSelectedContextAction "{64A33B845BB33B3D}" {
+       m_Info SCR_UIInfo "{547A6A52C50F5C37}" {
+        Name "#PS-Editor_ContextAction_RespawnEntity_Name"
+        Description "#PS-Editor_ContextAction_RespawnEntity_Name"
+        Icon "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset"
+        IconSetName "Respawn"
+       }
+       m_iOrder 170
+       m_bIsServer 1
+      }
+     }
+    }
+   }
+  }
   SCR_PlacingEditorComponent "{5145484399BAA2E7}" {
    m_Registries {
     SCR_PlaceableEntitiesRegistry "{52E65E9551790427}" {
@@ -18,4 +36,5 @@ SCR_EditorModeEntity : "{E56F54E533ACE527}Prefabs/Editor/Modes/EditorModeBase.et
    }
   }
  }
+ coords 115.602 1 84.23
 }
