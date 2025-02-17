@@ -1,3 +1,8 @@
+SCR_EditorSettingsEntity {
+ coords 48.282 1 148.978
+ m_bOverrideBaseModes 1
+ m_BaseModes BUILDING
+}
 SCR_AIGroup Test : "{126BE8C46FA39581}Prefabs/Groups/INDFOR/Group_FIA_FireTeam_P.et" {
  coords 74.554 1 89.132
 }
@@ -8,6 +13,12 @@ Vehicle UAZ1 : "{259EE7B78C51B624}Prefabs/Vehicles/Wheeled/UAZ469/UAZ469.et" {
 Vehicle S1203_transport_beige1 : "{543799AC5C52989C}Prefabs/Vehicles/Wheeled/S1203/S1203_transport_beige.et" {
  coords 128.185 1 121.382
  m_sAttachmentGroupName "Test3"
+}
+GenericEntity : "{57B4984773FCAFB1}Prefabs/Props/Military/Compositions/FIA/BuildingService_FIA.et" {
+ coords 95.247 1 160.748
+}
+GenericEntity : "{617E4B88F858344B}PrefabsEditable/Auto/Compositions/Slotted/SlotFlatSmall/E_SupplyCache_S_FIA_03.et" {
+ coords 103.454 1 165.147
 }
 PolylineShapeEntity : "{7019844BAD5C4DD8}Prefabs/PolyZone/PolyZone_Border.et" {
  coords 117.101 1 92.769
@@ -35,6 +46,17 @@ PolylineShapeEntity : "{7019844BAD5C4DD8}Prefabs/PolyZone/PolyZone_Border.et" {
 SCR_AIGroup Arab : "{70323274E7899BD1}Prefabs/Groups/INDFOR/Group_FIA_MedicalSection_p.et" {
  coords 92.253 1 157.198
 }
+Vehicle UH1H1 : "{70BAEEFC2D3FEE64}Prefabs/Vehicles/Helicopters/UH1H/UH1H.et" {
+ coords 89.226 1 157.672
+}
+$grp SCR_EditorRestrictionZoneEntity : "{7846A93EA395CFBA}PrefabsEditable/RestrictionZone/E_EditorRestrictionZoneBase.et" {
+ {
+  coords 92.383 1 158.469
+ }
+ {
+  coords 74.293 1 89.167
+ }
+}
 Vehicle M923A1 : "{9A0D72816DFFDB7F}Prefabs/Vehicles/Wheeled/M923A1/M923A1.et" {
  coords 140.1 1 90.548
  m_sAttachmentGroupName "Test2"
@@ -53,7 +75,7 @@ $grp Vehicle : "{C012BB3488BEA0C2}Prefabs/Vehicles/Wheeled/BTR70/BTR70.et" {
   m_sAttachmentGroupName "Test2"
  }
  BTR4 {
-  coords 117.848 1 116.135
+  coords 76.215 1 89.565
   m_sAttachmentGroupName "Test3"
  }
  BTR5 {

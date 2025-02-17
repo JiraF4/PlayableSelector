@@ -19,7 +19,20 @@ class PS_PlayableControllerComponent : ScriptComponent
 	{
 		m_vVoNPosition = VoNPosition;
 	}
-
+	
+	[RplProp()]
+	bool m_bOutFreezeTime;
+	
+	void SetOutFreezeTime(bool outFreezeTime)
+	{
+		Rpc(RPC_SetOutFreezeTime, outFreezeTime);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Owner)]
+	void RPC_SetOutFreezeTime(bool outFreezeTime)
+	{
+		m_bOutFreezeTime = outFreezeTime;
+	}
+	
 	// Event
 	protected ref ScriptInvokerBase<SCR_BaseGameMode_OnPlayerRoleChanged> m_eOnPlayerRoleChange = new ScriptInvokerBase<SCR_BaseGameMode_OnPlayerRoleChanged>();
 	ScriptInvokerBase<SCR_BaseGameMode_OnPlayerRoleChanged> GetOnPlayerRoleChange()
@@ -356,6 +369,8 @@ class PS_PlayableControllerComponent : ScriptComponent
 	// We change to VoN boi lets enable camera
 	private void OnControlledEntityChanged(IEntity from, IEntity to)
 	{
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		
 		// Write entity change to replay
 		if (Replication.IsServer()) {
 			RplId toRplId = RplId.Invalid();
@@ -363,7 +378,6 @@ class PS_PlayableControllerComponent : ScriptComponent
 				RplComponent rplTo = RplComponent.Cast(to.FindComponent(RplComponent));
 				toRplId = rplTo.Id();
 			}
-			PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
 		}
 
 		RplComponent rpl = RplComponent.Cast(GetOwner().FindComponent(RplComponent));
@@ -384,6 +398,12 @@ class PS_PlayableControllerComponent : ScriptComponent
 		PS_LobbyVoNComponent vonTo;
 		if (to)
 			vonTo = PS_LobbyVoNComponent.Cast(to.FindComponent(PS_LobbyVoNComponent));
+		if (!vonTo)
+		{
+			PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+			if (gameModeCoop.GetState() == SCR_EGameModeState.GAME)
+				GetGame().GetCallqueue().Call(TellFuckingEditorCoreThanWeAlive, thisPlayerController.GetPlayerId(), to);
+		}
 		if (vonTo && !vonFrom)
 		{
 			if (from)
@@ -391,9 +411,26 @@ class PS_PlayableControllerComponent : ScriptComponent
 			SwitchToObserver(from);
 		}
 		if (!vonTo)
+		{
 			SwitchFromObserver();
+		}
 	}
 	
+	// There is sure no ебанорго game modes without spawns, yeah sure блять
+	void TellFuckingEditorCoreThanWeAlive(int playerId, IEntity entity)
+	{
+		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if (gameModeCoop.IsFreezeTimeEnd() && gameModeCoop.GetDisableBuildingModeAfterFreezeTime())
+			 return;
+		SCR_BaseGameMode.Cast(GetGame().GetGameMode()).GetOnPlayerSpawned().Invoke(playerId, entity);
+		Rpc(AndFuckingServerTo, playerId, Replication.FindId(entity))
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void AndFuckingServerTo(int playerId, RplId entityId)
+	{
+		IEntity entity = IEntity.Cast(Replication.FindItem(entityId));
+		SCR_BaseGameMode.Cast(GetGame().GetGameMode()).GetOnPlayerSpawned().Invoke(playerId, entity);
+	}
 	
 	override protected void EOnFrame(IEntity owner, float timeSlice)
 	{
@@ -406,12 +443,98 @@ class PS_PlayableControllerComponent : ScriptComponent
 		
 		PlayerController playerController = PlayerController.Cast(owner);
 		ActionManager actionManager = playerController.GetActionManager();
+		if (!actionManager)
+			return;
+		
 		actionManager.SetActionValue("CharacterFire", 0);
 		actionManager.SetActionValue("CharacterThrowGrenade", 0);
 		actionManager.SetActionValue("CharacterMelee", 0);
 		actionManager.SetActionValue("CharacterFireStatic", 0);
 		actionManager.SetActionValue("TurretFire", 0);
 		actionManager.SetActionValue("VehicleFire", 0);
+		actionManager.SetActionValue("VehicleHorn", 0);
+		
+		IEntity character = playerController.GetControlledEntity();
+		if (character)
+		{
+			Vehicle vehicle = Vehicle.Cast(character.GetRootParent());
+			if (vehicle)
+			{
+				if (!vehicle.IsEnableMoveOnFreeze())
+				{
+					DisableVehicleMove(actionManager);
+				}
+			}
+		}
+		
+		if (m_bOutFreezeTime)
+		{
+			actionManager.SetActionValue("CharacterForward", 0);
+			actionManager.SetActionValue("CharacterRight", 0);
+			actionManager.SetActionValue("CharacterTurnUp", 0);
+			actionManager.SetActionValue("CharacterTurnRight", 0);
+			actionManager.SetActionValue("CharacterTurnUp", 0);
+			actionManager.SetActionValue("CharacterTurnRight", 0);
+			actionManager.SetActionValue("GetOut", 0);
+			actionManager.SetActionValue("JumpOut", 0);
+			actionManager.SetActionValue("CharacterStand", 0);
+			actionManager.SetActionValue("CharacterCrouch", 0);
+			actionManager.SetActionValue("CharacterProne", 0);
+			actionManager.SetActionValue("CharacterStandCrouchToggle", 0);
+			actionManager.SetActionValue("CharacterStandProneToggle", 0);
+			actionManager.SetActionValue("CharacterRoll", 0);
+			actionManager.SetActionValue("CharacterJump", 0);
+			
+			DisableVehicleMove(actionManager);
+			
+			if (character)
+			{
+				Vehicle vehicle = Vehicle.Cast(character.GetRootParent());
+				if (vehicle)
+				{
+					BaseVehicleNodeComponent vehicleNodeComponent = BaseVehicleNodeComponent.Cast(vehicle.FindComponent(BaseVehicleNodeComponent));
+					if (vehicleNodeComponent)
+					{
+						SCR_HelicopterControllerComponent helicopterControllerComponent = SCR_HelicopterControllerComponent.Cast(vehicleNodeComponent.FindComponent(SCR_HelicopterControllerComponent));
+						if (!helicopterControllerComponent.GetAutohoverEnabled())
+						{
+							actionManager.SetActionValue("AutohoverToggle", 1);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	void DisableVehicleMove(ActionManager actionManager)
+	{
+		actionManager.SetActionValue("VehicleEngineStop", 1);
+		actionManager.SetActionValue("VehicleEngineStart", 0);
+		actionManager.SetActionValue("AutohoverToggle", 0);
+		actionManager.SetActionValue("WheelBrake", 1);
+		actionManager.SetActionValue("WheelBrakePersistent", 1);
+		actionManager.SetActionValue("CyclicForward", 0);
+		actionManager.SetActionValue("CyclicBack", 0);
+		actionManager.SetActionValue("CyclicLeft", 0);
+		actionManager.SetActionValue("CyclicRight", 0);
+		actionManager.SetActionValue("AntiTorqueLeft", 0);
+		actionManager.SetActionValue("AntiTorqueRight", 0);
+		actionManager.SetActionValue("CollectiveIncrease", 0);
+		actionManager.SetActionValue("CollectiveDecrease", 0);
+		actionManager.SetActionValue("HelicopterEngineStop", 0);
+		actionManager.SetActionValue("HelicopterEngineStart", 0);
+		
+		actionManager.SetActionValue("CarThrust", 0);
+		actionManager.SetActionValue("CarBrake", 1);
+		actionManager.SetActionValue("CarSteering", 0);
+		actionManager.SetActionValue("CarTurbo", 0);
+		actionManager.SetActionValue("CarTurboToggle", 0);
+		actionManager.SetActionValue("CarShift", 0);
+		actionManager.SetActionValue("CarShiftReverse", 0);
+		actionManager.SetActionValue("CarHandBrake", 1);
+		actionManager.SetActionValue("CarHandBrakePersistent", 0);
+		actionManager.SetActionValue("CarLightsHiBeamToggle", 0);
+		actionManager.SetActionValue("CarHazardLights", 0);
 	}
 
 	// Yes every frame, just don't look at it.

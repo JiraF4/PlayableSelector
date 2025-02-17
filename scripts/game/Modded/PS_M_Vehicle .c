@@ -5,6 +5,14 @@ modded class Vehicle
 	[Attribute()]
 	string m_sAttachmentGroupName;
 	
+	[Attribute()]
+	protected bool m_bEnableMoveOnFreeze;
+	
+	bool IsEnableMoveOnFreeze()
+	{
+		return m_bEnableMoveOnFreeze;
+	}
+	
 	void Vehicle(IEntitySource src, IEntity parent)
 	{
 		m_aVehicles_PS.Insert(this);
@@ -14,6 +22,12 @@ modded class Vehicle
 	
 	void RegisterToMissionDate()
 	{
+		VehicleWheeledSimulation vehicleWheeledSimulation = VehicleWheeledSimulation.Cast(FindComponent(VehicleWheeledSimulation));
+		if (vehicleWheeledSimulation)
+		{
+			vehicleWheeledSimulation.SetBreak(1, 1);
+		}
+		
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		if (playableManager)
 		{

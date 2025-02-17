@@ -56,7 +56,7 @@ class PS_PlayableComponent : ScriptComponent
 
 	// Temporally
 	static protected int s_iRespawnTime;
-
+	
 	void CopyState(PS_RespawnData respawnData)
 	{
 		if (respawnData.m_PlayableComponent)

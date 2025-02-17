@@ -42,7 +42,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	protected bool m_bDisableChat;
 
 	[RplProp()]
-	protected float m_fCurrentFreezeTime;
+	protected float m_fCurrentFreezeTime = 1;
 
 	[Attribute("0", UIWidgets.CheckBox, "Creates a whitelist on the server for players who have taken roles and also for players specified in $profile:PS_SlotsReserver_Config.json and kicks everyone else.", category: "Reforger Lobby")]
 	protected bool m_bReserveSlots;
@@ -62,6 +62,12 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 	[Attribute("0", UIWidgets.CheckBox, "", category: "Reforger Lobby")]
 	protected bool m_bFreezeTimeShootingForbiden;
+	
+	[Attribute("1", UIWidgets.CheckBox, "", category: "Reforger Lobby")]
+	protected bool m_bDisableZalupaVision;
+	
+	[Attribute("0", UIWidgets.CheckBox, "", category: "Reforger Lobby")]
+	protected bool m_bDisableBuildingModeAfterFreezeTime;
 	
 	[Attribute("-1", UIWidgets.Auto, "", category: "Reforger Lobby (WIP)")]
 	protected int m_iFactionsBalance;
@@ -809,7 +815,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 		// next second or end
 		if (freezeTime <= 0)
+		{
 			removeRestrictedZones();
+			if (m_bDisableBuildingModeAfterFreezeTime)
+				DisableBuildingMode();
+		}
 		else
 			GetGame().GetCallqueue().CallLater(restrictedZonesTimer, time, false, freezeTime);
 	}
@@ -832,7 +842,18 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		}
 
 		m_hFreezeTimeCounter.SetTime(freezeTime);
-
+	}
+	void DisableBuildingMode()
+	{
+		SCR_EditorManagerCore editorManagerCore = SCR_EditorManagerCore.Cast(SCR_EditorManagerCore.GetInstance(SCR_EditorManagerCore));
+		array<int> outPlayers = {};
+		GetGame().GetPlayerManager().GetAllPlayers(outPlayers);
+		foreach (int player : outPlayers)
+		{
+			SCR_EditorManagerEntity editorManager = editorManagerCore.GetEditorManager(player);
+			if (editorManager)
+				editorManager.SetCanOpen(false, EEditorCanOpen.ALIVE);
+		}
 	}
 	PS_FreezeTimeCounter m_hFreezeTimeCounter;
 
@@ -872,6 +893,16 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	bool IsFactionLockMode()
 	{
 		return m_bFactionLock;
+	}
+	
+	bool IsArmaVisionDisabled()
+	{
+		return m_bDisableZalupaVision;
+	}
+	
+	bool GetDisableBuildingModeAfterFreezeTime()
+	{
+		return m_bDisableBuildingModeAfterFreezeTime;
 	}
 
 	bool GetMarkersOnlyOnBriefing()
