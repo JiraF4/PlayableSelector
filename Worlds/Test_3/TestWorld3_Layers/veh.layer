@@ -17,6 +17,24 @@ Vehicle S1203_transport_beige1 : "{543799AC5C52989C}Prefabs/Vehicles/Wheeled/S12
 GenericEntity : "{57B4984773FCAFB1}Prefabs/Props/Military/Compositions/FIA/BuildingService_FIA.et" {
  coords 95.247 1 160.748
 }
+SCR_EditorModeEntity : "{59EF8ECAE1DCD417}Prefabs/Editor/Modes/EditorModeEdit.et" {
+ components {
+  SCR_ContextActionsEditorComponent "{518AEC2A62FE8325}" {
+   m_ActionsLists {
+    SCR_EditorActionList "{54B2AA71F2ECD6D7}" {
+     m_Actions {
+      PS_RespawnSelectedContextAction "{64A33B845BB33B3D}" {
+       m_Info SCR_UIInfo "{547A6A52C50F5C37}" {
+        Icon "{F680C0AF2011FA1F}UI/Textures/Icons/PS_Respawn_x64.edds"
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+ coords 110.651 1 86.238
+}
 GenericEntity : "{617E4B88F858344B}PrefabsEditable/Auto/Compositions/Slotted/SlotFlatSmall/E_SupplyCache_S_FIA_03.et" {
  coords 103.454 1 165.147
 }
