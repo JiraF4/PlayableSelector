@@ -599,6 +599,20 @@ StringTable {
    Author "zazul"
    LastChanged "zazul"
   }
+  CustomStringTableItem "{64A31A3A9D99C14A}" {
+   Id "PS-Freeze_time_advanced"
+   Target_en_us "Freeze time advanced"
+   Modified 1688419146
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{64A31A3AA5151141}" {
+   Id "PS-Freeze_time_force_end"
+   Target_en_us "Freeze time force ended"
+   Modified 1688419161
+   Author "zazul"
+   LastChanged "zazul"
+  }
   CustomStringTableItem "{5EB30CD4368261A7}" {
    Id "PS-GameMaster_PlayableGroup"
    Target_en_us "Playable Unit"

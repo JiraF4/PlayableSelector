@@ -254,6 +254,15 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			return;
 		
 		playableController.FreezeTimerAdvance(data.ToInt());
+		FreezeTimerAdvance_Notify();
+		Rpc(FreezeTimerAdvance_Notify);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void FreezeTimerAdvance_Notify()
+	{
+		SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
+		ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("smsg");
+		invoker.Invoke(null, "#PS-Freeze_time_advanced");
 	}
 	
 	void FreezeTimerEnd_Callback(SCR_ChatPanel panel, string data)
@@ -264,6 +273,15 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			return;
 		
 		playableController.FreezeTimerEnd();
+		FreezeTimerEnd_Notify();
+		Rpc(FreezeTimerEnd_Notify);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void FreezeTimerEnd_Notify()
+	{
+		SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
+		ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("smsg");
+		invoker.Invoke(null, "#PS-Freeze_time_force_end");
 	}
 
 	void SpawnInit_Callback(SCR_ChatPanel panel, string data)
