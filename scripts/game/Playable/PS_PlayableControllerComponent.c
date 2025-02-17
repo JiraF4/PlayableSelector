@@ -333,6 +333,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 	override protected void OnPostInit(IEntity owner)
 	{
 		SetEventMask(GetOwner(), EntityEvent.POSTFIXEDFRAME);
+		SetEventMask(GetOwner(), EntityEvent.FRAME);
 		SCR_PlayerController playerController = SCR_PlayerController.Cast(PlayerController.Cast(GetOwner()));
 		playerController.m_OnControlledEntityChanged.Insert(OnControlledEntityChanged);
 
@@ -391,6 +392,26 @@ class PS_PlayableControllerComponent : ScriptComponent
 		}
 		if (!vonTo)
 			SwitchFromObserver();
+	}
+	
+	
+	override protected void EOnFrame(IEntity owner, float timeSlice)
+	{
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if ((gameMode.GetState() == SCR_EGameModeState.GAME && gameMode.IsFreezeTimeEnd()) || !gameMode.IsFreezeTimeShootingForbiden())
+		{
+			ClearEventMask(GetOwner(), EntityEvent.FRAME);
+			return;
+		}
+		
+		PlayerController playerController = PlayerController.Cast(owner);
+		ActionManager actionManager = playerController.GetActionManager();
+		actionManager.SetActionValue("CharacterFire", 0);
+		actionManager.SetActionValue("CharacterThrowGrenade", 0);
+		actionManager.SetActionValue("CharacterMelee", 0);
+		actionManager.SetActionValue("CharacterFireStatic", 0);
+		actionManager.SetActionValue("TurretFire", 0);
+		actionManager.SetActionValue("VehicleFire", 0);
 	}
 
 	// Yes every frame, just don't look at it.

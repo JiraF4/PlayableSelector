@@ -60,6 +60,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	[Attribute("0", UIWidgets.CheckBox, "", category: "Reforger Lobby")]
 	protected bool m_bFriendliesSpectatorOnly;
 
+	[Attribute("0", UIWidgets.CheckBox, "", category: "Reforger Lobby")]
+	protected bool m_bFreezeTimeShootingForbiden;
+	
 	[Attribute("-1", UIWidgets.Auto, "", category: "Reforger Lobby (WIP)")]
 	protected int m_iFactionsBalance;
 
@@ -837,6 +840,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	bool IsFreezeTimeEnd()
 	{
 		return m_fCurrentFreezeTime <= 0;
+	}
+	
+	bool IsFreezeTimeShootingForbiden()
+	{
+		return m_bFreezeTimeShootingForbiden;
 	}
 
 	bool IsAdminMode()
