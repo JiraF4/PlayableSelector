@@ -1,0 +1,46 @@
+SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base.et" {
+ ID "520EC961A090B1EE"
+ components {
+  MeshObject "{520EA1D2F659C81F}" {
+   Materials {
+    MaterialAssignClass "{64A732B891C3297A}" {
+     SourceMaterial "Basebody_01_Male_Arms"
+     AssignedMaterial "{9668A21511C6F791}Assets/_SharedData/Decals/Invisible_Material.emat"
+    }
+    MaterialAssignClass "{64A732B891C3294A}" {
+     SourceMaterial "Basebody_01_Male_Arms_wound"
+     AssignedMaterial "{9668A21511C6F791}Assets/_SharedData/Decals/Invisible_Material.emat"
+    }
+    MaterialAssignClass "{64A732B891C3294E}" {
+     SourceMaterial "Basebody_01_Male_Body"
+     AssignedMaterial "{9668A21511C6F791}Assets/_SharedData/Decals/Invisible_Material.emat"
+    }
+    MaterialAssignClass "{64A732B891C32954}" {
+     SourceMaterial "Basebody_01_Male_Body_wound"
+     AssignedMaterial "{9668A21511C6F791}Assets/_SharedData/Decals/Invisible_Material.emat"
+    }
+   }
+  }
+  PS_PlayableComponent "{5EFCC1946F475F15}" {
+   Enabled 0
+  }
+  PS_PolyZoneEffectHandler "{5F389088D37FBC21}" {
+   Enabled 0
+  }
+  PS_SpectatorLabelCharacter "{5F357473BDE91270}" {
+   Enabled 0
+  }
+  SCR_EditableCharacterComponent "{520EA1D2F659C85C}" {
+   Enabled 0
+  }
+  SCR_CharacterIdentityComponent "{5584CBC63E092DBC}" {
+   Override 1
+   Identity Identity "{5584CBC6363C648B}" {
+    VisualIdentity VisualIdentity "{56E6D9456009D1C4}" {
+     Head "{51A3C18E0AF9A0B0}Prefabs/Characters/Basebody/CharacterBasebodyInvisible.et"
+     Body "{51A3C18E0AF9A0B0}Prefabs/Characters/Basebody/CharacterBasebodyInvisible.et"
+    }
+   }
+  }
+ }
+}

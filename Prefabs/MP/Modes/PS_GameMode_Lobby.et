@@ -62,6 +62,7 @@ PS_GameModeCoop : "{0F307326459A1395}Prefabs/MP/Modes/GameMode_Base.et" {
   }
   SCR_PreGameGameModeStateComponent "{5ED9056CE8168166}" {
    m_fDuration 0
+   m_bDisableControls 0
   }
   SCR_ReconnectComponent "{5A02809D5E8ABE42}" {
    Enabled 0

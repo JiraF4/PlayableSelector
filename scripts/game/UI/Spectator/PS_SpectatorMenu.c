@@ -46,6 +46,7 @@ class PS_SpectatorMenu: MenuBase
 	
 	
 	protected PS_SpectatorLabelIcon m_SelectedLabel;
+	protected vector m_vSelectedPosition;
 	
 	static void ResetTarget()
 	{
@@ -150,6 +151,19 @@ class PS_SpectatorMenu: MenuBase
 		int xs, ys;
 		WidgetManager.GetMousePos(xs, ys);
 		
+		
+		float xr = GetGame().GetWorkspace().DPIUnscale(xs);
+		float yr = GetGame().GetWorkspace().DPIUnscale(ys);
+		vector outDir;
+		vector origin = GetGame().GetWorkspace().ProjScreenToWorld(xr, yr, outDir, GetGame().GetWorld());
+		TraceParam trace = new TraceParam();
+		trace.Start = origin;
+		trace.End = origin + outDir * 1000;
+		trace.Flags = TraceFlags.ANY_CONTACT | TraceFlags.WORLD | TraceFlags.ENTS | TraceFlags.OCEAN; 
+		trace.LayerMask = EPhysicsLayerPresets.Projectile;
+		float traceCursor = GetGame().GetWorld().TraceMove(trace, null);
+		m_vSelectedPosition = trace.Start + outDir * 1000 * traceCursor;
+		
 		// Check icon under cursor
 		array<Widget> outWidgets = {};
 		WidgetManager.TraceWidgets(xs, ys, GetRootWidget(), outWidgets);
@@ -173,19 +187,6 @@ class PS_SpectatorMenu: MenuBase
 		// Check physic trace
 		else
 		{
-			float xr = GetGame().GetWorkspace().DPIUnscale(xs);
-			float yr = GetGame().GetWorkspace().DPIUnscale(ys);
-			vector outDir;
-			vector origin = GetGame().GetWorkspace().ProjScreenToWorld(xr, yr, outDir, GetGame().GetWorld());
-				
-			TraceParam trace = new TraceParam();
-			trace.Start = origin;
-			trace.End = origin + outDir * 1000;
-			trace.Flags = TraceFlags.ANY_CONTACT | TraceFlags.WORLD | TraceFlags.ENTS | TraceFlags.OCEAN; 
-			trace.LayerMask = EPhysicsLayerPresets.Projectile;
-			
-			GetGame().GetWorld().TraceMove(trace, null);
-			
 			SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(trace.TraceEnt);
 			if (character)
 			{
@@ -203,7 +204,10 @@ class PS_SpectatorMenu: MenuBase
 	void OpenContextClick()
 	{
 		if (!m_SelectedLabel)
+		{
+			OpenContext(null);
 			return;
+		}
 		SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(m_SelectedLabel.GetEntity());
 		OpenContext(character);
 	}
@@ -215,6 +219,24 @@ class PS_SpectatorMenu: MenuBase
 		MenuBase menu = GetGame().GetMenuManager().GetTopMenu();
 		if (!menu)
 			return;
+		
+		if (!character)
+		{
+			array<Widget> outWidgets = {};
+			int xs, ys;
+			WidgetManager.GetMousePos(xs, ys);
+			WidgetManager.TraceWidgets(xs, ys, GetRootWidget(), outWidgets);
+			if (outWidgets.Count() > 0)
+				return;
+			if (!PS_PlayersHelper.IsAdminOrServer())
+				return;
+			
+			PS_ContextMenu contextMenu = PS_ContextMenu.CreateContextMenuOnMousePosition(menu.GetRootWidget(), "");
+			contextMenu.ActionCreatePrefab(m_vSelectedPosition);
+			contextMenu.ActionCreateAdministrator(m_vSelectedPosition);
+			
+			return;
+		}
 		
 		PS_PlayableComponent playableComponent = character.PS_GetPlayable();
 		

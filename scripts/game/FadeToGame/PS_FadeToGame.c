@@ -16,6 +16,9 @@ class PS_FadeToGame : ChimeraMenuBase
 	override void OnMenuOpen()
 	{
 		m_wFade = ImageWidget.Cast(GetRootWidget().FindAnyWidget("Fade"));
+		
+		if (PS_PlayersHelper.IsAdminOrServer())
+			Close();
 	}
 
 	//------------------------------------------------------------------------------------------------

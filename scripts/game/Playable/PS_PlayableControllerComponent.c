@@ -178,10 +178,12 @@ class PS_PlayableControllerComponent : ScriptComponent
 	}
 	
 	// ------ SpawnPrefab ------
-	void SpawnPrefab(string GUID)
+	void SpawnPrefab(string GUID, vector position)
 	{
 		IEntity camera = GetGame().GetCameraManager().CurrentCamera();
-		Rpc(RPC_SpawnPrefab, camera.GetOrigin(), GUID);
+		if (position == "0 0 0")
+			position = camera.GetOrigin();
+		Rpc(RPC_SpawnPrefab, position, GUID);
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void RPC_SpawnPrefab(vector position, string GUID)
@@ -196,9 +198,35 @@ class PS_PlayableControllerComponent : ScriptComponent
 		entitySpawnParams.Transform[3] = position;
 
 		IEntity entity = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), entitySpawnParams);
+		if (!entity)
+			return;
 		Physics physics = entity.GetPhysics();
 		if (physics)
 			physics.SetActive(ActiveState.ACTIVE);
+	}
+	
+	// ------ SpawnAdministrator ------
+	void SpawnAdministrator(vector position)
+	{
+		Rpc(RPC_SpawnAdministrator, position);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void RPC_SpawnAdministrator(vector position)
+	{
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		if (!SCR_Global.IsAdmin(thisPlayerController.GetPlayerId()))
+			return;
+
+		Resource resource = Resource.Load("{3C87CA398115BBD4}Prefabs/Characters/Core/Character_Administrator.et");
+		EntitySpawnParams entitySpawnParams = new EntitySpawnParams();
+		Math3D.MatrixIdentity4(entitySpawnParams.Transform);
+		entitySpawnParams.Transform[3] = position;
+
+		IEntity entity = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), entitySpawnParams);
+		if (!entity)
+			return;
+		SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(entity);
+		thisPlayerController.SetControlledEntity(entity);
 	}
 	
 	// ------ RespawnPlayable ------
@@ -391,7 +419,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 			m_vObserverPosition = from.GetOrigin();
 		}
 		m_bAfterInitialSwitch = true;
-
+		
 		PS_LobbyVoNComponent vonFrom;
 		if (from)
 			vonFrom = PS_LobbyVoNComponent.Cast(from.FindComponent(PS_LobbyVoNComponent));
@@ -440,6 +468,9 @@ class PS_PlayableControllerComponent : ScriptComponent
 			ClearEventMask(GetOwner(), EntityEvent.FRAME);
 			return;
 		}
+		
+		if (PS_PlayersHelper.IsAdminOrServer())
+			return;
 		
 		PlayerController playerController = PlayerController.Cast(owner);
 		ActionManager actionManager = playerController.GetActionManager();
@@ -730,6 +761,10 @@ class PS_PlayableControllerComponent : ScriptComponent
 
 	void SwitchToObserver(IEntity from)
 	{
+		SCR_EditorManagerEntity editorManagerEntity = SCR_EditorManagerEntity.GetInstance();
+		if (editorManagerEntity.IsOpened())
+			return;
+		
 		if (m_Camera)
 			return;
 		GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.SpectatorMenu);

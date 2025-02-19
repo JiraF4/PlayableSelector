@@ -179,7 +179,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	{
 		SCR_EditorModeEntity editorModeEntity = SCR_EditorModeEntity.GetInstance();
 		if (editorModeEntity)
+		{
 			editorModeEntity.GetOnClosed().Insert(EditorClosed);
+		}
 		else
 			GetGame().GetCallqueue().CallLater(RegisterEditorClosed, 100, false);
 	}
@@ -216,9 +218,22 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 		playableController.SaveCameraTransform();
 		playableController.SwitchFromObserver();
-		playableController.SwitchToMenu(GetState());
+		
+		IEntity entity = playerController.GetControlledEntity();
+		if (!entity)
+		{
+			playableController.SwitchToMenu(SCR_EGameModeState.GAME);
+			return;
+		}
+		
+		PS_LobbyVoNComponent von = PS_LobbyVoNComponent.Cast(entity.FindComponent(PS_LobbyVoNComponent));
+		if (von)
+		{
+			playableController.SwitchToMenu(SCR_EGameModeState.GAME);
+			return;
+		}
 	}
-
+	
 	void AddAdvanceAction()
 	{
 		SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
@@ -240,6 +255,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		invoker.Insert(ForceUnconsious_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("spw");
 		invoker.Insert(SpawnInit_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("spp");
+		invoker.Insert(SpawnPosition_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("fta");
 		invoker.Insert(FreezeTimerAdvance_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("fte");
@@ -284,6 +301,25 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		invoker.Invoke(null, "#PS-Freeze_time_force_end");
 	}
 
+	void SpawnPosition_Callback(SCR_ChatPanel panel, string data)
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		if (!playableController)
+			return;
+		
+		array<string> outTokens = {};
+		data.Split(" ", outTokens, true);
+		string positionStr = outTokens[0];
+		positionStr.Replace("|", " ");
+		positionStr.Replace("<", " ");
+		positionStr.Replace(">", " ");
+		positionStr.Replace(",", " ");
+		vector position = positionStr.ToVector();
+		
+		playableController.SpawnPrefab(data, position);
+	}
+	
 	void SpawnInit_Callback(SCR_ChatPanel panel, string data)
 	{
 		PlayerController playerController = GetGame().GetPlayerController();
@@ -291,7 +327,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (!playableController)
 			return;
 
-		playableController.SpawnPrefab(data);
+		playableController.SpawnPrefab(data, "0 0 0");
 	}
 
 	void ForceUnconsious_Callback(SCR_ChatPanel panel, string data)
@@ -561,14 +597,16 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	{
 		PlayerController playerController = GetGame().GetPlayerController();
 		PlayerManager playerManager = GetGame().GetPlayerManager();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
-
+		
 		if (!m_bTeamSwitch && !PS_PlayersHelper.IsAdminOrServer()) return;
 
 		MenuBase lobbyMenu = GetGame().GetMenuManager().FindMenuByPreset(ChimeraMenuPreset.CoopLobby);
 		if (!lobbyMenu)
 			GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.CoopLobby);
 	}
+
 
 	// Force open current game state menu
 	void OpenCurrentMenuOnClients()

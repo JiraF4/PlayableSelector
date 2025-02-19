@@ -317,6 +317,69 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 			new PS_ContextActionDataCharacter(character)
 		).GetOnOnContextAction();
 	}
+	void ActionCreatePrefab(vector position)
+	{
+		if (!PS_PlayersHelper.IsAdminOrServer())
+			return;
+		
+		string name = "#PS-ContextAction_CreatePrefab";
+		return AddAction(IMAGESET_PS, "Prefab", name, "",
+			new PS_ContextActionDataPosition(position)
+		).GetOnOnContextAction().Insert(OnCreatePrefab);
+	}
+	void OnCreatePrefab(PS_ContextAction contextAction, PS_ContextActionDataPosition contextActionDataPosition)
+	{
+		MenuBase menuBase = GetGame().GetMenuManager().GetTopMenu();
+		
+		Widget chat = menuBase.GetRootWidget().FindAnyWidget("ChatPanel");
+		if (!chat)
+			chat = GetGame().GetWorkspace().FindAnyWidget("ChatPanel");
+		if (!chat)
+			return;
+		vector position = contextActionDataPosition.GetPosition();
+		
+		string clipBoard = System.ImportFromClipboard();
+		string GUID = SCR_ConfigHelper.GetGUID(clipBoard, false);
+		if (GUID != "")
+		{
+			PlayerController playerController = GetGame().GetPlayerController();
+			PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+			if (!playableController)
+				return;
+			
+			playableController.SpawnPrefab(GUID, position);
+			return;
+		}
+		
+		return;
+		
+		SCR_ChatPanel chatPanel = SCR_ChatPanel.Cast(chat.FindHandler(SCR_ChatPanel));
+		SCR_ChatPanelManager.GetInstance().OpenChatPanel(chatPanel);
+		EditBoxWidget editBoxWidget = chatPanel.PS_GetWidgets().m_MessageEditBox;
+		string positionStr = position.ToString();
+		positionStr.Replace(" ", "|");
+		
+		editBoxWidget.SetText("/spp " + positionStr + " ");
+	}
+	void ActionCreateAdministrator(vector position)
+	{
+		if (!PS_PlayersHelper.IsAdminOrServer())
+			return;
+		
+		string name = "#PS-ContextAction_CreateAdministrator";
+		return AddAction(IMAGESET_PS, "Prefab", name, "",
+			new PS_ContextActionDataPosition(position)
+		).GetOnOnContextAction().Insert(OnCreateAdministrator);
+	}
+	void OnCreateAdministrator(PS_ContextAction contextAction, PS_ContextActionDataPosition contextActionDataPosition)
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		if (!playableController)
+			return;
+		
+		playableController.SpawnAdministrator(contextActionDataPosition.GetPosition());
+	}
 	
 	// Actions voice
 	PS_ScriptInvokerOnContextAction ActionJoinVoice()

@@ -44,7 +44,7 @@ modded class SCR_PlayersRestrictionZoneManagerComponent
 		if (!playerController)
 			return;
 		
-		PS_PlayableControllerComponent playableControllerComponent = PS_PlayableControllerComponent.Cast(GetGame().GetPlayerController().FindComponent(PS_PlayableControllerComponent));
+		PS_PlayableControllerComponent playableControllerComponent = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		if (!playableControllerComponent)
 			return;
 		

@@ -166,6 +166,22 @@ StringTable {
    Author "zazul"
    LastChanged "zazul"
   }
+  CustomStringTableItem "{64A74CE18FEB997D}" {
+   Id "PS-ContextAction_CreateAdministrator"
+   Target_en_us "Create holy spirit"
+   Target_ru_ru "Создать святой дух"
+   Modified 1688685971
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{64A732B94555BFDD}" {
+   Id "PS-ContextAction_CreatePrefab"
+   Target_en_us "Create prefab (Clipboard)"
+   Target_ru_ru "Создать префаб (Clipboard)"
+   Modified 1688685114
+   Author "zazul"
+   LastChanged "zazul"
+  }
   CustomStringTableItem "{64A34C79066B8C20}" {
    Id "PS-ContextAction_DetachFrom"
    Target_en_us "Detach from"

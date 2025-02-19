@@ -78,14 +78,26 @@ class PS_ContextActionDataPlayable : PS_ContextActionData {
 	}
 }
 class PS_ContextActionDataCharacter : PS_ContextActionData {
-	protected SCR_ChimeraCharacter m_Chracter;
+	protected SCR_ChimeraCharacter m_Character;
 	void PS_ContextActionDataCharacter(SCR_ChimeraCharacter character)
 	{
-		m_Chracter = character;
+		m_Character = character;
 	}
 	
 	SCR_ChimeraCharacter GetCharacter()
 	{
-		return m_Chracter;
+		return m_Character;
+	}
+}
+class PS_ContextActionDataPosition : PS_ContextActionData {
+	protected vector m_vPosition;
+	void PS_ContextActionDataPosition(vector position)
+	{
+		m_vPosition = position;
+	}
+	
+	vector GetPosition()
+	{
+		return m_vPosition;
 	}
 }
