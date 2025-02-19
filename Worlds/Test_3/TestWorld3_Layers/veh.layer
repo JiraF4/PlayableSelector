@@ -10,6 +10,20 @@ Vehicle UAZ1 : "{259EE7B78C51B624}Prefabs/Vehicles/Wheeled/UAZ469/UAZ469.et" {
  coords 134.551 1 111.901
  m_sAttachmentGroupName "Test3"
 }
+$grp GenericEntity : "{49FFE8F373F55960}Prefabs/Weapons/Explosives/Mine_M15AT/Mine_M15AT.et" {
+ {
+  coords 71.727 1 92.715
+ }
+ {
+  coords 71.885 1 91.923
+ }
+ {
+  coords 93.588 1 158.182
+ }
+ {
+  coords 94.742 1 157.234
+ }
+}
 Vehicle S1203_transport_beige1 : "{543799AC5C52989C}Prefabs/Vehicles/Wheeled/S1203/S1203_transport_beige.et" {
  coords 128.185 1 121.382
  m_sAttachmentGroupName "Test3"
@@ -60,6 +74,14 @@ $grp SCR_EditorRestrictionZoneEntity : "{7846A93EA395CFBA}PrefabsEditable/Restri
 Vehicle M923A1 : "{9A0D72816DFFDB7F}Prefabs/Vehicles/Wheeled/M923A1/M923A1.et" {
  coords 140.1 1 90.548
  m_sAttachmentGroupName "Test2"
+}
+$grp GenericEntity : "{B63D38376558C9DD}PrefabsEditable/Mines/E_Mine_M15AT.et" {
+ {
+  coords 74.263 1 92.452
+ }
+ {
+  coords 73.421 1 92.944
+ }
 }
 $grp Vehicle : "{C012BB3488BEA0C2}Prefabs/Vehicles/Wheeled/BTR70/BTR70.et" {
  BTR1 {

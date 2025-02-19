@@ -464,6 +464,12 @@ class PS_PlayableControllerComponent : ScriptComponent
 				{
 					DisableVehicleMove(actionManager);
 				}
+				VehicleWheeledSimulation vehicleWheeledSimulation = VehicleWheeledSimulation.Cast(vehicle.FindComponent(VehicleWheeledSimulation));
+				if (vehicleWheeledSimulation)
+				{
+					if (vehicleWheeledSimulation.EngineIsOn())
+						vehicleWheeledSimulation.EngineStop();
+				}
 			}
 		}
 		
@@ -511,7 +517,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		actionManager.SetActionValue("VehicleEngineStop", 1);
 		actionManager.SetActionValue("VehicleEngineStart", 0);
 		actionManager.SetActionValue("AutohoverToggle", 0);
-		actionManager.SetActionValue("WheelBrake", 1);
+		actionManager.SetActionValue("WheelBrake", 0);
 		actionManager.SetActionValue("WheelBrakePersistent", 1);
 		actionManager.SetActionValue("CyclicForward", 0);
 		actionManager.SetActionValue("CyclicBack", 0);
@@ -525,7 +531,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		actionManager.SetActionValue("HelicopterEngineStart", 0);
 		
 		actionManager.SetActionValue("CarThrust", 0);
-		actionManager.SetActionValue("CarBrake", 1);
+		actionManager.SetActionValue("CarBrake", 0);
 		actionManager.SetActionValue("CarSteering", 0);
 		actionManager.SetActionValue("CarTurbo", 0);
 		actionManager.SetActionValue("CarTurboToggle", 0);

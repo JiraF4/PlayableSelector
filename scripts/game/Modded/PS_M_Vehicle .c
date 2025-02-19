@@ -20,8 +20,26 @@ modded class Vehicle
 			GetGame().GetCallqueue().Call(RegisterToMissionDate);
 	}
 	
+	void Freeze()
+	{
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if ((gameMode.GetState() == SCR_EGameModeState.GAME && gameMode.IsFreezeTimeEnd()) || !gameMode.IsFreezeTimeShootingForbiden())
+		{
+			GetGame().GetCallqueue().Remove(Freeze);
+			return;
+		}
+		
+		if (!GetPhysics())
+			return;
+		
+		GetPhysics().SetVelocity("0 0 0");
+		GetPhysics().SetAngularVelocity("0 0 0");
+	}
+	
 	void RegisterToMissionDate()
 	{
+		if (!m_bEnableMoveOnFreeze)
+			GetGame().GetCallqueue().CallLater(Freeze, 0, true);
 		VehicleWheeledSimulation vehicleWheeledSimulation = VehicleWheeledSimulation.Cast(FindComponent(VehicleWheeledSimulation));
 		if (vehicleWheeledSimulation)
 		{

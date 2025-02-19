@@ -21,7 +21,15 @@ modded class SCR_PlayersRestrictionZoneManagerComponent
 		*/
 		
 		//super.KillPlayerOutOfZone(playerID, playerEntity);
-		RestrictMovement(playerID);
+		RestrictMovement(playerID, true);
+	}
+	
+	override void SetPlayerZoneData(int playerID, IEntity playerEntity, bool inZone, bool inWarningZone, ERestrictionZoneWarningType warningType, vector zoneCenter = vector.Zero, float warningRadiusSq = -1, float zoneRadiusSq = -1)
+	{	
+		super.SetPlayerZoneData(playerID, playerEntity, inZone, inWarningZone, warningType, zoneCenter, warningRadiusSq, zoneRadiusSq);
+		
+		if (inZone)
+			RestrictMovement(playerID, false);
 	}
 	
 	void ResetPlayerZoneData(int playerID)
@@ -29,7 +37,7 @@ modded class SCR_PlayersRestrictionZoneManagerComponent
 		SetPlayerZoneData(playerID, null, false, false, -1);
 	}
 	
-	void RestrictMovement(int playerID)
+	void RestrictMovement(int playerID, bool restrict)
 	{
 		PlayerController playerController = m_PlayerManager.GetPlayerController(playerID);
 		
@@ -40,6 +48,6 @@ modded class SCR_PlayersRestrictionZoneManagerComponent
 		if (!playableControllerComponent)
 			return;
 		
-		playableControllerComponent.SetOutFreezeTime(true);
+		playableControllerComponent.SetOutFreezeTime(restrict);
 	}
 }
