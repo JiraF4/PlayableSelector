@@ -74,7 +74,7 @@ class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 			m_wJoinRoomImage.SetVisible(false);
 			return;
 		}
-		m_wJoinRoomImage.SetVisible(true);
+		//m_wJoinRoomImage.SetVisible(true);
 		
 		// Bad hardcoded staff here
 		if (m_sRoomName == "#PS-VoNRoom_Command")

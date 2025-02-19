@@ -106,7 +106,7 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 		if (coopLobby.GetSelectedPlayer() == playerId)
 			return;
 		
-		string name = "Select player";
+		string name = "#PS-ContextAction_SelectPlayer";
 		return AddAction(IMAGESET, "exit", name, "",
 			new PS_ContextActionDataPlayer(playerId)
 		).GetOnOnContextAction().Insert(OnActionPlayerSelect);
@@ -125,7 +125,7 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 		if (GetGame().GetPlayerController().GetPlayerId() == playerId)
 			return;
 		
-		string name = "Kick";
+		string name = "#PS-ContextAction_Kick";
 		return AddAction(IMAGESET, "kickCommandAlt", name, "",
 			new PS_ContextActionDataPlayer(playerId)
 		).GetOnOnContextAction().Insert(OnActionKick);
@@ -138,7 +138,7 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 	
 	void ActionGetArmaId(int playerId)
 	{
-		string name = "Copy arma Id";
+		string name = "#PS-ContextAction_CopyArmaId";
 		return AddAction(IMAGESET_PS, "Arma", name, "",
 			new PS_ContextActionDataPlayer(playerId)
 		).GetOnOnContextAction().Insert(OnActionCopyArmaId);
@@ -151,7 +151,7 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 	
 	void ActionMute(int playerId)
 	{
-		string name = "Mute player";
+		string name = "#PS-ContextAction_MutePlayer";
 		return AddAction(IMAGESET_PS, "VoNDisabled", name, "",
 			new PS_ContextActionDataPlayer(playerId)
 		).GetOnOnContextAction().Insert(OnActionMute);
@@ -166,7 +166,7 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 	
 	void ActionUnmute(int playerId)
 	{
-		string name = "Unmute player";
+		string name = "#PS-ContextAction_UnmutePlayer";
 		return AddAction(IMAGESET_PS, "VoNDirect", name, "",
 			new PS_ContextActionDataPlayer(playerId)
 		).GetOnOnContextAction().Insert(OnActionUnmute);
@@ -184,7 +184,7 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 		if (!PS_PlayersHelper.IsAdminOrServer())
 			return;
 		
-		string name = "Unpin player";
+		string name = "#PS-ContextAction_UnpinPlayer";
 		return AddAction(IMAGESET, "pinPlay", name, "",
 			new PS_ContextActionDataPlayer(playerId)
 		).GetOnOnContextAction().Insert(OnActionUnpin);
@@ -200,7 +200,7 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 		if (!PS_PlayersHelper.IsAdminOrServer())
 			return;
 		
-		string name = "Pin player";
+		string name = "#PS-ContextAction_PinPlayer";
 		return AddAction(IMAGESET, "pinPlay", name, "",
 			new PS_ContextActionDataPlayer(playerId)
 		).GetOnOnContextAction().Insert(OnActionPin);
@@ -214,7 +214,7 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 	PS_ScriptInvokerOnContextAction ActionVoiceKick(int playerId)
 	{
 		SCR_UISoundEntity.SoundEvent("SOUND_LOBBY_KICK");
-		string name = "Kick from voice room";
+		string name = "#PS-ContextAction_KickFromVoiceRoom";
 		return AddAction(IMAGESET, "kickCommandAlt", name, "",
 			new PS_ContextActionDataPlayer(playerId)
 		).GetOnOnContextAction();
@@ -225,7 +225,7 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 		if (!PS_PlayersHelper.IsAdminOrServer())
 			return;
 		
-		string name = "Direct message";
+		string name = "#PS-ContextAction_DirectMessage";
 		AddAction(IMAGESET, "kickCommandAlt", name, "",
 			new PS_ContextActionDataPlayer(playerId)
 		).GetOnOnContextAction().Insert(OnContextDirectMessage);
@@ -250,25 +250,25 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 	// Actions playable
 	PS_ScriptInvokerOnContextAction ActionFreeSlot(RplId playableId)
 	{
-		return AddAction(IMAGESET, "kickCommandAlt", "Free slot", "",
+		return AddAction(IMAGESET, "kickCommandAlt", "#PS-ContextAction_FreeSlot", "",
 			new PS_ContextActionDataPlayable(playableId)
 		).GetOnOnContextAction();
 	}
 	PS_ScriptInvokerOnContextAction ActionLock(RplId playableId)
 	{
-		return AddAction(IMAGESET_PS, "Locked", "Lock slot", "",
+		return AddAction(IMAGESET_PS, "Locked", "#PS-ContextAction_LockSlot", "",
 			new PS_ContextActionDataPlayable(playableId)
 		).GetOnOnContextAction();
 	}
 	PS_ScriptInvokerOnContextAction ActionUnlock(RplId playableId)
 	{
-		return AddAction(IMAGESET_PS, "Unlocked", "Unlock slot", "",
+		return AddAction(IMAGESET_PS, "Unlocked", "#PS-ContextAction_UnlockSlot", "",
 			new PS_ContextActionDataPlayable(playableId)
 		).GetOnOnContextAction();
 	}
 	PS_ScriptInvokerOnContextAction ActionOpenInventory(RplId playableId)
 	{
-		return AddAction(IMAGESET_PS, "Backpack", "Open inventory", "",
+		return AddAction(IMAGESET_PS, "Backpack", "#PS-ContextAction_OpenInventory", "",
 			new PS_ContextActionDataPlayable(playableId)
 		).GetOnOnContextAction();
 	}
@@ -277,9 +277,7 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 		if (!PS_PlayersHelper.IsAdminOrServer())
 			return;
 		
-		string name = "Respawn";
-		if (playerId > 0)
-			name += "";
+		string name = "#PS-ContextAction_Respawn";
 		return AddAction(IMAGESET_PS, "Medicine", name, "",
 			new PS_ContextActionDataPlayable(playableId)
 		).GetOnOnContextAction().Insert(OnRespawnInPlace);
@@ -293,28 +291,28 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 	// Actions spectator
 	PS_ScriptInvokerOnContextAction ActionAttachTo(SCR_ChimeraCharacter character)
 	{
-		string name = "Attach to";
+		string name = "#PS-ContextAction_AttachTo";
 		return AddAction(IMAGESET, "battleye_enabled", name, "",
 			new PS_ContextActionDataCharacter(character)
 		).GetOnOnContextAction();
 	}
 	PS_ScriptInvokerOnContextAction ActionDetachFrom(SCR_ChimeraCharacter character)
 	{
-		string name = "Detach from";
+		string name = "#PS-ContextAction_DetachFrom";
 		return AddAction(IMAGESET, "battleye_enabled", name, "",
 			new PS_ContextActionDataCharacter(character)
 		).GetOnOnContextAction();
 	}
 	PS_ScriptInvokerOnContextAction ActionLookAt(SCR_ChimeraCharacter character)
 	{
-		string name = "Look at";
+		string name = "#PS-ContextAction_LookAt";
 		return AddAction(IMAGESET, "battleye_enabled", name, "",
 			new PS_ContextActionDataCharacter(character)
 		).GetOnOnContextAction();
 	}
 	PS_ScriptInvokerOnContextAction ActionFirstPersonView(SCR_ChimeraCharacter character)
 	{
-		string name = "First person view";
+		string name = "#PS-ContextAction_FirstPersonView";
 		return AddAction(IMAGESET, "battleye_enabled", name, "",
 			new PS_ContextActionDataCharacter(character)
 		).GetOnOnContextAction();
@@ -323,7 +321,7 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 	// Actions voice
 	PS_ScriptInvokerOnContextAction ActionJoinVoice()
 	{
-		return AddAction(IMAGESET_PS, "RoomEnter", "Join voice room", "",
+		return AddAction(IMAGESET_PS, "RoomEnter", "#PS-ContextAction_JoinVoiceRoom", "",
 			new PS_ContextActionData()
 		).GetOnOnContextAction();
 	}

@@ -150,6 +150,158 @@ StringTable {
    Author "SeskPC"
    LastChanged "SeskPC"
   }
+  CustomStringTableItem "{64A34C790378AD88}" {
+   Id "PS-ContextAction_AttachTo"
+   Target_en_us "Attach to"
+   Target_ru_ru "Закрепится"
+   Modified 1688646477
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{64A34C79926792B6}" {
+   Id "PS-ContextAction_CopyArmaId"
+   Target_en_us "Copy Arma id"
+   Target_ru_ru "Копировать Arma id"
+   Modified 1688646502
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{64A34C79066B8C20}" {
+   Id "PS-ContextAction_DetachFrom"
+   Target_en_us "Detach from"
+   Target_ru_ru "Открепится"
+   Modified 1688646508
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{64A34C796EFC982A}" {
+   Id "PS-ContextAction_DirectMessage"
+   Target_en_us "Direct message"
+   Target_ru_ru "Приватное сообщение"
+   Modified 1688646515
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{64A34C790B76EF12}" {
+   Id "PS-ContextAction_FirstPersonView"
+   Target_en_us "First person view"
+   Target_ru_ru "Вид от первого лица"
+   Modified 1688646521
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{64A34C79BFB70C71}" {
+   Id "PS-ContextAction_FreeSlot"
+   Target_en_us "Free slot"
+   Target_ru_ru "Освободить слот"
+   Modified 1688646530
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{64A34C7914BEBE1D}" {
+   Id "PS-ContextAction_JoinVoiceRoom"
+   Target_en_us "Join voice room"
+   Target_ru_ru "Зайти в голосовой канал"
+   Modified 1688646542
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{64A34C79894582B7}" {
+   Id "PS-ContextAction_Kick"
+   Target_en_us "Kick from server"
+   Target_ru_ru "Выгнать с сервера"
+   Modified 1688646547
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{64A34C79B8B8AEDA}" {
+   Id "PS-ContextAction_KickFromVoiceRoom"
+   Target_en_us "Kick from voice room"
+   Target_ru_ru "Выгнать из голосового канала"
+   Modified 1688646573
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{64A34C7966C91FF2}" {
+   Id "PS-ContextAction_LockSlot"
+   Target_en_us "Lock slot"
+   Target_ru_ru "Закрыть слот"
+   Modified 1688646578
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{64A34C7909A59270}" {
+   Id "PS-ContextAction_LookAt"
+   Target_en_us "Loot at"
+   Target_ru_ru "Смотреть на"
+   Modified 1688646587
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{64A34C7999483A04}" {
+   Id "PS-ContextAction_MutePlayer"
+   Target_en_us "Mute player"
+   Target_ru_ru "Замьютить игрока"
+   Modified 1688646604
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{64A34C796A1F5197}" {
+   Id "PS-ContextAction_OpenInventory"
+   Target_en_us "Open inventory"
+   Target_ru_ru "Открыть инвентарь"
+   Modified 1688646609
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{64A34C79AFAC84A0}" {
+   Id "PS-ContextAction_PinPlayer"
+   Target_en_us "Pin player"
+   Target_ru_ru "Закрепить игрока"
+   Modified 1688646615
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{64A34C796CDAF3C1}" {
+   Id "PS-ContextAction_Respawn"
+   Target_en_us "Respawn"
+   Target_ru_ru "Воскресить"
+   Modified 1688646625
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{64A34C7983ED835F}" {
+   Id "PS-ContextAction_SelectPlayer"
+   Target_en_us "Select player"
+   Target_ru_ru "Выбрать игрока"
+   Modified 1688646629
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{64A34C796841C7C6}" {
+   Id "PS-ContextAction_UnlockSlot"
+   Target_en_us "Unlock slot"
+   Target_ru_ru "Открыть слот"
+   Modified 1688646638
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{64A34C79A0444EC1}" {
+   Id "PS-ContextAction_UnmutePlayer"
+   Target_en_us "Unmute player"
+   Target_ru_ru "Размьютить игрока"
+   Modified 1688646649
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{64A34C79A7D56B80}" {
+   Id "PS-ContextAction_UnpinPlayer"
+   Target_en_us "Unpin player"
+   Target_ru_ru "Открепить игрока"
+   Modified 1688646660
+   Author "zazul"
+   LastChanged "zazul"
+  }
   CustomStringTableItem "{616ED424FF1D1ABC}" {
    Id "PS-Debrief_AfterAction"
    Target_en_us "After Action Report"
