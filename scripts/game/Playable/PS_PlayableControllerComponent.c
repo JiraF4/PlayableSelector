@@ -226,6 +226,9 @@ class PS_PlayableControllerComponent : ScriptComponent
 		if (!entity)
 			return;
 		SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(entity);
+		RplComponent rpl = RplComponent.Cast(entity.FindComponent(RplComponent));
+		if (rpl)
+			rpl.GiveExt(thisPlayerController.GetRplIdentity(), false);
 		thisPlayerController.SetControlledEntity(entity);
 	}
 	
@@ -725,6 +728,8 @@ class PS_PlayableControllerComponent : ScriptComponent
 	void LobbyVoNDisableDelayed()
 	{
 		PS_LobbyVoNComponent von = GetVoN();
+		if (!von)
+			return;
 		von.SetCommMethod(ECommMethod.DIRECT);
 		von.SetCapture(false);
 	}

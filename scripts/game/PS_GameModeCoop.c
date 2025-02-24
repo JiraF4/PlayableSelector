@@ -270,6 +270,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (!playableController)
 			return;
 		
+		if (GetState() != SCR_EGameModeState.GAME || IsFreezeTimeEnd())
+			return;
+		
 		playableController.FreezeTimerAdvance(data.ToInt());
 		FreezeTimerAdvance_Notify();
 		Rpc(FreezeTimerAdvance_Notify);
@@ -287,6 +290,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		if (!playableController)
+			return;
+		
+		if (GetState() != SCR_EGameModeState.GAME || IsFreezeTimeEnd())
 			return;
 		
 		playableController.FreezeTimerEnd();

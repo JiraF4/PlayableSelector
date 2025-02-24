@@ -21,6 +21,8 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
     }
    }
   }
+  PS_DisableCharacterCollisionComponent "{64B06113AE5567B3}" {
+  }
   PS_PlayableComponent "{5EFCC1946F475F15}" {
    Enabled 0
   }
@@ -28,6 +30,9 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
    Enabled 0
   }
   PS_SpectatorLabelCharacter "{5F357473BDE91270}" {
+   Enabled 0
+  }
+  SCR_CharacterDamageManagerComponent "{55872AD7B4E959F2}" {
    Enabled 0
   }
   SCR_EditableCharacterComponent "{520EA1D2F659C85C}" {
@@ -41,6 +46,10 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
      Body "{51A3C18E0AF9A0B0}Prefabs/Characters/Basebody/CharacterBasebodyInvisible.et"
     }
    }
+  }
+  CharacterAnimationComponent "{520EA1D2F659C994}" {
+   Layers 4096
+   DefaultShapeLayer 4096
   }
  }
 }

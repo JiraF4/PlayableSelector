@@ -162,6 +162,11 @@ class PS_PlayerVoiceSelector : SCR_ButtonComponent
 		SCR_FactionManager factionManager = SCR_FactionManager.Cast(GetGame().GetFactionManager());
 		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
 		
+		if (PS_PlayersHelper.IsAdminOrServer())
+		{
+			contextMenu.ActionGetArmaId(m_iPlayerId);
+		}
+		
 		PermissionState mute = PermissionState.DISALLOWED;
 		SocialComponent socialComp = SocialComponent.Cast(GetGame().GetPlayerController().FindComponent(SocialComponent));
 		if (socialComp.IsMuted(m_iPlayerId))
@@ -170,7 +175,6 @@ class PS_PlayerVoiceSelector : SCR_ButtonComponent
 			contextMenu.ActionMute(m_iPlayerId);
 		if (PS_PlayersHelper.IsAdminOrServer())
 		{
-			contextMenu.ActionKick(m_iPlayerId);
 			contextMenu.ActionPlayerSelect(m_iPlayerId);
 			
 			PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
@@ -211,9 +215,7 @@ class PS_PlayerVoiceSelector : SCR_ButtonComponent
 			contextMenu.ActionVoiceKick(m_iPlayerId).Insert(OnActionVoiceKick);
 		
 		if (PS_PlayersHelper.IsAdminOrServer())
-		{
-			contextMenu.ActionGetArmaId(m_iPlayerId);
-		}
+			contextMenu.ActionKick(m_iPlayerId);
 	}
 	
 	// -------------------- Buttons events --------------------
@@ -224,6 +226,8 @@ class PS_PlayerVoiceSelector : SCR_ButtonComponent
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		SCR_EGameModeState gameState = gameMode.GetState();
+		
+		SCR_UISoundEntity.SoundEvent("SOUND_LOBBY_KICK");
 		
 		// current player
 		PlayerController currentPlayerController = GetGame().GetPlayerController();

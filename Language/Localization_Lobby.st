@@ -785,9 +785,9 @@ StringTable {
   }
   CustomStringTableItem "{64A31A3AA5151141}" {
    Id "PS-Freeze_time_force_end"
-   Target_en_us "Freeze time force ended"
-   Target_ru_ru "Фризтайм завершен"
-   Modified 1688422246
+   Target_en_us "Freeze time ended by admin"
+   Target_ru_ru "Фризтайм завершен администратором"
+   Modified 1689324205
    Author "zazul"
    LastChanged "zazul"
   }

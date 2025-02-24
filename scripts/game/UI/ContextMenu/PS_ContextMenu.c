@@ -213,7 +213,6 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 	
 	PS_ScriptInvokerOnContextAction ActionVoiceKick(int playerId)
 	{
-		SCR_UISoundEntity.SoundEvent("SOUND_LOBBY_KICK");
 		string name = "#PS-ContextAction_KickFromVoiceRoom";
 		return AddAction(IMAGESET, "kickCommandAlt", name, "",
 			new PS_ContextActionDataPlayer(playerId)
@@ -226,7 +225,7 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 			return;
 		
 		string name = "#PS-ContextAction_DirectMessage";
-		AddAction(IMAGESET, "kickCommandAlt", name, "",
+		AddAction(IMAGESET, "whisper", name, "",
 			new PS_ContextActionDataPlayer(playerId)
 		).GetOnOnContextAction().Insert(OnContextDirectMessage);
 	}

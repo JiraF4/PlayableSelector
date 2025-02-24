@@ -515,14 +515,12 @@ class PS_CharacterSelector : SCR_ButtonComponent
 		PS_ContextMenu contextMenu = PS_ContextMenu.CreateContextMenuOnMousePosition(m_CoopLobby.GetRootWidget(), playerName);
 		contextMenu.ActionOpenInventory(m_iPlayableId).Insert(OnActionOpenInventory);
 		
-		if (PS_PlayersHelper.IsAdminOrServer())
-			if (m_iPlayerId != -2)
-				contextMenu.ActionLock(m_iPlayableId).Insert(OnActionLock);
-			else
-				contextMenu.ActionUnlock(m_iPlayableId).Insert(OnActionUnlock);
-		
 		if (m_iPlayerId > 0)
 		{
+			if (PS_PlayersHelper.IsAdminOrServer())
+			{
+				contextMenu.ActionGetArmaId(m_iPlayerId);
+			}
 			if (m_iPlayerId != m_iCurrentPlayerId)
 			{
 				PermissionState mute = PermissionState.DISALLOWED;
@@ -550,11 +548,13 @@ class PS_CharacterSelector : SCR_ButtonComponent
 			{
 				contextMenu.ActionPlayerSelect(m_iPlayerId);
 			}
-			if (PS_PlayersHelper.IsAdminOrServer())
-			{
-				contextMenu.ActionGetArmaId(m_iPlayerId);
-			}
 		}
+		
+		if (PS_PlayersHelper.IsAdminOrServer())
+			if (m_iPlayerId != -2)
+				contextMenu.ActionLock(m_iPlayableId).Insert(OnActionLock);
+			else
+				contextMenu.ActionUnlock(m_iPlayableId).Insert(OnActionUnlock);
 	}
 	void OnActionOpenInventory(PS_ContextAction contextAction, PS_ContextActionDataPlayable contextActionDataPlayable)
 	{

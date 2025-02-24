@@ -217,7 +217,7 @@ class PS_SpectatorMenu: MenuBase
 	void OpenContext(SCR_ChimeraCharacter character)
 	{
 		MenuBase menu = GetGame().GetMenuManager().GetTopMenu();
-		if (!menu)
+		if (!menu || menu != this)
 			return;
 		
 		if (!character)
