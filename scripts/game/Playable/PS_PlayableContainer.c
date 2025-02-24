@@ -127,31 +127,49 @@ class PS_PlayableContainer
 	// ---------------------------- Events ------------------------------
 	protected ref ScriptInvokerInt2 m_eOnPlayerChange = new ScriptInvokerInt2(); // int playerId
 	ScriptInvokerInt2 GetOnPlayerChange()
+	{
 		return m_eOnPlayerChange;
+	}
 	void InvokeOnPlayerChanged(int oldPlayerId, int playerId)
+	{
 		m_eOnPlayerChange.Invoke(oldPlayerId, playerId);
+	}
 
 	ref ScriptInvokerInt m_eOnDamageStateChanged = new ScriptInvokerInt();
 	ScriptInvokerInt GetOnDamageStateChanged()
+	{
 		return m_eOnDamageStateChanged;
+	}
 	ref ScriptInvokerVoid m_eOnUnregister = new ScriptInvokerVoid();
 	ScriptInvokerVoid GetOnUnregister()
+	{
 		return m_eOnUnregister;
+	}
 	protected ref ScriptInvokerBase<SCR_BaseGameMode_OnPlayerDisconnected> m_eOnPlayerDisconnected = new ScriptInvokerBase<SCR_BaseGameMode_OnPlayerDisconnected>();
 	ScriptInvokerBase<SCR_BaseGameMode_OnPlayerDisconnected> GetOnPlayerDisconnected()
+	{
 		return m_eOnPlayerDisconnected;
+	}
 	protected ref ScriptInvokerBase<SCR_BaseGameMode_PlayerId> m_eOnPlayerConnected = new ScriptInvokerBase<SCR_BaseGameMode_PlayerId>();
 	ScriptInvokerBase<SCR_BaseGameMode_PlayerId> GetOnPlayerConnected()
+	{
 		return m_eOnPlayerConnected;
+	}
 	protected ref ScriptInvokerBase<SCR_BaseGameMode_OnPlayerRoleChanged> m_eOnPlayerRoleChange = new ScriptInvokerBase<SCR_BaseGameMode_OnPlayerRoleChanged>();
 	ScriptInvokerBase<SCR_BaseGameMode_OnPlayerRoleChanged> GetOnPlayerRoleChange()
+	{
 		return m_eOnPlayerRoleChange;
+	}
 	protected ref ScriptInvokerInt m_eOnPlayerStateChange = new ScriptInvokerInt();
 	ScriptInvokerInt GetOnPlayerStateChange()
+	{
 		return m_eOnPlayerStateChange;
+	}
 	protected ref ScriptInvokerBool m_eOnPlayerPinChange = new ScriptInvokerBool();
 	ScriptInvokerBool GetOnPlayerPinChange()
+	{
 		return m_eOnPlayerPinChange;
+	}
 
 	void OnDamageStateChanged(EDamageState damageState)
 	{

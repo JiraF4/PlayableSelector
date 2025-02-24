@@ -10,7 +10,9 @@ class PS_PlayableVehicleContainer
 	
 	protected ref ScriptInvokerBool m_eOnLockChange = new ScriptInvokerBool();
 	ScriptInvokerBool GetOnLockChange()
+	{
 		return m_eOnLockChange;
+	}
 	
 	void Init(int rplId, ResourceName prefabName, ResourceName iconPath, int groupCallsign, int groupId, FactionKey factionKey)
 	{

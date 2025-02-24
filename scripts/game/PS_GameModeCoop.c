@@ -84,16 +84,21 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 	protected ref ScriptInvokerInt m_OnGameStateChange = new ScriptInvokerInt();
 	ScriptInvokerInt GetOnGameStateChange()
+	{
 		return m_OnGameStateChange;
+	}
 
 	protected ref ScriptInvokerString m_OnOnlyOneFactionAlive = new ScriptInvokerString();
 	ScriptInvokerString GetOnOnlyOneFactionAlive()
+	{
 		return m_OnOnlyOneFactionAlive;
-
+	}
 
 	protected ref ScriptInvoker m_OnHandlePlayerKilled = new ScriptInvoker();
 	ScriptInvoker GetOnHandlePlayerKilled()
+	{
 		return m_OnHandlePlayerKilled;
+	}
 
 	// Cache global
 	protected PS_PlayableManager m_playableManager;

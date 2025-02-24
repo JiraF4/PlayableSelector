@@ -32,7 +32,9 @@ class PS_AlivePlayerList : ScriptedWidgetComponent
 	
 	ref ScriptInvokerBool m_OnShowDead = new ScriptInvokerBool();
 	ScriptInvokerBool GetOnShowDead()
+	{
 		return m_OnShowDead;
+	}
 	
 	override void HandlerAttached(Widget w)
 	{
@@ -176,7 +178,9 @@ class PS_AlivePlayerList : ScriptedWidgetComponent
 	
 	// ETC
 	bool IsShowDead()
+	{
 		return m_hShowDeathButton.IsToggled();
+	}
 	
 	// -------------------- Buttons events --------------------
 	void FactionButtonClicked(SCR_ButtonBaseComponent playerButton)

@@ -36,7 +36,9 @@ class PS_PlayableControllerComponent : ScriptComponent
 	// Event
 	protected ref ScriptInvokerBase<SCR_BaseGameMode_OnPlayerRoleChanged> m_eOnPlayerRoleChange = new ScriptInvokerBase<SCR_BaseGameMode_OnPlayerRoleChanged>();
 	ScriptInvokerBase<SCR_BaseGameMode_OnPlayerRoleChanged> GetOnPlayerRoleChange()
+	{
 		return m_eOnPlayerRoleChange;
+	}
 
 	// ------ FactionReady ------
 	void SetFactionReady(FactionKey factionKey, int readyValue)

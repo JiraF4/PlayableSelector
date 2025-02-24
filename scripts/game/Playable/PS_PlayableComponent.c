@@ -34,25 +34,39 @@ class PS_PlayableComponent : ScriptComponent
 	// Cache components
 	protected SCR_ChimeraCharacter m_Owner;
 	SCR_ChimeraCharacter GetOwnerCharacter()
+	{
 		return m_Owner;
+	}
 	protected FactionAffiliationComponent m_FactionAffiliationComponent;
 	FactionAffiliationComponent GetFactionAffiliationComponent()
+	{
 		return m_FactionAffiliationComponent;
+	}
 	protected SCR_EditableCharacterComponent m_EditableCharacterComponent;
 	SCR_EditableCharacterComponent GetEditableCharacterComponent()
+	{
 		return m_EditableCharacterComponent;
+	}
 	protected SCR_UIInfo m_EditableUIInfo;
 	SCR_UIInfo GetEditableUIInfo()
+	{
 		return m_EditableUIInfo;
+	}
 	protected SCR_CharacterDamageManagerComponent m_CharacterDamageManagerComponent;
 	SCR_CharacterDamageManagerComponent GetCharacterDamageManagerComponent()
+	{
 		return m_CharacterDamageManagerComponent;
+	}
 	protected AIControlComponent m_AIControlComponent;
 	AIControlComponent GetAIControlComponent()
+	{
 		return m_AIControlComponent;
+	}
 	protected AIAgent m_AIAgent;
 	AIAgent GetAIAgent()
+	{
 		return m_AIAgent;
+	}
 
 	// Temporally
 	static protected int s_iRespawnTime;
@@ -153,7 +167,9 @@ class PS_PlayableComponent : ScriptComponent
 		GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.PlayableRespawnMenu);
 	}
 	int GetRespawnTime()
+	{
 		return s_iRespawnTime;
+	}
 
 	void ResetRplStream()
 	{

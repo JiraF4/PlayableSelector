@@ -30,7 +30,9 @@ class PS_SpectatorLabelIcon : SCR_ScriptedWidgetComponent
 	
 	vector m_vWorldPosition;
 	vector GetWorldPosition()
+	{
 		return m_vWorldPosition;
+	}
 	
 	override void HandlerAttached(Widget w)
 	{

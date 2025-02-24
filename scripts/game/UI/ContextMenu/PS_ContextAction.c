@@ -47,7 +47,9 @@ class PS_ContextAction : SCR_ButtonComponent
 	//------------------------------------------------------------------------------------------------
 	ref PS_ScriptInvokerOnContextAction m_eOnContextAction = new PS_ScriptInvokerOnContextAction();
 	PS_ScriptInvokerOnContextAction GetOnOnContextAction()
+	{
 		return m_eOnContextAction;
+	}
 }
 
 class PS_ContextActionData {
