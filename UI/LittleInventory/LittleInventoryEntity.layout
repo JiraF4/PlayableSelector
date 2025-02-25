@@ -69,7 +69,7 @@ VerticalLayoutWidgetClass {
         HorizontalAlign 3
         VerticalAlign 3
        }
-       Color 0.314 0.314 0.314 1
+       Color 0.238 0.238 0.238 1
        components {
         SCR_ButtonBaseComponent "{5F140D71C28D212F}" {
          m_BackgroundDefault 0 0 0 0.784
@@ -92,9 +92,9 @@ VerticalLayoutWidgetClass {
             HorizontalAlign 3
             VerticalAlign 3
            }
-           Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
-           Image "searhAndDestroyCommandAlt"
-           Size 32 32
+           Texture "{2EFEA2AF1F38E7F0}UI/Textures/Icons/icons_wrapperUI-64.imageset"
+           Image "cancel"
+           Size 38 38
           }
           PanelWidgetClass "{5F140D7209944A67}" {
            Name "Background"
