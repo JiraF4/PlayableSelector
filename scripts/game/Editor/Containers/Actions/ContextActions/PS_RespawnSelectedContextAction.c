@@ -15,7 +15,7 @@ class PS_RespawnSelectedContextAction : SCR_SelectedEntitiesContextAction
 			&& !selectedEntity.HasEntityFlag(EEditableEntityFlag.NON_DELETABLE)
 			&& !selectedEntity.HasEntityFlag(EEditableEntityFlag.NON_INTERACTIVE);
 	}
-	override void Perform(SCR_EditableEntityComponent selectedEntity, vector cursorWorldPosition)
+	override void PerformOwner(SCR_EditableEntityComponent selectedEntity, vector cursorWorldPosition)
 	{
 		PS_PlayableComponent playableComponent = PS_PlayableComponent.Cast(selectedEntity.GetOwner().FindComponent(PS_PlayableComponent));
 		PS_PlayableControllerComponent playableController = PS_PlayableManager.GetPlayableController();

@@ -365,8 +365,8 @@ class PS_CharacterSelector : SCR_ButtonComponent
 			state = PS_ECharacterState.Pin;
 		else if (m_iPlayerId == -2)
 			state = PS_ECharacterState.Lock;
-		else if (m_bCanKick && m_iPlayerId >= 0 && m_iPlayerId != m_iCurrentPlayerId)
-			state = PS_ECharacterState.Kick;
+		//else if (m_bCanKick && m_iPlayerId >= 0 && m_iPlayerId != m_iCurrentPlayerId)
+		//	state = PS_ECharacterState.Kick;
 		else if (m_iPlayerId >= 0)
 			state = PS_ECharacterState.Player;
 		

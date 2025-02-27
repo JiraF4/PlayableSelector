@@ -122,6 +122,8 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 	
 	void ActionKick(int playerId)
 	{
+		if (!PS_PlayersHelper.IsAdminOrServer())
+			return;
 		if (GetGame().GetPlayerController().GetPlayerId() == playerId)
 			return;
 		

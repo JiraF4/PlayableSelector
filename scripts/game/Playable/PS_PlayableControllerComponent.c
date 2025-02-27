@@ -237,7 +237,10 @@ class PS_PlayableControllerComponent : ScriptComponent
 	// ------ RespawnPlayable ------
 	void RespawnPlayable(RplId playableId, bool useInitPosition)
 	{
-		Rpc(RPC_RespawnPlayable, playableId, useInitPosition);
+		if (Replication.IsServer())
+			RPC_RespawnPlayable(playableId, useInitPosition);
+		else
+			Rpc(RPC_RespawnPlayable, playableId, useInitPosition);
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void RPC_RespawnPlayable(RplId playableId, bool useInitPosition)
@@ -742,6 +745,8 @@ class PS_PlayableControllerComponent : ScriptComponent
 	// Separate radio VoNs, CALL IT FROM SERVER
 	void SetVoNKey(string VoNKey, string VoNKeyLocal)
 	{
+		if (!GetVoN())
+			return;
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
 		IEntity entity = thisPlayerController.GetControlledEntity();
 		if (!entity)

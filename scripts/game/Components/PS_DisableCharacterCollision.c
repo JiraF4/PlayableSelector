@@ -11,8 +11,9 @@ class PS_DisableCharacterCollisionComponent : ScriptComponent
 	override void EOnInit(IEntity owner)
 	{
 		Physics physics = owner.GetPhysics();
-		physics.SetInteractionLayer(EPhysicsLayerDefs.CharNoCollide);
 		m_RplComponent = RplComponent.Cast(owner.FindComponent(RplComponent));
+		if (!Replication.IsServer() && !m_RplComponent.IsOwner())
+			physics.SetInteractionLayer(EPhysicsLayerDefs.CharNoCollide);
 		GetGame().GetCallqueue().CallLater(Recolor, 1000, false, owner);
 	}
 	
