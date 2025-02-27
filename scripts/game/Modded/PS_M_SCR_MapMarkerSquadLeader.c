@@ -11,6 +11,7 @@ modded class SCR_MapMarkerSquadLeader
 		
 		if (!gameModeCoop.GetDisableLeaderSquadMarkers())
 		{
+			SCR_EntityHelper.DeleteEntityAndChildren(this);
 			super.OnCreateMarker();
 			return;
 		}

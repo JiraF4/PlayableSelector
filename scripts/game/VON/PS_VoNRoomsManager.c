@@ -98,16 +98,16 @@ class PS_VoNRoomsManager : ScriptComponent
 			if (roomName.StartsWith("#PS-VoNRoom_Local"))
 			{
 				// We need silence
-				playableController.SetVoNKey(roomName);
+				playableController.SetVoNKey(roomName, roomId.ToString());
 			} else if (state == SCR_EGameModeState.GAME) {
-				playableController.SetVoNKey("Menu" + factionKey + roomName);
+				playableController.SetVoNKey("Menu" + factionKey + roomName, roomId.ToString());
 			} else if (state == SCR_EGameModeState.BRIEFING) { // On briefing also separate to squads
 				// May be reworked later
 				RplId playableId = playableManager.GetPlayableByPlayer(playerId);
 				int GroupCallSign = playableManager.GetGroupCallsignByPlayable(playableId);
-				playableController.SetVoNKey("Menu" + factionKey + GroupCallSign.ToString());
+				playableController.SetVoNKey("Menu" + factionKey + GroupCallSign.ToString(), roomId.ToString());
 			}
-			else playableController.SetVoNKey("Menu" + factionKey); // Сhange VoN zone
+			else playableController.SetVoNKey("Menu" + factionKey, roomId.ToString()); // Сhange VoN zone
 		}
 		
 		// Finally move client to room

@@ -589,9 +589,12 @@ class PS_PlayableControllerComponent : ScriptComponent
 		// Lets fight with phisyc engine
 		if (m_InitialEntity)
 		{
-			//vector currentOrigin = m_InitialEntity.GetOrigin();
-			//if (currentOrigin == m_vVoNPosition) return;
-			//Print("Move to: " + currentOrigin.ToString());
+			PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+			int playerId = thisPlayerController.GetPlayerId();
+			m_vVoNPosition = Vector(0, 100000, 0) + Vector(5000 * Math.Mod(playerId, 10), 5000 * Math.Floor(Math.Mod(playerId, 100) / 10), 5000 * Math.Floor(playerId / 100));
+			vector currentOrigin = m_InitialEntity.GetOrigin();
+			if (currentOrigin == m_vVoNPosition) return;
+			Print("Move to: " + currentOrigin.ToString());
 
 			m_InitialEntity.SetOrigin(m_vVoNPosition);
 
@@ -694,31 +697,32 @@ class PS_PlayableControllerComponent : ScriptComponent
 		PS_LobbyVoNComponent von = PS_LobbyVoNComponent.Cast(entity.FindComponent(PS_LobbyVoNComponent));
 		return von;
 	}
-	RadioTransceiver GetVoNTransiver()
+	RadioTransceiver GetVoNTransiver(int radioId)
 	{
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
 		IEntity entity = thisPlayerController.GetControlledEntity();
 		SCR_GadgetManagerComponent gadgetManager = SCR_GadgetManagerComponent.Cast(entity.FindComponent(SCR_GadgetManagerComponent));
-		IEntity radioEntity = gadgetManager.GetGadgetByType(EGadgetType.RADIO);
+		array<SCR_GadgetComponent> radios = gadgetManager.GetGadgetsByType(EGadgetType.RADIO);
+		IEntity radioEntity = radios[radioId].GetOwner();
 		BaseRadioComponent radio = BaseRadioComponent.Cast(radioEntity.FindComponent(BaseRadioComponent));
 		radio.SetPower(true);
 		RadioTransceiver transiver = RadioTransceiver.Cast(radio.GetTransceiver(0));
-		transiver.SetFrequency(1);
+		transiver.SetFrequency(radioId + 1);
 		return transiver;
 	}
 	void LobbyVoNEnable()
 	{
 		GetGame().GetCallqueue().Remove(LobbyVoNDisableDelayed);
 		PS_LobbyVoNComponent von = GetVoN();
-		von.SetTransmitRadio(null);
-		von.SetCommMethod(ECommMethod.DIRECT);
+		von.SetTransmitRadio(GetVoNTransiver(1));
+		von.SetCommMethod(ECommMethod.SQUAD_RADIO);
 		von.SetCapture(true);
 	}
 	void LobbyVoNRadioEnable()
 	{
 		GetGame().GetCallqueue().Remove(LobbyVoNDisableDelayed);
 		PS_LobbyVoNComponent von = GetVoN();
-		von.SetTransmitRadio(GetVoNTransiver());
+		von.SetTransmitRadio(GetVoNTransiver(0));
 		von.SetCommMethod(ECommMethod.SQUAD_RADIO);
 		von.SetCapture(true);
 	}
@@ -736,18 +740,20 @@ class PS_PlayableControllerComponent : ScriptComponent
 		von.SetCapture(false);
 	}
 	// Separate radio VoNs, CALL IT FROM SERVER
-	void SetVoNKey(string VoNKey)
+	void SetVoNKey(string VoNKey, string VoNKeyLocal)
 	{
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
 		IEntity entity = thisPlayerController.GetControlledEntity();
 		if (!entity)
 			return;
 		SCR_GadgetManagerComponent gadgetManager = SCR_GadgetManagerComponent.Cast(entity.FindComponent(SCR_GadgetManagerComponent));
-		IEntity radioEntity = gadgetManager.GetGadgetByType(EGadgetType.RADIO);
-		if (radioEntity)
+		array<SCR_GadgetComponent> radios = gadgetManager.GetGadgetsByType(EGadgetType.RADIO);
+		if (radios.Count() > 0)
 		{
-			BaseRadioComponent radio = BaseRadioComponent.Cast(radioEntity.FindComponent(BaseRadioComponent));
+			BaseRadioComponent radio = BaseRadioComponent.Cast(radios[0].GetOwner().FindComponent(BaseRadioComponent));
 			radio.SetEncryptionKey(VoNKey);
+			radio = BaseRadioComponent.Cast(radios[1].GetOwner().FindComponent(BaseRadioComponent));
+			radio.SetEncryptionKey(VoNKeyLocal);
 		}
 	}
 	bool isVonInit()

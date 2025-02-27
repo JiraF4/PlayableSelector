@@ -8,8 +8,11 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
    components {
     SCR_EquipmentStorageComponent "{56B49DA9722B635D}" {
      InitialStorageSlots {
-      SCR_EquipmentStorageSlot WristwatchSlot {
+      SCR_EquipmentStorageSlot BinocularSlot {
        Prefab "{74AA3854E16D9D56}Prefabs/MenuRadio.et"
+      }
+      SCR_EquipmentStorageSlot WristwatchSlot {
+       Prefab "{8F49616A4BAAF407}Prefabs/MenuRadio2.et"
       }
      }
     }
@@ -66,7 +69,7 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
   }
   PS_LobbyVoNComponent "{618B054CFFD60A4C}" {
    "Speaking Range" 1
-   Filename "{B4C3941EC8B2AD20}Sounds/VON/von.acp"
+   Filename "{92582B3603EE5464}Sounds/VON/vonLobby.acp"
   }
   PS_PlayableComponent "{5EFCC1946F475F15}" {
    Enabled 0
@@ -78,6 +81,9 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
    Enabled 0
   }
   SCR_CharacterStaminaComponent "{520EA1D2F659C824}" {
+   Enabled 0
+  }
+  SCR_EditableCharacterComponent "{520EA1D2F659C85C}" {
    Enabled 0
   }
   SCR_VoNComponent "{520EA1D2F659C856}" {

@@ -102,7 +102,7 @@ class PS_LobbyVoNComponent : VoNComponent
 		}
 		bool alreadyReceive = IsPlayerSpeech(playerId);
 		m_fPlayerSpeachReciveTime[playerId] = GetGame().GetWorld().GetWorldTime() + 100;
-		if (receiver) {
+		if (frequency == 32000) {
 			bool isChannel = m_fPlayerSpeachReciveIsChannel[playerId];
 			m_fPlayerSpeachReciveIsChannel[playerId] = true;
 			if (!alreadyReceive || !isChannel)
