@@ -788,6 +788,8 @@ class PS_PlayableManager : ScriptComponent
 		m_playersPlayable[playerId] = playableId;
 		int oldPlayerId = m_playablePlayers[playableId];
 		m_playablePlayers[playableId] = playerId;
+		if (oldPlayerId > 0 && oldPlayerId != playerId)
+			m_playersPlayable[oldPlayerId] = -1;
 		
 		// Remember last valid
 		if (playableId != RplId.Invalid()) {

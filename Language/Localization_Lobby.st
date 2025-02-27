@@ -257,8 +257,8 @@ StringTable {
   CustomStringTableItem "{64A34C7999483A04}" {
    Id "PS-ContextAction_MutePlayer"
    Target_en_us "Mute player"
-   Target_ru_ru "Замьютить игрока"
-   Modified 1688646604
+   Target_ru_ru "Заглушить игрока"
+   Modified 1689723214
    Author "zazul"
    LastChanged "zazul"
   }
@@ -305,8 +305,8 @@ StringTable {
   CustomStringTableItem "{64A34C79A0444EC1}" {
    Id "PS-ContextAction_UnmutePlayer"
    Target_en_us "Unmute player"
-   Target_ru_ru "Размьютить игрока"
-   Modified 1688646649
+   Target_ru_ru "Разглушить игрока"
+   Modified 1689723730
    Author "zazul"
    LastChanged "zazul"
   }

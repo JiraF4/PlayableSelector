@@ -193,27 +193,21 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	
 	void FreezeTimerAdvance(int time)
 	{
-		Rpc(RPC_FreezeTimerAdvance, time);
-	}
-	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
-	void RPC_FreezeTimerAdvance(int time)
-	{
 		time = time * 1000;
 		m_iFreezeTime += time;
 		m_fCurrentFreezeTime += time;
 		GetGame().GetCallqueue().Remove(restrictedZonesTimer);
-		restrictedZonesTimer(m_fCurrentFreezeTime + time);
+		restrictedZonesTimer(m_fCurrentFreezeTime);
+		
+		FreezeTimerAdvance_Notify();
 	}
 	
 	void FreezeTimerEnd()
 	{
-		Rpc(RPC_FreezeTimerEnd);
-	}
-	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
-	void RPC_FreezeTimerEnd()
-	{
 		GetGame().GetCallqueue().Remove(restrictedZonesTimer);
 		restrictedZonesTimer(5000);
+		
+		FreezeTimerEnd_Notify();
 	}
 
 	void EditorClosed()
@@ -279,8 +273,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			return;
 		
 		playableController.FreezeTimerAdvance(data.ToInt());
-		FreezeTimerAdvance_Notify();
-		Rpc(FreezeTimerAdvance_Notify);
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void FreezeTimerAdvance_Notify()
@@ -301,8 +293,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			return;
 		
 		playableController.FreezeTimerEnd();
-		FreezeTimerEnd_Notify();
-		Rpc(FreezeTimerEnd_Notify);
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void FreezeTimerEnd_Notify()
