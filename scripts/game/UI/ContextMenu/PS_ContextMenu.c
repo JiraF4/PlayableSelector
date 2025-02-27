@@ -147,8 +147,8 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 	}
 	void OnActionCopyArmaId(PS_ContextAction contextAction, PS_ContextActionDataPlayer contextActionDataPlayer)
 	{
-		string playerUUID = GetGame().GetBackendApi().GetPlayerUID(contextActionDataPlayer.GetPlayerId());
-		System.ExportToClipboard(playerUUID);
+		PS_PlayableControllerComponent playableController = PS_PlayableManager.GetPlayableController();
+		playableController.GetArmaIdFromServer(contextActionDataPlayer.GetPlayerId());
 	}
 	
 	void ActionMute(int playerId)

@@ -769,6 +769,22 @@ class PS_PlayableControllerComponent : ScriptComponent
 		IEntity radioEntity = gadgetManager.GetGadgetByType(EGadgetType.RADIO);
 		return radioEntity;
 	}
+	
+	void GetArmaIdFromServer(int playerId)
+	{
+		Rpc(RPC_GetArmaIdFromServer_Server, playerId);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void RPC_GetArmaIdFromServer_Server(int playerId)
+	{
+		string playerUUID = GetGame().GetBackendApi().GetPlayerUID(playerId);
+		Rpc(RPC_GetArmaIdFromServer_Owner, playerUUID);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Owner)]
+	void RPC_GetArmaIdFromServer_Owner(string playerUUID)
+	{
+		System.ExportToClipboard(playerUUID);
+	}
 
 	// ------------------ Observer camera controlls ------------------
 	void SaveCameraTransform()
