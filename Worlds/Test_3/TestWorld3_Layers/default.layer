@@ -11,6 +11,7 @@ PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_Game
  m_iFreezeTime 100000
  m_bDisableChat 1
  m_bDisableVanillaGroupMenu 1
+ m_bDisablePlayablesStreaming 1
  m_bFreezeTimeShootingForbiden 1
  {
   SCR_FactionManager "5EE8949D46B62B0A" {

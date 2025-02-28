@@ -264,6 +264,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	
 	void FreezeTimerAdvance_Callback(SCR_ChatPanel panel, string data)
 	{
+		if (!PS_PlayersHelper.IsAdminOrServer())
+			return;
+		
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		if (!playableController)
@@ -284,6 +287,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	
 	void FreezeTimerEnd_Callback(SCR_ChatPanel panel, string data)
 	{
+		if (!PS_PlayersHelper.IsAdminOrServer())
+			return;
+		
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		if (!playableController)

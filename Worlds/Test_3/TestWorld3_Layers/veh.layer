@@ -3,9 +3,6 @@ SCR_EditorSettingsEntity {
  m_bOverrideBaseModes 1
  m_BaseModes BUILDING
 }
-SCR_AIGroup Test : "{126BE8C46FA39581}Prefabs/Groups/INDFOR/Group_FIA_FireTeam_P.et" {
- coords 74.554 1 89.132
-}
 Vehicle UAZ1 : "{259EE7B78C51B624}Prefabs/Vehicles/Wheeled/UAZ469/UAZ469.et" {
  coords 134.551 1 111.901
  m_sAttachmentGroupName "Test3"
@@ -56,9 +53,6 @@ PolylineShapeEntity : "{7019844BAD5C4DD8}Prefabs/PolyZone/PolyZone_Border.et" {
    m_sGroupKey "Test"
   }
  }
-}
-SCR_AIGroup Arab : "{70323274E7899BD1}Prefabs/Groups/INDFOR/Group_FIA_MedicalSection_p.et" {
- coords 92.253 1 157.198
 }
 Vehicle UH1H1 : "{70BAEEFC2D3FEE64}Prefabs/Vehicles/Helicopters/UH1H/UH1H.et" {
  coords 89.226 1 157.672
