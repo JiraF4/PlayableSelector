@@ -57,7 +57,7 @@ OverlayWidgetClass {
            Color 0.761 0.386 0.078 1
            Size 262 24
           }
-          TextWidgetClass "{6470E23351BC6BE2}" {
+          RichTextWidgetClass "{6470E23351BC6BE2}" {
            Name "HeaderText"
            Slot OverlayWidgetSlot "{64614612DD7BF937}" {
             HorizontalAlign 3
