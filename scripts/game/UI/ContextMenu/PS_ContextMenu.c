@@ -364,6 +364,8 @@ class PS_ContextMenu : SCR_ScriptedWidgetComponent
 	}
 	void ActionCreateAdministrator(vector position)
 	{
+		return; // Temporally dosabled.
+		
 		if (!PS_PlayersHelper.IsAdminOrServer())
 			return;
 		
