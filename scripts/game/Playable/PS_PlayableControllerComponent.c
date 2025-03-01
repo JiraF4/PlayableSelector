@@ -502,12 +502,12 @@ class PS_PlayableControllerComponent : ScriptComponent
 				if (!vehicle.IsEnableMoveOnFreeze())
 				{
 					DisableVehicleMove(actionManager);
-				}
-				VehicleWheeledSimulation vehicleWheeledSimulation = VehicleWheeledSimulation.Cast(vehicle.FindComponent(VehicleWheeledSimulation));
-				if (vehicleWheeledSimulation)
-				{
-					if (vehicleWheeledSimulation.EngineIsOn())
-						vehicleWheeledSimulation.EngineStop();
+					VehicleWheeledSimulation vehicleWheeledSimulation = VehicleWheeledSimulation.Cast(vehicle.FindComponent(VehicleWheeledSimulation));
+					if (vehicleWheeledSimulation)
+					{
+						if (vehicleWheeledSimulation.EngineIsOn())
+							vehicleWheeledSimulation.EngineStop();
+					}
 				}
 			}
 		}

@@ -6,6 +6,7 @@ SCR_EditorSettingsEntity {
 Vehicle UAZ1 : "{259EE7B78C51B624}Prefabs/Vehicles/Wheeled/UAZ469/UAZ469.et" {
  coords 134.551 1 111.901
  m_sAttachmentGroupName "Test3"
+ m_bEnableMoveOnFreeze 1
 }
 $grp GenericEntity : "{49FFE8F373F55960}Prefabs/Weapons/Explosives/Mine_M15AT/Mine_M15AT.et" {
  {
