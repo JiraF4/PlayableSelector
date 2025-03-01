@@ -5,7 +5,7 @@ modded class Vehicle
 	[Attribute()]
 	string m_sAttachmentGroupName;
 	
-	[Attribute()]
+	[RplProp(), Attribute()]
 	protected bool m_bEnableMoveOnFreeze;
 	
 	bool IsEnableMoveOnFreeze()
