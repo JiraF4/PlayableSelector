@@ -64,7 +64,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	protected bool m_bFreezeTimeShootingForbiden;
 	
 	[Attribute("1", UIWidgets.CheckBox, "", category: "Reforger Lobby")]
-	protected bool m_bDisableZalupaVision;
+	protected bool m_bDisableArmaVision;
 	
 	[Attribute("0", UIWidgets.CheckBox, "", category: "Reforger Lobby")]
 	protected bool m_bDisableBuildingModeAfterFreezeTime;
@@ -960,7 +960,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	
 	bool IsArmaVisionDisabled()
 	{
-		return m_bDisableZalupaVision;
+		return m_bDisableArmaVision;
 	}
 	
 	bool GetDisableBuildingModeAfterFreezeTime()
