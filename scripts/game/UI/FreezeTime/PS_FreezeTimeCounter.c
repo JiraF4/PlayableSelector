@@ -1,6 +1,7 @@
 class PS_FreezeTimeCounter : SCR_ScriptedWidgetComponent
 {
 	TextWidget m_wFreezeTimeCounterText;
+	TextWidget m_wFreezeTimeText;
 	float m_fFullFreezeTime;
 	float m_fFullFreezeTimeCurrent;
 	
@@ -11,6 +12,7 @@ class PS_FreezeTimeCounter : SCR_ScriptedWidgetComponent
 	{
 		super.HandlerAttached(w);
 		m_wFreezeTimeCounterText = TextWidget.Cast(w.FindAnyWidget("FreezeTimeCounterText"));
+		m_wFreezeTimeText = TextWidget.Cast(w.FindAnyWidget("FreezeTimeText"));
 		
 		m_wEmpty = ImageWidget.Cast(w.FindAnyWidget("Fill"));
 		m_wFill = ImageWidget.Cast(w.FindAnyWidget("Empty"));

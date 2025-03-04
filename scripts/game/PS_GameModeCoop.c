@@ -37,6 +37,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 	[Attribute("60000", UIWidgets.EditBox, "Time in milliseconds before restriction zones are removed.", category: "Reforger Lobby")]
 	int m_iFreezeTime;
+	
+	[Attribute("5000", UIWidgets.EditBox, "Time in milliseconds before characters are activated.", category: "Reforger Lobby")]
+	int m_iDisableTime;
 
 	[Attribute("0", UIWidgets.CheckBox, "Disables text chat for alive players on game stage. Admins can always see text chat.", category: "Reforger Lobby")]
 	protected bool m_bDisableChat;
@@ -926,6 +929,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		return m_fCurrentFreezeTime <= 0;
 	}
 	
+	bool IsDisableTimeEnd()
+	{
+		return m_fCurrentFreezeTime <= (m_iFreezeTime - m_iDisableTime) && m_fCurrentFreezeTime != 1;
+	}
+	
 	bool IsFreezeTimeShootingForbiden()
 	{
 		return m_bFreezeTimeShootingForbiden;
@@ -1025,6 +1033,12 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	{
 		m_iFreezeTime = freezeTime;
 	}
+	
+	int GetDisableTime()
+	{
+		return m_iDisableTime;
+	}
+	void SetFreezeTi
 
 	int GetReconnectTime()
 	{

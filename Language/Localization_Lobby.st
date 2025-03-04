@@ -960,6 +960,14 @@ StringTable {
    Author "SeskPC"
    LastChanged "SeskPC"
   }
+  CustomStringTableItem "{64C90089D268F288}" {
+   Id "PS-Load_time"
+   Target_en_us "Load time"
+   Target_ru_ru "Прогрузка"
+   Modified 1690900266
+   Author "zazul"
+   LastChanged "zazul"
+  }
   CustomStringTableItem "{5EA75941A166E74B}" {
    Id "PS-Lobby_Chat"
    Target_en_us "Chat"

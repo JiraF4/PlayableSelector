@@ -1082,7 +1082,12 @@ class PS_PlayableManager : ScriptComponent
 			if (GetPlayerByPlayable(playable.GetRplId()) == -2 || (GetPlayerByPlayable(playable.GetRplId()) <= 0 && m_GameModeCoop.GetRemoveRedundantUnits()))
 			{
 				SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(playable.GetPlayableComponent().GetOwner());
-				SCR_EntityHelper.DeleteEntityAndChildren(character);
+				if (character)
+				{
+					SCR_EntityHelper.DeleteEntityAndChildren(character);
+					m_CallQueue.Call(RemoveRedundantUnits);
+					return;
+				}
 			}
 		}
 		
@@ -1092,7 +1097,11 @@ class PS_PlayableManager : ScriptComponent
 			{
 				IEntity entity = IEntity.Cast(Replication.FindItem(playableVehicleContainer.GetRplId()));
 				if (entity)
+				{
 					SCR_EntityHelper.DeleteEntityAndChildren(entity);
+					m_CallQueue.Call(RemoveRedundantUnits);
+					return;
+				}
 			}
 		}
 	}
