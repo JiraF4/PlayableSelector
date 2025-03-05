@@ -44,6 +44,20 @@ class PS_FreezeTimeCounter : SCR_ScriptedWidgetComponent
 			GetGame().GetCallqueue().CallLater(Update, 0, true);
 		}
 		
+		
+		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if (gameModeCoop.IsDisableTimeEnd())
+		{
+			m_wFreezeTimeText.SetText("#PS-Freeze_time");
+			m_wFreezeTimeCounterText.SetColor(new Color(0.760998, 0.386007, 0.078004, 1.000000));
+		}
+		else
+		{
+			m_wFreezeTimeText.SetText("#PS-Load_time");
+			m_wFreezeTimeCounterText.SetColor(Color.Red);
+			time -= (gameModeCoop.GetFreezeTime() - gameModeCoop.GetDisableTime());
+		}
+		
 		m_fFullFreezeTimeCurrent = time;
 		
 		float timeSeconds = ((float) time) / 1000;

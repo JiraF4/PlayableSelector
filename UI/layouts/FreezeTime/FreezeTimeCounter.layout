@@ -56,7 +56,7 @@ OverlayWidgetClass {
         }
         TextWidgetClass "{5F0EB4D5FBCA212F}" {
          Name "FreezeTimeCounterText"
-         Slot LayoutSlot {
+         Slot LayoutSlot "{64C91A01C7D04FFA}" {
          }
          Color 0.761 0.386 0.078 1
          Text "00:00"
@@ -84,7 +84,7 @@ OverlayWidgetClass {
      {
       ImageWidgetClass "{62BACE8287638BFB}" {
        Name "Fill"
-       Slot LayoutSlot {
+       Slot LayoutSlot "{64C91A01C7D04F35}" {
         VerticalAlign 0
         SizeMode Fill
        }
@@ -93,7 +93,7 @@ OverlayWidgetClass {
       }
       ImageWidgetClass "{62BACE829D8E87E7}" {
        Name "Empty"
-       Slot LayoutSlot {
+       Slot LayoutSlot "{64C91A01C7D04F0C}" {
         VerticalAlign 0
         SizeMode Fill
         FillWeight 0

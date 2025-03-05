@@ -263,6 +263,59 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		invoker.Insert(FreezeTimerAdvance_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("fte");
 		invoker.Insert(FreezeTimerEnd_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("cmc");
+		invoker.Insert(CopyAllMarkersToClipboard_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("lmc");
+		invoker.Insert(LoadAllMarkersToClipboard_Callback);
+	}
+	
+	
+	void CopyAllMarkersToClipboard_Callback(SCR_ChatPanel panel, string data)
+	{
+		SCR_MapMarkerManagerComponent markerMgr = SCR_MapMarkerManagerComponent.GetInstance();
+		array<SCR_MapMarkerBase> markers = markerMgr.GetStaticMarkers();
+		
+		PS_MapMarkersBaseJson mapMarkers = new PS_MapMarkersBaseJson();
+		foreach (SCR_MapMarkerBase marker : markers)
+		{
+			PS_MapMarkerBaseJson markerJson = marker.PS_GetMapMarkerBaseJson();
+			mapMarkers.m_aMapMarkers.Insert(markerJson);
+		}
+		SCR_JsonSaveContext saveContext = new SCR_JsonSaveContext();
+		saveContext.WriteValue("", mapMarkers);
+		System.ExportToClipboard(saveContext.ExportToString());
+	}
+	
+	
+	void LoadAllMarkersToClipboard_Callback(SCR_ChatPanel panel, string data)
+	{
+		
+		if (GetState() != SCR_EGameModeState.BRIEFING)
+			return;
+		
+		string json = System.ImportFromClipboard();
+		
+		SCR_JsonLoadContext loadContext = new SCR_JsonLoadContext();
+		loadContext.ImportFromString(json);
+		
+		PS_MapMarkersBaseJson mapMarkers = new PS_MapMarkersBaseJson();
+		loadContext.ReadValue("", mapMarkers);
+		
+		SCR_MapMarkerManagerComponent markerMgr = SCR_MapMarkerManagerComponent.GetInstance();
+		foreach (PS_MapMarkerBaseJson markerJson : mapMarkers.m_aMapMarkers)
+		{
+			SCR_MapMarkerBase marker = markerJson.GetMapMarkerBase();
+			marker.SetMarkerFactionFlags(0);
+			FactionManager factionManager = GetGame().GetFactionManager();
+			if (factionManager)
+			{
+				Faction markerOwnerFaction = SCR_FactionManager.SGetPlayerFaction(GetGame().GetPlayerController().GetPlayerId());
+				if (markerOwnerFaction)
+					marker.AddMarkerFactionFlags(factionManager.GetFactionIndex(markerOwnerFaction));
+			}
+			
+			markerMgr.InsertStaticMarker(marker, false, false);
+		}
 	}
 	
 	void FreezeTimerAdvance_Callback(SCR_ChatPanel panel, string data)
