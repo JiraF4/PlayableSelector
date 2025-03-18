@@ -36,7 +36,7 @@ class PS_LobbyVoNComponent : VoNComponent
 	
 	void PS_LobbyVoNComponent(IEntityComponentSource src, IEntity ent, IEntity parent)
 	{
-		GetGame().GetCallqueue().CallLater(DisablePhysicForOwner, 0, false, ent);
+		//GetGame().GetCallqueue().CallLater(DisablePhysicForOwner, 0, false, ent);
 	}
 	
 	void DisablePhysicForOwner(IEntity owner)
@@ -44,12 +44,12 @@ class PS_LobbyVoNComponent : VoNComponent
 		Physics physics = owner.GetPhysics();
 		if (physics)
 		{
-			physics.SetVelocity("0 0 0");
-			physics.SetAngularVelocity("0 0 0");
-			physics.SetMass(0);
-			physics.SetDamping(1, 1);
+			//physics.SetVelocity("0 0 0");
+			//physics.SetAngularVelocity("0 0 0");
+			//physics.SetMass(0);
+			//physics.SetDamping(1, 1);
 			//physics.ChangeSimulationState(SimulationState.NONE);
-			physics.SetActive(ActiveState.INACTIVE);
+			//physics.SetActive(ActiveState.INACTIVE);
 		}
 	}
 	

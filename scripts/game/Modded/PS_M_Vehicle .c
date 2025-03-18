@@ -32,8 +32,8 @@ modded class Vehicle
 		if (!GetPhysics())
 			return;
 		
-		GetPhysics().SetVelocity("0 0 0");
-		GetPhysics().SetAngularVelocity("0 0 0");
+		//GetPhysics().SetVelocity("0 0 0");
+		//GetPhysics().SetAngularVelocity("0 0 0");
 	}
 	
 	void RegisterToMissionDate()

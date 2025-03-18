@@ -597,7 +597,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 			m_vVoNPosition = Vector(0, 100000, 0) + Vector(5000 * Math.Mod(playerId, 10), 5000 * Math.Floor(Math.Mod(playerId, 100) / 10), 5000 * Math.Floor(playerId / 100));
 			vector currentOrigin = m_InitialEntity.GetOrigin();
 			if (currentOrigin == m_vVoNPosition) return;
-			Print("Move to: " + currentOrigin.ToString());
+			Print("Move to: " + m_vVoNPosition.ToString());
 
 			m_InitialEntity.SetOrigin(m_vVoNPosition);
 
@@ -609,10 +609,10 @@ class PS_PlayableControllerComponent : ScriptComponent
 			Physics physics = m_InitialEntity.GetPhysics();
 			if (physics)
 			{
-				physics.SetVelocity("0 0 0");
-				physics.SetAngularVelocity("0 0 0");
-				physics.SetMass(0);
-				physics.SetDamping(1, 1);
+				//physics.SetVelocity("0 0 0");
+				//physics.SetAngularVelocity("0 0 0");
+				//physics.SetMass(0);
+				//physics.SetDamping(1, 1);
 				//physics.ChangeSimulationState(SimulationState.NONE);
 				physics.SetActive(ActiveState.INACTIVE);
 			}

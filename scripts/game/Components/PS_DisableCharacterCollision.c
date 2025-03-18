@@ -12,8 +12,8 @@ class PS_DisableCharacterCollisionComponent : ScriptComponent
 	{
 		Physics physics = owner.GetPhysics();
 		m_RplComponent = RplComponent.Cast(owner.FindComponent(RplComponent));
-		if (!Replication.IsServer() && !m_RplComponent.IsOwner())
-			physics.SetInteractionLayer(EPhysicsLayerDefs.CharNoCollide);
+		//if (!Replication.IsServer() && !m_RplComponent.IsOwner())
+		//	physics.SetInteractionLayer(EPhysicsLayerDefs.CharNoCollide);
 		GetGame().GetCallqueue().CallLater(Recolor, 1000, false, owner);
 	}
 	
@@ -30,7 +30,7 @@ class PS_DisableCharacterCollisionComponent : ScriptComponent
 		{
 			remap += "$remap '" + materials[i] + "' '{788C42E96DB8587C}Assets/Editor/VirtualArea/VirtualArea_01_Danger.emat';";
 		}
-		owner.SetObject(obj, remap);
+		//owner.SetObject(obj, remap);
 	}
 	
 	//------------------------------------------------------------------------------------------------
