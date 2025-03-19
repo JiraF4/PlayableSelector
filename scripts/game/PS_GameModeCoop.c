@@ -277,6 +277,10 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	
 	void CopyAllMarkersToClipboard_Callback(SCR_ChatPanel panel, string data)
 	{
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		PlayerController playerController = GetGame().GetPlayerController();
+		if (!playableManager.IsPlayerGroupLeader(playerController.GetPlayerId())) return;
+		
 		SCR_MapMarkerManagerComponent markerMgr = SCR_MapMarkerManagerComponent.GetInstance();
 		array<SCR_MapMarkerBase> markers = markerMgr.GetStaticMarkers();
 		
@@ -294,6 +298,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	
 	void LoadAllMarkersToClipboard_Callback(SCR_ChatPanel panel, string data)
 	{
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		PlayerController playerController = GetGame().GetPlayerController();
+		if (!playableManager.IsPlayerGroupLeader(playerController.GetPlayerId())) return;
 		
 		if (GetState() != SCR_EGameModeState.BRIEFING)
 			return;
