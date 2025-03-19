@@ -178,8 +178,13 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		}
 		else
 		{
-			video.Set("MaxFps", m_iForceMenuFramerate);
-			GetGame().UserSettingsChanged();
+			int currentFramerate;
+			video.Get("MaxFps", currentFramerate);
+			if (currentFramerate != m_iForceMenuFramerate)
+			{
+				video.Set("MaxFps", m_iForceMenuFramerate);
+				GetGame().UserSettingsChanged();
+			}
 		}
 	}
 
