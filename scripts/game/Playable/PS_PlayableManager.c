@@ -445,7 +445,7 @@ class PS_PlayableManager : ScriptComponent
 	// --------------------------------------------------------------------------------------------
 	// Register vehicle to global list replicated
 	// TODO: attach any entity
-	void RegisterGroupVehicle(RplId rplId, SCR_AIGroup group, Vehicle vehicle)
+	void RegisterGroupVehicle(RplId rplId, SCR_AIGroup group, IEntity vehicle)
 	{
 		if (!Replication.IsServer())
 			return;
@@ -457,8 +457,12 @@ class PS_PlayableManager : ScriptComponent
 		int groupCallsign = group.GetCallsignNum();
 		PS_PlayableVehicleContainer playableVehicleContainer = new PS_PlayableVehicleContainer();
 		SCR_EditableVehicleComponent editableVehicleComponent = SCR_EditableVehicleComponent.Cast(vehicle.FindComponent(SCR_EditableVehicleComponent));
+		SCR_VehicleFactionAffiliationComponent vehicleFactionAffiliationComponent = SCR_VehicleFactionAffiliationComponent.Cast(vehicle.FindComponent(SCR_VehicleFactionAffiliationComponent));
 		SCR_UIInfo uIInfo = editableVehicleComponent.GetInfo();
-		playableVehicleContainer.Init(rplId, vehicle.GetPrefabData().GetPrefabName(), uIInfo.GetIconPath(), groupCallsign, group.m_PlayersGroup.GetGroupID(), vehicle.GetFactionAffiliation().GetDefaultFactionKey());
+		ResourceName prefab = vehicle.GetPrefabData().GetPrefabName();
+		if (prefab == "")
+			prefab = vehicle.GetPrefabData().GetPrefab().GetAncestor().GetResourceName();
+		playableVehicleContainer.Init(rplId, prefab, uIInfo.GetIconPath(), groupCallsign, group.m_PlayersGroup.GetGroupID(), vehicleFactionAffiliationComponent.GetDefaultFactionKey());
 		Rpc(RPC_RegisterGroupVehicle, playableVehicleContainer);
 		RPC_RegisterGroupVehicle(playableVehicleContainer);
 	}
