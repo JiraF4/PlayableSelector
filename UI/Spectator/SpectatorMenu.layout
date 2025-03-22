@@ -64,6 +64,23 @@ FrameWidgetClass {
       }
      }
     }
+    TextWidgetClass "{64ED425685089728}" {
+     Name "GameTimerText"
+     Slot FrameWidgetSlot "{64ED425685089710}" {
+      PositionX 11
+      OffsetLeft 11
+      PositionY 0
+      OffsetTop 0
+      SizeX 99
+      OffsetRight -110
+      SizeY 18
+      OffsetBottom -18
+     }
+     "Is Visible" 0
+     Text "00:00:00"
+     "Font Size" 18
+     "Min Font Size" 18
+    }
    }
   }
   FrameWidgetClass "{5F34C897F439A3AE}" : "{0651202E9F2646DE}UI/layouts/Map/Map.layout" {

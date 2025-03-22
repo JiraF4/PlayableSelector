@@ -24,6 +24,7 @@ class PS_SpectatorMenu: MenuBase
 	protected Widget m_wAlivePlayerList;
 	protected Widget m_wSidesRatio;
 	protected Widget m_wSidesRatioFrame;
+	protected TextWidget m_wGameTimerText;
 	protected PS_VoiceChatList m_hVoiceChatList;
 	protected SCR_ButtonBaseComponent m_hVoiceChatListPinButton;
 	protected PS_AlivePlayerList m_hAlivePlayerList;
@@ -136,6 +137,7 @@ class PS_SpectatorMenu: MenuBase
 		m_wMapFrame = FrameWidget.Cast(GetRootWidget().FindAnyWidget("MapFrame"));
 		m_wSidesRatioFrame = GetRootWidget().FindAnyWidget("SidesRatioFrame");
 		m_wSidesRatio = GetRootWidget().FindAnyWidget("SidesRatio");
+		m_wGameTimerText = TextWidget.Cast(GetRootWidget().FindAnyWidget("GameTimerText"));
 		
 		m_bNavigationSwitchSpectatorUI = SCR_InputButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationSwitchSpectatorUI").FindHandler(SCR_InputButtonComponent));
 		m_bNavigationSwitchSpectatorUI.m_OnClicked.Insert(Action_SwitchSpectatorUI);
@@ -370,6 +372,23 @@ class PS_SpectatorMenu: MenuBase
 	override void OnMenuUpdate(float tDelta)
 	{
 		super.OnMenuUpdate(tDelta);
+		
+		if (PS_PlayersHelper.IsAdminOrServer())
+		{
+			m_wGameTimerText.SetVisible(true);
+			
+			PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+			float timeSeconds = gameModeCoop.GetElapsedTime() - gameModeCoop.GetGameStartTime()/1000;
+			if (timeSeconds < 0 || gameModeCoop.GetGameStartTime() == 0)
+				timeSeconds = 0;
+			int seconds = Math.Mod(timeSeconds, 60);
+			int minutes = (timeSeconds / 60);
+			int hours = (minutes / 60);
+			minutes = Math.Mod(minutes, 60);
+			m_wGameTimerText.SetTextFormat("%1:%2:%3", hours.ToString(2), minutes.ToString(2), seconds.ToString(2));
+		}
+		else
+			m_wGameTimerText.SetVisible(false);
 		
 		UpdateCursorTarget();
 		

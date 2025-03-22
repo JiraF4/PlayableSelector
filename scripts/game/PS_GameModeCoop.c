@@ -46,6 +46,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 	[RplProp()]
 	protected float m_fCurrentFreezeTime = 1;
+	[RplProp()]
+	protected float m_fGameStartTime = 0;
 
 	[Attribute("0", UIWidgets.CheckBox, "Creates a whitelist on the server for players who have taken roles and also for players specified in $profile:PS_SlotsReserver_Config.json and kicks everyone else.", category: "Reforger Lobby")]
 	protected bool m_bReserveSlots;
@@ -947,6 +949,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		// next second or end
 		if (freezeTime <= 0)
 		{
+			m_fGameStartTime = GetGame().GetWorld().GetWorldTime();
+			Replication.BumpMe();
 			removeRestrictedZones();
 			if (m_bDisableBuildingModeAfterFreezeTime)
 				DisableBuildingMode();
@@ -1103,7 +1107,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	{
 		return m_iDisableTime;
 	}
-	void SetFreezeTi
+	
+	float GetGameStartTime()
+	{
+		return m_fGameStartTime;
+	}
 
 	int GetReconnectTime()
 	{
