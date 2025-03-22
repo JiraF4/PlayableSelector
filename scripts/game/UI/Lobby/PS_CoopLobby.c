@@ -186,7 +186,7 @@ class PS_CoopLobby : MenuBase
 		{
 			m_InputManager.AddActionListener("VONDirect", EActionTrigger.DOWN, Action_LobbyVoNOn);
 			m_InputManager.AddActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
-			m_InputManager.AddActionListener("VONChannel", EActionTrigger.DOWN, Action_LobbyVoNChannelOn);
+			//m_InputManager.AddActionListener("VONChannel", EActionTrigger.DOWN, Action_LobbyVoNChannelOn);
 			m_InputManager.AddActionListener("VONChannel", EActionTrigger.UP, Action_LobbyVoNChannelOff);
 		}
 		
@@ -213,7 +213,7 @@ class PS_CoopLobby : MenuBase
 		{
 			m_InputManager.RemoveActionListener("VONDirect", EActionTrigger.DOWN, Action_LobbyVoNOn);
 			m_InputManager.RemoveActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
-			m_InputManager.RemoveActionListener("VONChannel", EActionTrigger.DOWN, Action_LobbyVoNChannelOn);
+			//m_InputManager.RemoveActionListener("VONChannel", EActionTrigger.DOWN, Action_LobbyVoNChannelOn);
 			m_InputManager.RemoveActionListener("VONChannel", EActionTrigger.UP, Action_LobbyVoNChannelOff);
 		}
 		if (m_PlayableManager)

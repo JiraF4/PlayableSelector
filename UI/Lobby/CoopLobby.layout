@@ -1185,6 +1185,7 @@ FrameWidgetClass {
               VerticalAlign 3
               Padding 15 15 15 15
              }
+             "Is Visible" 0
              components {
               SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
                m_sActionName "VONChannel"
