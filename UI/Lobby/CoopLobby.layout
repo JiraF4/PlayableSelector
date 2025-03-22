@@ -272,7 +272,6 @@ FrameWidgetClass {
                 VerticalAlign 3
                }
                "Inherit Color" 1
-               "Scrollbar Always Visible" 1
                {
                 VerticalLayoutWidgetClass "{5D6D1B9B2EB68480}" {
                  Name "RolesList"

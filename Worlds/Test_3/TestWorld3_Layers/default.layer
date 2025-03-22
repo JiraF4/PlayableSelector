@@ -1,34 +1,61 @@
 SCR_AIWorld : "{E0A05C76552E7F58}Prefabs/AI/SCR_AIWorld.et" {
- coords 111.676 1 127.135
+ coords 1382.338 36.279 2379.76
 }
 PerceptionManager PerceptionManager1 : "{028DAEAD63E056BE}Prefabs/World/Game/PerceptionManager.et" {
- coords 113.126 1 124.397
 }
 PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_GameMode_Lobby.et" {
- m_bAutoPlayerRespawn 0
- m_bAllowFactionChange 0
- m_bMarkersOnlyOnBriefing 1
- m_iFreezeTime 100000
- m_bDisableChat 1
- m_bDisableVanillaGroupMenu 1
- m_bDisablePlayablesStreaming 1
- m_bFreezeTimeShootingForbiden 1
- m_bDisableArmaVision 0
- m_iForceMenuFramerate 30
- {
-  SCR_FactionManager "5EE8949D46B62B0A" {
-   ID "5ED9088735FF2D8B"
-   Factions {
-    SCR_Faction "{56DEAC40D2DBC8B1}" {
-     m_bIsPlayable 1
+ components {
+  PS_CutsceneManager "{60E6C661B81E7619}" {
+   m_aCutscenes {
+    PS_Cutscene "{62653CC29803529D}" {
+     m_sCutsceneEntityName "Anime_1"
+     m_sCutsceneSound "{7B5E214E3A94F31A}MissionAudio/LastMorning/PrecariousState.acp"
+     m_iCutsceneTime 135000
     }
-    SCR_Faction "{56DEAC40D3C2E623}" {
-     m_bIsPlayable 1
-    }
-    SCR_Faction "{56DEAC40D132400B}" {
-     m_bIsPlayable 1
+   }
+  }
+  SCR_InitWeatherComponent "{5F3AFB2830A6CBFF}" {
+   m_sInitialStartingWeatherId "Cloudy"
+  }
+  SCR_TimeAndWeatherHandlerComponent "{5EE3229927D4D2F5}" {
+   m_iStartingHours 5
+   m_iStartingMinutes 55
+   m_aStartingWeatherAndTime {
+    SCR_TimeAndWeatherState "{6277209ED999B80B}" {
+     m_sWeatherPresetName "Rainy"
+     m_iStartingHour 5
+     m_iStartingMinutes 55
     }
    }
   }
  }
+ m_fAutoReloadTime 300
+ m_iReconnectTime 1260000
+ m_bMarkersOnlyOnBriefing 1
+ m_iFreezeTime 100000
+ m_bDisableChat 1
+ m_bReserveSlots 1
+ m_bDisablePlayablesStreaming 1
+ m_bFreezeTimeShootingForbiden 1
+ m_iForceMenuFramerate 30
+ {
+  SCR_FactionManager "5F2B25DD2FE1CDD2" {
+   ID "5ED9088735FF2D8B"
+   Factions {
+    SCR_Faction "{5978B9CE6585BBE8}" {
+     m_bIsPlayable 1
+    }
+    SCR_Faction "{5D9F7285A1D004FE}" {
+     m_bIsPlayable 1
+    }
+   }
+  }
+  SCR_EditorSettingsEntity {
+   ID "61B4E967E6C20362"
+   m_bIsUnlimitedEditorLegal 0
+  }
+ }
+}
+SCR_EditorModeEntity : "{1CF7F1998A0257B1}Prefabs/Editor/Modes/EditorModePhoto.et" {
+ coords 104.707 1 150.333
 }
