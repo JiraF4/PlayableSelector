@@ -22,7 +22,13 @@ class PS_GroupAttachmentComponent : ScriptComponent
 			SCR_AIGroup group = SCR_AIGroup.Cast(GetGame().GetWorld().FindEntityByName(m_sAttachmentGroupName));
 			if (group)
 			{
-				RplId id = Replication.FindId(GetOwner());
+				RplComponent rplComponent = RplComponent.Cast(GetOwner().FindComponent(RplComponent));
+				RplId id = rplComponent.Id();
+				if (!id.IsValid())
+				{
+					GetGame().GetCallqueue().Call(RegisterToMissionDate);
+					return;
+				}
 				playableManager.RegisterGroupVehicle(id, group, GetOwner());
 			}
 		}
