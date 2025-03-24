@@ -582,10 +582,9 @@ class PS_PlayableControllerComponent : ScriptComponent
 		actionManager.SetActionValue("CarHazardLights", 0);
 	}
 
-	// Yes every frame, just don't look at it.
-	override protected void EOnPostFixedFrame(IEntity owner, float timeSlice)
+	void UpdatePosition()
 	{
-		RplComponent rpl = RplComponent.Cast(owner.FindComponent(RplComponent));
+		RplComponent rpl = RplComponent.Cast(GetOwner().FindComponent(RplComponent));
 		if (!rpl.IsOwner())
 			return;
 		
@@ -614,7 +613,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 			// Who broke camera on map?
 			CameraBase cameraBase = GetGame().GetCameraManager().CurrentCamera();
 			if (cameraBase)
-				cameraBase.ApplyTransform(timeSlice);
+				cameraBase.ApplyTransform(GetGame().GetWorld().GetTimeSlice());
 
 			Physics physics = m_InitialEntity.GetPhysics();
 			if (physics)
@@ -725,6 +724,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 	}
 	void LobbyVoNEnable()
 	{
+		UpdatePosition();
 		GetGame().GetCallqueue().Remove(LobbyVoNDisableDelayed);
 		PS_LobbyVoNComponent von = GetVoN();
 		von.SetTransmitRadio(GetVoNTransiver(1));
@@ -733,6 +733,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 	}
 	void LobbyVoNRadioEnable()
 	{
+		UpdatePosition();
 		GetGame().GetCallqueue().Remove(LobbyVoNDisableDelayed);
 		PS_LobbyVoNComponent von = GetVoN();
 		von.SetTransmitRadio(GetVoNTransiver(0));
