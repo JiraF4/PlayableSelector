@@ -168,11 +168,17 @@ class PS_SpectatorMenu: MenuBase
 		
 		// Check icon under cursor
 		array<Widget> outWidgets = {};
+		array<Widget> outWidgetsOut = {};
 		WidgetManager.TraceWidgets(xs, ys, GetRootWidget(), outWidgets);
-		PS_SpectatorLabelIcon spectatorLabelIcon; 
-		if (outWidgets.Count() > 0)
+		foreach (Widget widget : outWidgets)
 		{
-			Widget widget = outWidgets[0];
+			if (!(widget.GetFlags() & WidgetFlags.IGNORE_CURSOR))
+				outWidgetsOut.Insert(widget)
+		}
+		PS_SpectatorLabelIcon spectatorLabelIcon; 
+		if (outWidgetsOut.Count() > 0)
+		{
+			Widget widget = outWidgetsOut[0];
 			while (!spectatorLabelIcon && widget)
 			{
 				spectatorLabelIcon = PS_SpectatorLabelIcon.Cast(widget.FindHandler(PS_SpectatorLabelIcon));
@@ -225,10 +231,16 @@ class PS_SpectatorMenu: MenuBase
 		if (!character)
 		{
 			array<Widget> outWidgets = {};
+			array<Widget> outWidgetsOut = {};
 			int xs, ys;
 			WidgetManager.GetMousePos(xs, ys);
 			WidgetManager.TraceWidgets(xs, ys, GetRootWidget(), outWidgets);
-			if (outWidgets.Count() > 0)
+			foreach (Widget widget : outWidgets)
+			{
+				if (!(widget.GetFlags() & WidgetFlags.IGNORE_CURSOR))
+					outWidgetsOut.Insert(widget)
+			}
+			if (outWidgetsOut.Count() > 0)
 				return;
 			if (!PS_PlayersHelper.IsAdminOrServer())
 				return;
