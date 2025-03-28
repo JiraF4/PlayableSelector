@@ -38,7 +38,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	[Attribute("60000", UIWidgets.EditBox, "Time in milliseconds before restriction zones are removed.", category: "Reforger Lobby")]
 	int m_iFreezeTime;
 	
-	[Attribute("5000", UIWidgets.EditBox, "Time in milliseconds before characters are activated.", category: "Reforger Lobby")]
+	[Attribute("0", UIWidgets.EditBox, "Time in milliseconds before characters are activated.", category: "Reforger Lobby (WIP)")]
 	int m_iDisableTime;
 
 	[Attribute("0", UIWidgets.CheckBox, "Disables text chat for alive players on game stage. Admins can always see text chat.", category: "Reforger Lobby")]
