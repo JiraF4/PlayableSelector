@@ -1,5 +1,5 @@
 MetaFileClass {
- Name "{19CCD8504848310C}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Crew_P.et"
+ Name "{19CCD8504848310D}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Crew_P.et"
  Configurations {
   EntityTemplateResourceClass PC {
   }
@@ -8,6 +8,8 @@ MetaFileClass {
   EntityTemplateResourceClass XBOX_SERIES : PC {
   }
   EntityTemplateResourceClass PS4 : PC {
+  }
+  EntityTemplateResourceClass PS5 : PC {
   }
   EntityTemplateResourceClass HEADLESS : PC {
   }

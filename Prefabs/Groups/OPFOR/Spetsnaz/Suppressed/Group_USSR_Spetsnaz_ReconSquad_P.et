@@ -1,0 +1,6 @@
+SCR_AIGroup : "{666A2B0A6B1967AE}Prefabs/Groups/OPFOR/Spetsnaz/Suppressed/Group_USSR_Spetsnaz_ReconSquad.et" {
+ ID "0000000000000001"
+ m_aUnitPrefabSlots {
+  "{B263BBB6777B70A2}Prefabs/Characters/Factions/OPFOR/USSR_Army/Spetsnaz/Suppressed/Character_USSR_SF_SL_S_P.et" "{20855F655861E3FD}Prefabs/Characters/Factions/OPFOR/USSR_Army/Spetsnaz/Suppressed/Character_USSR_SF_S_P.et" "{4C7CA19FC52757A3}Prefabs/Characters/Factions/OPFOR/USSR_Army/Spetsnaz/Suppressed/Character_USSR_SF_Sharpshooter_S_P.et" "{953DFD732BB0A8D0}Prefabs/Characters/Factions/OPFOR/USSR_Army/Spetsnaz/Suppressed/Character_USSR_SF_Sapper_S_P.et" "{F9A9F676F46CCE69}Prefabs/Characters/Factions/OPFOR/USSR_Army/Spetsnaz/Suppressed/Character_USSR_SF_Medic_S_P.et" "{5ACA1B0856786D94}Prefabs/Characters/Factions/OPFOR/USSR_Army/Spetsnaz/Suppressed/Character_USSR_SF_RTO_S_P.et"
+ }
+}

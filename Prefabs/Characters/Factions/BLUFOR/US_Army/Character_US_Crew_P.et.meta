@@ -1,0 +1,17 @@
+MetaFileClass {
+ Name "{7C589F7F29FA6FE8}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Crew_P.et"
+ Configurations {
+  EntityTemplateResourceClass PC {
+  }
+  EntityTemplateResourceClass XBOX_ONE : PC {
+  }
+  EntityTemplateResourceClass XBOX_SERIES : PC {
+  }
+  EntityTemplateResourceClass PS4 : PC {
+  }
+  EntityTemplateResourceClass PS5 : PC {
+  }
+  EntityTemplateResourceClass HEADLESS : PC {
+  }
+ }
+}
