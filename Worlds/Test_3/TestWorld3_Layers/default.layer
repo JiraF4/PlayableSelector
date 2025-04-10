@@ -33,6 +33,7 @@ PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_Game
  m_iReconnectTime 1260000
  m_bMarkersOnlyOnBriefing 1
  m_iFreezeTime 100000
+ m_iDisableTime 0
  m_bDisableChat 1
  m_bReserveSlots 1
  m_bDisablePlayablesStreaming 1

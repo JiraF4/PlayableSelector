@@ -12,8 +12,7 @@ class PS_PolyZoneEffectHUDTriggerCapture : PS_PolyZoneEffectHUD
 	override void Update(float timeSlice)
 	{
 		SCR_ChimeraCharacter chimeraCharacter = SCR_ChimeraCharacter.Cast(SCR_PlayerController.GetLocalControlledEntity());
-		FactionAffiliationComponent factionAffiliationComponent = chimeraCharacter.PS_GetPlayable().GetFactionAffiliationComponent();
-		Faction faction = factionAffiliationComponent.GetDefaultAffiliatedFaction();
+		Faction faction = chimeraCharacter.GetFaction();
 		FactionKey factionKey = faction.GetFactionKey();
 		if (m_PolyZoneObjectiveTriggerCapture.IsCurrentFaction(factionKey))
 		{

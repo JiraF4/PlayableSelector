@@ -21,6 +21,9 @@ class PS_Objective : PS_MissionDescription
 	[Attribute("")]
 	protected bool m_bAdvanceWhenTriggered;
 	
+	[Attribute("-1")]
+	int m_bPolyzoneColorToFactionAlpha;
+	
 	protected PS_GameModeCoop m_GameModeCoop;
 
 	override void EOnInit(IEntity owner)
@@ -58,6 +61,17 @@ class PS_Objective : PS_MissionDescription
 	{
 		if (m_OnObjectiveUpdate)
 			m_OnObjectiveUpdate.Invoke();
+		
+		if (m_bCompleted && m_bPolyzoneColorToFactionAlpha >= 0)
+		{
+			SCR_Faction faction = SCR_Faction.Cast(GetGame().GetFactionManager().GetFactionByKey(m_sFactionKey));
+			Color colorFill = faction.GetFactionColor();
+			Color colorOutline = faction.GetOutlineFactionColor();
+			IEntity parent = GetParent();
+			PS_PolyZone polyZone = PS_PolyZone.Cast(parent.FindComponent(PS_PolyZone));
+			polyZone.m_cPolygonColor = Color.FromRGBA(colorFill.R() * 255, colorFill.G() * 255, colorFill.B() * 255, m_bPolyzoneColorToFactionAlpha);
+			polyZone.m_cPolygonBorderColor = Color.FromRGBA(colorOutline.R() * 255, colorOutline.G() * 255, colorOutline.B() * 255, m_bPolyzoneColorToFactionAlpha);
+		}
 		
 		if (Replication.IsServer() && m_bAdvanceWhenTriggered && m_bCompleted)
 		{

@@ -1,9 +1,7 @@
 SCR_MapEntity MapEntity_Arland1 : "{66FBC1063149819B}Prefabs/World/Game/Arland/MapEntity_Arland.et" {
  coords 22.179 1 20.484
 }
-SCR_AIGroup : "{9C7902A055DDA271}Prefabs/Groups/OPFOR/Group_USSR_FireGroup_P.et" {
- coords 92.818 1 157.22
- m_aUnitPrefabSlots {
-  "{A5F4D7FEBDB57182}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_SL_P.et" "{00716F7369F3C5E8}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_AR_P.et"
- }
+Vehicle BTR9 : "{C012BB3488BEA0C2}Prefabs/Vehicles/Wheeled/BTR70/BTR70.et" {
+ coords 98.796 1 155.211
+ m_sAttachmentGroupName "aaa"
 }

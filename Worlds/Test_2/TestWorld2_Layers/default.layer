@@ -49,6 +49,9 @@ PolylineShapeEntity : "{1D807ABE94FE2618}Prefabs/PolyZone/PolyZone_Capture.et" {
 PS_MissionDescription : "{3136BE42592F3B1B}PrefabsEditable/MissionDescription/EditableMissionDescription.et" {
  coords 95.586 1 151.188
 }
+GenericEntity : "{52AACED13FA088FF}Prefabs/Items/Equipment/Radios/Radio_Noqia2028_CheeseRiders.et" {
+ coords 121.225 1 105.193
+}
 PS_ManualCameraSpectator ManualCameraSpectator1 : "{6EAA30EF620F4A2E}Prefabs/Editor/Camera/ManualCameraSpectator.et" {
  coords 122.492 1 163.836
  Flags 1048579

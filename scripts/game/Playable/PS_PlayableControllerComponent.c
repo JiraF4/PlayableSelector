@@ -582,7 +582,12 @@ class PS_PlayableControllerComponent : ScriptComponent
 		actionManager.SetActionValue("CarHazardLights", 0);
 	}
 
-	void UpdatePosition()
+	override void EOnFixedFrame(IEntity owner, float timeSlice)
+	{
+		UpdatePosition(false);
+	}
+	
+	void UpdatePosition(bool force)
 	{
 		RplComponent rpl = RplComponent.Cast(GetOwner().FindComponent(RplComponent));
 		if (!rpl.IsOwner())
@@ -602,7 +607,9 @@ class PS_PlayableControllerComponent : ScriptComponent
 			vector mat[4];
 			Math3D.MatrixIdentity4(mat);
 			mat[3] = m_vVoNPosition;
-			gameEntity.Teleport(mat);
+			if (force)
+				gameEntity.Teleport(mat);
+			gameEntity.SetTransform(mat);
 			
 			MenuBase menu = GetGame().GetMenuManager().GetTopMenu();
 			if (menu && (menu.IsInherited(PS_PreviewMapMenu) || menu.IsInherited(PS_CoopLobby) || menu.IsInherited(PS_BriefingMapMenu)))
@@ -724,7 +731,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 	}
 	void LobbyVoNEnable()
 	{
-		UpdatePosition();
+		UpdatePosition(true);
 		GetGame().GetCallqueue().Remove(LobbyVoNDisableDelayed);
 		PS_LobbyVoNComponent von = GetVoN();
 		von.SetTransmitRadio(GetVoNTransiver(1));
@@ -733,7 +740,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 	}
 	void LobbyVoNRadioEnable()
 	{
-		UpdatePosition();
+		UpdatePosition(true);
 		GetGame().GetCallqueue().Remove(LobbyVoNDisableDelayed);
 		PS_LobbyVoNComponent von = GetVoN();
 		von.SetTransmitRadio(GetVoNTransiver(0));
