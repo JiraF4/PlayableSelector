@@ -169,6 +169,9 @@ class PS_MissionDescription : GenericEntity
 		writer.WriteString(m_sDescriptionLayout);
 		writer.WriteString(m_sTextData);
 		writer.WriteBool(m_bEmptyFactionVisibility);
+		writer.WriteBool(m_bShowForAnyFaction);
+		writer.WriteInt(m_iOrder);
+		
 		
 		string factions = "";
 		foreach (FactionKey factionKey: m_aVisibleForFactions)
@@ -187,6 +190,8 @@ class PS_MissionDescription : GenericEntity
 		reader.ReadString(m_sDescriptionLayout);
 		reader.ReadString(m_sTextData);
 		reader.ReadBool(m_bEmptyFactionVisibility);
+		reader.ReadBool(m_bShowForAnyFaction);		
+		reader.ReadInt(m_iOrder);
 		
 		string factions;
 		reader.ReadString(factions);
