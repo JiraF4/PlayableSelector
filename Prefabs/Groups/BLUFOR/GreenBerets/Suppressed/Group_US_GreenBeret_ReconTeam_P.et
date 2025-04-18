@@ -1,0 +1,6 @@
+SCR_AIGroup : "{AC473DE5F4B24E82}Prefabs/Groups/BLUFOR/GreenBerets/Suppressed/Group_US_GreenBeret_ReconTeam.et" {
+ ID "0000000000000001"
+ m_aUnitPrefabSlots {
+  "{502410DA7C2D7F02}Prefabs/Characters/Factions/BLUFOR/US_Army/GreenBerets/Suppressed/Character_US_SF_S_P.et" "{502410DA7C2D7F02}Prefabs/Characters/Factions/BLUFOR/US_Army/GreenBerets/Suppressed/Character_US_SF_S_P.et"
+ }
+}
