@@ -1,0 +1,19 @@
+FrameWidgetClass {
+ {
+  OverlayWidgetClass "{5DB8B556919FE5F2}" {
+   Prefab "{5DB8B556919FE5F2}"
+   {
+    VerticalLayoutWidgetClass "{5DB8B556919FE5EE}" {
+     Prefab "{5DB8B556919FE5EE}"
+     {
+      ButtonWidgetClass "{58D09C4071FF2106}" {
+       Prefab "{58D09C4071FF2106}"
+       "Is Enabled" 0
+       "Is Visible" 0
+      }
+     }
+    }
+   }
+  }
+ }
+}
