@@ -1,0 +1,26 @@
+SCR_ChimeraCharacter : "{D97EAE64721478F3}Prefabs/Characters/Factions/CIV/ConstructionWorker/Character_CIV_ConstructionWorker_Randomized.et" {
+ ID "520EC961A090B1EE"
+ components {
+  SCR_EditableCharacterComponent "{520EA1D2F659C85C}" {
+   m_VariantData SCR_EditableEntityVariantData "{6106F456FB3DEB31}" {
+    m_aVariants {
+     SCR_EditableEntityVariant "{6106F456FACE970C}" {
+      m_sVariantPrefab "{63BC2C711E110347}Prefabs/Characters/Factions/CIV/ConstructionWorker/Character_CIV_ConstructionWorker_1_P.et"
+     }
+     SCR_EditableEntityVariant "{6106F456FA33360D}" {
+      m_sVariantPrefab "{3D540532A19C8D48}Prefabs/Characters/Factions/CIV/ConstructionWorker/Character_CIV_ConstructionWorker_2_P.et"
+     }
+     SCR_EditableEntityVariant "{6106F456FA6743DE}" {
+      m_sVariantPrefab "{C95C42AAAC41E53C}Prefabs/Characters/Factions/CIV/ConstructionWorker/Character_CIV_ConstructionWorker_3_P.et"
+     }
+     SCR_EditableEntityVariant "{6106F456F8A8C3C6}" {
+      m_sVariantPrefab "{808457B5DE879156}Prefabs/Characters/Factions/CIV/ConstructionWorker/Character_CIV_ConstructionWorker_4_P.et"
+     }
+     SCR_EditableEntityVariant "{6106FC6FF952779D}" {
+      m_sVariantPrefab "{748C102DD35AF922}Prefabs/Characters/Factions/CIV/ConstructionWorker/Character_CIV_ConstructionWorker_5_P.et"
+     }
+    }
+   }
+  }
+ }
+}

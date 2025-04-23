@@ -1,0 +1,29 @@
+SCR_ChimeraCharacter : "{5882AE7A4543AFB4}Prefabs/Characters/Factions/CIV/Dockworker/Character_CIV_Dockworker_Randomized.et" {
+ ID "520EC961A090B1EE"
+ components {
+  SCR_EditableCharacterComponent "{520EA1D2F659C85C}" {
+   m_VariantData SCR_EditableEntityVariantData "{6106974AA180825D}" {
+    m_aVariants {
+     SCR_EditableEntityVariant "{6106974AA0F867CF}" {
+      m_sVariantPrefab "{54308692B62EFF30}Prefabs/Characters/Factions/CIV/Dockworker/Character_CIV_Dockworker_1_P.et"
+     }
+     SCR_EditableEntityVariant "{6106974AA0956792}" {
+      m_sVariantPrefab "{0AD8AFD109A3713F}Prefabs/Characters/Factions/CIV/Dockworker/Character_CIV_Dockworker_2_P.et"
+     }
+     SCR_EditableEntityVariant "{6106974AA02AB73D}" {
+      m_sVariantPrefab "{FED0E849047E194B}Prefabs/Characters/Factions/CIV/Dockworker/Character_CIV_Dockworker_3_P.et"
+     }
+     SCR_EditableEntityVariant "{6108A91C90DD9064}" {
+      m_sVariantPrefab "{B708FD5676B86D21}Prefabs/Characters/Factions/CIV/Dockworker/Character_CIV_Dockworker_4_P.et"
+     }
+     SCR_EditableEntityVariant "{6108A91C9075BA7A}" {
+      m_sVariantPrefab "{4300BACE7B650555}Prefabs/Characters/Factions/CIV/Dockworker/Character_CIV_Dockworker_5_P.et"
+     }
+     SCR_EditableEntityVariant "{6108A91C97AD1A50}" {
+      m_sVariantPrefab "{1DE8938DC4E88B5A}Prefabs/Characters/Factions/CIV/Dockworker/Character_CIV_Dockworker_6_P.et"
+     }
+    }
+   }
+  }
+ }
+}
