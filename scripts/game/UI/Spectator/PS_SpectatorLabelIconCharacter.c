@@ -152,7 +152,7 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 		}
 		
 		SCR_UIInfo uiInfo = m_EditableCharacterComponent.GetInfo();
-		m_wSpectatorLabelIcon.LoadImageTexture(0, uiInfo.GetIconPath());
+		uiInfo.SetIconTo(m_wSpectatorLabelIcon);
 	}
 	
 	override void UpdateLabel()
@@ -192,7 +192,7 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 			}
 			if (m_bWounded && !m_ControllerComponent.IsUnconscious()) {
 				SCR_UIInfo uiInfo = m_EditableCharacterComponent.GetInfo();
-				m_wSpectatorLabelIcon.LoadImageTexture(0, uiInfo.GetIconPath());
+				uiInfo.SetIconTo(m_wSpectatorLabelIcon);
 				m_wSpectatorLabelIconWounded.SetVisible(false);
 				m_bWounded = false;
 			}

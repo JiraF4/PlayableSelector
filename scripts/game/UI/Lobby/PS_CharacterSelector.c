@@ -70,7 +70,6 @@ class PS_CharacterSelector : SCR_ButtonComponent
 	
 	// Cache parameters
 	protected SCR_CharacterDamageManagerComponent m_CharacterDamageManagerComponent;
-	protected ResourceName m_sPlayableIcon;
 	protected SCR_Faction m_Faction;
 	protected FactionKey m_sFactionKey;
 	
@@ -147,9 +146,8 @@ class PS_CharacterSelector : SCR_ButtonComponent
 		m_sFactionKey = m_Faction.GetFactionKey();
 		
 		// Initial setup
-		m_sPlayableIcon = m_PlayableContainer.GetRoleIconPath();
+		m_PlayableContainer.SetIconTo(m_wUnitIcon);
 		m_wCharacterFactionColor.SetColor(m_Faction.GetFactionColor());
-		m_wUnitIcon.LoadImageTexture(0, m_sPlayableIcon);
 		m_iPlayerId = m_PlayableManager.GetPlayerByPlayable(m_iPlayableId);
 		if (m_iPlayerId > 0)
 			m_bDisconnected = !m_PlayerManager.IsPlayerConnected(m_iPlayerId);

@@ -16,9 +16,8 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 	
 	// Cache parameters
 	protected PS_AlivePlayerList m_AlivePlayerList;
-	protected PS_PlayableContainer m_PlayableComponent;
+	protected PS_PlayableContainer m_PlayableContainer;
 	protected SCR_CharacterDamageManagerComponent m_CharacterDamageManagerComponent;
-	protected ResourceName m_sPlayableIcon;
 	protected bool m_bDead;
 	
 	// Widgets
@@ -57,23 +56,22 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 		m_iPlayableId = playableId;
 		
 		// Cache parameters
-		m_PlayableComponent = m_PlayableManager.GetPlayableById(playableId);
+		m_PlayableContainer = m_PlayableManager.GetPlayableById(playableId);
 		
 		// Temp
-		Faction faction = m_PlayableComponent.GetFaction();
+		Faction faction = m_PlayableContainer.GetFaction();
 		
 		// Initial setup
-		m_sPlayableIcon = m_PlayableComponent.GetRoleIconPath();
 		m_wPlayerFactionColor.SetColor(faction.GetFactionColor());
-		EDamageState damageState = m_PlayableComponent.GetDamageState();
+		EDamageState damageState = m_PlayableContainer.GetDamageState();
 		UpdateDammage(damageState);
 		UpdatePlayer(m_PlayableManager.GetPlayerByPlayableRemembered(m_iPlayableId));
 		UpdateShowDead(m_AlivePlayerList.IsShowDead());
 		
 		// Events
-		m_PlayableComponent.GetOnPlayerChange().Insert(UpdatePlayerWrap);
-		m_PlayableComponent.GetOnDamageStateChanged().Insert(UpdateDammage);
-		m_PlayableComponent.GetOnUnregister().Insert(RemoveSelf);
+		m_PlayableContainer.GetOnPlayerChange().Insert(UpdatePlayerWrap);
+		m_PlayableContainer.GetOnDamageStateChanged().Insert(UpdateDammage);
+		m_PlayableContainer.GetOnUnregister().Insert(RemoveSelf);
 	}
 	
 	void SetSpectatorMenu(PS_SpectatorMenu spectatorMenu)
@@ -99,7 +97,7 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 		if (m_bDead)
 		{
 			m_wRoot.SetVisible(m_AlivePlayerList.IsShowDead());
-			m_AlivePlayerList.OnAliveDie(m_PlayableComponent);
+			m_AlivePlayerList.OnAliveDie(m_PlayableContainer);
 			m_wUnitIcon.SetVisible(false);
 			m_wDeadIcon.SetVisible(true);
 			//m_wUnitIcon.LoadImageFromSet(0, m_sImageSet, "death");
@@ -108,28 +106,28 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 		}
 		else
 		{
-			m_wUnitIcon.LoadImageTexture(0, m_sPlayableIcon);
+			m_PlayableContainer.SetIconTo(m_wUnitIcon);
 			m_wPlayerName.SetColor(Color.White);
 		}
 	}
 	
 	void UpdatePlayerWrap(int oldPlayerId, int playerId)
 	{
-		UpdatePlayer(m_PlayableManager.GetPlayerByPlayableRemembered(m_PlayableComponent.GetRplId()))
+		UpdatePlayer(m_PlayableManager.GetPlayerByPlayableRemembered(m_PlayableContainer.GetRplId()))
 	}
 	void UpdatePlayer(int playerId)
 	{
 		string playerName = m_PlayableManager.GetPlayerName(playerId);
 		if (playerName == "") // No player
-			playerName = m_PlayableComponent.GetName();
+			playerName = m_PlayableContainer.GetName();
 		m_wPlayerName.SetText(playerName);
 	}
 	
 	void RemoveSelf()
 	{
 		m_wRoot.RemoveFromHierarchy();
-		m_AliveGroup.OnAliveRemoved(m_PlayableComponent);
-		m_AlivePlayerList.OnAliveRemoved(m_PlayableComponent);
+		m_AliveGroup.OnAliveRemoved(m_PlayableContainer);
+		m_AlivePlayerList.OnAliveRemoved(m_PlayableContainer);
 	}
 	
 	void UpdateShowDead(bool showDead)
@@ -244,7 +242,7 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 	// -------------------- Buttons events --------------------
 	void AlivePlayerButtonClicked(SCR_ButtonBaseComponent playerButton)
 	{
-		m_mSpectatorMenu.SetCameraCharacter(m_PlayableComponent.GetRplId());
+		m_mSpectatorMenu.SetCameraCharacter(m_PlayableContainer.GetRplId());
 	}
 	
 }

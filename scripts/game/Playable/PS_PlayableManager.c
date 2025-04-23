@@ -228,7 +228,7 @@ class PS_PlayableManager : ScriptComponent
 		if (playableId != RplId.Invalid())
 		{
 			PS_PlayableContainer playableContainer = GetPlayableById(playableId);
-			if (playableContainer.GetDamageState() == EDamageState.DESTROYED)
+			if (playableContainer && playableContainer.GetDamageState() == EDamageState.DESTROYED)
 			{
 				m_CallQueue.CallLater(DelayedSwitchToInitialEntity, 1000, false, playerId);
 			}

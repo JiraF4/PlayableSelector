@@ -317,7 +317,16 @@ class PS_PlayableComponent : ScriptComponent
 	{
 		SCR_EditableCharacterComponent editableCharacterComponent = SCR_EditableCharacterComponent.Cast(GetOwner().FindComponent(SCR_EditableCharacterComponent));
 		SCR_UIInfo uiInfo = editableCharacterComponent.GetInfo();
-		return uiInfo.GetIconPath();
+		if (uiInfo.GetIconSetName() == "")
+			return uiInfo.GetIconPath();
+		else
+			return uiInfo.GetImageSetPath();
+	}
+	string GetRoleIconQuad()
+	{
+		SCR_EditableCharacterComponent editableCharacterComponent = SCR_EditableCharacterComponent.Cast(GetOwner().FindComponent(SCR_EditableCharacterComponent));
+		SCR_UIInfo uiInfo = editableCharacterComponent.GetInfo();
+		return uiInfo.GetIconSetName();
 	}
 	string GetRoleName()
 	{
