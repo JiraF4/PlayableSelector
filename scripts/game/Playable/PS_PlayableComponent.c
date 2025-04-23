@@ -211,12 +211,14 @@ class PS_PlayableComponent : ScriptComponent
 
 	private void OnDamageStateChange(EDamageState state)
 	{
-		if (m_PlayableManager && !m_bRespawned && state == EDamageState.DESTROYED)
+		if (!m_PlayableManager)
+			return;
+		if (!m_bRespawned && state == EDamageState.DESTROYED)
 		{
 			GetGame().GetCallqueue().CallLater(TryRespawn, 200, false, m_PlayableManager.GetPlayerByPlayable(m_RplId));
 			m_bRespawned = true;
 		}
-		PS_PlayableManager.GetInstance().OnPlayableDamageStateChanged(m_RplId, state);
+		m_PlayableManager.OnPlayableDamageStateChanged(m_RplId, state);
 	}
 
 	private void TryRespawn(int playerId)
