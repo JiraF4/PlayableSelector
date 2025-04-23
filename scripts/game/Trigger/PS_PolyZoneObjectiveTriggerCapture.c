@@ -9,7 +9,7 @@ class PS_PolyZoneObjectiveTriggerCapture : PS_PolyZoneObjectiveTrigger
 	float m_fCaptureTime;
 	[Attribute("2")]
 	int m_iPowerBalance;
-	[Attribute("")]
+	[Attribute(""), RplProp()]
 	FactionKey m_sCurrentFaction;
 	[Attribute("0")]
 	bool m_bCanRetake;
@@ -62,6 +62,9 @@ class PS_PolyZoneObjectiveTriggerCapture : PS_PolyZoneObjectiveTrigger
 	
 	override void OnFrame(IEntity owner, float timeSlice)
 	{
+		if (!Replication.IsServer())
+			return;
+		
 		UpdateFactionTimers();
 		
 		int maxDiff = 0;
@@ -69,7 +72,7 @@ class PS_PolyZoneObjectiveTriggerCapture : PS_PolyZoneObjectiveTrigger
 		FactionKey maxFaction = "";
 		foreach (FactionKey factionKey, int count : m_mFactionCounters)
 		{
-			if (m_mFactionCounters[factionKey] >= maxCount)
+			if (m_mFactionCounters[factionKey] > maxCount)
 			{
 				maxDiff = m_mFactionCounters[factionKey] - maxCount;
 				maxCount = m_mFactionCounters[factionKey];
@@ -96,6 +99,7 @@ class PS_PolyZoneObjectiveTriggerCapture : PS_PolyZoneObjectiveTrigger
 			if (m_mFactionTimers[maxFaction] > m_fCaptureTime)
 			{
 				m_sCurrentFaction = maxFaction;
+				Replication.BumpMe();
 				foreach (FactionKey factionKey, float timer : m_mFactionTimers)
 				{
 					m_mFactionTimers[factionKey] = 0;
@@ -116,7 +120,7 @@ class PS_PolyZoneObjectiveTriggerCapture : PS_PolyZoneObjectiveTrigger
 			Rpc(RPC_UpdateFactionTimers, factionKey, timer);
 		}
 	}
-	[RplRpc(RplChannel.Unreliable, RplRcver.Broadcast)]
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void RPC_UpdateFactionTimers(FactionKey factionKey, float timer)
 	{
 		m_mFactionTimers[factionKey] = timer;
@@ -128,8 +132,7 @@ class PS_PolyZoneObjectiveTriggerCapture : PS_PolyZoneObjectiveTrigger
 			return false;
 		
 		SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(ent);
-		PS_PlayableComponent playableComponent = character.PS_GetPlayable();
-		SCR_DamageManagerComponent damageManagerComponent = playableComponent.GetCharacterDamageManagerComponent();
+		SCR_DamageManagerComponent damageManagerComponent = character.GetDamageManager();
 		
 		return damageManagerComponent.GetState() != EDamageState.DESTROYED;
 	}

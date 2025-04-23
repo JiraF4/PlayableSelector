@@ -28,7 +28,17 @@ class PS_MissionDescription : GenericEntity
 	{
 		return m_iOrder;
 	}
-	
+	void SetOrder(int order)
+	{
+		RPC_SetOrder(order);
+		Rpc(RPC_SetOrder, order);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RPC_SetOrder(int order)
+	{
+		m_iOrder = order;
+	}
+			
 	ResourceName GetDescriptionLayout()
 	{
 		return m_sDescriptionLayout;
@@ -89,6 +99,23 @@ class PS_MissionDescription : GenericEntity
 		m_sTitle = title;
 	}
 	
+
+	bool GetShowForAnyFaction()
+	{
+		return m_bShowForAnyFaction;
+	}
+	void SetShowForAnyFaction(bool enable)
+	{
+		RPC_SetShowForAnyFaction(enable);
+		Rpc(RPC_SetShowForAnyFaction, enable);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RPC_SetShowForAnyFaction(bool enable)
+	{
+		m_bShowForAnyFaction = enable;
+	}
+
+	
 	string GetTextData()
 	{
 		return m_sTextData;
@@ -142,6 +169,9 @@ class PS_MissionDescription : GenericEntity
 		writer.WriteString(m_sDescriptionLayout);
 		writer.WriteString(m_sTextData);
 		writer.WriteBool(m_bEmptyFactionVisibility);
+		writer.WriteBool(m_bShowForAnyFaction);
+		writer.WriteInt(m_iOrder);
+		
 		
 		string factions = "";
 		foreach (FactionKey factionKey: m_aVisibleForFactions)
@@ -160,6 +190,8 @@ class PS_MissionDescription : GenericEntity
 		reader.ReadString(m_sDescriptionLayout);
 		reader.ReadString(m_sTextData);
 		reader.ReadBool(m_bEmptyFactionVisibility);
+		reader.ReadBool(m_bShowForAnyFaction);		
+		reader.ReadInt(m_iOrder);
 		
 		string factions;
 		reader.ReadString(factions);

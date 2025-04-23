@@ -582,29 +582,45 @@ class PS_PlayableControllerComponent : ScriptComponent
 		actionManager.SetActionValue("CarHazardLights", 0);
 	}
 
-	// Yes every frame, just don't look at it.
-	override protected void EOnPostFixedFrame(IEntity owner, float timeSlice)
+	override void EOnFixedFrame(IEntity owner, float timeSlice)
 	{
-		RplComponent rpl = RplComponent.Cast(owner.FindComponent(RplComponent));
+		UpdatePosition(false);
+	}
+	
+	void UpdatePosition(bool force)
+	{
+		RplComponent rpl = RplComponent.Cast(GetOwner().FindComponent(RplComponent));
 		if (!rpl.IsOwner())
 			return;
-
+		
 		// Lets fight with phisyc engine
 		if (m_InitialEntity)
 		{
 			PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
 			int playerId = thisPlayerController.GetPlayerId();
-			m_vVoNPosition = Vector(0, 100000, 0) + Vector(5000 * Math.Mod(playerId, 10), 5000 * Math.Floor(Math.Mod(playerId, 100) / 10), 5000 * Math.Floor(playerId / 100));
+			m_vVoNPosition = Vector(0, 100000, 0) + Vector(1000 * Math.Mod(playerId, 10), 5000 * Math.Floor(Math.Mod(playerId, 100) / 10), 5000 * Math.Floor(playerId / 100));
 			vector currentOrigin = m_InitialEntity.GetOrigin();
-			if (currentOrigin == m_vVoNPosition) return;
-			Print("Move to: " + m_vVoNPosition.ToString());
-
-			m_InitialEntity.SetOrigin(m_vVoNPosition);
+			//if (currentOrigin == m_vVoNPosition) return;
+			//Print("Move to: " + m_vVoNPosition.ToString());
+			
+			GameEntity gameEntity = GameEntity.Cast(m_InitialEntity);
+			vector mat[4];
+			Math3D.MatrixIdentity4(mat);
+			mat[3] = m_vVoNPosition;
+			if (force)
+				gameEntity.Teleport(mat);
+			gameEntity.SetTransform(mat);
+			
+			MenuBase menu = GetGame().GetMenuManager().GetTopMenu();
+			if (menu && (menu.IsInherited(PS_PreviewMapMenu) || menu.IsInherited(PS_CoopLobby) || menu.IsInherited(PS_BriefingMapMenu)))
+			{
+				GetGame().GetCameraManager().CurrentCamera().SetWorldTransform(mat);
+			}
 
 			// Who broke camera on map?
 			CameraBase cameraBase = GetGame().GetCameraManager().CurrentCamera();
 			if (cameraBase)
-				cameraBase.ApplyTransform(timeSlice);
+				cameraBase.ApplyTransform(GetGame().GetWorld().GetTimeSlice());
 
 			Physics physics = m_InitialEntity.GetPhysics();
 			if (physics)
@@ -715,6 +731,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 	}
 	void LobbyVoNEnable()
 	{
+		UpdatePosition(true);
 		GetGame().GetCallqueue().Remove(LobbyVoNDisableDelayed);
 		PS_LobbyVoNComponent von = GetVoN();
 		von.SetTransmitRadio(GetVoNTransiver(1));
@@ -723,6 +740,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 	}
 	void LobbyVoNRadioEnable()
 	{
+		UpdatePosition(true);
 		GetGame().GetCallqueue().Remove(LobbyVoNDisableDelayed);
 		PS_LobbyVoNComponent von = GetVoN();
 		von.SetTransmitRadio(GetVoNTransiver(0));

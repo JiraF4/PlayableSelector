@@ -4,6 +4,13 @@ class PS_MissionMakerTool: WorldEditorTool
 	//[Attribute()]
 	ref PS_LoadoutInspector m_inventoryInspector;
 	
+	[Attribute()]
+	int m_iCallsingCompany;
+	[Attribute()]
+	int m_iCallsingPlatoon;
+	[Attribute()]
+	int m_iCallsingSquad;
+	
 	//[ButtonAttribute("Inventory apply")]
 	void InventoryApply()
 	{
@@ -301,17 +308,20 @@ class PS_MissionMakerTool: WorldEditorTool
 			componentSourceCallsignAssigner = m_API.CreateComponent(entitySource, "PS_GroupCallsignAssigner");
 		
 		int companyCallsignIndex, platoonCallsignIndex, squadCallsignIndex;
-		componentSourceCallsignAssigner.Get("m_iCompanyCallsign", companyCallsignIndex);
-		componentSourceCallsignAssigner.Get("m_iPlatoonCallsign", platoonCallsignIndex);
-		componentSourceCallsignAssigner.Get("m_iSquadCallsign", squadCallsignIndex);
+		//componentSourceCallsignAssigner.Get("m_iCompanyCallsign", companyCallsignIndex);
+		//componentSourceCallsignAssigner.Get("m_iPlatoonCallsign", platoonCallsignIndex);
+		//componentSourceCallsignAssigner.Get("m_iSquadCallsign", squadCallsignIndex);
+		companyCallsignIndex = m_iCallsingCompany;
+		platoonCallsignIndex = m_iCallsingPlatoon;
+		squadCallsignIndex = m_iCallsingSquad;
 		bool currentAssigned = false;
 		GetNextFreeCallSign(entity, faction, currentAssigned, companyCallsignIndex, platoonCallsignIndex, squadCallsignIndex);
-		if (currentAssigned)
-		{
+		//if (currentAssigned)
+		//{
 			componentSourceCallsignAssigner.Set("m_iCompanyCallsign", companyCallsignIndex);
 			componentSourceCallsignAssigner.Set("m_iPlatoonCallsign", platoonCallsignIndex);
 			componentSourceCallsignAssigner.Set("m_iSquadCallsign", squadCallsignIndex);
-		}
+		//}
 		
 		array<ResourceName> outPrefabs = new array<ResourceName>();
 		entitySource.Get("m_aUnitPrefabSlots", outPrefabs);

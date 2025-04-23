@@ -15,6 +15,15 @@ SCR_EditorModeEntity : "{E56F54E533ACE527}Prefabs/Editor/Modes/EditorModeBase.et
        m_iOrder 170
        m_bIsServer 1
       }
+      PS_DirectMessageSelectedContextAction "{64E6A9E8ACB73808}" {
+       m_Info SCR_UIInfo "{64E6A9E8B316AFB7}" {
+        Name "#PS-ContextAction_DirectMessage"
+        Description "#PS-ContextAction_DirectMessage"
+        Icon "{2EFEA2AF1F38E7F0}UI/Textures/Icons/icons_wrapperUI-64.imageset"
+        IconSetName "whisper"
+       }
+       m_iOrder 170
+      }
      }
     }
    }
@@ -37,4 +46,5 @@ SCR_EditorModeEntity : "{E56F54E533ACE527}Prefabs/Editor/Modes/EditorModeBase.et
   }
  }
  coords 110.651 1 86.238
+ m_bIsLimited 0
 }

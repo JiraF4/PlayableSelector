@@ -1,0 +1,6 @@
+SCR_AIGroup : "{B721D5A8C1B556CE}Prefabs/Groups/OPFOR/Spetsnaz/Suppressed/Group_USSR_Spetsnaz_ReconTeam.et" {
+ ID "0000000000000001"
+ m_aUnitPrefabSlots {
+  "{20855F655861E3FD}Prefabs/Characters/Factions/OPFOR/USSR_Army/Spetsnaz/Suppressed/Character_USSR_SF_S_P.et" "{20855F655861E3FD}Prefabs/Characters/Factions/OPFOR/USSR_Army/Spetsnaz/Suppressed/Character_USSR_SF_S_P.et"
+ }
+}

@@ -104,6 +104,8 @@ class PS_RolesGroup : SCR_ScriptedWidgetComponent
 		SCR_Faction faction = SCR_Faction.Cast(aiGroup.GetFaction());
 		m_sFactionKey = faction.GetFactionKey();
 		
+		 m_wRoot.SetZOrder(aiGroup.GetCallsignNum());
+		
 		// Init
 		m_wRolesGroupName.SetText(PS_GroupHelper.GetGroupName(m_AIGroup));
 		UpdateCustomName();

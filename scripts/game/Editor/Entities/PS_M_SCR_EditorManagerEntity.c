@@ -9,7 +9,12 @@ modded class SCR_EditorManagerEntity
 		{
 			PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 			if (gameModeCoop.IsArmaVisionDisabled())
-				return null;
+			{
+				SCR_EditorModeEntity editorModeEntity = super.CreateEditorMode(mode, isInit, prefab);
+				GetGame().GetCallqueue().Call(RemoveMode, editorModeEntity, false);
+				return editorModeEntity;
+				
+			}
 		}
 		return super.CreateEditorMode(mode, isInit, prefab);
 	}

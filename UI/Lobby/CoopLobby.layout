@@ -272,7 +272,6 @@ FrameWidgetClass {
                 VerticalAlign 3
                }
                "Inherit Color" 1
-               "Scrollbar Always Visible" 1
                {
                 VerticalLayoutWidgetClass "{5D6D1B9B2EB68480}" {
                  Name "RolesList"
@@ -1185,6 +1184,7 @@ FrameWidgetClass {
               VerticalAlign 3
               Padding 15 15 15 15
              }
+             "Is Visible" 0
              components {
               SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
                m_sActionName "VONChannel"

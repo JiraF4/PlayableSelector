@@ -38,7 +38,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	[Attribute("60000", UIWidgets.EditBox, "Time in milliseconds before restriction zones are removed.", category: "Reforger Lobby")]
 	int m_iFreezeTime;
 	
-	[Attribute("5000", UIWidgets.EditBox, "Time in milliseconds before characters are activated.", category: "Reforger Lobby")]
+	[Attribute("0", UIWidgets.EditBox, "Time in milliseconds before characters are activated.", category: "Reforger Lobby (WIP)")]
 	int m_iDisableTime;
 
 	[Attribute("0", UIWidgets.CheckBox, "Disables text chat for alive players on game stage. Admins can always see text chat.", category: "Reforger Lobby")]
@@ -46,6 +46,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 	[RplProp()]
 	protected float m_fCurrentFreezeTime = 1;
+	[RplProp()]
+	protected float m_fGameStartTime = 0;
 
 	[Attribute("0", UIWidgets.CheckBox, "Creates a whitelist on the server for players who have taken roles and also for players specified in $profile:PS_SlotsReserver_Config.json and kicks everyone else.", category: "Reforger Lobby")]
 	protected bool m_bReserveSlots;
@@ -178,8 +180,13 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		}
 		else
 		{
-			video.Set("MaxFps", m_iForceMenuFramerate);
-			GetGame().UserSettingsChanged();
+			int currentFramerate;
+			video.Get("MaxFps", currentFramerate);
+			if (currentFramerate != m_iForceMenuFramerate)
+			{
+				video.Set("MaxFps", m_iForceMenuFramerate);
+				GetGame().UserSettingsChanged();
+			}
 		}
 	}
 
@@ -272,6 +279,10 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	
 	void CopyAllMarkersToClipboard_Callback(SCR_ChatPanel panel, string data)
 	{
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		PlayerController playerController = GetGame().GetPlayerController();
+		if (!playableManager.IsPlayerGroupLeader(playerController.GetPlayerId())) return;
+		
 		SCR_MapMarkerManagerComponent markerMgr = SCR_MapMarkerManagerComponent.GetInstance();
 		array<SCR_MapMarkerBase> markers = markerMgr.GetStaticMarkers();
 		
@@ -289,6 +300,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	
 	void LoadAllMarkersToClipboard_Callback(SCR_ChatPanel panel, string data)
 	{
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		PlayerController playerController = GetGame().GetPlayerController();
+		if (!playableManager.IsPlayerGroupLeader(playerController.GetPlayerId())) return;
 		
 		if (GetState() != SCR_EGameModeState.BRIEFING)
 			return;
@@ -699,6 +713,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		Resource resource = Resource.Load("{ADDE38E4119816AB}Prefabs/InitialPlayer_Version2.et");
 		EntitySpawnParams params = new EntitySpawnParams();
 		GetTransform(params.Transform);
+		vector position = Vector(0, 100000, 0) + Vector(1000 * Math.Mod(playerId, 10), 5000 * Math.Floor(Math.Mod(playerId, 100) / 10), 5000 * Math.Floor(playerId / 100));
+		params.Transform[3] = position;
 		IEntity initialEntity = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		SCR_PlayerController playerController = SCR_PlayerController.Cast(playerManager.GetPlayerController(playerId));
@@ -935,6 +951,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		// next second or end
 		if (freezeTime <= 0)
 		{
+			m_fGameStartTime = GetGame().GetWorld().GetWorldTime();
+			Replication.BumpMe();
 			removeRestrictedZones();
 			if (m_bDisableBuildingModeAfterFreezeTime)
 				DisableBuildingMode();
@@ -1091,7 +1109,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	{
 		return m_iDisableTime;
 	}
-	void SetFreezeTi
+	
+	float GetGameStartTime()
+	{
+		return m_fGameStartTime;
+	}
 
 	int GetReconnectTime()
 	{

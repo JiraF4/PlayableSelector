@@ -68,7 +68,7 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
    ReceiveLight 0
   }
   PS_LobbyVoNComponent "{618B054CFFD60A4C}" {
-   "Speaking Range" 1
+   "Speaking Range" 0
    Filename "{92582B3603EE5464}Sounds/VON/vonLobby.acp"
   }
   PS_PlayableComponent "{5EFCC1946F475F15}" {
@@ -78,6 +78,9 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
    Enabled 0
   }
   PS_SpectatorLabelCharacter "{5F357473BDE91270}" {
+   Enabled 0
+  }
+  SCR_CharacterDamageManagerComponent "{55872AD7B4E959F2}" {
    Enabled 0
   }
   SCR_CharacterStaminaComponent "{520EA1D2F659C824}" {
@@ -98,7 +101,6 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
    }
   }
   CharacterAnimationComponent "{520EA1D2F659C994}" {
-   AnimGraph "{BD1FFB356D76A384}anims/workspaces/player/player_main_PS_VON.agr"
    AnimInstance "{B086D0CD3B9E3AB0}anims/workspaces/player/player_PS_VON.asi"
   }
  }
