@@ -81,7 +81,7 @@ OverlayWidgetClass {
        Slot OverlayWidgetSlot "{6530E410F8D2BD70}" {
         HorizontalAlign 3
         VerticalAlign 3
-        Padding 4 4 4 4
+        Padding 8 8 8 8
        }
        components {
         SCR_EventHandlerComponent "{6530E415BA46583D}" {
