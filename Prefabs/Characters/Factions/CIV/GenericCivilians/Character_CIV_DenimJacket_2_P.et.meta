@@ -1,0 +1,17 @@
+MetaFileClass {
+ Name "{BDD848EC6D8E2537}Prefabs/Characters/Factions/CIV/GenericCivilians/Character_CIV_DenimJacket_2_P.et"
+ Configurations {
+  EntityTemplateResourceClass PC {
+  }
+  EntityTemplateResourceClass XBOX_ONE : PC {
+  }
+  EntityTemplateResourceClass XBOX_SERIES : PC {
+  }
+  EntityTemplateResourceClass PS4 : PC {
+  }
+  EntityTemplateResourceClass PS5 : PC {
+  }
+  EntityTemplateResourceClass HEADLESS : PC {
+  }
+ }
+}

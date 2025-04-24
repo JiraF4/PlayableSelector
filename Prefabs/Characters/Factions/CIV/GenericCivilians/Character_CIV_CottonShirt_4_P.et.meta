@@ -1,0 +1,17 @@
+MetaFileClass {
+ Name "{233B8AB028BB511F}Prefabs/Characters/Factions/CIV/GenericCivilians/Character_CIV_CottonShirt_4_P.et"
+ Configurations {
+  EntityTemplateResourceClass PC {
+  }
+  EntityTemplateResourceClass XBOX_ONE : PC {
+  }
+  EntityTemplateResourceClass XBOX_SERIES : PC {
+  }
+  EntityTemplateResourceClass PS4 : PC {
+  }
+  EntityTemplateResourceClass PS5 : PC {
+  }
+  EntityTemplateResourceClass HEADLESS : PC {
+  }
+ }
+}
