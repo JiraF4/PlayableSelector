@@ -1254,6 +1254,46 @@ StringTable {
    Author "zazul"
    LastChanged "SeskPC"
   }
+  CustomStringTableItem "{6530E427E9F16FE1}" {
+   Id "PS-PingMenu_Cancel"
+   Target_en_us "Cancel"
+   Target_ru_ru "Отмена"
+   Modified 1697721493
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{6530E427F85E1BB2}" {
+   Id "PS-PingMenu_Header"
+   Target_en_us "Request help from a Game Master"
+   Target_ru_ru "Запросить помощь Игрового Мастера"
+   Modified 1697721646
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{6530E427EE5036FF}" {
+   Id "PS-PingMenu_MinimumCharacters"
+   Target_en_us "Describe your problem in at least 15 characters."
+   Target_ru_ru "Сообщите свою проблему в минимум 15 символов."
+   Modified 1697721616
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{6530E427F58CA99B}" {
+   Id "PS-PingMenu_Placeholder"
+   Target_en_us "Example: Please help, im stuck"
+   Target_ru_ru "Например: Пожалуйста помогите, я застрял"
+   Modified 1697721573
+   Author "zazul"
+   LastChanged "zazul"
+  }
+  CustomStringTableItem "{6530E427E51432AD}" {
+   Id "PS-PingMenu_Send"
+   Target_en_us "Send"
+   Target_ru_ru "Отправить"
+   Modified 1697721506
+   Author "zazul"
+   LastChanged "zazul"
+  }
   CustomStringTableItem "{5EBE323E40F74A24}" {
    Id "PS-Preview_PleaseWait"
    Target_en_us "Please wait"\

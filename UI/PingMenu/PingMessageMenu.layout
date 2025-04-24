@@ -37,7 +37,7 @@ OverlayWidgetClass {
       Padding 4 4 0 0
      }
      Color 0 0 0 1
-     Text "Запросить помощь Игрового Мастера"
+     Text "#PS-PingMenu_Header"
      FontProperties FontProperties "{6530E412C6FC1168}" {
       Font "{3E7733BAC8C831F6}UI/Fonts/RobotoCondensed/RobotoCondensed_Regular.fnt"
      }
@@ -49,7 +49,7 @@ OverlayWidgetClass {
       Padding 24 64 0 0
      }
      Color 1 1 1 0.4
-     Text "Сообщите свою проблему в минимум 15 символов."
+     Text "#PS-PingMenu_MinimumCharacters"
      "Font Size" 16
      "Min Font Size" 16
     }
@@ -89,7 +89,7 @@ OverlayWidgetClass {
        }
        "Use placeholder text" 1
        "Placeholder color" 0.784 0.784 0.784 0.4
-       "Placeholder text" "Например: Пожалуйста, помогите я застрял"
+       "Placeholder text" "#PS-PingMenu_Placeholder"
        "Vertical alignment" Top
       }
      }
@@ -109,7 +109,7 @@ OverlayWidgetClass {
        components {
         SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
          m_sActionName "MenuBack"
-         m_sLabel "Cancel"
+         m_sLabel "#PS-PingMenu_Cancel"
         }
        }
       }
@@ -121,7 +121,7 @@ OverlayWidgetClass {
        components {
         SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
          m_sActionName "MenuSelect"
-         m_sLabel "Send"
+         m_sLabel "#PS-PingMenu_Send"
         }
        }
       }
