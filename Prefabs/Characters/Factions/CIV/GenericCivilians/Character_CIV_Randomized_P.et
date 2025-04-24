@@ -1,0 +1,44 @@
+SCR_ChimeraCharacter : "{22E43956740A6794}Prefabs/Characters/Factions/CIV/GenericCivilians/Character_CIV_Randomized.et" {
+ ID "520EC961A090B1EE"
+ components {
+  SCR_EditableCharacterComponent "{520EA1D2F659C85C}" {
+   m_VariantData SCR_EditableEntityVariantData "{60F6AD0216876E18}" {
+    m_aVariants {
+     SCR_EditableEntityVariant "{60F6AD0214499D36}" {
+      m_sVariantPrefab "{E33061AFD203AB38}Prefabs/Characters/Factions/CIV/GenericCivilians/Character_CIV_DenimJacket_1_P.et"
+     }
+     SCR_EditableEntityVariant "{610683B39A4757A3}" {
+      m_sVariantPrefab "{BDD848EC6D8E2537}Prefabs/Characters/Factions/CIV/GenericCivilians/Character_CIV_DenimJacket_2_P.et"
+     }
+     SCR_EditableEntityVariant "{60F6AD020CCB2AAF}" {
+      m_sVariantPrefab "{1104849A07F28417}Prefabs/Characters/Factions/CIV/GenericCivilians/Character_CIV_Turtleneck_1_P.et"
+     }
+     SCR_EditableEntityVariant "{610683B39993152B}" {
+      m_sVariantPrefab "{4FECADD9B87F0A18}Prefabs/Characters/Factions/CIV/GenericCivilians/Character_CIV_Turtleneck_2_P.et"
+     }
+     SCR_EditableEntityVariant "{6106EE52BD1136AA}" {
+      m_sVariantPrefab "{BBE4EA41B5A2626C}Prefabs/Characters/Factions/CIV/GenericCivilians/Character_CIV_Turtleneck_3_P.et"
+     }
+     SCR_EditableEntityVariant "{60F6AD021580BA26}" {
+      m_sVariantPrefab "{C003F174E82DC30E}Prefabs/Characters/Factions/CIV/GenericCivilians/Character_CIV_CottonShirt_1_P.et"
+     }
+     SCR_EditableEntityVariant "{610683B39ADC674C}" {
+      m_sVariantPrefab "{9EEBD83757A04D01}Prefabs/Characters/Factions/CIV/GenericCivilians/Character_CIV_CottonShirt_2_P.et"
+     }
+     SCR_EditableEntityVariant "{610683B39AB8A46A}" {
+      m_sVariantPrefab "{6AE39FAF5A7D2575}Prefabs/Characters/Factions/CIV/GenericCivilians/Character_CIV_CottonShirt_3_P.et"
+     }
+     SCR_EditableEntityVariant "{6106F1B295599D6E}" {
+      m_sVariantPrefab "{233B8AB028BB511F}Prefabs/Characters/Factions/CIV/GenericCivilians/Character_CIV_CottonShirt_4_P.et"
+     }
+     SCR_EditableEntityVariant "{6106F1B294E50522}" {
+      m_sVariantPrefab "{D733CD282566396B}Prefabs/Characters/Factions/CIV/GenericCivilians/Character_CIV_CottonShirt_5_P.et"
+     }
+     SCR_EditableEntityVariant "{6106F1B29422C913}" {
+      m_sVariantPrefab "{89DBE46B9AEBB764}Prefabs/Characters/Factions/CIV/GenericCivilians/Character_CIV_CottonShirt_6_P.et"
+     }
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,20 @@
+SCR_ChimeraCharacter : "{B3AB6D12D247DDB5}Prefabs/Characters/Factions/CIV/Businessman/Character_CIV_Businessman_Randomized.et" {
+ ID "520EC961A090B1EE"
+ components {
+  SCR_EditableCharacterComponent "{520EA1D2F659C85C}" {
+   m_VariantData SCR_EditableEntityVariantData "{6106974AAD84694F}" {
+    m_aVariants {
+     SCR_EditableEntityVariant "{6106974AACA0498F}" {
+      m_sVariantPrefab "{D7C11362F2CC2428}Prefabs/Characters/Factions/CIV/Businessman/Character_CIV_Businessman_1_P.et"
+     }
+     SCR_EditableEntityVariant "{6106974AAC961171}" {
+      m_sVariantPrefab "{89293A214D41AA27}Prefabs/Characters/Factions/CIV/Businessman/Character_CIV_Businessman_2_P.et"
+     }
+     SCR_EditableEntityVariant "{6106974AACC2F3E7}" {
+      m_sVariantPrefab "{7D217DB9409CC253}Prefabs/Characters/Factions/CIV/Businessman/Character_CIV_Businessman_3_P.et"
+     }
+    }
+   }
+  }
+ }
+}
