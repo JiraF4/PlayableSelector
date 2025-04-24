@@ -123,9 +123,9 @@ class PS_PlayableManager : ScriptComponent
 
 	[RplProp()]
 	int m_iMaxPlayersCount = 1; // Max players count from server config
-	[RplProp(onRplName: "OnStartTimerCounterChanged")]
 	
 	// TODO: Remove?
+	[RplProp(onRplName: "OnStartTimerCounterChanged")]
 	int m_iStartTimerCounter = -1;
 	void StartTime()
 	{

@@ -1,0 +1,133 @@
+OverlayWidgetClass {
+ Name "rootFrame"
+ {
+  OverlayWidgetClass "{652ECCA16F9A3ABB}" {
+   Name "Overlay"
+   Slot OverlayWidgetSlot "{652ECCA16F9A3A95}" {
+   }
+   {
+    ImageWidgetClass "{652ECCA01EF75F6A}" {
+     Name "Image0"
+     Slot OverlayWidgetSlot "{652ECCA152F464D2}" {
+     }
+     Color 0.0006 0.0006 0.0006 0.8
+     Size 640 256
+    }
+    BlurWidgetClass "{6530E413BFC28E37}" {
+     Name "Blur0"
+     Slot OverlayWidgetSlot "{6530E413BFC28E11}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+     }
+     Intensity 0.4
+    }
+    ImageWidgetClass "{652ECCA176AE0FFB}" {
+     Name "Image1"
+     Slot OverlayWidgetSlot "{652ECCA152F464D2}" {
+      VerticalAlign 0
+     }
+     Color 0.7605 0.3865 0.0782 1
+     Size 640 32
+    }
+    TextWidgetClass "{652ECCA186974963}" {
+     Name "Text0"
+     Slot OverlayWidgetSlot "{652ECCA152F464DC}" {
+      HorizontalAlign 0
+      VerticalAlign 0
+      Padding 4 4 0 0
+     }
+     Color 0 0 0 1
+     Text "Запросить помощь Игрового Мастера"
+     FontProperties FontProperties "{6530E412C6FC1168}" {
+      Font "{3E7733BAC8C831F6}UI/Fonts/RobotoCondensed/RobotoCondensed_Regular.fnt"
+     }
+    }
+    TextWidgetClass "{652ECCA29A9EB38E}" {
+     Name "Text1"
+     Slot OverlayWidgetSlot "{652ECCA152F464DC}" {
+      HorizontalAlign 0
+      Padding 24 64 0 0
+     }
+     Color 1 1 1 0.4
+     Text "Сообщите свою проблему в минимум 15 символов."
+     "Font Size" 16
+     "Min Font Size" 16
+    }
+    ImageWidgetClass "{6530E4138E4616FC}" {
+     Name "Image2"
+     Slot OverlayWidgetSlot "{6530E4138E4616D8}" {
+      Padding 0 128 0 0
+     }
+     Color 0.6939 0.6939 0.6939 0.5
+     Size 600 1
+    }
+    OverlayWidgetClass "{652ECCA1B258A94C}" {
+     Name "Overlay0"
+     Slot OverlayWidgetSlot "{652ECCA152F46423}" {
+      Padding 0 0 0 64
+     }
+     {
+      ImageWidgetClass "{652ECCA1B6A8E4DD}" {
+       Name "Image0"
+       Slot OverlayWidgetSlot "{652ECCA1B6A8E439}" {
+        HorizontalAlign 3
+        VerticalAlign 0
+       }
+       Color 0.008 0.0116 0.016 1
+       Size 600 96
+      }
+      EditBoxWidgetClass "{652ECCA19EF80F71}" {
+       Name "EditBox0"
+       Slot OverlayWidgetSlot "{6530E410F8D2BD70}" {
+        HorizontalAlign 3
+        VerticalAlign 3
+        Padding 4 4 4 4
+       }
+       components {
+        SCR_EventHandlerComponent "{6530E415BA46583D}" {
+        }
+       }
+       "Use placeholder text" 1
+       "Placeholder color" 0.784 0.784 0.784 0.4
+       "Placeholder text" "Например: Пожалуйста, помогите я застрял"
+       "Vertical alignment" Top
+      }
+     }
+    }
+    HorizontalLayoutWidgetClass "{6530E4132164E519}" {
+     Name "HorizontalLayoutButtons"
+     Slot OverlayWidgetSlot "{6530E4132164E542}" {
+      HorizontalAlign 0
+      VerticalAlign 2
+      Padding 20 0 0 20
+     }
+     {
+      ButtonWidgetClass "{6530E41313140E89}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
+       Name "ButtonCancel"
+       Slot LayoutSlot "{6530E415CC3E07C2}" {
+       }
+       components {
+        SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
+         m_sActionName "MenuBack"
+         m_sLabel "Cancel"
+        }
+       }
+      }
+      ButtonWidgetClass "{6530E41328C71CB4}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
+       Name "ButtonSend"
+       Slot LayoutSlot "{6530E41328C712C6}" {
+        Padding 20 0 0 0
+       }
+       components {
+        SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
+         m_sActionName "MenuSelect"
+         m_sLabel "Send"
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}

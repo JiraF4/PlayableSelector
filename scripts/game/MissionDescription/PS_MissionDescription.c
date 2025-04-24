@@ -1,6 +1,5 @@
 class PS_MissionDescriptionClass : GenericEntityClass
 {
-
 }
 
 class PS_MissionDescription : GenericEntity
