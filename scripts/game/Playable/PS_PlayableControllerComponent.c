@@ -844,7 +844,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		if (gameMode.GetFriendliesSpectatorOnly())
-			PS_ManualCameraSpectator.Cast(m_Camera).SetCharacterEntity(from);
+			PS_ManualCameraSpectator.Cast(m_Camera).SetCharacterEntityMove(from);
 	}
 
 	void SwitchFromObserver()

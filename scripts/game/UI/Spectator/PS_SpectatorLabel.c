@@ -81,6 +81,16 @@ class PS_SpectatorLabel : ScriptComponent
 		if (!m_MapEntity.IsOpen()) return false;
 		if (!m_hManualMarkerComponent) CreateMarker();
 		
+		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if (gameModeCoop.GetFriendliesSpectatorOnly())
+		{
+			SCR_ChimeraCharacter chimeraCharacter = SCR_ChimeraCharacter.Cast(GetOwner());
+			if (chimeraCharacter.GetFactionKey() != PS_PlayableManager.GetInstance().GetPlayerFactionKeyRemembered(GetGame().GetPlayerController().GetPlayerId()))
+			{
+				m_hManualMarkerComponent.SetOpacity(0);
+			}
+		}
+		
 		m_hManualMarkerComponent.SetSlotWorld(GetOwner().GetOrigin()
 			, GetOwner().GetYawPitchRoll() + Vector(90, 0, 0), m_cMapMarkerConfig.m_fWorldSize
 			, m_cMapMarkerConfig.m_bUseWorldScale, m_cMapMarkerConfig.m_fMinSize);

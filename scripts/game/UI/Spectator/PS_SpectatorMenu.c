@@ -95,7 +95,30 @@ class PS_SpectatorMenu: MenuBase
 		}
 		PS_ManualCameraSpectator camera = PS_ManualCameraSpectator.Cast(GetGame().GetCameraManager().CurrentCamera());
 		if (camera)
-			camera.SetCharacterEntity(characterEntity);
+			if (m_GameMode.GetFriendliesSpectatorOnly())
+				camera.SetCharacterEntityMove(characterEntity);
+			else
+				camera.SetCharacterEntity(characterEntity);
+		return true;
+	}
+	
+	bool SetCameraMoveCharacter(RplId rplId)
+	{
+		RplComponent rplComponent = RplComponent.Cast(Replication.FindItem(rplId));
+		if (!rplComponent)
+			return false;
+		IEntity characterEntity = rplComponent.GetEntity();
+		if (m_GameMode.GetFriendliesSpectatorOnly())
+		{
+			PS_PlayableContainer playableContainer = m_PlayableManager.GetPlayableById(rplId);
+			FactionKey playableFactionKey = playableContainer.GetFactionKey();
+			FactionKey lastPlayerFaction = m_PlayableManager.GetPlayerFactionKeyRemembered(GetGame().GetPlayerController().GetPlayerId());
+			if (playableFactionKey != lastPlayerFaction)
+				return false;
+		}
+		PS_ManualCameraSpectator camera = PS_ManualCameraSpectator.Cast(GetGame().GetCameraManager().CurrentCamera());
+		if (camera)
+			camera.SetCharacterEntityMove(characterEntity);
 		return true;
 	}
 	
@@ -313,7 +336,10 @@ class PS_SpectatorMenu: MenuBase
 		SCR_ChimeraCharacter character = contextActionDataCharacter.GetCharacter();
 		PS_ManualCameraSpectator camera = PS_ManualCameraSpectator.Cast(GetGame().GetCameraManager().CurrentCamera());
 		if (camera)
-			camera.SetCharacterEntity(character)
+			if (m_GameMode.GetFriendliesSpectatorOnly())
+				camera.SetCharacterEntityMove(character);
+			else
+				camera.SetCharacterEntity(character);
 	}
 	
 	void RoomSwitchToGlobal()
