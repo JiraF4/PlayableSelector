@@ -61,6 +61,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 	[Attribute("0", UIWidgets.CheckBox, "", category: "Reforger Lobby")]
 	protected bool m_bDisablePlayablesStreaming;
+	
+	[Attribute("0", UIWidgets.CheckBox, "", category: "Reforger Lobby")]
+	protected bool m_bDisableGarbageSystem;
 
 	[Attribute("0", UIWidgets.CheckBox, "", category: "Reforger Lobby")]
 	protected bool m_bFriendliesSpectatorOnly;
@@ -110,6 +113,18 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	protected PS_CutsceneManager m_CutsceneManager;
 
 	// ------------------------------------------ Events ------------------------------------------
+	
+	override void EOnInit(IEntity owner)
+	{
+        super.EOnInit(owner);
+        
+        if (!GetGame().InPlayMode() || !Replication.IsServer()){
+            return;
+        }
+        World world = GetGame().GetWorld();
+        world.FindSystem(SCR_GarbageSystem).Enable(!m_bDisableGarbageSystem);
+    }
+	
 	override void OnGameStart()
 	{
 		super.OnGameStart();
