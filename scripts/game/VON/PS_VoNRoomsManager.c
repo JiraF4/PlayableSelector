@@ -15,15 +15,13 @@ typedef string VoNRoomKey;
 class PS_VoNRoomsManager : ScriptComponent
 {
 	// server data
-	ref map<int, vector> m_mRoomOffsets = new map<int, vector>(); // offset from initial position for each room
+	//ref map<int, vector> m_mRoomOffsets = new map<int, vector>(); // offset from initial position for each room
 	ref map<VoNRoomKey, int> m_mVoiceRoomsFromName = new map<VoNRoomKey, int>(); // room key to roomId relationship
 	
 	// Replication data
 	ref map<int, VoNRoomKey> m_mVoiceRooms = new map<int, VoNRoomKey>(); // room names for UI
 	ref map<int, int> m_mPlayersRooms = new map<int, int>(); // player to room relationship
-	
-	// Move speech bois to space
-	static vector roomInitialPosition = "-1 1000000 1";
+
 	
 	// offset every room
 	vector lastOffset;
@@ -44,7 +42,6 @@ class PS_VoNRoomsManager : ScriptComponent
 		baseGameMode.GetOnPlayerConnected().Insert(OnPlayerConnected);
 		
 		// Set default room position
-		m_mRoomOffsets[0] = roomInitialPosition;
 		m_mVoiceRooms[0] = "";
 		m_mVoiceRoomsFromName[""] = 0;
 		if (Replication.IsServer()) m_bRplLoaded = true;
@@ -79,43 +76,24 @@ class PS_VoNRoomsManager : ScriptComponent
 		// Skip if same room
 		if (roomId == GetPlayerRoom(playerId))
 			return;
-		
-		FactionManager factionManager = GetGame().GetFactionManager();
-		vector roomPosition = GetOrCreateRoomPosition(roomId, factionManager.GetFactionIndex(factionManager.GetFactionByKey(factionKey)));
-		
+
 		// Get global stuff
 		PlayerManager playerManager = GetGame().GetPlayerManager();
-		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		PlayerController playerController = playerManager.GetPlayerController(playerId);
-		
-		if (playerController)
-		{
-			PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-			SCR_EGameModeState state = gameMode.GetState();
-			
-			// Channel VoN switch
-			if (roomName.StartsWith("#PS-VoNRoom_Local"))
-			{
-				// We need silence
-				playableController.SetVoNKey(roomName, roomId.ToString());
-			} else if (state == SCR_EGameModeState.GAME) {
-				playableController.SetVoNKey("Menu" + factionKey + roomName, roomId.ToString());
-			} else if (state == SCR_EGameModeState.BRIEFING) { // On briefing also separate to squads
-				// May be reworked later
-				RplId playableId = playableManager.GetPlayableByPlayer(playerId);
-				int GroupCallSign = playableManager.GetGroupCallsignByPlayable(playableId);
-				playableController.SetVoNKey("Menu" + factionKey + GroupCallSign.ToString(), roomId.ToString());
-			}
-			else playableController.SetVoNKey("Menu" + factionKey, roomId.ToString()); // Сhange VoN zone
-		}
-		
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+
+		BaseTransceiver transceiver = playableController.GetTransceiver();
+		transceiver.SetFrequency(roomId);
+		Print("GRAY.MoveToRoom SetFrequency = " + roomId);
+		Print("GRAY.MoveToRoom transceiver = " + transceiver);
+
 		// Finally move client to room
-		RPC_MoveToRoom(playerId, roomId, roomPosition);
-		Rpc(RPC_MoveToRoom, playerId, roomId, roomPosition);
+		RPC_MoveToRoom(playerId, roomId);
+		Rpc(RPC_MoveToRoom, playerId, roomId);
 	}
+	
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	void RPC_MoveToRoom(int playerId, int roomId, vector position)
+	void RPC_MoveToRoom(int playerId, int roomId)
 	{
 		int oldRoomId = GetPlayerRoom(playerId);
 		
@@ -128,7 +106,6 @@ class PS_VoNRoomsManager : ScriptComponent
 		if (playerController.GetPlayerId() != playerId) return;
 		
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-		playableController.SetVoNPosition(position);
 	}
 	void RestoreRoom(int playerId)
 	{
@@ -147,10 +124,9 @@ class PS_VoNRoomsManager : ScriptComponent
 		}
 		
 		FactionManager factionManager = GetGame().GetFactionManager();
-		vector roomPosition = GetOrCreateRoomPosition(roomId, factionManager.GetFactionIndex(factionManager.GetFactionByKey(factionKey)));
-		
-		RPC_MoveToRoom(playerId, roomId, roomPosition);
-		Rpc(RPC_MoveToRoom, playerId, roomId, roomPosition);
+
+		RPC_MoveToRoom(playerId, roomId);
+		Rpc(RPC_MoveToRoom, playerId, roomId);
 	}
 	
 	// ------------------------- Room creation -------------------------
@@ -177,16 +153,6 @@ class PS_VoNRoomsManager : ScriptComponent
 	{
 		m_mVoiceRoomsFromName[roomKey] = roomId;
 		m_mVoiceRooms[roomId] = roomKey;
-	}
-	
-	// Create position if new roomId provided
-	vector GetOrCreateRoomPosition(int roomId, int factionIndex)
-	{
-		if (!m_mRoomOffsets.Contains(roomId)) {
-			lastOffset = lastOffset + lastOffset.Up * 100;
-			m_mRoomOffsets[roomId] = roomInitialPosition + lastOffset;
-		}
-		return m_mRoomOffsets[roomId];
 	}
 	
 	// ------------------------- Get -------------------------

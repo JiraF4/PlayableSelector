@@ -150,7 +150,7 @@ class PS_PreviewMapMenu: ChimeraMenuBase
 	{
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-		playableController.LobbyVoNRadioEnable();
+		playableController.LobbyVoNFactionEnable();
 	}
 	void Action_LobbyVoNChannelOff()
 	{
@@ -158,6 +158,7 @@ class PS_PreviewMapMenu: ChimeraMenuBase
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		playableController.LobbyVoNDisable();
 	}
+	
 	void Action_Exit()
 	{
 		// For some strange reason players all the time accidentally exit game, maybe jus open pause menu

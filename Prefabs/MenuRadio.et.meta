@@ -1,5 +1,5 @@
 MetaFileClass {
- Name "{74AA3854E16D9D56}Prefabs/Items/Equipment/Radios/MenuRadio.et"
+ Name "{8F49616A4BAAF407}Prefabs/MenuRadio2.et"
  Configurations {
   EntityTemplateResourceClass PC {
   }
@@ -8,6 +8,8 @@ MetaFileClass {
   EntityTemplateResourceClass XBOX_SERIES : PC {
   }
   EntityTemplateResourceClass PS4 : PC {
+  }
+  EntityTemplateResourceClass PS5 : PC {
   }
   EntityTemplateResourceClass HEADLESS : PC {
   }
