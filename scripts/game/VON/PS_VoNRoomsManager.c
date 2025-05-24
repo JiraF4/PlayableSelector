@@ -99,12 +99,6 @@ class PS_VoNRoomsManager : ScriptComponent
 		m_mPlayersRooms[playerId] = roomId;
 		
 		m_eOnRoomChanged.Invoke(playerId, roomId, oldRoomId);
-		
-		PlayerController playerController = GetGame().GetPlayerController();
-		if (!playerController) return;
-		if (playerController.GetPlayerId() != playerId) return;
-		
-		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 	}
 	void RestoreRoom(int playerId)
 	{
