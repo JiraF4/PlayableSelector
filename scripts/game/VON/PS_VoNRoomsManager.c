@@ -68,7 +68,8 @@ class PS_VoNRoomsManager : ScriptComponent
 	// Move to room by key and create if not exist, RUN ONLY ON SERVER
 	void MoveToRoom(int playerId, FactionKey factionKey, string roomName)
 	{
-		if (!Replication.IsServer()) return;
+		if (!Replication.IsServer())
+			return;
 		
 		// Create new room and id if need
 		int roomId = GetOrCreateRoomWithFaction(factionKey, roomName);
@@ -84,7 +85,7 @@ class PS_VoNRoomsManager : ScriptComponent
 
 		BaseTransceiver transceiver = playableController.GetTransceiver();
 		transceiver.SetFrequency(roomId);
-		
+
 		// Finally move client to room
 		RPC_MoveToRoom(playerId, roomId);
 		Rpc(RPC_MoveToRoom, playerId, roomId);

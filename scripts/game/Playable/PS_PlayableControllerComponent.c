@@ -382,7 +382,8 @@ class PS_PlayableControllerComponent : ScriptComponent
 		SetEventMask(GetOwner(), EntityEvent.FRAME);
 		SCR_PlayerController playerController = SCR_PlayerController.Cast(PlayerController.Cast(GetOwner()));
 		playerController.m_OnControlledEntityChanged.Insert(OnControlledEntityChanged);
-
+		UpdateCameraStart();
+		
 		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		if (!gameModeCoop)
 			return;
@@ -639,7 +640,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		BaseTransceiver transceiver = GetTransceiverFaction();
 
 		RadioHandlerComponent rhc = RadioHandlerComponent.Cast(GetGame().GetPlayerController().FindComponent(RadioHandlerComponent));
-		rhc.SetFrequency(transceiver, factionIndex);
+		rhc.SetFrequency(transceiver, factionIndex + 1000);
 	}
 	
 	void MoveToVoNRoomByKey(int playerId, string roomKey)
@@ -683,16 +684,14 @@ class PS_PlayableControllerComponent : ScriptComponent
 	{
 		if(!m_lobbyTransceiver)
 		{
-			PlayerController pc = PlayerController.Cast(GetOwner());
-			IEntity entity = pc.GetControlledEntity();
-			SCR_GadgetManagerComponent gadgetManager = SCR_GadgetManagerComponent.Cast(entity.FindComponent(SCR_GadgetManagerComponent));
+			SCR_GadgetManagerComponent gadgetManager = SCR_GadgetManagerComponent.Cast(GetInitialEntity().FindComponent(SCR_GadgetManagerComponent));
 			IEntity radioEntity = gadgetManager.GetGadgetByType(EGadgetType.RADIO);
-			
+			if(!radioEntity)
+				return null;
+
 			BaseRadioComponent radio = BaseRadioComponent.Cast(radioEntity.FindComponent(BaseRadioComponent));
 			if(radio)
-			{
 				m_lobbyTransceiver = radio.GetTransceiver(0);
-			}
 		}
 
 		return m_lobbyTransceiver;
@@ -702,31 +701,36 @@ class PS_PlayableControllerComponent : ScriptComponent
 	{
 		if(!m_factionTransceiver)
 		{
-			PlayerController pc = PlayerController.Cast(GetOwner());
-			IEntity entity = pc.GetControlledEntity();
-			SCR_GadgetManagerComponent gadgetManager = SCR_GadgetManagerComponent.Cast(entity.FindComponent(SCR_GadgetManagerComponent));
+			SCR_GadgetManagerComponent gadgetManager = SCR_GadgetManagerComponent.Cast(GetInitialEntity().FindComponent(SCR_GadgetManagerComponent));
 			IEntity radioEntity = gadgetManager.GetGadgetByType(EGadgetType.RADIO);
+			if(!radioEntity)
+				return null;
 			
 			BaseRadioComponent radio = BaseRadioComponent.Cast(radioEntity.FindComponent(BaseRadioComponent));
 			if(radio)
-			{
 				m_factionTransceiver = radio.GetTransceiver(1);
-			}
 		}
 
 		return m_factionTransceiver;
 	}
 
+	void UpdateCameraStart()
+	{
+		BaseWorld world = GetGame().GetWorld();
+		int cameraID = world.GetCurrentCameraId();
+		vector mat[4];
+		world.GetCamera(cameraID, mat);
+		world.SetCamera(cameraID, Vector(0,100000,0), Vector(0,0,0));
+	}
+	
 	void UpdateCamera()
 	{
 		if(!m_Camera)
 			return;
 		
-		if(!m_InitialEntity)
-		{
-			GetInitialEntity();
+		BaseGameEntity gameEntity = BaseGameEntity.Cast(GetInitialEntity());
+		if(!gameEntity)
 			return;
-		}
 		
 		vector mat[4];
 		m_Camera.GetTransform(mat);
@@ -736,8 +740,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 
 		m_lastCameraPos = mat[3];
 		
-		BaseGameEntity entity = BaseGameEntity.Cast(m_InitialEntity);
-		entity.Teleport(mat);
+		gameEntity.Teleport(mat);
 	}
 	
 	void LobbyVoNEnable()
