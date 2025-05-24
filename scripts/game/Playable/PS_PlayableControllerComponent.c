@@ -639,11 +639,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		BaseTransceiver transceiver = GetTransceiverFaction();
 
 		RadioHandlerComponent rhc = RadioHandlerComponent.Cast(GetGame().GetPlayerController().FindComponent(RadioHandlerComponent));
-		rhc.SetFrequency(transceiver, factionIndex + 1000);
-		
-		
-		Print("GRAY.ChangeFactionKey factionIndex = " + factionIndex);
-		Print("GRAY.ChangeFactionKey transceiver = " + transceiver);
+		rhc.SetFrequency(transceiver, factionIndex);
 	}
 	
 	void MoveToVoNRoomByKey(int playerId, string roomKey)
@@ -746,7 +742,6 @@ class PS_PlayableControllerComponent : ScriptComponent
 	
 	void LobbyVoNEnable()
 	{
-		Print("GRAY. LobbyVoNEnable freq = " + GetTransceiver().GetFrequency());
 		GetGame().GetCallqueue().Remove(LobbyVoNDisableDelayed);
 		PS_LobbyVoNComponent von = GetVoN();
 		von.SetTransmitRadio(GetTransceiver());
@@ -756,7 +751,6 @@ class PS_PlayableControllerComponent : ScriptComponent
 
 	void LobbyVoNFactionEnable()
 	{
-		Print("GRAY. LobbyVoNFactionEnable freq = " + GetTransceiverFaction().GetFrequency());
 		GetGame().GetCallqueue().Remove(LobbyVoNDisableDelayed);
 		PS_LobbyVoNComponent von = GetVoN();
 		von.SetTransmitRadio(GetTransceiverFaction());

@@ -84,9 +84,7 @@ class PS_VoNRoomsManager : ScriptComponent
 
 		BaseTransceiver transceiver = playableController.GetTransceiver();
 		transceiver.SetFrequency(roomId);
-		Print("GRAY.MoveToRoom SetFrequency = " + roomId);
-		Print("GRAY.MoveToRoom transceiver = " + transceiver);
-
+		
 		// Finally move client to room
 		RPC_MoveToRoom(playerId, roomId);
 		Rpc(RPC_MoveToRoom, playerId, roomId);
