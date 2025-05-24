@@ -172,7 +172,9 @@ class PS_SpectatorMenu: MenuBase
 		InitChat();
 		
 		GetGame().GetCallqueue().CallLater(RoomSwitchToGlobal, 0);
-		GetGame().GetCallqueue().CallLater(playableController.UpdateCamera, 333, true);
+		
+		if(m_GameMode.IsSpectatorLocalVoiceEnable())
+			GetGame().GetCallqueue().CallLater(playableController.UpdateCamera, 333, true);
 	}
 	
 	void UpdateCursorTarget()

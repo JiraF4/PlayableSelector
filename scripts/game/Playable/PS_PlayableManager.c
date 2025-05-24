@@ -248,7 +248,7 @@ class PS_PlayableManager : ScriptComponent
 			{
 				Resource resource = Resource.Load("{ADDE38E4119816AB}Prefabs/InitialPlayer_Version2.et");
 				EntitySpawnParams params = new EntitySpawnParams();
-				params.Transform[3] = Vector(0, 1000 + playerId, 0);
+				params.Transform[3] = Vector(0, 10000 + playerId, 0);
 				entity = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
 				playableController.SetInitialEntity(entity);
 			}

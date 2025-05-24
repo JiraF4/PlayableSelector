@@ -720,7 +720,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		int cameraID = world.GetCurrentCameraId();
 		vector mat[4];
 		world.GetCamera(cameraID, mat);
-		world.SetCamera(cameraID, Vector(0,1000,0), Vector(0,0,0));
+		world.SetCamera(cameraID, Vector(0,10000,0), Vector(0,0,0));
 	}
 	
 	void UpdateCamera()
