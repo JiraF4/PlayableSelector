@@ -115,8 +115,6 @@ class PS_VoNRoomsManager : ScriptComponent
 			roomName = outTokens[1];
 		}
 		
-		FactionManager factionManager = GetGame().GetFactionManager();
-
 		RPC_MoveToRoom(playerId, roomId);
 		Rpc(RPC_MoveToRoom, playerId, roomId);
 	}
