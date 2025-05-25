@@ -921,6 +921,25 @@ StringTable {
    Author "SeskPC"
    LastChanged "SeskPC"
   }
+  CustomStringTableItem "{65724C0033DCE7E1}" {
+   Id "PS-Keybind_LobbyAdminVON"
+   Target_en_us "Lobby Admin VON"
+   Target_fr_fr "Voix de l'administrateur du salon"
+   Target_it_it "Voce dell'amministratore della lobby"
+   Target_de_de "Lobby-Admin-Stimme"
+   Target_es_es "Voz del administrador del vestíbulo"
+   Target_cs_cz "Hlas administrátora lobby"
+   Target_pl_pl "Głos administratora lobby"
+   Target_ru_ru "Голос администратора лобби"
+   Target_ja_jp "ロビー管理者の声"
+   Target_ko_kr "로비 관리자 음성"
+   Target_pt_br "Voz do administrador do lobby"
+   Target_zh_cn "大厅管理员语音"
+   Target_uk_ua "Голос адміністратора лобі"
+   Modified 1701989843
+   Author "Gray"
+   LastChanged "Gray"
+  }
   CustomStringTableItem "{5EC2E47EDD8EAD31}" {
    Id "PS-Keybind_MissionDescriptionSwitch"
    Target_en_us "Mission description interface"
