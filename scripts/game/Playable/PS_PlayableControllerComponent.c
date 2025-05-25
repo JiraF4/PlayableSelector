@@ -789,9 +789,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 	{
 		if(!SCR_Global.IsAdmin())
 			return;
-		
-		Print("GRAY. LobbyVoNAdminEnable freq = " + GetTransceiverAdmin().GetFrequency());
-		
+
 		GetGame().GetCallqueue().Remove(LobbyVoNDisableDelayed);
 		PS_LobbyVoNComponent von = GetVoN();
 		von.SetTransmitRadio(GetTransceiverAdmin());
