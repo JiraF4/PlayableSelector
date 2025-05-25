@@ -14,6 +14,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 	protected BaseTransceiver m_adminTransceiver;
 	protected SCR_EGameModeState m_eMenuState = SCR_EGameModeState.PREGAME;
 	protected bool m_bAfterInitialSwitch = false;
+	protected bool m_isSpectating = false;
 	protected vector m_vObserverPosition = "0 0 0";
 	protected vector lastCameraTransform[4];
 	protected vector m_lastCameraPos;
@@ -450,6 +451,11 @@ class PS_PlayableControllerComponent : ScriptComponent
 		}
 	}
 	
+	bool IsSpectating()
+	{
+		return m_isSpectating;
+	}
+	
 	// There is sure no ебанорго game modes without spawns, yeah sure блять
 	void TellFuckingEditorCoreThanWeAlive(int playerId, IEntity entity)
 	{
@@ -875,6 +881,8 @@ class PS_PlayableControllerComponent : ScriptComponent
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		if (gameMode.GetFriendliesSpectatorOnly())
 			PS_ManualCameraSpectator.Cast(m_Camera).SetCharacterEntityMove(from);
+		
+		m_isSpectating = true;
 	}
 
 	void SwitchFromObserver()
@@ -884,6 +892,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		GetGame().GetMenuManager().CloseMenuByPreset(ChimeraMenuPreset.SpectatorMenu);
 		SCR_EntityHelper.DeleteEntityAndChildren(m_Camera);
 		m_Camera = null;
+		m_isSpectating = false;
 	}
 
 	// Force change game state
