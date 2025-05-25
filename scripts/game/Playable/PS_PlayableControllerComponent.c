@@ -597,6 +597,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		
 		return m_InitialEntity;
 	}
+	
 	void SetInitialEntity(IEntity initialEntity)
 	{
 		m_InitialEntity = initialEntity;
@@ -713,6 +714,23 @@ class PS_PlayableControllerComponent : ScriptComponent
 
 		return m_factionTransceiver;
 	}
+	
+	BaseTransceiver GetTransceiverAdmin()
+	{
+		if(!m_adminTransceiver)
+		{
+			SCR_GadgetManagerComponent gadgetManager = SCR_GadgetManagerComponent.Cast(GetInitialEntity().FindComponent(SCR_GadgetManagerComponent));
+			IEntity radioEntity = gadgetManager.GetGadgetByType(EGadgetType.RADIO);
+			if(!radioEntity)
+				return null;
+			
+			BaseRadioComponent radio = BaseRadioComponent.Cast(radioEntity.FindComponent(BaseRadioComponent));
+			if(radio)
+				m_adminTransceiver = radio.GetTransceiver(2);
+		}
+
+		return m_adminTransceiver;
+	}
 
 	void UpdateCameraStart()
 	{
@@ -761,11 +779,26 @@ class PS_PlayableControllerComponent : ScriptComponent
 		von.SetCapture(true);
 	}
 	
+	void LobbyVoNAdminEnable()
+	{
+		if(!SCR_Global.IsAdmin())
+			return;
+		
+		Print("GRAY. LobbyVoNAdminEnable freq = " + GetTransceiverAdmin().GetFrequency());
+		
+		GetGame().GetCallqueue().Remove(LobbyVoNDisableDelayed);
+		PS_LobbyVoNComponent von = GetVoN();
+		von.SetTransmitRadio(GetTransceiverAdmin());
+		von.SetCommMethod(ECommMethod.SQUAD_RADIO);
+		von.SetCapture(true);
+	}
+	
 	void LobbyVoNDisable()
 	{
 		// Delay VoN disable
 		GetGame().GetCallqueue().CallLater(LobbyVoNDisableDelayed, PS_LobbyVoNComponent.PS_TRANSMISSION_TIMEOUT_MS);
 	}
+	
 	void LobbyVoNDisableDelayed()
 	{
 		PS_LobbyVoNComponent von = GetVoN();
@@ -774,7 +807,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		von.SetCommMethod(ECommMethod.DIRECT);
 		von.SetCapture(false);
 	}
-	// Separate radio VoNs, CALL IT FROM SERVER
+
 	bool isVonInit()
 	{
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());

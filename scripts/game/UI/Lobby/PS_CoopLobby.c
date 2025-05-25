@@ -186,8 +186,10 @@ class PS_CoopLobby : MenuBase
 		{
 			m_InputManager.AddActionListener("VONDirect", EActionTrigger.DOWN, Action_LobbyVoNOn);
 			m_InputManager.AddActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
-			m_InputManager.AddActionListener("VONChannel", EActionTrigger.DOWN, Action_LobbyVoNChannelOn);
-			m_InputManager.AddActionListener("VONChannel", EActionTrigger.UP, Action_LobbyVoNChannelOff);
+			m_InputManager.AddActionListener("VONChannel", EActionTrigger.DOWN, Action_LobbyVoNFactionOn);
+			m_InputManager.AddActionListener("VONChannel", EActionTrigger.UP, Action_LobbyVoNOff);			
+			m_InputManager.AddActionListener("LobbyAdminVON", EActionTrigger.DOWN, Action_LobbyVoNAdminOn);
+			m_InputManager.AddActionListener("LobbyAdminVON", EActionTrigger.UP, Action_LobbyVoNOff);
 		}
 		
 		m_LobbyLoadoutPreview.SetItemInfoWidget(m_wLobbyLittleInventoryItemInfo);
@@ -213,8 +215,10 @@ class PS_CoopLobby : MenuBase
 		{
 			m_InputManager.RemoveActionListener("VONDirect", EActionTrigger.DOWN, Action_LobbyVoNOn);
 			m_InputManager.RemoveActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
-			m_InputManager.RemoveActionListener("VONChannel", EActionTrigger.DOWN, Action_LobbyVoNChannelOn);
-			m_InputManager.RemoveActionListener("VONChannel", EActionTrigger.UP, Action_LobbyVoNChannelOff);
+			m_InputManager.RemoveActionListener("VONChannel", EActionTrigger.DOWN, Action_LobbyVoNFactionOn);
+			m_InputManager.RemoveActionListener("VONChannel", EActionTrigger.UP, Action_LobbyVoNOff);
+			m_InputManager.RemoveActionListener("LobbyAdminVON", EActionTrigger.DOWN, Action_LobbyVoNAdminOn);
+			m_InputManager.RemoveActionListener("LobbyAdminVON", EActionTrigger.UP, Action_LobbyVoNOff);
 		}
 		if (m_PlayableManager)
 		{
@@ -592,15 +596,16 @@ class PS_CoopLobby : MenuBase
 		m_PlayableControllerComponent.LobbyVoNDisable();
 	}
 	// Channel
-	void Action_LobbyVoNChannelOn()
+	void Action_LobbyVoNFactionOn()
 	{
 		m_PlayableControllerComponent.LobbyVoNFactionEnable();
 	}
-	void Action_LobbyVoNChannelOff()
+
+	void Action_LobbyVoNAdminOn()
 	{
-		m_PlayableControllerComponent.LobbyVoNDisable();
+		m_PlayableControllerComponent.LobbyVoNAdminEnable();
 	}
-	
+
 	void Action_ChatOpen()
 	{
 		// Delay is esential, if any character already controlled

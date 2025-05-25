@@ -15,7 +15,6 @@ typedef string VoNRoomKey;
 class PS_VoNRoomsManager : ScriptComponent
 {
 	// server data
-	//ref map<int, vector> m_mRoomOffsets = new map<int, vector>(); // offset from initial position for each room
 	ref map<VoNRoomKey, int> m_mVoiceRoomsFromName = new map<VoNRoomKey, int>(); // room key to roomId relationship
 	
 	// Replication data

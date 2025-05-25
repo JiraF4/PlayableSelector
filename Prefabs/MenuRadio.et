@@ -6,7 +6,7 @@ GenericEntity : "{74AA3854E16D9D56}Prefabs/RL/MenuRadio.et" {
    "Turned on" 1
    Transceivers {
     RadioTransceiver "{5EB53DCA71704D99}" {
-     ChannelFrequency 0
+     ChannelFrequency 1
      "Min tunable frequency" 0
      "Max tunable frequency" 999999999
     }
@@ -17,9 +17,9 @@ GenericEntity : "{74AA3854E16D9D56}Prefabs/RL/MenuRadio.et" {
      "Max tunable frequency" 999999999
     }
     RadioTransceiver "{65706A1840F81A72}" {
-     ChannelFrequency 0
+     ChannelFrequency -1
      "Transmitting Range" 100000
-     "Min tunable frequency" 0
+     "Min tunable frequency" -999999999
      "Max tunable frequency" 999999999
     }
    }
