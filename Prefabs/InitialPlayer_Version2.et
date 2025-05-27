@@ -9,10 +9,7 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
     SCR_EquipmentStorageComponent "{56B49DA9722B635D}" {
      InitialStorageSlots {
       SCR_EquipmentStorageSlot BinocularSlot {
-       Prefab "{74AA3854E16D9D56}Prefabs/MenuRadio.et"
-      }
-      SCR_EquipmentStorageSlot WristwatchSlot {
-       Prefab "{8F49616A4BAAF407}Prefabs/MenuRadio2.et"
+       Prefab "{8F49616A4BAAF407}Prefabs/MenuRadio.et"
       }
      }
     }
@@ -90,6 +87,9 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
    Enabled 0
   }
   SCR_VoNComponent "{520EA1D2F659C856}" {
+   Enabled 0
+  }
+  RHS_ThermalSlotManagerComponent "{60D6F4C7C990A7BB}" {
    Enabled 0
   }
   SCR_CharacterIdentityComponent "{5584CBC63E092DBC}" {

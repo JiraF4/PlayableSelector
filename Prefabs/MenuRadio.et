@@ -1,137 +1,28 @@
-GenericEntity : "{5879D8E9C56E358D}Prefabs/Items/Core/Radio_base.et" {
+GenericEntity : "{74AA3854E16D9D56}Prefabs/RL/MenuRadio.et" {
  ID "508AB2013EEE1E00"
  components {
   BaseRadioComponent "{5A30BAE7673C63CA}" {
-   "Encryption key" "Menu"
+   "Encryption key" "lobby"
    "Turned on" 1
    Transceivers {
     RadioTransceiver "{5EB53DCA71704D99}" {
-     ChannelFrequency 32000
+     ChannelFrequency 1
+     "Min tunable frequency" 0
+     "Max tunable frequency" 999999999
+    }
+    RadioTransceiver "{65706A18418B3FC2}" {
+     ChannelFrequency 0
      "Transmitting Range" 100000
-     "Min tunable frequency" 32000
-     "Max tunable frequency" 68000
+     "Min tunable frequency" 0
+     "Max tunable frequency" 999999999
+    }
+    RadioTransceiver "{65706A1840F81A72}" {
+     ChannelFrequency -1
+     "Transmitting Range" 100000
+     "Min tunable frequency" -999999999
+     "Max tunable frequency" 999999999
     }
    }
-  }
-  InventoryItemComponent "{5222EB4D0C73006B}" {
-   Attributes SCR_ItemAttributeCollection "{5222EB4D0A2B466B}" {
-    ItemDisplayName UIInfo "{5222EB4D07D865FA}" {
-     Name "Meat leg of spirits"
-     Description "Enchanted meat for talking to spirits"
-     Icon "{2FBD8DA665FB8AF1}UI/Textures/VON/ANPRC68-100px_UI.edds"
-    }
-    ItemPhysAttributes ItemPhysicalAttributes PhysicalAttributes {
-     Weight 1.3
-     SizeSetupStrategy Manual
-     ItemVolume 300
-     RestingUP Forward
-     RestingAdditiveOffsetLS 0 0 0.15
-    }
-    ItemAnimationAttributes ItemAnimationAttributes "{5EB53DCA71704DEA}" {
-     AnimationInstance "{332D4A7512E78419}Assets/Items/Equipment/workspaces/Radio_ANPRC68_player.asi"
-     AnimationAttachments {
-      AnimationAttachmentInfo "{5EB53DCA71704DED}" {
-       AnimGraph "{402BB5FA2891D687}Assets/Items/Equipment/workspaces/Radio_ANPRC68.agr"
-       AnimInstance "{332D4A7512E78419}Assets/Items/Equipment/workspaces/Radio_ANPRC68_player.asi"
-       BindingName "Gadget"
-      }
-     }
-     HandAdditiveRotation 0 90 90
-     HandAdditiveTranslation 0.05 0.25 0.05
-     AllowInspection 1
-    }
-    CustomAttributes {
-     PreviewRenderAttributes "{5EB53DCA71704DF0}" {
-      CameraPreset Top
-      CameraOrbitAngles 40 30 0
-      CameraDistanceToItem 0.75
-      FOV 40
-     }
-     SCR_VONPreviewAttributes "{5EB53DCA71704DF2}" {
-      CameraOrbitAngles -30 180 45
-      CameraDistanceToItem 1
-      FOV 40
-     }
-    }
-    CommonItemType "RADIO"
-    m_SlotType SLOT_GADGETS_STORAGE
-   }
-  }
-  MeshObject "{5A30BAE7673C63D1}" {
-   Object "{4C5DB4BC63F4D4F0}Assets/Items/Food/MeatLeg_01.xob"
-  }
-  RigidBody "{5A30BAE7673C63D3}" {
-   CenterOfMass 0 0.1 0
-   ModelGeometry 1
-   CCDRadius 0.015
-  }
-  ProcAnimComponent "{5EB53DCA71704DF9}" {
-   Enabled 0
-   Parameters {
-    ProcAnimParams "{5EB53DCA71704DFB}" {
-     ResourceName "{F335B90D4353B9A4}Assets/Items/Equipment/Radios/Radio_ANPRC68/Radio_ANPRC68_01.pap"
-     BoneNames {
-      "i_channel01" "i_power" "i_volume"
-     }
-     SimulationDistance 20
-     SimulateOnDedicatedServer 0
-    }
-   }
-  }
-  SCR_RadioComponent "{5A30BAE7673C63D4}" {
-   m_eAnimVariable ANPRC68
-  }
-  ActionsManagerComponent "{508AB5952B584B2E}" {
-   ActionContexts {
-    UserActionContext "{508AC2ABEC97066C}" {
-     Position PointInfo "{508AC2ABEAC4A0F5}" {
-      Offset 0 0.1 0
-     }
-     Radius 0.115
-    }
-    UserActionContext "{5EB53DCA71704DC4}" {
-     ContextName "knob_channel"
-     Position PointInfo "{5EB53DCA71704DC6}" {
-      Offset 0.012 0.2 0.007
-     }
-     Radius 0.1
-    }
-    UserActionContext "{5EB53DCA71704DC7}" {
-     ContextName "knob_toggle"
-     Position PointInfo "{5EB53DCA71704DC8}" {
-      Offset 0 0.2 -0.01
-     }
-     Radius 0.1
-    }
-   }
-   additionalActions {
-    SCR_EquipGadgetAction "{553AEBE8F3B60801}" : "{068D8D646964D12A}Prefabs/Characters/Core/Actions/EquipGadgetAction.conf" {
-    }
-    SCR_RadioTuningUserAction "{5EB53DCA71704DCB}" {
-     ParentContextList {
-      "knob_channel"
-     }
-     UIInfo UIInfo "{5EB53DCA71704DCF}" {
-     }
-    }
-    SCR_RadioTuningUserAction "{5EB53DCA71704DD0}" {
-     ParentContextList {
-      "knob_channel"
-     }
-     UIInfo UIInfo "{5EB53DCA71704DD1}" {
-     }
-     m_bTuneUp 1
-    }
-    SCR_RadioToggleUserAction "{5EB53DCA71704DD3}" {
-     ParentContextList {
-      "knob_toggle"
-     }
-    }
-   }
-  }
-  RplComponent "{508AB59531D748C9}" {
-   "Rpl State Override" None
-   Streamable Disabled
   }
  }
 }
