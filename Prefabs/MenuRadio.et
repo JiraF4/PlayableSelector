@@ -1,8 +1,8 @@
-GenericEntity : "{74AA3854E16D9D56}Prefabs/RL/MenuRadio.et" {
+GenericEntity : "{5879D8E9C56E358D}Prefabs/Items/Core/Radio_base.et" {
  ID "508AB2013EEE1E00"
  components {
   BaseRadioComponent "{5A30BAE7673C63CA}" {
-   "Encryption key" "lobby"
+   "Encryption key" "Lobby"
    "Turned on" 1
    Transceivers {
     RadioTransceiver "{5EB53DCA71704D99}" {
