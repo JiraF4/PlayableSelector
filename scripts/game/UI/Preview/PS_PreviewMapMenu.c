@@ -47,8 +47,10 @@ class PS_PreviewMapMenu: ChimeraMenuBase
 		
 		GetGame().GetInputManager().AddActionListener("VONDirect", EActionTrigger.DOWN, Action_LobbyVoNOn);
 		GetGame().GetInputManager().AddActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
-		GetGame().GetInputManager().AddActionListener("VONChannel", EActionTrigger.DOWN, Action_LobbyVoNChannelOn);
-		GetGame().GetInputManager().AddActionListener("VONChannel", EActionTrigger.UP, Action_LobbyVoNChannelOff);
+		GetGame().GetInputManager().AddActionListener("VONChannel", EActionTrigger.DOWN, Action_LobbyVoNFactionOn);
+		GetGame().GetInputManager().AddActionListener("VONChannel", EActionTrigger.UP, Action_LobbyVoNOff);		
+		GetGame().GetInputManager().AddActionListener("LobbyAdminVON", EActionTrigger.DOWN, Action_LobbyVoNAdminOn);
+		GetGame().GetInputManager().AddActionListener("LobbyAdminVON", EActionTrigger.UP, Action_LobbyVoNOff);
 		GetGame().GetInputManager().AddActionListener("MenuBack", EActionTrigger.DOWN, Action_Exit);
 		
 		GetGame().GetCallqueue().CallLater(UpdateCycle, 0);
@@ -101,8 +103,10 @@ class PS_PreviewMapMenu: ChimeraMenuBase
 		GetGame().GetInputManager().RemoveActionListener("ChatToggle", EActionTrigger.DOWN, Action_OnChatToggleAction);
 		GetGame().GetInputManager().RemoveActionListener("VONDirect", EActionTrigger.DOWN, Action_LobbyVoNOn);
 		GetGame().GetInputManager().RemoveActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
-		GetGame().GetInputManager().RemoveActionListener("VONChannel", EActionTrigger.DOWN, Action_LobbyVoNChannelOn);
-		GetGame().GetInputManager().RemoveActionListener("VONChannel", EActionTrigger.UP, Action_LobbyVoNChannelOff);
+		GetGame().GetInputManager().RemoveActionListener("VONChannel", EActionTrigger.DOWN, Action_LobbyVoNFactionOn);
+		GetGame().GetInputManager().RemoveActionListener("VONChannel", EActionTrigger.UP, Action_LobbyVoNOff);
+		GetGame().GetInputManager().RemoveActionListener("LobbyAdminVON", EActionTrigger.DOWN, Action_LobbyVoNAdminOn);
+		GetGame().GetInputManager().RemoveActionListener("LobbyAdminVON", EActionTrigger.UP, Action_LobbyVoNOff);
 		GetGame().GetInputManager().RemoveActionListener("MenuBack", EActionTrigger.DOWN, Action_Exit);
 	}
 	
@@ -146,18 +150,20 @@ class PS_PreviewMapMenu: ChimeraMenuBase
 		playableController.LobbyVoNDisable();
 	}
 	// Channel
-	void Action_LobbyVoNChannelOn()
+	void Action_LobbyVoNFactionOn()
 	{
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-		playableController.LobbyVoNRadioEnable();
+		playableController.LobbyVoNFactionEnable();
 	}
-	void Action_LobbyVoNChannelOff()
+
+	void Action_LobbyVoNAdminOn()
 	{
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-		playableController.LobbyVoNDisable();
+		playableController.LobbyVoNAdminEnable();
 	}
+	
 	void Action_Exit()
 	{
 		// For some strange reason players all the time accidentally exit game, maybe jus open pause menu

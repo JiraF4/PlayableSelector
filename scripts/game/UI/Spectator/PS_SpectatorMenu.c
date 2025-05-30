@@ -13,6 +13,7 @@ class PS_SpectatorMenu: MenuBase
 	InputManager m_InputManager;
 	PS_GameModeCoop m_GameMode;
 	PS_PlayableManager m_PlayableManager;
+	PS_PlayableControllerComponent playableController;
 	
 	static PS_SpectatorMenu s_SpectatorMenu;
 	
@@ -144,6 +145,8 @@ class PS_SpectatorMenu: MenuBase
 		}
 		m_GameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		m_PlayableManager = PS_PlayableManager.GetInstance();
+		PlayerController playerController = GetGame().GetPlayerController();
+		playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		
 		m_wVoiceChatList = GetRootWidget().FindAnyWidget("VoiceChatFrame");
 		m_hVoiceChatList = PS_VoiceChatList.Cast(m_wVoiceChatList.FindHandler(PS_VoiceChatList));
@@ -169,6 +172,9 @@ class PS_SpectatorMenu: MenuBase
 		InitChat();
 		
 		GetGame().GetCallqueue().CallLater(RoomSwitchToGlobal, 0);
+		
+		if(m_GameMode.IsSpectatorLocalVoiceEnable())
+			GetGame().GetCallqueue().CallLater(playableController.UpdateCamera, 333, true);
 	}
 	
 	void UpdateCursorTarget()
@@ -405,6 +411,8 @@ class PS_SpectatorMenu: MenuBase
 #endif
 			m_InputManager.RemoveActionListener("MouseLeft", EActionTrigger.UP, OpenContextClick);
 		}
+		
+		GetGame().GetCallqueue().Remove(playableController.UpdateCamera);
 	}
 	
 	override void OnMenuUpdate(float tDelta)
@@ -580,7 +588,7 @@ class PS_SpectatorMenu: MenuBase
 	{
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-		playableController.LobbyVoNRadioEnable();
+		playableController.LobbyVoNEnable();
 	}
 	
 	void Action_LobbyVoNOff()
