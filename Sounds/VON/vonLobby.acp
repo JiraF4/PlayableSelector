@@ -3,7 +3,7 @@ AudioClass {
   SignalClass {
    id 30733
    name "Signal 1"
-   tl -829.742 -514.155
+   tl -792.242 -542.905
    res "{CF1F9C4B120DE5F8}Sounds/VON/Von.sig"
    inputsport {
     1
@@ -28,19 +28,19 @@ AudioClass {
    tl -18.571 -1113.444
    res "{2DE6099BBD60C620}Sounds/_SharedData/Signals/Character/Character_Occlusion.sig"
    inputsport {
-    1 2 6 7 8 20 50 54
+    2 8 20 50
    }
    outputsport {
-    5 36
+    36
    }
    inputvalues {
-    0 0 0 0 0 0 1000 400
+    0 0 0 1000
    }
    inputvaluesmin {
-    0 0 0 0 0 0 0 0
+    0 0 0 0
    }
    inputvaluesmax {
-    1 1 1 1 1 1 10000 10000
+    1 1 1 10000
    }
    path "{2DE6099BBD60C620}Sounds/_SharedData/Signals/Character/Character_Occlusion.sig"
   }
@@ -53,7 +53,7 @@ AudioClass {
     1 35 40 112 139
    }
    outputsport {
-    34 39 105 106 107 110
+    34 39 105 107 106 110
    }
    inputvalues {
     40 1 1 16000 16000
@@ -68,33 +68,6 @@ AudioClass {
   }
  }
  filters {
-  FilterClass {
-   id 33814
-   name "Filter Bitcrusher"
-   version 5
-   tl -542.043 -579.021
-   ins {
-    ConnectionsClass connections {
-     id 0
-     links {
-      ConnectionClass connection {
-       id 30733
-       port 5
-      }
-     }
-    }
-   }
-   pi {
-    1 0
-   }
-   pu {
-    1 0
-   }
-   wetDry 0
-   DSPObject BitCrusherDSPTypeClass dsp {
-    bitMask "11010101"
-   }
-  }
   FilterClass {
    id 39958
    name "Filter Compressor"
@@ -154,35 +127,6 @@ AudioClass {
    }
   }
   FilterClass {
-   id 63510
-   name "Filter HP"
-   version 5
-   tl -542.043 -482.209
-   pi {
-    1 0
-   }
-   volume_dB 1
-   DSPObject BiquadDSPTypeClass dsp {
-    biquadType HighPass
-    fc 1200
-    Q 2
-   }
-  }
-  FilterClass {
-   id 64534
-   name "Filter LP"
-   version 5
-   tl -539.543 -390.932
-   pi {
-    1 0
-   }
-   volume_dB 2
-   DSPObject BiquadDSPTypeClass dsp {
-    fc 3600
-    Q 1.8
-   }
-  }
-  FilterClass {
    id 75798
    name "Filter Test"
    version 5
@@ -196,47 +140,6 @@ AudioClass {
   }
  }
  filter_chain {
-  FilterChainClass {
-   id 32791
-   name "FilterChain"
-   comment "Dont use compressor here. Creates panorama movement when DIRECT and RADIO are mixed."
-   version 5
-   tl -275.559 -513.921
-   ctl 0 -21
-   ins {
-    ConnectionsClass connections {
-     id 1
-     links {
-      ConnectionClass connection {
-       id 33814
-       port 65
-      }
-     }
-    }
-    ConnectionsClass connections {
-     id 2
-     links {
-      ConnectionClass connection {
-       id 63510
-       port 65
-      }
-     }
-    }
-    ConnectionsClass connections {
-     id 3
-     links {
-      ConnectionClass connection {
-       id 64534
-       port 65
-      }
-     }
-    }
-   }
-   pi {
-    14 0
-   }
-   ports 3
-  }
   FilterChainClass {
    id 53271
    name "FilterChain 52"
@@ -291,21 +194,17 @@ AudioClass {
    id 27657
    name "VON_RADIO"
    version 5
-   tl 258.454 -143.107
+   tl 255.954 -213.107
    ins {
     ConnectionsClass connections {
      id 64
      links {
       ConnectionClass connection {
-       id 46098
-       port 65
-      }
-      ConnectionClass connection {
        id 22546
        port 65
       }
       ConnectionClass connection {
-       id 52231
+       id 50183
        port 65
       }
      }
@@ -383,7 +282,7 @@ AudioClass {
    id 38919
    name "Bus 1"
    version 7
-   tl -605.793 -167.393
+   tl -542.043 -213.643
    ins {
     ConnectionsClass connections {
      id 0
@@ -415,7 +314,7 @@ AudioClass {
    id 50183
    name "Bus 49"
    version 7
-   tl -321.809 -206.143
+   tl -275.559 -212.393
    ins {
     ConnectionsClass connections {
      id 0
@@ -428,16 +327,14 @@ AudioClass {
     }
     ConnectionsClass connections {
      id 1
-     links {
-      ConnectionClass connection {
-       id 32791
-       port 65
-      }
-     }
     }
     ConnectionsClass connections {
      id 64
      links {
+      ConnectionClass connection {
+       id 52231
+       port 65
+      }
       ConnectionClass connection {
        id 38919
        port 65
@@ -517,13 +414,13 @@ AudioClass {
   GeneratorClass {
    id 36869
    name "Generator 1"
-   version 5
-   tl -817.242 -124.893
+   version 6
+   tl -792.242 -214.893
    function BrownianNoise
-   time 10
    volume 0.2
    volume_dB -14
-   loopCount 255
+   time 10
+   infinite 1
   }
  }
  mixers {
@@ -531,7 +428,7 @@ AudioClass {
    id 13323
    name "OutputState"
    version 4
-   tl 702.726 -509.139
+   tl 501.476 -640.389
    res "{B764D803219C775E}Sounds/FinalMix.afm"
    ins {
     ConnectionsClass connections {
@@ -562,11 +459,11 @@ AudioClass {
     }
    }
    pi {
-    73728 0
+    368640 0
    }
    path "{B764D803219C775E}Sounds/FinalMix.afm"
    inputs {
-    "WPN_Handling" "WPN_Shots" "WPN_Explosions" "WNP_BulletHits" "CHAR" "ENV_AMB_2D" "VEH_Animations" "Impacts" "Dialog" "Music" "ENV_Doors" "VEH_Engine" "VEH_Tires" "VON" "SFX" "SFX_Reverb" "VON_Reverb" "Dialog_Reverb" "Impacts_EXT" "ENV_AMB_3D" "WPN_SonicCracks" "CHAR_Gear" "PA" "SFX_Reverb_Exterior" "UI" "ENV_AMB_3D_Reverb_Exterior" "SFX_Direct" "SFX_Reverb_Small" "SFX_Reverb_Medium" "SFX_Reverb_Large" "WPN_Shots_Player" "Dialog_Reverb_Small" "Dialog_Reverb_Medium" "Dialog_Reverb_Large" "Dialog_Delay_Exterior"
+    "WPN_Handling" "WPN_Shots" "WPN_Explosions" "WNP_BulletHits" "CHAR" "ENV_AMB_2D" "VEH_Animations" "Impacts" "Dialog" "Music" "ENV_Doors" "VEH_Engine" "VEH_Tires" "VON" "SFX" "SFX_Reverb" "VON_Reverb" "Dialog_Reverb" "Impacts_EXT" "ENV_AMB_3D" "WPN_SonicCracks" "CHAR_Gear" "PA" "SFX_Reverb_Exterior" "UI" "ENV_AMB_3D_Reverb_Exterior" "SFX_Direct" "SFX_Reverb_Small" "SFX_Reverb_Medium" "SFX_Reverb_Large" "WPN_Shots_Player" "Dialog_Reverb_Small" "Dialog_Reverb_Medium" "Dialog_Reverb_Large" "WPN_TravelingProjectile" "Dialog_Delay_Exterior" "SFX_Reverb_InCabin"
    }
   }
  }
@@ -577,6 +474,15 @@ AudioClass {
    version 5
    tl -18.571 -810.857
    ins {
+    ConnectionsClass connections {
+     id 0
+     links {
+      ConnectionClass connection {
+       id 48156
+       port 65
+      }
+     }
+    }
     ConnectionsClass connections {
      id 1
      links {
@@ -606,7 +512,7 @@ AudioClass {
     }
    }
    pi {
-    23 0
+    7 0
    }
    ITD 0
   }
@@ -614,7 +520,7 @@ AudioClass {
    id 44050
    name "Shader 4"
    version 5
-   tl -17.321 103.222
+   tl -18.571 103.222
    ins {
     ConnectionsClass connections {
      id 1
@@ -637,24 +543,6 @@ AudioClass {
    }
    pi {
     2 0
-   }
-   ITD 0
-  }
-  ShaderClass {
-   id 46098
-   name "Shader 2"
-   version 5
-   tl -153.571 -168.643
-   ins {
-    ConnectionsClass connections {
-     id 64
-     links {
-      ConnectionClass connection {
-       id 50183
-       port 65
-      }
-     }
-    }
    }
    ITD 0
   }
@@ -684,7 +572,6 @@ AudioClass {
    tl -18.571 -1190.389
    ctl 0 -21
    parent "{9F8145144171C64B}Sounds/_SharedData/Configs/Amplitude/_SharedData/Amplitude_-40LUFS_to_-35LUFS.conf"
-   outerRange 20
   }
  }
  frequency {
