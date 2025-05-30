@@ -78,7 +78,7 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
    Enabled 0
   }
   SCR_CharacterDamageManagerComponent "{55872AD7B4E959F2}" {
-   Enabled 0
+   EnableDamage 0
   }
   SCR_CharacterStaminaComponent "{520EA1D2F659C824}" {
    Enabled 0
