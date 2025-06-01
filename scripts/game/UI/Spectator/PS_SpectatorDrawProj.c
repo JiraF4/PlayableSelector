@@ -32,7 +32,7 @@ class PS_SpectatorDrawProj : ScriptComponent
 	override protected void EOnFixedFrame(IEntity owner, float timeSlice)
 	{
 		m_alive += timeSlice;
-		if(m_alive > MAX_ALIVE)
+		if(m_alive > MAX_ALIVE || !m_isEnabled)
 		{
 			ClearEventMask(owner, EntityEvent.FIXEDFRAME);
 			m_lines.Clear();
