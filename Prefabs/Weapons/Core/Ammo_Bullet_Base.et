@@ -1,0 +1,7 @@
+Projectile {
+ ID "DA5C6308000CDEF2"
+ components {
+  PS_SpectatorDrawProj "{6583191C69E31FF4}" {
+  }
+ }
+}
