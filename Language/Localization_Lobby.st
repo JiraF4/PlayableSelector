@@ -953,6 +953,25 @@ StringTable {
    Author "SeskPC"
    LastChanged "SeskPC"
   }
+  CustomStringTableItem "{6583132A055F7577}" {
+   Id "PS-Keybind_SwitchSpectatorHDR"
+   Target_en_us "Night Vision"
+   Target_fr_fr "Vision nocturne"
+   Target_it_it "Visione notturna"
+   Target_de_de "Nachtsicht"
+   Target_es_es "Visión nocturna"
+   Target_cs_cz "Noční vidění"
+   Target_pl_pl "Noktowizor"
+   Target_ru_ru "Ночное зрение"
+   Target_ja_jp "暗視装置"
+   Target_ko_kr "야간 투시"
+   Target_pt_br "Visão noturna"
+   Target_zh_cn "夜视仪"
+   Target_uk_ua "Нічний зір"
+   Modified 1703089763
+   Author "Gray"
+   LastChanged "Gray"
+  }
   CustomStringTableItem "{5EC5311F4BC93B53}" {
    Id "PS-Keybind_SwitchSpectatorUI"
    Target_en_us "Hide/Show UI"
@@ -1332,6 +1351,25 @@ StringTable {
    Modified 1642794412
    Author "zazul"
    LastChanged "SeskPC"
+  }
+  CustomStringTableItem "{6583105EB3562C64}" {
+   Id "PS-Spectator_SwitchSpectatorDraw"
+   Target_en_us "Draw Projectiles"
+   Target_fr_fr "Tracer les projectiles"
+   Target_it_it "Disegnare i proiettili"
+   Target_de_de "Projektile zeichnen"
+   Target_es_es "Dibujar proyectiles"
+   Target_cs_cz "Kreslit projektily"
+   Target_pl_pl "Rysować pociski"
+   Target_ru_ru "Рисовать снаряды"
+   Target_ja_jp "弾道を描く"
+   Target_ko_kr "발사체 그리기"
+   Target_pt_br "Desenhar projéteis"
+   Target_zh_cn "绘制弹道"
+   Target_uk_ua "Малювати снаряди"
+   Modified 1703088873
+   Author "Gray"
+   LastChanged "Gray"
   }
   CustomStringTableItem "{5EC5311F409ED937}" {
    Id "PS-Spectator_SwitchSpectatorUI"

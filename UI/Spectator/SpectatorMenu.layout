@@ -573,6 +573,30 @@ FrameWidgetClass {
         }
        }
       }
+      ButtonWidgetClass "{6583105F1624A712}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
+       Name "NavigationSwitchSpectatorDraw"
+       Slot LayoutSlot "{5EBC737F18D3A94E}" {
+        Padding 20 0 0 0
+       }
+       components {
+        SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
+         m_sActionName "SwitchSpectatorDraw"
+         m_sLabel "#PS-Spectator_SwitchSpectatorDraw"
+        }
+       }
+      }
+      ButtonWidgetClass "{658316B7AA7E4490}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
+       Name "NavigationSwitchSpectatorDraw0"
+       Slot LayoutSlot "{5EBC737F18D3A94E}" {
+        Padding 20 0 0 0
+       }
+       components {
+        SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
+         m_sActionName "SwitchSpectatorHDR"
+         m_sLabel "#PS-Keybind_SwitchSpectatorHDR"
+        }
+       }
+      }
      }
     }
    }

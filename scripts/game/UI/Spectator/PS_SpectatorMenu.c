@@ -50,6 +50,9 @@ class PS_SpectatorMenu: MenuBase
 	protected PS_SpectatorLabelIcon m_SelectedLabel;
 	protected vector m_vSelectedPosition;
 	
+	protected bool m_isHDRActive = false;
+	protected int m_hdr = 5;
+	
 	static void ResetTarget()
 	{
 		if (s_SpectatorMenu)
@@ -381,6 +384,9 @@ class PS_SpectatorMenu: MenuBase
 			m_InputManager.AddActionListener("VONDirect", EActionTrigger.DOWN, Action_LobbyVoNOn);
 			m_InputManager.AddActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
 			m_InputManager.AddActionListener("SwitchSpectatorUI", EActionTrigger.DOWN, Action_SwitchSpectatorUI);
+			m_InputManager.AddActionListener("SwitchSpectatorDraw", EActionTrigger.DOWN, Action_SwitchSpectatorDraw);
+			m_InputManager.AddActionListener("SwitchSpectatorHDR", EActionTrigger.DOWN, Action_ToggleHDR);
+			m_InputManager.AddActionListener("SwitchSpectatorHDRWheel", EActionTrigger.VALUE, Action_AdjustHDR);
 			m_InputManager.AddActionListener("GadgetMap", EActionTrigger.DOWN, Action_ToggleMap);
 			m_InputManager.AddActionListener("ManualCameraTeleport", EActionTrigger.DOWN, Action_ManualCameraTeleport);
 			m_InputManager.AddActionListener("EditorLastNotificationTeleport", EActionTrigger.DOWN, Action_EditorLastNotificationTeleport);
@@ -403,6 +409,9 @@ class PS_SpectatorMenu: MenuBase
 			m_InputManager.RemoveActionListener("LobbyVoN", EActionTrigger.DOWN, Action_LobbyVoNOn);
 			m_InputManager.RemoveActionListener("LobbyVoN", EActionTrigger.UP, Action_LobbyVoNOff);
 			m_InputManager.RemoveActionListener("SwitchSpectatorUI", EActionTrigger.DOWN, Action_SwitchSpectatorUI);
+			m_InputManager.RemoveActionListener("SwitchSpectatorDraw", EActionTrigger.DOWN, Action_SwitchSpectatorDraw);
+			m_InputManager.RemoveActionListener("SwitchSpectatorHDR", EActionTrigger.DOWN, Action_ToggleHDR);
+			m_InputManager.RemoveActionListener("SwitchSpectatorHDRWheel", EActionTrigger.VALUE, Action_AdjustHDR);	
 			m_InputManager.RemoveActionListener("GadgetMap", EActionTrigger.DOWN, Action_ToggleMap);
 			m_InputManager.RemoveActionListener("ManualCameraTeleport", EActionTrigger.DOWN, Action_ManualCameraTeleport);
 			m_InputManager.RemoveActionListener("EditorLastNotificationTeleport", EActionTrigger.DOWN, Action_EditorLastNotificationTeleport);
@@ -412,6 +421,8 @@ class PS_SpectatorMenu: MenuBase
 			m_InputManager.RemoveActionListener("MouseLeft", EActionTrigger.UP, OpenContextClick);
 		}
 		
+		PS_SpectatorDrawProj.SetEnabled(false);
+		ResetHDR();
 		GetGame().GetCallqueue().Remove(playableController.UpdateCamera);
 	}
 	
@@ -618,6 +629,52 @@ class PS_SpectatorMenu: MenuBase
 			m_wIconsFrame.SetVisible(true);
 			m_wSidesRatioFrame.SetVisible(true);
 		}
+	}
+	
+	void Action_SwitchSpectatorDraw()
+	{
+		PS_SpectatorDrawProj.Toggle();
+	}
+	
+	void Action_AdjustHDR(float value)
+	{
+		if(value == 0)
+			return;
+		
+		if(!m_isHDRActive)
+			return;
+		
+		int input = Math.ClampInt(m_hdr + value, 1, 50);
+		if(m_hdr == input)
+			return;
+		
+		m_hdr = input;
+		
+		BaseWorld world = GetGame().GetWorld();
+		world.SetCameraHDRBrightness(world.GetCurrentCameraId(), input);
+	}
+	
+	void Action_ToggleHDR()
+	{
+		BaseWorld world = GetGame().GetWorld();
+		int cameraID = world.GetCurrentCameraId();
+
+		if(m_isHDRActive)
+		{
+			world.SetCameraHDRBrightness(cameraID, -1);
+		}
+		else
+		{
+			world.SetCameraHDRBrightness(cameraID, m_hdr);
+		}
+		m_isHDRActive = !m_isHDRActive;
+	}
+	
+	void ResetHDR()
+	{
+		BaseWorld world = GetGame().GetWorld();
+		world.SetCameraHDRBrightness(world.GetCurrentCameraId(), -1);
+		m_isHDRActive = false;
 	}
 	
 	bool IsUIVisible()
