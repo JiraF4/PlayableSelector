@@ -5,7 +5,7 @@ class PS_SpectatorDrawProjClass : ScriptComponentClass
 
 class PS_SpectatorDrawProj : ScriptComponent
 {
-	protected static const float MAX_ALIVE = 2.5;
+	protected static const float MAX_ALIVE = 1.75;
 	protected static bool m_isEnabled;
 	
 	protected ref array<ref Shape> m_lines = {};
