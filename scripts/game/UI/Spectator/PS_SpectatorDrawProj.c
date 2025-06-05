@@ -50,18 +50,18 @@ class PS_SpectatorDrawProj : ScriptComponent
 	}
 
 	protected int GetColor()
-    {
+	{
 		if(m_alive < 0.1)
 			return Color.RED;
 		
 		float speed = shell.GetVelocity().LengthSq();
 		float t = Math.Clamp(speed / m_startSpeed, 0.0, 1.0);
 		
-        Color result = Color.Green.LerpNew(Color.Red, t);
-        result.Saturate();
-
-        return result.PackToInt();
-    }
+		Color result = Color.Green.LerpNew(Color.Red, t);
+		result.Saturate();
+		
+		return result.PackToInt();
+	}
 	
 	void SetPos(vector position)
 	{
