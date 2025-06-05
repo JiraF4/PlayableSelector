@@ -68,7 +68,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	[Attribute("0", UIWidgets.CheckBox, "", category: "Reforger Lobby")]
 	protected bool m_bFriendliesSpectatorOnly;
 
-	[Attribute("0", UIWidgets.CheckBox, "", category: "Reforger Lobby")]
+	[Attribute("1", UIWidgets.CheckBox, "", category: "Reforger Lobby")]
 	protected bool m_bEnableSpectatorLocalVoice;
 	
 	[Attribute("0", UIWidgets.CheckBox, "", category: "Reforger Lobby")]
