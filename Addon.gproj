@@ -1,9 +1,9 @@
 GameProject {
- ID "PlayableSelector"
- GUID "596523840114E2D3"
- TITLE "ReforgerLobbyDEV"
+ ID "ReforgerLobbyCommunity"
+ GUID "0315131312150202"
+ TITLE "Reforger Lobby Community"
  Dependencies {
-  "58D0FB3206B6F859" "0315131312150202"
+  "58D0FB3206B6F859" "DEB66BADC0DE6667"
  }
  Configurations {
   GameProjectConfig PC {
