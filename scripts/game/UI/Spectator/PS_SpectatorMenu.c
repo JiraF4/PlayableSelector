@@ -416,7 +416,7 @@ class PS_SpectatorMenu: MenuBase
 			m_wGameTimerText.SetVisible(true);
 			
 			PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-			float timeSeconds = gameModeCoop.GetElapsedTime() - gameModeCoop.GetGameStartTime()/1000;
+			float timeSeconds = gameModeCoop.GetElapsedTime() - gameModeCoop.GetGameStartElapsedTime();
 			if (timeSeconds < 0 || gameModeCoop.GetGameStartTime() == 0)
 				timeSeconds = 0;
 			int seconds = Math.Mod(timeSeconds, 60);
