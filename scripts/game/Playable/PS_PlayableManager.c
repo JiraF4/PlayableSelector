@@ -36,6 +36,8 @@ class PS_PlayableManager : ScriptComponent
 {
 	// Map of our playables
 	ref map<RplId, ref PS_PlayableContainer> m_aPlayables = new map<RplId, ref PS_PlayableContainer>(); // We NOW sync it!
+	ref array<RplId> m_aPlayableRplIdArray = {};
+	ref array<PS_PlayableContainer> m_aPlayableContainerArray = {};
 	ref array<PS_PlayableContainer> m_aPlayablesSorted = {};
 	ref map<RplId, ref PS_PlayableVehicleContainer> m_mPlayableVehicles = new map<RplId, ref PS_PlayableVehicleContainer>();
 
@@ -407,7 +409,10 @@ class PS_PlayableManager : ScriptComponent
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	protected void RPC_RegisterPlayable(PS_PlayableContainer container)
 	{
-		m_aPlayables[container.GetRplId()] = container;
+		auto containerRplId = container.GetRplId();
+		m_aPlayables[containerRplId] = container;
+		m_aPlayableRplIdArray.Insert(containerRplId);
+		m_aPlayableContainerArray.Insert(container);
 		m_CallQueue.Remove(UpdatePlayablesSortedDelayed);
 		m_CallQueue.Remove(UpdatePlayablesSorted);
 		m_CallQueue.Call(UpdatePlayablesSortedDelayed); // List updated resort
@@ -436,6 +441,9 @@ class PS_PlayableManager : ScriptComponent
 			return;
 		PS_PlayableContainer playableContainer = m_aPlayables[playableId];
 		m_aPlayables.Remove(playableId);
+		auto m_aPlayableIndex = m_aPlayableRplIdArray.Find(playableId);
+		m_aPlayableRplIdArray.RemoveOrdered(m_aPlayableIndex);
+		m_aPlayableContainerArray.RemoveOrdered(m_aPlayableIndex);
 
 		UpdatePlayablesSorted(); // List updated resort
 		m_eOnPlayableUnregistered.Invoke(playableId, playableContainer);
@@ -508,6 +516,17 @@ class PS_PlayableManager : ScriptComponent
 	{
 		return m_aPlayables;
 	}
+
+	array<RplId> GetPlayableRplIdArray()
+	{
+		return m_aPlayableRplIdArray;
+	}
+
+	array<PS_PlayableContainer> GetPlayableContainerArray()
+	{
+		return m_aPlayableContainerArray;
+	}
+
 
 	// --------------------------------------------------------------------------------------------
 	// Get cached list of playables sorted by CallSign -> Rank -> RplId
@@ -1132,8 +1151,9 @@ class PS_PlayableManager : ScriptComponent
 		map<RplId, ref PS_PlayableContainer> playables = GetPlayables();
 
 		// Rerange playables from global list
-		foreach (RplId playableId, PS_PlayableContainer playable : playables)
+		foreach (int playableIndex, RplId playableId : m_aPlayableRplIdArray)
 		{
+			PS_PlayableContainer playable = m_aPlayableContainerArray[playableIndex];
 			if (!playable)
 				continue;
 			int callSign = GetGroupCallsignByPlayable(playable.GetRplId());
@@ -1231,6 +1251,8 @@ class PS_PlayableManager : ScriptComponent
 		writer.WriteInt(playablesCount);
 		foreach (RplId id, PS_PlayableContainer container : m_aPlayables)
 		{
+			auto index = m_aPlayableRplIdArray.Find(id);
+			writer.WriteInt(index);
 			container.Save(writer);
 		}
 
@@ -1265,12 +1287,20 @@ class PS_PlayableManager : ScriptComponent
 		// Load containers
 		int playablesCount;
 		reader.ReadInt(playablesCount);
+		auto containersReorder = new map<int, ref PS_PlayableContainer>();
 		for (int i = 0; i < playablesCount; i++)
 		{
+			int index;
+			reader.ReadInt(index);
 			PS_PlayableContainer container = new PS_PlayableContainer();
 			container.Load(reader);
-			RPC_RegisterPlayable(container);
+			containersReorder.Set(index, container);
 		}
+		
+		for (int i = 0; i < playablesCount; i++) {
+			auto container = containersReorder.Get(i);
+			RPC_RegisterPlayable(container);
+		};
 
 		int playableVehiclesCount;
 		reader.ReadInt(playableVehiclesCount);
