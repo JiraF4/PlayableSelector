@@ -13,13 +13,13 @@ class PS_PlayableComponent : ScriptComponent
 	[Attribute()]
 	ref array<ResourceName> m_aRespawnPrefabs;
 
-	// Actually just RplId from RplComponent
-	protected RplId m_RplId;
+	protected bool m_firstTimeSpawn = true;
+	protected RplId m_RplId; // Actually just RplId from RplComponent
 	protected vector spawnTransform[4];
+	protected bool m_bRespawned;
 	[RplProp()]
 	int m_iRespawnCounter = 0;
-	protected bool m_bRespawned;
-
+	
 	// Server only
 	protected ref PS_PlayableContainer m_PlayableContainer;
 	PS_PlayableContainer GetPlayableContainer()
@@ -147,6 +147,32 @@ class PS_PlayableComponent : ScriptComponent
 		RPC_SetPlayable(isPlayable);
 		Rpc(RPC_SetPlayable, isPlayable);
 	}
+	
+	void SpawnFirstTime()
+	{
+		if(!m_firstTimeSpawn)
+			return;
+		
+		m_firstTimeSpawn = true;
+		Rpc(RPC_SpawnFirstTime, spawnTransform[3]);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Owner)]
+	protected void RPC_SpawnFirstTime(vector position)
+	{
+		BaseGameEntity gameEntity = BaseGameEntity.Cast(GetOwner());
+		vector mat[4];
+		mat[3] = position;
+		gameEntity.Teleport(mat);
+		
+		Physics physics = gameEntity.GetPhysics();
+		if (physics)
+		{
+			physics.SetVelocity("0 0 0");
+			physics.SetAngularVelocity("0 0 0");
+			physics.EnableGravity(true);
+		}
+	}
+	
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void RPC_SetPlayable(bool isPlayable)
 	{

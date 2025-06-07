@@ -31,7 +31,10 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 	[Attribute("0", uiwidget: UIWidgets.CheckBox, "Remove units not occupied by players.", category: "Reforger Lobby")]
 	protected bool m_bRemoveRedundantUnits;
-
+	
+	[Attribute("0", uiwidget: UIWidgets.CheckBox, "Hide units until they are slotted", category: "Reforger Lobby")]
+	protected bool m_bHidePlayersOnSpawn;
+	
 	[Attribute("0", uiwidget: UIWidgets.CheckBox, "Remove default markers on squad leaders.", category: "Reforger Lobby")]
 	protected bool m_bRemoveSquadMarkers;
 
@@ -46,8 +49,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 	[RplProp()]
 	protected float m_fCurrentFreezeTime = 1;
+	
 	[RplProp()]
 	protected float m_fGameStartTime = 0;
+	[RplProp()]
+	protected float m_fGameStartElapsedTime = 0;
 
 	[Attribute("0", UIWidgets.CheckBox, "Creates a whitelist on the server for players who have taken roles and also for players specified in $profile:PS_SlotsReserver_Config.json and kicks everyone else.", category: "Reforger Lobby")]
 	protected bool m_bReserveSlots;
@@ -68,7 +74,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	[Attribute("0", UIWidgets.CheckBox, "", category: "Reforger Lobby")]
 	protected bool m_bFriendliesSpectatorOnly;
 
-	[Attribute("0", UIWidgets.CheckBox, "", category: "Reforger Lobby")]
+	[Attribute("1", UIWidgets.CheckBox, "", category: "Reforger Lobby")]
 	protected bool m_bEnableSpectatorLocalVoice;
 	
 	[Attribute("0", UIWidgets.CheckBox, "", category: "Reforger Lobby")]
@@ -968,6 +974,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (freezeTime <= 0)
 		{
 			m_fGameStartTime = GetGame().GetWorld().GetWorldTime();
+			m_fGameStartElapsedTime = GetElapsedTime();
 			Replication.BumpMe();
 			removeRestrictedZones();
 			if (m_bDisableBuildingModeAfterFreezeTime)
@@ -1011,6 +1018,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	PS_FreezeTimeCounter m_hFreezeTimeCounter;
 
 	// ------------------------------------------ Global flags ------------------------------------------
+	static PS_GameModeCoop GetInstance()
+	{
+		return PS_GameModeCoop.Cast(GetGame().GetGameMode());
+	}
+	
 	bool IsFreezeTimeEnd()
 	{
 		return m_fCurrentFreezeTime <= 0;
@@ -1041,6 +1053,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	bool IsSpectatorLocalVoiceEnable()
 	{
 		return m_bEnableSpectatorLocalVoice;
+	}
+	
+	bool IsHidePlayersOnSpawnEnable()
+	{
+		return m_bHidePlayersOnSpawn;
 	}
 
 	bool GetDisablePlayablesStreaming()
@@ -1134,6 +1151,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	float GetGameStartTime()
 	{
 		return m_fGameStartTime;
+	}
+
+	float GetGameStartElapsedTime()
+	{
+		return m_fGameStartElapsedTime;
 	}
 
 	int GetReconnectTime()

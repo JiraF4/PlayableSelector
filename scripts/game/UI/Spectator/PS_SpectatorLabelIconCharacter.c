@@ -120,6 +120,24 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 		}
 	}
 	
+	void OnReceiveStart(int playerId, BaseTransceiver receiver, int frequency, float quality)
+	{
+		int entityId = GetGame().GetPlayerManager().GetPlayerIdFromControlledEntity(m_eChimeraCharacter);
+		if(entityId != playerId)
+			return;
+		
+		SetSelected(true);
+	}
+	
+	void OnReceiveEnd(int playerId)
+	{
+		int entityId = GetGame().GetPlayerManager().GetPlayerIdFromControlledEntity(m_eChimeraCharacter);
+		if(entityId != playerId)
+			return;
+		
+		SetSelected(false);
+	}
+	
 	// --------------------------------------------------------------------------------------------------------------------------------
 	override void SetEntity(IEntity entity, string boneName)
 	{
@@ -129,6 +147,14 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 		m_ControllerComponent = SCR_CharacterControllerComponent.Cast(m_eChimeraCharacter.FindComponent(SCR_CharacterControllerComponent));
 		m_EditableCharacterComponent = SCR_EditableCharacterComponent.Cast(m_eChimeraCharacter.FindComponent(SCR_EditableCharacterComponent));
 		
+		IEntity player = GetGame().GetPlayerController().GetControlledEntity();
+		PS_LobbyVoNComponent m_LobbyVoNComponent = PS_LobbyVoNComponent.Cast(player.FindComponent(PS_LobbyVoNComponent));
+		if (m_LobbyVoNComponent)
+		{
+			m_LobbyVoNComponent.GetOnReceiveStart().Insert(OnReceiveStart);
+			m_LobbyVoNComponent.GetOnReceiveEnd().Insert(OnReceiveEnd);
+		}
+
 		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		if (gameModeCoop.GetFriendliesSpectatorOnly())
 		{

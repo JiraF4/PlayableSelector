@@ -9,7 +9,7 @@ class PS_SpectatorLabelIcon : SCR_ScriptedWidgetComponent
 	RichTextWidget m_wSpectatorLabelText;
 	PanelWidget m_wSpectatorLabel;
 	
-	protected float m_fMaxIconDistance = 800.0;
+	protected float m_fMaxIconDistance = 1500.0;
 	protected float m_fMinIconDistance = 10.0;
 	[Attribute("64.0")]
 	protected float m_fMaxIconSize;
