@@ -266,7 +266,12 @@ class PS_PlayableManager : ScriptComponent
 
 		// Apply entity
 		playerController.SetInitialMainEntity(entity);
-
+		if(PS_GameModeCoop.GetInstance().IsHidePlayersOnSpawnEnable())
+		{
+			PS_PlayableComponent playableComp = PS_PlayableComponent.Cast(entity.FindComponent(PS_PlayableComponent));
+			playableComp.SpawnFirstTime();
+		}
+		
 		// Set new player faction
 		SCR_ChimeraCharacter playableCharacter = SCR_ChimeraCharacter.Cast(entity);
 		SCR_Faction faction = SCR_Faction.Cast(playableCharacter.GetFaction());
@@ -371,7 +376,18 @@ class PS_PlayableManager : ScriptComponent
 				playerGroup = playableGroup.m_PlayersGroup;
 			}
 			SetPlayablePlayerGroupId(playableId, playerGroup.GetGroupID()); // Save link to map for fast search
-			m_CallQueue.Call(UpdateGroupCallsign, playableId, playerGroup, playableGroup) // Delay for group init
+			m_CallQueue.Call(UpdateGroupCallsign, playableId, playerGroup, playableGroup); // Delay for group init
+			
+			if(PS_GameModeCoop.GetInstance().IsHidePlayersOnSpawnEnable())
+			{
+				IEntity entity = playableComponent.GetOwner();
+				Physics physics = entity.GetPhysics();
+				if (physics)
+				{
+					physics.EnableGravity(false);
+					entity.SetOrigin(entity.GetOrigin() + vector.Up * 10000);
+				}
+			}
 		}
 	}
 	protected void UpdateGroupCallsign(RplId playableId, SCR_AIGroup playerGroup, SCR_AIGroup playableGroup)
