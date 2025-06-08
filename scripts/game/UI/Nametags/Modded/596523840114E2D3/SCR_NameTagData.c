@@ -5,6 +5,8 @@ modded class SCR_NameTagData {
 
     protected PS_PPI_PlayerInfo m_PS_PPI_PlayerInfo;
 
+
+
     override void GetName(out string name, out notnull array<string> nameParams) {
         if (!m_PS_PPI_GameModeComponent || !m_PS_PPI_CharacterComponent)
             return super.GetName(name, nameParams);
@@ -21,10 +23,10 @@ modded class SCR_NameTagData {
             );
 
             if (PS_PPI_IsAlive())
-            if (!m_PS_PPI_PlayerInfo.IsPlayerConnected())
-                m_sName = string.Format("[Disconnected] %1", m_sName);
-            else if (!m_PS_PPI_CharacterComponent.IsPlayerControlled())
-                m_sName = string.Format("[AI] %1", m_sName);
+                if (!m_PS_PPI_PlayerInfo.IsPlayerConnected())
+                    m_sName = string.Format("[Disconnected] %1", m_sName);
+                else if (!m_PS_PPI_CharacterComponent.IsPlayerControlled())
+                    m_sName = string.Format("[AI] %1", m_sName);
         }
         else {
             m_sName = "AI";
@@ -43,12 +45,38 @@ modded class SCR_NameTagData {
 
         return m_CharController.GetLifeState() == ECharacterLifeState.ALIVE;
     };
+	
+	protected bool PS_PPI_IsDeadEntitiesCleanupEnabled() {
+		return m_fDeadEntitiesCleanup >= 0.0;
+	};
 
 
 
 	override bool InitTag(SCR_NameTagDisplay display, IEntity entity, SCR_NameTagConfig config, bool IsCurrentPlayer = false) {
-        if (!super.InitTag(display, entity, config, IsCurrentPlayer))
-            return false;
+        if (!super.InitTag(display, entity, config, IsCurrentPlayer)) {
+            // !!! OVERRIDE BEHAVIOUR START !!!
+            // !!! Watch for updates in super !!!
+            // Allow init tag on dead characters
+            auto character = ChimeraCharacter.Cast(entity);
+            
+            if (!character || !m_CharController || !m_CharController.IsDead() || (m_NTDisplay && config.m_aVisibilityRuleset.m_fDeadEntitiesCleanup >= 0.0))
+                return false;
+            
+            m_CharController.m_OnLifeStateChanged.Insert(OnLifeStateChanged);
+			
+            if (m_bIsCurrentPlayer) {
+                auto vonComp = SCR_VoNComponent.Cast(character.FindComponent(SCR_VoNComponent));
+                if (vonComp)
+                    vonComp.m_OnReceivedVON.Insert(OnReceivedVON);
+            };
+			
+            InitDefaults();			
+            InitData(config);
+				
+            if (!UpdateEntityStateFlags())
+                return false;
+            // !!! OVERRIDE BEHAVIOUR END !!!
+        };
         
         m_PS_PPI_GameModeComponent = PS_PPI_GameModeComponent.GetInstance();
         if (!m_PS_PPI_GameModeComponent)
@@ -88,10 +116,42 @@ modded class SCR_NameTagData {
 		
         if (m_CharController) {
             m_CharController.m_OnLifeStateChanged.Remove(PS_PPI_OnLifeStateChanged);
-		};
+        };
 		
 		super.ResetTag();
 	};
+
+    override void ActivateEntityState(ENameTagEntityState state) {
+        auto isDead = state == ENameTagEntityState.DEAD;
+        auto isDeadBefore = (m_eEntityStateFlags & ENameTagEntityState.DEAD) != 0;
+        auto isCleanBefore = (m_Flags & ENameTagFlags.CLEANUP) != 0;
+
+        if (m_fDeadEntitiesCleanup >= 0.0 || !isDead || isDeadBefore || isCleanBefore) {
+            super.ActivateEntityState(state);
+            return;
+        };
+
+        // !!! OVERRIDE BEHAVIOUR START !!!
+        // !!! Watch for updates in super !!!
+        auto attacedhToOld = m_eAttachedTo;
+
+        super.ActivateEntityState(state);
+
+        if (isDeadBefore || isCleanBefore)
+            return;
+        
+        m_Flags &= ~ENameTagFlags.CLEANUP;
+        SetTagPosition(attacedhToOld);
+
+        auto queue = GetGame().GetCallqueue();
+        if (!queue)
+            return;
+        
+        queue.Remove(Cleanup);
+        // !!! OVERRIDE BEHAVIOUR END !!!
+	};
+
+
 
     protected event void PS_PPI_OnPlayerInfoIdChanged(notnull PS_PPI_CharacterComponent characterComponent, int playerInfoId, int playerInfoIdOld) {
         if (m_PS_PPI_PlayerInfo) {
@@ -116,13 +176,8 @@ modded class SCR_NameTagData {
     };
 
     protected event void PS_PPI_OnLifeStateChanged(ECharacterLifeState previousLifeState, ECharacterLifeState newLifeState) {
-        auto isAlive = newLifeState == ECharacterLifeState.ALIVE;
-        auto isAliveOld = previousLifeState == ECharacterLifeState.ALIVE;
-        if (isAlive != isAliveOld)
-            return;
-        
         PS_PPI_OnTagChanged();
-    };
+	};
 
     protected event void PS_PPI_OnTagChanged() {
         m_Flags |= ENameTagFlags.NAME_UPDATE;
