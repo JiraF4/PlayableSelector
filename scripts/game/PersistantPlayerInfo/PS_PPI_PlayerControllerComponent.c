@@ -104,8 +104,18 @@ class PS_PPI_PlayerControllerComponent : ScriptComponent {
     protected void OnControlledEntityChanged(IEntity from, IEntity to) {
         PrintFormat("[PS][PPI] <%1>.OnControlledEntityChanged(<%2>, <%3>)", this, from, to, level: LogLevel.NORMAL);
 
+        if (from) {
+            auto characterComponent = PS_PPI_CharacterComponent.GetInstance(from);
+            if (characterComponent)
+                characterComponent.SetPlayerControlled(false);
+        };
+
         if (!to)
             return;
+
+        auto characterComponent = PS_PPI_CharacterComponent.GetInstance(to);
+        if (characterComponent)
+            characterComponent.SetPlayerControlled(true);
 
         if (!IsPlayerInfoIdRegistered()) {
             PrintFormat("[PS][PPI] <%1>: is not yet registered (no `playerInfoId` is set)! Setting entity player info id is delayed until registration!", this, level: LogLevel.WARNING);

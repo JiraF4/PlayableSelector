@@ -1,19 +1,28 @@
-void PS_PPI_CharacterComponent_OnPlayerInfoIdChanged(PS_PPI_CharacterComponent chracterComponent, int newPlayerInfoId, int oldPlayerInfoId);
+void PS_PPI_CharacterComponent_OnPlayerInfoIdChanged(notnull PS_PPI_CharacterComponent characterComponent, int newPlayerInfoId, int oldPlayerInfoId);
 typedef func PS_PPI_CharacterComponent_OnPlayerInfoIdChanged;
 typedef ScriptInvokerBase<PS_PPI_CharacterComponent_OnPlayerInfoIdChanged> PS_PPI_CharacterComponent_OnPlayerInfoIdChangedInvoker;
+
+void PS_PPI_CharacterComponent_OnPlayerControlledChanged(notnull PS_PPI_CharacterComponent characterComponent, bool isPlayerControlled);
+typedef func PS_PPI_CharacterComponent_OnPlayerControlledChanged;
+typedef ScriptInvokerBase<PS_PPI_CharacterComponent_OnPlayerControlledChanged> PS_PPI_CharacterComponent_OnPlayerControlledChangedInvoker;
 
 class PS_PPI_CharacterComponentClass : ScriptComponentClass {};
 
 class PS_PPI_CharacterComponent : ScriptComponent {
     protected int playerInfoId;
 
+    protected bool isPlayerControlled;
+
     protected ref PS_PPI_CharacterComponent_OnPlayerInfoIdChangedInvoker onPlayerInfoIdChanged;
+
+    protected ref PS_PPI_CharacterComponent_OnPlayerControlledChangedInvoker onPlayerControlledChangedInvoker;
 	
 
 
 	private void PS_PPI_CharacterComponent(IEntityComponentSource src, IEntity ent, IEntity parent) {
 		playerInfoId = -1;
 		onPlayerInfoIdChanged = new PS_PPI_CharacterComponent_OnPlayerInfoIdChangedInvoker();
+        onPlayerControlledChangedInvoker = new PS_PPI_CharacterComponent_OnPlayerControlledChangedInvoker();
 	};
 
 
@@ -53,12 +62,46 @@ class PS_PPI_CharacterComponent : ScriptComponent {
         onPlayerInfoIdChanged.Invoke(this, newPlayerInfoId, oldPlayerInfoId);
     };
 
-    
+    bool IsPlayerControlled() {
+        return isPlayerControlled;
+    };
+
+    void SetPlayerControlled(bool isPlayerControlled) {
+        PrintFormat("[PS][PPI] <%1>.SetPlayerControlled(%2)", this, isPlayerControlled.ToString(), level: LogLevel.NORMAL);
+        Rpc(RpcDo_SetPlayerControlled, isPlayerControlled);
+        SetPlayerControlledLocal(isPlayerControlled);
+    };
+
+    [RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+    protected void RpcDo_SetPlayerControlled(bool isPlayerControlled) {
+        PrintFormat("[PS][PPI] <%1>.RpcDo_SetPlayerControlled(%2)", this, isPlayerControlled.ToString(), level: LogLevel.NORMAL);
+        SetPlayerControlledLocal(isPlayerControlled);
+    };
+
+    protected void SetPlayerControlledLocal(bool isPlayerControlled) {
+        if (this.isPlayerControlled == isPlayerControlled)
+            return;
+        
+        this.isPlayerControlled = isPlayerControlled;
+        OnPlayerControlledChanged(isPlayerControlled);
+    };
+
+    protected event void OnPlayerControlledChanged(bool isPlayerControlled) {
+        PrintFormat("[PS][PPI] <%1>.OnPlayerControlledChanged(%2)", this, isPlayerControlled.ToString(), level: LogLevel.NORMAL);
+        onPlayerControlledChangedInvoker.Invoke(this, isPlayerControlled);
+    };
+
+    PS_PPI_CharacterComponent_OnPlayerControlledChangedInvoker GetOnPlayerControlledChanged() {
+        return onPlayerControlledChangedInvoker;
+    };
+
+
 
 	override event protected bool RplSave(ScriptBitWriter writer) {
         PrintFormat("[PS][PPI] <%1>.RplSave()", this, level: LogLevel.NORMAL);
 
 		writer.WriteInt(playerInfoId);
+        writer.WriteBool(isPlayerControlled);
 
         return true;
 	};
@@ -68,9 +111,13 @@ class PS_PPI_CharacterComponent : ScriptComponent {
 
         if (!reader.ReadInt(playerInfoId))
             return false;
-            
+        if (!reader.ReadBool(isPlayerControlled))
+            return false;
+
         if (HasPlayerInfoId())
             OnPlayerInfoIdChanged(playerInfoId, -1);
+        if (IsPlayerControlled())
+            OnPlayerControlledChanged(isPlayerControlled);
             
         return true;
     };
