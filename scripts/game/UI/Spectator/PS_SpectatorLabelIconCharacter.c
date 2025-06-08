@@ -7,6 +7,10 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 	protected PS_PlayableComponent m_cPlayableComponent;
 	protected SCR_EditableCharacterComponent m_EditableCharacterComponent;
 	
+	protected PS_PPI_GameModeComponent m_PPI_GameModeComponent;
+	protected PS_PPI_CharacterComponent m_PPI_CharacterComponent;
+	protected PS_PPI_PlayerInfo m_PPI_PlayerInfo;
+	
 	protected ImageWidget m_wSpectatorLabelIconBackground;
 	protected ImageWidget m_wSpectatorLabelIconCircle;
 	protected ImageWidget m_wSpectatorLabelIconWounded;
@@ -31,6 +35,10 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 		m_wOverlayCircle = OverlayWidget.Cast(w.FindAnyWidget("OverlayCircle"));
 		
 		m_PlayableManager = PS_PlayableManager.GetInstance();
+
+		m_PPI_GameModeComponent = PS_PPI_GameModeComponent.GetInstance();
+		m_PPI_CharacterComponent = null;
+		m_PPI_PlayerInfo = null;
 		
 		super.HandlerAttached(w);
 		
@@ -44,6 +52,23 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 		
 		m_LabelEventHandler.GetOnDoubleClick().Insert(AttachCamera);
 		m_LabelEventHandler.GetOnClick().Insert(LookCamera);
+	}
+
+	override void HandlerDeattached(Widget w)
+	{
+		super.HandlerDeattached(w);
+
+		if (m_PPI_PlayerInfo) {
+			m_PPI_PlayerInfo.GetOnPlayerInfoChanged().Remove(PPI_OnPlayerInfoChanged);
+			m_PPI_PlayerInfo = null;
+		};
+
+		if (m_PPI_CharacterComponent) {
+			m_PPI_CharacterComponent.GetOnPlayerInfoIdChanged().Remove(PPI_OnPlayerInfoIdChanged);
+			m_PPI_CharacterComponent = null;
+		};
+
+		m_PPI_GameModeComponent = null;
 	}
 	
 	void LookCamera(Widget w, int x, int y, int button)
@@ -129,6 +154,29 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 		m_ControllerComponent = SCR_CharacterControllerComponent.Cast(m_eChimeraCharacter.FindComponent(SCR_CharacterControllerComponent));
 		m_EditableCharacterComponent = SCR_EditableCharacterComponent.Cast(m_eChimeraCharacter.FindComponent(SCR_EditableCharacterComponent));
 		
+		if (m_PPI_PlayerInfo) {
+			m_PPI_PlayerInfo.GetOnPlayerInfoChanged().Remove(PPI_OnPlayerInfoChanged);
+			m_PPI_PlayerInfo = null;
+		};
+		
+		if (m_PPI_CharacterComponent) {
+			m_PPI_CharacterComponent.GetOnPlayerInfoIdChanged().Remove(PPI_OnPlayerInfoIdChanged);
+			m_PPI_CharacterComponent = null;
+		};
+
+		m_PPI_CharacterComponent = PS_PPI_CharacterComponent.GetInstance(entity);
+		if (m_PPI_CharacterComponent) {
+			m_PPI_CharacterComponent.GetOnPlayerInfoIdChanged().Insert(PPI_OnPlayerInfoIdChanged);
+			
+			auto playerInfoId = m_PPI_CharacterComponent.GetPlayerInfoId();
+			if (playerInfoId != -1) {
+				m_PPI_PlayerInfo = m_PPI_GameModeComponent.GetPlayerInfo(playerInfoId);
+				m_PPI_PlayerInfo.GetOnPlayerInfoChanged().Insert(PPI_OnPlayerInfoChanged);
+			};
+
+			PPI_UpdateName();
+		};
+		
 		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		if (gameModeCoop.GetFriendliesSpectatorOnly())
 		{
@@ -157,7 +205,7 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 	
 	override void UpdateLabel()
 	{
-		if (m_cPlayableComponent)
+		if (m_cPlayableComponent && !m_PPI_CharacterComponent)
 		{
 			int playerId = m_PlayableManager.GetPlayerByPlayableRemembered(m_cPlayableComponent.GetRplId());
 			if (playerId > 0)
@@ -215,4 +263,32 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 			m_wRoot.SetOpacity(0.6);
 		}
 	}
+
+	protected event void PPI_OnPlayerInfoIdChanged(notnull PS_PPI_CharacterComponent characterComponent, int playerInfoId, int playerInfoIdOld) {
+		if (m_PPI_PlayerInfo) {
+			m_PPI_PlayerInfo.GetOnPlayerInfoChanged().Remove(PPI_OnPlayerInfoChanged);
+			m_PPI_PlayerInfo = null;
+		};
+
+		if (playerInfoId != -1) {
+			m_PPI_PlayerInfo = m_PPI_GameModeComponent.GetPlayerInfo(playerInfoId);
+			m_PPI_PlayerInfo.GetOnPlayerInfoChanged().Insert(PPI_OnPlayerInfoChanged);
+		};
+
+		PPI_UpdateName();
+	};
+
+	protected event void PPI_OnPlayerInfoChanged(notnull PS_PPI_PlayerInfo playerInfo) {
+		PPI_UpdateName();
+	};
+
+	protected event void PPI_UpdateName() {
+		string playerName;
+		if (m_PPI_PlayerInfo)
+			playerName = m_PPI_PlayerInfo.GetPlayerName();
+		else
+			playerName = "AI";
+
+		m_wSpectatorLabelText.SetText(playerName);
+	};
 }
