@@ -13,12 +13,14 @@ modded class SCR_NameTagData {
 
         if (m_PS_PPI_PlayerInfo) {
             m_sName = string.Format(
-                "[%4] %3 (%2)",
+                "%3",
                 m_PS_PPI_PlayerInfo.GetPlayerId(),
                 m_PS_PPI_PlayerInfo.GetPlayerIdentityId(),
                 m_PS_PPI_PlayerInfo.GetPlayerName(),
                 SCR_Enum.GetEnumName(PlatformKind, m_PS_PPI_PlayerInfo.GetPlayerPlatformKind())
             );
+
+            if (PS_PPI_IsAlive())
             if (!m_PS_PPI_PlayerInfo.IsPlayerConnected())
                 m_sName = string.Format("[Disconnected] %1", m_sName);
             else if (!m_PS_PPI_CharacterComponent.IsPlayerControlled())
@@ -28,9 +30,21 @@ modded class SCR_NameTagData {
             m_sName = "AI";
         };
 
+        if (!PS_PPI_IsAlive())
+            m_sName = string.Format("[Dead] %1", m_sName);
+
         name = m_sName;
         nameParams.Copy(m_aNameParams);
 	};
+
+    protected bool PS_PPI_IsAlive() {
+        if (!m_CharController)
+            return true;
+
+        return m_CharController.GetLifeState() == ECharacterLifeState.ALIVE;
+    };
+
+
 
 	override bool InitTag(SCR_NameTagDisplay display, IEntity entity, SCR_NameTagConfig config, bool IsCurrentPlayer = false) {
         if (!super.InitTag(display, entity, config, IsCurrentPlayer))
@@ -52,6 +66,10 @@ modded class SCR_NameTagData {
         };
         if (m_PS_PPI_CharacterComponent.IsPlayerControlled())
             PS_PPI_OnPlayerControlledChanged(m_PS_PPI_CharacterComponent, true);
+
+        if (m_CharController) {
+            m_CharController.m_OnLifeStateChanged.Insert(PS_PPI_OnLifeStateChanged);
+        };
             
         return true;
     };
@@ -66,6 +84,10 @@ modded class SCR_NameTagData {
 			m_PS_PPI_CharacterComponent.GetOnPlayerInfoIdChanged().Remove(PS_PPI_OnPlayerInfoIdChanged);
             m_PS_PPI_CharacterComponent.GetOnPlayerControlledChanged().Remove(PS_PPI_OnPlayerControlledChanged);
 			m_PS_PPI_CharacterComponent = null;
+		};
+		
+        if (m_CharController) {
+            m_CharController.m_OnLifeStateChanged.Remove(PS_PPI_OnLifeStateChanged);
 		};
 		
 		super.ResetTag();
@@ -90,6 +112,15 @@ modded class SCR_NameTagData {
     };
 
     protected event void PS_PPI_OnPlayerControlledChanged(notnull PS_PPI_CharacterComponent characterComponent, bool isPlayerControlled) {
+        PS_PPI_OnTagChanged();
+    };
+
+    protected event void PS_PPI_OnLifeStateChanged(ECharacterLifeState previousLifeState, ECharacterLifeState newLifeState) {
+        auto isAlive = newLifeState == ECharacterLifeState.ALIVE;
+        auto isAliveOld = previousLifeState == ECharacterLifeState.ALIVE;
+        if (isAlive != isAliveOld)
+            return;
+        
         PS_PPI_OnTagChanged();
     };
 
