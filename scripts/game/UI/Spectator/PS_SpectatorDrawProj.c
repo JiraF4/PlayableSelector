@@ -1,3 +1,4 @@
+/*
 [ComponentEditorProps(category: "GameScripted/GameMode/Components", description: "", color: "0 0 255 255", icon: HYBRID_COMPONENT_ICON)]
 class PS_SpectatorDrawProjClass : ScriptComponentClass
 {
@@ -81,3 +82,4 @@ class PS_SpectatorDrawProj : ScriptComponent
 		m_isEnabled = !m_isEnabled;
 	}	
 }
+*/

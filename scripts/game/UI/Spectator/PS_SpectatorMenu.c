@@ -384,7 +384,6 @@ class PS_SpectatorMenu: MenuBase
 			m_InputManager.AddActionListener("VONDirect", EActionTrigger.DOWN, Action_LobbyVoNOn);
 			m_InputManager.AddActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
 			m_InputManager.AddActionListener("SwitchSpectatorUI", EActionTrigger.DOWN, Action_SwitchSpectatorUI);
-			m_InputManager.AddActionListener("SwitchSpectatorDraw", EActionTrigger.DOWN, Action_SwitchSpectatorDraw);
 			m_InputManager.AddActionListener("SwitchSpectatorHDR", EActionTrigger.DOWN, Action_ToggleHDR);
 			m_InputManager.AddActionListener("SwitchSpectatorHDRWheel", EActionTrigger.VALUE, Action_AdjustHDR);
 			m_InputManager.AddActionListener("GadgetMap", EActionTrigger.DOWN, Action_ToggleMap);
@@ -409,7 +408,6 @@ class PS_SpectatorMenu: MenuBase
 			m_InputManager.RemoveActionListener("LobbyVoN", EActionTrigger.DOWN, Action_LobbyVoNOn);
 			m_InputManager.RemoveActionListener("LobbyVoN", EActionTrigger.UP, Action_LobbyVoNOff);
 			m_InputManager.RemoveActionListener("SwitchSpectatorUI", EActionTrigger.DOWN, Action_SwitchSpectatorUI);
-			m_InputManager.RemoveActionListener("SwitchSpectatorDraw", EActionTrigger.DOWN, Action_SwitchSpectatorDraw);
 			m_InputManager.RemoveActionListener("SwitchSpectatorHDR", EActionTrigger.DOWN, Action_ToggleHDR);
 			m_InputManager.RemoveActionListener("SwitchSpectatorHDRWheel", EActionTrigger.VALUE, Action_AdjustHDR);	
 			m_InputManager.RemoveActionListener("GadgetMap", EActionTrigger.DOWN, Action_ToggleMap);
@@ -420,8 +418,7 @@ class PS_SpectatorMenu: MenuBase
 #endif
 			m_InputManager.RemoveActionListener("MouseLeft", EActionTrigger.UP, OpenContextClick);
 		}
-		
-		PS_SpectatorDrawProj.SetEnabled(false);
+
 		ResetHDR();
 		GetGame().GetCallqueue().Remove(playableController.UpdateCamera);
 	}
@@ -629,11 +626,6 @@ class PS_SpectatorMenu: MenuBase
 			m_wIconsFrame.SetVisible(true);
 			m_wSidesRatioFrame.SetVisible(true);
 		}
-	}
-	
-	void Action_SwitchSpectatorDraw()
-	{
-		PS_SpectatorDrawProj.Toggle();
 	}
 	
 	void Action_AdjustHDR(float value)
