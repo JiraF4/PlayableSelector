@@ -543,6 +543,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 	protected override void OnPlayerConnected(int playerId)
 	{
+		super.OnPlayerConnected(playerId);
+		
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		string name = GetGame().GetPlayerManager().GetPlayerName(playerId);
 		playableManager.SetPlayerName(playerId, name);
@@ -566,6 +568,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	// Update state for disconnected and start timer if need (DO NOT DELETE CONTROLED ENTITY)
 	protected override void OnPlayerDisconnected(int playerId, KickCauseCode cause, int timeout)
 	{
+		super.OnPlayerDisconnected(playerId, cause, timeout);
+
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		SCR_PlayerController playerController = SCR_PlayerController.Cast(playerManager.GetPlayerController(playerId));
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
