@@ -55,6 +55,8 @@ class PS_FactionReadyWidgetComponent : PS_HideableButton
 	//------------------------------------------------------------------------------------------------
 	void OnFactionClicked(SCR_ButtonBaseComponent button)
 	{
+		m_sCurrentFactionKey = m_PlayableManager.GetPlayerFactionKey(m_iCurrentPlayerId);
+		
 		if (m_sFactionKey != m_sCurrentFactionKey)
 			return;
 		
