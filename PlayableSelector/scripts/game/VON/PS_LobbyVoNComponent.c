@@ -89,7 +89,7 @@ class PS_LobbyVoNComponent : VoNComponent
 		OnReceiveHandle(playerId, transmitter, 0, 0);
 	}
 	
-	override protected event void OnReceive(int playerId, BaseTransceiver receiver, int frequency, float quality)
+	override protected event void OnReceive(int playerId, bool isSenderEditor, BaseTransceiver receiver, int frequency, float quality)
 	{		
 		OnReceiveHandle(playerId, receiver, frequency, quality);
 	}

@@ -41,8 +41,7 @@ ButtonWidgetClass {
         OffsetBottom -44
        }
       }
-      RichTextWidgetClass "{60F6F4E7F0E57009}" {
-       Prefab "{5D6D1B99A45E5176}"
+      RichTextWidgetClass "{660496AD121B4351}" {
        Name "PlayerName"
        Slot FrameWidgetSlot "{60F6F4E7BF0B5461}" {
         PositionX 40
@@ -111,8 +110,7 @@ ButtonWidgetClass {
         }
        }
       }
-      ImageWidgetClass "{5EBE323E7C895A55}" {
-       Prefab "{5D6D1B9A2749B71D}"
+      ImageWidgetClass "{660496AD144B6E9D}" {
        Name "PlayerFactionColor"
        Slot FrameWidgetSlot "{5D6D1B96C41F631C}" {
         Anchor 0 0 0 0
@@ -146,8 +144,7 @@ ButtonWidgetClass {
         OffsetBottom -16
        }
       }
-      ImageWidgetClass "{60F6F4E7F0E5700A}" {
-       Prefab "{5D6D1B9A2749B71D}"
+      ImageWidgetClass "{660496AD18D52508}" {
        Name "PlayerFactionColorShort"
        Slot FrameWidgetSlot "{5D6D1B96C41F631C}" {
         Anchor 0 0 0 0

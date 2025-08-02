@@ -62,8 +62,7 @@ ButtonWidgetClass {
      }
      Color 0.376 0.749 0.749 1
     }
-    ImageWidgetClass "{5EB2906F65B84659}" {
-     Prefab "{5EB1176784E2EFB5}"
+    ImageWidgetClass "{660496AD246053D2}" {
      Name "LeaderIcon"
      Slot FrameWidgetSlot "{5EB2906F65B847CB}" {
       PositionX 224
@@ -112,8 +111,7 @@ ButtonWidgetClass {
       }
      }
     }
-    RichTextWidgetClass "{5EB11767AA8586F0}" {
-     Prefab "{5D6D1B99A45E5176}"
+    RichTextWidgetClass "{660496ACF0DE2161}" {
      Name "PlayerName"
      Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
       PositionX 52
@@ -130,8 +128,7 @@ ButtonWidgetClass {
      "Min Font Size" 20
      "Vertical Alignment" Center
     }
-    TextWidgetClass "{5EB1157657D3947D}" {
-     Prefab "{5D6D1B99A45E5176}"
+    TextWidgetClass "{660496ACD64912DB}" {
      Name "GroupName"
      Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
       PositionX 299

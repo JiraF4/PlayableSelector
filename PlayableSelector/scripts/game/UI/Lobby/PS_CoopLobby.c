@@ -256,6 +256,7 @@ class PS_CoopLobby : MenuBase
 			
 			SCR_Faction faction = playable.GetFaction();
 			if (!factions.Contains(faction))
+				//DRG_BUG
 				factions.Insert(faction, new Tuple3<int, int, int>(playerAdded, playerAddedMax, playerAddedLocked));
 			else
 			{

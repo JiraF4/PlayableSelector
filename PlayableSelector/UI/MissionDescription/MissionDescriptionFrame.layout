@@ -120,8 +120,7 @@ FrameWidgetClass {
         }
        }
       }
-      ImageWidgetClass "{5EC27C519FC89D6D}" {
-       Prefab "{5EB1176784E2EFB5}"
+      ImageWidgetClass "{660496ADF355CCDE}" {
        Name "FolderIcon"
        Slot FrameWidgetSlot "{5EB2906F65B847CB}" {
         PositionX 0
