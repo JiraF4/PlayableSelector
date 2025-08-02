@@ -36,8 +36,7 @@ ButtonWidgetClass {
      }
      Color 0.175 0.001 0.001 1
     }
-    ImageWidgetClass "{60B6B9E6473350B9}" {
-     Prefab "{5EB1176E3DB20C7D}"
+    ImageWidgetClass "{66049A751210F9F0}" {
      Name "Background"
      Slot OverlayWidgetSlot "{60B71466C552F029}" {
       HorizontalAlign 3
