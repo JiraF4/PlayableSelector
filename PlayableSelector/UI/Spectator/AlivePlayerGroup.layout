@@ -57,8 +57,7 @@ VerticalLayoutWidgetClass {
         OffsetBottom 0
        }
       }
-      TextWidgetClass "{60DEBA2521C7DDBE}" {
-       Prefab "{5D6D1B99A45E5176}"
+      TextWidgetClass "{66049A7A4D4F42FA}" {
        Name "GroupName"
        Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
         Anchor 0 0 1 1
@@ -76,8 +75,7 @@ VerticalLayoutWidgetClass {
        "Min Font Size" 20
        "Vertical Alignment" Center
       }
-      ImageWidgetClass "{60DEBA2521C7DDBF}" {
-       Prefab "{5D6D1B9A2749B71D}"
+      ImageWidgetClass "{66049A7A5019F6ED}" {
        Name "GroupFactionColor"
        Slot FrameWidgetSlot "{5D6D1B96C41F631C}" {
         Anchor 0 1 1 1

@@ -61,8 +61,7 @@ ButtonWidgetClass {
      Image "RoomEnter"
      Size 64 64
     }
-    TextWidgetClass "{5EB1458AF2F57E5D}" {
-     Prefab "{5D6D1B99A45E5176}"
+    TextWidgetClass "{66049555A9084CE8}" {
      Name "RoomName"
      Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
       PositionX 6

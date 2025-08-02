@@ -74,4 +74,41 @@ modded class SCR_MapMarkerBase
 		m_iRotation = mapMarkerBaseJson.m_iRotation;
 		m_sCustomText = mapMarkerBaseJson.m_sCustomText;
 	}
+	
+	
+	// 1.5 WTF?
+	//------------------------------------------------------------------------------------------------
+	
+	override static void Encode(SSnapSerializerBase snapshot, ScriptCtx ctx, ScriptBitSerializer packet)
+	{
+		super.Encode(snapshot, ctx, packet);
+	}
+	
+	
+	override static bool Decode(ScriptBitSerializer packet, ScriptCtx ctx, SSnapSerializerBase snapshot)
+	{
+		return super.Decode(packet, ctx, snapshot);
+	}
+	
+	override static bool SnapCompare(SSnapSerializerBase lhs, SSnapSerializerBase rhs , ScriptCtx ctx)
+	{
+		return super.SnapCompare(lhs, rhs , ctx);
+	}
+
+	override static bool PropCompare(SCR_MapMarkerBase instance, SSnapSerializerBase snapshot, ScriptCtx ctx)
+	{
+		return super.PropCompare(instance, snapshot, ctx);
+
+	}
+	
+	override static bool Extract(SCR_MapMarkerBase instance, ScriptCtx ctx, SSnapSerializerBase snapshot)
+	{
+		return super.Extract(instance, ctx, snapshot);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	override static bool Inject(SSnapSerializerBase snapshot, ScriptCtx ctx, SCR_MapMarkerBase instance)
+	{
+		return super.Inject(snapshot, ctx, instance);
+	}
 }
