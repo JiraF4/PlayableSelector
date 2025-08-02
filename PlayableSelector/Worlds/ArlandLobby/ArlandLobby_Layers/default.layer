@@ -18,6 +18,7 @@ SCR_AIWorld : "{01DC74137CFDDB6A}Prefabs/AI/SCR_AIWorld_Arland.et" {
 PerceptionManager PerceptionManager1 : "{028DAEAD63E056BE}Prefabs/World/Game/PerceptionManager.et" {
 }
 PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_GameMode_Lobby.et" {
+ m_bFreezeTimeShootingForbiden 1
 }
 $grp SCR_AIGroup : "{107554618BE6FF20}Prefabs/Groups/BLUFOR/Group_US_Team_Suppress_P.et" {
  {
@@ -41,16 +42,6 @@ $grp SCR_AIGroup : "{25CA78D4E661F9B8}Prefabs/Groups/INDFOR/Group_FIA_AmmoTeam_P
   coords 1377.662 36.04 2388.349
  }
 }
-Vehicle Mi8MT_armed_gunship_HE1 : "{3C6B3ED0C3AC30D5}Prefabs/Vehicles/Helicopters/Mi8MT/Mi8MT_armed_gunship_HE.et" {
- components {
-  RigidBody "{51DAA09FECF52BBF}" {
-   ResponseIndex "Normal"
-  }
- }
- coords 1567.855 127.144 2391.245
- angleX -27.844
- angleY -93.031
-}
 SCR_AIGroup : "{704B4E4EC7C56B55}Prefabs/Groups/BLUFOR/Group_US_AmmoTeam_P.et" {
  coords 1615.499 41.336 2271.03
 }
@@ -60,7 +51,7 @@ $grp Vehicle : "{C012BB3488BEA0C2}Prefabs/Vehicles/Wheeled/BTR70/BTR70.et" {
  }
  BTR2 {
   coords 1402.762 35.906 2384.317
-  angleY -79.493
+  angles 0 -79.493 0
  }
  BTR3 {
   coords 1405.874 36.013 2373.17
@@ -69,10 +60,10 @@ $grp Vehicle : "{C012BB3488BEA0C2}Prefabs/Vehicles/Wheeled/BTR70/BTR70.et" {
 $grp Turret : "{D1FFE458E8AC4BDB}Prefabs/Weapons/Mortars/2B14/Mortar_2B14.et" {
  {
   coords 1402.003 35.969 2387.599
-  angleY 29.541
+  angles 0 29.541 0
  }
  {
   coords 1389.938 36.219 2365.683
-  angleY 106.857
+  angles 0 106.857 0
  }
 }

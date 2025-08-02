@@ -8,7 +8,7 @@ VerticalLayoutWidgetClass {
   }
  }
  {
-  PanelWidgetClass "{5F1147E2EE9D1031}" {
+  PanelWidgetClass "{6604C04FC70A9C81}" {
    Name "LittleInventoryEntityHeader"
    Slot LayoutSlot "{5F1147E2ED9CBB3B}" {
     SizeMode Fill
@@ -16,7 +16,7 @@ VerticalLayoutWidgetClass {
    Color 0.008 0.012 0.016 1
    style full
    {
-    HorizontalLayoutWidgetClass "{5F1147E3611C4AF6}" {
+    HorizontalLayoutWidgetClass "{6604C04FC70A9C8E}" {
      Name "HorizontalLayout"
      Slot FrameWidgetSlot "{5F1147E3611C4A9A}" {
       Anchor 0 0 1 1
@@ -31,7 +31,7 @@ VerticalLayoutWidgetClass {
       SizeToContent 1
      }
      {
-      TextWidgetClass "{5F1147E36BD97AF0}" {
+      TextWidgetClass "{6604C04FC70A9C8D}" {
        Name "EntityName"
        Slot LayoutSlot "{5F1147E36BD97A92}" {
         Padding 4 0 0 0
@@ -42,7 +42,7 @@ VerticalLayoutWidgetClass {
        "Min Font Size" 16
        "Vertical Alignment" Center
       }
-      TextWidgetClass "{5F1147E36CE3A906}" {
+      TextWidgetClass "{6604C04FC70A9C8B}" {
        Name "EntityWeight"
        Slot LayoutSlot "{5F1147E36BD97A92}" {
         Padding 0 0 4 0
@@ -52,7 +52,7 @@ VerticalLayoutWidgetClass {
        "Min Font Size" 16
        "Vertical Alignment" Center
       }
-      TextWidgetClass "{5F1147E36CDAD8AA}" {
+      TextWidgetClass "{6604C04FC70A83E4}" {
        Name "EntityVolume"
        Slot LayoutSlot "{5F1147E36BD97A92}" {
         Padding 0 0 4 0
@@ -63,7 +63,7 @@ VerticalLayoutWidgetClass {
        "Min Font Size" 16
        "Vertical Alignment" Center
       }
-      ButtonWidgetClass "{5F140D727A627BB3}" {
+      ButtonWidgetClass "{6604C04FC70A83E7}" {
        Name "CloseButton"
        Slot LayoutSlot "{5F14135187CB72AF}" {
         HorizontalAlign 3
@@ -78,15 +78,14 @@ VerticalLayoutWidgetClass {
         }
        }
        {
-        OverlayWidgetClass "{5F140D727A627BB4}" {
-         Prefab "{5F13554AAC25679E}"
+        OverlayWidgetClass "{6604C04C2C35508E}" {
          Name "Overlay"
          Slot ButtonWidgetSlot "{5F14135187CB72F7}" {
           HorizontalAlign 3
           VerticalAlign 3
          }
          {
-          ImageWidgetClass "{5F1147E370189CCB}" {
+          ImageWidgetClass "{6604C04C2C35508C}" {
            Name "Close"
            Slot OverlayWidgetSlot "{5F14135187CB72D2}" {
             HorizontalAlign 3
@@ -96,7 +95,7 @@ VerticalLayoutWidgetClass {
            Image "cancel"
            Size 38 38
           }
-          PanelWidgetClass "{5F140D7209944A67}" {
+          PanelWidgetClass "{6604C04C2C35508B}" {
            Name "Background"
            Slot OverlayWidgetSlot "{5F14135187CB7236}" {
             HorizontalAlign 3
@@ -104,7 +103,7 @@ VerticalLayoutWidgetClass {
            }
            style outline_2px
           }
-          PanelWidgetClass "{5F140D7209944A41}" {
+          PanelWidgetClass "{6604C04C2C355089}" {
            Name "Border"
            Slot OverlayWidgetSlot "{5F14135187CB7206}" {
             HorizontalAlign 3
@@ -120,14 +119,14 @@ VerticalLayoutWidgetClass {
     }
    }
   }
-  PanelWidgetClass "{5F1217F78E05B02A}" {
+  PanelWidgetClass "{6604C04FC70A80EB}" {
    Name "ItemsPanel"
    Slot LayoutSlot "{5F1217F78E05B007}" {
    }
    Color 0 0 0 0.251
    style full
    {
-    GridLayoutWidgetClass "{5F1147E2EE9D1035}" {
+    GridLayoutWidgetClass "{6604C04FC70A8C37}" {
      Name "LittleInventoryEntityItems"
      Slot FrameWidgetSlot "{5F151BE5F144FC43}" {
       Anchor 0 0 1 1
@@ -142,7 +141,7 @@ VerticalLayoutWidgetClass {
       SizeToContent 1
      }
     }
-    ButtonWidgetClass "{5F151BE43A921D77}" {
+    ButtonWidgetClass "{6604C04FC70A8C30}" {
      Name "ItemsPanelButton"
      Slot FrameWidgetSlot "{5F151BE43A921D5C}" {
       Anchor 0 0 1 1
@@ -165,21 +164,21 @@ VerticalLayoutWidgetClass {
       }
      }
      {
-      OverlayWidgetClass "{5F151BE5C08EFA10}" {
+      OverlayWidgetClass "{6604C04FC70AC76C}" {
        Name "Overlay"
        Slot ButtonWidgetSlot "{5F151BE5C08EFA71}" {
         HorizontalAlign 3
         VerticalAlign 3
        }
        {
-        ImageWidgetClass "{5F151BEB2707276C}" {
+        ImageWidgetClass "{6604C04FC70AC76D}" {
          Name "Background"
          Slot OverlayWidgetSlot "{5F151BE0DD26F48B}" {
           HorizontalAlign 3
           VerticalAlign 3
          }
         }
-        PanelWidgetClass "{5F151BEB270720C8}" {
+        PanelWidgetClass "{6604C04FC70B21BB}" {
          Name "Border"
          Slot OverlayWidgetSlot "{5F151BE0DD26F49B}" {
           HorizontalAlign 3
@@ -190,7 +189,7 @@ VerticalLayoutWidgetClass {
          Color 0.761 0.386 0.078 1
          style outline_2px
         }
-        PanelWidgetClass "{5F151BEB27072029}" {
+        PanelWidgetClass "{6604C04FC70B21B8}" {
          Name "Outline"
          Slot OverlayWidgetSlot "{5F151BE0DD26F4F8}" {
           HorizontalAlign 3
@@ -206,14 +205,14 @@ VerticalLayoutWidgetClass {
     }
    }
   }
-  PanelWidgetClass "{5F1217F791D60076}" {
+  PanelWidgetClass "{6604C04FC70B2065}" {
    Name "SlotsPanel"
    Slot LayoutSlot "{5F1217F791D60056}" {
    }
    Color 0 0 0 0.251
    style full
    {
-    GridLayoutWidgetClass "{5F1147E509C29DFE}" {
+    GridLayoutWidgetClass "{6604C04FC70B2062}" {
      Name "LittleInventoryEntitySlots"
      Slot FrameWidgetSlot "{5F1217F791298528}" {
       Anchor 0 0 1 1

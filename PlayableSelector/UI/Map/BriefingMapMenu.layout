@@ -621,8 +621,7 @@ FrameWidgetClass {
       }
      }
     }
-    RichTextWidgetClass "{61B4F41DF0F91C01}" {
-     Prefab "{00000000B0FD85CE}"
+    RichTextWidgetClass "{66049A6A4064CECB}" {
      Name "Action"
      Slot FrameWidgetSlot "{59107CC3B4EF4150}" {
       Anchor 1 1 1 1

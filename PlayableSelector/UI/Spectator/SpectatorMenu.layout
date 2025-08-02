@@ -2,7 +2,7 @@ FrameWidgetClass {
  Name "SpectatorMenu"
  "Z Order" 10
  {
-  FrameWidgetClass "{5EE8949BDE5C93EE}" {
+  FrameWidgetClass "{6604C04D879C564E}" {
    Name "IconsFrame"
    Slot FrameWidgetSlot "{5EE8949BDE5C93C5}" {
     Anchor 0 0 1 1
@@ -17,7 +17,7 @@ FrameWidgetClass {
    }
    Clipping True
   }
-  FrameWidgetClass "{60DB2B52C92E445E}" {
+  FrameWidgetClass "{6604C04D879C5557}" {
    Name "SidesRatioFrame"
    Slot FrameWidgetSlot "{60DB2B52C92E458A}" {
     Anchor 0 0 1 0
@@ -31,7 +31,7 @@ FrameWidgetClass {
     OffsetBottom -18
    }
    {
-    ImageWidgetClass "{60DB2B52ED8BAE0E}" {
+    ImageWidgetClass "{6604C04D879C5554}" {
      Name "SidesRatioBackground"
      Slot FrameWidgetSlot "{60DB2B52ED8BAE63}" {
       Anchor 0 0 1 1
@@ -46,7 +46,7 @@ FrameWidgetClass {
      }
      Color 0.007 0.012 0.014 1
     }
-    HorizontalLayoutWidgetClass "{60DB2B551619CC3C}" {
+    HorizontalLayoutWidgetClass "{6604C04D879C5552}" {
      Name "SidesRatio"
      Slot FrameWidgetSlot "{60B551B74785C9E5}" {
       Anchor 0 0 1 0
@@ -64,7 +64,7 @@ FrameWidgetClass {
       }
      }
     }
-    TextWidgetClass "{64ED425685089728}" {
+    TextWidgetClass "{6604C04D879C5553}" {
      Name "GameTimerText"
      Slot FrameWidgetSlot "{64ED425685089710}" {
       PositionX 11
@@ -83,7 +83,7 @@ FrameWidgetClass {
     }
    }
   }
-  FrameWidgetClass "{5F34C897F439A3AE}" : "{0651202E9F2646DE}UI/layouts/Map/Map.layout" {
+  FrameWidgetClass "{6604C04D879C5276}" : "{0651202E9F2646DE}UI/layouts/Map/Map.layout" {
    Name "MapFrame"
    Slot FrameWidgetSlot "{58731DB204D943BC}" {
     Anchor 0 0 1 1
@@ -98,7 +98,7 @@ FrameWidgetClass {
    }
    "Is Visible" 0
    {
-    FrameWidgetClass "{5F34C888848C4724}" : "{2F8AEE78FF5A8104}UI/layouts/Map/ToolMenu.layout" {
+    FrameWidgetClass "{6604C04D879C5277}" : "{2F8AEE78FF5A8104}UI/layouts/Map/ToolMenu.layout" {
      Name "ToolMenu"
      Slot FrameWidgetSlot "{59107CDEE98682C5}" {
       Anchor 0.5 0 0.5 0
@@ -117,7 +117,7 @@ FrameWidgetClass {
        Prefab "{590E7E6C0F9CBE13}"
        "Is Visible" 0
        {
-        ImageWidgetClass "{590E7E6F8F36A661}" {
+        SmartPanelWidgetClass "{590E7E6F8F36A661}" {
          Prefab "{590E7E6F8F36A661}"
          "Is Visible" 0
         }
@@ -151,7 +151,7 @@ FrameWidgetClass {
     }
    }
   }
-  FrameWidgetClass "{5EB701CDC06E16AD}" : "{35DB604900C55B98}UI/VoiceChat/VoiceChatFrame.layout" {
+  FrameWidgetClass "{6604C04D879C50E7}" : "{35DB604900C55B98}UI/VoiceChat/VoiceChatFrame.layout" {
    Name "VoiceChatFrame"
    Slot FrameWidgetSlot "{5EB701CDC06E1686}" {
     Anchor 1 0.5 1 0.5
@@ -172,7 +172,7 @@ FrameWidgetClass {
     }
    }
    {
-    ImageWidgetClass "{60DCA2405FB6DEA0}" {
+    ImageWidgetClass "{6604C04D879C50E4}" {
      Name "Extender"
      Slot FrameWidgetSlot "{60DCA24044200F5D}" {
       Anchor 0 0 1 1
@@ -229,7 +229,7 @@ FrameWidgetClass {
       OffsetBottom -39
      }
      {
-      ButtonWidgetClass "{60CF625489094B1B}" {
+      ButtonWidgetClass "{6604C04D879C50E5}" {
        Name "PinButton"
        Slot FrameWidgetSlot "{5EA8C93F5E685F59}" {
         Anchor 0 0 0 0
@@ -260,12 +260,12 @@ FrameWidgetClass {
        }
        "no focus" 1
        {
-        FrameWidgetClass "{60CF625489094B1C}" {
+        FrameWidgetClass "{6604C04D879C50E2}" {
          Name "PinButtonFrame"
          Slot ButtonWidgetSlot "{5EA8C93CB4241314}" {
          }
          {
-          ImageWidgetClass "{60CF625489094B1E}" {
+          ImageWidgetClass "{6604C04D879C50E3}" {
            Name "Background"
            Slot FrameWidgetSlot "{5D6E8206B132EE77}" {
             PositionX 0
@@ -279,7 +279,7 @@ FrameWidgetClass {
            }
            Color 1 1 1 0
           }
-          ImageWidgetClass "{60CF625489094B1F}" {
+          ImageWidgetClass "{6604C04D879C50E0}" {
            Name "PinImage"
            Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
             PositionX 0
@@ -344,7 +344,7 @@ FrameWidgetClass {
     }
    }
   }
-  FrameWidgetClass "{5EBA3C94C3245291}" : "{18D3CF175C9AA974}UI/Spectator/AlivePlayersList.layout" {
+  FrameWidgetClass "{6604C04D879C5EDA}" : "{18D3CF175C9AA974}UI/Spectator/AlivePlayersList.layout" {
    Name "AlivePlayersList"
    Slot FrameWidgetSlot "{5EBA3C97F505681F}" {
     Anchor 0 0.5 0 0.5
@@ -364,7 +364,7 @@ FrameWidgetClass {
     }
    }
    {
-    ImageWidgetClass "{60DCA240442011AC}" {
+    ImageWidgetClass "{6604C04D879C66FE}" {
      Name "Extender"
      Slot FrameWidgetSlot "{60DCA24044200F5D}" {
       Anchor 0 0 1 1
@@ -411,7 +411,7 @@ FrameWidgetClass {
     FrameWidgetClass "{5EBA3C97FF93DE7A}" {
      Prefab "{5EBA3C97FF93DE7A}"
      {
-      ButtonWidgetClass "{60CF6254EE61EB76}" {
+      ButtonWidgetClass "{6604C04D879C66FC}" {
        Name "PinButton"
        Slot FrameWidgetSlot "{5EA8C93F5E685F59}" {
         Anchor 0 0 0 0
@@ -442,12 +442,12 @@ FrameWidgetClass {
        }
        "no focus" 1
        {
-        FrameWidgetClass "{60CF6254EE61EB77}" {
+        FrameWidgetClass "{6604C04D879C66FD}" {
          Name "PinButtonFrame"
          Slot ButtonWidgetSlot "{5EA8C93CB4241314}" {
          }
          {
-          ImageWidgetClass "{60CF6254EE61EB78}" {
+          ImageWidgetClass "{6604C04D879C66F2}" {
            Name "Background"
            Slot FrameWidgetSlot "{5D6E8206B132EE77}" {
             PositionX 0
@@ -461,7 +461,7 @@ FrameWidgetClass {
            }
            Color 1 1 1 0
           }
-          ImageWidgetClass "{60CF6254EE61EB79}" {
+          ImageWidgetClass "{6604C04D879C66F3}" {
            Name "PinImage"
            Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
             PositionX 0
@@ -502,7 +502,7 @@ FrameWidgetClass {
     }
    }
   }
-  FrameWidgetClass "{5EB701CD498F59EC}" : "{B7A765172F0BD4D9}UI/layouts/Common/GameVersionWatermark.layout" {
+  FrameWidgetClass "{6604C04D879C657B}" : "{B7A765172F0BD4D9}UI/layouts/Common/GameVersionWatermark.layout" {
    Name "EarlyAccessRoot"
    Slot FrameWidgetSlot "{5CEE96372B5D270B}" {
     PositionX 0
@@ -516,7 +516,7 @@ FrameWidgetClass {
    }
    Opacity 1
   }
-  OverlayWidgetClass "{5EC5025171F3344C}" {
+  OverlayWidgetClass "{6604C04D879C63C7}" {
    Name "OverlayFooter"
    Slot FrameWidgetSlot "{5EB10006FB0FA78D}" {
     Anchor 0 1 0 1
@@ -530,14 +530,14 @@ FrameWidgetClass {
     OffsetBottom 0
    }
    {
-    HorizontalLayoutWidgetClass "{5EC5025171F3344E}" {
+    HorizontalLayoutWidgetClass "{6604C04D879C63C4}" {
      Name "HorizontalLayout"
      Slot OverlayWidgetSlot "{5EB10006A9111D66}" {
       HorizontalAlign 0
       VerticalAlign 0
      }
      {
-      ButtonWidgetClass "{5EC5025171F33450}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
+      ButtonWidgetClass "{6604C04D879C63C5}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
        Name "NavigationChat"
        Slot LayoutSlot "{5EB100087EA225FE}" {
         Padding 20 0 0 0
@@ -549,7 +549,7 @@ FrameWidgetClass {
         }
        }
       }
-      ButtonWidgetClass "{5EC5025171F33454}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
+      ButtonWidgetClass "{6604C04D879C63D9}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
        Name "NavigationFactionVoice"
        Slot LayoutSlot "{5EBC737F18D3A94E}" {
         Padding 20 0 0 0
@@ -561,7 +561,7 @@ FrameWidgetClass {
         }
        }
       }
-      ButtonWidgetClass "{5EC5025171F33456}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
+      ButtonWidgetClass "{6604C04D879C63DF}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
        Name "NavigationSwitchSpectatorUI"
        Slot LayoutSlot "{5EBC737F18D3A94E}" {
         Padding 20 0 0 0
