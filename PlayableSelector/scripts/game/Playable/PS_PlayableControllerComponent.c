@@ -380,8 +380,14 @@ class PS_PlayableControllerComponent : ScriptComponent
 
 	// Just don't look at it.
 	override protected void OnPostInit(IEntity owner)
-	{
-		SetEventMask(GetOwner(), EntityEvent.POSTFIXEDFRAME);
+	{  
+		EntitySpawnParams params = new EntitySpawnParams(); 
+		Resource resource = Resource.Load("{6EAA30EF620F4A2E}Prefabs/Editor/Camera/ManualCameraSpectator.et");
+		m_Camera = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
+		
+		
+		//SetEventMask(GetOwner(), EntityEvent.POSTFIXEDFRAME);
+		GetGame().GetCallqueue().CallLater(UpdatePosition, 0, true, false);
 		SetEventMask(GetOwner(), EntityEvent.FRAME);
 		SCR_PlayerController playerController = SCR_PlayerController.Cast(PlayerController.Cast(GetOwner()));
 		playerController.m_OnControlledEntityChanged.Insert(OnControlledEntityChanged);
@@ -615,12 +621,15 @@ class PS_PlayableControllerComponent : ScriptComponent
 			if (menu && (menu.IsInherited(PS_PreviewMapMenu) || menu.IsInherited(PS_CoopLobby) || menu.IsInherited(PS_BriefingMapMenu)))
 			{
 				GetGame().GetCameraManager().CurrentCamera().SetWorldTransform(mat);
+				if (m_Camera)
+					m_Camera.SetTransform(mat);	
 			}
 
 			// Who broke camera on map?
 			CameraBase cameraBase = GetGame().GetCameraManager().CurrentCamera();
 			if (cameraBase)
 				cameraBase.ApplyTransform(GetGame().GetWorld().GetTimeSlice());
+ 
 
 			Physics physics = m_InitialEntity.GetPhysics();
 			if (physics)
