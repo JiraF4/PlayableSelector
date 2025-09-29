@@ -14,6 +14,9 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
       SCR_EquipmentStorageSlot WristwatchSlot {
        Prefab "{8F49616A4BAAF407}Prefabs/MenuRadio2.et"
       }
+      SCR_EquipmentStorageSlot MapSlot {
+       Prefab "{922F95F91943F69A}Prefabs/Items/Equipment/Maps/PaperMap_01_folded_US.et"
+      }
      }
     }
    }
@@ -68,7 +71,6 @@ SCR_ChimeraCharacter : "{37578B1666981FCE}Prefabs/Characters/Core/Character_Base
    ReceiveLight 0
   }
   PS_LobbyVoNComponent "{618B054CFFD60A4C}" {
-   "Speaking Range" 0
    Filename "{92582B3603EE5464}Sounds/VON/vonLobby.acp"
   }
   PS_PlayableComponent "{5EFCC1946F475F15}" {
