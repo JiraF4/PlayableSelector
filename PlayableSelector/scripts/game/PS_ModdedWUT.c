@@ -10,6 +10,7 @@ modded class SCR_CallsignGroupComponent
 	}
 }
 
+/*
 // Говно из 1.2.1
 // Долбаебы ниразу даже не пробовали запускать сервак для отладки
 // Только так это говно могло попасть в релиз
@@ -30,3 +31,4 @@ modded class SCR_SaveWorkshopManager
 			return "";
 	}
 }
+*/

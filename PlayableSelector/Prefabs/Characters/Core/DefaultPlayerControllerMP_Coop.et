@@ -1,8 +1,6 @@
 SCR_PlayerController : "{225E51284CC95CFA}Prefabs/Characters/Core/DefaultPlayerControllerMP.et" {
  ID "1A9BA6BEFA06E3B1"
  components {
-  PS_BigMsgSenderComponent "{5ED8E740ACEA83B2}" {
-  }
   PS_PlayableControllerComponent "{5EA7206115A83E71}" {
   }
   SCR_FastTravelComponent "{5DAA74121E45C2EB}" {
@@ -16,6 +14,20 @@ SCR_PlayerController : "{225E51284CC95CFA}Prefabs/Characters/Core/DefaultPlayerC
      m_LayoutPath "{47864BB47AB0B1F4}UI/layouts/HUD/CampaignMP/CampaignMainHUD.layout"
      m_eLayer ALWAYS_TOP
      m_bAdaptiveOpacity 1
+    }
+   }
+  }
+  SCR_RespawnComponent "{998227246E6A49E0}" {
+   Enabled 0
+   components {
+    SCR_FreeSpawnRequestComponent "{5CD2D126A634C24E}" {
+     Enabled 0
+    }
+    SCR_PossessSpawnRequestComponent "{5CD2D126BA9130E9}" {
+     Enabled 0
+    }
+    SCR_SpawnPointRespawnRequestComponent "{5CD2D126BE7315B8}" {
+     Enabled 0
     }
    }
   }

@@ -152,14 +152,14 @@ class PS_GameModeCoop : SCR_BaseGameMode
 				factionRespawnCount
 			);
 		}
-
+		/*
 		string loadSave = GameSessionStorage.s_Data.Get("SCR_SaveFileManager_FileNameToLoad");
 		if (loadSave != "")
 		{
 			SCR_SaveManagerCore saveManager = GetGame().GetSaveManager();
 			saveManager.Load(loadSave);
 		}
-
+		*/
 		if (Replication.IsServer())
 		{
 			PS_VoNRoomsManager.GetInstance().GetOrCreateRoomWithFaction("", "#PS-VoNRoom_Global");
@@ -507,7 +507,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		Resource resource = BaseContainerTools.LoadContainer(data);
 		if (!resource)
 			return;
-		GameStateTransitions.RequestScenarioChangeTransition(data, "");
+		GameStateTransitions.RequestScenarioChangeTransition(data, "", "");
 	}
 
 	void removeRestrictedZones()
