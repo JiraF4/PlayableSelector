@@ -18,6 +18,22 @@ SCR_AIWorld : "{01DC74137CFDDB6A}Prefabs/AI/SCR_AIWorld_Arland.et" {
 PerceptionManager PerceptionManager1 : "{028DAEAD63E056BE}Prefabs/World/Game/PerceptionManager.et" {
 }
 PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_GameMode_Lobby.et" {
+ components {
+  SCR_RespawnSystemComponent "{56B2B4793051E7C9}" {
+   Enabled 0
+   components {
+    SCR_FreeSpawnHandlerComponent "{5CD2860C681CE021}" {
+     Enabled 0
+    }
+    SCR_PossessSpawnHandlerComponent "{5CD2D12697D089D4}" {
+     Enabled 0
+    }
+    SCR_SpawnPointSpawnHandlerComponent "{5CD2D126957998DF}" {
+     Enabled 0
+    }
+   }
+  }
+ }
  m_bFreezeTimeShootingForbiden 1
 }
 $grp SCR_AIGroup : "{107554618BE6FF20}Prefabs/Groups/BLUFOR/Group_US_Team_Suppress_P.et" {
@@ -41,6 +57,9 @@ $grp SCR_AIGroup : "{25CA78D4E661F9B8}Prefabs/Groups/INDFOR/Group_FIA_AmmoTeam_P
  {
   coords 1377.662 36.04 2388.349
  }
+}
+Turret : "{66B35D82EB9B4E28}Prefabs/Weapons/Tripods/6T7/Deployable_Tripod_6T7_NSV_SPP.et" {
+ coords 1398.232 35.925 2371.196
 }
 SCR_AIGroup : "{704B4E4EC7C56B55}Prefabs/Groups/BLUFOR/Group_US_AmmoTeam_P.et" {
  coords 1615.499 41.336 2271.03
@@ -66,4 +85,7 @@ $grp Turret : "{D1FFE458E8AC4BDB}Prefabs/Weapons/Mortars/2B14/Mortar_2B14.et" {
   coords 1389.938 36.219 2365.683
   angles 0 106.857 0
  }
+}
+Turret : "{F585627D662E34D7}Prefabs/Weapons/Tripods/6T7/Tripod_6T7.et" {
+ coords 1396.401 35.868 2370.719
 }

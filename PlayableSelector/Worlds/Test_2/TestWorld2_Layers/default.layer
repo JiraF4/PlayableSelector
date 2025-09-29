@@ -35,6 +35,9 @@ PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_Game
   }
  }
 }
+GenericEntity {
+ coords 121.225 1 105.193
+}
 PolylineShapeEntity : "{1D807ABE94FE2618}Prefabs/PolyZone/PolyZone_Capture.et" {
  coords 116.268 6.202 116.792
  {
@@ -49,12 +52,12 @@ PolylineShapeEntity : "{1D807ABE94FE2618}Prefabs/PolyZone/PolyZone_Capture.et" {
 PS_MissionDescription : "{3136BE42592F3B1B}PrefabsEditable/MissionDescription/EditableMissionDescription.et" {
  coords 95.586 1 151.188
 }
-GenericEntity : "{52AACED13FA088FF}Prefabs/Items/Equipment/Radios/Radio_Noqia2028_CheeseRiders.et" {
- coords 121.225 1 105.193
+SCR_ChimeraCharacter : "{47B0BA658525301A}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_Rifleman_P.et" {
+ coords 131.25 1 142.847
 }
 PS_ManualCameraSpectator ManualCameraSpectator1 : "{6EAA30EF620F4A2E}Prefabs/Editor/Camera/ManualCameraSpectator.et" {
+ Flags 0x100003 0
  coords 122.492 1 163.836
- Flags 1048579
 }
 Vehicle BTR2 : "{C012BB3488BEA0C2}Prefabs/Vehicles/Wheeled/BTR70/BTR70.et" {
  coords 125.374 1 101.361

@@ -181,7 +181,7 @@ class PS_MissionDataManager : ScriptComponent
 	{
 		SCR_MissionHeader missionHeader = SCR_MissionHeader.Cast(GetGame().GetMissionHeader());
 		if (missionHeader) {
-			m_Data.MissionPath = missionHeader.GetHeaderResourcePath();
+			//m_Data.MissionPath = missionHeader.GetHeaderResourcePath();
 			m_Data.WorldPath = missionHeader.GetWorldPath();
 			
 			m_Data.MissionName = missionHeader.m_sName;

@@ -131,9 +131,9 @@ class PS_PlayableControllerComponent : ScriptComponent
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void RPC_LoadMission(string missionName)
 	{
-		SCR_SaveManagerCore saveManager = GetGame().GetSaveManager();
+		// SCR_SaveManagerCore saveManager = GetGame().GetSaveManager();
 		// It's litteraly broken on dedicated.
-		saveManager.RestartAndLoad(missionName);
+		// saveManager.RestartAndLoad(missionName);
 	}
 
 	// ------ FactionLock ------
@@ -381,10 +381,11 @@ class PS_PlayableControllerComponent : ScriptComponent
 	// Just don't look at it.
 	override protected void OnPostInit(IEntity owner)
 	{  
+		/*
 		EntitySpawnParams params = new EntitySpawnParams(); 
 		Resource resource = Resource.Load("{6EAA30EF620F4A2E}Prefabs/Editor/Camera/ManualCameraSpectator.et");
 		m_Camera = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
-		
+		*/
 		
 		//SetEventMask(GetOwner(), EntityEvent.POSTFIXEDFRAME);
 		GetGame().GetCallqueue().CallLater(UpdatePosition, 0, true, false);
