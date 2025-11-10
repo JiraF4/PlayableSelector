@@ -18,8 +18,8 @@ modded class SCR_AIGroup : ChimeraAIGroup
 			m_iNameAuthorID = -1;
 		}
 		
-		if (m_bSetPlayable)
-			Event_OnInit.Insert(MakePlayable);
+		if (m_bSetPlayable && GetGame().InPlayMode())
+			GetOnInit().Insert(MakePlayable);
 		
 		super.EOnInit(owner);
 	}
