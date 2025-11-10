@@ -32,29 +32,6 @@ GenericEntity : "{57B4984773FCAFB1}Prefabs/Props/Military/Compositions/FIA/Build
 GenericEntity : "{617E4B88F858344B}PrefabsEditable/Auto/Compositions/Slotted/SlotFlatSmall/E_SupplyCache_S_FIA_03.et" {
  coords 103.454 1 165.147
 }
-PolylineShapeEntity : "{7019844BAD5C4DD8}Prefabs/PolyZone/PolyZone_Border.et" {
- coords 117.101 1 92.769
- Points {
-  ShapePoint "{645EFC7FFD583EBD}" {
-   Position 11.972 0 6.362
-  }
-  ShapePoint "{645EFC7FFE9A421E}" {
-   Position 8.925 0 19.956
-  }
-  ShapePoint "{645EFC7FFEC5BE58}" {
-   Position -9.361 0 23.434
-  }
-  ShapePoint "{645EFC7FFE082B22}" {
-   Position -6.641 0 1.661
-  }
- }
- {
-  PS_PolyZoneTrigger {
-   ID "60FD050E1E83544C"
-   m_sGroupKey "Test"
-  }
- }
-}
 Vehicle UH1H1 : "{70BAEEFC2D3FEE64}Prefabs/Vehicles/Helicopters/UH1H/UH1H.et" {
  coords 89.226 1 157.672
 }

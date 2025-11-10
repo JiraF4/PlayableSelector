@@ -97,7 +97,7 @@ class PS_MissionDataVehicle : JsonApiStruct
 }
 class PS_MissionDataPlayer : JsonApiStruct
 {
-	int PlayerId;
+	int m_iPlayerId;
 	string GUID;
 	string Name;
 	
@@ -109,7 +109,7 @@ class PS_MissionDataPlayer : JsonApiStruct
 
 class PS_MissionDataPlayerToEntity : JsonApiStruct
 {
-	int PlayerId;
+	int m_iPlayerId;
 	int EntityId;
 	
 	void PS_MissionDataPlayerToEntity()
@@ -120,7 +120,7 @@ class PS_MissionDataPlayerToEntity : JsonApiStruct
 
 class PS_MissionDataDamageEvent : JsonApiStruct
 {
-	int PlayerId;
+	int m_iPlayerId;
 	int TargetId;
 	float DamageValue;
 	int TargetState;
@@ -172,7 +172,7 @@ class PS_MissionDataStateChangeEvent : JsonApiStruct
 class PS_MissionDataPlayerKill : JsonApiStruct
 {
 	int InstigatorId;
-	int PlayerId;
+	int m_iPlayerId;
 	int Time;
 	int SystemTime;
 	

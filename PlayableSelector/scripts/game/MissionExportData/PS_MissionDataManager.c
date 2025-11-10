@@ -98,7 +98,7 @@ class PS_MissionDataManager : ScriptComponent
 		EDamageState state = damageManagerComponent.GetState();
 		
 		PS_MissionDataDamageEvent missionDataDamageEvent = new PS_MissionDataDamageEvent();
-		missionDataDamageEvent.PlayerId = playerId;
+		missionDataDamageEvent.m_iPlayerId = playerId;
 		missionDataDamageEvent.TargetId = targetId;
 		missionDataDamageEvent.DamageValue = value;
 		missionDataDamageEvent.TargetState = state;
@@ -127,7 +127,7 @@ class PS_MissionDataManager : ScriptComponent
 		
 		PS_MissionDataPlayerKill missionDataPlayerKill = new PS_MissionDataPlayerKill();
 		missionDataPlayerKill.InstigatorId = killerId;
-		missionDataPlayerKill.PlayerId = playerId;
+		missionDataPlayerKill.m_iPlayerId = playerId;
 		missionDataPlayerKill.Time = GetGame().GetWorld().GetWorldTime();
 		missionDataPlayerKill.SystemTime = System.GetUnixTime();
 		m_Data.Kills.Insert(missionDataPlayerKill);
@@ -168,7 +168,7 @@ class PS_MissionDataManager : ScriptComponent
 		string name = m_PlayerManager.GetPlayerName(playerId);
 		
 		PS_MissionDataPlayer player = new PS_MissionDataPlayer();
-		player.PlayerId = playerId;
+		player.m_iPlayerId = playerId;
 		player.GUID = GUID;
 		player.Name = name;
 		m_Data.Players.Insert(player);
@@ -181,7 +181,7 @@ class PS_MissionDataManager : ScriptComponent
 	{
 		SCR_MissionHeader missionHeader = SCR_MissionHeader.Cast(GetGame().GetMissionHeader());
 		if (missionHeader) {
-			m_Data.MissionPath = missionHeader.GetHeaderResourcePath();
+			//m_Data.MissionPath = missionHeader.GetHeaderResourcePath();
 			m_Data.WorldPath = missionHeader.GetWorldPath();
 			
 			m_Data.MissionName = missionHeader.m_sName;
@@ -309,7 +309,7 @@ class PS_MissionDataManager : ScriptComponent
 			int playerId = m_PlayableManager.GetPlayerByPlayable(playableId);
 			
 			PS_MissionDataPlayerToEntity playerToEntity = new PS_MissionDataPlayerToEntity();
-			playerToEntity.PlayerId = playerId;
+			playerToEntity.m_iPlayerId = playerId;
 			playerToEntity.EntityId = playableId;
 			
 			m_Data.PlayersToPlayables.Insert(playerToEntity);

@@ -1,14 +1,14 @@
 FrameWidgetClass {
  Name "MapMenu"
  {
-  SizeLayoutWidgetClass "{5EBE2C27989BB598}" : "{D519C5E16410D772}UI/layouts/Map/MapTaskList.layout" {
+  SizeLayoutWidgetClass "{6604C04D653EA5B2}" : "{D519C5E16410D772}UI/layouts/Map/MapTaskList.layout" {
    Name "MapTaskList"
    Slot FrameWidgetSlot "{59F48194AC30BD2E}" {
    }
    "Z Order" 1
    "Is Visible" 0
   }
-  ImageWidgetClass "{5EBE2C27989BB59B}" {
+  ImageWidgetClass "{6604C04D653EA4EF}" {
    Name "FadeOut"
    Slot FrameWidgetSlot "{59DA82335FBAB4D4}" {
     Anchor 0 0 1 1
@@ -26,7 +26,7 @@ FrameWidgetClass {
    Opacity 0
    Color 0 0 0 1
   }
-  FrameWidgetClass "{5EBE2C27989BB5E2}" : "{D89BBA18F99053D6}UI/layouts/HUD/Chat/ChatHud.layout" {
+  FrameWidgetClass "{6604C04D653EA140}" : "{D89BBA18F99053D6}UI/layouts/HUD/Chat/ChatHud.layout" {
    Name "ChatHud"
    Slot FrameWidgetSlot "{58731DB272499DED}" {
     Anchor 0 0 1 1
@@ -40,7 +40,7 @@ FrameWidgetClass {
     OffsetBottom 0
    }
   }
-  FrameWidgetClass "{5EBE2C27989BB5EE}" : "{0651202E9F2646DE}UI/layouts/Map/Map.layout" {
+  FrameWidgetClass "{6604C04D653EAF76}" : "{0651202E9F2646DE}UI/layouts/Map/Map.layout" {
    Name "MapFrame"
    Slot FrameWidgetSlot "{58731DB204D943BC}" {
     Anchor 0 0 1 1
@@ -68,7 +68,7 @@ FrameWidgetClass {
     }
    }
   }
-  OverlayWidgetClass "{5EBE2C27989BB5FC}" {
+  OverlayWidgetClass "{6604C04D653EAC39}" {
    Name "OverlayFooter"
    Slot FrameWidgetSlot "{5EB10006FB0FA78D}" {
     Anchor 0 1 0 1
@@ -83,14 +83,14 @@ FrameWidgetClass {
    }
    "Is Visible" 0
    {
-    HorizontalLayoutWidgetClass "{5EBE2C27989BB5FE}" {
+    HorizontalLayoutWidgetClass "{6604C04D653EAC37}" {
      Name "HorizontalLayout"
      Slot OverlayWidgetSlot "{5EB10006A9111D66}" {
       HorizontalAlign 0
       VerticalAlign 0
      }
      {
-      ButtonWidgetClass "{5EBE2C27989BB5C0}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
+      ButtonWidgetClass "{6604C04D653EAC34}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
        Name "NavigationRight"
        Slot LayoutSlot "{5EB100087EA225FE}" {
         Padding 20 0 0 0
@@ -102,7 +102,7 @@ FrameWidgetClass {
         }
        }
       }
-      ButtonWidgetClass "{5EBE2C27989BB5C4}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
+      ButtonWidgetClass "{6604C04D653EAC31}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
        Name "NavigationRoomVoice"
        Slot LayoutSlot "{5EBC737F18D3A970}" {
        }
@@ -113,7 +113,7 @@ FrameWidgetClass {
         }
        }
       }
-      ButtonWidgetClass "{5EBE2C27989BB5C6}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
+      ButtonWidgetClass "{6604C04D653EACCC}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
        Name "NavigationFactionVoice"
        Slot LayoutSlot "{5EBC737F18D3A94E}" {
        }
@@ -128,7 +128,7 @@ FrameWidgetClass {
     }
    }
   }
-  FrameWidgetClass "{5EBE2C27989BB5C8}" {
+  FrameWidgetClass "{6604C04D653EAA46}" {
    Name "StepsFrame"
    Slot FrameWidgetSlot "{5EAF56867198CBEE}" {
     Anchor 1 1 1 1
@@ -143,7 +143,7 @@ FrameWidgetClass {
    }
    "Is Visible" 0
    {
-    ImageWidgetClass "{5EBE2C27989BB5C9}" {
+    ImageWidgetClass "{6604C04D653EAA47}" {
      Name "StepsBackground"
      Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
       PositionX 0
@@ -158,7 +158,7 @@ FrameWidgetClass {
      Opacity 0.8
      Color 0.001 0.001 0.001 1
     }
-    FrameWidgetClass "{5EBE2C27989BB5CA}" {
+    FrameWidgetClass "{6604C04D653EAA45}" {
      Name "StepsHeaderFrame"
      Slot FrameWidgetSlot "{5EAF568435415315}" {
       PositionX 0
@@ -171,7 +171,7 @@ FrameWidgetClass {
       OffsetBottom -39
      }
      {
-      ImageWidgetClass "{5EBE2C27989BB5CB}" {
+      ImageWidgetClass "{6604C04D653EAA42}" {
        Name "StepsHeaderBackground"
        Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
         PositionX 0
@@ -185,7 +185,7 @@ FrameWidgetClass {
        }
        Color 0.001 0.001 0.001 1
       }
-      OverlayWidgetClass "{5EBE2C27989BB5CC}" {
+      OverlayWidgetClass "{6604C04D653EAA43}" {
        Name "StepsHeaderTextOverlay"
        Slot FrameWidgetSlot "{5EB0E9ED5655F81D}" {
         PositionX 0
@@ -198,7 +198,7 @@ FrameWidgetClass {
         OffsetBottom -39
        }
        {
-        TextWidgetClass "{5EBE2C27989BB5CE}" {
+        TextWidgetClass "{6604C04D653EAA40}" {
          Name "StepsHeaderText"
          Slot OverlayWidgetSlot "{5EB10000C310B3FC}" {
           HorizontalAlign 0
@@ -210,7 +210,7 @@ FrameWidgetClass {
       }
      }
     }
-    TextWidgetClass "{5EBE2C2798842490}" {
+    TextWidgetClass "{6604C04D653EAA5E}" {
      Name "StepsHeaderText0"
      Slot FrameWidgetSlot "{5EB69C7825300550}" {
       PositionX 3.634
@@ -228,7 +228,7 @@ FrameWidgetClass {
      "Horizontal Alignment" Center
      "Vertical Alignment" Center
     }
-    FrameWidgetClass "{5EBE2C279884248F}" {
+    FrameWidgetClass "{6604C04D653EAA5F}" {
      Name "StepsProgressBarFrame"
      Slot FrameWidgetSlot "{5EAF568435415315}" {
       PositionX 0
@@ -241,7 +241,7 @@ FrameWidgetClass {
       OffsetBottom -45
      }
      {
-      ImageWidgetClass "{5EBE2C279884248D}" {
+      ImageWidgetClass "{6604C04D653EAA5C}" {
        Name "StepsBackground"
        Slot FrameWidgetSlot "{5EAF5684AADFB3B7}" {
         PositionX 0
@@ -260,7 +260,7 @@ FrameWidgetClass {
     }
    }
   }
-  FrameWidgetClass "{5EBE2C279884248A}" : "{35DB604900C55B98}UI/VoiceChat/VoiceChatFrame.layout" {
+  FrameWidgetClass "{6604C04D653EAAD5}" : "{35DB604900C55B98}UI/VoiceChat/VoiceChatFrame.layout" {
    Name "VoiceChatFrame"
    Slot FrameWidgetSlot "{5EB701C8F15ED5E1}" {
     Anchor 1 1 1 1
@@ -274,7 +274,7 @@ FrameWidgetClass {
     OffsetBottom 10
    }
   }
-  FrameWidgetClass "{5EBE2C2798842486}" : "{F43237F55B38B45C}UI/GameModeHeader/GameModeHeader.layout" {
+  FrameWidgetClass "{6604C04D653ED5ED}" : "{F43237F55B38B45C}UI/GameModeHeader/GameModeHeader.layout" {
    Name "GameModeHeader"
    Slot FrameWidgetSlot "{5EB10000F5F77EA0}" {
     PositionX -960
@@ -417,7 +417,7 @@ FrameWidgetClass {
     }
    }
   }
-  FrameWidgetClass "{5EC27C79EC033FEA}" : "{0CAA34745062743B}UI/MissionDescription/MissionDescriptionFrame.layout" {
+  FrameWidgetClass "{6604C04D653ED331}" : "{0CAA34745062743B}UI/MissionDescription/MissionDescriptionFrame.layout" {
    Name "MissionDescriptionFrame"
    Slot FrameWidgetSlot "{5EBEE964499ECB58}" {
     PositionX 10
@@ -439,7 +439,7 @@ FrameWidgetClass {
         OverlayWidgetClass "{5EBEE964499F395B}" {
          Prefab "{5EBEE964499F395B}"
          {
-          TextWidgetClass "{5EBEE964499F395C}" {
+          RichTextWidgetClass "{5EBEE964499F395C}" {
            Prefab "{5EBEE964499F395C}"
            Text "#PS-Briefing_MissionDescriptionHeader"
           }
@@ -451,7 +451,7 @@ FrameWidgetClass {
     }
    }
   }
-  FrameWidgetClass "{5EBE2C2798842478}" : "{B7A765172F0BD4D9}UI/layouts/Common/GameVersionWatermark.layout" {
+  FrameWidgetClass "{6604C04D653ED3B6}" : "{B7A765172F0BD4D9}UI/layouts/Common/GameVersionWatermark.layout" {
    Name "EarlyAccessRoot"
    Slot FrameWidgetSlot "{5CEE96372B5D270B}" {
     PositionX -49.712
@@ -465,7 +465,7 @@ FrameWidgetClass {
    }
    Opacity 1
   }
-  OverlayWidgetClass "{5F1894B0493817E0}" {
+  OverlayWidgetClass "{6604C04D653ED2A8}" {
    Name "PlayableNotSelectedOverlay"
    Slot FrameWidgetSlot "{5EBE323890A56A10}" {
     Anchor 0 0 1 0
@@ -481,12 +481,12 @@ FrameWidgetClass {
    }
    Clipping False
    {
-    FrameWidgetClass "{5F1894B0493817E7}" {
+    FrameWidgetClass "{6604C04D653ED2A9}" {
      Name "Frame0"
      Slot OverlayWidgetSlot "{5EE8EEC276DBC641}" {
      }
      {
-      PanelWidgetClass "{5F1894B0493817E5}" {
+      PanelWidgetClass "{6604C04D653ED2A6}" {
        Name "Overlay0"
        Slot FrameWidgetSlot "{5EE8EEC276CA4EF4}" {
         PositionX 0
@@ -502,13 +502,13 @@ FrameWidgetClass {
        Color 0 0 0 0.6
        style full
        {
-        VerticalLayoutWidgetClass "{5F1894B0493817E4}" {
+        VerticalLayoutWidgetClass "{6604C04D653ED2A7}" {
          Name "HorizontalLayout"
          Slot FrameWidgetSlot "{5EE8EEC25FBC84D3}" {
           SizeToContent 1
          }
          {
-          TextWidgetClass "{5F1894B0493817EB}" {
+          TextWidgetClass "{6604C04D653ED2A4}" {
            Name "TextPlayableNotSelected"
            Slot LayoutSlot "{5EE8EEC5B1C05AFD}" {
             HorizontalAlign 1
@@ -529,7 +529,7 @@ FrameWidgetClass {
     }
    }
   }
-  FrameWidgetClass "{61B4F41DBAD5D754}" {
+  FrameWidgetClass "{6604C04D653ECB55}" {
    Name "ToolMenu"
    Slot FrameWidgetSlot "{59107CDEE98682C5}" {
     PositionX 25
@@ -547,7 +547,7 @@ FrameWidgetClass {
    Clipping False
    "Ignore Cursor" 0
    {
-    FrameWidgetClass "{61B4F41DBAD5D75A}" {
+    FrameWidgetClass "{6604C04D653ECB6A}" {
      Name "ToolMenuBar"
      Slot FrameWidgetSlot "{59107CC3B4EFA8B6}" {
       OffsetLeft 0
@@ -559,7 +559,7 @@ FrameWidgetClass {
      }
      Clipping True
      {
-      ImageWidgetClass "{61B4F41DBAD5D759}" {
+      ImageWidgetClass "{6604C04D653ECB69}" {
        Name "MenuBackground"
        Slot FrameWidgetSlot "{59107CDD6A9F6BD3}" {
         Anchor 0 0 1 1
@@ -578,7 +578,7 @@ FrameWidgetClass {
        Image ""
        Size 40 40
       }
-      HorizontalLayoutWidgetClass "{61B4F41DBAD5D758}" {
+      HorizontalLayoutWidgetClass "{6604C04D653ECB64}" {
        Name "ToolMenuHoriz"
        Slot FrameWidgetSlot "{59107CC3B4EFA879}" {
         PositionX 0
@@ -593,36 +593,6 @@ FrameWidgetClass {
        }
       }
      }
-    }
-    RichTextWidgetClass "{61B4F41DBAD5D75F}" {
-     Prefab "{00000000B0FD85CE}"
-     Name "Action"
-     Slot FrameWidgetSlot "{59107CC3B4EF4150}" {
-      Anchor 1 1 1 1
-      OffsetLeft 0
-      OffsetTop 0
-      SizeX 1
-      OffsetRight -1
-      SizeY 1
-      OffsetBottom -1
-      Alignment 0.5 0.5
-     }
-     Clipping False
-     Color 0.761 0.386 0.078 1
-     components {
-      SCR_DeviceSpecificComponent "{5918811AAA9B9B8D}" {
-       m_bControllerOnly 1
-      }
-     }
-     Text "<image set=\"{F7FD1672FECA05E8}UI/Textures/Icons/icons_gamepad_64.imageset\" name=\"DPAD_horizontal\" scale=\"1\"/>"
-     "Font Size" 32
-     "Min Font Size" 32
-     "Vertical Alignment" Center
-     FontProperties FontProperties "{58CE6BA0EDCA2C14}" {
-      Font "{EABA4FE9D014CCEF}UI/Fonts/RobotoCondensed/RobotoCondensed_Bold.fnt"
-     }
-     Offset -40 0
-     "Line Spacing" 0
     }
    }
   }

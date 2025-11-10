@@ -7,7 +7,7 @@ FrameWidgetClass {
   }
  }
  {
-  ImageWidgetClass "{5EBF1EC8B9915317}" {
+  ImageWidgetClass "{6604C04D3CE3928D}" {
    Name "Background"
    Slot FrameWidgetSlot "{5EB11767D337F688}" {
     OffsetLeft 0
@@ -19,8 +19,7 @@ FrameWidgetClass {
    }
    Color 1 1 1 0
   }
-  TextWidgetClass "{5EBF1EC8B991531A}" {
-   Prefab "{5D6D1B99A45E5176}"
+  TextWidgetClass "{6604C04D3CE3917A}" {
    Name "ObjectiveName"
    Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
     PositionX 6
@@ -37,7 +36,7 @@ FrameWidgetClass {
    "Min Font Size" 20
    "Vertical Alignment" Center
   }
-  ImageWidgetClass "{5EBF1ED60443C03F}" {
+  ImageWidgetClass "{6604C04D3CE391C8}" {
    Name "ObjectiveCompletion"
    Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
     PositionX 486
@@ -53,8 +52,7 @@ FrameWidgetClass {
    Image "check"
    Size 32 32
   }
-  TextWidgetClass "{5EBF1ED47B73F68B}" {
-   Prefab "{5D6D1B99A45E5176}"
+  TextWidgetClass "{6604C04D3CE391F2}" {
    Name "ObjectiveScore"
    Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
     PositionX 406
@@ -72,7 +70,7 @@ FrameWidgetClass {
    "Horizontal Alignment" Center
    "Vertical Alignment" Center
   }
-  ButtonWidgetClass "{60B551D38F9D7EAF}" {
+  ButtonWidgetClass "{6604C04D3CE390D7}" {
    Name "CompleteButton"
    Slot FrameWidgetSlot "{5EA8C93F5E685F59}" {
     Anchor 0 0 0 0
@@ -102,7 +100,7 @@ FrameWidgetClass {
    }
    "no focus" 1
    {
-    FrameWidgetClass "{60B551D38F9D7EB0}" {
+    FrameWidgetClass "{6604C04D3CE390D4}" {
      Name "CompleteButtonFrame"
      Slot ButtonWidgetSlot "{5EA8C93CB4241314}" {
       HorizontalAlign 3
@@ -110,7 +108,7 @@ FrameWidgetClass {
      }
      "Inherit Color" 1
      {
-      ImageWidgetClass "{60B551D38F9D7EB2}" {
+      ImageWidgetClass "{6604C04D3CE390D2}" {
        Name "Background"
        Slot FrameWidgetSlot "{5D6E8206B132EE77}" {
         PositionX 0

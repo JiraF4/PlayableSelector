@@ -1,7 +1,7 @@
 GameProject {
- ID "PlayableSelector"
- GUID "596523840114E2D3"
- TITLE "ReforgerLobbyDEV"
+ ID "ReforgerLobby"
+ GUID "5EAF2B0473DB5A99"
+ TITLE "Reforger Lobby"
  Dependencies {
   "58D0FB3206B6F859" "1337133713371337"
  }

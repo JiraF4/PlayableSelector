@@ -750,8 +750,7 @@ FrameWidgetClass {
                       OffsetBottom -34
                      }
                     }
-                    ImageWidgetClass "{5EB701CA9F3C8B4A}" {
-                     Prefab "{5EB10001224C7F50}"
+                    ImageWidgetClass "{66049A6B78B90653}" {
                      Name "Background"
                      Slot FrameWidgetSlot "{5EB701CAB2EE0FA2}" {
                       OffsetLeft 0
@@ -837,8 +836,7 @@ FrameWidgetClass {
                       OffsetBottom -34
                      }
                     }
-                    ImageWidgetClass "{5EB701CA613F7B56}" {
-                     Prefab "{5EB10001224C7F50}"
+                    ImageWidgetClass "{66049A6B47678393}" {
                      Name "Background"
                      Slot FrameWidgetSlot "{5EB701CAB2EE0FA2}" {
                       OffsetLeft 0
@@ -1082,8 +1080,7 @@ FrameWidgetClass {
            }
            "Scale Mode" "Scale to fill"
            {
-            ImageWidgetClass "{5D6F149AB0493675}" {
-             Prefab "{000000002B6EC668}"
+            ImageWidgetClass "{66049A6B57308930}" {
              Name "Separator"
              Slot AlignableSlot "{5D6F149A469DB824}" {
              }

@@ -7,7 +7,7 @@ FrameWidgetClass {
   }
  }
  {
-  ImageWidgetClass "{5EBF1ED0A97FAABB}" {
+  ImageWidgetClass "{6604C04C537D896C}" {
    Name "Background"
    Slot FrameWidgetSlot "{5EB11767D337F688}" {
     OffsetLeft 0
@@ -19,8 +19,7 @@ FrameWidgetClass {
    }
    Color 1 1 1 0
   }
-  TextWidgetClass "{5EBF1ED0A97FAABA}" {
-   Prefab "{5D6D1B99A45E5176}"
+  TextWidgetClass "{6604C04C537D89E8}" {
    Name "UnitName"
    Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
     PositionX 60
@@ -37,7 +36,7 @@ FrameWidgetClass {
    "Min Font Size" 20
    "Vertical Alignment" Center
   }
-  ImageWidgetClass "{5EBF1ED175E859AE}" {
+  ImageWidgetClass "{6604C04C537D89BA}" {
    Name "UnitTypeImage"
    Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
     PositionX 10
@@ -53,8 +52,7 @@ FrameWidgetClass {
    Image "characters"
    Size 32 32
   }
-  TextWidgetClass "{5EBF1ED0A97FAABF}" {
-   Prefab "{5D6D1B99A45E5176}"
+  TextWidgetClass "{6604C04C537D887C}" {
    Name "Destroyed"
    Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
     PositionX 476
@@ -72,8 +70,7 @@ FrameWidgetClass {
    "Horizontal Alignment" Center
    "Vertical Alignment" Center
   }
-  TextWidgetClass "{5EBF1ED1A09CDA34}" {
-   Prefab "{5D6D1B99A45E5176}"
+  TextWidgetClass "{6604C04C537D882A}" {
    Name "VehicleDamaged"
    Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
     PositionX 416
@@ -91,8 +88,7 @@ FrameWidgetClass {
    "Horizontal Alignment" Center
    "Vertical Alignment" Center
   }
-  TextWidgetClass "{5EBF1EDDE4F0AE0B}" {
-   Prefab "{5D6D1B99A45E5176}"
+  TextWidgetClass "{6604C04C537D88D3}" {
    Name "CharacterDamaged"
    Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
     PositionX 356
@@ -110,8 +106,7 @@ FrameWidgetClass {
    "Horizontal Alignment" Center
    "Vertical Alignment" Center
   }
-  TextWidgetClass "{5EBF1EDDC874FE63}" {
-   Prefab "{5D6D1B99A45E5176}"
+  TextWidgetClass "{6604C04C537D8885}" {
    Name "Undamaged"
    Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
     PositionX 296

@@ -8,6 +8,11 @@ PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_Game
  m_bRemoveSquadMarkers 1
  m_bDisableChat 1
  m_bReserveSlots 1
+ m_bDisableVanillaGroupMenu 1
+ m_bDisablePlayablesStreaming 1
+ m_bDisableGarbageSystem 1
+ m_bFreezeTimeShootingForbiden 1
+ m_bDisableBuildingModeAfterFreezeTime 1
  {
   SCR_FactionManager "60DB72876BAC8F30" {
    ID "5ED9088735FF2D8B"
@@ -21,6 +26,4 @@ PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_Game
    }
   }
  }
-}
-HitRegistrationManager HitRegManager1 : "{0EDA3D48791120DD}Prefabs/MP/HitRegManager.et" {
 }
