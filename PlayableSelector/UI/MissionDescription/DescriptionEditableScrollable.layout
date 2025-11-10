@@ -25,7 +25,10 @@ FrameWidgetClass {
      Name "RichTextEditable"
      Slot AlignableSlot "{609140F0AFDAAA55}" {
       Padding 0 0 0 15
+      HorizontalAlign 3
+      VerticalAlign 3
      }
+     Pivot 0 0
      Text ""
      "Font Size" 20
      "Min Font Size" 20
