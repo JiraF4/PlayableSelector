@@ -1,0 +1,128 @@
+FrameWidgetClass {
+ Name "ObjectiveFrame"
+ Slot LayoutSlot "{5EBF1EC9E8008D16}" {
+ }
+ components {
+  PS_DebriefingLossesWidgetComponent "{6084E1C19F1615C1}" {
+  }
+ }
+ {
+  ImageWidgetClass "{6604C04C537D896C}" {
+   Name "Background"
+   Slot FrameWidgetSlot "{5EB11767D337F688}" {
+    OffsetLeft 0
+    OffsetTop 0
+    SizeX 530
+    OffsetRight -530
+    SizeY 44
+    OffsetBottom -44
+   }
+   Color 1 1 1 0
+  }
+  TextWidgetClass "{6604C04C537D89E8}" {
+   Name "UnitName"
+   Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
+    PositionX 60
+    OffsetLeft 60
+    PositionY 0
+    OffsetTop 0
+    SizeX 318
+    OffsetRight -378
+    SizeY 44
+    OffsetBottom -44
+   }
+   Text "lasagna soldier"
+   "Font Size" 20
+   "Min Font Size" 20
+   "Vertical Alignment" Center
+  }
+  ImageWidgetClass "{6604C04C537D89BA}" {
+   Name "UnitTypeImage"
+   Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
+    PositionX 10
+    OffsetLeft 10
+    PositionY 0
+    OffsetTop 0
+    SizeX 44
+    OffsetRight -54
+    SizeY 44
+    OffsetBottom -44
+   }
+   Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
+   Image "characters"
+   Size 32 32
+  }
+  TextWidgetClass "{6604C04C537D887C}" {
+   Name "Destroyed"
+   Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
+    PositionX 476
+    OffsetLeft 476
+    PositionY 0
+    OffsetTop 0
+    SizeX 44
+    OffsetRight -520
+    SizeY 44
+    OffsetBottom -44
+   }
+   Text "100"
+   "Font Size" 20
+   "Min Font Size" 20
+   "Horizontal Alignment" Center
+   "Vertical Alignment" Center
+  }
+  TextWidgetClass "{6604C04C537D882A}" {
+   Name "VehicleDamaged"
+   Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
+    PositionX 416
+    OffsetLeft 416
+    PositionY 0
+    OffsetTop 0
+    SizeX 44
+    OffsetRight -460
+    SizeY 44
+    OffsetBottom -44
+   }
+   Text "100"
+   "Font Size" 20
+   "Min Font Size" 20
+   "Horizontal Alignment" Center
+   "Vertical Alignment" Center
+  }
+  TextWidgetClass "{6604C04C537D88D3}" {
+   Name "CharacterDamaged"
+   Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
+    PositionX 356
+    OffsetLeft 356
+    PositionY 0
+    OffsetTop 0
+    SizeX 44
+    OffsetRight -400
+    SizeY 44
+    OffsetBottom -44
+   }
+   Text "100"
+   "Font Size" 20
+   "Min Font Size" 20
+   "Horizontal Alignment" Center
+   "Vertical Alignment" Center
+  }
+  TextWidgetClass "{6604C04C537D8885}" {
+   Name "Undamaged"
+   Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
+    PositionX 296
+    OffsetLeft 296
+    PositionY 0
+    OffsetTop 0
+    SizeX 44
+    OffsetRight -340
+    SizeY 44
+    OffsetBottom -44
+   }
+   Text "100"
+   "Font Size" 20
+   "Min Font Size" 20
+   "Horizontal Alignment" Center
+   "Vertical Alignment" Center
+  }
+ }
+}

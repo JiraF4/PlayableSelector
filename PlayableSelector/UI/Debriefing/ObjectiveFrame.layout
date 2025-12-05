@@ -1,0 +1,129 @@
+FrameWidgetClass {
+ Name "ObjectiveFrame"
+ Slot LayoutSlot "{5EBF1EC9E8008D16}" {
+ }
+ components {
+  PS_DebriefingObjectiveWidgetComponent "{6084E1C4324FF049}" {
+  }
+ }
+ {
+  ImageWidgetClass "{6604C04D3CE3928D}" {
+   Name "Background"
+   Slot FrameWidgetSlot "{5EB11767D337F688}" {
+    OffsetLeft 0
+    OffsetTop 0
+    SizeX 530
+    OffsetRight -530
+    SizeY 44
+    OffsetBottom -44
+   }
+   Color 1 1 1 0
+  }
+  TextWidgetClass "{6604C04D3CE3917A}" {
+   Name "ObjectiveName"
+   Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
+    PositionX 6
+    OffsetLeft 6
+    PositionY 0
+    OffsetTop 0
+    SizeX 374
+    OffsetRight -380
+    SizeY 44
+    OffsetBottom -44
+   }
+   Text "Escort orange cat who loves lasagna to safety"
+   "Font Size" 20
+   "Min Font Size" 20
+   "Vertical Alignment" Center
+  }
+  ImageWidgetClass "{6604C04D3CE391C8}" {
+   Name "ObjectiveCompletion"
+   Slot FrameWidgetSlot "{5EA8C93CB43A445D}" {
+    PositionX 486
+    OffsetLeft 486
+    PositionY 0
+    OffsetTop 0
+    SizeX 44
+    OffsetRight -530
+    SizeY 44
+    OffsetBottom -44
+   }
+   Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
+   Image "check"
+   Size 32 32
+  }
+  TextWidgetClass "{6604C04D3CE391F2}" {
+   Name "ObjectiveScore"
+   Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
+    PositionX 406
+    OffsetLeft 406
+    PositionY 0
+    OffsetTop 0
+    SizeX 64
+    OffsetRight -470
+    SizeY 44
+    OffsetBottom -44
+   }
+   Text "100000"
+   "Font Size" 20
+   "Min Font Size" 20
+   "Horizontal Alignment" Center
+   "Vertical Alignment" Center
+  }
+  ButtonWidgetClass "{6604C04D3CE390D7}" {
+   Name "CompleteButton"
+   Slot FrameWidgetSlot "{5EA8C93F5E685F59}" {
+    Anchor 0 0 0 0
+    PositionX 486
+    OffsetLeft 486
+    PositionY 0
+    OffsetTop 0
+    SizeX 44
+    OffsetRight -530
+    SizeY 44
+    OffsetBottom -44
+   }
+   Color 0 1 0.019 0
+   "Inherit Color" 1
+   components {
+    SCR_ButtonBaseComponent "{5EAB23942F4C5DCF}" {
+     m_sSoundHovered ""
+     m_sSoundClicked ""
+     m_BackgroundDefault 1 1 1 0
+     m_BackgroundHovered 1 1 1 0.162
+     m_BackgroundSelected 1 1 1 0
+     m_BackgroundSelectedHovered 1 1 1 0.162
+     m_BackgroundClicked 1 1 1 0
+     m_bShowBorderOnFocus 0
+     m_bNoBorderAnimation 1
+    }
+   }
+   "no focus" 1
+   {
+    FrameWidgetClass "{6604C04D3CE390D4}" {
+     Name "CompleteButtonFrame"
+     Slot ButtonWidgetSlot "{5EA8C93CB4241314}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+     }
+     "Inherit Color" 1
+     {
+      ImageWidgetClass "{6604C04D3CE390D2}" {
+       Name "Background"
+       Slot FrameWidgetSlot "{5D6E8206B132EE77}" {
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX 44
+        OffsetRight -44
+        SizeY 44
+        OffsetBottom -44
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}
