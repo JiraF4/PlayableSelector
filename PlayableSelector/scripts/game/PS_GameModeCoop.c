@@ -114,6 +114,14 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	protected PS_PlayableManager m_playableManager;
 	protected PS_CutsceneManager m_CutsceneManager;
 
+	protected void EnsureManagers()
+	{
+		if (!m_playableManager)
+			m_playableManager = PS_PlayableManager.GetInstance();
+		if (!m_CutsceneManager)
+			m_CutsceneManager = PS_CutsceneManager.GetInstance();
+	}
+
 	// ------------------------------------------ Events ------------------------------------------
 	
 	override void EOnInit(IEntity owner)
@@ -130,6 +138,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	override void OnGameStart()
 	{
 		super.OnGameStart();
+		EnsureManagers();
 
 		InputManager inputManager = GetGame().GetInputManager();
 		if (inputManager && m_bDisableVanillaGroupMenu)
@@ -141,9 +150,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		Widget FreezeTimeCounterOverlay = GetGame().GetWorkspace().FindAnyWidget("FreezeTimeCounterOverlay");
 		if (FreezeTimeCounterOverlay)
 			FreezeTimeCounterOverlay.RemoveFromHierarchy();
-
-		m_playableManager = PS_PlayableManager.GetInstance();
-		m_CutsceneManager = PS_CutsceneManager.GetInstance();
 
 		foreach (PS_FactionRespawnCount factionRespawnCount : m_aFactionRespawnCount)
 		{
@@ -602,36 +608,27 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 		m_OnPostCompPlayerDisconnected.Invoke(playerId, cause, timeout);
 
-		if (IsMaster())
+		if (IsMaster() && controlledEntity)
 		{
-			if (controlledEntity)
+			// Reconnect ownership is handled by the custom playable reservation timer above.
+			// This keeps the disconnect flow independent from version-specific reconnect component APIs.
+			CharacterControllerComponent charController = CharacterControllerComponent.Cast(controlledEntity.FindComponent(CharacterControllerComponent));
+			if (charController)
 			{
-				if (SCR_ReconnectComponent.GetInstance() && SCR_ReconnectComponent.GetInstance().IsReconnectEnabled())
+				charController.SetMovement(0, vector.Forward);
+			}
+
+			CompartmentAccessComponent compAccess = CompartmentAccessComponent.Cast(controlledEntity.FindComponent(CompartmentAccessComponent));
+			if (compAccess)
+			{
+				BaseCompartmentSlot compartment = compAccess.GetCompartment();
+				if (compartment)
 				{
-					if (SCR_ReconnectComponent.GetInstance().OnPlayerDC(playerId, cause))	// if conditions to allow reconnect pass, skip the entity delete
+					CarControllerComponent carController = CarControllerComponent.Cast(compartment.GetVehicle().FindComponent(CarControllerComponent));
+					if (carController)
 					{
-						CharacterControllerComponent charController = CharacterControllerComponent.Cast(controlledEntity.FindComponent(CharacterControllerComponent));
-						if (charController)
-						{
-							charController.SetMovement(0, vector.Forward);
-						}
-
-						CompartmentAccessComponent compAccess = CompartmentAccessComponent.Cast(controlledEntity.FindComponent(CompartmentAccessComponent)); // TODO nullcheck
-						if (compAccess)
-						{
-							BaseCompartmentSlot compartment = compAccess.GetCompartment();
-							if (compartment)
-							{
-								CarControllerComponent carController = CarControllerComponent.Cast(compartment.GetVehicle().FindComponent(CarControllerComponent));
-								if (carController)
-								{
-									carController.Shutdown();
-									carController.StopEngine(false);
-								}
-							}
-						}
-
-						return;
+						carController.Shutdown();
+						carController.StopEngine(false);
 					}
 				}
 			}
@@ -640,6 +637,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 	bool CanJoinFaction(FactionKey factionKeyPlayer, FactionKey currentFaction)
 	{
+		EnsureManagers();
+
 		if (m_iFactionsBalance == -1)
 			return true;
 		if (factionKeyPlayer == currentFaction)
@@ -781,6 +780,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 	void Respawn(int playerId, PS_RespawnData respawnData)
 	{
+		EnsureManagers();
+
 		Resource resource = Resource.Load(respawnData.m_sPrefabName);
 		EntitySpawnParams params = new EntitySpawnParams();
 		Math3D.MatrixCopy(respawnData.m_aSpawnTransform, params.Transform);
@@ -879,6 +880,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	{
 		if (!Replication.IsServer())
 			return;
+
+		EnsureManagers();
 
 		SCR_EGameModeState state = GetState();
 		if (oldState != SCR_EGameModeState.NULL && oldState != state) return;

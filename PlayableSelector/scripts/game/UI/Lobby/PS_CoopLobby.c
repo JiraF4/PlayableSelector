@@ -1,3 +1,17 @@
+class PS_CoopLobbyFactionCount
+{
+	int m_iPlayers;
+	int m_iMaxPlayers;
+	int m_iLockedPlayers;
+
+	void PS_CoopLobbyFactionCount(int players, int maxPlayers, int lockedPlayers)
+	{
+		m_iPlayers = players;
+		m_iMaxPlayers = maxPlayers;
+		m_iLockedPlayers = lockedPlayers;
+	}
+}
+
 // Insert new menu to global pressets enum
 // Don't forge modify config {C747AFB6B750CE9A}Configs/System/chimeraMenus.conf, if you do the same.
 modded enum ChimeraMenuPreset : ScriptMenuPresetEnum
@@ -239,7 +253,7 @@ class PS_CoopLobby : MenuBase
 	{
 		array<PS_PlayableContainer> playables = m_PlayableManager.GetPlayablesSorted();
 		map<RplId, ref PS_PlayableVehicleContainer> playableVehicles = m_PlayableManager.GetPlayableVehicles();
-		map<SCR_Faction, ref Tuple3<int, int, int>> factions = new map<SCR_Faction, ref Tuple3<int, int, int>>();
+		map<SCR_Faction, ref PS_CoopLobbyFactionCount> factions = new map<SCR_Faction, ref PS_CoopLobbyFactionCount>();
 		
 		foreach (PS_PlayableContainer playable : playables)
 		{
@@ -257,13 +271,13 @@ class PS_CoopLobby : MenuBase
 			SCR_Faction faction = playable.GetFaction();
 			if (!factions.Contains(faction))
 				//DRG_BUG
-				factions.Insert(faction, new Tuple3<int, int, int>(playerAdded, playerAddedMax, playerAddedLocked));
+				factions.Insert(faction, new PS_CoopLobbyFactionCount(playerAdded, playerAddedMax, playerAddedLocked));
 			else
 			{
-				Tuple3<int, int, int> tuple = factions.Get(faction);
-				tuple.param1 += playerAdded;
-				tuple.param2 += playerAddedMax;
-				tuple.param3 += playerAddedLocked;
+				PS_CoopLobbyFactionCount count = factions.Get(faction);
+				count.m_iPlayers += playerAdded;
+				count.m_iMaxPlayers += playerAddedMax;
+				count.m_iLockedPlayers += playerAddedLocked;
 			}
 		}
 		
@@ -272,9 +286,9 @@ class PS_CoopLobby : MenuBase
 			AddPlayableVehicle(playableVehicleContainer);
 		}
 		
-		foreach (SCR_Faction faction, Tuple3<int, int, int> count : factions)
+		foreach (SCR_Faction faction, PS_CoopLobbyFactionCount count : factions)
 		{
-			AddFaction(faction, count.param1, count.param2, count.param3);
+			AddFaction(faction, count.m_iPlayers, count.m_iMaxPlayers, count.m_iLockedPlayers);
 		}
 		
 		// Added in runtime

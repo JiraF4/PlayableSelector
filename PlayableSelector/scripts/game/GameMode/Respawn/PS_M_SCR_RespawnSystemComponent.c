@@ -45,17 +45,75 @@ modded class SCR_RespawnSystemComponent : RespawnSystemComponent
 	//! \param[in] response
 	//! \param[in] data
 	//! \return
-	override SCR_BaseSpawnPointRequestResultInfo GetSpawnPointRequestResultInfo(SCR_SpawnRequestComponent requestComponent, SCR_ESpawnResult response, SCR_SpawnData data){	return null;	} 
-	static override SCR_RespawnSystemComponent GetInstance()	{return null;}
-	override RplComponent GetRplComponent()	{return null;}
-	static override MenuBase OpenRespawnMenu()	{return null;} 
-	static override void CloseRespawnMenu()	{return;} 
-	override void ServerSetEnableRespawn(bool enableSpawning){return;}  
-	override bool IsRespawnEnabled()	{return false;} 
-	override bool IsPauseMenuRespawnEnabled() {return null;} 
-	override bool IsFactionChangeAllowed() {return false;} 
-	override ScriptInvoker GetOnRespawnEnabledChanged() {return null;} 
-	override void OnPlayerRegistered_S(int playerId) {return;}	
-	override void OnInit(IEntity owner) {return;}
-	override void OnPlayerAuditSuccess_S(int playerId)	{return;}
+	override SCR_BaseSpawnPointRequestResultInfo GetSpawnPointRequestResultInfo(SCR_SpawnRequestComponent requestComponent, SCR_ESpawnResult response, SCR_SpawnData data) { return null; }
+	static override SCR_RespawnSystemComponent GetInstance()
+	{
+		if (s_Instance)
+			return s_Instance;
+
+		BaseGameMode gameMode = GetGame().GetGameMode();
+		if (!gameMode)
+			return null;
+
+		return SCR_RespawnSystemComponent.Cast(gameMode.FindComponent(SCR_RespawnSystemComponent));
+	}
+
+	override RplComponent GetRplComponent()
+	{
+		return m_RplComponent;
+	}
+
+	static override MenuBase OpenRespawnMenu()
+	{
+		return null;
+	}
+
+	static override void CloseRespawnMenu()
+	{
+	}
+
+	override void ServerSetEnableRespawn(bool enableSpawning)
+	{
+		m_bEnableRespawn = enableSpawning;
+		GetOnRespawnEnabledChanged().Invoke();
+	}
+
+	override bool IsRespawnEnabled()
+	{
+		return m_bEnableRespawn;
+	}
+
+	override bool IsPauseMenuRespawnEnabled()
+	{
+		return m_bEnablePauseMenuRespawn;
+	}
+
+	override bool IsFactionChangeAllowed()
+	{
+		return false;
+	}
+
+	override ScriptInvoker GetOnRespawnEnabledChanged()
+	{
+		if (!Event_OnRespawnEnabledChanged)
+			Event_OnRespawnEnabledChanged = new ScriptInvoker();
+
+		return Event_OnRespawnEnabledChanged;
+	}
+
+	override void OnPlayerRegistered_S(int playerId)
+	{
+	}
+
+	override void OnInit(IEntity owner)
+	{
+		s_Instance = this;
+		m_pGameMode = SCR_BaseGameMode.Cast(owner);
+		m_RplComponent = RplComponent.Cast(owner.FindComponent(RplComponent));
+		GetOnRespawnEnabledChanged();
+	}
+
+	override void OnPlayerAuditSuccess_S(int playerId)
+	{
+	}
 }

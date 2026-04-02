@@ -28,6 +28,20 @@ class PS_MissionDataManager : ScriptComponent
 	PlayerManager m_PlayerManager;
 	ref PS_MissionDataConfig m_Data = new PS_MissionDataConfig();
 	int m_iInitTimer = 20;
+
+	protected void EnsureInitialized()
+	{
+		if (!m_GameModeCoop)
+			m_GameModeCoop = PS_GameModeCoop.Cast(GetOwner());
+		if (!m_PlayerManager)
+			m_PlayerManager = GetGame().GetPlayerManager();
+		if (!m_PlayableManager)
+			m_PlayableManager = PS_PlayableManager.GetInstance();
+		if (!m_ObjectiveManager)
+			m_ObjectiveManager = PS_ObjectiveManager.GetInstance();
+		if (!m_FactionManager)
+			m_FactionManager = GetGame().GetFactionManager();
+	}
 	
 	override void OnPostInit(IEntity owner)
 	{
@@ -108,11 +122,7 @@ class PS_MissionDataManager : ScriptComponent
 	
 	void LateInit()
 	{
-		m_GameModeCoop = PS_GameModeCoop.Cast(GetOwner());
-		m_PlayerManager = GetGame().GetPlayerManager();
-		m_PlayableManager = PS_PlayableManager.GetInstance();
-		m_ObjectiveManager = PS_ObjectiveManager.GetInstance();
-		m_FactionManager = GetGame().GetFactionManager();
+		EnsureInitialized();
 		
 		m_GameModeCoop.GetOnHandlePlayerKilled().Insert(OnPlayerKilled);
 		m_GameModeCoop.GetOnGameStateChange().Insert(OnGameStateChanged);
@@ -123,6 +133,8 @@ class PS_MissionDataManager : ScriptComponent
 	
 	void OnPlayerKilled(int playerId, IEntity playerEntity, IEntity killerEntity, notnull Instigator killer)
 	{
+		EnsureInitialized();
+
 		int killerId = killer.GetInstigatorPlayerID();
 		
 		PS_MissionDataPlayerKill missionDataPlayerKill = new PS_MissionDataPlayerKill();
@@ -145,6 +157,8 @@ class PS_MissionDataManager : ScriptComponent
 	
 	void OnGameStateChanged(SCR_EGameModeState state)
 	{
+		EnsureInitialized();
+
 		PS_MissionDataStateChangeEvent missionDataStateChangeEvent = new PS_MissionDataStateChangeEvent();
 		missionDataStateChangeEvent.State = state;
 		missionDataStateChangeEvent.Time = GetGame().GetWorld().GetWorldTime();
@@ -161,6 +175,11 @@ class PS_MissionDataManager : ScriptComponent
 	
 	void OnPlayerAuditSuccess(int playerId)
 	{
+		EnsureInitialized();
+
+		if (!m_PlayerManager)
+			return;
+
 		if (m_playerSaved.Contains(playerId))
 			return;
 		
@@ -179,6 +198,8 @@ class PS_MissionDataManager : ScriptComponent
 	// Save main mission data
 	void InitData()
 	{
+		EnsureInitialized();
+
 		SCR_MissionHeader missionHeader = SCR_MissionHeader.Cast(GetGame().GetMissionHeader());
 		if (missionHeader) {
 			//m_Data.MissionPath = missionHeader.GetHeaderResourcePath();

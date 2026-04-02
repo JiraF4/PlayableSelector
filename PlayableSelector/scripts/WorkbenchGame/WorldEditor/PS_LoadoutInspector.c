@@ -1,3 +1,15 @@
+class PS_LoadoutInspectorWeaponSlot
+{
+	int m_iComponentId;
+	IEntityComponentSource m_ComponentSource;
+
+	void PS_LoadoutInspectorWeaponSlot(int componentId, IEntityComponentSource componentSource)
+	{
+		m_iComponentId = componentId;
+		m_ComponentSource = componentSource;
+	}
+}
+
 class PS_LoadoutInspectorCustomTitle: BaseContainerCustomTitle
 {
 	override bool _WB_GetCustomTitle(BaseContainer source, out string title)
@@ -79,7 +91,7 @@ class PS_LoadoutInspector
 	void SetItems(WorldEditorAPI wApi, IEntitySource entitySource)
 	{
 		IEntityComponentSource baseLoadoutManagerComponent = null;
-		array<ref Tuple2<int, IEntityComponentSource>> weaponSlots = new array<ref Tuple2<int, IEntityComponentSource>>();
+		array<ref PS_LoadoutInspectorWeaponSlot> weaponSlots = new array<ref PS_LoadoutInspectorWeaponSlot>();
 		BaseContainer equipmentStorageComponent = null;
 		IEntityComponentSource inventoryStorageManagerComponent = null;
 		int componentsCount = entitySource.GetComponentCount();
@@ -93,7 +105,7 @@ class PS_LoadoutInspector
 			if (componentSource.GetClassName() == "CharacterGrenadeSlotComponent"
 			 || componentSource.GetClassName() == "CharacterWeaponSlotComponent")
 			{
-				weaponSlots.Insert(new Tuple2<int, IEntityComponentSource>(r, componentSource));
+				weaponSlots.Insert(new PS_LoadoutInspectorWeaponSlot(r, componentSource));
 			}
 			if (componentSource.GetClassName() == "SCR_CharacterInventoryStorageComponent")
 			{
@@ -146,10 +158,10 @@ class PS_LoadoutInspector
 				wApi.SetVariableValue(entitySource, {ContainerIdPathEntry("SCR_CharacterInventoryStorageComponent"), ContainerIdPathEntry("components", 0), ContainerIdPathEntry("InitialStorageSlots", 1)}, "Prefab", itemPrefab);
 		}
 		
-		foreach(Tuple2<int, IEntityComponentSource> t : weaponSlots)
+		foreach(PS_LoadoutInspectorWeaponSlot weaponSlot : weaponSlots)
 		{
-			int componetnId = t.param1; 
-			IEntityComponentSource componentSource = t.param2;
+			int componetnId = weaponSlot.m_iComponentId; 
+			IEntityComponentSource componentSource = weaponSlot.m_ComponentSource;
 			ResourceName itemPrefabOld;
 			componentSource.Get("WeaponTemplate", itemPrefabOld);
 			int slotIndex;

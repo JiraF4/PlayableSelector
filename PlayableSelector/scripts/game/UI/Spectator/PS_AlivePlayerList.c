@@ -1,3 +1,15 @@
+class PS_AliveFactionCount
+{
+	int m_iCount;
+	int m_iAliveCount;
+
+	void PS_AliveFactionCount(int count, int aliveCount)
+	{
+		m_iCount = count;
+		m_iAliveCount = aliveCount;
+	}
+}
+
 // Widget displays info about alive players in game.
 // Path: {18D3CF175C9AA974}UI/Spectator/AlivePlayersList.layout
 
@@ -60,7 +72,7 @@ class PS_AlivePlayerList : ScriptedWidgetComponent
 	void InitList()
 	{
 		array<PS_PlayableContainer> playables = m_PlayableManager.GetPlayablesSorted();
-		map<SCR_Faction, ref Tuple2<int, int>> factions = new map<SCR_Faction, ref Tuple2<int, int>>();
+		map<SCR_Faction, ref PS_AliveFactionCount> factions = new map<SCR_Faction, ref PS_AliveFactionCount>();
 		
 		foreach (PS_PlayableContainer playable : playables)
 		{
@@ -72,20 +84,20 @@ class PS_AlivePlayerList : ScriptedWidgetComponent
 				alive = 1;
 			if (!factions.Contains(faction))
 			{
-				factions.Insert(faction, new Tuple2<int, int>(1, alive));
+				factions.Insert(faction, new PS_AliveFactionCount(1, alive));
 			}
 			else
 			{
-				Tuple2<int, int> factionCount = factions.Get(faction);
-				factionCount.param1++;
-				factionCount.param2 += alive;
+				PS_AliveFactionCount factionCount = factions.Get(faction);
+				factionCount.m_iCount++;
+				factionCount.m_iAliveCount += alive;
 			}
 		}
 		
-		foreach (SCR_Faction faction, Tuple2<int, int> factionCount : factions)
+		foreach (SCR_Faction faction, PS_AliveFactionCount factionCount : factions)
 		{
 			m_aSelectedFactions.Insert(faction);
-			AddFactionButton(faction, factionCount.param1, factionCount.param2);
+			AddFactionButton(faction, factionCount.m_iCount, factionCount.m_iAliveCount);
 		}
 		
 		// Added in runtime
