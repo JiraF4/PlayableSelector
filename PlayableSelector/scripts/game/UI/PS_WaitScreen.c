@@ -17,6 +17,9 @@ class PS_WaitScreen: MenuBase
 			Close();
 			return;
 		}
+		EntitySpawnParams params = new EntitySpawnParams();
+		Resource resource = Resource.Load("{6EAA30EF620F4A2E}Prefabs/Editor/Camera/ManualCameraSpectator.et");
+		IEntity m_Camera = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
 		GetGame().GetCallqueue().CallLater(AwaitPlayerController, 100, true);
 	}
 	
