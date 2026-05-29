@@ -605,7 +605,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		{
 			PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
 			int playerId = thisPlayerController.GetPlayerId();
-			m_vVoNPosition = Vector(0, 100000, 0) + Vector(1000 * Math.Mod(playerId, 10), 5000 * Math.Floor(Math.Mod(playerId, 100) / 10), 5000 * Math.Floor(playerId / 100));
+			m_vVoNPosition = Vector(0, 100, 0) + Vector(100 * Math.Mod(playerId, 10), 500 * Math.Floor(Math.Mod(playerId, 100) / 10), 500 * Math.Floor(playerId / 100));
 			vector currentOrigin = m_InitialEntity.GetOrigin();
 			//if (currentOrigin == m_vVoNPosition) return;
 			//Print("Move to: " + m_vVoNPosition.ToString());
