@@ -606,9 +606,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		{
 			if (controlledEntity)
 			{
-				if (SCR_ReconnectComponent.GetInstance() && SCR_ReconnectComponent.GetInstance().IsReconnectEnabled())
+				if (SCR_ReconnectComponent.GetInstance())
 				{
-					if (SCR_ReconnectComponent.GetInstance().OnPlayerDC(playerId, cause))	// if conditions to allow reconnect pass, skip the entity delete
+					if (SCR_ReconnectComponent.GetInstance().HandlePlayerDisconnect(playerId, cause))	// if conditions to allow reconnect pass, skip the entity delete
 					{
 						CharacterControllerComponent charController = CharacterControllerComponent.Cast(controlledEntity.FindComponent(CharacterControllerComponent));
 						if (charController)
