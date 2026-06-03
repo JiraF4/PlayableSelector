@@ -34,6 +34,6 @@ PS_MissionDescription {
   }
  }
  m_sTitle "Description title"
- m_sDescriptionLayout "{41DAF7B7061DC0BC}UI/MissionDescription/DescriptionEditable.layout"
+ m_sDescriptionLayout "{B6DE04F7CF7A95DA}UI/MissionDescription/DescriptionEditableScrollable.layout"
  m_sTextData "Description text"
 }
