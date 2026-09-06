@@ -2,6 +2,11 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 {
 	protected bool m_bDead = false;
 	protected bool m_bWounded = false;
+	// Per-frame write-skip caches: UpdateLabel runs every frame for every label, so only push to the widget when
+	// the value actually changed. Self-correcting (always recomputed from live state) => reconnect-safe: a label
+	// reused for a new/reconnected player re-pushes on the first frame the value differs.
+	protected string m_sLastLabelText;
+	protected int m_iLastIconsVisible = -1;
 	protected SCR_ChimeraCharacter m_eChimeraCharacter;
 	protected SCR_CharacterControllerComponent m_ControllerComponent;
 	protected PS_PlayableComponent m_cPlayableComponent;
@@ -160,27 +165,52 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 		if (m_cPlayableComponent)
 		{
 			int playerId = m_PlayableManager.GetPlayerByPlayableRemembered(m_cPlayableComponent.GetRplId());
+			// Fallback: if the RplId was never registered (e.g. clone-and-teleport from unstuck mod),
+			// try the LIVE mapping, then resolve from the entity's network owner.
+			if (playerId <= 0)
+				playerId = m_PlayableManager.GetPlayerByPlayable(m_cPlayableComponent.GetRplId());
+			if (playerId <= 0 && m_eChimeraCharacter)
+			{
+				int ownerId = GetGame().GetPlayerManager().GetPlayerIdFromControlledEntity(m_eChimeraCharacter);
+				if (ownerId > 0)
+					playerId = ownerId;
+			}
+			string newText;
+			bool hasText = false;
 			if (playerId > 0)
 			{
 				string playerName = m_PlayableManager.GetPlayerName(playerId);
 				if (playerName != "")
-					m_wSpectatorLabelText.SetText(playerName);
+				{
+					newText = playerName;
+					hasText = true;
+				}
+				// name not ready yet: keep current text (matches the old "do nothing" branch)
 			} else {
-				m_wSpectatorLabelText.SetText(m_cPlayableComponent.GetName());
+				newText = m_cPlayableComponent.GetName();
+				hasText = true;
+			}
+			// Only touch the widget when the text actually changed (was an unconditional SetText every frame).
+			if (hasText && newText != m_sLastLabelText)
+			{
+				m_wSpectatorLabelText.SetText(newText);
+				m_sLastLabelText = newText;
 			}
 		}
-		
+
+		// Only flip icon visibility on change (was 3x SetVisible every frame).
+		int showIcons;
 		if (m_fDistanceToIcon > 120 && !m_bSelected)
-		{
-			m_wOverlayCircle.SetVisible(false);
-			m_wSpectatorLabelIcon.SetVisible(false);
-			m_wSpectatorLabelIconSelected.SetVisible(false);
-		}
+			showIcons = 0;
 		else
+			showIcons = 1;
+		if (showIcons != m_iLastIconsVisible)
 		{
-			m_wOverlayCircle.SetVisible(true);
-			m_wSpectatorLabelIcon.SetVisible(true);
-			m_wSpectatorLabelIconSelected.SetVisible(true);
+			m_iLastIconsVisible = showIcons;
+			bool iconsVisible = showIcons == 1;
+			m_wOverlayCircle.SetVisible(iconsVisible);
+			m_wSpectatorLabelIcon.SetVisible(iconsVisible);
+			m_wSpectatorLabelIconSelected.SetVisible(iconsVisible);
 		}
 		
 		if (!m_bDead)

@@ -5,10 +5,10 @@ class PS_PlayableContainer
 	protected string m_sName;
 	protected FactionKey m_FactionKey;
 	protected SCR_ECharacterRank m_eCharacterRank;
-	protected string m_sRoleIconPath;
-	protected string m_sRoleIconQuad;
-	protected string m_sRoleName;
 	protected EDamageState m_eDamageState;
+	// Role icon/name are NOT stored here anymore - they are static per playable prefab, so replicating
+	// them per container (128x) wasted JIP bandwidth. They now live once-per-prefab in PS_PlayableManager
+	// and the getters below look them up by this container's RplId.
 
 	void Init(PS_PlayableComponent playableComponent) // Rpc workaround
 	{
@@ -17,9 +17,6 @@ class PS_PlayableContainer
 		m_sName = playableComponent.GetName();
 		m_FactionKey = playableComponent.GetFactionKey();
 		m_eCharacterRank = playableComponent.GetCharacterRank();
-		m_sRoleIconPath = playableComponent.GetRoleIconPath();
-		m_sRoleIconQuad = playableComponent.GetRoleIconQuad();
-		m_sRoleName = playableComponent.GetRoleName();
 		m_eDamageState = playableComponent.GetDamageState();
 	}
 
@@ -30,9 +27,6 @@ class PS_PlayableContainer
 		snapshot.SerializeString(instance.m_sName);
 		snapshot.SerializeString(instance.m_FactionKey);
 		snapshot.SerializeInt(instance.m_eCharacterRank);
-		snapshot.SerializeString(instance.m_sRoleIconPath);
-		snapshot.SerializeString(instance.m_sRoleIconQuad);
-		snapshot.SerializeString(instance.m_sRoleName);
 		snapshot.SerializeInt(instance.m_eDamageState);
 		return true;
 	}
@@ -43,9 +37,6 @@ class PS_PlayableContainer
 		snapshot.SerializeString(instance.m_sName);
 		snapshot.SerializeString(instance.m_FactionKey);
 		snapshot.SerializeInt(instance.m_eCharacterRank);
-		snapshot.SerializeString(instance.m_sRoleIconPath);
-		snapshot.SerializeString(instance.m_sRoleIconQuad);
-		snapshot.SerializeString(instance.m_sRoleName);
 		snapshot.SerializeInt(instance.m_eDamageState);
 		return true;
 	}
@@ -56,9 +47,6 @@ class PS_PlayableContainer
 		snapshot.EncodeString(packet);
 		snapshot.EncodeString(packet);
 		snapshot.EncodeInt(packet);
-		snapshot.EncodeString(packet);
-		snapshot.EncodeString(packet);
-		snapshot.EncodeString(packet);
 		snapshot.EncodeInt(packet);
 	}
 
@@ -68,9 +56,6 @@ class PS_PlayableContainer
 		snapshot.DecodeString(packet);
 		snapshot.DecodeString(packet);
 		snapshot.DecodeInt(packet);
-		snapshot.DecodeString(packet);
-		snapshot.DecodeString(packet);
-		snapshot.DecodeString(packet);
 		snapshot.DecodeInt(packet);
 		return true;
 	}
@@ -81,9 +66,6 @@ class PS_PlayableContainer
 			&& lhs.CompareStringSnapshots(rhs)
 			&& lhs.CompareStringSnapshots(rhs)
 			&& lhs.CompareSnapshots(rhs, 4)
-			&& lhs.CompareStringSnapshots(rhs)
-			&& lhs.CompareStringSnapshots(rhs)
-			&& lhs.CompareStringSnapshots(rhs)
 			&& lhs.CompareSnapshots(rhs, 4);
 	}
 
@@ -93,9 +75,6 @@ class PS_PlayableContainer
 			&& snapshot.CompareString(instance.m_sName)
 			&& snapshot.CompareString(instance.m_FactionKey)
 			&& snapshot.CompareInt(instance.m_eCharacterRank)
-			&& snapshot.CompareString(instance.m_sRoleIconPath)
-			&& snapshot.CompareString(instance.m_sRoleIconQuad)
-			&& snapshot.CompareString(instance.m_sRoleName)
 			&& snapshot.CompareInt(instance.m_eDamageState);
 	}
 
@@ -105,9 +84,6 @@ class PS_PlayableContainer
 		writer.WriteString(m_sName);
 		writer.WriteString(m_FactionKey);
 		writer.WriteInt(m_eCharacterRank);
-		writer.WriteString(m_sRoleIconPath);
-		writer.WriteString(m_sRoleIconQuad);
-		writer.WriteString(m_sRoleName);
 		writer.WriteInt(m_eDamageState);
 	}
 
@@ -117,9 +93,6 @@ class PS_PlayableContainer
 		reader.ReadString(m_sName);
 		reader.ReadString(m_FactionKey);
 		reader.ReadInt(m_eCharacterRank);
-		reader.ReadString(m_sRoleIconPath);
-		reader.ReadString(m_sRoleIconQuad);
-		reader.ReadString(m_sRoleName);
 		reader.ReadInt(m_eDamageState);
 	}
 
@@ -204,31 +177,43 @@ class PS_PlayableContainer
 	{
 		return SCR_Faction.Cast(GetGame().GetFactionManager().GetFactionByKey(GetFactionKey()));
 	}
+	// Role icon/name are stored once-per-prefab in PS_PlayableManager (see container field comment)
 	string GetRoleIconPath()
 	{
-		return m_sRoleIconPath;
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		if (!playableManager)
+			return "";
+		return playableManager.GetPlayableRoleIconPath(m_RplId);
 	}
 	string GetRoleIconQuad()
 	{
-		return m_sRoleIconQuad;
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		if (!playableManager)
+			return "";
+		return playableManager.GetPlayableRoleIconQuad(m_RplId);
 	}
-	
+
 	bool SetIconTo(ImageWidget imageWidget)
 	{
-		if (!imageWidget || m_sRoleIconPath.IsEmpty())
+		string iconPath = GetRoleIconPath();
+		if (!imageWidget || iconPath.IsEmpty())
 			return false;
 
-		if (m_sRoleIconQuad != "")
-			imageWidget.LoadImageFromSet(0, m_sRoleIconPath, m_sRoleIconQuad);
+		string iconQuad = GetRoleIconQuad();
+		if (iconQuad != "")
+			imageWidget.LoadImageFromSet(0, iconPath, iconQuad);
 		else
-			imageWidget.LoadImageTexture(0, m_sRoleIconPath);
+			imageWidget.LoadImageTexture(0, iconPath);
 
 		return true;
 	}
-	
+
 	string GetRoleName()
 	{
-		return m_sRoleName;
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		if (!playableManager)
+			return "";
+		return playableManager.GetPlayableRoleName(m_RplId);
 	}
 	SCR_ECharacterRank GetCharacterRank()
 	{

@@ -90,11 +90,17 @@ class PS_GameModeHeader : ScriptedWidgetComponent
 	
 	void UpdateTimeAndWeather()
 	{
+		if (!m_TimeAndWeatherManagerEntity)
+			return;
 		float time = m_TimeAndWeatherManagerEntity.GetTimeOfTheDay();
 		WeatherState weatherState = m_TimeAndWeatherManagerEntity.GetCurrentWeatherState();
+		if (!weatherState)
+			return;
 		
-		m_wTimeImage.LoadImageTexture(0, timeImages[8 * (time/24.0)]);
-		m_wWeatherImage.LoadImageTexture(0, weatherState.GetIconPath());
+		if (m_wTimeImage)
+			m_wTimeImage.LoadImageTexture(0, timeImages[8 * (time/24.0)]);
+		if (m_wWeatherImage)
+			m_wWeatherImage.LoadImageTexture(0, weatherState.GetIconPath());
 	}
 	
 	void AddOnClick()

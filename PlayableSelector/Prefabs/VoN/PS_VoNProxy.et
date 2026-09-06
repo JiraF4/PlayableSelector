@@ -1,0 +1,28 @@
+GenericEntity {
+ ID "5EAF0B0BC0DE0001"
+ components {
+  BaseRadioComponent "{5EAF0B0BC0DE0002}" {
+   "Encryption key" "PSVoN"
+   "Turned on" 1
+   Transceivers {
+    RadioTransceiver "{5EAF0B0BC0DE0003}" {
+     ChannelFrequency 1000
+     "Transmitting Range" 65000
+     "Min tunable frequency" 1000
+     "Max tunable frequency" 10000
+     "Frequency resolution" 10
+    }
+   }
+  }
+  PS_VoNProxyComponent "{5EAF0B0BC0DE0004}" {
+  }
+  SCR_RadioComponent "{5EAF0B0BC0DE0005}" {
+  }
+  SCR_VoNComponent "{5EAF0B0BC0DE0006}" {
+   Filename "{92582B3603EE5464}Sounds/VON/vonLobby.acp"
+  }
+  RplComponent "{5EAF0B0BC0DE0007}" {
+   Streamable Disabled
+  }
+ }
+}

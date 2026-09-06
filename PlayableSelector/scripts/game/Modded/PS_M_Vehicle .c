@@ -52,7 +52,7 @@ modded class Vehicle
 			SCR_AIGroup group = SCR_AIGroup.Cast(GetGame().GetWorld().FindEntityByName(m_sAttachmentGroupName));
 			if (group)
 			{
-				RplId id = Replication.FindId(this);
+				RplId id = Replication.FindItemId(this);
 				playableManager.RegisterGroupVehicle(id, group, this);
 			}
 		}
@@ -68,7 +68,7 @@ modded class Vehicle
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		if (playableManager)
 		{
-			RplId id = Replication.FindId(this);
+			RplId id = Replication.FindItemId(this);
 			playableManager.UnRegisterGroupVehicle(id);
 		}
 	}

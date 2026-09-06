@@ -24,11 +24,14 @@ class PS_SpectatorMenu: MenuBase
 	protected Widget m_wAlivePlayerList;
 	protected Widget m_wSidesRatio;
 	protected Widget m_wSidesRatioFrame;
+	protected Widget m_wKillListFrame;
 	protected TextWidget m_wGameTimerText;
 	protected PS_VoiceChatList m_hVoiceChatList;
 	protected SCR_ButtonBaseComponent m_hVoiceChatListPinButton;
 	protected PS_AlivePlayerList m_hAlivePlayerList;
 	protected SCR_ButtonBaseComponent m_hAlivePlayerListPinButton;
+	protected PS_KillList m_hKillList;
+	protected SCR_ButtonBaseComponent m_hKillListPinButton;
 	
 	protected PS_SpectatorLabelIcon m_LookTarget;
 	
@@ -82,17 +85,40 @@ class PS_SpectatorMenu: MenuBase
 	bool SetCameraCharacter(RplId rplId)
 	{
 		RplComponent rplComponent = RplComponent.Cast(Replication.FindItem(rplId));
-		if (!rplComponent)
-			return false;
-		IEntity characterEntity = rplComponent.GetEntity();
+		IEntity characterEntity;
+		if (rplComponent)
+			characterEntity = rplComponent.GetEntity();
+
+		// Friendly-only gate first - it reads the replicated PlayableManager, so it applies even when the
+		// target entity itself is not streamed to this client.
 		if (m_GameMode.GetFriendliesSpectatorOnly())
 		{
 			PS_PlayableContainer playableContainer = m_PlayableManager.GetPlayableById(rplId);
-			FactionKey playableFactionKey = playableContainer.GetFactionKey();
-			FactionKey lastPlayerFaction = m_PlayableManager.GetPlayerFactionKeyRemembered(GetGame().GetPlayerController().GetPlayerId());
-			if (playableFactionKey != lastPlayerFaction)
-				return false;
+			if (playableContainer)
+			{
+				FactionKey playableFactionKey = playableContainer.GetFactionKey();
+				FactionKey lastPlayerFaction = m_PlayableManager.GetPlayerFactionKeyRemembered(GetGame().GetPlayerController().GetPlayerId());
+				if (playableFactionKey != lastPlayerFaction)
+					return false;
+			}
 		}
+
+		// Outside this client's replication pool (default NDS culling): no local entity to follow. Ask the
+		// server for the player's coordinates and fly the spectator camera there instead (see
+		// PS_PlayableControllerComponent.RequestSpectatePosition). Click again once they stream in for the
+		// normal first-person follow.
+		if (!characterEntity)
+		{
+			SCR_PlayerController playerController = SCR_PlayerController.Cast(GetGame().GetPlayerController());
+			if (playerController)
+			{
+				PS_PlayableControllerComponent controller = playerController.PS_GetPLayableComponent();
+				if (controller)
+					controller.RequestSpectatePosition(rplId);
+			}
+			return false;
+		}
+
 		PS_ManualCameraSpectator camera = PS_ManualCameraSpectator.Cast(GetGame().GetCameraManager().CurrentCamera());
 		if (camera)
 			if (m_GameMode.GetFriendliesSpectatorOnly())
@@ -154,6 +180,14 @@ class PS_SpectatorMenu: MenuBase
 		m_hAlivePlayerListPinButton = SCR_ButtonBaseComponent.Cast(m_wAlivePlayerList.FindAnyWidget("PinButton").FindHandler(SCR_ButtonBaseComponent));
 		
 		m_hAlivePlayerList.SetSpectatorMenu(this);
+		
+		m_wKillListFrame = GetRootWidget().FindAnyWidget("KillListFrame");
+		m_hKillList = PS_KillList.Cast(m_wKillListFrame.FindHandler(PS_KillList));
+		m_hKillListPinButton = SCR_ButtonBaseComponent.Cast(m_wKillListFrame.FindAnyWidget("PinButton").FindHandler(SCR_ButtonBaseComponent));
+		
+		if (m_hKillList)
+			m_hKillList.OnSpectatorMenuOpen();
+		
 		m_wOverlayFooter = GetRootWidget().FindAnyWidget("OverlayFooter");
 		m_wEarlyAccessRoot = GetRootWidget().FindAnyWidget("EarlyAccessRoot");
 		m_wIconsFrame = FrameWidget.Cast(GetRootWidget().FindAnyWidget("IconsFrame"));
@@ -292,7 +326,7 @@ class PS_SpectatorMenu: MenuBase
 			contextMenu.ActionDetachFrom(character).Insert(OnActionDetachFrom);
 		contextMenu.ActionLookAt(character).Insert(OnActionLookAt);
 		contextMenu.ActionFirstPersonView(character).Insert(OnActionFirstPersonView);
-		contextMenu.ActionRespawnInPlace(playableComponent.GetId(), playerId);
+		contextMenu.ActionRespawnInPlace(playableComponent.GetRplId(), playerId);
 		if (playerId > 0)
 		{
 			contextMenu.ActionKick(playerId);
@@ -389,6 +423,10 @@ class PS_SpectatorMenu: MenuBase
 	{
 		super.OnMenuClose();
 		
+		// Clear static self-reference so that ResetTarget() and other external
+		// callers do not dereference a destroyed menu instance after close.
+		s_SpectatorMenu = null;
+		
 		if (m_InputManager)
 		{
 			m_InputManager.RemoveActionListener("ShowScoreboard", EActionTrigger.DOWN, OnShowPlayerList);
@@ -411,22 +449,28 @@ class PS_SpectatorMenu: MenuBase
 	{
 		super.OnMenuUpdate(tDelta);
 		
-		if (PS_PlayersHelper.IsAdminOrServer())
+		if (m_wGameTimerText)
 		{
-			m_wGameTimerText.SetVisible(true);
-			
-			PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-			float timeSeconds = gameModeCoop.GetElapsedTime() - gameModeCoop.GetGameStartElapsedTime();
-			if (timeSeconds < 0 || gameModeCoop.GetGameStartTime() == 0)
-				timeSeconds = 0;
-			int seconds = Math.Mod(timeSeconds, 60);
-			int minutes = (timeSeconds / 60);
-			int hours = (minutes / 60);
-			minutes = Math.Mod(minutes, 60);
-			m_wGameTimerText.SetTextFormat("%1:%2:%3", hours.ToString(2), minutes.ToString(2), seconds.ToString(2));
+			if (PS_PlayersHelper.IsAdminOrServer())
+			{
+				m_wGameTimerText.SetVisible(true);
+				
+				PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+				if (gameModeCoop)
+				{
+					float timeSeconds = gameModeCoop.GetElapsedTime() - gameModeCoop.GetGameStartElapsedTime();
+					if (timeSeconds < 0 || gameModeCoop.GetGameStartTime() == 0)
+						timeSeconds = 0;
+					int seconds = Math.Mod(timeSeconds, 60);
+					int minutes = (timeSeconds / 60);
+					int hours = (minutes / 60);
+					minutes = Math.Mod(minutes, 60);
+					m_wGameTimerText.SetTextFormat("%1:%2:%3", hours.ToString(2), minutes.ToString(2), seconds.ToString(2));
+				}
+			}
+			else
+				m_wGameTimerText.SetVisible(false);
 		}
-		else
-			m_wGameTimerText.SetVisible(false);
 		
 		UpdateCursorTarget();
 		
@@ -466,38 +510,85 @@ class PS_SpectatorMenu: MenuBase
 				break;
 			}
 			
+			if (cursorWidget == m_wKillListFrame)
+			{
+				break;
+			}
+			
 			cursorWidget = cursorWidget.GetParent();
 		}
 		
-		float alivePlayerListX = FrameSlot.GetPosX(m_wAlivePlayerList);
-		float voiceChatListX = FrameSlot.GetPosX(m_wVoiceChatList);
-		if (cursorWidget == m_wAlivePlayerList || m_hAlivePlayerListPinButton.IsToggled())
+		// Alive player list slide
+		if (m_wAlivePlayerList)
 		{
-			alivePlayerListX += tDelta * 1200.0;
-			if (alivePlayerListX > 0)
-				alivePlayerListX = 0;
+			float alivePlayerListX = FrameSlot.GetPosX(m_wAlivePlayerList);
+			if (cursorWidget == m_wAlivePlayerList || m_hAlivePlayerListPinButton.IsToggled())
+			{
+				alivePlayerListX += tDelta * 1200.0;
+				if (alivePlayerListX > 0)
+					alivePlayerListX = 0;
+			}
+			else
+			{
+				alivePlayerListX -= tDelta * 1200.0;
+				if (alivePlayerListX < -315)
+					alivePlayerListX = -315;
+			}
+			FrameSlot.SetPosX(m_wAlivePlayerList, alivePlayerListX);
 		}
-		else
-		{
-			alivePlayerListX -= tDelta * 1200.0;
-			if (alivePlayerListX < -315)
-				alivePlayerListX = -315;
-		}
-		FrameSlot.SetPosX(m_wAlivePlayerList, alivePlayerListX);
 		
-		if (cursorWidget == m_wVoiceChatList || m_hVoiceChatListPinButton.IsToggled())
+		// Voice chat list slide
+		if (m_wVoiceChatList)
 		{
-			voiceChatListX -= tDelta * 1200.0;
-			if (voiceChatListX < -320)
-				voiceChatListX = -320;
+			float voiceChatListX = FrameSlot.GetPosX(m_wVoiceChatList);
+			if (cursorWidget == m_wVoiceChatList || m_hVoiceChatListPinButton.IsToggled())
+			{
+				voiceChatListX -= tDelta * 1200.0;
+				if (voiceChatListX < -320)
+					voiceChatListX = -320;
+			}
+			else
+			{
+				voiceChatListX += tDelta * 1200.0;
+				if (voiceChatListX > -5)
+					voiceChatListX = -5;
+			}
+			FrameSlot.SetPosX(m_wVoiceChatList, voiceChatListX);
 		}
-		else
+		
+		// Kill feed slide
+		if (m_wKillListFrame)
 		{
-			voiceChatListX += tDelta * 1200.0;
-			if (voiceChatListX > -5)
-				voiceChatListX = -5;
+			// Kill feed lives at top-middle and slides DOWN from above (anchored top-centre in the layout).
+			// Hover detection is POSITION-based (is the cursor inside the panel's CURRENT on-screen rect), not
+			// widget-based: the SidesRatio's runtime-created ratio lines (and other top-edge widgets) sit in
+			// front of the peek and stole the widget hit-test, flip-flopping the hover and making the panel
+			// wiggle. A rect test that grows with the panel as it opens cannot oscillate.
+			float killListY = FrameSlot.GetPosY(m_wKillListFrame);
+			int killMouseX, killMouseY;
+			WidgetManager.GetMousePos(killMouseX, killMouseY);
+			WorkspaceWidget killWs = GetGame().GetWorkspace();
+			float killCurX = killWs.DPIUnscale(killMouseX);
+			float killCurY = killWs.DPIUnscale(killMouseY);
+			float killCenterX = killWs.DPIUnscale(killWs.GetWidth() / 2.0);
+			// 640 = frame width/height (see KillListFrame slot); 25 = the Extender hover margin.
+			bool killHovered = m_hKillListPinButton.IsToggled()
+				|| (killCurX >= killCenterX - 320 && killCurX <= killCenterX + 320
+					&& killCurY >= killListY - 25 && killCurY <= killListY + 640 + 25);
+			if (killHovered)
+			{
+				killListY += tDelta * 1200.0;
+				if (killListY > 0)
+					killListY = 0;
+			}
+			else
+			{
+				killListY -= tDelta * 1200.0;
+				if (killListY < -610)
+					killListY = -610;
+			}
+			FrameSlot.SetPosY(m_wKillListFrame, killListY);
 		}
-		FrameSlot.SetPosX(m_wVoiceChatList, voiceChatListX);
 		
 		/* VoN Magic
 		PlayerController playerController = GetGame().GetPlayerController();
@@ -535,6 +626,11 @@ class PS_SpectatorMenu: MenuBase
 	void UpdateIcons()
 	{
 		PS_SpectatorLabelsManager spectatorLabelsManager = PS_SpectatorLabelsManager.GetInstance();
+		if (!spectatorLabelsManager)
+		{
+			Print("[PS_SpecDiag] UpdateIcons: PS_SpectatorLabelsManager.GetInstance() returned null - skipping");
+			return;
+		}
 		foreach (PS_SpectatorLabel spectatorLabel : spectatorLabelsManager.m_aSpectatorLabels)
 		{
 			if (!m_mIconsList.Contains(spectatorLabel))
@@ -599,6 +695,7 @@ class PS_SpectatorMenu: MenuBase
 			m_wOverlayFooter.SetVisible(false);
 			m_wEarlyAccessRoot.SetVisible(false);
 			m_wAlivePlayerList.SetVisible(false);
+			m_wKillListFrame.SetVisible(false);
 			m_wIconsFrame.SetVisible(false);
 			m_wSidesRatioFrame.SetVisible(false);
 		} else {
@@ -607,6 +704,7 @@ class PS_SpectatorMenu: MenuBase
 			m_wOverlayFooter.SetVisible(true);
 			m_wEarlyAccessRoot.SetVisible(true);
 			m_wAlivePlayerList.SetVisible(true);
+			m_wKillListFrame.SetVisible(true);
 			m_wIconsFrame.SetVisible(true);
 			m_wSidesRatioFrame.SetVisible(true);
 		}

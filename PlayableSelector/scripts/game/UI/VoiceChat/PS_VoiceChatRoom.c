@@ -9,7 +9,7 @@ class PS_VoiceChatRoom : SCR_ScriptedWidgetComponent
 	protected PS_VoNRoomsManager m_gVoNRoomsManager;
 	
 	// Local
-	int m_iRoomId;
+	string m_sChannelKey;
 	PS_VoiceRoomHeader m_hRoomHandler;
 	VerticalLayoutWidget m_wPlayersVerticalLayout;
 	ref map<int, PS_PlayerVoiceSelector> m_mPlayers = new map<int, PS_PlayerVoiceSelector>;
@@ -42,11 +42,11 @@ class PS_VoiceChatRoom : SCR_ScriptedWidgetComponent
 		}
 	}
 	
-	void SetRoomId(int roomId)
+	void SetChannelKey(string channelKey)
 	{
-		m_iRoomId = roomId;
-		
-		string roomName = m_gVoNRoomsManager.GetRoomName(roomId);
+		m_sChannelKey = channelKey;
+
+		string roomName = channelKey; // the channel key IS the room key
 		FactionKey factionKey = "";
 		if (roomName == "") roomName = "Room not registered on server";
 		else {
@@ -57,7 +57,7 @@ class PS_VoiceChatRoom : SCR_ScriptedWidgetComponent
 		}
 		SCR_FactionManager factionManager = SCR_FactionManager.Cast(GetGame().GetFactionManager());
 		SCR_Faction faction = SCR_Faction.Cast(factionManager.GetFactionByKey(factionKey));
-		m_hRoomHandler.SetRoomName(faction, roomName, roomId);
+		m_hRoomHandler.SetRoomName(faction, roomName, channelKey);
 	}
 	
 	void AddPlayer(int playerId)

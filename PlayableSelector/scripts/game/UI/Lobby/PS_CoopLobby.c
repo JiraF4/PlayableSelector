@@ -181,15 +181,9 @@ class PS_CoopLobby : MenuBase
 		m_PlayersSearchBox.m_OnWriteModeEnter.Insert(OnPlayersSearchWriteModeEnter);
 		m_PlayersSearchBox.m_OnWriteModeLeave.Insert(OnPlayersSearchWriteModeLeave);
 		
-		// Actions
-		if (m_GameModeCoop.GetState() == SCR_EGameModeState.SLOTSELECTION)
-		{
-			m_InputManager.AddActionListener("VONDirect", EActionTrigger.DOWN, Action_LobbyVoNOn);
-			m_InputManager.AddActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
-			//m_InputManager.AddActionListener("VONChannel", EActionTrigger.DOWN, Action_LobbyVoNChannelOn);
-			m_InputManager.AddActionListener("VONChannel", EActionTrigger.UP, Action_LobbyVoNChannelOff);
-		}
-		
+		// Body-less voice: push-to-talk is owned by PS_MenuVoN (binds VONDirect while the local
+		// player is a menu speaker). No per-menu VoN bindings - they drove the removed body VoN.
+
 		m_LobbyLoadoutPreview.SetItemInfoWidget(m_wLobbyLittleInventoryItemInfo);
 		
 		// Init
@@ -209,14 +203,7 @@ class PS_CoopLobby : MenuBase
 	
 	override void OnMenuClose()
 	{
-		if (m_InputManager)
-		{
-			m_InputManager.RemoveActionListener("VONDirect", EActionTrigger.DOWN, Action_LobbyVoNOn);
-			m_InputManager.RemoveActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
-			//m_InputManager.RemoveActionListener("VONChannel", EActionTrigger.DOWN, Action_LobbyVoNChannelOn);
-			m_InputManager.RemoveActionListener("VONChannel", EActionTrigger.UP, Action_LobbyVoNChannelOff);
-		}
-		if (m_PlayableManager)
+if (m_PlayableManager)
 		{
 			m_PlayableManager.GetOnFactionChange().Remove(UpdatePlayerFaction);
 			m_PlayableManager.GetOnStartTimerCounterChanged().Remove(OnStartTimerCounterChanged);
@@ -239,7 +226,6 @@ class PS_CoopLobby : MenuBase
 	{
 		array<PS_PlayableContainer> playables = m_PlayableManager.GetPlayablesSorted();
 		map<RplId, ref PS_PlayableVehicleContainer> playableVehicles = m_PlayableManager.GetPlayableVehicles();
-		map<SCR_Faction, ref Tuple3<int, int, int>> factions = new map<SCR_Faction, ref Tuple3<int, int, int>>();
 		
 		foreach (PS_PlayableContainer playable : playables)
 		{
@@ -255,26 +241,12 @@ class PS_CoopLobby : MenuBase
 				playerAddedLocked = 1;
 			
 			SCR_Faction faction = playable.GetFaction();
-			if (!factions.Contains(faction))
-				//DRG_BUG
-				factions.Insert(faction, new Tuple3<int, int, int>(playerAdded, playerAddedMax, playerAddedLocked));
-			else
-			{
-				Tuple3<int, int, int> tuple = factions.Get(faction);
-				tuple.param1 += playerAdded;
-				tuple.param2 += playerAddedMax;
-				tuple.param3 += playerAddedLocked;
-			}
+			AddFactionCount(faction, playerAdded, playerAddedMax, playerAddedLocked);
 		}
 		
 		foreach (RplId rplId, PS_PlayableVehicleContainer playableVehicleContainer : playableVehicles)
 		{
 			AddPlayableVehicle(playableVehicleContainer);
-		}
-		
-		foreach (SCR_Faction faction, Tuple3<int, int, int> count : factions)
-		{
-			AddFaction(faction, count.param1, count.param2, count.param3);
 		}
 		
 		// Added in runtime
@@ -431,7 +403,12 @@ class PS_CoopLobby : MenuBase
 	
 	void OnRolesGroupRemoved(PS_RolesGroup rolesGroup)
 	{
-		m_mGroups.Remove(m_mGroups.GetKeyByValue(rolesGroup));
+		SCR_AIGroup targetKey = null;
+		foreach (SCR_AIGroup aiGroup, PS_RolesGroup rGroup : m_mGroups)
+		{
+			if (rGroup == rolesGroup) { targetKey = aiGroup; break; }
+		}
+		m_mGroups.Remove(targetKey);
 	}
 	
 	void OnPlayableRemoved(PS_PlayableContainer playable)

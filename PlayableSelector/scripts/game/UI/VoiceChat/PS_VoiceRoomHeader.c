@@ -10,7 +10,7 @@ class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 	ImageWidget m_wFactionColor;
 	TextWidget m_wRoomName;
 	string m_sRoomName;
-	int m_iRoomId;
+	string m_sChannelKey;
 	SCR_Faction m_fFaction;
 	
 	override void HandlerAttached(Widget w)
@@ -26,12 +26,12 @@ class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 		GetGame().GetCallqueue().CallLater(AddOnClick, 0);
 	}
 	
-	void SetRoomName(SCR_Faction faction, string roomName, int roomId)
+	void SetRoomName(SCR_Faction faction, string roomName, string channelKey)
 	{
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		m_sRoomName = roomName;
 		m_fFaction = faction;
-		m_iRoomId = roomId;
+		m_sChannelKey = channelKey;
 		
 		if (m_fFaction)
 		{
@@ -43,6 +43,18 @@ class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 			int CallSign = roomName.ToInt();
 			name = PS_GroupHelper.GroupCallsignToGroupName(faction, CallSign);
 		}
+		if (name.StartsWith("#PS-VoNRoom_Group")) {
+			// Group channels are keyed by unique group id ("#PS-VoNRoom_Group<id>"); map back to the group's
+			// callsign name (e.g. "Buran-11"). Checked before "_Global" - both start with "#PS-VoNRoom_G", but
+			// StartsWith("#PS-VoNRoom_Group") matches only the group rooms.
+			int groupId = name.Substring(17, name.Length() - 17).ToInt();
+			SCR_GroupsManagerComponent groupsManager = SCR_GroupsManagerComponent.GetInstance();
+			SCR_AIGroup group;
+			if (groupsManager)
+				group = groupsManager.FindGroup(groupId);
+			if (group)
+				name = PS_GroupHelper.GetGroupName(group);
+		}
 		if (name.StartsWith("#PS-VoNRoom_Local")) name = "#PS-VoNRoom_Local";
 		if (name.StartsWith("#PS-VoNRoom_Public")) {
 			int playerId = name.Substring(18, name.Length() - 18).ToInt();
@@ -53,9 +65,9 @@ class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 		m_wRoomName.SetText(name);
 	}
 	
-	int GetRoomId()
+	string GetChannelKey()
 	{
-		return m_iRoomId;
+		return m_sChannelKey;
 	}
 	
 	void AddOnClick()
@@ -68,9 +80,11 @@ class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		PlayerController playerController = GetGame().GetPlayerController();
+		if (!playerController)
+			return;
 		int playerId = playerController.GetPlayerId();
 		
-		if (VoNRoomsManager.GetPlayerRoom(playerId) == m_iRoomId) {
+		if (VoNRoomsManager.GetPlayerChannel(playerId) == m_sChannelKey) {
 			m_wJoinRoomImage.SetVisible(false);
 			return;
 		}
@@ -80,12 +94,24 @@ class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 		if (m_sRoomName == "#PS-VoNRoom_Command")
 		{
 			PS_GameModeCoop gamemode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-			if (!playableManager.IsPlayerGroupLeader(playerId) && !gamemode.m_bPublicCommandBriefing) m_wJoinRoomImage.LoadImageFromSet(0, m_sImageSetPS, "Lock");
-			else m_wJoinRoomImage.LoadImageFromSet(0, m_sImageSetPS, "RoomEnter");
+			if (CanJoinCommand(playableManager, gamemode, playerId)) m_wJoinRoomImage.LoadImageFromSet(0, m_sImageSetPS, "RoomEnter");
+			else m_wJoinRoomImage.LoadImageFromSet(0, m_sImageSetPS, "Lock");
 			return;
 		}
-		
+
 		m_wJoinRoomImage.LoadImageFromSet(0, m_sImageSetPS, "RoomEnter");
+	}
+
+	// HQ/Command is joinable by leaders, when public-command-briefing is on, OR by anyone during the
+	// briefing phase (members default to their group channel but may opt into HQ). Outside briefing it
+	// stays leader-only.
+	protected bool CanJoinCommand(PS_PlayableManager playableManager, PS_GameModeCoop gamemode, int playerId)
+	{
+		if (!gamemode)
+			return true;
+		if (gamemode.GetState() == SCR_EGameModeState.BRIEFING)
+			return true;
+		return playableManager.IsPlayerGroupLeader(playerId) || gamemode.m_bPublicCommandBriefing;
 	}
 
 	// -------------------- Buttons events --------------------
@@ -94,19 +120,30 @@ class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		
 		PlayerController playerController = GetGame().GetPlayerController();
+		if (!playerController) return;
 		int playerId = playerController.GetPlayerId();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		
-		// Bad hardcoded staff here
 		if (m_sRoomName == "#PS-VoNRoom_Command")
 		{
 			PS_GameModeCoop gamemode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-			if (!playableManager.IsPlayerGroupLeader(playerId) && !gamemode.m_bPublicCommandBriefing)
+			if (!CanJoinCommand(playableManager, gamemode, playerId))
 				return;
 		}
-		
+
 		FactionKey factionKey = "";
 		if (m_fFaction) factionKey = m_fFaction.GetFactionKey();
+
+		if (factionKey != "")
+		{
+			FactionKey playerFaction = playableManager.GetPlayerFactionKey(playerId);
+			if (playerFaction != "" && playerFaction != factionKey)
+			{
+				Print(string.Format("[PS_VoN] VoiceRoomHeader: blocked cross-faction room join - player %1 (%2) tried to join room of faction '%3'", playerId, playerFaction, factionKey), LogLevel.WARNING);
+				return;
+			}
+		}
+
 		playableController.MoveToVoNRoom(playerId, factionKey, m_sRoomName);
 	}
 }

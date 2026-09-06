@@ -21,6 +21,7 @@ class PS_MissionDataManager : ScriptComponent
 	ref map<EntityID, RplId> m_EntityToRpl = new map<EntityID, RplId>();
 	ref map<RplId, SCR_DamageManagerComponent> m_RplToDamageManager = new map<RplId, SCR_DamageManagerComponent>();
 	ref map<int, bool> m_playerSaved = new map<int, bool>();
+	ref set<RplId> m_DeadEntities = new set<RplId>();
 	PS_PlayableManager m_PlayableManager;
 	PS_ObjectiveManager m_ObjectiveManager;
 	PS_GameModeCoop m_GameModeCoop;
@@ -40,7 +41,11 @@ class PS_MissionDataManager : ScriptComponent
 	
 	void RegisterVehicle(Vehicle vehicle)
 	{
+		if (!Replication.IsServer())
+			return;
 		RplComponent rplComponent = RplComponent.Cast(vehicle.FindComponent(RplComponent));
+		if (!rplComponent)
+			return; // not replicated (e.g. decoration), nothing to track
 		SCR_EditableVehicleComponent editableVehicleComponent = SCR_EditableVehicleComponent.Cast(vehicle.FindComponent(SCR_EditableVehicleComponent));
 		FactionAffiliationComponent factionAffiliationComponent = FactionAffiliationComponent.Cast(vehicle.FindComponent(FactionAffiliationComponent));
 		SCR_DamageManagerComponent damageManagerComponent = SCR_DamageManagerComponent.Cast(vehicle.FindComponent(SCR_DamageManagerComponent));
@@ -53,14 +58,14 @@ class PS_MissionDataManager : ScriptComponent
 		{
 			SCR_UIInfo info = editableVehicleComponent.GetInfo();
 			if (info)
-				vehicleData.EditableName = info.GetName();
+				vehicleData.EditableName = WidgetManager.Translate("%1", info.GetName());
 		}
 		if (factionAffiliationComponent)
 		{
 			Faction faction = factionAffiliationComponent.GetDefaultAffiliatedFaction();
 			if (faction)
 			{
-				vehicleData.VehicleFactionKey = faction.GetFactionKey();
+				vehicleData.VehicleFactionKey = WidgetManager.Translate("%1", faction.GetFactionKey());
 			}
 		}
 		if (damageManagerComponent)
@@ -75,6 +80,8 @@ class PS_MissionDataManager : ScriptComponent
 	
 	void OnDamaged(BaseDamageContext damageContext)
 	{
+		if (!damageContext)
+			return;
 		IEntity target = damageContext.hitEntity;
 		Instigator instigator = damageContext.instigator;
 		if (target && instigator)
@@ -82,28 +89,50 @@ class PS_MissionDataManager : ScriptComponent
 			int playerId = instigator.GetInstigatorPlayerID();
 			if (playerId == -1)
 				return;
-			
+
 			EntityID entityID = target.GetID();
 			if (!m_EntityToRpl.Contains(entityID))
 				return;
 			RplId rplId = m_EntityToRpl.Get(entityID);
-			
-			GetGame().GetCallqueue().Call(SaveDamageEvent, playerId, rplId, damageContext.damageValue);
+
+			IEntity instigatorEntity = instigator.GetInstigatorEntity();
+			// Fire/incendiary ticks keep the instigator's playerId but can lose the entity (player
+			// despawned/died) - GetInstigatorEntity() then returns null. Guard before GetOrigin().
+			if (!instigatorEntity)
+				return;
+			vector instigatorOrigin = instigatorEntity.GetOrigin();
+			vector targetOrigin = target.GetOrigin();
+			float distance = vector.Distance(instigatorOrigin, targetOrigin);
+
+			GetGame().GetCallqueue().Call(SaveDamageEventWithDistance, playerId, rplId, damageContext.damageValue, distance);
 		}
 	}
-	
-	void SaveDamageEvent(int playerId, RplId targetId, float value)
+
+	void SaveDamageEventWithDistance(int playerId, RplId targetId, float value, float distance)
 	{
 		SCR_DamageManagerComponent damageManagerComponent = m_RplToDamageManager.Get(targetId);
+		if (!damageManagerComponent)
+			return;
 		EDamageState state = damageManagerComponent.GetState();
-		
+		float time = GetGame().GetWorld().GetWorldTime();
+		distance = Math.Round(distance);
+
 		PS_MissionDataDamageEvent missionDataDamageEvent = new PS_MissionDataDamageEvent();
 		missionDataDamageEvent.m_iPlayerId = playerId;
 		missionDataDamageEvent.TargetId = targetId;
 		missionDataDamageEvent.DamageValue = value;
 		missionDataDamageEvent.TargetState = state;
-		missionDataDamageEvent.Time = GetGame().GetWorld().GetWorldTime();
+		missionDataDamageEvent.Time = time;
+		missionDataDamageEvent.Distance = distance;
 		m_Data.DamageEvents.Insert(missionDataDamageEvent);
+
+		// Kills are recorded SOLELY by OnPlayerKilled now. This damage path used to ALSO insert a kill on
+		// DESTROYED, but with the victim id set to the entity RplId (NOT a playerId) - so every player kill landed
+		// in m_Data.Kills twice: once here (killer resolves to a player, victim doesn't) and once in
+		// OnPlayerKilled. That is what doubled the "kills" column on the website (and why deaths stayed single -
+		// this path's victim never resolved). OnPlayerKilled has the correct victim+killer playerIds and now also
+		// carries the distance, so this insert is removed. (Note: this also dropped non-player/vehicle destructions
+		// from the kill log - they were unresolved RplId rows anyway; say so if the site needs vehicle kills.)
 	}
 	
 	void LateInit()
@@ -114,11 +143,31 @@ class PS_MissionDataManager : ScriptComponent
 		m_ObjectiveManager = PS_ObjectiveManager.GetInstance();
 		m_FactionManager = GetGame().GetFactionManager();
 		
+		GetGame().GetCallqueue().CallLater(DelayedInit, 1000, false);
+		
 		m_GameModeCoop.GetOnHandlePlayerKilled().Insert(OnPlayerKilled);
 		m_GameModeCoop.GetOnGameStateChange().Insert(OnGameStateChanged);
 		m_GameModeCoop.GetOnPlayerAuditSuccess().Insert(OnPlayerAuditSuccess);
 		if (RplSession.Mode() != RplMode.Dedicated) 
 			OnPlayerAuditSuccess(GetGame().GetPlayerController().GetPlayerId());
+	}
+	
+	void DelayedInit()
+	{
+		if (!Replication.IsServer())
+			return;
+		
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		if (!playableManager)
+			return;
+		
+		array<PS_PlayableContainer> playables = playableManager.GetPlayablesSorted();
+		foreach (PS_PlayableContainer playable : playables)
+		{
+			PS_PlayableComponent playableComp = playable.GetPlayableComponent();
+			if (!playableComp)
+				continue;
+		}
 	}
 	
 	void OnPlayerKilled(int playerId, IEntity playerEntity, IEntity killerEntity, notnull Instigator killer)
@@ -130,6 +179,10 @@ class PS_MissionDataManager : ScriptComponent
 		missionDataPlayerKill.m_iPlayerId = playerId;
 		missionDataPlayerKill.Time = GetGame().GetWorld().GetWorldTime();
 		missionDataPlayerKill.SystemTime = System.GetUnixTime();
+		// Distance (killer -> victim at death), carried over from the now-removed damage-path kill so the kill log
+		// keeps it. killerEntity is null for non-instigated deaths -> leave distance at default in that case.
+		if (playerEntity && killerEntity)
+			missionDataPlayerKill.Distance = Math.Round(vector.Distance(killerEntity.GetOrigin(), playerEntity.GetOrigin()));
 		m_Data.Kills.Insert(missionDataPlayerKill);
 	}
 	
@@ -154,9 +207,52 @@ class PS_MissionDataManager : ScriptComponent
 			SavePlayers();
 		if (state == SCR_EGameModeState.DEBRIEFING)
 		{
+			GetGame().GetCallqueue().Call(DefineScenarioType);
 			GetGame().GetCallqueue().Call(SaveObjectives);
 			GetGame().GetCallqueue().Call(WriteToFile);
+			GetGame().GetCallqueue().Call(SendToWebsite);
 		}
+	}
+
+	// Fill the scenario/world identifiers from the mission header for the website payload.
+	void DefineScenarioType()
+	{
+		SCR_MissionHeader missionHeader = SCR_MissionHeader.Cast(GetGame().GetMissionHeader());
+		if (!missionHeader)
+			return;
+		m_Data.WorldPath = missionHeader.GetWorldPath();
+		m_Data.MissionName = missionHeader.m_sName;
+		m_Data.MissionAuthor = missionHeader.m_sAuthor;
+		m_Data.MissionDescription = missionHeader.m_sDescription;
+		m_Data.ScenarioType = missionHeader.m_sGameMode;
+	}
+
+	// POST the collected mission data to the StatSender endpoint. No-op (graceful) when the server has no
+	// $profile:StatSender_Config.json, so a standalone PlayableSelector simply writes the JSON file and
+	// skips the upload. Moved here from QuickTvT so the whole stats pipeline lives in PlayableSelector.
+	void SendToWebsite()
+	{
+		StatSender_Config config = new StatSender_Config();
+		bool isLoaded = config.LoadFromFile("$profile:StatSender_Config.json");
+		if (!isLoaded)
+		{
+			Print("PS_MissionDataManager: StatSender_Config.json not found - skipping website upload", LogLevel.NORMAL);
+			return;
+		}
+
+		m_Data.Token = config.Token;
+
+		JsonSaveContext missionSaveContext = new JsonSaveContext();
+		missionSaveContext.WriteValue("", m_Data);
+
+		RestContext context = GetGame().GetRestApi().GetContext(config.Address);
+		if (!context)
+		{
+			Print("PS_MissionDataManager: StatSender REST context is null", LogLevel.WARNING);
+			return;
+		}
+		string answer = context.POST_now("", missionSaveContext.SaveToString());
+		Print(string.Format("PS_MissionDataManager: website answer(%1)", answer));
 	}
 	
 	void OnPlayerAuditSuccess(int playerId)
@@ -179,6 +275,9 @@ class PS_MissionDataManager : ScriptComponent
 	// Save main mission data
 	void InitData()
 	{
+		string localization = "ru_ru";
+		WidgetManager.SetLanguage(localization);
+
 		SCR_MissionHeader missionHeader = SCR_MissionHeader.Cast(GetGame().GetMissionHeader());
 		if (missionHeader) {
 			//m_Data.MissionPath = missionHeader.GetHeaderResourcePath();
@@ -206,7 +305,9 @@ class PS_MissionDataManager : ScriptComponent
 		
 		#ifdef PS_REPLAYS
 		PS_ReplayWriter replayWriter = PS_ReplayWriter.GetInstance();
-		m_Data.ReplayPath = replayWriter.m_sReplayFileName;
+		string ReplayPath = replayWriter.m_sReplayFileName;
+		ReplayPath.Replace("$profile:Replays/", "");
+		m_Data.ReplayPath = ReplayPath;
 		#endif
 		
 		PS_MissionDescriptionManager missionDescriptionManager = PS_MissionDescriptionManager.GetInstance();
@@ -217,9 +318,9 @@ class PS_MissionDataManager : ScriptComponent
 			PS_MissionDataDescription descriptionData = new PS_MissionDataDescription();
 			m_Data.Descriptions.Insert(descriptionData);
 			
-			descriptionData.Title = description.m_sTitle;
+			descriptionData.Title = WidgetManager.Translate("%1", description.m_sTitle);
 			descriptionData.DescriptionLayout = description.m_sDescriptionLayout;
-			descriptionData.TextData = description.m_sTextData;
+			descriptionData.TextData = WidgetManager.Translate("%1", description.m_sTextData);
 			descriptionData.VisibleForFactions = description.m_aVisibleForFactions;
 			descriptionData.EmptyFactionVisibility = description.m_bEmptyFactionVisibility;
 		}
@@ -244,6 +345,8 @@ class PS_MissionDataManager : ScriptComponent
 				continue;
 			
 			SCR_Faction faction = SCR_Faction.Cast(group.GetFaction());
+			if (!faction)
+				continue;
 			if (!factionsMap.Contains(faction))
 			{
 				factionData = new PS_MissionDataFaction();
@@ -273,7 +376,7 @@ class PS_MissionDataManager : ScriptComponent
 				
 				groupData.Callsign = playableManager.GetGroupCallsignByPlayable(playable.GetRplId());
 				groupData.CallsignName = callsign;
-				groupData.Name = customName;
+				groupData.Name = WidgetManager.Translate("%1", customName);
 				
 				groupsMap.Insert(group, groupData);
 			}
@@ -331,7 +434,7 @@ class PS_MissionDataManager : ScriptComponent
 			PS_ObjectiveLevel objectiveLevel = m_ObjectiveManager.GetFactionScoreLevel(factionKey);
 			if (objectiveLevel)
 			{
-				missionDataFactionResult.ResultName = objectiveLevel.GetName();
+				missionDataFactionResult.ResultName = WidgetManager.Translate("%1", objectiveLevel.GetName());
 				missionDataFactionResult.ResultScore = objectiveLevel.GetScore();
 			}
 			foreach (PS_Objective objective : objectivesOut)
@@ -341,7 +444,7 @@ class PS_MissionDataManager : ScriptComponent
 				
 				PS_MissionDataObjective missionDataObjective = new PS_MissionDataObjective();
 				
-				missionDataObjective.Name = objective.GetTitle();
+				missionDataObjective.Name = WidgetManager.Translate("%1", objective.GetTitle());
 				missionDataObjective.Completed = objective.GetCompleted();
 				missionDataObjective.Score = objective.GetScore();
 				
@@ -353,9 +456,12 @@ class PS_MissionDataManager : ScriptComponent
 	
 	void WriteToFile()
 	{
-		SCR_JsonSaveContext missionSaveContext = new SCR_JsonSaveContext();
+		string time = System.GetUnixTime().ToString();
+		m_Data.SessionName = string.Format("PS_MissionData_%1.json", time);
+
+		JsonSaveContext missionSaveContext = new JsonSaveContext();
 		missionSaveContext.WriteValue("", m_Data);
-		string fileName = string.Format("$profile:Sessions\\PS_MissionData_%1.json", System.GetUnixTime().ToString());
+		string fileName = string.Format("$profile:Sessions\\PS_MissionData_%1.json", time);
 		missionSaveContext.SaveToFile(fileName);
 	}
 }

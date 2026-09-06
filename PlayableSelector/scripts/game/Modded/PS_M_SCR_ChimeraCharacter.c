@@ -43,5 +43,66 @@ modded class SCR_ChimeraCharacter
 	void ~SCR_ChimeraCharacter()
 	{
 		m_aCharacters_PS.RemoveItem(this);
+		
+		if (!GetGame().InPlayMode())
+			return;
+		if (!GetGame().GetWorld())
+			return;
+		if (!Replication.IsServer())
+			return;
+		
+		BaseGameMode gamemode = GetGame().GetGameMode();
+		if (!gamemode)
+			return;
+		
+		RplComponent rpl = RplComponent.Cast(this.FindComponent(RplComponent));
+		if (rpl)
+		{
+			PS_ReplayWriter replayWriter = PS_ReplayWriter.GetInstance();
+			if (replayWriter)
+				replayWriter.WriteEntityDelete(rpl.Id());
+		}
+	}
+	
+	override void EOnInit(IEntity owner)
+	{
+		super.EOnInit(this);
+		if (!Replication.IsServer()) return;
+		if (!GetGame().InPlayMode())
+			return;
+		GetGame().GetCallqueue().CallLater(RegisterToReplay, 0, false);
+	}
+	
+	void RegisterToReplay()
+	{
+		PS_ReplayWriter replayWriter = PS_ReplayWriter.GetInstance();
+		if (replayWriter)
+		{
+			RplComponent rpl = RplComponent.Cast(this.FindComponent(RplComponent));
+			SCR_CharacterDamageManagerComponent damageComponent = SCR_CharacterDamageManagerComponent.Cast(this.FindComponent(SCR_CharacterDamageManagerComponent));
+			if (damageComponent)
+			{
+				ScriptInvoker damageEvent = damageComponent.GetOnDamageStateChanged();
+				damageEvent.Insert(DieLogger);
+			}
+			replayWriter.WriteCharacterRegistration(rpl.Id(), this);
+			GetGame().GetCallqueue().CallLater(ReplayPositionLogger, 0, false, rpl.Id());
+		}
+	}
+	
+	protected void ReplayPositionLogger(RplId rplId)
+	{
+		PS_ReplayWriter replayWriter = PS_ReplayWriter.GetInstance();
+		if (replayWriter)
+			replayWriter.WriteEntityMove(rplId, this);
+		GetGame().GetCallqueue().CallLater(ReplayPositionLogger, 500, false, rplId);
+	}
+	
+	protected void DieLogger(EDamageState state)
+	{
+		RplComponent rpl = RplComponent.Cast(this.FindComponent(RplComponent));
+		PS_ReplayWriter replayWriter = PS_ReplayWriter.GetInstance();
+		if (replayWriter && rpl)
+			replayWriter.WriteCharacterDamageStateChanged(rpl.Id(), state);
 	}
 }

@@ -17,6 +17,15 @@ class PS_FreezeTimeCounter : SCR_ScriptedWidgetComponent
 		m_wEmpty = ImageWidget.Cast(w.FindAnyWidget("Fill"));
 		m_wFill = ImageWidget.Cast(w.FindAnyWidget("Empty"));
 	}
+
+	// FIX (TIMER LEAK): The repeating CallLater(Update, 0, true) registered in SetTime()
+	// runs every frame on the global callqueue. Without removal on detach, the old counter
+	// widget instance survives in memory after server restart, accumulating parallel timers.
+	override void HandlerDeattached(Widget w)
+	{
+		super.HandlerDeattached(w);
+		GetGame().GetCallqueue().Remove(Update);
+	}
 	
 	void Update()
 	{

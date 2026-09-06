@@ -106,8 +106,14 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 		}
 		else
 		{
+			// Respawn / revive: restore the alive look (the old code left the dead icon visible) and
+			// re-tally, since the faction alive-count was never restored when a unit came back.
 			m_PlayableContainer.SetIconTo(m_wUnitIcon);
+			m_wUnitIcon.SetVisible(true);
+			m_wDeadIcon.SetVisible(false);
 			m_wPlayerName.SetColor(Color.White);
+			UpdateShowDead(m_AlivePlayerList.IsShowDead());
+			m_AlivePlayerList.RecomputeFactionCounts();
 		}
 	}
 	
@@ -117,6 +123,19 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 	}
 	void UpdatePlayer(int playerId)
 	{
+		// GetPlayerName now prefers the live engine name, so a late-joiner/reconnect slotted by the Game
+		// Master resolves to the nickname here (was the role name when the name cache hadn't filled yet).
+		//
+		// Fallback: if the RplId was never registered (e.g. clone-and-teleport from unstuck mod),
+		// try the LIVE mapping, then resolve from the entity's network owner.
+		if (playerId <= 0)
+			playerId = m_PlayableManager.GetPlayerByPlayable(m_PlayableContainer.GetRplId());
+		if (playerId <= 0)
+		{
+			PS_PlayableComponent pc = m_PlayableContainer.GetPlayableComponent();
+			if (pc && pc.GetOwner())
+				playerId = GetGame().GetPlayerManager().GetPlayerIdFromControlledEntity(pc.GetOwner());
+		}
 		string playerName = m_PlayableManager.GetPlayerName(playerId);
 		if (playerName == "") // No player
 			playerName = m_PlayableContainer.GetName();
@@ -180,7 +199,7 @@ class PS_AlivePlayerSelector : SCR_ButtonBaseComponent
 			contextMenu.ActionDetachFrom(character).Insert(OnActionDetachFrom);
 		contextMenu.ActionLookAt(character).Insert(OnActionLookAt);
 		contextMenu.ActionFirstPersonView(character).Insert(OnActionFirstPersonView);
-		contextMenu.ActionRespawnInPlace(playableComponent.GetId(), playerId);
+		contextMenu.ActionRespawnInPlace(playableComponent.GetRplId(), playerId);
 		if (playerId > 0)
 		{
 			contextMenu.ActionDirectMessage(playerId);

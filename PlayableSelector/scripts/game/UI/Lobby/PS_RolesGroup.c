@@ -100,7 +100,8 @@ class PS_RolesGroup : SCR_ScriptedWidgetComponent
 		if (!aiGroup)
 			return;
 		m_iGroupCallsign = aiGroup.GetCallsignNum();
-		m_sGroupCallsign = m_iGroupCallsign.ToString();
+		// VoN room keyed by UNIQUE group id (not the callsign num, which can collide across groups -> leak).
+		m_sGroupCallsign = PS_PlayableManager.GroupVonRoomName(aiGroup.GetGroupID());
 		SCR_Faction faction = SCR_Faction.Cast(aiGroup.GetFaction());
 		m_sFactionKey = faction.GetFactionKey();
 		

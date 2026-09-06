@@ -18,8 +18,8 @@ PanelWidgetClass {
     OffsetTop 0
     SizeX 0
     OffsetRight 0
-    SizeY 60
-    OffsetBottom -60
+    SizeY 100
+    OffsetBottom -100
     SizeToContent 1
    }
    {

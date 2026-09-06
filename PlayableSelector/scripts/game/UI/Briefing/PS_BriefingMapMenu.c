@@ -27,6 +27,10 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 	
 	protected Widget m_wSteps;
 	
+	// Faction-ready countdown (3-2-1), created programmatically during briefing
+	protected OverlayWidget m_wCountdownOverlay;
+	protected TextWidget m_wCountdownText;
+	
 	// -------------------- Menu events --------------------
 	override void OnMenuOpen()
 	{	
@@ -71,6 +75,25 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		if (playableManager.GetPlayableByPlayer(playerController.GetPlayerId()) != RplId.Invalid())
 			GetRootWidget().FindAnyWidget("PlayableNotSelectedOverlay").SetVisible(false);
+		
+		// Faction-ready countdown (3-2-1) — create a fullscreen overlay so the briefing
+		// can display the same countdown as the lobby's OverlayCounter.
+		WorkspaceWidget workspace = GetGame().GetWorkspace();
+		m_wCountdownOverlay = OverlayWidget.Cast(workspace.CreateWidget(WidgetType.OverlayWidgetTypeID, WidgetFlags.VISIBLE, Color.White, 0, GetRootWidget()));
+		FrameSlot.SetAnchorMin(m_wCountdownOverlay, 0, 0);
+		FrameSlot.SetAnchorMax(m_wCountdownOverlay, 1, 1);
+		m_wCountdownOverlay.SetVisible(false);
+		m_wCountdownText = TextWidget.Cast(workspace.CreateWidget(WidgetType.TextWidgetTypeID, WidgetFlags.VISIBLE, Color.White, 0, m_wCountdownOverlay));
+		OverlaySlot.SetHorizontalAlign(m_wCountdownText, LayoutHorizontalAlign.Center);
+		OverlaySlot.SetVerticalAlign(m_wCountdownText, LayoutVerticalAlign.Center);
+		m_wCountdownText.SetColor(Color.White);
+		m_wCountdownText.SetExactFontSize(120);
+		
+		// Subscribe to the timer counter changed event
+		playableManager.GetOnStartTimerCounterChanged().Insert(OnStartTimerCounterChanged);
+		// Show current value if countdown already running
+		if (playableManager.m_iStartTimerCounter > 0)
+			OnStartTimerCounterChanged(playableManager.m_iStartTimerCounter);
 		
 		GetGame().GetCallqueue().CallLater(UpdateCycle, 0);
 	}
@@ -169,8 +192,34 @@ class PS_BriefingMapMenu: ChimeraMenuBase
 		*/
 	}
 	
+	void OnStartTimerCounterChanged(int timer)
+	{
+		if (!m_wCountdownOverlay)
+			return;
+		if (timer <= 0)
+		{
+			m_wCountdownOverlay.SetVisible(false);
+		} else {
+			m_wCountdownOverlay.SetVisible(true);
+			m_wCountdownText.SetText(timer.ToString());
+			SCR_UISoundEntity.SoundEvent("SOUND_RADIO_FREQUENCY_CYCLE");
+		}
+	}
+	
 	override void OnMenuClose()
 	{
+		// FIX (TIMER LEAK): Stop the self-rescheduling UpdateCycle timer. Without this,
+		// each briefing menu open adds another 100ms chain on the global callqueue that
+		// keeps the old menu instance alive. After N server restarts, N chains run in parallel.
+		GetGame().GetCallqueue().Remove(UpdateCycle);
+
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		if (playableManager)
+			playableManager.GetOnStartTimerCounterChanged().Remove(OnStartTimerCounterChanged);
+		
+		if (m_wCountdownOverlay)
+			m_wCountdownOverlay.RemoveFromHierarchy();
+		
 		if (m_MapEntity)
 			m_MapEntity.CloseMap();
 		

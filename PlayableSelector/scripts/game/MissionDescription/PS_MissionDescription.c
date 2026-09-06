@@ -48,6 +48,20 @@ class PS_MissionDescription : GenericEntity
 		if (m_bShowForAnyFaction) return true;
 		return m_aVisibleForFactions.Contains(factionKey);
 	}
+	// Compatibility shim for dependent addons (PodvalTVTMissions707, abu_fixNullPointerErrors) built against
+	// the older map<FactionKey,bool> visibility API. Visibility is now stored as array<FactionKey> (the
+	// factions it IS visible for); expose it as a map so old callers - foreach (FactionKey k, bool v :
+	// GetVisibleForFactionsRaw()) - keep compiling. Every listed faction maps to true.
+	map<FactionKey, bool> GetVisibleForFactionsRaw()
+	{
+		map<FactionKey, bool> result = new map<FactionKey, bool>();
+		if (m_aVisibleForFactions)
+		{
+			foreach (FactionKey factionKey : m_aVisibleForFactions)
+				result.Insert(factionKey, true);
+		}
+		return result;
+	}
 	void SetVisibleForFaction(Faction faction, bool visible)
 	{
 		RPC_SetVisibleForFaction_ByKey(faction.GetFactionKey(), visible);

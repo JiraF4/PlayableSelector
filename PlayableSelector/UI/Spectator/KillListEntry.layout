@@ -1,0 +1,17 @@
+HorizontalLayoutWidgetClass {
+ Name "KillListEntry"
+ Slot LayoutSlot "{C0A1B2D3E4F5A6C2}" {
+ }
+ {
+  TextWidgetClass "{C0A1B2D3E4F5A6C0}" {
+   Name "KillEntryText"
+   Slot LayoutSlot "{C0A1B2D3E4F5A6C1}" {
+    FillWeight 1
+   }
+   Color 1 1 1 1
+   Text "..."
+   "Font Size" 13
+   "Min Font Size" 13
+  }
+ }
+}

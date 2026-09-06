@@ -39,7 +39,7 @@ class PS_GroupAttachmentComponent : ScriptComponent
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		if (playableManager)
 		{
-			RplId id = Replication.FindId(GetOwner());
+			RplId id = Replication.FindItemId(GetOwner());
 			playableManager.UnRegisterGroupVehicle(id);
 		}
 	}

@@ -1,0 +1,7 @@
+GenericEntity {
+ ID "9D9BE68EA2672F76"
+ components {
+  PS_ReplayExplosionWriter "{5EC4EE5D3BC2EB0D}" {
+  }
+ }
+}

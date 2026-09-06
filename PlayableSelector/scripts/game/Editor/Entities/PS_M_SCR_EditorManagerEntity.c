@@ -8,13 +8,11 @@ modded class SCR_EditorManagerEntity
 		if (mode == EEditorMode.PHOTO)
 		{
 			PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-			if (gameModeCoop.IsArmaVisionDisabled())
-			{
-				SCR_EditorModeEntity editorModeEntity = super.CreateEditorMode(mode, isInit, prefab);
-				GetGame().GetCallqueue().Call(RemoveMode, editorModeEntity, false);
-				return editorModeEntity;
-				
-			}
+			// Don't create the mode at all (vanilla callers tolerate null).
+			// The old create-then-remove churn re-triggered role change from AddMode/UpdateLimited,
+			// ending in "ScriptInvoker: Recursive call of Invoke" server crashes.
+			if (gameModeCoop && gameModeCoop.IsArmaVisionDisabled())
+				return null;
 		}
 		return super.CreateEditorMode(mode, isInit, prefab);
 	}

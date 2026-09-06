@@ -35,7 +35,7 @@ class PS_SlotsReserver : ScriptComponent
 		SCR_BaseGameMode gameMode = SCR_BaseGameMode.Cast(GetGame().GetGameMode());
 		gameMode.GetOnPlayerAuditSuccess().Insert(CheckReserved);
 		
-		SCR_JsonLoadContext configLoadContext = new SCR_JsonLoadContext();
+		JsonLoadContext configLoadContext = new JsonLoadContext();
 		if (configLoadContext.LoadFromFile(m_configFilePath))
 			if (configLoadContext.ReadValue("", m_cReservedPlayerIdentitiesConfig))
 			{

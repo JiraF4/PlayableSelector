@@ -150,6 +150,7 @@ class PS_PlayableComponent : ScriptComponent
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void RPC_SetPlayable(bool isPlayable)
 	{
+		PS_NetStat.Hit("RPC_SetPlayable");
 		m_bIsPlayable = isPlayable;
 		if (m_bIsPlayable)
 			GetGame().GetCallqueue().CallLater(AddToList, 0, false, m_Owner);

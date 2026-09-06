@@ -82,7 +82,7 @@ modded class SCR_PingEditorComponent
 		CallEvents(manager, false, reporterID, reporterInEditor, unlimitedOnly, position, target);
 
 		//--- Send the ping to server
-		Rpc(PS_SendPingServer_CustomText, unlimitedOnly, position, Replication.FindId(target), customText);
+		Rpc(PS_SendPingServer_CustomText, unlimitedOnly, position, Replication.FindItemId(target), customText);
 		
 		//~ Ping cooldown to prevent spamming
 		ActivateCooldown();

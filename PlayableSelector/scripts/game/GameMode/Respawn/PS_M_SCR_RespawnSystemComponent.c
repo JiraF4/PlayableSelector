@@ -55,7 +55,26 @@ modded class SCR_RespawnSystemComponent : RespawnSystemComponent
 	override bool IsPauseMenuRespawnEnabled() {return null;} 
 	override bool IsFactionChangeAllowed() {return false;} 
 	override ScriptInvoker GetOnRespawnEnabledChanged() {return null;} 
-	override void OnPlayerRegistered_S(int playerId) {return;}	
+	override void OnPlayerRegistered_S(int playerId) {return;}
 	override void OnInit(IEntity owner) {return;}
 	override void OnPlayerAuditSuccess_S(int playerId)	{return;}
+
+	// Vanilla bodies dereference m_SpawnLogic, which is never created because OnInit is disabled.
+	// Without these no-ops the server throws a VME on every disconnect/kill/cleanup.
+	override void OnPlayerDisconnected_S(int playerId, KickCauseCode cause, int timeout) {return;}
+	override void OnPlayerKilled_S(int playerId, IEntity playerEntity, IEntity killerEntity, notnull Instigator killer) {return;}
+	override void OnPlayerDeleted_S(int playerId) {return;}
+	override void OnPlayerEntityCleanup_S(notnull IEntity playerEntity) {return;}
+}
+
+// The lobby disables the vanilla respawn pipeline (GetInstance above returns null), but the spawn
+// request components on player controllers still initialize against it and throw a VME per player.
+modded class SCR_SpawnRequestComponent
+{
+	protected override void OnPostInit(IEntity owner)
+	{
+		if (!SCR_RespawnSystemComponent.GetInstance())
+			return;
+		super.OnPostInit(owner);
+	}
 }

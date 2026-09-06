@@ -248,11 +248,8 @@ class PS_LobbyLoadoutPreview : SCR_WLibComponentBase
 		// Concatinate all weapons to string and update widget text
 		string weapons = "";
 		for (int i = 0; i < weaponsCount.Count(); i++)
-		{
-			
-			string line = WidgetManager.Translate(weaponsCount.GetKey(i));
-			int count = weaponsCount.GetElement(i);
-			weapons = weapons + line + "\n";
+		{				string line = WidgetManager.Translate(weaponsCount.GetKey(i));
+				weapons = weapons + line + "\n";
 		}
 		
 		// Concatinate all magazines to string and update widget text
@@ -260,7 +257,6 @@ class PS_LobbyLoadoutPreview : SCR_WLibComponentBase
 		for (int i = 0; i < magazinessCount.Count(); i++)
 		{
 			string line = WidgetManager.Translate(magazinessCount.GetKey(i));
-			int count = magazinessCount.GetElement(i);
 			magazines = magazines + line + "\n";
 		}
 		

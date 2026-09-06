@@ -1,5 +1,6 @@
 class PS_MissionDescriptionContentUI : ScriptedWidgetComponent
 {
+	string m_sTitle;
 	PS_MissionDescriptionUI m_hMissionDescriptionUI;
 	PS_MissionDescription m_MapDescription;
 	

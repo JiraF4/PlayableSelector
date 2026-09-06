@@ -62,6 +62,52 @@ class PS_ManualCameraSpectator : SCR_ManualCamera
 		characterCameraHandlerComponent.OnAlphatestChange(0);
 	}
 
+	// Spectator jump-to-coordinates: place the free camera at a raw world position with no entity to
+	// follow. Used when the clicked playable is outside this client's replication pool (default NDS
+	// culling) so there is no local entity for SetCharacterEntity to track - the server sends only the
+	// coordinates. SCR_ManualCamera re-reads the entity transform every frame (ProcessComponents ->
+	// GetLocalTransform), so SetOrigin sticks and manual input continues from the new spot; SetOrigin
+	// also keeps the camera's current orientation.
+	void MoveToPosition(vector pos)
+	{
+		SetCharacterEntity(null);
+		SetOrigin(pos);
+	}
+
+	// Place the camera 5 meters behind and 2 meters above a target position, oriented to look at it.
+	// Used on death (camera behind corpse) and when spectating an un-replicated player.
+	static const float SPECTATE_BEHIND_DISTANCE = 5.0;
+	static const float SPECTATE_ABOVE_OFFSET = 2.0;
+	void SetCameraBehindPosition(vector targetPos, vector targetForward)
+	{
+		SetCharacterEntity(null);
+
+		vector backDir = -targetForward;
+		backDir[1] = 0;
+		// Ragdoll guard: if the corpse tumbled and its forward is near-vertical, the horizontal
+		// component collapses to zero — fall back to a default "behind" direction.
+		if (backDir.Length() < 0.01)
+			backDir = vector.Forward;
+		backDir = backDir.Normalized();
+
+		vector cameraPos = targetPos + backDir * SPECTATE_BEHIND_DISTANCE + vector.Up * SPECTATE_ABOVE_OFFSET;
+
+		// Terrain protection: clamp to surface Y so the camera never ends up underground
+		float surfaceY = GetGame().GetWorld().GetSurfaceY(cameraPos[0], cameraPos[2]);
+		if (cameraPos[1] < surfaceY + 1.0)
+			cameraPos[1] = surfaceY + 1.0;
+
+		// Build a transform that looks from cameraPos toward the target
+		vector dir = targetPos - cameraPos;
+		vector angles = dir.VectorToAngles();
+		angles[2] = 0; // no roll
+		vector mat[4];
+		Math3D.AnglesToMatrix(angles, mat);
+		mat[3] = cameraPos;
+
+		SetTransform(mat);
+	}
+
 	void CameraPositionUpdate()
 	{
 		vector newTransform[4];

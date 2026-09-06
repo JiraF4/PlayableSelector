@@ -15,6 +15,11 @@ SCR_PlayerController : "{225E51284CC95CFA}Prefabs/Characters/Core/DefaultPlayerC
      m_eLayer ALWAYS_TOP
      m_bAdaptiveOpacity 1
     }
+    SCR_MapRadialDisplay "{5D9A832AE20EEA26}" : "{E4788D2619943545}Configs/HUD/RadialMenu/MapRadialMenuDisplay.conf" {
+     m_bShowWhenCreated 0
+     m_bAdaptiveOpacity 0
+     m_bFastFadeOnPerform 1
+    }
    }
   }
   SCR_RespawnComponent "{998227246E6A49E0}" {

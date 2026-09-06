@@ -39,6 +39,8 @@ PS_GameModeCoop : "{0F307326459A1395}Prefabs/MP/Modes/GameMode_Base.et" {
   }
   PS_VoNRoomsManager "{5ED9088704AA8ACB}" {
   }
+  PS_KillListManager "{D1A2B3C4E5F6A7B8}" {
+  }
   SCR_CampaignBuildingManagerComponent "{61B4DDBF56BF1B48}" {
    m_sFreeRoamBuildingClientTrigger "{5E191CEAF4B95816}Prefabs/MP/FreeRoamBuildingClientTrigger.et"
    m_BudgetType CAMPAIGN

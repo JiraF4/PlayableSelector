@@ -1,50 +1,80 @@
 OverlayWidgetClass : "{DAAA8D092128D446}UI/Util/HideableButton.layout" {
- Name "FactionReadyHideableButton"
- Slot LayoutSlot "{61B4C308CEBD75B8}" {
- }
- components {
-  PS_FactionReadyWidgetComponent "{618EDD66FD8B5855}" {
+  Name "FactionReadyHideableButton"
+  Slot LayoutSlot "{61B4C308CEBD75B8}" {
   }
- }
- {
-  ImageWidgetClass "{618EDD66C75AABCE}" {
-   Name "BackgroundFaction"
-   Slot OverlayWidgetSlot "{5EB117705B84CDF5}" {
-    Padding 6 6 6 6
+  components {
+   PS_FactionReadyWidgetComponent "{618EDD66FD8B5855}" {
    }
-   Color 0.502 0 0 1
-   Image "Wait"
-   Size 48 48
   }
-  ImageWidgetClass "{5EB1176784E2EFB5}" {
-   Prefab "{5EB1176784E2EFB5}"
-   Slot OverlayWidgetSlot "{5EB117705B84CDF5}" {
+  {
+   ImageWidgetClass "{618EDD66C75AABCE}" {
+    Name "BackgroundFaction"
+    Slot OverlayWidgetSlot "{5EB117705B84CDF5}" {
+    }
+    Color 1 1 1 1
+    Image "Wait"
+    Size 64 40
    }
-   Texture "{2EFEA2AF1F38E7F0}UI/Textures/Icons/icons_wrapperUI-64.imageset"
-   Image "disable"
-   Size 64 64
-  }
-  ButtonWidgetClass "{5EB1176E3DB20C7A}" {
-   Prefab "{5EB1176E3DB20C7A}"
-   {
-    FrameWidgetClass "{5EB1176E3DB20C7C}" {
-     Prefab "{5EB1176E3DB20C7C}"
-     {
-      ImageWidgetClass "{5EB1176E3DB20C7D}" {
-       Prefab "{5EB1176E3DB20C7D}"
-       Slot FrameWidgetSlot "{5D6E8206B132EE77}" {
-        OffsetLeft 0
-        OffsetTop 0
-        SizeX 40
-        OffsetRight -40
-        SizeY 40
-        OffsetBottom -40
+   ImageWidgetClass "{5EB1176784E2EFB5}" {
+    Prefab "{5EB1176784E2EFB5}"
+    Slot OverlayWidgetSlot "{5EB117705B84CD2A}" {
+    }
+    Texture "{2EFEA2AF1F38E7F0}UI/Textures/Icons/icons_wrapperUI-64.imageset"
+    Image "disable"
+    Size 64 64
+    Opacity 0.4
+   }
+   ButtonWidgetClass "{5EB1176E3DB20C7A}" {
+    Prefab "{5EB1176E3DB20C7A}"
+    {
+     FrameWidgetClass "{5EB1176E3DB20C7C}" {
+      Prefab "{5EB1176E3DB20C7C}"
+      {
+       ImageWidgetClass "{5EB1176E3DB20C7D}" {
+        Prefab "{5EB1176E3DB20C7D}"
+        Slot FrameWidgetSlot "{5D6E8206B132EE77}" {
+         OffsetLeft 0
+         OffsetTop 0
+         SizeX 40
+         OffsetRight -40
+         SizeY 40
+         OffsetBottom -40
+        }
+        Size 60 60
        }
-       Size 60 60
       }
      }
     }
    }
+   VerticalLayoutWidgetClass "{A1B2C3D4E5F6A7B8}" {
+    Name "CommanderNamesLayout"
+    Slot OverlayWidgetSlot "{A1B2C3D4E5F6A7B9}" {
+     Padding 0 68 0 0
+    }
+    {
+     TextWidgetClass "{B1B2C3D4E5F6A7C0}" {
+      Name "FactionName"
+      Slot LayoutSlot "{B1B2C3D4E5F6A7C1}" {
+       HorizontalAlign 1
+      }
+      "Font Size" 14
+      "Min Font Size" 10
+      "Horizontal Alignment" Center
+      "Vertical Alignment" Top
+      Color 1 1 1 1
+     }
+     TextWidgetClass "{A1B2C3D4E5F6A7C0}" {
+      Name "CommanderNames"
+      Slot LayoutSlot "{C1B2C3D4E5F6A7D1}" {
+       HorizontalAlign 1
+      }
+      "Font Size" 12
+      "Min Font Size" 8
+      "Horizontal Alignment" Center
+      "Vertical Alignment" Top
+      Color 0.8 0.8 0.8 1
+     }
+    }
+   }
   }
- }
 }

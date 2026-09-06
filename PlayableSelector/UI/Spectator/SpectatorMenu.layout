@@ -30,6 +30,7 @@ FrameWidgetClass {
     SizeY 18
     OffsetBottom -18
    }
+   "Ignore Cursor" 1
    {
     ImageWidgetClass "{6604C04D879C5554}" {
      Name "SidesRatioBackground"
@@ -45,6 +46,7 @@ FrameWidgetClass {
       OffsetBottom 0
      }
      Color 0.007 0.012 0.014 1
+     "Ignore Cursor" 1
     }
     HorizontalLayoutWidgetClass "{6604C04D879C5552}" {
      Name "SidesRatio"
@@ -341,6 +343,45 @@ FrameWidgetClass {
       SizeY 591
       OffsetBottom -640
      }
+    }
+   }
+  }
+  FrameWidgetClass "{D1A2B3C4E5F6A7B0}" : "{C1A2B3D4E5F6A7B7}UI/Spectator/KillList.layout" {
+   Name "KillListFrame"
+   Slot FrameWidgetSlot "{D1A2B3C4E5F6A7B1}" {
+    Anchor 0.5 0 0.5 0
+    PositionX -320
+    OffsetLeft -320
+    PositionY 0
+    OffsetTop 0
+    SizeX 640
+    OffsetRight 320
+    SizeY 640
+    OffsetBottom 640
+   }
+   Clipping False
+   "Ignore Cursor" 0
+   components {
+    PS_KillList "{C1A2B3D4E5F6A7B8}" {
+    }
+   }
+   {
+    ImageWidgetClass "{D1A2B3C4E5F6A7B2}" {
+     Name "Extender"
+     Slot FrameWidgetSlot "{D1A2B3C4E5F6A7B3}" {
+      Anchor 0 0 1 1
+      PositionX 0
+      OffsetLeft -25
+      PositionY 0
+      OffsetTop -25
+      SizeX 0
+      OffsetRight -25
+      SizeY 0
+      OffsetBottom -25
+     }
+     Opacity 0
+     Clipping False
+     "Ignore Cursor" 0
     }
    }
   }

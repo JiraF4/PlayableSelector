@@ -75,30 +75,18 @@ class PS_WaitScreen: MenuBase
 			return;
 		}
 		
-		if (!playerController.GetControlledEntity())
+		// Body-less: the player controls nothing in the lobby; wait for the VoN proxy (the
+		// menu/spectator voice host) to stream in instead of for a controlled character.
+		if (!PS_VoNProxyComponent.GetProxyEntity(playerController.GetPlayerId()))
 		{
-			m_wInfoText.SetText("Awaiting initial character.");
+			m_wInfoText.SetText("Awaiting VoN proxy.");
 			return;
 		}
 		
-		PS_PlayableControllerComponent playableControllerComponent = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-		if (!playableControllerComponent.isVonInit())
-		{
-			m_wInfoText.SetText("Awaiting VoN Initialization.");
-			return;
-		}
-		
-		int publicRoomId = VoNRoomsManager.GetRoomWithFaction("", "#PS-VoNRoom_Public" + playerController.GetPlayerId().ToString());
-		int globalRoomId = VoNRoomsManager.GetRoomWithFaction("", "#PS-VoNRoom_Global");
-		if (publicRoomId == -1 || globalRoomId == -1)
-		{
-			m_wInfoText.SetText("Awaiting VoN room creation.");
-			return;
-		}
-		
-		int roomId = VoNRoomsManager.GetPlayerRoom(playerController.GetPlayerId());
-		string roomKey = VoNRoomsManager.GetRoomName(roomId);
-		
+		// Channels are deterministic string keys created lazily, so there is no per-player room to wait
+		// for anymore. The player's current channel key is read directly.
+		string roomKey = VoNRoomsManager.GetPlayerChannel(playerController.GetPlayerId());
+
 		m_bWaitEnded = true;
 		Close();
 		

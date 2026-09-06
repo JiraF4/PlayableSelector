@@ -81,21 +81,33 @@ class PS_VehicleSelector : SCR_ButtonComponent
 	void SetVehicle(PS_PlayableVehicleContainer playableVehicleContainer)
 	{
 		m_PlayableVehicleContainer = playableVehicleContainer;
-		
-		// Temp
+
+		// Faction can be null if the container was registered with a faction key that no longer
+		// resolves on this client; guard so the lobby still builds instead of throwing a VME per slot.
 		m_Faction = m_PlayableVehicleContainer.GetFaction();
-		m_sFactionKey = m_Faction.GetFactionKey();
-		
-		// Initial setup
-		m_wVehicleFactionColor.SetColor(m_Faction.GetFactionColor());
-		
+		if (m_Faction)
+		{
+			m_sFactionKey = m_Faction.GetFactionKey();
+			m_wVehicleFactionColor.SetColor(m_Faction.GetFactionColor());
+		}
+
+		// The preview entity may fail to resolve (missing/invalid prefab) or carry no editable
+		// component; skip the icon/name in that case rather than dereferencing null.
 		ItemPreviewManagerEntity previewManager = ChimeraWorld.CastFrom(GetGame().GetWorld()).GetItemPreviewManager();
 		IEntity entity = previewManager.ResolvePreviewEntityForPrefab(m_PlayableVehicleContainer.m_sPrefabName);
-		SCR_EditableVehicleComponent editableVehicleComponent = SCR_EditableVehicleComponent.Cast(entity.FindComponent(SCR_EditableVehicleComponent));
-		SCR_UIInfo uIInfo = editableVehicleComponent.GetInfo();
-		m_wUnitIcon.LoadImageTexture(0, uIInfo.GetIconPath());
-		m_wVehicleClassName.SetText(uIInfo.GetName());
-		
+		SCR_EditableVehicleComponent editableVehicleComponent;
+		if (entity)
+			editableVehicleComponent = SCR_EditableVehicleComponent.Cast(entity.FindComponent(SCR_EditableVehicleComponent));
+		if (editableVehicleComponent)
+		{
+			SCR_UIInfo uIInfo = editableVehicleComponent.GetInfo();
+			if (uIInfo)
+			{
+				m_wUnitIcon.LoadImageTexture(0, uIInfo.GetIconPath());
+				m_wVehicleClassName.SetText(uIInfo.GetName());
+			}
+		}
+
 		// Events
 		playableVehicleContainer.GetOnLockChange().Insert(OnLockChange);
 		OnLockChange(playableVehicleContainer.GetLock());

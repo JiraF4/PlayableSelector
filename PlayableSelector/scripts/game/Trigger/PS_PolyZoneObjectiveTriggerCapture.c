@@ -132,7 +132,11 @@ class PS_PolyZoneObjectiveTriggerCapture : PS_PolyZoneObjectiveTrigger
 			return false;
 		
 		SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(ent);
+		if (!character)
+			return false;
 		SCR_DamageManagerComponent damageManagerComponent = character.GetDamageManager();
+		if (!damageManagerComponent)
+			return false;
 		
 		return damageManagerComponent.GetState() != EDamageState.DESTROYED;
 	}

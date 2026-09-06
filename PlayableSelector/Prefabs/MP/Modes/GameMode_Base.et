@@ -5,5 +5,7 @@ SCR_BaseGameMode {
   }
   PS_SpectatorLabelsManager "{5F34C8D0DF1B7479}" {
   }
+  PS_ReplayWriter "{5ED90809FC33D26E}" {
+  }
  }
 }

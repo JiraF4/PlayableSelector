@@ -34,6 +34,7 @@ PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_Game
    }
   }
  }
+ m_bRemoveRedundantUnits 1
  m_bFreezeTimeShootingForbiden 1
 }
 $grp SCR_AIGroup : "{107554618BE6FF20}Prefabs/Groups/BLUFOR/Group_US_Team_Suppress_P.et" {

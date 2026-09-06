@@ -11,7 +11,13 @@ class PS_MissionDataConfig : JsonApiStruct
 	string MissionPath;
 	string WorldPath;
 	string ReplayPath;
-	
+
+	// Website stats (moved here from QuickTvT so PlayableSelector owns the export end-to-end):
+	// ScenarioType = mission header game mode, SessionName = the written file name, Token = StatSender auth.
+	string ScenarioType;
+	string SessionName;
+	string Token;
+
 	ref array<ref PS_MissionDataDescription> Descriptions = new array<ref PS_MissionDataDescription>;
 	ref array<ref PS_MissionDataFaction> Factions = new array<ref PS_MissionDataFaction>;
 	ref array<ref PS_MissionDataVehicle> Vehicles = new array<ref PS_MissionDataVehicle>;
@@ -125,6 +131,7 @@ class PS_MissionDataDamageEvent : JsonApiStruct
 	float DamageValue;
 	int TargetState;
 	int Time;
+	float Distance;
 	
 	void PS_MissionDataDamageEvent()
 	{
@@ -175,9 +182,24 @@ class PS_MissionDataPlayerKill : JsonApiStruct
 	int m_iPlayerId;
 	int Time;
 	int SystemTime;
-	
+	float Distance;
+
 	void PS_MissionDataPlayerKill()
 	{
 		RegAll();
+	}
+}
+
+// StatSender endpoint config, read from $profile:StatSender_Config.json (moved here from QuickTvT).
+// Address = REST endpoint that receives the mission JSON; Token = auth token echoed into the payload.
+class StatSender_Config : JsonApiStruct
+{
+	string Address;
+	string Token;
+
+	void StatSender_Config()
+	{
+		RegV("Address");
+		RegV("Token");
 	}
 }

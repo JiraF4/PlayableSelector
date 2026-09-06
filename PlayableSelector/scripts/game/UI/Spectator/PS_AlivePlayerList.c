@@ -27,8 +27,8 @@ class PS_AlivePlayerList : ScriptedWidgetComponent
 	
 	// Vars
 	protected ref map<SCR_AIGroup, PS_AlivePlayerGroup> m_aAlivePlayerGroups = new map<SCR_AIGroup, PS_AlivePlayerGroup>();
-	protected ref map<Faction, PS_AliveFactionButton> m_aFactionButtons = new map<Faction, PS_AliveFactionButton>();
-	protected ref array<Faction> m_aSelectedFactions = {};
+	protected ref map<SCR_Faction, PS_AliveFactionButton> m_aFactionButtons = new map<SCR_Faction, PS_AliveFactionButton>();
+	protected ref array<SCR_Faction> m_aSelectedFactions = {};
 	
 	ref ScriptInvokerBool m_OnShowDead = new ScriptInvokerBool();
 	ScriptInvokerBool GetOnShowDead()
@@ -59,37 +59,132 @@ class PS_AlivePlayerList : ScriptedWidgetComponent
 	
 	void InitList()
 	{
+		// InitList runs on EVERY spectator-menu open (OnMenuOpen -> SetSpectatorMenu). Reset prior state first,
+		// or a re-open duplicates rows/buttons AND stacks another OnPlayableRegistered subscription - which is
+		// exactly what broke the alive-count: a stale VISIBLE faction button left at 0 alongside a duplicate
+		// (hidden) button that held the correct number, plus N recomputes per event from N stacked subscriptions.
+		m_PlayableManager.GetOnPlayableRegistered().Remove(OnPlayableRegistered);
+		foreach (SCR_Faction discardFaction, PS_AliveFactionButton oldButton : m_aFactionButtons)
+		{
+			if (oldButton)
+				oldButton.GetRootWidget().RemoveFromHierarchy();
+		}
+		m_aFactionButtons.Clear();
+		foreach (SCR_AIGroup discardGroup, PS_AlivePlayerGroup oldGroup : m_aAlivePlayerGroups)
+		{
+			if (oldGroup)
+				oldGroup.GetRootWidget().RemoveFromHierarchy();
+		}
+		m_aAlivePlayerGroups.Clear();
+		m_aSelectedFactions.Clear();
+
 		array<PS_PlayableContainer> playables = m_PlayableManager.GetPlayablesSorted();
-		map<SCR_Faction, ref Tuple2<int, int>> factions = new map<SCR_Faction, ref Tuple2<int, int>>();
-		
+
+		// Order by faction (alphabetical) then group, so the list reads Faction A + its squads, then
+		// Faction B + its squads (instead of raw registration order). Build a sortable key per playable
+		// (factionKey | group name | stable index) and add them in sorted order, so both the group widgets
+		// AND the faction filter buttons end up created in that order.
+		array<string> sortKeys = {};
+		map<string, PS_PlayableContainer> byKey = new map<string, PS_PlayableContainer>();
+		for (int i = 0; i < playables.Count(); i++)
+		{
+			PS_PlayableContainer playable = playables[i];
+			SCR_AIGroup group = m_PlayableManager.GetPlayerGroupByPlayable(playable.GetRplId());
+			string groupName = "";
+			if (group)
+				groupName = PS_GroupHelper.GetGroupFullName(group);
+			string idx = i.ToString();
+			while (idx.Length() < 4)
+				idx = "0" + idx;
+			string key = playable.GetFactionKey() + "|" + groupName + "|" + idx;
+			sortKeys.Insert(key);
+			byKey.Insert(key, playable);
+		}
+		sortKeys.Sort();
+
+		foreach (string key : sortKeys)
+		{
+			PS_PlayableContainer playable = byKey.Get(key);
+			AddPlayable(playable);
+
+			SCR_Faction faction = playable.GetFaction();
+			if (faction && !m_aSelectedFactions.Contains(faction))
+			{
+				m_aSelectedFactions.Insert(faction);
+				AddFactionButton(faction, 0, 0); // created in sorted order; counts filled by RecomputeFactionCounts
+			}
+		}
+
+		RecomputeFactionCounts();
+
+		// Added in runtime
+		m_PlayableManager.GetOnPlayableRegistered().Insert(OnPlayableRegistered);
+	}
+
+	// Recount total + alive playables per faction from the CURRENT replicated damage states and push the
+	// values to the faction buttons. Order-independent and idempotent - replaces the old incremental +/-
+	// counter (AddFactionCount), which drifted: it decremented for deaths fired during init (UpdateDammage
+	// runs inside AddPlayable, before the buttons exist) and never restored the count on respawn. The data
+	// it reads already replicates, so this needs no server round-trip.
+	void RecomputeFactionCounts()
+	{
+		map<SCR_Faction, ref Tuple2<int, int>> tally = new map<SCR_Faction, ref Tuple2<int, int>>();
+		array<PS_PlayableContainer> playables = m_PlayableManager.GetPlayablesSorted();
 		foreach (PS_PlayableContainer playable : playables)
 		{
-			AddPlayable(playable);
-			
 			SCR_Faction faction = playable.GetFaction();
-			int alive = 0;
+			if (!faction)
+				continue;
+			int aliveAdd = 0;
 			if (playable.GetDamageState() != EDamageState.DESTROYED)
-				alive = 1;
-			if (!factions.Contains(faction))
+				aliveAdd = 1;
+			Tuple2<int, int> t;
+			if (!tally.Find(faction, t))
+				tally.Insert(faction, new Tuple2<int, int>(1, aliveAdd));
+			else
 			{
-				factions.Insert(faction, new Tuple2<int, int>(1, alive));
+				t.param1 = t.param1 + 1;
+				t.param2 = t.param2 + aliveAdd;
+			}
+		}
+
+		// Update existing buttons; create any missing (a faction registered after init appends).
+		foreach (SCR_Faction faction, Tuple2<int, int> t : tally)
+		{
+			bool buttonExisted = m_aFactionButtons.Contains(faction);
+			// TEMP DIAGNOSTIC (alive=0 while count computes alive): is the button found/updated, or do we keep
+			// re-creating it (duplicate widgets)? buttonsInMap reveals duplication. Remove once confirmed.
+			PrintFormat("[PS_AliveDBG] update faction='%1' total=%2 alive=%3 buttonExisted=%4 buttonsInMap=%5",
+				faction.GetFactionKey(), t.param1, t.param2, buttonExisted, m_aFactionButtons.Count());
+			if (!m_aFactionButtons.Contains(faction))
+			{
+				// Default a newly-seen faction to "selected" so its button is created VISIBLE - AddFactionButton
+				// hides buttons whose faction is not selected, which previously left a recompute-created button
+				// hidden so the count never showed.
+				if (!m_aSelectedFactions.Contains(faction))
+					m_aSelectedFactions.Insert(faction);
+				AddFactionButton(faction, t.param1, t.param2);
 			}
 			else
 			{
-				Tuple2<int, int> factionCount = factions.Get(faction);
-				factionCount.param1++;
-				factionCount.param2 += alive;
+				PS_AliveFactionButton button = m_aFactionButtons.Get(faction);
+				button.SetCount(t.param1);
+				button.SetCountAlive(t.param2);
 			}
 		}
-		
-		foreach (SCR_Faction faction, Tuple2<int, int> factionCount : factions)
+
+		// Drop buttons for factions that no longer have any playables.
+		array<SCR_Faction> stale = {};
+		foreach (SCR_Faction faction, PS_AliveFactionButton button : m_aFactionButtons)
 		{
-			m_aSelectedFactions.Insert(faction);
-			AddFactionButton(faction, factionCount.param1, factionCount.param2);
+			if (!tally.Contains(faction))
+				stale.Insert(faction);
 		}
-		
-		// Added in runtime
-		m_PlayableManager.GetOnPlayableRegistered().Insert(OnPlayableRegistered);
+		foreach (SCR_Faction staleFaction : stale)
+		{
+			m_aFactionButtons.Get(staleFaction).GetRootWidget().RemoveFromHierarchy();
+			m_aFactionButtons.Remove(staleFaction);
+		}
 	}
 	
 	void AddPlayable(PS_PlayableContainer playable)
@@ -125,50 +220,41 @@ class PS_AlivePlayerList : ScriptedWidgetComponent
 	void SetSpectatorMenu(PS_SpectatorMenu spectatorMenu)
 	{
 		m_mSpectatorMenu = spectatorMenu;
-		
+
 		InitList();
+	}
+
+	void ~PS_AlivePlayerList()
+	{
+		// Best-effort unsubscribe if this instance is ever GC'd. The AUTHORITATIVE cleanup is the reset at the
+		// top of InitList (runs on every menu open) - a widget component is not reliably collected the instant
+		// its menu closes, so the destructor cannot be relied on as the only cleanup.
+		if (GetGame() && m_PlayableManager)
+		{
+			PS_ScriptInvokerPlayable onRegistered = m_PlayableManager.GetOnPlayableRegistered();
+			if (onRegistered)
+				onRegistered.Remove(OnPlayableRegistered);
+		}
 	}
 	
 	void OnPlayableRegistered(RplId playableId, PS_PlayableContainer playable)
 	{
 		AddPlayable(playable);
-		
+
 		SCR_Faction faction = playable.GetFaction();
-		int addAlive = 0;
-		if (playable.GetDamageState() != EDamageState.DESTROYED)
-			addAlive = 1;
-		AddFactionCount(faction, 1, addAlive);	
+		if (faction && !m_aSelectedFactions.Contains(faction))
+			m_aSelectedFactions.Insert(faction);
+		RecomputeFactionCounts();
 	}
-	
-	void AddFactionCount(SCR_Faction faction, int added, int addedAlive)
-	{
-		if (!m_aFactionButtons.Contains(faction))
-			AddFactionButton(faction, 0, 0);
-		PS_AliveFactionButton aliveFactionButton = m_aFactionButtons.Get(faction);
-		int count = aliveFactionButton.GetCount();
-		int countAlive = aliveFactionButton.GetCountAlive();
-		aliveFactionButton.SetCount(count + added);
-		aliveFactionButton.SetCountAlive(countAlive + addedAlive);
-		if ((count + added) == 0)
-		{
-			aliveFactionButton.GetRootWidget().RemoveFromHierarchy();
-			m_aFactionButtons.Remove(faction);
-		}
-	}
-	
+
 	void OnAliveDie(PS_PlayableContainer playableContainer)
 	{
-		SCR_Faction faction = playableContainer.GetFaction();
-		AddFactionCount(faction, 0, -1);
+		RecomputeFactionCounts();
 	}
-	
+
 	void OnAliveRemoved(PS_PlayableContainer playableContainer)
 	{
-		SCR_Faction faction = playableContainer.GetFaction();
-		int removeAlive = 0;
-		if (playableContainer.GetDamageState() == EDamageState.DESTROYED)
-			removeAlive = -1;
-		AddFactionCount(faction, -1, removeAlive);
+		RecomputeFactionCounts();
 	}
 	
 	void OnAliveGroupRemoved(SCR_AIGroup group)
