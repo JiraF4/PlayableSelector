@@ -39,6 +39,20 @@ class PS_MissionDataManager : ScriptComponent
 		GetGame().GetCallqueue().CallLater(AwaitFullInit, 0, true);
 	}
 	
+	override void OnDelete(IEntity owner)
+	{
+		if (m_GameModeCoop)
+		{
+			if (m_GameModeCoop.GetOnHandlePlayerKilled())
+				m_GameModeCoop.GetOnHandlePlayerKilled().Remove(OnPlayerKilled);
+			if (m_GameModeCoop.GetOnGameStateChange())
+				m_GameModeCoop.GetOnGameStateChange().Remove(OnGameStateChanged);
+			if (m_GameModeCoop.GetOnPlayerAuditSuccess())
+				m_GameModeCoop.GetOnPlayerAuditSuccess().Remove(OnPlayerAuditSuccess);
+		}
+		super.OnDelete(owner);
+	}
+	
 	void RegisterVehicle(Vehicle vehicle)
 	{
 		if (!Replication.IsServer())
@@ -203,10 +217,19 @@ class PS_MissionDataManager : ScriptComponent
 		missionDataStateChangeEvent.Time = GetGame().GetWorld().GetWorldTime();
 		missionDataStateChangeEvent.SystemTime = System.GetUnixTime();
 		m_Data.StateEvents.Insert(missionDataStateChangeEvent);
+		
 		if (state == SCR_EGameModeState.GAME)
-			SavePlayers();
-		if (state == SCR_EGameModeState.DEBRIEFING)
 		{
+			if (m_Data.Factions.IsEmpty())
+				CollectFactions();
+			SavePlayers();
+		}
+		else if (state == SCR_EGameModeState.DEBRIEFING)
+		{
+			if (m_Data.Factions.IsEmpty())
+				CollectFactions();
+			SavePlayers();
+			
 			GetGame().GetCallqueue().Call(DefineScenarioType);
 			GetGame().GetCallqueue().Call(SaveObjectives);
 			GetGame().GetCallqueue().Call(WriteToFile);
@@ -242,30 +265,81 @@ class PS_MissionDataManager : ScriptComponent
 
 		m_Data.Token = config.Token;
 
+		// Ensure factions and objectives are captured before generating payload
+		if (m_Data.Factions.IsEmpty())
+			CollectFactions();
+
+		SavePlayers();
+
+		// The web backend (MissionSessionReader.php) does NOT parse DamageEvents or Vehicles.
+		// These two arrays account for ~95% of JSON size (easily 2-5 MB on 100-player games),
+		// which causes Enfusion 1.8's REST API 1MB buffer validation to drop the request.
+		// Temporarily detach them to serialize a lightweight (<100 KB) payload for HTTP:
+		ref array<ref PS_MissionDataDamageEvent> backupDamage = m_Data.DamageEvents;
+		ref array<ref PS_MissionDataVehicle> backupVehicles = m_Data.Vehicles;
+
+		m_Data.DamageEvents = new array<ref PS_MissionDataDamageEvent>();
+		m_Data.Vehicles = new array<ref PS_MissionDataVehicle>();
+
 		JsonSaveContext missionSaveContext = new JsonSaveContext();
 		missionSaveContext.WriteValue("", m_Data);
+		string payload = missionSaveContext.SaveToString();
+
+		// Restore full in-memory arrays immediately
+		m_Data.DamageEvents = backupDamage;
+		m_Data.Vehicles = backupVehicles;
+
+		int payloadSize = payload.Length();
+		Print(string.Format("PS_MissionDataManager: Prepared website payload (%1 bytes)", payloadSize), LogLevel.NORMAL);
+
+		if (payloadSize >= 1000000)
+		{
+			Print(string.Format("PS_MissionDataManager: ERROR - Payload exceeds 1MB limit (%1 bytes), dropping to prevent engine crash", payloadSize), LogLevel.ERROR);
+			return;
+		}
 
 		RestContext context = GetGame().GetRestApi().GetContext(config.Address);
 		if (!context)
 		{
-			Print("PS_MissionDataManager: StatSender REST context is null", LogLevel.WARNING);
+			Print(string.Format("PS_MissionDataManager: RestContext is null for %1", config.Address), LogLevel.WARNING);
 			return;
 		}
-		string answer = context.POST_now("", missionSaveContext.SaveToString());
-		Print(string.Format("PS_MissionDataManager: website answer(%1)", answer));
+
+		// Set proper Content-Type for PHP backend
+		context.SetHeaders("Content-Type,application/json");
+
+		string answer = context.POST_now("", payload);
+		Print(string.Format("PS_MissionDataManager: Website upload complete. Response: %1", answer), LogLevel.NORMAL);
 	}
 	
 	void OnPlayerAuditSuccess(int playerId)
 	{
+		string guid = GetGame().GetBackendApi().GetPlayerIdentityId(playerId);
+		if (guid != "")
+		{
+			foreach (PS_MissionDataPlayer existingPlayer : m_Data.Players)
+			{
+				if (existingPlayer.GUID == guid)
+				{
+					existingPlayer.m_iPlayerId = playerId;
+					string currentName = m_PlayerManager.GetPlayerName(playerId);
+					if (currentName != "" && !currentName.StartsWith("Player"))
+						existingPlayer.Name = currentName;
+					if (!m_playerSaved.Contains(playerId))
+						m_playerSaved.Insert(playerId, true);
+					return;
+				}
+			}
+		}
+
 		if (m_playerSaved.Contains(playerId))
 			return;
 		
-		string GUID = GetGame().GetBackendApi().GetPlayerIdentityId(playerId);
 		string name = m_PlayerManager.GetPlayerName(playerId);
 		
 		PS_MissionDataPlayer player = new PS_MissionDataPlayer();
 		player.m_iPlayerId = playerId;
-		player.GUID = GUID;
+		player.GUID = guid;
 		player.Name = name;
 		m_Data.Players.Insert(player);
 		
@@ -277,144 +351,220 @@ class PS_MissionDataManager : ScriptComponent
 	{
 		string localization = "ru_ru";
 		WidgetManager.SetLanguage(localization);
-
+		
 		SCR_MissionHeader missionHeader = SCR_MissionHeader.Cast(GetGame().GetMissionHeader());
-		if (missionHeader) {
+		if (missionHeader)
+		{
 			//m_Data.MissionPath = missionHeader.GetHeaderResourcePath();
 			m_Data.WorldPath = missionHeader.GetWorldPath();
-			
 			m_Data.MissionName = missionHeader.m_sName;
 			m_Data.MissionAuthor = missionHeader.m_sAuthor;
 			m_Data.MissionDescription = missionHeader.m_sDescription;
 		}
 		
 		ChimeraWorld world = GetGame().GetWorld();
-		TimeAndWeatherManagerEntity timeAndWeatherManagerEntity = world.GetTimeAndWeatherManager();
-		float time = timeAndWeatherManagerEntity.GetTimeOfTheDay();
-		WeatherState weatherState = timeAndWeatherManagerEntity.GetCurrentWeatherState();
-		m_Data.MissionWeather = weatherState.GetStateName();
-		m_Data.MissionDayTime = time;
-		m_Data.MissionWeatherIcon = weatherState.GetIconPath();
+		if (world)
+		{
+			TimeAndWeatherManagerEntity timeAndWeatherManagerEntity = world.GetTimeAndWeatherManager();
+			if (timeAndWeatherManagerEntity)
+			{
+				float time = timeAndWeatherManagerEntity.GetTimeOfTheDay();
+				WeatherState weatherState = timeAndWeatherManagerEntity.GetCurrentWeatherState();
+				if (weatherState)
+				{
+					m_Data.MissionWeather = weatherState.GetStateName();
+					m_Data.MissionWeatherIcon = weatherState.GetIconPath();
+				}
+				m_Data.MissionDayTime = time;
+			}
+		}
 		
-	
 		PS_MissionDataStateChangeEvent missionDataStateChangeEvent = new PS_MissionDataStateChangeEvent();
-		missionDataStateChangeEvent.State = SCR_EGameModeState.PREGAME;
-		missionDataStateChangeEvent.Time = GetGame().GetWorld().GetWorldTime();
+		missionDataStateChangeEvent.State = SCR_EGameModeState.SLOTSELECTION;
+		missionDataStateChangeEvent.Time = 0;
 		missionDataStateChangeEvent.SystemTime = System.GetUnixTime();
 		m_Data.StateEvents.Insert(missionDataStateChangeEvent);
 		
 		#ifdef PS_REPLAYS
 		PS_ReplayWriter replayWriter = PS_ReplayWriter.GetInstance();
-		string ReplayPath = replayWriter.m_sReplayFileName;
-		ReplayPath.Replace("$profile:Replays/", "");
-		m_Data.ReplayPath = ReplayPath;
+		if (replayWriter)
+		{
+			string replayPath = replayWriter.m_sReplayFileName;
+			replayPath.Replace("$profile:Replays/", "");
+			m_Data.ReplayPath = replayPath;
+		}
 		#endif
 		
 		PS_MissionDescriptionManager missionDescriptionManager = PS_MissionDescriptionManager.GetInstance();
-		array<PS_MissionDescription> descriptions = new array<PS_MissionDescription>();
-		missionDescriptionManager.GetDescriptions(descriptions);
-		foreach (PS_MissionDescription description : descriptions)
+		if (missionDescriptionManager)
 		{
-			PS_MissionDataDescription descriptionData = new PS_MissionDataDescription();
-			m_Data.Descriptions.Insert(descriptionData);
-			
-			descriptionData.Title = WidgetManager.Translate("%1", description.m_sTitle);
-			descriptionData.DescriptionLayout = description.m_sDescriptionLayout;
-			descriptionData.TextData = WidgetManager.Translate("%1", description.m_sTextData);
-			descriptionData.VisibleForFactions = description.m_aVisibleForFactions;
-			descriptionData.EmptyFactionVisibility = description.m_bEmptyFactionVisibility;
+			array<PS_MissionDescription> descriptions = new array<PS_MissionDescription>();
+			missionDescriptionManager.GetDescriptions(descriptions);
+			foreach (PS_MissionDescription description : descriptions)
+			{
+				if (!description)
+					continue;
+
+				PS_MissionDataDescription descriptionData = new PS_MissionDataDescription();
+				descriptionData.Title = WidgetManager.Translate("%1", description.m_sTitle);
+				descriptionData.DescriptionLayout = description.m_sDescriptionLayout;
+				descriptionData.TextData = WidgetManager.Translate("%1", description.m_sTextData);
+				descriptionData.VisibleForFactions = description.m_aVisibleForFactions;
+				descriptionData.EmptyFactionVisibility = description.m_bEmptyFactionVisibility;
+				m_Data.Descriptions.Insert(descriptionData);
+			}
 		}
 		
-		
+		CollectFactions();
+	}
+	
+	void SavePlayables()
+	{
+		CollectFactions();
+	}
+	
+	void CollectFactions()
+	{
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		
+		if (!playableManager)
+			return;
+
 		array<PS_PlayableContainer> playables = playableManager.GetPlayablesSorted();
-		
-		PS_MissionDataGroup groupData = new PS_MissionDataGroup();
-		PS_MissionDataFaction factionData = new PS_MissionDataFaction();
-		
+		if (!playables || playables.IsEmpty())
+			return;
+
+		m_Data.Factions.Clear();
+
 		map<Faction, PS_MissionDataFaction> factionsMap = new map<Faction, PS_MissionDataFaction>();
 		map<SCR_AIGroup, PS_MissionDataGroup> groupsMap = new map<SCR_AIGroup, PS_MissionDataGroup>();
+
 		foreach (PS_PlayableContainer playable : playables)
 		{
-			IEntity character = playable.GetPlayableComponent().GetOwner();
+			if (!playable)
+				continue;
+
+			PS_PlayableComponent playableComp = playable.GetPlayableComponent();
+			if (!playableComp)
+				continue;
+
+			IEntity character = playableComp.GetOwner();
+			if (!character)
+				continue;
+
 			AIControlComponent aiComponent = AIControlComponent.Cast(character.FindComponent(AIControlComponent));
+			if (!aiComponent)
+				continue;
+
 			AIAgent agent = aiComponent.GetAIAgent();
+			if (!agent)
+				continue;
+
 			SCR_AIGroup group = SCR_AIGroup.Cast(agent.GetParentGroup());
 			if (!group)
 				continue;
-			
+
 			SCR_Faction faction = SCR_Faction.Cast(group.GetFaction());
 			if (!faction)
 				continue;
+
+			PS_MissionDataFaction factionData;
 			if (!factionsMap.Contains(faction))
 			{
 				factionData = new PS_MissionDataFaction();
-				m_Data.Factions.Insert(factionData);
-				
 				factionData.Name = WidgetManager.Translate("%1", faction.GetFactionName());
 				factionData.Key = WidgetManager.Translate("%1", faction.GetFactionKey());
-				
+
 				Color color = faction.GetFactionColor();
 				factionData.FactionColor = string.Format("%1,%2,%3,%4", color.A(), color.R(), color.G(), color.B());
 				color = faction.GetOutlineFactionColor();
 				factionData.FactionOutlineColor = string.Format("%1,%2,%3,%4", color.A(), color.R(), color.G(), color.B());
-				
+
+				m_Data.Factions.Insert(factionData);
 				factionsMap.Insert(faction, factionData);
 			}
-			factionData = factionsMap.Get(faction);
+			else
+			{
+				factionData = factionsMap.Get(faction);
+			}
+
+			PS_MissionDataGroup groupData;
 			if (!groupsMap.Contains(group))
 			{
 				groupData = new PS_MissionDataGroup();
-				factionData.Groups.Insert(groupData);
-				
 				string customName = group.GetCustomName();
 				string company, platoon, squad, t, format;
 				group.GetCallsigns(company, platoon, squad, t, format);
-				string callsign;
-				callsign = WidgetManager.Translate(format, company, platoon, squad, "");
-				
+				string callsign = WidgetManager.Translate(format, company, platoon, squad, "");
+
 				groupData.Callsign = playableManager.GetGroupCallsignByPlayable(playable.GetRplId());
 				groupData.CallsignName = callsign;
 				groupData.Name = WidgetManager.Translate("%1", customName);
-				
+
+				factionData.Groups.Insert(groupData);
 				groupsMap.Insert(group, groupData);
 			}
-			groupData = groupsMap.Get(group);
-			
+			else
+			{
+				groupData = groupsMap.Get(group);
+			}
+
+			SCR_DamageManagerComponent damageManagerComponent = SCR_DamageManagerComponent.Cast(character.FindComponent(SCR_DamageManagerComponent));
+			if (damageManagerComponent)
+			{
+				if (!m_RplToDamageManager.Contains(playable.GetRplId()))
+				{
+					damageManagerComponent.GetOnDamage().Insert(OnDamaged);
+					m_RplToDamageManager.Insert(playable.GetRplId(), damageManagerComponent);
+				}
+			}
+
 			array<AIAgent> outAgents = new array<AIAgent>();
 			group.GetAgents(outAgents);
-			
+
 			PS_MissionDataPlayable missionDataPlayable = new PS_MissionDataPlayable();
-			
-			SCR_CharacterDamageManagerComponent damageManagerComponent = playable.GetPlayableComponent().GetCharacterDamageManagerComponent();
-			
-			damageManagerComponent.GetOnDamage().Insert(OnDamaged);
-			m_RplToDamageManager.Insert(playable.GetRplId(), damageManagerComponent);
 			missionDataPlayable.EntityId = playable.GetRplId();
 			missionDataPlayable.GroupOrder = outAgents.Find(agent);
 			missionDataPlayable.Name = WidgetManager.Translate("%1", playable.GetName());
 			missionDataPlayable.RoleName = WidgetManager.Translate("%1", playable.GetRoleName());
-			m_EntityToRpl.Insert(character.GetID(), playable.GetRplId());
-			
+
+			if (!m_EntityToRpl.Contains(character.GetID()))
+				m_EntityToRpl.Insert(character.GetID(), playable.GetRplId());
+
 			groupData.Playables.Insert(missionDataPlayable);
 		}
+
+		Print(string.Format("PS_MissionDataManager: Successfully collected %1 factions and playables", m_Data.Factions.Count()), LogLevel.NORMAL);
 	}
 	
 	void SavePlayers()
 	{
+		if (!m_PlayableManager)
+			return;
+
 		array<PS_PlayableContainer> playables = m_PlayableManager.GetPlayablesSorted();
-		
+		if (!playables)
+			return;
+
+		m_Data.PlayersToPlayables.Clear();
+
 		foreach (PS_PlayableContainer playable : playables)
 		{
-			IEntity character = playable.GetPlayableComponent().GetOwner();
+			if (!playable)
+				continue;
+
 			RplId playableId = playable.GetRplId();
 			int playerId = m_PlayableManager.GetPlayerByPlayable(playableId);
-			
+
+			if (playerId <= 0)
+				playerId = m_PlayableManager.GetPlayerByPlayableRemembered(playableId);
+
+			if (playerId <= 0)
+				continue;
+
 			PS_MissionDataPlayerToEntity playerToEntity = new PS_MissionDataPlayerToEntity();
 			playerToEntity.m_iPlayerId = playerId;
 			playerToEntity.EntityId = playableId;
-			
+
 			m_Data.PlayersToPlayables.Insert(playerToEntity);
 		}
 	}
@@ -459,9 +609,18 @@ class PS_MissionDataManager : ScriptComponent
 		string time = System.GetUnixTime().ToString();
 		m_Data.SessionName = string.Format("PS_MissionData_%1.json", time);
 
+		// Guarantee $profile:Sessions exists on Linux/Windows
+		FileIO.MakeDirectory("$profile:Sessions");
+
+		string fileName = string.Format("$profile:Sessions/PS_MissionData_%1.json", time);
+
 		JsonSaveContext missionSaveContext = new JsonSaveContext();
 		missionSaveContext.WriteValue("", m_Data);
-		string fileName = string.Format("$profile:Sessions\\PS_MissionData_%1.json", time);
-		missionSaveContext.SaveToFile(fileName);
+		bool saved = missionSaveContext.SaveToFile(fileName);
+
+		if (saved)
+			Print(string.Format("PS_MissionDataManager: Full session data saved locally to %1", fileName), LogLevel.NORMAL);
+		else
+			Print(string.Format("PS_MissionDataManager: Failed to save session data to %1", fileName), LogLevel.ERROR);
 	}
 }
