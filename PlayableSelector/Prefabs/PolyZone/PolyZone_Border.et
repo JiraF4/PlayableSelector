@@ -21,12 +21,13 @@ PolylineShapeEntity : "{BD11B8FAA469D169}Prefabs/PolyZone/PolyZone.et" {
    TriggerActivationType "All changes"
    PeriodicQueries 1
    ClassesFilter {
-    "SCR_ChimeraCharacter"
+    "SCR_ChimeraCharacter" "Vehicle" "Turret"
    }
    m_polyZoneEffect PS_PolyZoneEffectRestricted "{60FD050E0DC2A2AB}" {
     m_fKillTime 30
    }
    m_bReversed 1
+   m_bDebug 0
   }
  }
 }
