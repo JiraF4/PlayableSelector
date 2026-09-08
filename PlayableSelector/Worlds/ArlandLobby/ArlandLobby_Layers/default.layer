@@ -48,6 +48,14 @@ $grp SCR_AIGroup : "{107554618BE6FF20}Prefabs/Groups/BLUFOR/Group_US_Team_Suppre
   coords 1403.625 60.56 2369.921
  }
 }
+$grp Vehicle : "{259EE7B78C51B624}Prefabs/Vehicles/Wheeled/UAZ469/UAZ469.et" {
+ UAZ1 {
+  coords 1381.183 36.317 2364.543
+ }
+ UAZ2 {
+  coords 1334.473 37.045 2386.64
+ }
+}
 $grp SCR_AIGroup : "{25CA78D4E661F9B8}Prefabs/Groups/INDFOR/Group_FIA_AmmoTeam_P.et" {
  {
   coords 1398.815 36.04 2377.214
@@ -62,8 +70,65 @@ $grp SCR_AIGroup : "{25CA78D4E661F9B8}Prefabs/Groups/INDFOR/Group_FIA_AmmoTeam_P
 Turret : "{66B35D82EB9B4E28}Prefabs/Weapons/Tripods/6T7/Deployable_Tripod_6T7_NSV_SPP.et" {
  coords 1398.232 35.925 2371.196
 }
+PolylineShapeEntity : "{7019844BAD5C4DD8}Prefabs/PolyZone/PolyZone_Border.et" {
+ components {
+  PS_PolyZone "{60E90266F25533F6}" {
+   m_fPolygonBorderWidth 7
+   m_bReversed 0
+   m_aVisibleForFactions {
+    ""
+    "FIA"
+    "US"
+    "USSR"
+   }
+  }
+ }
+ coords 1352.058 36.639 2377.886
+ Points {
+  ShapePoint "{6A4E13C17265CBF0}" {
+   Position -16.535 0.334 22.253
+  }
+  ShapePoint "{6A4E13C173BF232A}" {
+   Position -30.508 0.363 12.663
+  }
+  ShapePoint "{6A4E13C17180F705}" {
+   Position -14.334 0.27 -10.544
+  }
+ }
+ {
+  PS_PolyZoneTrigger {
+   ID "60FD050E1E83544C"
+   m_sGroupKey "DEF_"
+  }
+ }
+}
 SCR_AIGroup : "{704B4E4EC7C56B55}Prefabs/Groups/BLUFOR/Group_US_AmmoTeam_P.et" {
  coords 1615.499 41.336 2271.03
+}
+PolylineShapeEntity : "{BD11B8FAA469D169}Prefabs/PolyZone/PolyZone.et" {
+ components {
+  PS_PolyZone "{60E90266F25533F6}" {
+   m_fPolygonBorderWidth 7
+   m_aVisibleForFactions {
+    ""
+    "FIA"
+    "US"
+    "USSR"
+   }
+  }
+ }
+ coords 1376.909 36.535 2358.881
+ Points {
+  ShapePoint "{6A4E13C17B3297BA}" {
+   Position -13.203 0.406 0.741
+  }
+  ShapePoint "{6A4E13C1783EE6B3}" {
+   Position -13.799 0.03 -17.138
+  }
+  ShapePoint "{6A4E13C176B46536}" {
+   Position -0.64 -0.32 -17.208
+  }
+ }
 }
 $grp Vehicle : "{C012BB3488BEA0C2}Prefabs/Vehicles/Wheeled/BTR70/BTR70.et" {
  BTR1 {
@@ -77,7 +142,15 @@ $grp Vehicle : "{C012BB3488BEA0C2}Prefabs/Vehicles/Wheeled/BTR70/BTR70.et" {
   coords 1405.874 36.013 2373.17
  }
 }
-$grp Turret : "{D1FFE458E8AC4BDB}Prefabs/Weapons/Mortars/2B14/Mortar_2B14.et" {
+$grp SCR_AIGroup : "{D1B420D921CC6CD4}Prefabs/Groups/OPFOR/Group_USSR_PlatoonHQ_P.et" {
+ DEF_ {
+  coords 1337.05 43.372 2392.901
+ }
+ DEF_HQ {
+  coords 1492.135 38.723 2313.541
+ }
+}
+$grp Turret : "{D1FFE458E8AC4BDB}Prefabs/Weapons/Mortars/2B14/Mortar_2B14_hand.et" {
  {
   coords 1402.003 35.969 2387.599
   angles 0 29.541 0

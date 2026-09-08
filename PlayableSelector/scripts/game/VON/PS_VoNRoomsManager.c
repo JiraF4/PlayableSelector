@@ -106,10 +106,66 @@ class PS_VoNRoomsManager : ScriptComponent
 			return null;
 	}
 
-	// [PS_VoNDBG] per-channel-change diagnostic toggle. Currently ON for live cross-group/faction verification.
-	// NOTE: it runs on EVERY machine on EVERY channel move (a burst during the briefing mass-assignment), so set
-	// this back to false once verification is done to drop that cost in production.
-	static bool s_bVoNDebug = true;
+	// [PS_VoNDBG] per-channel-change diagnostic toggle. Default false for production.
+	static bool s_bVoNDebug = false;
+
+	protected static const float PS_VONFIX_SKY_ALTITUDE    = 10000;
+	protected static const float PS_VONFIX_CHANNEL_BASE    = 1000;
+	protected static const float PS_VONFIX_CHANNEL_SPACING = 1000;
+	protected static const float PS_VONFIX_MEMBER_STEP     = 0.4;
+	protected static const int   PS_VONFIX_GRID_COLS       = 12;
+	protected static const int   PS_VONFIX_TOTAL_SLOTS     = 144;
+	protected static const float PS_VONFIX_ISOLATED_XZ     = -5000;
+	protected static const float PS_VONFIX_NO_CHANNEL_XZ   = -6000;
+
+	//------------------------------------------------------------------------------------------------
+	/**
+	 * @brief Расчет трехмерных виртуальных координат игрока в сетке голосовой комнаты на 128 игроков.
+	 * @param[in] playerId ID игрока
+	 * @return Вектор трехмерных мировых координат
+	 */
+	vector GetRoomPosition(int playerId)
+	{
+		// Controls a living character / not a menu speaker -> isolated far spot
+		// Safe: living/parked proxy radios are muted by ApplyRadioKeyNow (PS_VoNRoomsManager.c:619-627)
+		if (!SCR_VoNComponent.PS_IsMenuSpeaker(playerId))
+			return Vector(PS_VONFIX_ISOLATED_XZ, PS_VONFIX_SKY_ALTITUDE, PS_VONFIX_ISOLATED_XZ);
+
+		string channelKey;
+		if (!m_mPlayersChannel.Find(playerId, channelKey))
+			return Vector(PS_VONFIX_NO_CHANNEL_XZ, PS_VONFIX_SKY_ALTITUDE, PS_VONFIX_NO_CHANNEL_XZ);
+
+		int index = m_aChannels.Find(channelKey);
+		if (index < 0)
+			return Vector(PS_VONFIX_NO_CHANNEL_XZ, PS_VONFIX_SKY_ALTITUDE, PS_VONFIX_NO_CHANNEL_XZ);
+
+		// Deterministic collision-free slot allocation within the room (12x12 grid = 144 slots >= 128 players).
+		// Rank playerId against other players currently in the same channelKey.
+		// Both client and server replicate m_mPlayersChannel, so this guarantees 100% identical coordinates
+		// on all machines without any slot collisions even when server playerIds grow beyond 256.
+		int slot = 0;
+		for (int i = 0; i < m_mPlayersChannel.Count(); i++)
+		{
+			int otherId = m_mPlayersChannel.GetKey(i);
+			if (otherId < playerId && m_mPlayersChannel.GetElement(i) == channelKey)
+				slot++;
+		}
+
+		if (slot >= PS_VONFIX_TOTAL_SLOTS)
+			slot = PS_VONFIX_TOTAL_SLOTS - 1;
+
+		int gridX = slot % PS_VONFIX_GRID_COLS;
+		int gridZ = slot / PS_VONFIX_GRID_COLS;
+
+		// Centered 12x12 grid: (12 - 1) / 2 = 5.5
+		vector memberOffset = Vector(
+			(gridX - 5.5) * PS_VONFIX_MEMBER_STEP,
+			0,
+			(gridZ - 5.5) * PS_VONFIX_MEMBER_STEP
+		);
+
+		return Vector(PS_VONFIX_CHANNEL_BASE + PS_VONFIX_CHANNEL_SPACING * index, PS_VONFIX_SKY_ALTITUDE, PS_VONFIX_CHANNEL_BASE) + memberOffset;
+	}
 
 	// ------------------------- Channel keys -------------------------
 	// Channel key format preserved from the old room keys: factionKey + "|" + roomName ("" == global)
@@ -225,6 +281,7 @@ class PS_VoNRoomsManager : ScriptComponent
 
 		ApplyRadioKey(playerId); // re-tune this player's VoN proxy radio on this machine
 
+		SCR_VoNComponent.InvalidateEditorLocCache(-1);
 		m_eOnRoomChanged.Invoke(playerId, channelKey, oldChannelKey);
 	}
 
@@ -325,6 +382,17 @@ class PS_VoNRoomsManager : ScriptComponent
 			Print(string.Format("[PS_VoN] VoN proxy spawned for player %1 at %2", playerId, proxy.GetOrigin().ToString()), LogLevel.NORMAL);
 
 		ApplyRadioKey(playerId); // key may have been assigned before the proxy existed
+
+		// Guard check on server for 1.8 transceiver badge
+		IEntity proxyEntity;
+		if (m_mProxies_S.Find(playerId, proxyEntity) && proxyEntity)
+		{
+			BaseRadioComponent r = BaseRadioComponent.Cast(proxyEntity.FindComponent(BaseRadioComponent));
+			if (!r || r.TransceiversCount() < 1 || !EditorFactionTransceiver.Cast(r.GetTransceiver(0)))
+			{
+				Print(string.Format("[PS_VoN] WARNING: VoN proxy radio for player %1 has no EditorFactionTransceiver - menu voice will be SILENT on 1.8+ (transmit works, delivery never happens).", playerId), LogLevel.ERROR);
+			}
+		}
 	}
 
 	// Server: delete this player's proxy (on disconnect).
@@ -338,6 +406,7 @@ class PS_VoNRoomsManager : ScriptComponent
 		m_mProxies_S.Remove(playerId);
 		m_mProxySlots_S.Remove(playerId);
 		m_mChannelChangeTime.Remove(playerId); // FIX (DESYNC): clean up grace period entry
+		SCR_VoNComponent.InvalidateEditorLocCache(-1);
 
 		// FIX (GHOST NAMES): remove the player from the replicated channel map so late-joining
 		// clients (JIP) no longer receive stale entries in their RplLoad snapshot. Without this,
@@ -708,6 +777,7 @@ class PS_VoNRoomsManager : ScriptComponent
 			return;
 		m_mPlayersChannel.Remove(playerId);
 		m_mChannelChangeTime.Remove(playerId);
+		SCR_VoNComponent.InvalidateEditorLocCache(-1);
 		m_eOnRoomChanged.Invoke(playerId, "", oldChannelKey);
 	}
 

@@ -200,9 +200,8 @@ class PS_MenuVoN
 		// path for players without a controlled entity.
 		m_VoNComp.ConnectEditorToVoNSystem(pc.GetPlayerId());
 
-		// Arm the component on the radio for RECEPTION too, not only while the key is held.
-		m_VoNComp.SetCommMethod(ECommMethod.SQUAD_RADIO);
-		m_VoNComp.SetTransmitRadio(m_Transceiver);
+		SCR_VoNComponent.InvalidateEditorLocCache(pc.GetPlayerId());
+		ArmDirect();
 
 		InputManager inputManager = GetGame().GetInputManager();
 		inputManager.AddActionListener("VONDirect", EActionTrigger.DOWN, OnTalkDown);
@@ -220,6 +219,10 @@ class PS_MenuVoN
 
 	protected void Deactivate()
 	{
+		PlayerController pc = GetGame().GetPlayerController();
+		if (pc)
+			SCR_VoNComponent.InvalidateEditorLocCache(pc.GetPlayerId());
+
 		if (!m_bActive)
 			return;
 
@@ -238,7 +241,6 @@ class PS_MenuVoN
 		m_bActive = false;
 		m_ActivePc = null;
 		// Let the VON controller revert to vanilla update-system registration now the menu device is off.
-		PlayerController pc = GetGame().GetPlayerController();
 		if (pc)
 		{
 			SCR_VONController vonController = SCR_VONController.Cast(pc.FindComponent(SCR_VONController));
@@ -279,23 +281,28 @@ class PS_MenuVoN
 		if (currentVonComp != m_VoNComp)
 			return;
 		m_Transceiver = tsv; // keep in sync with the proxy's freshly-tuned transceiver
-		m_VoNComp.SetCommMethod(ECommMethod.SQUAD_RADIO);
-		m_VoNComp.SetTransmitRadio(tsv);
+		ArmDirect();
 	}
 
 	// =====================================================================
 	// PRESS-TO-TALK
 	// =====================================================================
 
-	protected void OnTalkDown()
+	protected void ArmDirect()
 	{
-		if (!m_bActive || !m_VoNComp || !m_Transceiver)
+		if (!m_VoNComp)
 			return;
 
-		// Radio-only transmission: everyone whose menu radio shares our frequency
-		// (= same voice channel) hears it.
-		m_VoNComp.SetCommMethod(ECommMethod.SQUAD_RADIO);
-		m_VoNComp.SetTransmitRadio(m_Transceiver);
+		m_VoNComp.SetCommMethod(ECommMethod.DIRECT);
+		m_VoNComp.SetTransmitRadio(null);
+	}
+
+	protected void OnTalkDown()
+	{
+		if (!m_bActive || !m_VoNComp)
+			return;
+
+		ArmDirect();
 		m_VoNComp.SetCapture(true);
 	}
 

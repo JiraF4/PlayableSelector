@@ -960,6 +960,102 @@ StringTable {
    Author "SeskPC"
    LastChanged "SeskPC"
   }
+  CustomStringTableItem "{67F8C10200000005}" {
+   Id "PS-Keybind_VoNModeCycle"
+   Target_en_us "Direct Voice Mode (Whisper/Normal/Shout)"
+   Target_ru_ru "Переключение режима прямого голоса"
+   Modified 1788476151
+   Author "RamboKZ"
+   LastChanged "RamboKZ"
+  }
+  CustomStringTableItem "{67F8C10200000014}" {
+   Id "PS-KillList_Head"
+   Target_en_us "Head"
+   Target_ru_ru "Голова"
+   Modified 1788476152
+   Author "RamboKZ"
+   LastChanged "RamboKZ"
+  }
+  CustomStringTableItem "{67F8C10200000010}" {
+   Id "PS-KillList_Header"
+   Target_en_us "Kill List"
+   Target_ru_ru "Список убийств"
+   Modified 1788476152
+   Author "RamboKZ"
+   LastChanged "RamboKZ"
+  }
+  CustomStringTableItem "{67F8C10200000012}" {
+   Id "PS-KillList_KilledYou"
+   Target_en_us "Killed by"
+   Target_ru_ru "Вас убили"
+   Modified 1788476152
+   Author "RamboKZ"
+   LastChanged "RamboKZ"
+  }
+  CustomStringTableItem "{67F8C10200000017}" {
+   Id "PS-KillList_LeftArm"
+   Target_en_us "Left Arm"
+   Target_ru_ru "Левая рука"
+   Modified 1788476152
+   Author "RamboKZ"
+   LastChanged "RamboKZ"
+  }
+  CustomStringTableItem "{67F8C10200000019}" {
+   Id "PS-KillList_LeftLeg"
+   Target_en_us "Left Leg"
+   Target_ru_ru "Левая нога"
+   Modified 1788476152
+   Author "RamboKZ"
+   LastChanged "RamboKZ"
+  }
+  CustomStringTableItem "{67F8C10200000016}" {
+   Id "PS-KillList_LowerTorso"
+   Target_en_us "Lower Torso"
+   Target_ru_ru "Нижняя часть туловища"
+   Modified 1788476152
+   Author "RamboKZ"
+   LastChanged "RamboKZ"
+  }
+  CustomStringTableItem "{67F8C10200000018}" {
+   Id "PS-KillList_RightArm"
+   Target_en_us "Right Arm"
+   Target_ru_ru "Правая рука"
+   Modified 1788476152
+   Author "RamboKZ"
+   LastChanged "RamboKZ"
+  }
+  CustomStringTableItem "{67F8C1020000001A}" {
+   Id "PS-KillList_RightLeg"
+   Target_en_us "Right Leg"
+   Target_ru_ru "Правая нога"
+   Modified 1788476152
+   Author "RamboKZ"
+   LastChanged "RamboKZ"
+  }
+  CustomStringTableItem "{67F8C10200000013}" {
+   Id "PS-KillList_TeamKills"
+   Target_en_us "Team Kills"
+   Target_ru_ru "Убийства своих"
+   Modified 1788476152
+   Author "RamboKZ"
+   LastChanged "RamboKZ"
+  }
+  CustomStringTableItem "{67F8C10200000015}" {
+   Id "PS-KillList_UpperTorso"
+   Target_en_us "Upper Torso"
+   Target_ru_ru "Верхняя часть туловища"
+   Modified 1788476152
+   Author "RamboKZ"
+   LastChanged "RamboKZ"
+  }
+  CustomStringTableItem "{67F8C10200000011}" {
+   Id "PS-KillList_YourKills"
+   Target_en_us "Your Kills"
+   Target_ru_ru "Ваши убийства"
+   Modified 1788476152
+   Author "RamboKZ"
+   LastChanged "RamboKZ"
+  }
   CustomStringTableItem "{64C90089D268F288}" {
    Id "PS-Load_time"
    Target_en_us "Load time"
@@ -1326,6 +1422,38 @@ StringTable {
    Modified 1642794418
    Author "SeskPC"
    LastChanged "SeskPC"
+  }
+  CustomStringTableItem "{67F8C10200000001}" {
+   Id "PS-VoN_ModeLabel"
+   Target_en_us "VOICE MODE"
+   Target_ru_ru "РЕЖИМ ГОЛОСА"
+   Modified 1788476151
+   Author "RamboKZ"
+   LastChanged "RamboKZ"
+  }
+  CustomStringTableItem "{67F8C10200000002}" {
+   Id "PS-VoN_ModeNormal"
+   Target_en_us "Normal"
+   Target_ru_ru "Обычный"
+   Modified 1788476151
+   Author "RamboKZ"
+   LastChanged "RamboKZ"
+  }
+  CustomStringTableItem "{67F8C10200000003}" {
+   Id "PS-VoN_ModeShout"
+   Target_en_us "Shout"
+   Target_ru_ru "Крик"
+   Modified 1788476151
+   Author "RamboKZ"
+   LastChanged "RamboKZ"
+  }
+  CustomStringTableItem "{67F8C10200000004}" {
+   Id "PS-VoN_ModeWhisper"
+   Target_en_us "Whisper"
+   Target_ru_ru "Шёпот"
+   Modified 1788476151
+   Author "RamboKZ"
+   LastChanged "RamboKZ"
   }
   CustomStringTableItem "{5EB6E12BC67891C4}" {
    Id "PS-VoNRoom_Command"

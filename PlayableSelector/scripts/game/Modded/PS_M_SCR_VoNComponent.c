@@ -30,6 +30,25 @@ modded class SCR_VoNComponent
 	// (int playerId, bool talking)
 	protected static ref ScriptInvoker s_OnPSTalkingChanged = new ScriptInvoker();
 
+	protected static ref map<int, vector> s_mCachedEditorLoc = new map<int, vector>();
+	protected static ref map<int, float> s_mCachedEditorLocExpiry = new map<int, float>();
+	protected static const int PS_VONFIX_LOC_CACHE_TTL_MS = 1000;
+	protected static const int PS_VONFIX_LOC_CACHE_MAX = 256;
+
+	static void InvalidateEditorLocCache(int playerId = -1)
+	{
+		if (playerId < 0)
+		{
+			s_mCachedEditorLoc.Clear();
+			s_mCachedEditorLocExpiry.Clear();
+		}
+		else
+		{
+			s_mCachedEditorLoc.Remove(playerId);
+			s_mCachedEditorLocExpiry.Remove(playerId);
+		}
+	}
+
 	static ScriptInvoker PS_GetOnTalkingChanged()
 	{
 		return s_OnPSTalkingChanged;
@@ -107,56 +126,54 @@ modded class SCR_VoNComponent
 
 	override protected event vector GetEditorWorldLocation(int playerId)
 	{
-		IEntity editor = super.GetEditorEntity(playerId);
-		if (editor && super.IsEntityActiveEditor(editor))
-			return super.GetEditorWorldLocation(playerId);
+		// Guard against null world during mission unload/shutdown
+		World world = GetGame().GetWorld();
+		if (!world)
+			return ComputeEditorWorldLocation(playerId);
 
-		IEntity proxy = PS_VoNProxyComponent.GetProxyEntity(playerId);
-		if (!proxy)
-			return vector.Zero;
+		float now = world.GetWorldTime();
+		float expiry;
+		vector loc;
 
-		// FIX (1.8): the reworked engine VoN places / culls incoming editor-voice audio by
-		// this location. The proxies sit at 10km altitude (spread out so one channel's
-		// proximity speech cannot bleed into another's), so without this a RECEIVING client
-		// would place every remote menu/spectator transmission 10km from the listener's ear
-		// = inaudible (the "no voice outside a playable character since 1.8" report — in-game
-		// character voice still works because it never goes through this editor path). For a
-		// REMOTE sender on a client machine, report the LOCAL listener's ear position
-		// (controlled entity, else camera) so the audio lands at the listener the same way
-		// vanilla radio voice does. The local player's own id and the dedicated server keep
-		// reporting the sender's proxy (entity-consistent) as before.
-		if (RplSession.Mode() != RplMode.Dedicated)
+		if (s_mCachedEditorLocExpiry.Find(playerId, expiry) && expiry > now)
 		{
-			PlayerController localPc = GetGame().GetPlayerController();
-			if (localPc && localPc.GetPlayerId() > 0 && localPc.GetPlayerId() != playerId)
-			{
-				IEntity controlled = localPc.GetControlledEntity();
-				if (controlled)
-				{
-					if (PS_VoNRoomsManager.s_bVoNDebug && GetGame().GetWorld().GetWorldTime() - s_fLastLocLog > 1000)
-					{
-						s_fLastLocLog = GetGame().GetWorld().GetWorldTime();
-						PrintFormat("[PS_VoNLoc] GetEditorWorldLocation player=%1 -> LOCAL controlled entity at %2", playerId, controlled.GetOrigin());
-					}
-					return controlled.GetOrigin();
-				}
-
-				CameraBase cam = GetGame().GetCameraManager().CurrentCamera();
-				if (cam)
-				{
-					vector mat[4];
-					cam.GetWorldCameraTransform(mat);
-					if (PS_VoNRoomsManager.s_bVoNDebug && GetGame().GetWorld().GetWorldTime() - s_fLastLocLog > 1000)
-					{
-						s_fLastLocLog = GetGame().GetWorld().GetWorldTime();
-						PrintFormat("[PS_VoNLoc] GetEditorWorldLocation player=%1 -> LOCAL camera at %2", playerId, mat[3]);
-					}
-					return mat[3];
-				}
-			}
+			if (s_mCachedEditorLoc.Find(playerId, loc))
+				return loc;
 		}
 
-		return proxy.GetOrigin();
+		// Cache expired or missing - compute location
+		loc = ComputeEditorWorldLocation(playerId);
+
+		// Prevent unbounded cache growth with gentle FIFO eviction (VON-108)
+		if (s_mCachedEditorLoc.Count() >= PS_VONFIX_LOC_CACHE_MAX)
+		{
+			int oldestKey = s_mCachedEditorLoc.GetKey(0);
+			InvalidateEditorLocCache(oldestKey);
+		}
+
+		s_mCachedEditorLocExpiry.Set(playerId, now + PS_VONFIX_LOC_CACHE_TTL_MS);
+		s_mCachedEditorLoc.Set(playerId, loc);
+		return loc;
+	}
+
+	protected vector ComputeEditorWorldLocation(int playerId)
+	{
+		// Real GM editor retains vanilla behavior
+		SCR_EditorManagerEntity gm = SCR_EditorManagerEntity.Cast(super.GetEditorEntity(playerId));
+		if (gm && super.IsEntityActiveEditor(gm))
+			return super.GetEditorWorldLocation(playerId);
+
+		// Resolve virtual position for menu/lobby/spectator voice rooms
+		PS_VoNRoomsManager vonMgr = PS_VoNRoomsManager.GetInstance();
+		if (vonMgr)
+			return vonMgr.GetRoomPosition(playerId);
+
+		// Fallback to proxy entity origin if rooms manager is unavailable
+		IEntity proxy = PS_VoNProxyComponent.GetProxyEntity(playerId);
+		if (proxy)
+			return proxy.GetOrigin();
+
+		return vector.Zero;
 	}
 
 	override bool IsEntityActiveEditor(IEntity entity)

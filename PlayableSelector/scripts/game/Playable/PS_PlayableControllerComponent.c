@@ -852,7 +852,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		if (!entity)
 			return;
 
-		// Inventory gadget path (radios carried as items)
+		// Inventory gadget path (рации, переносимые в инвентаре/снаряжении бойца)
 		SCR_GadgetManagerComponent gadgetManager = SCR_GadgetManagerComponent.Cast(entity.FindComponent(SCR_GadgetManagerComponent));
 		if (gadgetManager)
 		{
@@ -861,21 +861,21 @@ class PS_PlayableControllerComponent : ScriptComponent
 			{
 				if (!gadget)
 					continue;
-				BaseRadioComponent radio = BaseRadioComponent.Cast(gadget.GetOwner().FindComponent(BaseRadioComponent));
-				if (radio)
+				IEntity owner = gadget.GetOwner();
+				if (!owner)
+					continue;
+				BaseRadioComponent radio = BaseRadioComponent.Cast(owner.FindComponent(BaseRadioComponent));
+				if (radio && !radios.Contains(radio))
 					radios.Insert(radio);
 			}
-			if (radios.Count() >= 2)
-				return;
-			radios.Clear();
 		}
 
-		// Direct child entity path (radios attached without an inventory system)
+		// Direct child entity path (рации, закрепленные напрямую как дочерние сущности)
 		IEntity child = entity.GetChildren();
 		while (child)
 		{
 			BaseRadioComponent radio = BaseRadioComponent.Cast(child.FindComponent(BaseRadioComponent));
-			if (radio)
+			if (radio && !radios.Contains(radio))
 				radios.Insert(radio);
 			child = child.GetSibling();
 		}
@@ -945,8 +945,18 @@ class PS_PlayableControllerComponent : ScriptComponent
 		GetVoNRadios(radios);
 		foreach (BaseRadioComponent radio : radios)
 		{
-			if (radio)
-				radio.SetPower(false);
+			if (!radio)
+				continue;
+
+			radio.SetPower(false);
+
+			int count = radio.TransceiversCount();
+			for (int i = 0; i < count; i++)
+			{
+				BaseTransceiver tsv = radio.GetTransceiver(i);
+				if (tsv && tsv.IsMuted())
+					tsv.SetMuteState(false);
+			}
 		}
 	}
 	
@@ -1401,7 +1411,25 @@ class PS_PlayableControllerComponent : ScriptComponent
 	[RplRpc(RplChannel.Reliable, RplRcver.Owner)]
 	void RPC_EnterSpectator()
 	{
+		// Immediately power down radios on the controlled body
+		DisableBodyVoNRadios();
+
 		PlayerController pc = PlayerController.Cast(GetOwner());
+		if (pc)
+		{
+			SCR_VONController vonController = SCR_VONController.Cast(pc.FindComponent(SCR_VONController));
+			if (vonController)
+			{
+				VoNComponent vonComp = vonController.GetVONComponent();
+				if (vonComp)
+				{
+					vonComp.SetCapture(false);
+					vonController.SetVONComponent(null);
+				}
+				vonController.PS_ResetVON();
+			}
+		}
+
 		IEntity corpse;
 		if (pc)
 			corpse = pc.GetControlledEntity();

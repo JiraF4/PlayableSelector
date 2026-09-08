@@ -1,0 +1,19 @@
+MetaFileClass {
+ Name "{67C8A94DF58B0005}Sounds/VON/PS_VoN_Shout.acp"
+ Configurations {
+  AudioProjectResourceClass PC {
+  }
+  AudioProjectResourceClass XBOX_ONE : PC {
+  }
+  AudioProjectResourceClass XBOX_SERIES : PC {
+  }
+  AudioProjectResourceClass PS4 : PC {
+  }
+  AudioProjectResourceClass PS5 : PC {
+  }
+  AudioProjectResourceClass HEADLESS : PC {
+  }
+  AudioProjectResourceClass Xbox : PC {
+  }
+ }
+}

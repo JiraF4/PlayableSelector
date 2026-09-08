@@ -103,10 +103,10 @@ AudioClass {
    pi {
     3 0
    }
-   volume_dB 4
+   volume_dB 1
    DSPObject CompressorDSPTypeClass dsp {
-    threshold -23
-    ratio 4
+    threshold -16
+    ratio 2
     attack 20
     release 200
    }
@@ -121,7 +121,7 @@ AudioClass {
    }
    DSPObject BiquadDSPTypeClass dsp {
     biquadType HighPass
-    fc 220
+    fc 80
     Q 1
    }
   }
@@ -134,8 +134,8 @@ AudioClass {
     3 0
    }
    DSPObject BiquadDSPTypeClass dsp {
-    fc 8000
-    Q 1.5
+    fc 14000
+    Q 1
    }
   }
   FilterClass {
@@ -150,7 +150,7 @@ AudioClass {
     biquadType LowShelf
     fc 150
     Q 1
-    gain -6
+    gain 0
    }
   }
   FilterClass {
@@ -161,11 +161,11 @@ AudioClass {
    pi {
     1 0
    }
-   volume_dB 1
+   volume_dB 0
    DSPObject BiquadDSPTypeClass dsp {
     biquadType HighPass
-    fc 1200
-    Q 2
+    fc 90
+    Q 0.707
    }
   }
   FilterClass {
@@ -176,10 +176,10 @@ AudioClass {
    pi {
     1 0
    }
-   volume_dB 2
+   volume_dB 0
    DSPObject BiquadDSPTypeClass dsp {
-    fc 3600
-    Q 1.8
+    fc 12000
+    Q 0.707
    }
   }
   FilterClass {
@@ -199,7 +199,7 @@ AudioClass {
   FilterChainClass {
    id 32791
    name "FilterChain"
-   comment "Dont use compressor here. Creates panorama movement when DIRECT and RADIO are mixed."
+   comment "Lobby Clean Voice Filter: Bypassed bitcrusher, studio-grade 90Hz HP & 12kHz LP filters."
    version 5
    tl -275.559 -513.921
    ctl 0 -21
@@ -208,22 +208,13 @@ AudioClass {
      id 1
      links {
       ConnectionClass connection {
-       id 33814
-       port 65
-      }
-     }
-    }
-    ConnectionsClass connections {
-     id 2
-     links {
-      ConnectionClass connection {
        id 63510
        port 65
       }
      }
     }
     ConnectionsClass connections {
-     id 3
+     id 2
      links {
       ConnectionClass connection {
        id 64534
@@ -233,9 +224,9 @@ AudioClass {
     }
    }
    pi {
-    14 0
+    6 0
    }
-   ports 3
+   ports 2
   }
   FilterChainClass {
    id 53271
@@ -297,10 +288,6 @@ AudioClass {
      id 64
      links {
       ConnectionClass connection {
-       id 46098
-       port 65
-      }
-      ConnectionClass connection {
        id 22546
        port 65
       }
@@ -313,7 +300,7 @@ AudioClass {
    }
    varName "VON_Radio"
    varResource "{A60F08955792B575}Sounds/_SharedData/Variables/GlobalVariables.conf"
-   volume_dB 1
+   volume_dB 0
    outState 13323
    outStatePort 77831
   }
@@ -333,7 +320,7 @@ AudioClass {
      }
     }
    }
-   volume_dB 3
+   volume_dB -100
    outState 13323
    outStatePort 77831
   }
@@ -480,8 +467,8 @@ AudioClass {
    pi {
     2 0
    }
-   volume 0.631
-   volume_dB -4
+   volume 1
+   volume_dB 0
   }
   BusClass {
    id 76807
@@ -521,8 +508,8 @@ AudioClass {
    tl -817.242 -124.893
    function BrownianNoise
    time 10
-   volume 0.2
-   volume_dB -14
+   volume 0
+   volume_dB -100
    loopCount 255
   }
  }
@@ -553,12 +540,6 @@ AudioClass {
     }
     ConnectionsClass connections {
      id 160775
-     links {
-      ConnectionClass connection {
-       id 69661
-       port 65
-      }
-     }
     }
    }
    pi {
@@ -573,7 +554,7 @@ AudioClass {
  shaders {
   ShaderClass {
    id 22546
-   name "Shader 1"
+   name "Shader Direct"
    version 5
    tl -18.571 -810.857
    ins {
@@ -642,7 +623,7 @@ AudioClass {
   }
   ShaderClass {
    id 46098
-   name "Shader 2"
+   name "Shader Radio"
    version 5
    tl -153.571 -168.643
    ins {
@@ -660,7 +641,7 @@ AudioClass {
   }
   ShaderClass {
    id 57362
-   name "Shader 56"
+   name "Shader RAW"
    version 5
    tl -18.571 -1491.286
    ins {
@@ -824,12 +805,6 @@ AudioClass {
    ins {
     ConnectionsClass connections {
      id 0
-     links {
-      ConnectionClass connection {
-       id 49161
-       port 5
-      }
-     }
     }
     ConnectionsClass connections {
      id 1
