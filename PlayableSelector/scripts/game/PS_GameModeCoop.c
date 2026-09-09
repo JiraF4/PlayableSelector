@@ -371,12 +371,22 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			playableController.SwitchToMenu(SCR_EGameModeState.GAME);
 			return;
 		}
-		
+
 		PS_LobbyVoNComponent von = PS_LobbyVoNComponent.Cast(entity.FindComponent(PS_LobbyVoNComponent));
 		if (von)
 		{
 			playableController.SwitchToMenu(SCR_EGameModeState.GAME);
 			return;
+		}
+
+		// FIX BUG-44 (ref: PodvalLobbyCrashFix/Scripts/Game/Modded/CrashFix_PS_GameModeCoop.c): мертвый игрок,
+		// закрывший GM-редактор, зависал в трупе — SwitchFromObserver выше уже снёс камеру/меню спектатора,
+		// а ванильный fallthrough возвращал управление в уничтоженное тело. Пересоздаём спектатор сразу,
+		// с позицией от трупа. Проверка по базовому SCR_DamageManagerComponent (покрывает и Character-наследника).
+		SCR_DamageManagerComponent deadDmg = SCR_DamageManagerComponent.Cast(entity.FindComponent(SCR_DamageManagerComponent));
+		if (deadDmg && deadDmg.GetState() == EDamageState.DESTROYED)
+		{
+			playableController.SwitchToObserver(entity);
 		}
 	}
 	
