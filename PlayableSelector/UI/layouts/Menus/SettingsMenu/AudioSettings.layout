@@ -1,0 +1,54 @@
+HorizontalLayoutWidgetClass {
+ {
+  ScrollLayoutWidgetClass "{000000009881A4C7}" {
+   Prefab "{000000009881A4C7}"
+   {
+    VerticalLayoutWidgetClass "{00000000C099DEEF}" {
+     Prefab "{00000000C099DEEF}"
+     {
+      VerticalLayoutWidgetClass "{685354209F36EFEF}" : "{FEEEB639F2735BA1}UI/layouts/Menus/SettingsMenu/CustomWidgets/SettingsTitle.layout" {
+       Name "TitlePS"
+       Slot LayoutSlot "{685354234AC6FBB8}" {
+       }
+       components {
+        SCR_LabelComponent "{6853542375F01898}" {
+         m_sLabel "#PS-Settings_Title"
+        }
+       }
+      }
+      ButtonWidgetClass "{6853542330B1510E}" : "{4A41296C0E9A889F}UI/layouts/WidgetLibrary/WLib_Slider.layout" {
+       Name "Earplugs"
+       Slot LayoutSlot "{6853542312E8B319}" {
+        Padding 4 4 4 4
+       }
+       components {
+        SCR_SliderComponent "{548294960C7399D9}" {
+         m_sLabel "#PS-Earplugs_SettingName"
+         m_sLabelLayout "{F003823FF141983C}UI/layouts/Menus/SettingsMenu/CustomWidgets/SettingsLabel.layout"
+         m_sFormatText "%1%"
+         m_bRoundValue 1
+        }
+       }
+      }
+      VerticalLayoutWidgetClass "{58B33058AD55320C}" {
+       Prefab "{58B33058AD55320C}"
+       components {
+        SCR_LabelComponent "{58B30C1A8E56F0FF}" {
+         m_fPaddingTop 30
+        }
+       }
+       {
+        TextWidgetClass "{58B30C1F77EC7B4E}" {
+         Prefab "{58B30C1F77EC7B4E}"
+         Slot LayoutSlot "{58B30C1F77EC7B76}" {
+          Padding 39 30 39 20
+         }
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}
