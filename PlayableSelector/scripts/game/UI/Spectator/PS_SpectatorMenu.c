@@ -47,7 +47,11 @@ class PS_SpectatorMenu: MenuBase
 	protected ref map<PS_SpectatorLabel, PS_SpectatorLabel> m_mIconsList = new map<PS_SpectatorLabel, PS_SpectatorLabel>();
 	
 	protected vector m_vLastPingPosition;
-	
+
+	protected ref map<RplId, int> m_mLastSpectateRequestTime = new map<RplId, int>();
+	// System.GetTickCount() returns milliseconds - throttle window is 500 ms per rplId.
+	protected static const int SPECTATE_THROTTLE_MS = 500;
+
 	
 	protected PS_SpectatorLabelIcon m_SelectedLabel;
 	protected vector m_vSelectedPosition;
@@ -109,6 +113,15 @@ class PS_SpectatorMenu: MenuBase
 		// normal first-person follow.
 		if (!characterEntity)
 		{
+			int now = System.GetTickCount();
+			int lastRequest = 0;
+			if (m_mLastSpectateRequestTime.Find(rplId, lastRequest))
+			{
+				if (now - lastRequest < SPECTATE_THROTTLE_MS)
+					return false;
+			}
+			m_mLastSpectateRequestTime.Set(rplId, now);
+
 			SCR_PlayerController playerController = SCR_PlayerController.Cast(GetGame().GetPlayerController());
 			if (playerController)
 			{
@@ -426,14 +439,16 @@ class PS_SpectatorMenu: MenuBase
 		// Clear static self-reference so that ResetTarget() and other external
 		// callers do not dereference a destroyed menu instance after close.
 		s_SpectatorMenu = null;
+
+		m_mLastSpectateRequestTime.Clear();
 		
 		if (m_InputManager)
 		{
 			m_InputManager.RemoveActionListener("ShowScoreboard", EActionTrigger.DOWN, OnShowPlayerList);
 			m_InputManager.RemoveActionListener("MenuOpen", EActionTrigger.DOWN, OpenPauseMenu);
 			m_InputManager.RemoveActionListener("ChatToggle", EActionTrigger.DOWN, ChatToggle);
-			m_InputManager.RemoveActionListener("LobbyVoN", EActionTrigger.DOWN, Action_LobbyVoNOn);
-			m_InputManager.RemoveActionListener("LobbyVoN", EActionTrigger.UP, Action_LobbyVoNOff);
+			m_InputManager.RemoveActionListener("VONDirect", EActionTrigger.DOWN, Action_LobbyVoNOn);
+			m_InputManager.RemoveActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
 			m_InputManager.RemoveActionListener("SwitchSpectatorUI", EActionTrigger.DOWN, Action_SwitchSpectatorUI);
 			m_InputManager.RemoveActionListener("GadgetMap", EActionTrigger.DOWN, Action_ToggleMap);
 			m_InputManager.RemoveActionListener("ManualCameraTeleport", EActionTrigger.DOWN, Action_ManualCameraTeleport);
@@ -477,13 +492,19 @@ class PS_SpectatorMenu: MenuBase
 		if (m_GameMode.GetFriendliesSpectatorOnly())
 		{
 			PS_ManualCameraSpectator camera = PS_ManualCameraSpectator.Cast(GetGame().GetCameraManager().CurrentCamera());
-			if (!camera.GetCharacterEntity())
+			if (camera && !camera.GetCharacterEntity())
 			{
 				array<PS_PlayableContainer> playables = m_PlayableManager.GetPlayablesSorted();
-				foreach (PS_PlayableContainer playable : playables)
+				if (playables)
 				{
-					if (playable.GetDamageState() != EDamageState.DESTROYED)
-						SetCameraCharacter(playable.GetRplId());
+					foreach (PS_PlayableContainer playable : playables)
+					{
+						if (playable && playable.GetDamageState() != EDamageState.DESTROYED)
+						{
+							if (SetCameraCharacter(playable.GetRplId()))
+								break;
+						}
+					}
 				}
 			}
 		}
