@@ -15,23 +15,6 @@ modded class SCR_PlayerController
 	
 	override void OnControlledEntityChanged(IEntity from, IEntity to)
 	{
-		if (Replication.IsServer())
-		{
-			PS_ReplayWriter replayWriter = PS_ReplayWriter.GetInstance();
-			if (replayWriter)
-			{
-				if (to)
-				{
-					RplComponent rpl = RplComponent.Cast(to.FindComponent(RplComponent));
-					if (rpl)
-						replayWriter.WriteCharacterPossess(rpl.Id(), GetPlayerId());
-				}
-				else
-				{
-					replayWriter.WriteCharacterPossess(RplId.Invalid(), GetPlayerId());
-				}
-			}
-		}
 		super.OnControlledEntityChanged(from, to);
 
 		// Only execute on local client for own controller
