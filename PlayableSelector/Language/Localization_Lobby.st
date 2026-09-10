@@ -960,14 +960,6 @@ StringTable {
    Author "SeskPC"
    LastChanged "SeskPC"
   }
-  CustomStringTableItem "{67F8C10200000005}" {
-   Id "PS-Keybind_VoNModeCycle"
-   Target_en_us "Direct Voice Mode (Whisper/Normal/Shout)"
-   Target_ru_ru "Переключение режима прямого голоса"
-   Modified 1788476151
-   Author "RamboKZ"
-   LastChanged "RamboKZ"
-  }
   CustomStringTableItem "{67F8C10200000014}" {
    Id "PS-KillList_Head"
    Target_en_us "Head"
@@ -1429,38 +1421,6 @@ StringTable {
    Modified 1642794418
    Author "SeskPC"
    LastChanged "SeskPC"
-  }
-  CustomStringTableItem "{67F8C10200000001}" {
-   Id "PS-VoN_ModeLabel"
-   Target_en_us "VOICE MODE"
-   Target_ru_ru "РЕЖИМ ГОЛОСА"
-   Modified 1788476151
-   Author "RamboKZ"
-   LastChanged "RamboKZ"
-  }
-  CustomStringTableItem "{67F8C10200000002}" {
-   Id "PS-VoN_ModeNormal"
-   Target_en_us "Normal"
-   Target_ru_ru "Обычный"
-   Modified 1788476151
-   Author "RamboKZ"
-   LastChanged "RamboKZ"
-  }
-  CustomStringTableItem "{67F8C10200000003}" {
-   Id "PS-VoN_ModeShout"
-   Target_en_us "Shout"
-   Target_ru_ru "Крик"
-   Modified 1788476151
-   Author "RamboKZ"
-   LastChanged "RamboKZ"
-  }
-  CustomStringTableItem "{67F8C10200000004}" {
-   Id "PS-VoN_ModeWhisper"
-   Target_en_us "Whisper"
-   Target_ru_ru "Шёпот"
-   Modified 1788476151
-   Author "RamboKZ"
-   LastChanged "RamboKZ"
   }
   CustomStringTableItem "{5EB6E12BC67891C4}" {
    Id "PS-VoNRoom_Command"

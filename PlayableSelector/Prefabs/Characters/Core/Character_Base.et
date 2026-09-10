@@ -20,14 +20,5 @@ SCR_ChimeraCharacter {
    m_sSpectatorLabelLayout "{68625BAD23CEE68F}UI/Spectator/SpectatorLabelIconCharacter.layout"
    m_sBoneName "Spine3"
   }
-  SCR_VoNComponent "{520EA1D2F659C856}" {
-   Filename "{67C8A94DF58B0004}Sounds/VON/PS_VoN_Normal.acp"
-  }
-  PS_VoNShoutComponent "{67C8A94DF58B0031}" {
-   Filename "{67C8A94DF58B0005}Sounds/VON/PS_VoN_Shout.acp"
-  }
-  PS_VoNWhisperComponent "{67C8A94DF58B0032}" {
-   Filename "{67C8A94DF58B0003}Sounds/VON/PS_VoN_Whisper.acp"
-  }
  }
 }
