@@ -171,7 +171,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	override void OnGameEnd()
 	{
 		m_bGameEnded = true;
-		PS_LobbyAudioManager.DestroyInstance();
 		// FIX (TIMER LEAK): Stop all self-rescheduling timers that live on the global callqueue.
 		// On server restart the GameMode entity is destroyed, but GetGame().GetCallqueue()
 		// survives — keeping the old instance alive and running stale callbacks.
@@ -280,7 +279,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (RplSession.Mode() != RplMode.Dedicated) {
 			GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.WaitScreen);
 			GetGame().GetInputManager().AddActionListener("OpenLobby", EActionTrigger.DOWN, Action_OpenLobby);
-			PS_LobbyAudioManager.GetInstance().Init();
 		}
 
 		GetGame().GetCallqueue().CallLater(AddAdvanceAction, 0, false);
@@ -1375,10 +1373,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 		SCR_EGameModeState state = GetState();
 		m_OnGameStateChange.Invoke(state);
-		
-		// Lobby audio: mute world SFX in lobby phases, restore afterwards (client only).
-		if (RplSession.Mode() != RplMode.Dedicated)
-			PS_LobbyAudioManager.GetInstance().OnGamePhaseChanged(state);
 
 		// Run the VoN reconcile loop ONLY during menu phases (lobby / briefing); fully stop it in GAME so it
 		// costs nothing while the match runs. This (re)starts it each time we return to a menu phase too.

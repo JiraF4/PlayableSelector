@@ -432,14 +432,6 @@ StringTable {
    Author "zazul"
    LastChanged "SeskPC"
   }
-  CustomStringTableItem "{71E0A10600000002}" {
-   Id "PS-Earplugs_SettingName"
-   Target_en_us "Earplugs volume reduction"
-   Target_ru_ru "Сила приглушения беруш"
-   Modified 1783851050
-   Author "RamboKZ"
-   LastChanged "armen"
-  }
   CustomStringTableItem "{64A33B842940A2A4}" {
    Id "PS-Editor_ContextAction_RespawnEntity_Name"
    Target_en_us "Respawn entity"
@@ -954,14 +946,6 @@ StringTable {
    Modified 1642794205
    Author "SeskPC"
    LastChanged "SeskPC"
-  }
-  CustomStringTableItem "{71E0A10600000001}" {
-   Id "PS-Keybind_ToggleEarplugs"
-   Target_en_us "Earplugs (suppress world sound)"
-   Target_ru_ru "Беруши (приглушить звуки мира)"
-   Modified 1788476151
-   Author "RamboKZ"
-   LastChanged "RamboKZ"
   }
   CustomStringTableItem "{5EC2E47EA1E2244F}" {
    Id "PS-Keybind_VoiceChatSwitch"

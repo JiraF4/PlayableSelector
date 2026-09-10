@@ -15,12 +15,6 @@ SCR_PlayerController : "{225E51284CC95CFA}Prefabs/Characters/Core/DefaultPlayerC
       m_eLayer ALWAYS_TOP
       m_bAdaptiveOpacity 1
      }
-     PS_EarplugsIndicator "{71E0A10500000001}" {
-      VisibleAtParent 1
-      m_LayoutPath "{71E0A10300000001}UI/layouts/HUD/PS_EarplugsIndicator.layout"
-      m_eLayer LOW
-      m_bShowWhenCreated 1
-     }
     SCR_MapRadialDisplay "{5D9A832AE20EEA26}" : "{E4788D2619943545}Configs/HUD/RadialMenu/MapRadialMenuDisplay.conf" {
      m_bShowWhenCreated 0
      m_bAdaptiveOpacity 0
