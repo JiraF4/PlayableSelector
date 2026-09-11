@@ -13,7 +13,5 @@ MetaFileClass {
   }
   EntityTemplateResourceClass HEADLESS : PC {
   }
-  EntityTemplateResourceClass Xbox : PC {
-  }
  }
 }
