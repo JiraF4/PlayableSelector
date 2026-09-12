@@ -856,6 +856,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		SCR_GadgetManagerComponent gadgetManager = SCR_GadgetManagerComponent.Cast(entity.FindComponent(SCR_GadgetManagerComponent));
 		if (gadgetManager)
 		{
+			// Компактные носимые рации (КВ)
 			array<SCR_GadgetComponent> gadgets = gadgetManager.GetGadgetsByType(EGadgetType.RADIO);
 			foreach (SCR_GadgetComponent gadget : gadgets)
 			{
@@ -865,6 +866,20 @@ class PS_PlayableControllerComponent : ScriptComponent
 				if (!owner)
 					continue;
 				BaseRadioComponent radio = BaseRadioComponent.Cast(owner.FindComponent(BaseRadioComponent));
+				if (radio && !radios.Contains(radio))
+					radios.Insert(radio);
+			}
+
+			// Ранцевые радиостанции (ДВ / дальняя связь)
+			array<SCR_GadgetComponent> backpackGadgets = gadgetManager.GetGadgetsByType(EGadgetType.RADIO_BACKPACK);
+			foreach (SCR_GadgetComponent backpackGadget : backpackGadgets)
+			{
+				if (!backpackGadget)
+					continue;
+				IEntity backpackOwner = backpackGadget.GetOwner();
+				if (!backpackOwner)
+					continue;
+				BaseRadioComponent radio = BaseRadioComponent.Cast(backpackOwner.FindComponent(BaseRadioComponent));
 				if (radio && !radios.Contains(radio))
 					radios.Insert(radio);
 			}
@@ -878,6 +893,19 @@ class PS_PlayableControllerComponent : ScriptComponent
 			if (radio && !radios.Contains(radio))
 				radios.Insert(radio);
 			child = child.GetSibling();
+		}
+
+		if (PS_RadioVoiceFix.s_bDebug)
+		{
+			int compactCount = 0;
+			int backpackCount = 0;
+			if (gadgetManager)
+			{
+				compactCount = gadgets.Count();
+				backpackCount = backpackGadgets.Count();
+			}
+			Print(string.Format("[PS_Radio] GetVoNRadios: entity=%1, collected %2 radio(s) (compact=%3, backpack=%4)",
+				entity, radios.Count(), compactCount, backpackCount), LogLevel.NORMAL);
 		}
 	}
 

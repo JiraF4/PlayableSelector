@@ -47,9 +47,20 @@ modded class SCR_VONController
 	}
 
 	//------------------------------------------------------------------------------------------------
+	/**
+	 * @brief Обработка смены управляемой сущности с запросом ресинхронизации радиосвязи.
+	 */
 	override protected void OnControlledEntityChanged(IEntity from, IEntity to)
 	{
 		super.OnControlledEntityChanged(from, to);
+
+		if (System.IsConsoleApp() || (RplSession.Mode() == RplMode.Dedicated))
+			return;
+
+		if (to)
+		{
+			PS_RadioVoiceFix.Request();
+		}
 	}
 
 	//------------------------------------------------------------------------------------------------
