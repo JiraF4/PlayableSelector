@@ -1109,8 +1109,9 @@ class PS_PlayableManager : ScriptComponent
 				playableComponent.InvokeOnPlayerChanged(playerId, -1);
 		}
 
-		// Update both maps
-		m_playersPlayable[playerId] = playableId;
+		// Update both maps (only real players are indexed in m_playersPlayable)
+		if (playerId > 0)
+			m_playersPlayable[playerId] = playableId;
 		int oldPlayerId = m_playablePlayers[playableId];
 		m_playablePlayers[playableId] = playerId;
 		if (oldPlayerId > 0 && oldPlayerId != playerId)
@@ -1185,8 +1186,9 @@ class PS_PlayableManager : ScriptComponent
 				playableComponent.InvokeOnPlayerChanged(playerId, -1);
 		}
 
-		// Update both maps
-		m_playersPlayable[playerId] = playableId;
+		// Update both maps (only real players are indexed in m_playersPlayable)
+		if (playerId > 0)
+			m_playersPlayable[playerId] = playableId;
 		int oldPlayerId = m_playablePlayers[playableId];
 		m_playablePlayers[playableId] = playerId;
 
@@ -1676,14 +1678,19 @@ class PS_PlayableManager : ScriptComponent
 	// --------------------------------------------------------------------------------------------
 	// ------------------------------------ Replication -------------------------------------------
 	// --------------------------------------------------------------------------------------------
+	/**
+	 * @brief Сериализация снимка лобби для подключающихся клиентов (JIP).
+	 * @issue BUG-LockedSlotsJIP: закрытые админом слоты (-2) не отображались у JIP-игроков.
+	 * @cause m_playersPlayable (map<int, RplId>) имела коллизию ключа -2 при закрытии нескольких слотов.
+	 * @solution Прямая сериализация m_playablePlayers (map<RplId, int>) с сохранением всех закрытых (-2) и занятых слотов.
+	 */
 	override protected bool RplSave(ScriptBitWriter writer)
 	{
 		// Save maps
-		// Note: m_playablePlayers (reverse of m_playersPlayable) and the playable name map
-		// (carried by each container) are intentionally NOT sent - they are reconstructed on load
-		// to keep the JIP snapshot smaller on full servers.
+		// Replicate m_playablePlayers (RplId -> playerId) directly so all locked slots (playerId == -2)
+		// and occupied slots (playerId > 0) are preserved without key collision upon JIP.
 		PS_ReplicationHelper.WriteMapIntInt(writer, m_playersStates);
-		PS_ReplicationHelper.WriteMapIntRplId(writer, m_playersPlayable);
+		PS_ReplicationHelper.WriteMapRplIdInt(writer, m_playablePlayers);
 		PS_ReplicationHelper.WriteMapIntBool(writer, m_playersPin);
 		PS_ReplicationHelper.WriteMapIntFactionKey(writer, m_playersFaction);
 		PS_ReplicationHelper.WriteMapIntFactionKey(writer, m_playersFactionRemembered);
@@ -1733,11 +1740,18 @@ class PS_PlayableManager : ScriptComponent
 	}
 
 	// --------------------------------------------------------------------------------------------
+	/**
+	 * @brief Десериализация снимка лобби на клиенте при JIP.
+	 * @issue BUG-LockedSlotsJIP: закрытые слоты (-2) не отображались у JIP-игроков.
+	 * @cause Восстановление m_playablePlayers из m_playersPlayable теряло все закрытые слоты кроме одного из-за коллизии ключа -2.
+	 * @solution Прямое чтение m_playablePlayers и обратное построение m_playersPlayable только для реальных игроков (playerId > 0).
+	 */
 	override protected bool RplLoad(ScriptBitReader reader)
 	{
 		// Load maps (must match RplSave order)
 		PS_ReplicationHelper.ReadMapIntInt(reader, m_playersStates);
-		PS_ReplicationHelper.ReadMapIntRplId(reader, m_playersPlayable);
+		m_playablePlayers.Clear();
+		PS_ReplicationHelper.ReadMapRplIdInt(reader, m_playablePlayers);
 		PS_ReplicationHelper.ReadMapIntBool(reader, m_playersPin);
 		PS_ReplicationHelper.ReadMapIntFactionKey(reader, m_playersFaction);
 		PS_ReplicationHelper.ReadMapIntFactionKey(reader, m_playersFactionRemembered);
@@ -1764,10 +1778,13 @@ class PS_PlayableManager : ScriptComponent
 			m_mPrefabRoleName[prefab] = name;
 		}
 
-		// Reconstruct the reverse player<->playable map instead of replicating it
-		m_playablePlayers.Clear();
-		foreach (int playerId, RplId playableId : m_playersPlayable)
-			m_playablePlayers[playableId] = playerId;
+		// Reconstruct m_playersPlayable for real players only (playerId > 0)
+		m_playersPlayable.Clear();
+		foreach (RplId playableId, int playerId : m_playablePlayers)
+		{
+			if (playerId > 0)
+				m_playersPlayable[playerId] = playableId;
+		}
 
 		// Load containers
 		int playablesCount;
