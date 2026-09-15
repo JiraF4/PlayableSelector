@@ -197,15 +197,18 @@ class PS_PlayableManager : ScriptComponent
 	}
 
 	/**
-	 * @brief Выводит системное сообщение в локальный чат
+	 * @brief Выводит простое локальное сообщение в чат администратора
 	 * @context Client | UI
 	 */
 	void ShowSlotsLoadingNotice()
 	{
+		if (!PS_PlayersHelper.IsAdminOrServer())
+			return;
+
 		SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
 		if (!chatPanelManager)
 			return;
-		ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("smsg");
+		ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("lmsg");
 		if (invoker)
 			invoker.Invoke(null, GetSlotsLoadingMessage());
 	}

@@ -690,6 +690,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void RPC_SlotsLoadingNotice()
 	{
+		if (!PS_PlayersHelper.IsAdminOrServer())
+			return;
+
 		if (!m_playableManager)
 			m_playableManager = PS_PlayableManager.GetInstance();
 		if (m_playableManager)
