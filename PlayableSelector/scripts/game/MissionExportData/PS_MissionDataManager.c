@@ -35,7 +35,7 @@ class PS_MissionDataManager : ScriptComponent
 	FactionManager m_FactionManager;
 	PlayerManager m_PlayerManager;
 	ref PS_MissionDataConfig m_Data = new PS_MissionDataConfig();
-	int m_iInitTimer = 20;
+	int m_iInitTimer = 40;
 
 	// Strong reference: движок Enfusion удаляет асинхронный RestCallback, если на него нет сильной ссылки
 	protected ref RestCallback m_WebsiteCallback;
@@ -126,7 +126,7 @@ class PS_MissionDataManager : ScriptComponent
 	
 	void AwaitFullInit()
 	{
-		m_iInitTimer--; // Wait 20 frames, I belive everything can init in 20 frames. maybe...
+		m_iInitTimer--; // Wait 40 frames, I belive everything can init in 40 frames. maybe...
 		if (m_iInitTimer <= 0)
 		{
 			GetGame().GetCallqueue().Remove(AwaitFullInit);
@@ -144,6 +144,9 @@ class PS_MissionDataManager : ScriptComponent
 		
 		if (state == SCR_EGameModeState.GAME)
 		{
+			if (m_Data.Factions.IsEmpty() || (m_PlayableManager && GetTotalPlayablesCount() < m_PlayableManager.GetPlayables().Count()))
+				CollectFactions();
+
 			SavePlayers();
 		}
 		else if (state == SCR_EGameModeState.DEBRIEFING)
@@ -156,12 +159,14 @@ class PS_MissionDataManager : ScriptComponent
 	 * @brief Финализация экспорта статистики при переходе в дебрифинг.
 	 * @issue BUG-09
 	 * @cause Раздельные вызовы в Callqueue прерывались при возникновении ошибки в промежуточном методе.
-	 * @solution Единый безопасный поток: метаданные сценария -> задачи -> локальный файл -> асинхронный веб-экспорт.
+	 * @solution Единый безопасный поток: метаданные сценария -> задачи -> проверка фракций -> локальный файл -> асинхронный веб-экспорт.
 	 */
 	void FinalizeMissionExport()
 	{
 		DefineScenarioType();
 		SaveObjectives();
+		if (m_Data.Factions.IsEmpty() || (m_PlayableManager && GetTotalPlayablesCount() < m_PlayableManager.GetPlayables().Count()))
+			CollectFactions();
 		if (m_Data.PlayersToPlayables.IsEmpty())
 			SavePlayers();
 
@@ -510,7 +515,7 @@ class PS_MissionDataManager : ScriptComponent
 				if (!fallbackGroupsMap.Contains(fallbackKey))
 				{
 					groupData = new PS_MissionDataGroup();
-					groupData.Callsign = "0";
+					groupData.Callsign = 0;
 					groupData.CallsignName = "";
 					groupData.Name = WidgetManager.Translate("%1", faction.GetFactionName());
 
