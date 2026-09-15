@@ -183,7 +183,23 @@ class PS_GameModeHeader : ScriptedWidgetComponent
 		if (!PS_PlayersHelper.IsAdminOrServer()) 
 			return;
 		
-		if (PS_GameModeCoop.Cast(GetGame().GetGameMode()).GetState() == SCR_EGameModeState.GAME) return;
+		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if (!gameModeCoop)
+			return;
+		
+		if (gameModeCoop.GetState() == SCR_EGameModeState.GAME)
+			return;
+		
+		// Блокировка перехода из PREGAME в SLOTSELECTION, пока слоты миссии ещё загружаются
+		if (gameModeCoop.GetState() == SCR_EGameModeState.PREGAME)
+		{
+			PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+			if (playableManager && !playableManager.IsSlotsFullyLoaded())
+			{
+				playableManager.ShowSlotsLoadingNotice();
+				return;
+			}
+		}
 		
 		playableController.AdvanceGameState(SCR_EGameModeState.NULL);
 	}

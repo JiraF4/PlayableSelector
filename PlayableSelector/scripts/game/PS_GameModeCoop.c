@@ -640,6 +640,18 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (!PS_PlayersHelper.IsAdminOrServer()) return;
 		if (!playableController) return;
 
+		// Блокировка перехода из PREGAME в SLOTSELECTION, пока слоты миссии ещё загружаются
+		if (GetState() == SCR_EGameModeState.PREGAME)
+		{
+			if (!m_playableManager)
+				m_playableManager = PS_PlayableManager.GetInstance();
+			if (m_playableManager && !m_playableManager.IsSlotsFullyLoaded())
+			{
+				m_playableManager.ShowSlotsLoadingNotice();
+				return;
+			}
+		}
+
 		// Admin lock: if a DIFFERENT admin used /adv within the last 5 seconds, block this one.
 		// Same admin can retry freely — they already know they advanced.
 		int myId = playerController.GetPlayerId();
@@ -669,6 +681,19 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	{
 		s_iLastAdvAdminPlayerId = adminPlayerId;
 		s_fLastAdvAdminTime = timestamp;
+	}
+
+	/**
+	 * @brief Оповещение администраторов и игроков о продолжающейся фоновой загрузке слотов
+	 * @rpc Server -> Broadcast (Reliable)
+	 */
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RPC_SlotsLoadingNotice()
+	{
+		if (!m_playableManager)
+			m_playableManager = PS_PlayableManager.GetInstance();
+		if (m_playableManager)
+			m_playableManager.ShowSlotsLoadingNotice();
 	}
 
 	void PlayGameConfig_Callback(SCR_ChatPanel panel, string data)
@@ -1573,6 +1598,15 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		switch (state)
 		{
 			case SCR_EGameModeState.PREGAME:
+				if (!m_playableManager)
+					m_playableManager = PS_PlayableManager.GetInstance();
+				if (m_playableManager && !m_playableManager.IsSlotsFullyLoaded())
+				{
+					Print(string.Format("[PS_GameModeCoop] AdvanceGameState: transition PREGAME -> SLOTSELECTION blocked, %1", m_playableManager.GetSlotsLoadingMessage()), LogLevel.WARNING);
+					Rpc(RPC_SlotsLoadingNotice);
+					RPC_SlotsLoadingNotice();
+					return;
+				}
 				SetGameModeState(SCR_EGameModeState.SLOTSELECTION);
 				break;
 			case SCR_EGameModeState.SLOTSELECTION:

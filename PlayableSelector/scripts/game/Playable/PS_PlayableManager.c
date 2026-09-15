@@ -152,6 +152,96 @@ class PS_PlayableManager : ScriptComponent
 
 	[RplProp()]
 	int m_iMaxPlayersCount = 1; // Max players count from server config
+
+	/**
+	 * @brief Флаг завершения фоновой загрузки и регистрации всех слотов миссии.
+	 * @sync Server -> All (Broadcast RPC + RplProp + JIP Snapshot)
+	 */
+	[RplProp()]
+	protected bool m_bSlotsFullyLoaded = false;
+
+	/**
+	 * @brief Проверка завершения загрузки всех слотов на карте
+	 * @context Client | Server | Authority
+	 * @return true, если все слоты зарегистрированы и спавн завершён
+	 */
+	bool IsSlotsFullyLoaded()
+	{
+		return m_bSlotsFullyLoaded;
+	}
+
+	int GetPlayablesCount()
+	{
+		return m_aPlayables.Count();
+	}
+
+	int GetTargetPlayablesCount()
+	{
+		SCR_MissionHeader missionHeader = SCR_MissionHeader.Cast(GetGame().GetMissionHeader());
+		if (missionHeader)
+			return missionHeader.m_iPlayerCount;
+		return 0;
+	}
+
+	/**
+	 * @brief Формирует текст системного оповещения о загрузке слотов
+	 */
+	string GetSlotsLoadingMessage()
+	{
+		int currentCount = m_aPlayables.Count();
+		int targetCount = GetTargetPlayablesCount();
+		if (targetCount > 1 && targetCount >= currentCount)
+			return string.Format("[PlayableSelector] Слоты ещё загружаются (%1/%2). Подождите завершения загрузки...", currentCount, targetCount);
+		else
+			return string.Format("[PlayableSelector] Слоты ещё загружаются (%1). Подождите завершения загрузки...", currentCount);
+	}
+
+	/**
+	 * @brief Выводит системное сообщение в локальный чат
+	 * @context Client | UI
+	 */
+	void ShowSlotsLoadingNotice()
+	{
+		SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
+		if (!chatPanelManager)
+			return;
+		ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("smsg");
+		if (invoker)
+			invoker.Invoke(null, GetSlotsLoadingMessage());
+	}
+
+	/**
+	 * @brief Фиксирует завершение фонового спавна и регистрации всех слотов на карте.
+	 * @context Authority | Server
+	 * @details Вызывается после затишья в 1.5с при регистрации слотов или по защитному таймауту.
+	 */
+	void SetSlotsFullyLoaded()
+	{
+		if (m_bSlotsFullyLoaded)
+			return;
+
+		m_bSlotsFullyLoaded = true;
+		if (m_CallQueue)
+			m_CallQueue.Remove(SetSlotsFullyLoaded);
+
+		if (Replication.IsServer())
+		{
+			Replication.BumpMe();
+			Rpc(RPC_SetSlotsFullyLoaded);
+		}
+
+		Print(string.Format("[PS_PlayableManager] All slots fully loaded! Total playables registered: %1", m_aPlayables.Count()), LogLevel.NORMAL);
+	}
+
+	/**
+	 * @brief Сетевое оповещение клиентов о завершении загрузки слотов
+	 * @rpc Server -> Broadcast (Reliable)
+	 */
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	protected void RPC_SetSlotsFullyLoaded()
+	{
+		m_bSlotsFullyLoaded = true;
+	}
 	
 	// TODO: Remove?
 	[RplProp(onRplName: "OnStartTimerCounterChanged")]
@@ -202,7 +292,11 @@ class PS_PlayableManager : ScriptComponent
 		m_PlayerManager = GetGame().GetPlayerManager();
 
 		if (Replication.IsServer())
+		{
 			m_bRplLoaded = true;
+			// Fallback safety timeout in case map has no playables or streaming completes with 0 slots
+			m_CallQueue.CallLater(SetSlotsFullyLoaded, 15000, false);
+		}
 		if (RplSession.Mode() == RplMode.Dedicated)
 			ForceGetSessionMaxPlayersCount();
 	
@@ -408,7 +502,14 @@ class PS_PlayableManager : ScriptComponent
 				playerGroup = playableGroup.m_PlayersGroup;
 			}
 			SetPlayablePlayerGroupId(playableId, playerGroup.GetGroupID()); // Save link to map for fast search
-			m_CallQueue.Call(UpdateGroupCallsign, playableId, playerGroup, playableGroup) // Delay for group init
+			m_CallQueue.Call(UpdateGroupCallsign, playableId, playerGroup, playableGroup); // Delay for group init
+
+			// Reset debounce timer on every registered slot (1.5s quiet period after last slot)
+			if (!m_bSlotsFullyLoaded)
+			{
+				m_CallQueue.Remove(SetSlotsFullyLoaded);
+				m_CallQueue.CallLater(SetSlotsFullyLoaded, 1500, false);
+			}
 		}
 	}
 	protected void UpdateGroupCallsign(RplId playableId, SCR_AIGroup playerGroup, SCR_AIGroup playableGroup)
@@ -1694,6 +1795,8 @@ class PS_PlayableManager : ScriptComponent
 	 */
 	override protected bool RplSave(ScriptBitWriter writer)
 	{
+		writer.WriteBool(m_bSlotsFullyLoaded);
+
 		// Save maps
 		// Replicate m_playablePlayers (RplId -> playerId) directly so all locked slots (playerId == -2)
 		// and occupied slots (playerId > 0) are preserved without key collision upon JIP.
@@ -1756,6 +1859,8 @@ class PS_PlayableManager : ScriptComponent
 	 */
 	override protected bool RplLoad(ScriptBitReader reader)
 	{
+		reader.ReadBool(m_bSlotsFullyLoaded);
+
 		// Load maps (must match RplSave order)
 		PS_ReplicationHelper.ReadMapIntInt(reader, m_playersStates);
 		m_playablePlayers.Clear();
