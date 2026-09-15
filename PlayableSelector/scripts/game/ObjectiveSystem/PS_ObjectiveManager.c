@@ -73,8 +73,17 @@ class PS_ObjectiveManager : ScriptComponent
 		return GetObjectiveLevelByScore(score);
 	}
 	
+	/**
+	 * @brief Получение уровня выполнения задач по набранным очкам.
+	 * @issue BUG-09 / VME-01
+	 * @cause При пустом m_aObjectiveLavels обращение по индексу m_aObjectiveLavels.Count() - 1 приводило к выходу за границы массива (-1) и падению виртуальной машины.
+	 * @solution Проверка на null и пустоту массива перед поиском и безопасный возврат null.
+	 */
 	PS_ObjectiveLevel GetObjectiveLevelByScore(int score)
 	{
+		if (!m_aObjectiveLavels || m_aObjectiveLavels.IsEmpty())
+			return null;
+
 		foreach (PS_ObjectiveLevel objectiveLevel : m_aObjectiveLavels)
 		{
 			if (objectiveLevel.GetScore() >= score)

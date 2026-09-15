@@ -6,6 +6,15 @@ class PS_MissionDataManagerClass: ScriptComponentClass
 };
 
 
+/**
+ * @brief Менеджер сбора и экспорта данных сессии (статистика, игроки, слоты, задачи).
+ * @subsystem Lobby | Stats
+ * @context Server
+ * @entity PS_GameMode_Lobby.et / PS_GameModeCoop
+ * @depends PlayableSelector
+ * @listens PS_GameModeCoop.GetOnHandlePlayerKilled, GetOnGameStateChange, GetOnPlayerAuditSuccess
+ * @details Формирует итоговые структуры матча и выполняет локальное сохранение в JSON, а также асинхронный экспорт через REST API на веб-сайт статистики.
+ */
 class PS_MissionDataManager : ScriptComponent
 {
 	// more singletons for singletons god, make our spagetie kingdom great
@@ -18,8 +27,6 @@ class PS_MissionDataManager : ScriptComponent
 			return null;
 	}
 	
-	ref map<EntityID, RplId> m_EntityToRpl = new map<EntityID, RplId>();
-	ref map<RplId, SCR_DamageManagerComponent> m_RplToDamageManager = new map<RplId, SCR_DamageManagerComponent>();
 	ref map<int, bool> m_playerSaved = new map<int, bool>();
 	ref set<RplId> m_DeadEntities = new set<RplId>();
 	PS_PlayableManager m_PlayableManager;
@@ -29,6 +36,9 @@ class PS_MissionDataManager : ScriptComponent
 	PlayerManager m_PlayerManager;
 	ref PS_MissionDataConfig m_Data = new PS_MissionDataConfig();
 	int m_iInitTimer = 20;
+
+	// Strong reference: движок Enfusion удаляет асинхронный RestCallback, если на него нет сильной ссылки
+	protected ref RestCallback m_WebsiteCallback;
 	
 	override void OnPostInit(IEntity owner)
 	{
@@ -62,7 +72,6 @@ class PS_MissionDataManager : ScriptComponent
 			return; // not replicated (e.g. decoration), nothing to track
 		SCR_EditableVehicleComponent editableVehicleComponent = SCR_EditableVehicleComponent.Cast(vehicle.FindComponent(SCR_EditableVehicleComponent));
 		FactionAffiliationComponent factionAffiliationComponent = FactionAffiliationComponent.Cast(vehicle.FindComponent(FactionAffiliationComponent));
-		SCR_DamageManagerComponent damageManagerComponent = SCR_DamageManagerComponent.Cast(vehicle.FindComponent(SCR_DamageManagerComponent));
 		RplId vehicleId = rplComponent.Id();
 		
 		PS_MissionDataVehicle vehicleData = new PS_MissionDataVehicle();
@@ -82,71 +91,8 @@ class PS_MissionDataManager : ScriptComponent
 				vehicleData.VehicleFactionKey = WidgetManager.Translate("%1", faction.GetFactionKey());
 			}
 		}
-		if (damageManagerComponent)
-		{
-			m_RplToDamageManager.Insert(vehicleId, damageManagerComponent);
-			damageManagerComponent.GetOnDamage().Insert(OnDamaged);
-		}
 		
 		m_Data.Vehicles.Insert(vehicleData);
-		m_EntityToRpl.Insert(vehicle.GetID(), vehicleId);
-	}
-	
-	void OnDamaged(BaseDamageContext damageContext)
-	{
-		if (!damageContext)
-			return;
-		IEntity target = damageContext.hitEntity;
-		Instigator instigator = damageContext.instigator;
-		if (target && instigator)
-		{
-			int playerId = instigator.GetInstigatorPlayerID();
-			if (playerId == -1)
-				return;
-
-			EntityID entityID = target.GetID();
-			if (!m_EntityToRpl.Contains(entityID))
-				return;
-			RplId rplId = m_EntityToRpl.Get(entityID);
-
-			IEntity instigatorEntity = instigator.GetInstigatorEntity();
-			// Fire/incendiary ticks keep the instigator's playerId but can lose the entity (player
-			// despawned/died) - GetInstigatorEntity() then returns null. Guard before GetOrigin().
-			if (!instigatorEntity)
-				return;
-			vector instigatorOrigin = instigatorEntity.GetOrigin();
-			vector targetOrigin = target.GetOrigin();
-			float distance = vector.Distance(instigatorOrigin, targetOrigin);
-
-			GetGame().GetCallqueue().Call(SaveDamageEventWithDistance, playerId, rplId, damageContext.damageValue, distance);
-		}
-	}
-
-	void SaveDamageEventWithDistance(int playerId, RplId targetId, float value, float distance)
-	{
-		SCR_DamageManagerComponent damageManagerComponent = m_RplToDamageManager.Get(targetId);
-		if (!damageManagerComponent)
-			return;
-		EDamageState state = damageManagerComponent.GetState();
-		float time = GetGame().GetWorld().GetWorldTime();
-		distance = Math.Round(distance);
-
-		PS_MissionDataDamageEvent missionDataDamageEvent = new PS_MissionDataDamageEvent();
-		missionDataDamageEvent.m_iPlayerId = playerId;
-		missionDataDamageEvent.TargetId = targetId;
-		missionDataDamageEvent.DamageValue = value;
-		missionDataDamageEvent.TargetState = state;
-		missionDataDamageEvent.Time = time;
-		missionDataDamageEvent.Distance = distance;
-		m_Data.DamageEvents.Insert(missionDataDamageEvent);
-
-		// Kills are recorded SOLELY by OnPlayerKilled now. This damage path used to ALSO insert a kill on
-		// DESTROYED, but with the victim id set to the entity RplId (NOT a playerId) - so every player kill landed
-		// in m_Data.Kills twice: once here (killer resolves to a player, victim doesn't) and once in
-		// OnPlayerKilled. That is what doubled the "kills" column on the website (and why deaths stayed single -
-		// this path's victim never resolved). OnPlayerKilled has the correct victim+killer playerIds and now also
-		// carries the distance, so this insert is removed. (Note: this also dropped non-player/vehicle destructions
-		// from the kill log - they were unresolved RplId rows anyway; say so if the site needs vehicle kills.)
 	}
 	
 	void LateInit()
@@ -157,31 +103,11 @@ class PS_MissionDataManager : ScriptComponent
 		m_ObjectiveManager = PS_ObjectiveManager.GetInstance();
 		m_FactionManager = GetGame().GetFactionManager();
 		
-		GetGame().GetCallqueue().CallLater(DelayedInit, 1000, false);
-		
 		m_GameModeCoop.GetOnHandlePlayerKilled().Insert(OnPlayerKilled);
 		m_GameModeCoop.GetOnGameStateChange().Insert(OnGameStateChanged);
 		m_GameModeCoop.GetOnPlayerAuditSuccess().Insert(OnPlayerAuditSuccess);
 		if (RplSession.Mode() != RplMode.Dedicated) 
 			OnPlayerAuditSuccess(GetGame().GetPlayerController().GetPlayerId());
-	}
-	
-	void DelayedInit()
-	{
-		if (!Replication.IsServer())
-			return;
-		
-		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		if (!playableManager)
-			return;
-		
-		array<PS_PlayableContainer> playables = playableManager.GetPlayablesSorted();
-		foreach (PS_PlayableContainer playable : playables)
-		{
-			PS_PlayableComponent playableComp = playable.GetPlayableComponent();
-			if (!playableComp)
-				continue;
-		}
 	}
 	
 	void OnPlayerKilled(int playerId, IEntity playerEntity, IEntity killerEntity, notnull Instigator killer)
@@ -193,8 +119,6 @@ class PS_MissionDataManager : ScriptComponent
 		missionDataPlayerKill.m_iPlayerId = playerId;
 		missionDataPlayerKill.Time = GetGame().GetWorld().GetWorldTime();
 		missionDataPlayerKill.SystemTime = System.GetUnixTime();
-		// Distance (killer -> victim at death), carried over from the now-removed damage-path kill so the kill log
-		// keeps it. killerEntity is null for non-instigated deaths -> leave distance at default in that case.
 		if (playerEntity && killerEntity)
 			missionDataPlayerKill.Distance = Math.Round(vector.Distance(killerEntity.GetOrigin(), playerEntity.GetOrigin()));
 		m_Data.Kills.Insert(missionDataPlayerKill);
@@ -220,21 +144,32 @@ class PS_MissionDataManager : ScriptComponent
 		
 		if (state == SCR_EGameModeState.GAME)
 		{
-			if (m_Data.Factions.IsEmpty() || (m_PlayableManager && GetTotalPlayablesCount() < m_PlayableManager.GetPlayables().Count()))
-				CollectFactions();
 			SavePlayers();
 		}
 		else if (state == SCR_EGameModeState.DEBRIEFING)
 		{
-			if (m_Data.Factions.IsEmpty() || (m_PlayableManager && GetTotalPlayablesCount() < m_PlayableManager.GetPlayables().Count()))
-				CollectFactions();
-			SavePlayers();
-			
-			GetGame().GetCallqueue().Call(DefineScenarioType);
-			GetGame().GetCallqueue().Call(SaveObjectives);
-			GetGame().GetCallqueue().Call(WriteToFile);
-			GetGame().GetCallqueue().Call(SendToWebsite);
+			GetGame().GetCallqueue().Call(FinalizeMissionExport);
 		}
+	}
+
+	/**
+	 * @brief Финализация экспорта статистики при переходе в дебрифинг.
+	 * @issue BUG-09
+	 * @cause Раздельные вызовы в Callqueue прерывались при возникновении ошибки в промежуточном методе.
+	 * @solution Единый безопасный поток: метаданные сценария -> задачи -> локальный файл -> асинхронный веб-экспорт.
+	 */
+	void FinalizeMissionExport()
+	{
+		DefineScenarioType();
+		SaveObjectives();
+		if (m_Data.PlayersToPlayables.IsEmpty())
+			SavePlayers();
+
+		string time = System.GetUnixTime().ToString();
+		m_Data.SessionName = string.Format("PS_MissionData_%1.json", time);
+
+		WriteToFile();
+		SendToWebsite();
 	}
 
 	// Fill the scenario/world identifiers from the mission header for the website payload.
@@ -250,9 +185,12 @@ class PS_MissionDataManager : ScriptComponent
 		m_Data.ScenarioType = missionHeader.m_sGameMode;
 	}
 
-	// POST the collected mission data to the StatSender endpoint. No-op (graceful) when the server has no
-	// $profile:StatSender_Config.json, so a standalone PlayableSelector simply writes the JSON file and
-	// skips the upload. Moved here from QuickTvT so the whole stats pipeline lives in PlayableSelector.
+	/**
+	 * @brief Асинхронная отправка данных миссии на веб-сайт статистики.
+	 * @issue REST-1MB / FREEZE-01
+	 * @cause Синхронный POST_now блокировал сервер на несколько секунд, а превышение 1 МБ сбрасывало запрос движком.
+	 * @solution Асинхронный POST через RestCallback с предварительной валидацией и отсутствием блокировки Game Thread.
+	 */
 	void SendToWebsite()
 	{
 		StatSender_Config config = new StatSender_Config();
@@ -263,31 +201,25 @@ class PS_MissionDataManager : ScriptComponent
 			return;
 		}
 
+		if (config.Address == "")
+		{
+			Print("PS_MissionDataManager: StatSender Address is empty - skipping website upload", LogLevel.WARNING);
+			return;
+		}
+
 		m_Data.Token = config.Token;
 
-		// Ensure factions and objectives are captured before generating payload
-		if (m_Data.Factions.IsEmpty() || (m_PlayableManager && GetTotalPlayablesCount() < m_PlayableManager.GetPlayables().Count()))
-			CollectFactions();
-
-		SavePlayers();
-
-		// The web backend (MissionSessionReader.php) does NOT parse DamageEvents or Vehicles.
-		// These two arrays account for ~95% of JSON size (easily 2-5 MB on 100-player games),
-		// which causes Enfusion 1.8's REST API 1MB buffer validation to drop the request.
-		// Temporarily detach them to serialize a lightweight (<100 KB) payload for HTTP:
-		ref array<ref PS_MissionDataDamageEvent> backupDamage = m_Data.DamageEvents;
-		ref array<ref PS_MissionDataVehicle> backupVehicles = m_Data.Vehicles;
-
-		m_Data.DamageEvents = new array<ref PS_MissionDataDamageEvent>();
-		m_Data.Vehicles = new array<ref PS_MissionDataVehicle>();
+		// Пре-валидация в соответствии с требованиями MissionSessionReader.php (preValidate)
+		if (m_Data.MissionName == "" || m_Data.Factions.IsEmpty() || m_Data.Token == "" || m_Data.ScenarioType == "")
+		{
+			Print(string.Format("PS_MissionDataManager: Pre-validation failed (MissionName='%1', Factions=%2, Token='%3', ScenarioType='%4') - aborting website upload",
+				m_Data.MissionName, m_Data.Factions.Count(), m_Data.Token != "", m_Data.ScenarioType), LogLevel.ERROR);
+			return;
+		}
 
 		JsonSaveContext missionSaveContext = new JsonSaveContext();
 		missionSaveContext.WriteValue("", m_Data);
 		string payload = missionSaveContext.SaveToString();
-
-		// Restore full in-memory arrays immediately
-		m_Data.DamageEvents = backupDamage;
-		m_Data.Vehicles = backupVehicles;
 
 		int payloadSize = payload.Length();
 		Print(string.Format("PS_MissionDataManager: Prepared website payload (%1 bytes)", payloadSize), LogLevel.NORMAL);
@@ -305,11 +237,31 @@ class PS_MissionDataManager : ScriptComponent
 			return;
 		}
 
-		// Set proper Content-Type for PHP backend
 		context.SetHeaders("Content-Type,application/json");
 
-		string answer = context.POST_now("", payload);
-		Print(string.Format("PS_MissionDataManager: Website upload complete. Response: %1", answer), LogLevel.NORMAL);
+		m_WebsiteCallback = new RestCallback();
+		m_WebsiteCallback.SetOnSuccess(OnWebsiteUploadDone);
+		m_WebsiteCallback.SetOnError(OnWebsiteUploadDone);
+
+		int reqId = context.POST(m_WebsiteCallback, "", payload);
+		Print(string.Format("PS_MissionDataManager: Asynchronous website upload initiated (Request ID: %1, size: %2 bytes)", reqId, payloadSize), LogLevel.NORMAL);
+	}
+
+	protected void OnWebsiteUploadDone(RestCallback cb)
+	{
+		m_WebsiteCallback = null;
+		if (!cb)
+			return;
+
+		int httpCode = cb.GetHttpCode();
+		if (httpCode == 200 || httpCode == 201)
+		{
+			Print(string.Format("PS_MissionDataManager: Website upload succeeded (HTTP %1). Response: %2", httpCode, cb.GetData()), LogLevel.NORMAL);
+		}
+		else
+		{
+			Print(string.Format("PS_MissionDataManager: Website upload failed (HTTP %1, RestResult %2). Response: %3", httpCode, cb.GetRestResult(), cb.GetData()), LogLevel.WARNING);
+		}
 	}
 	
 	void OnPlayerAuditSuccess(int playerId)
@@ -571,22 +523,6 @@ class PS_MissionDataManager : ScriptComponent
 				}
 			}
 
-			// 3. Подписка на урон, если персонаж еще существует в мире
-			if (character)
-			{
-				SCR_DamageManagerComponent damageManagerComponent = SCR_DamageManagerComponent.Cast(character.FindComponent(SCR_DamageManagerComponent));
-				if (damageManagerComponent)
-				{
-					if (!m_RplToDamageManager.Contains(playableId))
-					{
-						damageManagerComponent.GetOnDamage().Insert(OnDamaged);
-						m_RplToDamageManager.Insert(playableId, damageManagerComponent);
-					}
-				}
-
-				if (!m_EntityToRpl.Contains(character.GetID()))
-					m_EntityToRpl.Insert(character.GetID(), playableId);
-			}
 
 			// 4. Добавление слота в группу
 			PS_MissionDataPlayable missionDataPlayable = new PS_MissionDataPlayable();
@@ -670,12 +606,18 @@ class PS_MissionDataManager : ScriptComponent
 	
 	void SaveObjectives()
 	{
+		if (!m_ObjectiveManager || !m_FactionManager)
+			return;
+
 		array<PS_Objective> objectivesOut = {};
 		m_ObjectiveManager.GetObjectives(objectivesOut);
 		array<Faction> outFactions = {};
 		m_FactionManager.GetFactionsList(outFactions);
 		foreach (Faction faction : outFactions)
 		{
+			if (!faction)
+				continue;
+
 			FactionKey factionKey = faction.GetFactionKey();
 			
 			PS_MissionDataFactionResult missionDataFactionResult = new PS_MissionDataFactionResult();
@@ -688,7 +630,7 @@ class PS_MissionDataManager : ScriptComponent
 			}
 			foreach (PS_Objective objective : objectivesOut)
 			{
-				if (objective.GetFactionKey() != factionKey)
+				if (!objective || objective.GetFactionKey() != factionKey)
 					continue;
 				
 				PS_MissionDataObjective missionDataObjective = new PS_MissionDataObjective();
@@ -705,13 +647,16 @@ class PS_MissionDataManager : ScriptComponent
 	
 	void WriteToFile()
 	{
-		string time = System.GetUnixTime().ToString();
-		m_Data.SessionName = string.Format("PS_MissionData_%1.json", time);
+		if (m_Data.SessionName == "")
+		{
+			string time = System.GetUnixTime().ToString();
+			m_Data.SessionName = string.Format("PS_MissionData_%1.json", time);
+		}
 
 		// Guarantee $profile:Sessions exists on Linux/Windows
 		FileIO.MakeDirectory("$profile:Sessions");
 
-		string fileName = string.Format("$profile:Sessions/PS_MissionData_%1.json", time);
+		string fileName = string.Format("$profile:Sessions/%1", m_Data.SessionName);
 
 		JsonSaveContext missionSaveContext = new JsonSaveContext();
 		missionSaveContext.WriteValue("", m_Data);
