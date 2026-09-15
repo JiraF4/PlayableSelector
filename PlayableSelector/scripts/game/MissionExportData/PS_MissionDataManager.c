@@ -141,12 +141,12 @@ class PS_MissionDataManager : ScriptComponent
 		missionDataStateChangeEvent.Time = GetGame().GetWorld().GetWorldTime();
 		missionDataStateChangeEvent.SystemTime = System.GetUnixTime();
 		m_Data.StateEvents.Insert(missionDataStateChangeEvent);
-		
-		if (state == SCR_EGameModeState.GAME)
+		if (state == SCR_EGameModeState.SLOTSELECTION)
+			CollectFactions();
+		else if (state == SCR_EGameModeState.GAME)
 		{
-			if (m_Data.Factions.IsEmpty() || (m_PlayableManager && GetTotalPlayablesCount() < m_PlayableManager.GetPlayables().Count()))
+			if (m_Data.Factions.IsEmpty())
 				CollectFactions();
-
 			SavePlayers();
 		}
 		else if (state == SCR_EGameModeState.DEBRIEFING)
@@ -165,7 +165,7 @@ class PS_MissionDataManager : ScriptComponent
 	{
 		DefineScenarioType();
 		SaveObjectives();
-		if (m_Data.Factions.IsEmpty() || (m_PlayableManager && GetTotalPlayablesCount() < m_PlayableManager.GetPlayables().Count()))
+		if (m_Data.Factions.IsEmpty())
 			CollectFactions();
 		if (m_Data.PlayersToPlayables.IsEmpty())
 			SavePlayers();
@@ -371,30 +371,6 @@ class PS_MissionDataManager : ScriptComponent
 				m_Data.Descriptions.Insert(descriptionData);
 			}
 		}
-		
-		CollectFactions();
-	}
-	
-	void SavePlayables()
-	{
-		CollectFactions();
-	}
-	
-	int GetTotalPlayablesCount()
-	{
-		int count = 0;
-		foreach (PS_MissionDataFaction faction : m_Data.Factions)
-		{
-			if (!faction || !faction.Groups)
-				continue;
-			foreach (PS_MissionDataGroup group : faction.Groups)
-			{
-				if (!group || !group.Playables)
-					continue;
-				count += group.Playables.Count();
-			}
-		}
-		return count;
 	}
 
 	/**
@@ -539,7 +515,7 @@ class PS_MissionDataManager : ScriptComponent
 			groupData.Playables.Insert(missionDataPlayable);
 		}
 
-		Print(string.Format("PS_MissionDataManager: Successfully collected %1 factions and %2 playables", m_Data.Factions.Count(), GetTotalPlayablesCount()), LogLevel.NORMAL);
+		Print(string.Format("PS_MissionDataManager: Successfully collected %1 factions and %2 playables", m_Data.Factions.Count(), playables.Count()), LogLevel.NORMAL);
 	}
 	
 	/**
