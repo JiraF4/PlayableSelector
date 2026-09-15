@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PS Mission Data Viewer | Reforger Statistics</title>
+    <style>
+        :root {
+            --bg-base: #0b0f19;
+            --bg-surface: #111827;
+            --bg-card: #1f2937;
+            --bg-card-hover: #283548;
+            --border-color: #374151;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --text-dim: #6b7280;
+            --accent-blue: #38bdf8;
+            --accent-green: #22c55e;
+            --accent-red: #ef4444;
+            --accent-amber: #f59e0b;
+            --accent-purple: #a855f7;
+            --badge-win: rgba(34, 197, 94, 0.15);
+            --badge-loss: rgba(239, 68, 68, 0.15);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-base);
+            color: var(--text-main);
+            line-height: 1.5;
+            padding-bottom: 40px;
+        }
+        header {
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo-badge {
+            background: linear-gradient(135deg, #0284c7, #38bdf8);
+            color: white;
+            font-weight: 800;
+            font-size: 14px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+        }
+        h1 { font-size: 20px; font-weight: 700; color: #fff; }
+        .header-actions { display: flex; gap: 10px; align-items: center; }
+        .btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.15s ease;
+        }
+        .btn:hover { background: var(--bg-card-hover); border-color: var(--accent-blue); }
+        .btn-primary {
+            background: #0284c7;
+            border-color: #0369a1;
+            color: white;
+        }
+        .btn-primary:hover { background: #0369a1; }
+        
+        .container { max-width: 1400px; margin: 20px auto; padding: 0 20px; }
+
+        /* Dropzone */
+        .dropzone {
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            background: var(--bg-surface);
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 24px;
+        }
+        .dropzone:hover, .dropzone.dragover {
+            border-color: var(--accent-blue);
+            background: rgba(56, 189, 248, 0.05);
+        }
+        .dropzone-icon { font-size: 42px; margin-bottom: 8px; }
+        .dropzone-title { font-size: 16px; font-weight: 600; margin-bottom: 4px; color: #fff; }
+        .dropzone-hint { font-size: 13px; color: var(--text-muted); }
+
+        /* Mission Summary Card */
+        .summary-banner {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            display: none;
+        }
+        .mission-main-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .mission-heading h2 { font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 4px; }
+        .mission-sub { font-size: 14px; color: var(--text-muted); display: flex; gap: 16px; flex-wrap: wrap; }
+        .stat-badges { display: flex; gap: 12px; flex-wrap: wrap; }
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px 16px;
+            min-width: 130px;
+            text-align: center;
+        }
+        .stat-card .val { font-size: 22px; font-weight: 800; color: var(--accent-blue); line-height: 1.2; }
+        .stat-card .label { font-size: 11px; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.5px; margin-top: 4px; }
+
+        /* Tabs */
+        .tabs-nav {
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 12px 18px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.15s ease;
+            white-space: nowrap;
+        }
+        .tab-btn:hover { color: var(--text-main); }
+        .tab-btn.active {
+            color: var(--accent-blue);
+            border-bottom-color: var(--accent-blue);
+        }
+
+        .tab-pane { display: none; }
+        .tab-pane.active { display: block; }
+
+        /* Grids & Cards */
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
+
+        .card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 16px;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .card-title { font-size: 16px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px; }
+
+        /* Factions / Results */
+        .faction-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .objective-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border-radius: 6px;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+        .objective-item.completed { border-left: 3px solid var(--accent-green); }
+        .objective-item.failed { border-left: 3px solid var(--accent-red); }
+        .badge-status {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .status-win { background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid #22c55e; }
+        .status-loss { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #ef4444; }
+
+        /* Squads & Rosters */
+        .squad-group {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+        .squad-header {
+            background: var(--bg-card);
+            padding: 10px 14px;
+            font-weight: 600;
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .squad-callsign-badge {
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent-blue);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            font-family: monospace;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 4px;
+            margin-right: 8px;
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .slot-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .slot-table th, .slot-table td { padding: 8px 14px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .slot-table th { color: var(--text-dim); font-size: 11px; text-transform: uppercase; }
+        .slot-table tr:last-child td { border-bottom: none; }
+        .slot-table tr:hover { background: rgba(255,255,255,0.02); }
+        .slot-player { font-weight: 600; color: #fff; }
+        .slot-empty { color: var(--text-dim); font-style: italic; }
+        .slot-guid { font-family: monospace; font-size: 11px; color: var(--text-dim); }
+
+        /* Killfeed Table */
+        .kill-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+        .kill-time { font-family: monospace; color: var(--text-dim); font-size: 12px; min-width: 50px; }
+        .kill-tag {
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+        .tag-enemy { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+        .tag-tk { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #ef4444; }
+        .tag-suicide { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+        .kill-killer { font-weight: 700; color: #fff; }
+        .kill-arrow { color: var(--text-dim); }
+        .kill-victim { font-weight: 700; color: #cbd5e1; }
+        .kill-dist { margin-left: auto; color: var(--text-muted); font-size: 12px; }
+
+        /* Search input */
+        .search-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            width: 100%;
+            max-width: 320px;
+            margin-bottom: 12px;
+        }
+        .search-box:focus { outline: none; border-color: var(--accent-blue); }
+
+        /* JSON Pre */
+        pre.json-box {
+            background: #000;
+            color: #10b981;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            max-height: 600px;
+            font-size: 12px;
+            font-family: Consolas, 'Courier New', monospace;
+            border: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-content">
+        <div class="header-title">
+            <span class="logo-badge">PS STATS</span>
+            <h1 id="headerTitle">Анализатор статистики сессий PlayableSelector</h1>
+        </div>
+        <div class="header-actions">
+            <input type="file" id="fileInput" accept=".json" style="display:none" onchange="handleFileSelect(event)">
+            <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">📂 Открыть JSON</button>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <!-- Dropzone -->
+    <div id="dropzone" class="dropzone" onclick="document.getElementById('fileInput').click()">
+        <div class="dropzone-icon">📊</div>
+        <div class="dropzone-title">Перетащите файл PS_MissionData_*.json сюда</div>
+        <div class="dropzone-hint">или нажмите в любом месте для выбора файла со статистикой сессии</div>
+    </div>
+
+    <!-- Summary Banner -->
+    <div id="summaryBanner" class="summary-banner">
+        <div class="mission-main-info">
+            <div class="mission-heading">
+                <h2 id="missionName">Название миссии</h2>
+                <div class="mission-sub">
+                    <span>👤 Автор: <b id="missionAuthor" style="color:#fff;">-</b></span>
+                    <span>🗺️ Карта: <b id="missionWorld" style="color:#fff;">-</b></span>
+                    <span>🎮 Режим: <b id="missionType" style="color:#fff;">-</b></span>
+                    <span>⛅ Погода / Время: <b id="missionWeatherTime" style="color:#fff;">-</b></span>
+                </div>
+            </div>
+            <div class="stat-badges">
+                <div class="stat-card">
+                    <div class="val" id="statPlayers">0</div>
+                    <div class="label">Игроков</div>
+                </div>
+                <div class="stat-card">
+                    <div class="val" id="statKills" style="color:var(--accent-red);">0</div>
+                    <div class="label">Убийств</div>
+                </div>
+                <div class="stat-card">
+                    <div class="val" id="statTKs" style="color:var(--accent-amber);">0</div>
+                    <div class="label">Тимкиллов</div>
+                </div>
+                <div class="stat-card">
+                    <div class="val" id="statVehicles">0</div>
+                    <div class="label">Техники</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs-nav">
+            <button class="tab-btn active" onclick="switchTab('overview')">📋 Обзор и Задачи</button>
+            <button class="tab-btn" onclick="switchTab('roster')">👥 Игроки и Слоты (<span id="tabRosterCount">0</span>)</button>
+            <button class="tab-btn" onclick="switchTab('kills')">🎯 Килл-лог (<span id="tabKillsCount">0</span>)</button>
+            <button class="tab-btn" onclick="switchTab('vehicles')">🚙 Техника (<span id="tabVehiclesCount">0</span>)</button>
+            <button class="tab-btn" onclick="switchTab('briefing')">📜 Брифинг и Правила</button>
+            <button class="tab-btn" onclick="switchTab('raw')">💻 Исходный JSON</button>
+        </div>
+
+        <!-- Tab 1: Overview & Objectives -->
+        <div id="tab-overview" class="tab-pane active">
+            <div class="grid-2" id="factionResultsContainer">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+
+        <!-- Tab 2: Roster & Slots -->
+        <div id="tab-roster" class="tab-pane">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                <input type="text" id="playerSearch" class="search-box" placeholder="🔍 Поиск игрока или роли..." oninput="filterRoster()">
+                <div id="factionFilterButtons" style="display:flex; gap:8px; margin-bottom:12px;"></div>
+            </div>
+            <div id="rosterContainer">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+
+        <!-- Tab 3: Killfeed -->
+        <div id="tab-kills" class="tab-pane">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+                <input type="text" id="killSearch" class="search-box" placeholder="🔍 Поиск в килл-логе..." oninput="filterKills()">
+                <div style="display:flex; gap:12px; align-items:center;">
+                    <label style="font-size:13px; color:var(--text-muted); cursor:pointer;">
+                        <input type="checkbox" id="tkOnlyCheckbox" onchange="filterKills()"> Только тимкиллы (TK)
+                    </label>
+                </div>
+            </div>
+            <div id="killsContainer">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+
+        <!-- Tab 4: Vehicles -->
+        <div id="tab-vehicles" class="tab-pane">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">🚗 Список задействованной техники</div>
+                </div>
+                <table class="slot-table">
+                    <thead>
+                        <tr>
+                            <th>Фракция</th>
+                            <th>Наименование</th>
+                            <th>Префаб</th>
+                            <th>Entity ID</th>
+                        </tr>
+                    </thead>
+                    <tbody id="vehiclesTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tab 5: Briefing & Rules -->
+        <div id="tab-briefing" class="tab-pane">
+            <div id="briefingContainer" class="grid-2">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+
+        <!-- Tab 6: Raw JSON -->
+        <div id="tab-raw" class="tab-pane">
+            <div style="margin-bottom:10px; display:flex; justify-content:space-between;">
+                <span style="font-size:13px; color:var(--text-muted);">Полное содержимое файла:</span>
+                <button class="btn" onclick="copyRawJson()">📋 Скопировать JSON</button>
+            </div>
+            <pre id="rawJsonBox" class="json-box"></pre>
+        </div>
+    </div>
+</div>
+
+<script>
+    const LOC = {
+        '#RHS-Faction_AFRF': 'ВС РФ',
+        '#AR-Faction_CIV': 'Гражданские',
+        '#AR-Faction_US': 'Армия США',
+        '#AR-Faction_USSR': 'СССР',
+        '#AR-Faction_FIA': 'FIA',
+        '#PS-ObjectiveLevel_MajorLoss': 'Крупное поражение',
+        '#PS-ObjectiveLevel_MinorLoss': 'Незначительное поражение',
+        '#PS-ObjectiveLevel_Draw': 'Ничья',
+        '#PS-ObjectiveLevel_MinorVictory': 'Незначительная победа',
+        '#PS-ObjectiveLevel_MajorVictory': 'Крупная победа',
+        '#PDVL_Squad_PLHQ': 'Штаб взвода',
+        '#PDVL_Squad_Motorized': 'Мотострелковое отделение',
+        '#PDVL_Squad_Rifle': 'Стрелковое отделение',
+        '#PDVL_Role_PL': 'Командир взвода (PL)',
+        '#PDVL_Role_SL': 'Командир отделения (SL)',
+        '#PDVL_Role_SR': 'Зам. ком. отделения (SR)',
+        '#PDVL_Role_Medic': 'Санитар',
+        '#PDVL_Role_Sharpshooter': 'Снайпер / Марксман',
+        '#PDVL_Role_MG': 'Пулеметчик',
+        '#PDVL_Role_AMG': 'Пом. пулеметчика',
+        '#PDVL_Role_AR': 'Стрелок (AR)',
+        '#PDVL_Role_Rifleman': 'Стрелок',
+        '#PDVL_Role_GL': 'Гранатометчик (GL)',
+        '#PDVL_Role_AT': 'Гранатометчик (AT)',
+        '#PDVL_Role_AAT': 'Пом. гранатометчика (AAT)',
+        '#PDVL_Role_LAT': 'Стрелок с РПГ (LAT)',
+        '#PDVL_Role_Sniper': 'Снайпер',
+        '#AR-Role_Civilian_Businessman': 'Начальник станции (Бизнесмен)'
+    };
+
+    function loc(str) {
+        if (!str) return '';
+        if (LOC[str]) return LOC[str];
+        if (str.startsWith('#')) return str.substring(1).replace(/_/g, ' ');
+        return str;
+    }
+
+    let rawData = null;
+    let playersMap = new Map();
+    let playablesMap = new Map();
+    let parsedKills = [];
+
+    // Drag & Drop
+    const dropzone = document.getElementById('dropzone');
+    dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+    dropzone.addEventListener('dragleave', () => { dropzone.classList.remove('dragover'); });
+    dropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('dragover');
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            readFile(e.dataTransfer.files[0]);
+        }
+    });
+
+    function handleFileSelect(event) {
+        if (event.target.files && event.target.files[0]) {
+            readFile(event.target.files[0]);
+        }
+    }
+
+    function readFile(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const data = JSON.parse(e.target.result);
+                renderMissionData(data);
+            } catch (err) {
+                alert('Ошибка парсинга JSON файла: ' + err.message);
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+        const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick').includes(tabId));
+        if (activeBtn) activeBtn.classList.add('active');
+        const activePane = document.getElementById('tab-' + tabId);
+        if (activePane) activePane.classList.add('active');
+    }
+
+    function formatTime(secOrMs) {
+        if (!secOrMs) return '00:00';
+        let totalSec = Math.floor(secOrMs > 100000 ? secOrMs / 1000 : secOrMs);
+        let m = Math.floor(totalSec / 60);
+        let s = totalSec % 60;
+        return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+    }
+
+    function formatDayTime(val) {
+        if (val === undefined || val === null) return '-';
+        let totalMin = Math.floor(val * 60);
+        let h = Math.floor(totalMin / 60) % 24;
+        let m = totalMin % 60;
+        return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
+    }
+
+    function renderMissionData(data) {
+        rawData = data;
+        playersMap.clear();
+        playablesMap.clear();
+        parsedKills = [];
+
+        document.getElementById('summaryBanner').style.display = 'block';
+        dropzone.style.display = 'none';
+
+        // Base Info
+        document.getElementById('missionName').textContent = data.MissionName || 'Без названия';
+        document.getElementById('missionAuthor').textContent = data.MissionAuthor || 'Не указан';
+        let world = data.WorldPath || '';
+        let mapName = world.split('/').pop().replace('.ent', '') || '-';
+        document.getElementById('missionWorld').textContent = mapName;
+        document.getElementById('missionType').textContent = data.ScenarioType || 'TvT';
+        document.getElementById('missionWeatherTime').textContent = (data.MissionWeather || '') + ' (' + formatDayTime(data.MissionDayTime) + ')';
+
+        // Index Playables
+        if (data.Factions) {
+            data.Factions.forEach(f => {
+                let fKey = f.Key;
+                let fName = loc(f.Name) || fKey;
+                if (f.Groups) {
+                    f.Groups.forEach(g => {
+                        let cName = loc(g.CallsignName);
+                        let sName = loc(g.Name);
+                        let gName = (cName && sName) ? `${cName} — ${sName}` : (cName || sName || 'Отделение');
+                        if (g.Playables) {
+                            g.Playables.forEach(p => {
+                                playablesMap.set(p.EntityId, {
+                                    entityId: p.EntityId,
+                                    roleName: loc(p.Name) || loc(p.RoleName) || 'Боец',
+                                    rawRole: p.Name || p.RoleName,
+                                    groupName: gName,
+                                    callsignName: cName,
+                                    squadName: sName,
+                                    factionKey: fKey,
+                                    factionName: fName,
+                                    groupOrder: p.GroupOrder
+                                });
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+        // Index Players
+        if (data.Players) {
+            data.Players.forEach(pl => {
+                playersMap.set(pl.m_iPlayerId, {
+                    id: pl.m_iPlayerId,
+                    name: pl.Name,
+                    guid: pl.GUID,
+                    entityId: 0,
+                    factionKey: '',
+                    factionName: '',
+                    groupName: '',
+                    roleName: '',
+                    kills: 0,
+                    deaths: 0,
+                    teamKills: 0
+                });
+            });
+        }
+
+        // Map Players to Slots
+        if (data.PlayersToPlayables) {
+            data.PlayersToPlayables.forEach(link => {
+                let pl = playersMap.get(link.m_iPlayerId);
+                let slot = playablesMap.get(link.EntityId);
+                if (pl && slot) {
+                    pl.entityId = link.EntityId;
+                    pl.factionKey = slot.factionKey;
+                    pl.factionName = slot.factionName;
+                    pl.groupName = slot.groupName;
+                    pl.roleName = slot.roleName;
+                }
+            });
+        }
+
+        // Process Kills
+        let tksCount = 0;
+        if (data.Kills) {
+            data.Kills.forEach(k => {
+                let killer = playersMap.get(k.InstigatorId);
+                let victim = playersMap.get(k.m_iPlayerId);
+                let killerName = killer ? killer.name : ('Игрок #' + k.InstigatorId);
+                let victimName = victim ? victim.name : ('Игрок #' + k.m_iPlayerId);
+                let isSuicide = (k.InstigatorId === k.m_iPlayerId) || (k.InstigatorId === 0);
+                let isTK = false;
+
+                if (!isSuicide && killer && victim && killer.factionKey && victim.factionKey && killer.factionKey === victim.factionKey) {
+                    isTK = true;
+                    tksCount++;
+                    killer.teamKills++;
+                }
+
+                if (killer && !isSuicide && !isTK) killer.kills++;
+                if (victim) victim.deaths++;
+
+                parsedKills.push({
+                    raw: k,
+                    killerName,
+                    victimName,
+                    killerFaction: killer ? killer.factionName : '',
+                    victimFaction: victim ? victim.factionName : '',
+                    killerRole: killer ? killer.roleName : '',
+                    victimRole: victim ? victim.roleName : '',
+                    distance: k.Distance,
+                    time: k.Time,
+                    isTK,
+                    isSuicide
+                });
+            });
+        }
+
+        // Stats Badges
+        document.getElementById('statPlayers').textContent = playersMap.size;
+        document.getElementById('statKills').textContent = data.Kills ? data.Kills.length : 0;
+        document.getElementById('statTKs').textContent = tksCount;
+        document.getElementById('statVehicles').textContent = data.Vehicles ? data.Vehicles.length : 0;
+        document.getElementById('tabRosterCount').textContent = playersMap.size;
+        document.getElementById('tabKillsCount').textContent = data.Kills ? data.Kills.length : 0;
+        document.getElementById('tabVehiclesCount').textContent = data.Vehicles ? data.Vehicles.length : 0;
+
+        // Render Tabs
+        renderOverviewTab(data);
+        renderRosterTab(data);
+        renderKillsTab();
+        renderVehiclesTab(data);
+        renderBriefingTab(data);
+        renderRawJson(data);
+    }
+
+    function renderOverviewTab(data) {
+        const container = document.getElementById('factionResultsContainer');
+        container.innerHTML = '';
+
+        if (!data.FactionResults || data.FactionResults.length === 0) {
+            container.innerHTML = '<div class="card">Нет данных о результатах задач фракций.</div>';
+            return;
+        }
+
+        const activeResults = data.FactionResults.filter(r => (r.Objectives && r.Objectives.length > 0) || r.ResultScore > 0);
+        const resultsToRender = activeResults.length > 0 ? activeResults : data.FactionResults;
+
+        resultsToRender.forEach(r => {
+            let resName = loc(r.ResultName);
+            let isWin = resName.includes('победа') || resName.includes('Victory');
+            let badgeClass = isWin ? 'status-win' : 'status-loss';
+
+            let card = document.createElement('div');
+            card.className = 'card';
+            
+            let objHtml = '';
+            if (r.Objectives && r.Objectives.length > 0) {
+                r.Objectives.forEach(o => {
+                    let cls = o.Completed ? 'completed' : 'failed';
+                    let icon = o.Completed ? '✅' : '❌';
+                    objHtml += `
+                        <div class="objective-item ${cls}">
+                            <span>${icon} ${o.Name}</span>
+                            <span style="color:var(--text-dim);">+${o.Score} очков</span>
+                        </div>
+                    `;
+                });
+            } else {
+                objHtml = '<div style="font-size:12px; color:var(--text-dim);">Задачи отсутствуют</div>';
+            }
+
+            card.innerHTML = `
+                <div class="card-header">
+                    <div class="card-title">
+                        <span>🚩 ${loc(r.ResultFactionKey)}</span>
+                    </div>
+                    <div>
+                        <span class="badge-status ${badgeClass}">${resName || 'Итог'}</span>
+                        <span style="margin-left:8px; font-weight:700; color:var(--accent-blue);">${r.ResultScore} очк.</span>
+                    </div>
+                </div>
+                <div>${objHtml}</div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    let currentFactionFilter = 'ALL';
+    function renderRosterTab(data) {
+        const filterBtns = document.getElementById('factionFilterButtons');
+        filterBtns.innerHTML = '<button class="btn btn-primary" onclick="setFactionFilter(\'ALL\', this)">Все стороны</button>';
+        
+        if (data.Factions) {
+            data.Factions.forEach(f => {
+                let btn = document.createElement('button');
+                btn.className = 'btn';
+                btn.textContent = loc(f.Name) || f.Key;
+                btn.onclick = () => setFactionFilter(f.Key, btn);
+                filterBtns.appendChild(btn);
+            });
+        }
+        filterRoster();
+    }
+
+    function setFactionFilter(key, btn) {
+        currentFactionFilter = key;
+        document.querySelectorAll('#factionFilterButtons .btn').forEach(b => b.classList.remove('btn-primary'));
+        if (btn) btn.classList.add('btn-primary');
+        filterRoster();
+    }
+
+    function filterRoster() {
+        const search = document.getElementById('playerSearch').value.toLowerCase();
+        const container = document.getElementById('rosterContainer');
+        container.innerHTML = '';
+
+        if (!rawData || !rawData.Factions) return;
+
+        rawData.Factions.forEach(f => {
+            if (currentFactionFilter !== 'ALL' && f.Key !== currentFactionFilter) return;
+
+            let fCard = document.createElement('div');
+            fCard.className = 'card';
+            fCard.style.marginBottom = '24px';
+            fCard.innerHTML = `<div class="card-header"><div class="card-title" style="font-size:18px;">🚩 ${loc(f.Name) || f.Key}</div></div>`;
+
+            let groupsRendered = 0;
+            if (f.Groups) {
+                f.Groups.forEach(g => {
+                    let callsignName = loc(g.CallsignName);
+                    let customName = loc(g.Name);
+                    let playables = g.Playables || [];
+                    
+                    let filteredSlots = playables.filter(p => {
+                        let roleName = loc(p.Name) || loc(p.RoleName) || '';
+                        let occupant = Array.from(playersMap.values()).find(pl => pl.entityId === p.EntityId);
+                        let occName = occupant ? occupant.name : '';
+                        let occGuid = occupant ? occupant.guid : '';
+                        let cSearch = (callsignName || '').toLowerCase();
+                        let nSearch = (customName || '').toLowerCase();
+                        return !search || 
+                               roleName.toLowerCase().includes(search) || 
+                               occName.toLowerCase().includes(search) || 
+                               occGuid.toLowerCase().includes(search) ||
+                               cSearch.includes(search) ||
+                               nSearch.includes(search);
+                    });
+
+                    if (filteredSlots.length === 0) return;
+                    groupsRendered++;
+
+                    let sGroup = document.createElement('div');
+                    sGroup.className = 'squad-group';
+
+                    let headerLabel = '';
+                    let callsignTooltip = g.Callsign ? `title="Callsign ID: ${g.Callsign}"` : '';
+                    if (callsignName && customName) {
+                        headerLabel = `<span class="squad-callsign-badge" ${callsignTooltip}>📡 ${callsignName}</span> <span style="color:#fff; font-weight:700;">${customName}</span>`;
+                    } else if (callsignName) {
+                        headerLabel = `<span class="squad-callsign-badge" ${callsignTooltip}>📡 ${callsignName}</span>`;
+                    } else if (customName) {
+                        headerLabel = `<span style="color:#fff; font-weight:700;">${customName}</span>`;
+                    } else {
+                        headerLabel = `<span>Отделение</span>`;
+                    }
+
+                    let groupHead = `<div class="squad-header"><div style="display:flex; align-items:center; flex-wrap:wrap; gap:4px;">${headerLabel}</div><span style="color:var(--text-dim); font-size:12px;">${filteredSlots.length} слотов</span></div>`;
+                    
+                    let rows = '';
+                    filteredSlots.forEach(p => {
+                        let occupant = Array.from(playersMap.values()).find(pl => pl.entityId === p.EntityId);
+                        let role = loc(p.Name) || loc(p.RoleName) || 'Боец';
+                        let isDead = occupant && occupant.deaths > 0;
+                        let statusBadge = '';
+                        if (occupant) {
+                            statusBadge = isDead 
+                                ? '<span style="color:var(--accent-red); font-size:11px; font-weight:700;">☠️ Погиб</span>' 
+                                : '<span style="color:var(--accent-green); font-size:11px; font-weight:700;">🛡️ Выжил</span>';
+                        }
+                        rows += `
+                            <tr>
+                                <td style="width:30%; font-weight:500;">${role}</td>
+                                <td style="width:35%;">
+                                    ${occupant ? `<span class="slot-player">${occupant.name}</span>` : `<span class="slot-empty">[Свободно]</span>`}
+                                </td>
+                                <td style="width:20%;">${statusBadge}</td>
+                                <td style="width:15%;" class="slot-guid">${occupant ? occupant.guid.substring(0, 8) + '...' : '-'}</td>
+                            </tr>
+                        `;
+                    });
+
+                    sGroup.innerHTML = groupHead + `<table class="slot-table"><tbody>${rows}</tbody></table>`;
+                    fCard.appendChild(sGroup);
+                });
+            }
+
+            if (groupsRendered > 0) container.appendChild(fCard);
+        });
+    }
+
+    function renderKillsTab() {
+        filterKills();
+    }
+
+    function filterKills() {
+        const search = document.getElementById('killSearch').value.toLowerCase();
+        const tkOnly = document.getElementById('tkOnlyCheckbox').checked;
+        const container = document.getElementById('killsContainer');
+        container.innerHTML = '';
+
+        if (!parsedKills || parsedKills.length === 0) {
+            container.innerHTML = '<div class="card">В этой сессии не зафиксировано убийств.</div>';
+            return;
+        }
+
+        let filtered = parsedKills.filter(k => {
+            if (tkOnly && !k.isTK) return false;
+            if (!search) return true;
+            return k.killerName.toLowerCase().includes(search) || 
+                   k.victimName.toLowerCase().includes(search) ||
+                   k.killerFaction.toLowerCase().includes(search) ||
+                   k.victimFaction.toLowerCase().includes(search);
+        });
+
+        if (filtered.length === 0) {
+            container.innerHTML = '<div class="card" style="color:var(--text-dim);">Ничего не найдено по вашему запросу.</div>';
+            return;
+        }
+
+        filtered.forEach(k => {
+            let row = document.createElement('div');
+            row.className = 'kill-row';
+
+            let tagClass = 'tag-enemy';
+            let tagText = 'KILL';
+            if (k.isSuicide) { tagClass = 'tag-suicide'; tagText = 'SUICIDE'; }
+            else if (k.isTK) { tagClass = 'tag-tk'; tagText = 'TEAMKILL'; }
+
+            let distText = k.distance > 0 ? (k.distance.toFixed(1) + ' м') : '-';
+
+            row.innerHTML = `
+                <span class="kill-time">${formatTime(k.time)}</span>
+                <span class="kill-tag ${tagClass}">${tagText}</span>
+                <span class="kill-killer">${k.killerName}</span>
+                <span style="font-size:11px; color:var(--text-dim);">(${k.killerFaction || 'Неизв.'})</span>
+                <span class="kill-arrow">➔</span>
+                <span class="kill-victim">${k.victimName}</span>
+                <span style="font-size:11px; color:var(--text-dim);">(${k.victimFaction || 'Неизв.'})</span>
+                <span class="kill-dist">📏 ${distText}</span>
+            `;
+            container.appendChild(row);
+        });
+    }
+
+    function renderVehiclesTab(data) {
+        const tbody = document.getElementById('vehiclesTableBody');
+        tbody.innerHTML = '';
+        if (!data.Vehicles || data.Vehicles.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="color:var(--text-dim); text-align:center;">Техника отсутствует</td></tr>';
+            return;
+        }
+
+        data.Vehicles.forEach(v => {
+            let tr = document.createElement('tr');
+            let name = loc(v.EditableName) || 'Техника';
+            let prefab = v.PrefabPath ? v.PrefabPath.split('/').pop() : '-';
+            tr.innerHTML = `
+                <td><span class="faction-badge" style="background:rgba(255,255,255,0.08);">${v.VehicleFactionKey || '-'}</span></td>
+                <td style="font-weight:600; color:#fff;">${name}</td>
+                <td style="font-family:monospace; font-size:11px; color:var(--text-dim);">${prefab}</td>
+                <td style="font-family:monospace; font-size:11px; color:var(--text-dim);">${v.EntityId}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function renderBriefingTab(data) {
+        const container = document.getElementById('briefingContainer');
+        container.innerHTML = '';
+
+        if (!data.Descriptions || data.Descriptions.length === 0) {
+            container.innerHTML = '<div class="card">Описания миссии отсутствуют.</div>';
+            return;
+        }
+
+        data.Descriptions.forEach(d => {
+            if (!d.TextData && !d.Title) return;
+            let card = document.createElement('div');
+            card.className = 'card';
+            let title = loc(d.Title) || 'Описание';
+            let text = (d.TextData || '').replace(/<color[^>]*>/g, '').replace(/<\/color>/g, '');
+            card.innerHTML = `
+                <div class="card-header">
+                    <div class="card-title">📑 ${title}</div>
+                </div>
+                <div style="font-size:13px; white-space:pre-wrap; color:var(--text-main); line-height:1.6;">${text}</div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function renderRawJson(data) {
+        document.getElementById('rawJsonBox').textContent = JSON.stringify(data, null, 2);
+    }
+
+    function copyRawJson() {
+        if (!rawData) return;
+        navigator.clipboard.writeText(JSON.stringify(rawData, null, 2)).then(() => {
+            alert('JSON скопирован в буфер обмена!');
+        });
+    }
+</script>
+</body>
+</html>
