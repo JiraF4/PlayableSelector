@@ -48,8 +48,12 @@ class PS_RadioVoiceFix
 			return;
 
 		array<SCR_GadgetComponent> gadgets = {};
-		gadgetMgr.GetGadgetsByType(EGadgetType.RADIO, gadgets);
-		gadgetMgr.GetGadgetsByType(EGadgetType.RADIO_BACKPACK, gadgets);
+		array<SCR_GadgetComponent> radioGadgets = gadgetMgr.GetGadgetsByType(EGadgetType.RADIO);
+		if (radioGadgets)
+			gadgets.InsertAll(radioGadgets);
+		array<SCR_GadgetComponent> backpackGadgets = gadgetMgr.GetGadgetsByType(EGadgetType.RADIO_BACKPACK);
+		if (backpackGadgets)
+			gadgets.InsertAll(backpackGadgets);
 
 		int cycledCount = 0;
 		foreach (SCR_GadgetComponent gadget : gadgets)

@@ -852,12 +852,16 @@ class PS_PlayableControllerComponent : ScriptComponent
 		if (!entity)
 			return;
 
+		int compactCount = 0;
+		int backpackCount = 0;
+
 		// Inventory gadget path (рации, переносимые в инвентаре/снаряжении бойца)
 		SCR_GadgetManagerComponent gadgetManager = SCR_GadgetManagerComponent.Cast(entity.FindComponent(SCR_GadgetManagerComponent));
 		if (gadgetManager)
 		{
 			// Компактные носимые рации (КВ)
 			array<SCR_GadgetComponent> gadgets = gadgetManager.GetGadgetsByType(EGadgetType.RADIO);
+			compactCount = gadgets.Count();
 			foreach (SCR_GadgetComponent gadget : gadgets)
 			{
 				if (!gadget)
@@ -872,6 +876,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 
 			// Ранцевые радиостанции (ДВ / дальняя связь)
 			array<SCR_GadgetComponent> backpackGadgets = gadgetManager.GetGadgetsByType(EGadgetType.RADIO_BACKPACK);
+			backpackCount = backpackGadgets.Count();
 			foreach (SCR_GadgetComponent backpackGadget : backpackGadgets)
 			{
 				if (!backpackGadget)
@@ -897,13 +902,6 @@ class PS_PlayableControllerComponent : ScriptComponent
 
 		if (PS_RadioVoiceFix.s_bDebug)
 		{
-			int compactCount = 0;
-			int backpackCount = 0;
-			if (gadgetManager)
-			{
-				compactCount = gadgets.Count();
-				backpackCount = backpackGadgets.Count();
-			}
 			Print(string.Format("[PS_Radio] GetVoNRadios: entity=%1, collected %2 radio(s) (compact=%3, backpack=%4)",
 				entity, radios.Count(), compactCount, backpackCount), LogLevel.NORMAL);
 		}

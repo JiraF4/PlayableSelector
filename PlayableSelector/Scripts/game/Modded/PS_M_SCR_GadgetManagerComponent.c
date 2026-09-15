@@ -57,7 +57,7 @@ modded class SCR_GadgetManagerComponent
 	/**
 	 * @brief Перехват добавления предмета в инвентарь или слот.
 	 */
-	override void OnItemAdded(InventoryItemComponent item, BaseInventoryStorageComponent storageOwner)
+	override void OnItemAdded(IEntity item, BaseInventoryStorageComponent storageOwner)
 	{
 		super.OnItemAdded(item, storageOwner);
 
@@ -67,7 +67,7 @@ modded class SCR_GadgetManagerComponent
 		if (!item)
 			return;
 
-		SCR_GadgetComponent gadgetComp = SCR_GadgetComponent.Cast(item.GetOwner().FindComponent(SCR_GadgetComponent));
+		SCR_GadgetComponent gadgetComp = SCR_GadgetComponent.Cast(item.FindComponent(SCR_GadgetComponent));
 		if (!gadgetComp)
 			return;
 
