@@ -191,9 +191,9 @@ class PS_PlayableManager : ScriptComponent
 		int currentCount = m_aPlayables.Count();
 		int targetCount = GetTargetPlayablesCount();
 		if (targetCount > 1 && targetCount >= currentCount)
-			return string.Format("[PlayableSelector] Слоты ещё загружаются (%1/%2). Подождите завершения загрузки...", currentCount, targetCount);
+			return string.Format("Слоты ещё загружаются (%1/%2). Подождите завершения загрузки...", currentCount, targetCount);
 		else
-			return string.Format("[PlayableSelector] Слоты ещё загружаются (%1). Подождите завершения загрузки...", currentCount);
+			return string.Format("Слоты ещё загружаются (%1). Подождите завершения загрузки...", currentCount);
 	}
 
 	/**
