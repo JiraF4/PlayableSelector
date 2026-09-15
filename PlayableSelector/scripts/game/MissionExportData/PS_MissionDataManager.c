@@ -220,13 +220,13 @@ class PS_MissionDataManager : ScriptComponent
 		
 		if (state == SCR_EGameModeState.GAME)
 		{
-			if (m_Data.Factions.IsEmpty())
+			if (m_Data.Factions.IsEmpty() || (m_PlayableManager && GetTotalPlayablesCount() < m_PlayableManager.GetPlayables().Count()))
 				CollectFactions();
 			SavePlayers();
 		}
 		else if (state == SCR_EGameModeState.DEBRIEFING)
 		{
-			if (m_Data.Factions.IsEmpty())
+			if (m_Data.Factions.IsEmpty() || (m_PlayableManager && GetTotalPlayablesCount() < m_PlayableManager.GetPlayables().Count()))
 				CollectFactions();
 			SavePlayers();
 			
@@ -266,7 +266,7 @@ class PS_MissionDataManager : ScriptComponent
 		m_Data.Token = config.Token;
 
 		// Ensure factions and objectives are captured before generating payload
-		if (m_Data.Factions.IsEmpty())
+		if (m_Data.Factions.IsEmpty() || (m_PlayableManager && GetTotalPlayablesCount() < m_PlayableManager.GetPlayables().Count()))
 			CollectFactions();
 
 		SavePlayers();
@@ -423,6 +423,32 @@ class PS_MissionDataManager : ScriptComponent
 		CollectFactions();
 	}
 	
+	int GetTotalPlayablesCount()
+	{
+		int count = 0;
+		foreach (PS_MissionDataFaction faction : m_Data.Factions)
+		{
+			if (!faction || !faction.Groups)
+				continue;
+			foreach (PS_MissionDataGroup group : faction.Groups)
+			{
+				if (!group || !group.Playables)
+					continue;
+				count += group.Playables.Count();
+			}
+		}
+		return count;
+	}
+
+	/**
+	 * @brief Полный сбор структуры фракций, отделений и слотов миссии для экспорта статистики.
+	 * @subsystem Lobby | Core
+	 * @context Server
+	 * @depends PlayableSelector
+	 * @details Опрашивает PS_PlayableManager и формирует полную иерархию фракций и отделений.
+	 *          Использует устойчивые метаданные PS_PlayableContainer и привязку групп,
+	 *          не завися от состояния AIAgent и физического существования живого персонажа.
+	 */
 	void CollectFactions()
 	{
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
@@ -437,33 +463,33 @@ class PS_MissionDataManager : ScriptComponent
 
 		map<Faction, PS_MissionDataFaction> factionsMap = new map<Faction, PS_MissionDataFaction>();
 		map<SCR_AIGroup, PS_MissionDataGroup> groupsMap = new map<SCR_AIGroup, PS_MissionDataGroup>();
+		map<string, PS_MissionDataGroup> fallbackGroupsMap = new map<string, PS_MissionDataGroup>();
 
 		foreach (PS_PlayableContainer playable : playables)
 		{
 			if (!playable)
 				continue;
 
+			RplId playableId = playable.GetRplId();
+
+			// 1. Определение фракции слота через кэшированный FactionKey контейнера
+			Faction faction;
+			FactionKey factionKey = playable.GetFactionKey();
+			if (m_FactionManager && factionKey != "")
+				faction = m_FactionManager.GetFactionByKey(factionKey);
+
 			PS_PlayableComponent playableComp = playable.GetPlayableComponent();
-			if (!playableComp)
-				continue;
+			IEntity character;
+			if (playableComp)
+				character = playableComp.GetOwner();
 
-			IEntity character = playableComp.GetOwner();
-			if (!character)
-				continue;
+			if (!faction && character)
+			{
+				SCR_ChimeraCharacter chimeraChar = SCR_ChimeraCharacter.Cast(character);
+				if (chimeraChar)
+					faction = chimeraChar.GetFaction();
+			}
 
-			AIControlComponent aiComponent = AIControlComponent.Cast(character.FindComponent(AIControlComponent));
-			if (!aiComponent)
-				continue;
-
-			AIAgent agent = aiComponent.GetAIAgent();
-			if (!agent)
-				continue;
-
-			SCR_AIGroup group = SCR_AIGroup.Cast(agent.GetParentGroup());
-			if (!group)
-				continue;
-
-			SCR_Faction faction = SCR_Faction.Cast(group.GetFaction());
 			if (!faction)
 				continue;
 
@@ -476,7 +502,9 @@ class PS_MissionDataManager : ScriptComponent
 
 				Color color = faction.GetFactionColor();
 				factionData.FactionColor = string.Format("%1,%2,%3,%4", color.A(), color.R(), color.G(), color.B());
-				color = faction.GetOutlineFactionColor();
+				SCR_Faction scrFaction = SCR_Faction.Cast(faction);
+				if (scrFaction)
+					color = scrFaction.GetOutlineFactionColor();
 				factionData.FactionOutlineColor = string.Format("%1,%2,%3,%4", color.A(), color.R(), color.G(), color.B());
 
 				m_Data.Factions.Insert(factionData);
@@ -487,55 +515,101 @@ class PS_MissionDataManager : ScriptComponent
 				factionData = factionsMap.Get(faction);
 			}
 
-			PS_MissionDataGroup groupData;
-			if (!groupsMap.Contains(group))
+			// 2. Определение группы слота через PlayableManager
+			SCR_AIGroup group = playableManager.GetPlayerGroupByPlayable(playableId);
+			if (!group && character)
 			{
-				groupData = new PS_MissionDataGroup();
-				string customName = group.GetCustomName();
-				string company, platoon, squad, t, format;
-				group.GetCallsigns(company, platoon, squad, t, format);
-				string callsign = WidgetManager.Translate(format, company, platoon, squad, "");
-
-				groupData.Callsign = playableManager.GetGroupCallsignByPlayable(playable.GetRplId());
-				groupData.CallsignName = callsign;
-				groupData.Name = WidgetManager.Translate("%1", customName);
-
-				factionData.Groups.Insert(groupData);
-				groupsMap.Insert(group, groupData);
-			}
-			else
-			{
-				groupData = groupsMap.Get(group);
-			}
-
-			SCR_DamageManagerComponent damageManagerComponent = SCR_DamageManagerComponent.Cast(character.FindComponent(SCR_DamageManagerComponent));
-			if (damageManagerComponent)
-			{
-				if (!m_RplToDamageManager.Contains(playable.GetRplId()))
+				AIControlComponent aiComponent = AIControlComponent.Cast(character.FindComponent(AIControlComponent));
+				if (aiComponent)
 				{
-					damageManagerComponent.GetOnDamage().Insert(OnDamaged);
-					m_RplToDamageManager.Insert(playable.GetRplId(), damageManagerComponent);
+					AIAgent agent = aiComponent.GetAIAgent();
+					if (agent)
+						group = SCR_AIGroup.Cast(agent.GetParentGroup());
 				}
 			}
 
-			array<AIAgent> outAgents = new array<AIAgent>();
-			group.GetAgents(outAgents);
+			PS_MissionDataGroup groupData;
+			if (group)
+			{
+				if (!groupsMap.Contains(group))
+				{
+					groupData = new PS_MissionDataGroup();
+					string customName = group.GetCustomName();
+					string company, platoon, squad, t, format;
+					group.GetCallsigns(company, platoon, squad, t, format);
+					string callsign = WidgetManager.Translate(format, company, platoon, squad, "");
 
+					groupData.Callsign = playableManager.GetGroupCallsignByPlayable(playableId);
+					groupData.CallsignName = callsign;
+					groupData.Name = WidgetManager.Translate("%1", customName);
+
+					factionData.Groups.Insert(groupData);
+					groupsMap.Insert(group, groupData);
+				}
+				else
+				{
+					groupData = groupsMap.Get(group);
+				}
+			}
+			else
+			{
+				// Резервная группа для слотов без группы SCR_AIGroup (слот гарантированно сохраняется)
+				string fallbackKey = faction.GetFactionKey() + "_DefaultGroup";
+				if (!fallbackGroupsMap.Contains(fallbackKey))
+				{
+					groupData = new PS_MissionDataGroup();
+					groupData.Callsign = "0";
+					groupData.CallsignName = "";
+					groupData.Name = WidgetManager.Translate("%1", faction.GetFactionName());
+
+					factionData.Groups.Insert(groupData);
+					fallbackGroupsMap.Insert(fallbackKey, groupData);
+				}
+				else
+				{
+					groupData = fallbackGroupsMap.Get(fallbackKey);
+				}
+			}
+
+			// 3. Подписка на урон, если персонаж еще существует в мире
+			if (character)
+			{
+				SCR_DamageManagerComponent damageManagerComponent = SCR_DamageManagerComponent.Cast(character.FindComponent(SCR_DamageManagerComponent));
+				if (damageManagerComponent)
+				{
+					if (!m_RplToDamageManager.Contains(playableId))
+					{
+						damageManagerComponent.GetOnDamage().Insert(OnDamaged);
+						m_RplToDamageManager.Insert(playableId, damageManagerComponent);
+					}
+				}
+
+				if (!m_EntityToRpl.Contains(character.GetID()))
+					m_EntityToRpl.Insert(character.GetID(), playableId);
+			}
+
+			// 4. Добавление слота в группу
 			PS_MissionDataPlayable missionDataPlayable = new PS_MissionDataPlayable();
-			missionDataPlayable.EntityId = playable.GetRplId();
-			missionDataPlayable.GroupOrder = outAgents.Find(agent);
+			missionDataPlayable.EntityId = playableId;
+			missionDataPlayable.GroupOrder = groupData.Playables.Count();
 			missionDataPlayable.Name = WidgetManager.Translate("%1", playable.GetName());
 			missionDataPlayable.RoleName = WidgetManager.Translate("%1", playable.GetRoleName());
-
-			if (!m_EntityToRpl.Contains(character.GetID()))
-				m_EntityToRpl.Insert(character.GetID(), playable.GetRplId());
 
 			groupData.Playables.Insert(missionDataPlayable);
 		}
 
-		Print(string.Format("PS_MissionDataManager: Successfully collected %1 factions and playables", m_Data.Factions.Count()), LogLevel.NORMAL);
+		Print(string.Format("PS_MissionDataManager: Successfully collected %1 factions and %2 playables", m_Data.Factions.Count(), GetTotalPlayablesCount()), LogLevel.NORMAL);
 	}
 	
+	/**
+	 * @brief Сохранение соответствия игроков занятым слотам для экспорта статистики.
+	 * @subsystem Lobby | Core
+	 * @context Server
+	 * @depends PlayableSelector
+	 * @details Сохраняет текущих и запомненных игроков (погибших/дисконнектившихся) по каждому слоту,
+	 *          а также проверяет всех зарегистрированных игроков m_Data.Players на наличие запомненного слота,
+	 *          гарантируя, что все участники матча попадут в PlayersToPlayables.
+	 */
 	void SavePlayers()
 	{
 		if (!m_PlayableManager)
@@ -546,6 +620,7 @@ class PS_MissionDataManager : ScriptComponent
 			return;
 
 		m_Data.PlayersToPlayables.Clear();
+		map<int, bool> processedPlayers = new map<int, bool>();
 
 		foreach (PS_PlayableContainer playable : playables)
 		{
@@ -566,6 +641,30 @@ class PS_MissionDataManager : ScriptComponent
 			playerToEntity.EntityId = playableId;
 
 			m_Data.PlayersToPlayables.Insert(playerToEntity);
+			processedPlayers.Insert(playerId, true);
+		}
+
+		// Дополнительная проверка по всем участникам: если игрок заходил в игру и брал слот,
+		// но его слот освободился при смерти, восстанавливаем его по личному запомненному слоту
+		foreach (PS_MissionDataPlayer missionPlayer : m_Data.Players)
+		{
+			if (!missionPlayer)
+				continue;
+
+			int pid = missionPlayer.m_iPlayerId;
+			if (pid <= 0 || processedPlayers.Contains(pid))
+				continue;
+
+			RplId rememberedPlayable = m_PlayableManager.GetPlayableByPlayerRemembered(pid);
+			if (rememberedPlayable != RplId.Invalid())
+			{
+				PS_MissionDataPlayerToEntity playerToEntity = new PS_MissionDataPlayerToEntity();
+				playerToEntity.m_iPlayerId = pid;
+				playerToEntity.EntityId = rememberedPlayable;
+
+				m_Data.PlayersToPlayables.Insert(playerToEntity);
+				processedPlayers.Insert(pid, true);
+			}
 		}
 	}
 	

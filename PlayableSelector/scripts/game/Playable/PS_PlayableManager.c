@@ -1079,13 +1079,17 @@ class PS_PlayableManager : ScriptComponent
 			return -1;
 		return m_playablePlayers[PlayableId];
 	}
-	// Get last not -1 player id by playable id or -1 if no player found
-	// - Synced on clients
+	/**
+	 * @brief Получение последнего занявшего слот игрока (восстановление после гибели или дисконнекта).
+	 * @issue BUG-01
+	 * @cause Метод обращался к m_playersPlayableRemembered вместо m_playablePlayersRemembered, из-за чего поиск по RplId завершался неудачей и отсекал всех погибших игроков из экспорта статистики.
+	 * @solution Обращение к m_playablePlayersRemembered по ключу PlayableId.
+	 */
 	int GetPlayerByPlayableRemembered(RplId PlayableId)
 	{
-		if (!m_playersPlayableRemembered.Contains(PlayableId))
+		if (!m_playablePlayersRemembered.Contains(PlayableId))
 			return -1;
-		return m_playersPlayableRemembered[PlayableId];
+		return m_playablePlayersRemembered[PlayableId];
 	}
 	// Set player -> playable / playable -> player links, by playable id to player id
 	// - Execute ONLY on server
@@ -1117,15 +1121,15 @@ class PS_PlayableManager : ScriptComponent
 		if (oldPlayerId > 0 && oldPlayerId != playerId)
 			m_playersPlayable[oldPlayerId] = -1;
 		
-		// Remember last valid
-		if (playableId != RplId.Invalid()) {
-			m_playablePlayersRemembered[playerId] = playableId;
+		// Remember last valid (BUG-01)
+		if (playableId != RplId.Invalid() && playerId > 0) {
+			m_playablePlayersRemembered[playableId] = playerId;
+			m_playersPlayableRemembered[playerId] = playableId;
 		}
 		
 		// Invoke if player valid
 		if (playerId > 0)
 		{
-			m_playersPlayableRemembered[playableId] = playerId; // Remember last valid
 			m_eOnPlayerPlayableChange.Invoke(playerId, playableId);
 		}
 		
@@ -1144,13 +1148,17 @@ class PS_PlayableManager : ScriptComponent
 			return RplId.Invalid();
 		return m_playersPlayable[playerId];
 	}
-	// Get last not RplId.Invalid() playable id byt player id or RplId.Invalid() if no playable found
-	// - Synced on clients
+	/**
+	 * @brief Получение последнего занятого слота игрока (восстановление после реконнекта).
+	 * @issue BUG-01
+	 * @cause Метод обращался к m_playablePlayersRemembered вместо m_playersPlayableRemembered, из-за чего поиск по playerId давал неверные данные.
+	 * @solution Обращение к m_playersPlayableRemembered по ключу playerId.
+	 */
 	RplId GetPlayableByPlayerRemembered(int playerId)
 	{
-		if (!m_playablePlayersRemembered.Contains(playerId))
+		if (!m_playersPlayableRemembered.Contains(playerId))
 			return RplId.Invalid();
-		return m_playablePlayersRemembered[playerId];
+		return m_playersPlayableRemembered[playerId];
 	}
 	// Set playable -> player / player -> playable links, by player id to playable id
 	// - Execute ONLY on server
@@ -1192,16 +1200,16 @@ class PS_PlayableManager : ScriptComponent
 		int oldPlayerId = m_playablePlayers[playableId];
 		m_playablePlayers[playableId] = playerId;
 
-		// Remember last valid
-		if (playableId != RplId.Invalid()) {
-			m_playablePlayersRemembered[playerId] = playableId;
+		// Remember last valid (BUG-01)
+		if (playableId != RplId.Invalid() && playerId > 0) {
+			m_playablePlayersRemembered[playableId] = playerId;
+			m_playersPlayableRemembered[playerId] = playableId;
 		}
 
 		// Invoke if playable valid
 		if (playerId > 0)
 		{
 			m_eOnPlayerPlayableChange.Invoke(playerId, playableId);
-			m_playersPlayableRemembered[playableId] = playerId; // Remember last valid
 		}
 
 		// Invoke container event
