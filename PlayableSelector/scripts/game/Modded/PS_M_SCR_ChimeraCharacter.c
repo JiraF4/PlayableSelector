@@ -1,3 +1,12 @@
+/**
+ * @brief Модификация ChimeraCharacter для связи с PlayableComponent и глобального учета персонажей.
+ * @subsystem Slots / Core
+ * @context Hybrid
+ * @entity ChimeraCharacter
+ * @depends PlayableSelector
+ * @listens None
+ * @details Хранит ссылку на PS_PlayableComponent и ведет глобальный список зарегистрированных персонажей m_aCharacters_PS.
+ */
 modded class SCR_ChimeraCharacter 
 {
 	PS_PlayableComponent PS_m_PlayableComponent;
@@ -17,27 +26,6 @@ modded class SCR_ChimeraCharacter
 	void SCR_ChimeraCharacter(IEntitySource src, IEntity parent)
 	{
 		m_aCharacters_PS.Insert(this);
-		
-		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		if (gameModeCoop && !gameModeCoop.IsFreezeTimeEnd())
-		{
-			//  GetGame().GetCallqueue().CallLater(FreezeTimeDisable, 0, true);
-		}
-		else
-		{
-			Activate();
-		}
-	}
-	
-	void FreezeTimeDisable()
-	{
-		Deactivate();
-		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		if (gameModeCoop.IsDisableTimeEnd())
-		{
-			Activate();
-			GetGame().GetCallqueue().Remove(FreezeTimeDisable);
-		}
 	}
 	
 	void ~SCR_ChimeraCharacter()

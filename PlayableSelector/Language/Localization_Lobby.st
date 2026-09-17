@@ -1051,7 +1051,7 @@ StringTable {
   CustomStringTableItem "{64C90089D268F288}" {
    Id "PS-Load_time"
    Target_en_us "Load time"
-   Target_ru_ru "Прогрузка"
+   Target_ru_ru "Ожидание прогрузки"
    Modified 1690900266
    Author "zazul"
    LastChanged "zazul"

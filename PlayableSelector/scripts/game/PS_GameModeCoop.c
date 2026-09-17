@@ -37,6 +37,33 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 	[Attribute("60000", UIWidgets.EditBox, "Time in milliseconds before restriction zones are removed.", category: "Reforger Lobby")]
 	int m_iFreezeTime;
+
+	[Attribute("60000", UIWidgets.EditBox, "Hard freeze duration in milliseconds.", category: "Reforger Lobby")]
+	protected int m_iHardFreezeTime;
+
+	[RplProp(onRplName: "OnRpl_HardFreeze")]
+	protected bool m_bHardFreeze;
+
+	[RplProp()]
+	protected float m_fHardFreezeDuration = 60000;
+
+	[RplProp()]
+	protected float m_fHardFreezeRemaining = 60000;
+
+	protected bool m_bDayAdvanceWasOn;
+
+	static bool s_bHardFreezeActive;
+	static bool s_bDamageBlocked;
+
+	static bool IsHardFreezeActiveStatic()
+	{
+		return s_bHardFreezeActive;
+	}
+
+	static bool IsDamageBlockedStatic()
+	{
+		return s_bDamageBlocked;
+	}
 	
 	[Attribute("0", UIWidgets.EditBox, "Time in milliseconds before characters are activated.", category: "Reforger Lobby (WIP)")]
 	int m_iDisableTime;
@@ -49,6 +76,10 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	// One-shot guard for FreezeTimerEnd: every group leader's PS_SquadsReadyWidget independently RPCs the server
 	// when all squads are ready, so the end notification must fire only once per freeze period (reset in StartGame).
 	protected bool m_bFreezeEndTriggered;
+	// True while restrictedZonesTimer is actively counting down (Soft Freeze phase).
+	// Set to true at the start of Soft Freeze, false when it expires. Used by hardFreezeTimer to decide
+	// whether to resume the Soft Freeze after Hard Freeze ends.
+	protected bool m_bSoftFreezeActive;
 	[RplProp()]
 	protected float m_fGameStartTime = 0;
 	[RplProp()]
@@ -176,7 +207,13 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		// survives — keeping the old instance alive and running stale callbacks.
 		GetGame().GetCallqueue().Remove(ForceFramerate);
 		GetGame().GetCallqueue().Remove(VoNReconcileTick);
+		GetGame().GetCallqueue().Remove(hardFreezeTimer);
 		GetGame().GetCallqueue().Remove(restrictedZonesTimer);
+		if (Replication.IsServer())
+		{
+			RestoreDayAdvance_S();
+		}
+		ApplyLocalControlsLock(false);
 		super.OnGameEnd();
 	}
 	
@@ -417,6 +454,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		invoker.Insert(FreezeTimerAdvance_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("fte");
 		invoker.Insert(FreezeTimerEnd_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("hardfreeze");
+		invoker.Insert(HardFreeze_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("cmc");
 		invoker.Insert(CopyAllMarkersToClipboard_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("lmc");
@@ -532,6 +571,64 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		invoker.Invoke(null, "#PS-Freeze_time_force_end");
 	}
 
+	void HardFreeze_Callback(SCR_ChatPanel panel, string data)
+	{
+		if (!PS_PlayersHelper.IsAdminOrServer())
+			return;
+
+		PlayerController playerController = GetGame().GetPlayerController();
+		if (!playerController)
+			return;
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		if (!playableController)
+			return;
+
+		#ifndef WORKBENCH
+		if (GetState() != SCR_EGameModeState.GAME)
+			return;
+		#endif
+
+		int sec = 30;
+		if (!data.IsEmpty())
+			sec = data.ToInt();
+
+		playableController.HardFreezeAdminCommand(sec);
+	}
+
+	/**
+	 * @brief Серверная обработка админ-команды /hardfreeze.
+	 * @context Server
+	 * @param seconds Время паузы в секундах (0 = мгновенное снятие)
+	 */
+	void HardFreezeAdmin_S(int seconds)
+	{
+		if (!Replication.IsServer())
+			return;
+
+		if (seconds <= 0)
+		{
+			EndHardFreeze_S();
+			HardFreezeNotify("#PS-Freeze_time_force_end");
+		}
+		else
+		{
+			int durationMs = seconds * 1000;
+			StartHardFreeze_S(durationMs);
+			HardFreezeNotify("#PS-Freeze_time_advanced");
+		}
+	}
+
+	void HardFreezeNotify(string message)
+	{
+		SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
+		if (chatPanelManager)
+		{
+			ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("smsg");
+			if (invoker)
+				invoker.Invoke(null, message);
+		}
+	}
+
 	void SpawnPosition_Callback(SCR_ChatPanel panel, string data)
 	{
 		PlayerController playerController = GetGame().GetPlayerController();
@@ -630,7 +727,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	// Each client maintains its own copy via RPC_BroadcastAdvAdminLock (Broadcast RPC).
 	protected static int s_iLastAdvAdminPlayerId = 0;
 	protected static float s_fLastAdvAdminTime = 0;
-	void AdvanceStage_Callback(SCR_ChatPanel panel, string data)
+
+	void AdvanceStage_Callback(SCR_ChatPanel panel, string data)
 	{
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
@@ -662,7 +760,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			return;
 		}
 
-		// Broadcast the admin lock so all clients know this admin just used /adv.		Rpc(RPC_BroadcastAdvAdminLock, myId, now);
+		// Broadcast the admin lock so all clients know this admin just used /adv.
+		Rpc(RPC_BroadcastAdvAdminLock, myId, now);
 		RPC_BroadcastAdvAdminLock(myId, now);
 
 		// Safety: during freeze time in GAME state, "/adv" acts as "/fte" (end freeze time)
@@ -1420,6 +1519,13 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (vonMgr)
 			vonMgr.SetVoNGamePhase(state == SCR_EGameModeState.GAME);
 
+		if (state != SCR_EGameModeState.GAME)
+		{
+			if (Replication.IsServer() && m_bHardFreeze)
+				EndHardFreeze_S();
+			ApplyLocalControlsLock(false);
+		}
+
 		switch (state)
 		{
 			case SCR_EGameModeState.BRIEFING: // Force move to voice rooms
@@ -1653,7 +1759,16 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		// alive so players can still pick them during the freeze window.
 		playableManager.RemoveRedundantUnits(true);
 		m_bFreezeEndTriggered = false; // new freeze period - allow the one-shot end notification again
+		m_bSoftFreezeActive = false;   // reset Soft Freeze tracking for the new game cycle
+
+		// Start both Soft Freeze and Hard Freeze simultaneously at game start.
+		// Hard Freeze will mask/override the UI counter until it expires, after which the remaining
+		// Soft Freeze time is seamlessly revealed without increasing the total match freeze time.
+		s_bDamageBlocked = (m_iHardFreezeTime > 0) || (m_bFreezeTimeShootingForbiden && m_iFreezeTime > 0);
 		restrictedZonesTimer(m_iFreezeTime);
+		if (m_iHardFreezeTime > 0)
+			StartHardFreeze_S(m_iHardFreezeTime);
+
 		StartGameMode();
 	}
 
@@ -1684,6 +1799,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	// TODO: move it to component
 	void restrictedZonesTimer(int freezeTime)
 	{
+		m_bSoftFreezeActive = true;
+
 		// reduce time by second
 		int time = 1000;
 		if (freezeTime < time) time = freezeTime;
@@ -1699,9 +1816,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		// next second or end
 		if (freezeTime <= 0)
 		{
+			m_bSoftFreezeActive = false;
 			m_fGameStartTime = GetGame().GetWorld().GetWorldTime();
 			m_fGameStartElapsedTime = GetElapsedTime();
 			Replication.BumpMe();
+			s_bDamageBlocked = m_bHardFreeze;
 			removeRestrictedZones();
 			if (m_bDisableBuildingModeAfterFreezeTime)
 				DisableBuildingMode();
@@ -1720,10 +1839,10 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	{
 		if (freezeTime <= 0)
 		{
-			if (m_hFreezeTimeCounter)
-			{
-				m_hFreezeTimeCounter.GetRootWidget().RemoveFromHierarchy();
-			}
+			s_bDamageBlocked = m_bHardFreeze;
+			if (!m_bHardFreeze)
+				DestroyFreezeTimeCounter();
+
 			if (m_hSquadsReadyWidget)
 			{
 				m_hSquadsReadyWidget.Destroy();
@@ -1732,17 +1851,16 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			return;
 		}
 
-		if (m_hFreezeTimeCounter == null)
-		{
-			Widget widget = GetGame().GetWorkspace().CreateWidgets("{EC8A548C3F53BE4F}UI/layouts/FreezeTime/FreezeTimeCounter.layout");
-			m_hFreezeTimeCounter = PS_FreezeTimeCounter.Cast(widget.FindHandler(PS_FreezeTimeCounter));
-		}
+		EnsureFreezeTimeCounter();
 
 		// Create squads-ready widget on first freeze-time tick (client-side)
 		if (m_hSquadsReadyWidget == null && RplSession.Mode() != RplMode.Dedicated)
 			m_hSquadsReadyWidget = PS_SquadsReadyWidget.Create();
 
-		m_hFreezeTimeCounter.SetTime(freezeTime);
+		// Hard Freeze takes visual priority over the counter UI.
+		// Soft Freeze time is only applied once Hard Freeze has concluded.
+		if (!m_bHardFreeze && m_hFreezeTimeCounter)
+			m_hFreezeTimeCounter.SetTime(freezeTime);
 	}
 	void DisableBuildingMode()
 	{
@@ -1759,6 +1877,398 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	PS_FreezeTimeCounter m_hFreezeTimeCounter;
 	ref PS_SquadsReadyWidget m_hSquadsReadyWidget;
 
+	// ------------------------------------------ Hard Freeze ------------------------------------------
+	bool IsHardFreezeActive()
+	{
+		return m_bHardFreeze;
+	}
+
+	int GetHardFreezeTime()
+	{
+		return m_iHardFreezeTime;
+	}
+
+	float GetHardFreezeDuration()
+	{
+		return m_fHardFreezeDuration;
+	}
+
+	float GetHardFreezeRemaining()
+	{
+		return m_fHardFreezeRemaining;
+	}
+
+	/**
+	 * @brief Реактивный обработчик репликации состояния Hard Freeze на клиентах.
+	 * @context Client / JIP
+	 * @sync Server -> All
+	 * @note Вызывается локально на клиентах при получении обновлённого значения m_bHardFreeze
+	 */
+	void OnRpl_HardFreeze()
+	{
+		s_bHardFreezeActive = m_bHardFreeze;
+		s_bDamageBlocked = m_bHardFreeze || (m_bFreezeTimeShootingForbiden && !IsFreezeTimeEnd());
+
+		ApplyLocalControlsLock(m_bHardFreeze);
+
+		if (m_bHardFreeze)
+		{
+			EnsureFreezeTimeCounter();
+			if (m_hFreezeTimeCounter)
+			{
+				m_hFreezeTimeCounter.UpdateDisplayMode(true, m_fHardFreezeDuration);
+				m_hFreezeTimeCounter.SetTime(m_fHardFreezeRemaining);
+			}
+
+			MenuManager mm = GetGame().GetMenuManager();
+			if (mm)
+			{
+				mm.CloseMenuByPreset(ChimeraMenuPreset.Inventory20Menu);
+				mm.CloseMenuByPreset(ChimeraMenuPreset.MapMenu);
+			}
+
+			PlayerController pc = GetGame().GetPlayerController();
+			if (pc)
+			{
+				PS_PlayableControllerComponent pcc = PS_PlayableControllerComponent.Cast(pc.FindComponent(PS_PlayableControllerComponent));
+				if (pcc)
+					pcc.EnsureEventMask();
+			}
+		}
+		else
+		{
+			if (m_hFreezeTimeCounter)
+			{
+				if (m_fCurrentFreezeTime > 0)
+				{
+					// Seamlessly reveal the ongoing Soft Freeze and its remaining time
+					m_hFreezeTimeCounter.UpdateDisplayMode(false, m_iFreezeTime);
+					m_hFreezeTimeCounter.SetTime(m_fCurrentFreezeTime);
+				}
+				else
+				{
+					DestroyFreezeTimeCounter();
+				}
+			}
+		}
+	}
+
+	protected void EnsureFreezeTimeCounter()
+	{
+		if (m_hFreezeTimeCounter)
+			return;
+
+		Widget widget = GetGame().GetWorkspace().CreateWidgets("{EC8A548C3F53BE4F}UI/layouts/FreezeTime/FreezeTimeCounter.layout");
+		if (widget)
+			m_hFreezeTimeCounter = PS_FreezeTimeCounter.Cast(widget.FindHandler(PS_FreezeTimeCounter));
+	}
+
+	protected void DestroyFreezeTimeCounter()
+	{
+		if (!m_hFreezeTimeCounter)
+			return;
+
+		Widget root = m_hFreezeTimeCounter.GetRootWidget();
+		if (root)
+			root.RemoveFromHierarchy();
+		m_hFreezeTimeCounter = null;
+	}
+
+	/**
+	 * @brief Переопределение управления локального клиента для защиты от сброса движком во время Hard Freeze.
+	 * @context Client
+	 * @param enabled Флаг разрешения ввода
+	 */
+	override protected void SetLocalControls(bool enabled)
+	{
+		if (m_bHardFreeze)
+			enabled = false;
+
+		super.SetLocalControls(enabled);
+
+		EnforceHardFreezeControls(!enabled);
+	}
+
+	/**
+	 * @brief Потоковое принудительное применение блокировки движения, оружия и обзора на персонаже.
+	 * @context Client
+	 * @param locked Флаг блокировки
+	 */
+	void EnforceHardFreezeControls(bool locked)
+	{
+		PlayerController pc = GetGame().GetPlayerController();
+		if (!pc)
+			return;
+
+		PS_PlayableControllerComponent pcc = PS_PlayableControllerComponent.Cast(pc.FindComponent(PS_PlayableControllerComponent));
+		if (pcc && pcc.IsObserver())
+			return;
+
+		IEntity controlled = pc.GetControlledEntity();
+		ChimeraCharacter character = ChimeraCharacter.Cast(controlled);
+		if (character)
+		{
+			CharacterControllerComponent charCtrl = character.GetCharacterController();
+			if (charCtrl)
+			{
+				charCtrl.SetDisableViewControls(locked);
+				charCtrl.SetDisableMovementControls(locked);
+				charCtrl.SetDisableWeaponControls(locked);
+			}
+		}
+	}
+
+	/**
+	 * @brief Безопасное применение/снятие ограничений ввода и обзора.
+	 * @context Client
+	 * @param locked Флаг блокировки управления (true - блокировать, false - разблокировать)
+	 */
+	void ApplyLocalControlsLock(bool locked)
+	{
+		SetLocalControls(!locked);
+	}
+
+	/**
+	 * @brief Остановка автоматического хода времени суток на сервере.
+	 * @context Server
+	 */
+	void StopDayAdvance_S()
+	{
+		if (m_bDayAdvanceWasOn)
+			return;
+
+		ChimeraWorld world = ChimeraWorld.CastFrom(GetGame().GetWorld());
+		if (!world)
+			return;
+
+		TimeAndWeatherManagerEntity timeManager = world.GetTimeAndWeatherManager();
+		if (!timeManager)
+			return;
+
+		m_bDayAdvanceWasOn = timeManager.GetIsDayAutoAdvanced();
+		if (m_bDayAdvanceWasOn)
+			timeManager.SetIsDayAutoAdvanced(false);
+	}
+
+	/**
+	 * @brief Возобновление автоматического хода времени суток на сервере.
+	 * @context Server
+	 */
+	void RestoreDayAdvance_S()
+	{
+		if (!m_bDayAdvanceWasOn)
+			return;
+		m_bDayAdvanceWasOn = false;
+
+		ChimeraWorld world = ChimeraWorld.CastFrom(GetGame().GetWorld());
+		if (!world)
+			return;
+
+		TimeAndWeatherManagerEntity timeManager = world.GetTimeAndWeatherManager();
+		if (timeManager)
+			timeManager.SetIsDayAutoAdvanced(true);
+	}
+
+	/**
+	 * @brief Поиск контроллера вертолета с учетом возможного крепления к BaseVehicleNodeComponent.
+	 * @param vehicle Сущность транспорта
+	 * @return SCR_HelicopterControllerComponent или null
+	 */
+	static SCR_HelicopterControllerComponent GetHelicopterController(Vehicle vehicle)
+	{
+		if (!vehicle)
+			return null;
+
+		SCR_HelicopterControllerComponent heli = SCR_HelicopterControllerComponent.Cast(vehicle.GetVehicleController());
+		if (heli)
+			return heli;
+
+		BaseVehicleNodeComponent nodeComp = BaseVehicleNodeComponent.Cast(vehicle.FindComponent(BaseVehicleNodeComponent));
+		if (nodeComp)
+		{
+			heli = SCR_HelicopterControllerComponent.Cast(nodeComp.FindComponent(SCR_HelicopterControllerComponent));
+			if (heli)
+				return heli;
+		}
+
+		return SCR_HelicopterControllerComponent.Cast(vehicle.FindComponent(SCR_HelicopterControllerComponent));
+	}
+
+	/**
+	 * @brief Полная физическая остановка и стояночный тормоз для всех транспортных средств.
+	 * @context Server
+	 */
+	void FreezeAllVehicles_S()
+	{
+		foreach (Vehicle v : Vehicle.m_aVehicles_PS)
+		{
+			if (!v)
+				continue;
+
+			Physics phys = v.GetPhysics();
+			VehicleHelicopterSimulation heliSim = VehicleHelicopterSimulation.Cast(v.FindComponent(VehicleHelicopterSimulation));
+			if (heliSim)
+			{
+				SCR_HelicopterControllerComponent heliCtrl = GetHelicopterController(v);
+				bool isAirborne = !heliSim.HasAnyGroundContact();
+
+				if (isAirborne)
+				{
+					// Вертолет в воздухе: двигатель НЕ глушить, включить автоховер, сгасить дрейф
+					if (heliCtrl)
+						heliCtrl.SetAutohoverEnabled(true);
+
+					if (phys)
+					{
+						vector linVel = phys.GetVelocity();
+						phys.SetVelocity(Vector(0, linVel[1] * 0.5, 0));
+						phys.SetAngularVelocity(vector.Zero);
+					}
+				}
+				else
+				{
+					// Вертолет на земле: заглушить, стояночный тормоз шасси, обнулить скорость
+					heliSim.SetThrottle(0);
+					if (heliSim.EngineIsOn())
+						heliSim.EngineStop();
+
+					if (heliCtrl)
+						heliCtrl.SetPersistentWheelBrake(true);
+
+					if (phys)
+					{
+						phys.SetVelocity(vector.Zero);
+						phys.SetAngularVelocity(vector.Zero);
+					}
+				}
+				continue;
+			}
+
+			// Колесная техника: глушение, стояночный тормоз, обнуление скорости
+			if (phys)
+			{
+				phys.SetVelocity(vector.Zero);
+				phys.SetAngularVelocity(vector.Zero);
+			}
+
+			VehicleWheeledSimulation sim = VehicleWheeledSimulation.Cast(v.FindComponent(VehicleWheeledSimulation));
+			if (sim)
+			{
+				sim.SetThrottle(0);
+				sim.SetSteering(0);
+				sim.SetBreak(1, true);
+				if (sim.EngineIsOn())
+					sim.EngineStop();
+			}
+
+			BaseVehicleControllerComponent ctrl = v.GetVehicleController();
+			if (ctrl)
+				ctrl.StopEngine(false);
+		}
+	}
+
+	/**
+	 * @brief Запуск фазы Hard Freeze на сервере.
+	 * @context Server
+	 * @param durationMs Длительность в миллисекундах
+	 * @note При одновременном запуске с Soft Freeze оба процесса идут параллельно.
+	 *       Клиентский UI отображает Hard Freeze, а после его окончания переключается на остаток Soft Freeze.
+	 */
+	void StartHardFreeze_S(int durationMs)
+	{
+		if (!Replication.IsServer())
+			return;
+
+		GetGame().GetCallqueue().Remove(hardFreezeTimer);
+
+		m_bHardFreeze = true;
+		s_bHardFreezeActive = true;
+		s_bDamageBlocked = true;
+		m_fHardFreezeDuration = durationMs;
+		m_fHardFreezeRemaining = durationMs;
+		Replication.BumpMe();
+
+		StopDayAdvance_S();
+		FreezeAllVehicles_S();
+
+		if (RplSession.Mode() != RplMode.Dedicated)
+			OnRpl_HardFreeze();
+
+		hardFreezeTimer(durationMs);
+	}
+
+	/**
+	 * @brief Завершение фазы Hard Freeze на сервере.
+	 * @context Server
+	 */
+	void EndHardFreeze_S()
+	{
+		if (!Replication.IsServer())
+			return;
+
+		GetGame().GetCallqueue().Remove(hardFreezeTimer);
+
+		if (!m_bHardFreeze)
+			return;
+
+		m_bHardFreeze = false;
+		s_bHardFreezeActive = false;
+		s_bDamageBlocked = (m_bFreezeTimeShootingForbiden && !IsFreezeTimeEnd());
+		m_fHardFreezeRemaining = 0;
+		Replication.BumpMe();
+
+		RestoreDayAdvance_S();
+
+		if (RplSession.Mode() != RplMode.Dedicated)
+			OnRpl_HardFreeze();
+	}
+
+	/**
+	 * @brief Посекундный таймер Hard Freeze на сервере.
+	 * @context Server
+	 * @param remainingMs Оставшееся время в мс
+	 * @note По окончании Hard Freeze управление разблокируется через EndHardFreeze_S().
+	 *       Soft Freeze продолжает выполняться своим параллельным циклом без перезапуска и наложения таймеров.
+	 */
+	void hardFreezeTimer(int remainingMs)
+	{
+		if (!m_bHardFreeze)
+			return;
+
+		int step = 1000;
+		if (remainingMs < step)
+			step = remainingMs;
+		remainingMs -= step;
+
+		m_fHardFreezeRemaining = remainingMs;
+
+		if (RplSession.Mode() != RplMode.Dedicated)
+			RPC_HardFreezeTimer(remainingMs);
+		Rpc(RPC_HardFreezeTimer, remainingMs);
+
+		if (remainingMs <= 0)
+		{
+			EndHardFreeze_S();
+		}
+		else
+		{
+			GetGame().GetCallqueue().CallLater(hardFreezeTimer, step, false, remainingMs);
+		}
+	}
+
+	/**
+	 * @brief Синхронизация счетчика Hard Freeze на клиентах.
+	 * @rpc Server -> Broadcast (Reliable)
+	 * @param remainingMs Оставшееся время в мс
+	 */
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RPC_HardFreezeTimer(int remainingMs)
+	{
+		m_fHardFreezeRemaining = remainingMs;
+		if (m_hFreezeTimeCounter && m_bHardFreeze)
+			m_hFreezeTimeCounter.SetTime(remainingMs);
+	}
+
 	// ------------------------------------------ Global flags ------------------------------------------
 	bool IsFreezeTimeEnd()
 	{
@@ -1767,7 +2277,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	
 	bool IsDisableTimeEnd()
 	{
-		return m_fCurrentFreezeTime <= (m_iFreezeTime - m_iDisableTime) && m_fCurrentFreezeTime != 1;
+		return !m_bHardFreeze;
 	}
 	
 	bool IsFreezeTimeShootingForbiden()
@@ -1892,7 +2402,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	
 	int GetDisableTime()
 	{
-		return m_iDisableTime;
+		return m_iHardFreezeTime;
 	}
 	
 	float GetGameStartTime()
@@ -1956,6 +2466,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		writer.WriteBool(m_bFactionLock);
 		writer.WriteInt(m_iFreezeTime);
 		writer.WriteInt(m_iReconnectTime);
+		writer.WriteInt(m_iHardFreezeTime);
 
 		return true;
 	}
@@ -1965,6 +2476,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		reader.ReadBool(m_bFactionLock);
 		reader.ReadInt(m_iFreezeTime);
 		reader.ReadInt(m_iReconnectTime);
+		reader.ReadInt(m_iHardFreezeTime);
 
 		return true;
 	}

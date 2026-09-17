@@ -53,6 +53,7 @@ OverlayWidgetClass {
          Color 0.761 0.761 0.761 1
          Text "#PS-Freeze_time"
          "Min Font Size" 24
+         "Horizontal Alignment" Center
         }
         TextWidgetClass "{5F0EB4D5FBCA212F}" {
          Name "FreezeTimeCounterText"

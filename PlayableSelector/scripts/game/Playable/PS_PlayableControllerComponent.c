@@ -31,6 +31,52 @@ class PS_PlayableControllerComponent : ScriptComponent
 		return m_GameModeCoop;
 	}
 
+	/**
+	 * @brief Проверка активности режима наблюдателя/свободной камеры у игрока.
+	 * @context Client
+	 * @return bool True, если активна камера наблюдателя
+	 */
+	bool IsObserver()
+	{
+		return m_Camera != null;
+	}
+
+	/**
+	 * @brief Гарантирует активность покадровых событий FRAME в контроллере.
+	 * @context Client
+	 */
+	void EnsureEventMask()
+	{
+		SetEventMask(GetOwner(), EntityEvent.FRAME);
+	}
+
+	protected Vehicle m_CurrentVehicle;
+	protected VehicleWheeledSimulation m_CurrentWheeledSim;
+	protected VehicleHelicopterSimulation m_CurrentHeliSim;
+	protected SCR_HelicopterControllerComponent m_CurrentHeliCtrl;
+
+	protected void UpdateCachedVehicle(IEntity character)
+	{
+		Vehicle currentVehicle = null;
+		if (character)
+			currentVehicle = Vehicle.Cast(character.GetRootParent());
+
+		if (currentVehicle == m_CurrentVehicle)
+			return;
+
+		m_CurrentVehicle = currentVehicle;
+		m_CurrentWheeledSim = null;
+		m_CurrentHeliSim = null;
+		m_CurrentHeliCtrl = null;
+
+		if (!m_CurrentVehicle)
+			return;
+
+		m_CurrentWheeledSim = VehicleWheeledSimulation.Cast(m_CurrentVehicle.FindComponent(VehicleWheeledSimulation));
+		m_CurrentHeliSim = VehicleHelicopterSimulation.Cast(m_CurrentVehicle.FindComponent(VehicleHelicopterSimulation));
+		m_CurrentHeliCtrl = PS_GameModeCoop.GetHelicopterController(m_CurrentVehicle);
+	}
+
 	[RplProp()]
 	bool m_bOutFreezeTime;
 	
@@ -224,6 +270,33 @@ class PS_PlayableControllerComponent : ScriptComponent
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		if (gameMode)
 			gameMode.FreezeTimerEnd();
+	}
+
+	// ------ HardFreeze ------
+	/**
+	 * @brief Запрос установки/снятия Hard Freeze от администратора.
+	 * @rpc Owner -> Server (Reliable)
+	 * @param seconds Длительность паузы в секундах (0 = мгновенное снятие)
+	 */
+	void HardFreezeAdminCommand(int seconds)
+	{
+		Rpc(RPC_HardFreezeAdminCommand, seconds);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void RPC_HardFreezeAdminCommand(int seconds)
+	{
+		PlayerController pc = PlayerController.Cast(GetOwner());
+		if (!pc || !PS_PlayersHelper.IsAdminOrServer())
+			return;
+
+		PS_GameModeCoop gameMode = GetGameModeCoop();
+		#ifndef WORKBENCH
+		if (gameMode && gameMode.GetState() == SCR_EGameModeState.GAME)
+			gameMode.HardFreezeAdmin_S(seconds);
+		#else
+		if (gameMode)
+			gameMode.HardFreezeAdmin_S(seconds);
+		#endif
 	}
 	
 	// ------ SpawnPrefab ------
@@ -550,6 +623,23 @@ class PS_PlayableControllerComponent : ScriptComponent
 			if (gameModeCoop.GetState() == SCR_EGameModeState.GAME)
 				GetGame().GetCallqueue().Call(TellFuckingEditorCoreThanWeAlive, thisPlayerController.GetPlayerId(), to);
 		}
+
+		PS_GameModeCoop gm = GetGameModeCoop();
+		if (gm && gm.IsHardFreezeActive())
+		{
+			ChimeraCharacter character = ChimeraCharacter.Cast(to);
+			if (character)
+			{
+				CharacterControllerComponent charCtrl = character.GetCharacterController();
+				if (charCtrl)
+				{
+					charCtrl.SetDisableViewControls(true);
+					charCtrl.SetDisableMovementControls(true);
+					charCtrl.SetDisableWeaponControls(true);
+				}
+			}
+			gm.ApplyLocalControlsLock(true);
+		}
 	}
 	
 	// There is sure no ебанорго game modes without spawns, yeah sure блять
@@ -573,13 +663,17 @@ class PS_PlayableControllerComponent : ScriptComponent
 		PS_GameModeCoop gameMode = GetGameModeCoop();
 		if (!gameMode)
 			return; // game mode not resolved yet (early frame) - retry next frame
-		if ((gameMode.GetState() == SCR_EGameModeState.GAME && gameMode.IsFreezeTimeEnd()) || !gameMode.IsFreezeTimeShootingForbiden())
+		if (!gameMode.IsHardFreezeActive() && gameMode.GetState() == SCR_EGameModeState.GAME && gameMode.IsFreezeTimeEnd())
 		{
 			ClearEventMask(GetOwner(), EntityEvent.FRAME);
 			return;
 		}
 		
-		if (PS_PlayersHelper.IsAdminOrServer())
+		if (IsObserver())
+			return;
+
+		SCR_EditorManagerEntity editorManager = SCR_EditorManagerEntity.GetInstance();
+		if (editorManager && editorManager.IsOpened())
 			return;
 		
 		PlayerController playerController = PlayerController.Cast(owner);
@@ -587,41 +681,87 @@ class PS_PlayableControllerComponent : ScriptComponent
 		if (!actionManager)
 			return;
 		
-		actionManager.SetActionValue("CharacterFire", 0);
-		actionManager.SetActionValue("CharacterThrowGrenade", 0);
-		actionManager.SetActionValue("CharacterMelee", 0);
-		actionManager.SetActionValue("CharacterFireStatic", 0);
-		actionManager.SetActionValue("TurretFire", 0);
-		actionManager.SetActionValue("VehicleFire", 0);
-		actionManager.SetActionValue("VehicleHorn", 0);
+		if (gameMode.IsHardFreezeActive() || gameMode.IsFreezeTimeShootingForbiden())
+		{
+			actionManager.SetActionValue("CharacterFire", 0);
+			actionManager.SetActionValue("CharacterThrowGrenade", 0);
+			actionManager.SetActionValue("CharacterMelee", 0);
+			actionManager.SetActionValue("CharacterFireStatic", 0);
+			actionManager.SetActionValue("TurretFire", 0);
+			actionManager.SetActionValue("VehicleFire", 0);
+			actionManager.SetActionValue("VehicleHorn", 0);
+		}
 		
 		IEntity character = playerController.GetControlledEntity();
-		if (character)
+		UpdateCachedVehicle(character);
+
+		if (m_CurrentVehicle && (!m_CurrentVehicle.IsEnableMoveOnFreeze() || gameMode.IsHardFreezeActive()))
 		{
-			Vehicle vehicle = Vehicle.Cast(character.GetRootParent());
-			if (vehicle)
+			bool isAirborneHeli = (m_CurrentHeliSim && !m_CurrentHeliSim.HasAnyGroundContact());
+			DisableVehicleMove(actionManager, isAirborneHeli);
+
+			Physics phys = m_CurrentVehicle.GetPhysics();
+
+			if (m_CurrentWheeledSim)
 			{
-				if (!vehicle.IsEnableMoveOnFreeze())
+				if (m_CurrentWheeledSim.EngineIsOn())
+					m_CurrentWheeledSim.EngineStop();
+				m_CurrentWheeledSim.SetBreak(1, true);
+
+				if (phys)
 				{
-					DisableVehicleMove(actionManager);
-					VehicleWheeledSimulation vehicleWheeledSimulation = VehicleWheeledSimulation.Cast(vehicle.FindComponent(VehicleWheeledSimulation));
-					if (vehicleWheeledSimulation)
+					phys.SetVelocity(vector.Zero);
+					phys.SetAngularVelocity(vector.Zero);
+				}
+			}
+
+			if (m_CurrentHeliSim)
+			{
+				if (m_CurrentHeliSim.HasAnyGroundContact())
+				{
+					if (m_CurrentHeliSim.EngineIsOn())
+						m_CurrentHeliSim.EngineStop();
+					m_CurrentHeliSim.SetThrottle(0);
+					if (m_CurrentHeliCtrl && !m_CurrentHeliCtrl.GetPersistentWheelBrake())
+						m_CurrentHeliCtrl.SetPersistentWheelBrake(true);
+
+					if (phys)
 					{
-						if (vehicleWheeledSimulation.EngineIsOn())
-							vehicleWheeledSimulation.EngineStop();
+						phys.SetVelocity(vector.Zero);
+						phys.SetAngularVelocity(vector.Zero);
+					}
+				}
+				else
+				{
+					// Вертолет в воздухе: поддерживать автоховер, не глушить двигатель
+					if (m_CurrentHeliCtrl && !m_CurrentHeliCtrl.GetAutohoverEnabled())
+						m_CurrentHeliCtrl.SetAutohoverEnabled(true);
+
+					m_CurrentHeliSim.SetThrottle(0);
+
+					// Гашение физической инерции: нейтрализует влияние ручки управления и мыши
+					if (phys)
+					{
+						vector linVel = phys.GetVelocity();
+						vector angVel = phys.GetAngularVelocity();
+						// 95% гашение горизонтального смещения при сохранении вертикальной подушки автоховера
+						phys.SetVelocity(Vector(linVel[0] * 0.05, linVel[1] * 0.5, linVel[2] * 0.05));
+						// 95% гашение вращения исключает наклон фюзеляжа от стика
+						phys.SetAngularVelocity(angVel * 0.05);
 					}
 				}
 			}
 		}
-		
+
+		// Soft Freeze boundary violation restraint (Hard Freeze movement/view is blocked natively via CharacterControllerComponent)
 		if (m_bOutFreezeTime)
 		{
 			actionManager.SetActionValue("CharacterForward", 0);
 			actionManager.SetActionValue("CharacterRight", 0);
-			actionManager.SetActionValue("CharacterTurnUp", 0);
-			actionManager.SetActionValue("CharacterTurnRight", 0);
-			actionManager.SetActionValue("CharacterTurnUp", 0);
-			actionManager.SetActionValue("CharacterTurnRight", 0);
+			actionManager.SetActionValue("CharacterSprint", 0);
+			actionManager.SetActionValue("CharacterWeaponSprint", 0);
+			actionManager.SetActionValue("CharacterWalk", 0);
+			actionManager.SetActionValue("CharacterWeaponWalk", 0);
 			actionManager.SetActionValue("GetOut", 0);
 			actionManager.SetActionValue("JumpOut", 0);
 			actionManager.SetActionValue("CharacterStand", 0);
@@ -631,34 +771,38 @@ class PS_PlayableControllerComponent : ScriptComponent
 			actionManager.SetActionValue("CharacterStandProneToggle", 0);
 			actionManager.SetActionValue("CharacterRoll", 0);
 			actionManager.SetActionValue("CharacterJump", 0);
-			
-			DisableVehicleMove(actionManager);
-			
-			if (character)
-			{
-				Vehicle vehicle = Vehicle.Cast(character.GetRootParent());
-				if (vehicle)
-				{
-					BaseVehicleNodeComponent vehicleNodeComponent = BaseVehicleNodeComponent.Cast(vehicle.FindComponent(BaseVehicleNodeComponent));
-					if (vehicleNodeComponent)
-					{
-						SCR_HelicopterControllerComponent helicopterControllerComponent = SCR_HelicopterControllerComponent.Cast(vehicleNodeComponent.FindComponent(SCR_HelicopterControllerComponent));
-						if (!helicopterControllerComponent.GetAutohoverEnabled())
-						{
-							actionManager.SetActionValue("AutohoverToggle", 1);
-						}
-					}
-				}
-			}
+			actionManager.SetActionValue("CharacterLeftLean", 0);
+			actionManager.SetActionValue("CharacterRightLean", 0);
 		}
 	}
-	
-	void DisableVehicleMove(ActionManager actionManager)
+
+	void DisableVehicleMove(ActionManager actionManager, bool isAirborneHeli = false)
 	{
+		if (isAirborneHeli)
+		{
+			// Вертолет в воздухе: двигатель НЕ глушить, запретить отключение автоховера, обнулить ручку/педали/шаг
+			actionManager.SetActionValue("HelicopterEngineStop", 0);
+			actionManager.SetActionValue("HelicopterEngineStart", 0);
+			actionManager.SetActionValue("AutohoverToggle", 0);
+			actionManager.SetActionValue("CyclicForward", 0);
+			actionManager.SetActionValue("CyclicBack", 0);
+			actionManager.SetActionValue("CyclicLeft", 0);
+			actionManager.SetActionValue("CyclicRight", 0);
+			actionManager.SetActionValue("AntiTorqueLeft", 0);
+			actionManager.SetActionValue("AntiTorqueRight", 0);
+			actionManager.SetActionValue("CollectiveIncrease", 0);
+			actionManager.SetActionValue("CollectiveDecrease", 0);
+			return;
+		}
+
 		actionManager.SetActionValue("VehicleEngineStop", 1);
 		actionManager.SetActionValue("VehicleEngineStart", 0);
+		actionManager.SetActionValue("VehicleSteering", 0);
+		actionManager.SetActionValue("VehicleThrust", 0);
+		actionManager.SetActionValue("VehicleBrake", 1);
+		actionManager.SetActionValue("VehicleThrottle", 0);
 		actionManager.SetActionValue("AutohoverToggle", 0);
-		actionManager.SetActionValue("WheelBrake", 0);
+		actionManager.SetActionValue("WheelBrake", 1);
 		actionManager.SetActionValue("WheelBrakePersistent", 1);
 		actionManager.SetActionValue("CyclicForward", 0);
 		actionManager.SetActionValue("CyclicBack", 0);
@@ -668,20 +812,12 @@ class PS_PlayableControllerComponent : ScriptComponent
 		actionManager.SetActionValue("AntiTorqueRight", 0);
 		actionManager.SetActionValue("CollectiveIncrease", 0);
 		actionManager.SetActionValue("CollectiveDecrease", 0);
-		actionManager.SetActionValue("HelicopterEngineStop", 0);
+		actionManager.SetActionValue("HelicopterEngineStop", 1);
 		actionManager.SetActionValue("HelicopterEngineStart", 0);
-		
 		actionManager.SetActionValue("CarThrust", 0);
-		actionManager.SetActionValue("CarBrake", 0);
+		actionManager.SetActionValue("CarBrake", 1);
 		actionManager.SetActionValue("CarSteering", 0);
-		actionManager.SetActionValue("CarTurbo", 0);
-		actionManager.SetActionValue("CarTurboToggle", 0);
-		actionManager.SetActionValue("CarShift", 0);
-		actionManager.SetActionValue("CarShiftReverse", 0);
 		actionManager.SetActionValue("CarHandBrake", 1);
-		actionManager.SetActionValue("CarHandBrakePersistent", 0);
-		actionManager.SetActionValue("CarLightsHiBeamToggle", 0);
-		actionManager.SetActionValue("CarHazardLights", 0);
 	}
 
 	// EOnFixedFrame removed - FIXEDFRAME was never masked (the POSTFIXEDFRAME SetEventMask is commented out),
