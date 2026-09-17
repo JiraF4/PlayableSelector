@@ -24,20 +24,25 @@ modded class SCR_GadgetManagerComponent
 
 		if (owner)
 		{
-			if (PS_RadioVoiceFix.s_bDebug)
-				Print(string.Format("[PS_Radio] SCR_GadgetManagerComponent.OnControlledByPlayer: owner=%1, controlled=%2 (scheduling resync in 350ms)", owner, controlled), LogLevel.NORMAL);
-
 			GetGame().GetCallqueue().Remove(PS_ResyncVON);
-			GetGame().GetCallqueue().CallLater(PS_ResyncVON, 350, false, owner);
+
+			if (controlled)
+			{
+				if (PS_RadioVoiceFix.s_bDebug)
+					Print(string.Format("[PS_Radio] SCR_GadgetManagerComponent.OnControlledByPlayer: owner=%1, starting JIP radio streaming poll (250ms interval)", owner), LogLevel.NORMAL);
+
+				GetGame().GetCallqueue().CallLater(PS_ResyncVON, 250, false, owner, 0);
+			}
 		}
 	}
 
 	//------------------------------------------------------------------------------------------------
 	/**
-	 * @brief Отложенная валидация и повторная регистрация радиостанций в контроллере VoN.
+	 * @brief Асинхронный опрос стриминга радиооборудования при JIP и регистрация в контроллере VoN.
 	 * @param[in] owner Сущность персонажа
+	 * @param[in] attempt Номер текущей попытки опроса (до 20 попыток = 5 секунд)
 	 */
-	protected void PS_ResyncVON(IEntity owner)
+	protected void PS_ResyncVON(IEntity owner, int attempt = 0)
 	{
 		if (!owner)
 			return;
@@ -46,11 +51,51 @@ modded class SCR_GadgetManagerComponent
 		if (!pc || pc.GetControlledEntity() != owner)
 			return;
 
-		if (PS_RadioVoiceFix.s_bDebug)
-			Print(string.Format("[PS_Radio] SCR_GadgetManagerComponent.PS_ResyncVON: registering VON entries for owner=%1", owner), LogLevel.NORMAL);
+		// Проверяем наличие радиоустройств (носимых и ранцевых) в менеджере снаряжения
+		array<SCR_GadgetComponent> radioGadgets = GetGadgetsByType(EGadgetType.RADIO);
+		array<SCR_GadgetComponent> backpackGadgets = GetGadgetsByType(EGadgetType.RADIO_BACKPACK);
+		bool hasRadios = (radioGadgets && !radioGadgets.IsEmpty()) || (backpackGadgets && !backpackGadgets.IsEmpty());
 
-		RegisterVONEntries();
-		PS_RadioVoiceFix.Request();
+		// Если рации появились в инвентаре или исчерпан лимит ожидания (~5 секунд / 20 попыток)
+		if (hasRadios || attempt >= 20)
+		{
+			if (PS_RadioVoiceFix.s_bDebug)
+				Print(string.Format("[PS_Radio] SCR_GadgetManagerComponent.PS_ResyncVON: registering VON entries for owner=%1 (attempt=%2, foundRadios=%3)", owner, attempt, hasRadios), LogLevel.NORMAL);
+
+			RegisterVONEntries();
+
+			// Гарантируем включенное питание для обнаруженных радиостанций
+			if (hasRadios)
+			{
+				array<SCR_GadgetComponent> allRadios = {};
+				if (radioGadgets)
+					allRadios.InsertAll(radioGadgets);
+				if (backpackGadgets)
+					allRadios.InsertAll(backpackGadgets);
+
+				foreach (SCR_GadgetComponent gadget : allRadios)
+				{
+					if (!gadget)
+						continue;
+					IEntity radioEnt = gadget.GetOwner();
+					if (!radioEnt)
+						continue;
+					BaseRadioComponent radioComp = BaseRadioComponent.Cast(radioEnt.FindComponent(BaseRadioComponent));
+					if (radioComp && !radioComp.IsPowered())
+					{
+						radioComp.SetPower(true);
+						if (PS_RadioVoiceFix.s_bDebug)
+							Print(string.Format("[PS_Radio] SCR_GadgetManagerComponent.PS_ResyncVON: guaranteed power ON for radio=%1", radioComp), LogLevel.NORMAL);
+					}
+				}
+			}
+
+			PS_RadioVoiceFix.Request();
+			return;
+		}
+
+		// Радиостанции еще реплицируются по сети — опрашиваем повторно через 250 мс
+		GetGame().GetCallqueue().CallLater(PS_ResyncVON, 250, false, owner, attempt + 1);
 	}
 
 	//------------------------------------------------------------------------------------------------

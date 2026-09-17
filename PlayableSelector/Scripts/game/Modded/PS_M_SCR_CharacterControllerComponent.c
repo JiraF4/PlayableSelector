@@ -24,10 +24,6 @@ modded class SCR_CharacterControllerComponent
 					vonCtrl.PS_ResetVON();
 				}
 
-				PS_PlayableControllerComponent playableCtrl = PS_PlayableControllerComponent.Cast(pc.FindComponent(PS_PlayableControllerComponent));
-				if (playableCtrl)
-					playableCtrl.DisableBodyVoNRadios();
-
 				PS_MenuVoN.Refresh();
 			}
 		}

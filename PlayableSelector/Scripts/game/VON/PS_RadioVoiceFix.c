@@ -13,6 +13,9 @@ class PS_RadioVoiceFix
 	//! Флаг отладочного логирования радиоподсистемы PlayableSelector (false для отключения)
 	static bool s_bDebug = true;
 
+	//! Флаг активности автоматического сторожа (по умолчанию ВЫКЛЮЧЕН, управляется /rfix on /rfix off)
+	static bool s_bEnabled = false;
+
 	protected static const int FIX_DELAY_MS = 350;
 	protected static const int POWER_OFF_MS = 150;
 
@@ -22,6 +25,9 @@ class PS_RadioVoiceFix
 	 */
 	static void Request()
 	{
+		if (!s_bEnabled)
+			return;
+
 		if (System.IsConsoleApp() || (RplSession.Mode() == RplMode.Dedicated))
 			return;
 
@@ -30,6 +36,21 @@ class PS_RadioVoiceFix
 
 		GetGame().GetCallqueue().Remove(PowerCycleAll);
 		GetGame().GetCallqueue().CallLater(PowerCycleAll, FIX_DELAY_MS, false);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	/**
+	 * @brief Принудительный разовый перезапуск питания всех раций по требованию администратора.
+	 */
+	static void ForceCycleNow()
+	{
+		if (System.IsConsoleApp() || (RplSession.Mode() == RplMode.Dedicated))
+			return;
+
+		if (s_bDebug)
+			Print("[PS_Radio] PS_RadioVoiceFix.ForceCycleNow: executing forced power cycle...", LogLevel.NORMAL);
+
+		PowerCycleAll();
 	}
 
 	//------------------------------------------------------------------------------------------------

@@ -1095,30 +1095,24 @@ class PS_PlayableControllerComponent : ScriptComponent
 		return radios.Count() >= 2;
 	}
 
-	// Spectator voice fix (issue 3): a dead player keeps CONTROLLING their corpse, whose carried radios
-	// stay powered on the in-game faction net - so the spectator still HEARS living teammates' radio
-	// chatter. Menu/spectator voice runs on the separate VoN proxy entity, so powering the corpse's
-	// radios down kills only that unwanted in-game reception. Server-authoritative: the off state
-	// replicates to the owner, so their client stops decoding the faction net. No respawns in this mode,
-	// so there is nothing to restore.
+	/**
+	 * @brief Безопасное отсоединение микрофона локального контроллера от персонажа.
+	 * @subsystem Lobby | VoN
+	 * @context Client | Authority
+	 * @details Рации персонажа больше не обесточиваются (SetPower(false)), что исключает
+	 *          отказ КВ и ДВ раций при реконнекте (JIP) или возрождении. Изоляция голоса
+	 *          мертвого игрока обеспечивается отсоединением VoN-компонента от контроллера.
+	 */
 	void DisableBodyVoNRadios()
 	{
-		array<BaseRadioComponent> radios = {};
-		GetVoNRadios(radios);
-		foreach (BaseRadioComponent radio : radios)
+		PlayerController pc = PlayerController.Cast(GetOwner());
+		if (!pc)
+			pc = GetGame().GetPlayerController();
+		if (pc)
 		{
-			if (!radio)
-				continue;
-
-			radio.SetPower(false);
-
-			int count = radio.TransceiversCount();
-			for (int i = 0; i < count; i++)
-			{
-				BaseTransceiver tsv = radio.GetTransceiver(i);
-				if (tsv && tsv.IsMuted())
-					tsv.SetMuteState(false);
-			}
+			SCR_VONController vonController = SCR_VONController.Cast(pc.FindComponent(SCR_VONController));
+			if (vonController && vonController.GetVONComponent())
+				vonController.SetVONComponent(null);
 		}
 	}
 	
@@ -1402,12 +1396,6 @@ class PS_PlayableControllerComponent : ScriptComponent
 		// Keep third-party screen effects suppressed while the spectator camera is active.
 		// Effects like LMSuppression can re-register on camera changes; this catches them.
 		SuppressSpectatorScreenEffects();
-
-		// Keep the corpse's carried radios powered off. The vanilla VoN system
-		// (SCR_VONEntryRadio) periodically re-powers radios via SetPower(IsUsable()),
-		// so a one-shot disable is not enough — the spectator would re-hear in-game
-		// radio chatter from alive teammates on the same faction net.
-		DisableBodyVoNRadios();
 	}
 
 	// ---- Screen effect suppression for spectator camera ----
@@ -1573,9 +1561,6 @@ class PS_PlayableControllerComponent : ScriptComponent
 	[RplRpc(RplChannel.Reliable, RplRcver.Owner)]
 	void RPC_EnterSpectator()
 	{
-		// Immediately power down radios on the controlled body
-		DisableBodyVoNRadios();
-
 		PlayerController pc = PlayerController.Cast(GetOwner());
 		if (pc)
 		{

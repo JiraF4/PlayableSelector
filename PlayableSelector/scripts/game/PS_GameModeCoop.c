@@ -460,6 +460,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		invoker.Insert(CopyAllMarkersToClipboard_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("lmc");
 		invoker.Insert(LoadAllMarkersToClipboard_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("rfix");
+		invoker.Insert(RFix_Callback);
 	}
 	
 	
@@ -593,6 +595,50 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			sec = data.ToInt();
 
 		playableController.HardFreezeAdminCommand(sec);
+	}
+
+	/**
+	 * @brief Управление сторожем PS_RadioVoiceFix через админ-чат (/rfix on | /rfix off | /rfix force).
+	 * @subsystem Lobby | Radio
+	 * @context Client | Admin
+	 */
+	void RFix_Callback(SCR_ChatPanel panel, string data)
+	{
+		if (!PS_PlayersHelper.IsAdminOrServer())
+			return;
+
+		string arg = data.Trim();
+		arg.ToLower();
+
+		SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
+		ChatCommandInvoker smsg = chatPanelManager.GetCommandInvoker("smsg");
+
+		if (arg == "on" || arg == "1" || arg == "enable")
+		{
+			PS_RadioVoiceFix.s_bEnabled = true;
+			if (smsg)
+				smsg.Invoke(null, "[PS_Radio] Auto-Watchdog: ENABLED");
+		}
+		else if (arg == "off" || arg == "0" || arg == "disable")
+		{
+			PS_RadioVoiceFix.s_bEnabled = false;
+			if (smsg)
+				smsg.Invoke(null, "[PS_Radio] Auto-Watchdog: DISABLED");
+		}
+		else if (arg == "force" || arg == "cycle" || arg == "now")
+		{
+			PS_RadioVoiceFix.ForceCycleNow();
+			if (smsg)
+				smsg.Invoke(null, "[PS_Radio] Forced radio power cycle executed");
+		}
+		else
+		{
+			string status = "DISABLED";
+			if (PS_RadioVoiceFix.s_bEnabled)
+				status = "ENABLED";
+			if (smsg)
+				smsg.Invoke(null, string.Format("[PS_Radio] Watchdog Status: %1. Usage: /rfix on | /rfix off | /rfix force", status));
+		}
 	}
 
 	/**
@@ -1357,12 +1403,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		PS_PlayableControllerComponent ctrl = pc.PS_GetPLayableComponent();
 		if (ctrl)
 		{
-			// Issue 3: the spectator keeps controlling their corpse, whose radios are still on the in-game
-			// faction net - power them down so the dead player no longer hears living teammates' radio
-			// chatter (they keep the menu/spectator net via their VoN proxy). Re-applied once after the
-			// death/control state has settled, same reasoning as RestoreRoom above.
-			ctrl.DisableBodyVoNRadios();
-			GetGame().GetCallqueue().CallLater(ctrl.DisableBodyVoNRadios, 1500, false);
 			ctrl.EnterSpectatorOwner();
 		}
 	}
