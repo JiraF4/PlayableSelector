@@ -38,7 +38,7 @@ modded class SCR_GadgetManagerComponent
 
 	//------------------------------------------------------------------------------------------------
 	/**
-	 * @brief Асинхронный опрос стриминга радиооборудования при JIP и регистрация в контроллере VoN.
+	 * @brief Асинхронный опрос стриминга радиооборудования при JIP для гарантии включения питания.
 	 * @param[in] owner Сущность персонажа
 	 * @param[in] attempt Номер текущей попытки опроса (до 20 попыток = 5 секунд)
 	 */
@@ -60,9 +60,7 @@ modded class SCR_GadgetManagerComponent
 		if (hasRadios || attempt >= 20)
 		{
 			if (PS_RadioVoiceFix.s_bDebug)
-				Print(string.Format("[PS_Radio] SCR_GadgetManagerComponent.PS_ResyncVON: registering VON entries for owner=%1 (attempt=%2, foundRadios=%3)", owner, attempt, hasRadios), LogLevel.NORMAL);
-
-			RegisterVONEntries();
+				Print(string.Format("[PS_Radio] SCR_GadgetManagerComponent.PS_ResyncVON: radios resolved for owner=%1 (attempt=%2, foundRadios=%3)", owner, attempt, hasRadios), LogLevel.NORMAL);
 
 			// Гарантируем включенное питание для обнаруженных радиостанций
 			if (hasRadios)
