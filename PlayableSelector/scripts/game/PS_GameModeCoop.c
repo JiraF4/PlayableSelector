@@ -467,6 +467,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		invoker.Insert(HardFreeze_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("hft");
 		invoker.Insert(HardFreeze_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("hfta");
+		invoker.Insert(HardFreezeTimerAdvance_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("hfte");
 		invoker.Insert(HardFreezeTimerEnd_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("cmc");
@@ -959,7 +961,24 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			invoker.Invoke(null, message);
 	}
 
-	// ================================ /hfte ================================
+	// ================================ /hfta + /hfte ================================
+
+	void HardFreezeTimerAdvance_Callback(SCR_ChatPanel panel, string data)
+	{
+		if (!PS_PlayersHelper.IsAdminOrServer())
+			return;
+
+		int seconds = data.ToInt();
+		if (seconds == 0)
+			return;
+
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		if (!playableController)
+			return;
+
+		playableController.HardFreezeAdvanceCommand(seconds);
+	}
 
 	void HardFreezeTimerEnd_Callback(SCR_ChatPanel panel, string data)
 	{
@@ -972,6 +991,33 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			return;
 
 		playableController.HardFreezeAdminCommand(0);
+	}
+
+	/**
+	 * @brief Корректировка оставшегося времени активного хард-фриза.
+	 * @context Server
+	 * @param seconds Секунды для прибавления (>0) или вычитания (<0)
+	 */
+	void HardFreezeAdvance_S(int seconds)
+	{
+		if (!Replication.IsServer())
+			return;
+		if (!m_bHardFreeze)
+			return;
+
+		int deltaMs = seconds * 1000;
+		int newRemaining = m_fHardFreezeRemaining + deltaMs;
+		if (newRemaining <= 0)
+		{
+			// Если время вышло — просто завершить хард-фриз
+			EndHardFreeze_S();
+			HardFreezeNotify("#PS-Freeze_time_force_end");
+			return;
+		}
+
+		GetGame().GetCallqueue().Remove(hardFreezeTimer);
+		hardFreezeTimer(newRemaining);
+		HardFreezeNotify("#PS-Freeze_time_advanced");
 	}
 
 

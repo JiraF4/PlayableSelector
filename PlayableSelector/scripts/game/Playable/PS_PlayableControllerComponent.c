@@ -341,6 +341,33 @@ class PS_PlayableControllerComponent : ScriptComponent
 		if (gameMode)
 			gameMode.AdminBriefingCommand_S(minutes);
 	}
+
+	// ------ HardFreezeAdvance (/hfta) ------
+	/**
+	 * @brief Запрос корректировки оставшегося времени хард-фриза.
+	 * @rpc Owner -> Server (Reliable)
+	 * @param seconds Секунды для прибавления (>0) или вычитания (<0)
+	 */
+	void HardFreezeAdvanceCommand(int seconds)
+	{
+		Rpc(RPC_HardFreezeAdvanceCommand, seconds);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void RPC_HardFreezeAdvanceCommand(int seconds)
+	{
+		PlayerController pc = PlayerController.Cast(GetOwner());
+		if (!pc || !PS_PlayersHelper.IsAdminOrServer())
+			return;
+
+		PS_GameModeCoop gameMode = GetGameModeCoop();
+		#ifndef WORKBENCH
+		if (gameMode && gameMode.GetState() == SCR_EGameModeState.GAME)
+			gameMode.HardFreezeAdvance_S(seconds);
+		#else
+		if (gameMode)
+			gameMode.HardFreezeAdvance_S(seconds);
+		#endif
+	}
 	
 	// ------ SpawnPrefab ------
 	void SpawnPrefab(string GUID, vector position)
