@@ -161,6 +161,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	// pushing disconnect events after that dereferences the null map -> ~100 VMEs.
 	protected bool m_bGameEnded;
 
+	// Briefing timer (/brif command): server-only, not replicated.
+	// Managed entirely on the server via CallQueue (BriefingTick_S).
+	protected int m_iBriefingRemainingSeconds;
+	protected bool m_bBriefingTimerActive;
+
 	// ------------------------------------------ Events ------------------------------------------
 	
 	override void EOnInit(IEntity owner)
@@ -209,6 +214,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		GetGame().GetCallqueue().Remove(VoNReconcileTick);
 		GetGame().GetCallqueue().Remove(hardFreezeTimer);
 		GetGame().GetCallqueue().Remove(restrictedZonesTimer);
+		GetGame().GetCallqueue().Remove(BriefingTick_S);
+		GetGame().GetCallqueue().Remove(BriefingFinishAdvance_S);
+		m_bBriefingTimerActive = false;
 		if (Replication.IsServer())
 		{
 			RestoreDayAdvance_S();
@@ -454,14 +462,67 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		invoker.Insert(FreezeTimerAdvance_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("fte");
 		invoker.Insert(FreezeTimerEnd_Callback);
+		// Hard freeze — оригинальный /hardfreeze + короткие алиасы
 		invoker = chatPanelManager.GetCommandInvoker("hardfreeze");
 		invoker.Insert(HardFreeze_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("hft");
+		invoker.Insert(HardFreeze_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("hfta");
+		invoker.Insert(HardFreezeTimerAdvance_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("hfte");
+		invoker.Insert(HardFreezeTimerEnd_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("cmc");
 		invoker.Insert(CopyAllMarkersToClipboard_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("lmc");
 		invoker.Insert(LoadAllMarkersToClipboard_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("rfix");
 		invoker.Insert(RFix_Callback);
+		// /slots и алиасы (переход из PREGAME в SLOTSELECTION)
+		invoker = chatPanelManager.GetCommandInvoker("slots");
+		invoker.Insert(Slots_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("slot");
+		invoker.Insert(Slots_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("sl");
+		invoker.Insert(Slots_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("slotting");
+		invoker.Insert(Slots_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("слот");
+		invoker.Insert(Slots_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("слоты");
+		invoker.Insert(Slots_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("сл");
+		invoker.Insert(Slots_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("слотинг");
+		invoker.Insert(Slots_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("ыдщеы");
+		invoker.Insert(Slots_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("ыдще");
+		invoker.Insert(Slots_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("ыд");
+		invoker.Insert(Slots_Callback);
+		// /brif и алиасы (переход из SLOTSELECTION в BRIEFING + таймер)
+		invoker = chatPanelManager.GetCommandInvoker("brif");
+		invoker.Insert(Briefing_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("brief");
+		invoker.Insert(Briefing_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("briefing");
+		invoker.Insert(Briefing_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("br");
+		invoker.Insert(Briefing_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("bf");
+		invoker.Insert(Briefing_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("бриф");
+		invoker.Insert(Briefing_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("брифинг");
+		invoker.Insert(Briefing_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("бр");
+		invoker.Insert(Briefing_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("икша");
+		invoker.Insert(Briefing_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("икшуа");
+		invoker.Insert(Briefing_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("ик");
+		invoker.Insert(Briefing_Callback);
 	}
 	
 	
@@ -674,6 +735,291 @@ class PS_GameModeCoop : SCR_BaseGameMode
 				invoker.Invoke(null, message);
 		}
 	}
+
+	// ================================ /slots ================================
+
+	void Slots_Callback(SCR_ChatPanel panel, string data)
+	{
+		if (!PS_PlayersHelper.IsAdminOrServer())
+			return;
+
+		if (GetState() != SCR_EGameModeState.PREGAME)
+			return;
+
+		if (!m_playableManager)
+			m_playableManager = PS_PlayableManager.GetInstance();
+		if (m_playableManager && !m_playableManager.IsSlotsFullyLoaded())
+		{
+			m_playableManager.ShowSlotsLoadingNotice();
+			return;
+		}
+
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		if (!playableController)
+			return;
+
+		playableController.AdminSlotsCommand();
+	}
+
+	/**
+	 * @brief Серверная обработка /slots: рассылает smsg «Слотинг» и через 3 сек переводит в SLOTSELECTION.
+	 * @context Server
+	 */
+	void AdminSlotsCommand_S()
+	{
+		if (!Replication.IsServer())
+			return;
+
+		if (GetState() != SCR_EGameModeState.PREGAME)
+			return;
+
+		if (m_playableManager && !m_playableManager.IsSlotsFullyLoaded())
+			return;
+
+		Rpc(RPC_BroadcastGlobalMessage, "Слотинг");
+		RPC_BroadcastGlobalMessage("Слотинг");
+		GetGame().GetCallqueue().CallLater(SlotsAdvance_S, 3000, false);
+	}
+
+	void SlotsAdvance_S()
+	{
+		if (!Replication.IsServer())
+			return;
+		if (GetState() != SCR_EGameModeState.PREGAME)
+			return;
+		AdvanceGameState(SCR_EGameModeState.PREGAME);
+	}
+
+	// ================================ /brif ================================
+
+	void Briefing_Callback(SCR_ChatPanel panel, string data)
+	{
+		if (!PS_PlayersHelper.IsAdminOrServer())
+			return;
+
+		if (GetState() != SCR_EGameModeState.SLOTSELECTION)
+			return;
+
+		int minutes = data.ToInt();
+		if (minutes <= 0)
+			minutes = 10;
+
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		if (!playableController)
+			return;
+
+		playableController.AdminBriefingCommand(minutes);
+	}
+
+	/**
+	 * @brief Серверная обработка /brif: рассылает smsg «Брифинг» и через 3 сек переводит в BRIEFING.
+	 * @context Server
+	 * @param minutes Длительность брифинга в минутах
+	 */
+	void AdminBriefingCommand_S(int minutes)
+	{
+		if (!Replication.IsServer())
+			return;
+
+		if (GetState() != SCR_EGameModeState.SLOTSELECTION)
+			return;
+
+		Rpc(RPC_BroadcastGlobalMessage, "Брифинг");
+		RPC_BroadcastGlobalMessage("Брифинг");
+		GetGame().GetCallqueue().CallLater(BriefingStart_S, 3000, false, minutes);
+	}
+
+	void BriefingStart_S(int minutes)
+	{
+		if (!Replication.IsServer())
+			return;
+		if (GetState() != SCR_EGameModeState.SLOTSELECTION)
+			return;
+
+		AdvanceGameState(SCR_EGameModeState.SLOTSELECTION);
+
+		m_iBriefingRemainingSeconds = minutes * 60;
+		m_bBriefingTimerActive = true;
+
+		// Через 5 сек после перехода — объявить продолжительность брифинга
+		GetGame().GetCallqueue().CallLater(BriefingAnnounce_S, 5000, false, minutes);
+		// Запустить секундный тикер
+		GetGame().GetCallqueue().Remove(BriefingTick_S);
+		GetGame().GetCallqueue().CallLater(BriefingTick_S, 1000, false);
+	}
+
+	void BriefingAnnounce_S(int minutes)
+	{
+		if (!Replication.IsServer() || !m_bBriefingTimerActive)
+			return;
+		string msg = string.Format("Брифинг %1 мин", minutes);
+		Rpc(RPC_BroadcastGlobalMessage, msg);
+		RPC_BroadcastGlobalMessage(msg);
+	}
+
+	/**
+	 * @brief Секундный тикер таймера брифинга. Отправляет тихие lmsg-предупреждения игрокам
+	 *        и по истечении — smsg «Старт в игру» + 3-секундная пауза перед /adv.
+	 * @context Server
+	 */
+	void BriefingTick_S()
+	{
+		if (!Replication.IsServer())
+			return;
+
+		// Прекратить тикер если таймер деактивирован или вышли из BRIEFING
+		if (!m_bBriefingTimerActive || GetState() != SCR_EGameModeState.BRIEFING)
+		{
+			m_bBriefingTimerActive = false;
+			return;
+		}
+
+		m_iBriefingRemainingSeconds--;
+
+		// Контрольные точки тихих предупреждений в чат (lmsg, без smsg-баннера)
+		switch (m_iBriefingRemainingSeconds)
+		{
+			case 300: // 5 мин
+				BroadcastChatMessage_S("До окончания брифинга осталось: 5 мин.");
+				break;
+			case 180: // 3 мин
+				BroadcastChatMessage_S("До окончания брифинга осталось: 3 мин.");
+				break;
+			case 120: // 2 мин
+				BroadcastChatMessage_S("До окончания брифинга осталось: 2 мин.");
+				break;
+			case 60: // 1 мин
+				BroadcastChatMessage_S("До окончания брифинга осталось: 1 мин.");
+				break;
+			case 30: // 30 сек
+				BroadcastChatMessage_S("До окончания брифинга осталось: 30 сек.");
+				break;
+			case 10: // 10 сек
+				BroadcastChatMessage_S("До окончания брифинга осталось: 10 сек.");
+				break;
+		}
+
+		if (m_iBriefingRemainingSeconds <= 0)
+		{
+			m_bBriefingTimerActive = false;
+			Rpc(RPC_BroadcastGlobalMessage, "Старт в игру");
+			RPC_BroadcastGlobalMessage("Старт в игру");
+			// Молчаливая пауза 3 сек перед переходом в GAME
+			GetGame().GetCallqueue().CallLater(BriefingFinishAdvance_S, 3000, false);
+			return;
+		}
+
+		// Перезапустить тикер на следующую секунду
+		GetGame().GetCallqueue().CallLater(BriefingTick_S, 1000, false);
+	}
+
+	void BriefingFinishAdvance_S()
+	{
+		if (!Replication.IsServer())
+			return;
+		if (GetState() != SCR_EGameModeState.BRIEFING)
+			return;
+		AdvanceGameState(SCR_EGameModeState.BRIEFING);
+	}
+
+	// Рассылка глобального smsg-сообщения всем клиентам
+	void BroadcastChatMessage_S(string message)
+	{
+		Rpc(RPC_BroadcastChatMessage, message);
+		RPC_BroadcastChatMessage(message);
+	}
+
+	/**
+	 * @brief Рассылка глобального smsg-баннера всем игрокам.
+	 * @rpc Server -> Broadcast (Reliable)
+	 */
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RPC_BroadcastGlobalMessage(string message)
+	{
+		SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
+		if (!chatPanelManager)
+			return;
+		ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("smsg");
+		if (invoker)
+			invoker.Invoke(null, message);
+	}
+
+	/**
+	 * @brief Рассылка тихого lmsg-сообщения (в текст чата, без баннера) всем игрокам.
+	 * @rpc Server -> Broadcast (Reliable)
+	 */
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RPC_BroadcastChatMessage(string message)
+	{
+		SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
+		if (!chatPanelManager)
+			return;
+		ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("lmsg");
+		if (invoker)
+			invoker.Invoke(null, message);
+	}
+
+	// ================================ /hfta + /hfte ================================
+
+	void HardFreezeTimerAdvance_Callback(SCR_ChatPanel panel, string data)
+	{
+		if (!PS_PlayersHelper.IsAdminOrServer())
+			return;
+
+		int seconds = data.ToInt();
+		if (seconds == 0)
+			return;
+
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		if (!playableController)
+			return;
+
+		playableController.HardFreezeAdvanceCommand(seconds);
+	}
+
+	void HardFreezeTimerEnd_Callback(SCR_ChatPanel panel, string data)
+	{
+		if (!PS_PlayersHelper.IsAdminOrServer())
+			return;
+
+		PlayerController playerController = GetGame().GetPlayerController();
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		if (!playableController)
+			return;
+
+		playableController.HardFreezeAdminCommand(0);
+	}
+
+	/**
+	 * @brief Корректировка оставшегося времени активного хард-фриза.
+	 * @context Server
+	 * @param seconds Секунды для прибавления (>0) или вычитания (<0)
+	 */
+	void HardFreezeAdvance_S(int seconds)
+	{
+		if (!Replication.IsServer())
+			return;
+		if (!m_bHardFreeze)
+			return;
+
+		int deltaMs = seconds * 1000;
+		int newRemaining = m_fHardFreezeRemaining + deltaMs;
+		if (newRemaining <= 0)
+		{
+			// Если время вышло — просто завершить хард-фриз
+			EndHardFreeze_S();
+			HardFreezeNotify("#PS-Freeze_time_force_end");
+			return;
+		}
+
+		GetGame().GetCallqueue().Remove(hardFreezeTimer);
+		hardFreezeTimer(newRemaining);
+		HardFreezeNotify("#PS-Freeze_time_advanced");
+	}
+
 
 	void SpawnPosition_Callback(SCR_ChatPanel panel, string data)
 	{
@@ -1773,6 +2119,10 @@ class PS_GameModeCoop : SCR_BaseGameMode
 				SetGameModeState(SCR_EGameModeState.BRIEFING);
 				break;
 			case SCR_EGameModeState.BRIEFING:
+				// Остановить брифинг-таймер при ручном /adv из BRIEFING
+				m_bBriefingTimerActive = false;
+				GetGame().GetCallqueue().Remove(BriefingTick_S);
+				GetGame().GetCallqueue().Remove(BriefingFinishAdvance_S);
 				StartGame();
 				break;
 			case SCR_EGameModeState.GAME:

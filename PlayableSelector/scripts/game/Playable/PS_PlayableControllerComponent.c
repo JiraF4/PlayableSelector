@@ -298,6 +298,76 @@ class PS_PlayableControllerComponent : ScriptComponent
 			gameMode.HardFreezeAdmin_S(seconds);
 		#endif
 	}
+
+	// ------ AdminSlots (/slots) ------
+	/**
+	 * @brief Запрос перевода игры из PREGAME в SLOTSELECTION с задержкой 3 сек.
+	 * @rpc Owner -> Server (Reliable)
+	 */
+	void AdminSlotsCommand()
+	{
+		Rpc(RPC_AdminSlotsCommand);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void RPC_AdminSlotsCommand()
+	{
+		PlayerController pc = PlayerController.Cast(GetOwner());
+		if (!pc || !PS_PlayersHelper.IsAdminOrServer())
+			return;
+
+		PS_GameModeCoop gameMode = GetGameModeCoop();
+		if (gameMode)
+			gameMode.AdminSlotsCommand_S();
+	}
+
+	// ------ AdminBriefing (/brif) ------
+	/**
+	 * @brief Запрос перевода игры из SLOTSELECTION в BRIEFING с задержкой 3 сек и таймером брифинга.
+	 * @rpc Owner -> Server (Reliable)
+	 * @param minutes Длительность брифинга в минутах
+	 */
+	void AdminBriefingCommand(int minutes)
+	{
+		Rpc(RPC_AdminBriefingCommand, minutes);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void RPC_AdminBriefingCommand(int minutes)
+	{
+		PlayerController pc = PlayerController.Cast(GetOwner());
+		if (!pc || !PS_PlayersHelper.IsAdminOrServer())
+			return;
+
+		PS_GameModeCoop gameMode = GetGameModeCoop();
+		if (gameMode)
+			gameMode.AdminBriefingCommand_S(minutes);
+	}
+
+	// ------ HardFreezeAdvance (/hfta) ------
+	/**
+	 * @brief Запрос корректировки оставшегося времени хард-фриза.
+	 * @rpc Owner -> Server (Reliable)
+	 * @param seconds Секунды для прибавления (>0) или вычитания (<0)
+	 */
+	void HardFreezeAdvanceCommand(int seconds)
+	{
+		Rpc(RPC_HardFreezeAdvanceCommand, seconds);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void RPC_HardFreezeAdvanceCommand(int seconds)
+	{
+		PlayerController pc = PlayerController.Cast(GetOwner());
+		if (!pc || !PS_PlayersHelper.IsAdminOrServer())
+			return;
+
+		PS_GameModeCoop gameMode = GetGameModeCoop();
+		#ifndef WORKBENCH
+		if (gameMode && gameMode.GetState() == SCR_EGameModeState.GAME)
+			gameMode.HardFreezeAdvance_S(seconds);
+		#else
+		if (gameMode)
+			gameMode.HardFreezeAdvance_S(seconds);
+		#endif
+	}
 	
 	// ------ SpawnPrefab ------
 	void SpawnPrefab(string GUID, vector position)
