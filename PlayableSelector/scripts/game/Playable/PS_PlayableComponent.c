@@ -200,8 +200,9 @@ class PS_PlayableComponent : ScriptComponent
 				}
 			}
 
-			RplComponent rpl = RplComponent.Cast(GetOwner().FindComponent(RplComponent));
-			rpl.EnableStreaming(true);
+			RplComponent rpl = RplComponent.Cast(m_Owner.FindComponent(RplComponent));
+			if (rpl)
+				rpl.EnableStreaming(true);
 		}
 
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
@@ -349,10 +350,25 @@ class PS_PlayableComponent : ScriptComponent
 
 	}
 
-	void ~PS_PlayableComponent()
+	/**
+	 * @brief Очистка регистрации слота и отписка от событий при удалении сущности
+	 * @issue BUG-55
+	 * @cause Деструктор не вызывался из-за сильной ссылки в ScriptInvoker урона, а при вызове m_Owner уже частично разрушен
+	 * @solution Перенос логики в OnDelete() с отпиской от инвокера урона
+	 */
+	override void OnDelete(IEntity owner)
 	{
 		if (Replication.IsServer())
+		{
+			if (m_CharacterDamageManagerComponent)
+				m_CharacterDamageManagerComponent.GetOnDamageStateChanged().Remove(OnDamageStateChange);
 			RemoveFromList();
+		}
+		super.OnDelete(owner);
+	}
+
+	void ~PS_PlayableComponent()
+	{
 	}
 
 	// Send our precision data, we need it on clients

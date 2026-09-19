@@ -789,13 +789,26 @@ class PS_VoNRoomsManager : ScriptComponent
 		InitChannelIfNeeded(channelKey);
 		return channelKey;
 	}
-	// Create the channel on all clients if it does not exist yet. RUN ONLY ON SERVER
+	static const int MAX_DYNAMIC_CHANNELS = 128;
+
+	/**
+	 * @brief Создание нового динамического канала голосовой связи при необходимости
+	 * @issue BUG-50
+	 * @cause Отсутствие лимита на количество динамических каналов позволяло спамить RPC_CreateChannel
+	 * @solution Лимит MAX_DYNAMIC_CHANNELS (128) с отклонением создания и предупреждением в лог
+	 */
 	void InitChannelIfNeeded(string channelKey)
 	{
 		if (!Replication.IsServer())
 			return;
 		if (m_mChannelsSet.Contains(channelKey))
 			return;
+		if (m_aChannels.Count() >= MAX_DYNAMIC_CHANNELS)
+		{
+			Print(string.Format("[PS_VoN] Channel limit reached (%1/%2), rejecting channel '%3'",
+				m_aChannels.Count(), MAX_DYNAMIC_CHANNELS, channelKey), LogLevel.WARNING);
+			return;
+		}
 		RPC_CreateChannel(channelKey);
 		Rpc(RPC_CreateChannel, channelKey);
 	}
@@ -808,6 +821,8 @@ class PS_VoNRoomsManager : ScriptComponent
 	protected void RegisterChannelLocal(string channelKey)
 	{
 		if (m_mChannelsSet.Contains(channelKey))
+			return;
+		if (m_aChannels.Count() >= MAX_DYNAMIC_CHANNELS)
 			return;
 		m_mChannelsSet[channelKey] = true;
 		m_aChannels.Insert(channelKey);

@@ -114,13 +114,28 @@ class PS_CharacterSelector : SCR_ButtonComponent
 		m_PlayableManager.GetOnPlayerPlayableChange().Insert(OnPlayerPlayableChange);
 	}
 	
+	/**
+	 * @brief Отписка от всех инвокеров PlayableContainer, PlayableControllerComponent и PlayableManager
+	 * @issue BUG-60
+	 * @cause Подписки на инвокеры m_PlayableContainer удерживали удалённые виджеты слотов в памяти
+	 * @solution Полная отписка от всех связанных инвокеров в HandlerDeattached
+	 */
 	override void HandlerDeattached(Widget w)
 	{
 		if (m_PlayableControllerComponent)
 			m_PlayableControllerComponent.GetOnPlayerRoleChange().Remove(OnRoleChangeCurrent);
 		if (m_PlayableManager)
-		{
 			m_PlayableManager.GetOnPlayerPlayableChange().Remove(OnPlayerPlayableChange);
+
+		if (m_PlayableContainer)
+		{
+			m_PlayableContainer.GetOnPlayerChange().Remove(UpdatePlayer);
+			m_PlayableContainer.GetOnDamageStateChanged().Remove(UpdateDammage);
+			m_PlayableContainer.GetOnUnregister().Remove(RemoveSelf);
+			m_PlayableContainer.GetOnPlayerConnected().Remove(OnConnected);
+			m_PlayableContainer.GetOnPlayerStateChange().Remove(OnStateChange);
+			m_PlayableContainer.GetOnPlayerPinChange().Remove(UpdatePined);
+			m_PlayableContainer.GetOnPlayerRoleChange().Remove(OnRoleChange);
 		}
 	}
 	

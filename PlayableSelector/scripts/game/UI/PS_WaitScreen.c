@@ -98,8 +98,14 @@ class PS_WaitScreen: MenuBase
 		GetGame().GetCallqueue().Remove(AwaitPlayerController);
 	}
 	
+	/**
+	 * @brief Очистка CallLater при закрытии экрана ожидания
+	 * @issue BUG-59
+	 * @cause При досрочном закрытии экрана AwaitPlayerController продолжал опрашивать системы в Callqueue
+	 * @solution Удаление AwaitPlayerController из Callqueue в OnMenuClose
+	 */
 	override void OnMenuClose()
 	{
-		
+		GetGame().GetCallqueue().Remove(AwaitPlayerController);
 	}
 }

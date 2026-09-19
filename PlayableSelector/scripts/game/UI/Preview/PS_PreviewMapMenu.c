@@ -93,8 +93,20 @@ class PS_PreviewMapMenu: ChimeraMenuBase
 		
 	}
 	
+	/**
+	 * @brief Очистка подписок и отмена циклических таймеров при закрытии меню превью
+	 * @issue BUG-59
+	 * @cause UpdateCycle продолжал выполняться после закрытия меню превью
+	 * @solution Callqueue.Remove(UpdateCycle) и отмена отложенных вызовов карты в OnMenuClose
+	 */
 	override void OnMenuClose()
 	{
+		GetGame().GetCallqueue().Remove(UpdateCycle);
+		GetGame().GetCallqueue().Remove(OpenMap);
+		GetGame().GetCallqueue().Remove(OpenMapWrap);
+		GetGame().GetCallqueue().Remove(OpenMapWrapZoomChange);
+		GetGame().GetCallqueue().Remove(OpenMapWrapZoomChangeWrap);
+
 		if (m_MapEntity)
 			m_MapEntity.CloseMap();
 		

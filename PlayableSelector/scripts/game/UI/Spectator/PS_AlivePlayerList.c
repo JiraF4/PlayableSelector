@@ -224,6 +224,23 @@ class PS_AlivePlayerList : ScriptedWidgetComponent
 		InitList();
 	}
 
+	/**
+	 * @brief Отписка от инвокеров при отсоединении виджета от иерархии
+	 * @issue BUG-60
+	 * @cause Отсутствие HandlerDeattached приводило к удержанию виджета списка живых игроков инвокером PlayableManager
+	 * @solution Отписка от OnPlayableRegistered в HandlerDeattached
+	 */
+	override void HandlerDeattached(Widget w)
+	{
+		if (m_PlayableManager)
+		{
+			PS_ScriptInvokerPlayable onRegistered = m_PlayableManager.GetOnPlayableRegistered();
+			if (onRegistered)
+				onRegistered.Remove(OnPlayableRegistered);
+		}
+		super.HandlerDeattached(w);
+	}
+
 	void ~PS_AlivePlayerList()
 	{
 		// Best-effort unsubscribe if this instance is ever GC'd. The AUTHORITATIVE cleanup is the reset at the

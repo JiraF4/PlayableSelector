@@ -21,6 +21,7 @@ class PS_MenuVoN
 	protected BaseTransceiver m_Transceiver;
 	protected bool m_bActive;
 	protected bool m_bEditorSubscribed;
+	protected SCR_EditorManagerEntity m_SubscribedEditorManager;
 	protected PlayerController m_ActivePc; // controller we activated for; differs after a reconnect -> re-acquire
 
 	// =====================================================================
@@ -114,13 +115,14 @@ class PS_MenuVoN
 		return editorManager.IsOpened();
 	}
 
-	// The local editor manager is created asynchronously after connect - keep trying from
-	// Refresh() until it exists, then subscribe exactly once.
+	/**
+	 * @brief Подписка на события открытия/закрытия редактора с поддержкой смены менеджера при реконнекте
+	 * @issue BUG-57
+	 * @cause При реконнекте создавался новый SCR_EditorManagerEntity, но из-за m_bEditorSubscribed = true подписка не обновлялась
+	 * @solution Отслеживание текущего экземпляра editorManager и переподписка при его смене
+	 */
 	protected void TrySubscribeEditor()
 	{
-		if (m_bEditorSubscribed)
-			return;
-
 		SCR_EditorManagerCore core = SCR_EditorManagerCore.Cast(SCR_EditorManagerCore.GetInstance(SCR_EditorManagerCore));
 		if (!core)
 			return;
@@ -129,6 +131,16 @@ class PS_MenuVoN
 		if (!editorManager)
 			return;
 
+		if (m_SubscribedEditorManager == editorManager)
+			return;
+
+		if (m_SubscribedEditorManager)
+		{
+			m_SubscribedEditorManager.GetOnOpened().Remove(OnEditorToggled);
+			m_SubscribedEditorManager.GetOnClosed().Remove(OnEditorToggled);
+		}
+
+		m_SubscribedEditorManager = editorManager;
 		editorManager.GetOnOpened().Insert(OnEditorToggled);
 		editorManager.GetOnClosed().Insert(OnEditorToggled);
 		m_bEditorSubscribed = true;

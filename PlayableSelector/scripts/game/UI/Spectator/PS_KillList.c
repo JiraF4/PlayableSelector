@@ -99,6 +99,23 @@ class PS_KillList : ScriptedWidgetComponent
 		ReplayHistory();
 	}
 
+	/**
+	 * @brief Отписка от событий убийств при отсоединении виджета
+	 * @issue BUG-60
+	 * @cause Деструктор не вызывался из-за ссылки в ScriptInvoker, вызывая утечку виджета и дублирование хэндлеров
+	 * @solution Отписка от OnKillEvent в HandlerDeattached
+	 */
+	override void HandlerDeattached(Widget w)
+	{
+		if (m_KillListManager)
+		{
+			PS_ScriptInvokerKillEvent onKillEvent = m_KillListManager.GetOnKillEvent();
+			if (onKillEvent)
+				onKillEvent.Remove(OnKillEvent);
+		}
+		super.HandlerDeattached(w);
+	}
+
 	void ~PS_KillList()
 	{
 		if (!GetGame() || !GetGame().InPlayMode())

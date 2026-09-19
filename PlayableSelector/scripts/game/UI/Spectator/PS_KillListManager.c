@@ -23,10 +23,17 @@ class PS_KillListManager : ScriptComponent
 		PrintFormat("[PS_KillListManager] OnPostInit owner=%1 isServer=%2 isClient=%3", owner, Replication.IsServer(), Replication.IsClient());
 	}
 
-	override void EOnDeactivate(IEntity owner)
+	/**
+	 * @brief Очистка синглтона при удалении компонента
+	 * @issue BUG-55
+	 * @cause EOnDeactivate не является методом жизненного цикла ScriptComponent и никогда не вызывался
+	 * @solution Использование override OnDelete(IEntity owner)
+	 */
+	override void OnDelete(IEntity owner)
 	{
 		if (s_Instance == this)
 			s_Instance = null;
+		super.OnDelete(owner);
 	}
 
 	void FillKillInfoWeaponAndDistance(IEntity victimEntity, IEntity killerEntity, int killerPlayerId, PS_KillInfo killInfo)
@@ -59,6 +66,8 @@ class PS_KillListManager : ScriptComponent
 		killInfo.m_eLastHitZoneGroup = parts[7].ToInt();
 		killInfo.m_bIsTeamKill = (parts[8] == "1");
 
+		if (m_aKillHistory.Count() >= 200)
+			m_aKillHistory.Remove(0);
 		m_aKillHistory.Insert(killInfo);
 		PrintFormat("[PS_KillListManager] RPC_KillEvent victimId=%1 killerId=%2 isServer=%3 history=%4",
 			killInfo.m_iVictimPlayerId, killInfo.m_iKillerPlayerId, Replication.IsServer(), m_aKillHistory.Count());

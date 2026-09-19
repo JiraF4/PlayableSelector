@@ -74,8 +74,15 @@ class PS_DebriefingMenu : ChimeraMenuBase
 		}
 	}
 
+	/**
+	 * @brief Очистка подписок и остановка таймеров обновления при закрытии меню
+	 * @issue BUG-59
+	 * @cause UpdateCycle продолжал циклически выполняться в Callqueue после закрытия меню дебрифинга
+	 * @solution Вызов Callqueue.Remove(UpdateCycle) при OnMenuClose
+	 */
 	override void OnMenuClose()
 	{
+		GetGame().GetCallqueue().Remove(UpdateCycle);
 		GetGame().GetInputManager().RemoveActionListener("MenuBack", EActionTrigger.DOWN, Action_Exit);
 	}
 	

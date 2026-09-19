@@ -78,8 +78,17 @@ class PS_CutsceneMenu : ChimeraMenuBase
 		m_CinematicEntity.Play();
 	}
 	
+	/**
+	 * @brief Остановка синематики и очистка отложенных вызовов анимации
+	 * @issue BUG-59
+	 * @cause Отложенный запуск анимации ResumeAnimation срабатывал после закрытия меню катсцены
+	 * @solution Callqueue.Remove для PreloadStop и ResumeAnimation в OnMenuClose
+	 */
 	override void OnMenuClose()
 	{
+		GetGame().GetCallqueue().Remove(PreloadStop);
+		GetGame().GetCallqueue().Remove(ResumeAnimation);
+
 		if (m_CinematicEntity)
 			m_CinematicEntity.Stop();
 	}

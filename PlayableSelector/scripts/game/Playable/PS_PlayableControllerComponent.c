@@ -102,10 +102,35 @@ class PS_PlayableControllerComponent : ScriptComponent
 	{
 		Rpc(RPC_SetFactionReady, factionKey, readyValue);
 	}
+	/**
+	 * @brief Установка готовности фракции от командира или администратора
+	 * @issue BUG-52
+	 * @cause Неавторизованный клиент мог устанавливать готовность чужой фракции
+	 * @solution Проверка прав администратора или статуса командира соответствующей фракции
+	 * @rpc Owner -> Server (Reliable)
+	 */
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void RPC_SetFactionReady(FactionKey factionKey, int readyValue)
 	{
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		if (!thisPlayerController)
+			return;
+
+		int callerPid = thisPlayerController.GetPlayerId();
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		if (!playableManager)
+			return;
+
+		if (!SCR_Global.IsAdmin(callerPid))
+		{
+			if (playableManager.GetPlayerFactionKey(callerPid) != factionKey || !playableManager.IsPlayerFactionCommander(callerPid))
+			{
+				PrintFormat("[PS_AntiCheat] ADMIN_ATTEMPT: %1 action=SetFactionReady faction='%2' val=%3",
+					PS_GameModeCoop.PS_AntiCheatPlayerIdentity(callerPid), factionKey, readyValue);
+				return;
+			}
+		}
+
 		playableManager.SetFactionReady(factionKey, readyValue);
 	}
 
@@ -114,16 +139,38 @@ class PS_PlayableControllerComponent : ScriptComponent
 	{
 		Rpc(RPC_SetGroupReady, groupId, readyValue);
 	}
+	/**
+	 * @brief Голосование готовности отделения лидером группы или администратором во фризтайме
+	 * @issue BUG-52
+	 * @cause Лидер одной группы мог голосовать за чужие группы
+	 * @solution Проверка принадлежности groupId группе вызывающего лидера
+	 * @rpc Owner -> Server (Reliable)
+	 */
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void RPC_SetGroupReady(int groupId, int readyValue)
 	{
-		// Only group leaders may vote
-		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
 		if (!thisPlayerController)
 			return;
-		if (!playableManager.IsPlayerGroupLeader(thisPlayerController.GetPlayerId()))
+
+		int callerPid = thisPlayerController.GetPlayerId();
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		if (!playableManager)
 			return;
+
+		if (!SCR_Global.IsAdmin(callerPid))
+		{
+			if (!playableManager.IsPlayerGroupLeader(callerPid))
+				return;
+
+			SCR_AIGroup callerGroup = playableManager.GetPlayerGroup(callerPid);
+			if (!callerGroup || callerGroup.GetGroupID() != groupId)
+			{
+				PrintFormat("[PS_AntiCheat] ADMIN_ATTEMPT: %1 action=SetGroupReady targetGroup=%2",
+					PS_GameModeCoop.PS_AntiCheatPlayerIdentity(callerPid), groupId);
+				return;
+			}
+		}
 
 		// Only during freeze time
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
@@ -206,11 +253,28 @@ class PS_PlayableControllerComponent : ScriptComponent
 	{
 		Rpc(RPC_AdvanceGameState, state);
 	}
+	/**
+	 * @brief Серверный переход фазы матча от администратора
+	 * @issue BUG-48
+	 * @cause Неавторизованный клиент мог напрямую переключать стадию матча
+	 * @solution Проверка прав администратора через SCR_Global.IsAdmin
+	 * @rpc Owner -> Server (Reliable)
+	 */
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void RPC_AdvanceGameState(SCR_EGameModeState state)
 	{
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		if (!thisPlayerController || !SCR_Global.IsAdmin(thisPlayerController.GetPlayerId()))
+		{
+			if (thisPlayerController)
+				PrintFormat("[PS_AntiCheat] ADMIN_ATTEMPT: %1 action=AdvanceGameState state=%2",
+					PS_GameModeCoop.PS_AntiCheatPlayerIdentity(thisPlayerController.GetPlayerId()), typename.EnumToString(SCR_EGameModeState, state));
+			return;
+		}
+
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		gameMode.AdvanceGameState(state);
+		if (gameMode)
+			gameMode.AdvanceGameState(state);
 	}
 
 	void LoadMission(string missionName)
@@ -253,9 +317,25 @@ class PS_PlayableControllerComponent : ScriptComponent
 	{
 		Rpc(RPC_FreezeTimerAdvance, time);
 	}
+	/**
+	 * @brief Продление таймера фризтайма администратором
+	 * @issue BUG-48
+	 * @cause Неавторизованный клиент мог менять время фризтайма
+	 * @solution Проверка прав администратора
+	 * @rpc Owner -> Server (Reliable)
+	 */
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void RPC_FreezeTimerAdvance(int time)
 	{
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		if (!thisPlayerController || !SCR_Global.IsAdmin(thisPlayerController.GetPlayerId()))
+		{
+			if (thisPlayerController)
+				PrintFormat("[PS_AntiCheat] ADMIN_ATTEMPT: %1 action=FreezeTimerAdvance time=%2",
+					PS_GameModeCoop.PS_AntiCheatPlayerIdentity(thisPlayerController.GetPlayerId()), time);
+			return;
+		}
+
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		if (gameMode)
 			gameMode.FreezeTimerAdvance(time);
@@ -264,9 +344,25 @@ class PS_PlayableControllerComponent : ScriptComponent
 	{
 		Rpc(RPC_FreezeTimerEnd);
 	}
+	/**
+	 * @brief Досрочное завершение фризтайма администратором
+	 * @issue BUG-48
+	 * @cause Неавторизованный клиент мог досрочно сбросить фризтайм
+	 * @solution Проверка прав администратора
+	 * @rpc Owner -> Server (Reliable)
+	 */
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void RPC_FreezeTimerEnd()
 	{
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		if (!thisPlayerController || !SCR_Global.IsAdmin(thisPlayerController.GetPlayerId()))
+		{
+			if (thisPlayerController)
+				PrintFormat("[PS_AntiCheat] ADMIN_ATTEMPT: %1 action=FreezeTimerEnd",
+					PS_GameModeCoop.PS_AntiCheatPlayerIdentity(thisPlayerController.GetPlayerId()));
+			return;
+		}
+
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		if (gameMode)
 			gameMode.FreezeTimerEnd();
@@ -631,6 +727,38 @@ class PS_PlayableControllerComponent : ScriptComponent
 			return;
 
 		onPlayerRoleChanged.Insert(OnPlayerRoleChange);
+	}
+
+	/**
+	 * @brief Очистка подписок на инвокеры и отмена CallLater при удалении компонента
+	 * @issue BUG-58
+	 * @cause Отсутствие OnDelete приводило к утечке компонента в GetOnPlayerRoleChange() и фоновому выполнению EnforceSpectatorCamera
+	 * @solution Отписка от m_OnControlledEntityChanged, GetOnPlayerRoleChange и удаление задач из Callqueue
+	 */
+	override void OnDelete(IEntity owner)
+	{
+		GetGame().GetCallqueue().Remove(EnforceSpectatorCamera);
+		GetGame().GetCallqueue().Remove(RefreshMenuVoNRetry);
+
+		SCR_PlayerController playerController = SCR_PlayerController.Cast(PlayerController.Cast(owner));
+		if (playerController)
+			playerController.m_OnControlledEntityChanged.Remove(OnControlledEntityChanged);
+
+		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if (gameModeCoop)
+		{
+			ScriptInvokerBase<SCR_BaseGameMode_OnPlayerRoleChanged> onPlayerRoleChanged = gameModeCoop.GetOnPlayerRoleChange();
+			if (onPlayerRoleChanged)
+				onPlayerRoleChanged.Remove(OnPlayerRoleChange);
+		}
+
+		if (m_Camera)
+		{
+			SCR_EntityHelper.DeleteEntityAndChildren(m_Camera);
+			m_Camera = null;
+		}
+
+		super.OnDelete(owner);
 	}
 
 	void OnPlayerRoleChange(int playerId, EPlayerRole roleFlags)
@@ -1024,13 +1152,31 @@ class PS_PlayableControllerComponent : ScriptComponent
 	{
 		Rpc(RPC_MoveVoNToRoom, playerId, factionKey, roomName);
 	}
+	/**
+	 * @brief Перемещение игрока в голосовую комнату
+	 * @issue BUG-50
+	 * @cause Клиент мог перемещать чужих игроков между каналами VoN
+	 * @solution Проверка: обычный игрок может перемещать только себя, чужих — только администратор
+	 * @rpc Owner -> Server (Reliable)
+	 */
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void RPC_MoveVoNToRoom(int playerId, FactionKey factionKey, string roomName)
 	{
-		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		if (!thisPlayerController)
+			return;
+
+		int callerPid = thisPlayerController.GetPlayerId();
+		if (playerId != callerPid && !SCR_Global.IsAdmin(callerPid))
+		{
+			PrintFormat("[PS_AntiCheat] ADMIN_ATTEMPT: %1 action=MoveVoNToRoom target=%2 room='%3'",
+				PS_GameModeCoop.PS_AntiCheatPlayerIdentity(callerPid), playerId, roomName);
+			return;
+		}
 
 		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
-		VoNRoomsManager.MoveToRoom(playerId, factionKey, roomName);
+		if (VoNRoomsManager)
+			VoNRoomsManager.MoveToRoom(playerId, factionKey, roomName);
 	}
 
 	// Body-less: dead path (lobby voice is on the VoN proxy now, see PS_MenuVoN). Kept for the
@@ -1190,9 +1336,28 @@ class PS_PlayableControllerComponent : ScriptComponent
 	{
 		Rpc(RPC_GetArmaIdFromServer_Server, playerId);
 	}
+	/**
+	 * @brief Запрос backend UUID игрока с сервера
+	 * @issue BUG-69
+	 * @cause Обычный клиент мог запросить постоянный backend UUID любого другого игрока
+	 * @solution Возвращать чужой UUID только администраторам; обычному клиенту — только собственный ID
+	 * @rpc Owner -> Server (Reliable)
+	 */
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void RPC_GetArmaIdFromServer_Server(int playerId)
 	{
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		if (!thisPlayerController)
+			return;
+
+		int callerPid = thisPlayerController.GetPlayerId();
+		if (playerId != callerPid && !SCR_Global.IsAdmin(callerPid))
+		{
+			PrintFormat("[PS_AntiCheat] PRIVACY_VIOLATION: %1 action=GetArmaId target=%2",
+				PS_GameModeCoop.PS_AntiCheatPlayerIdentity(callerPid), playerId);
+			return;
+		}
+
 		string playerUUID = GetGame().GetBackendApi().GetPlayerIdentityId(playerId);
 		Rpc(RPC_GetArmaIdFromServer_Owner, playerUUID);
 	}
@@ -1212,9 +1377,28 @@ class PS_PlayableControllerComponent : ScriptComponent
 	{
 		Rpc(RPC_RequestPlayerGuid_Server, playerId);
 	}
+	/**
+	 * @brief Запрос GUID игрока с сервера
+	 * @issue BUG-69
+	 * @cause Обычный клиент мог запросить GUID любого другого игрока
+	 * @solution Возвращать чужой GUID только администраторам; обычному клиенту — только собственный ID
+	 * @rpc Owner -> Server (Reliable)
+	 */
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void RPC_RequestPlayerGuid_Server(int playerId)
 	{
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		if (!thisPlayerController)
+			return;
+
+		int callerPid = thisPlayerController.GetPlayerId();
+		if (playerId != callerPid && !SCR_Global.IsAdmin(callerPid))
+		{
+			PrintFormat("[PS_AntiCheat] PRIVACY_VIOLATION: %1 action=RequestPlayerGuid target=%2",
+				PS_GameModeCoop.PS_AntiCheatPlayerIdentity(callerPid), playerId);
+			return;
+		}
+
 		string playerGuid = GetGame().GetBackendApi().GetPlayerIdentityId(playerId);
 		Rpc(RPC_RequestPlayerGuid_Owner, playerGuid);
 	}
@@ -1254,9 +1438,41 @@ class PS_PlayableControllerComponent : ScriptComponent
 			return;
 		Rpc(RPC_RequestSpectatePosition, playableId);
 	}
+	/**
+	 * @brief Запрос точных мировых координат сущности для спектэйта
+	 * @issue BUG-51
+	 * @cause Сервер возвращал координаты любых сущностей (включая врагов) любому клиенту без проверки состояния
+	 * @solution Серверная проверка: запрашивающий должен быть в спектаторе/мёртв, при FriendliesSpectatorOnly разрешать только союзников
+	 * @rpc Owner -> Server (Reliable)
+	 */
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	protected void RPC_RequestSpectatePosition(RplId playableId)
 	{
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		if (!thisPlayerController)
+			return;
+
+		int callerPid = thisPlayerController.GetPlayerId();
+		bool isAdmin = SCR_Global.IsAdmin(callerPid);
+
+		// Caller must be dead / in spectator (or admin)
+		if (!isAdmin && !SCR_VoNComponent.PS_IsMenuSpeaker(callerPid))
+			return;
+
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if (gameMode && gameMode.GetFriendliesSpectatorOnly() && !isAdmin && playableManager)
+		{
+			PS_PlayableContainer targetPlayable = playableManager.GetPlayableById(playableId);
+			if (targetPlayable)
+			{
+				FactionKey targetFaction = targetPlayable.GetFactionKey();
+				FactionKey callerFaction = playableManager.GetPlayerFactionKeyRemembered(callerPid);
+				if (targetFaction != callerFaction)
+					return;
+			}
+		}
+
 		// Server has every entity - resolve the playable and read its current position + forward.
 		RplComponent rpl = RplComponent.Cast(Replication.FindItem(playableId));
 		if (!rpl)
@@ -1611,11 +1827,31 @@ class PS_PlayableControllerComponent : ScriptComponent
 	{
 		Rpc(RPC_ForceSwitch, playerId);
 	}
+	/**
+	 * @brief Принудительное переключение управляемой сущности игрока
+	 * @issue BUG-48
+	 * @cause Любой клиент мог вызывать ForceSwitch для любого другого игрока
+	 * @solution Проверка: вызов разрешён только для себя или администратору
+	 * @rpc Owner -> Server (Reliable)
+	 */
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void RPC_ForceSwitch(int playerId)
 	{
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		if (!thisPlayerController)
+			return;
+
+		int callerPid = thisPlayerController.GetPlayerId();
+		if (playerId != callerPid && !SCR_Global.IsAdmin(callerPid))
+		{
+			PrintFormat("[PS_AntiCheat] ADMIN_ATTEMPT: %1 action=ForceSwitch target=%2",
+				PS_GameModeCoop.PS_AntiCheatPlayerIdentity(callerPid), playerId);
+			return;
+		}
+
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		playableManager.ForceSwitch(playerId)
+		if (playableManager)
+			playableManager.ForceSwitch(playerId);
 	}
 
 	// Server: ask the owning client to enter the spectator camera/menu. Used on death - the player
@@ -1798,16 +2034,38 @@ class PS_PlayableControllerComponent : ScriptComponent
 	{
 		Rpc(RPC_SetPlayablePlayer, playableId, playerId);
 	}
+	/**
+	 * @brief Назначение игрока на слот персонажа по RplId слота
+	 * @issue BUG-48
+	 * @cause Клиент мог передавать отрицательный playerId (-1, -2 для блокировки/сброса) или чужой ID без прав админа
+	 * @solution Разрешать установку отрицательных ID и чужих ID только администраторам
+	 * @rpc Owner -> Server (Reliable)
+	 */
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	protected void RPC_SetPlayablePlayer(RplId playableId, int playerId)
 	{
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		if (!playableManager)
+			return;
+
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		if (!thisPlayerController)
+			return;
+
+		int callerPid = thisPlayerController.GetPlayerId();
+		bool isAdmin = SCR_Global.IsAdmin(callerPid);
+
+		// Negative playerId (-1 deselect, -2 lock slot) or targeting another player requires admin
+		if ((playerId < 0 || playerId != callerPid) && !isAdmin)
+		{
+			PrintFormat("[PS_AntiCheat] ADMIN_ATTEMPT: %1 action=SetPlayablePlayer target=%2 slot=%3",
+				PS_GameModeCoop.PS_AntiCheatPlayerIdentity(callerPid), playerId, playableId);
+			return;
+		}
 
 		// You can't change playable if pinned and not admin
-		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
-		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
-		if (playableManager.GetPlayerPin(playerId) && playerRole == EPlayerRole.NONE)
+		if (playableManager.GetPlayerPin(callerPid) && !isAdmin)
 			return;
 
 		// Check faction balance
@@ -1816,7 +2074,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		if (playableContainer)
 		{
 			FactionKey factionKey = playableContainer.GetFactionKey();
-			if (playerId >= 0 && !SCR_Global.IsAdmin(thisPlayerController.GetPlayerId()) && !gameModeCoop.CanJoinFaction(factionKey, playableManager.GetPlayerFactionKey(playerId)))
+			if (playerId >= 0 && !isAdmin && gameModeCoop && !gameModeCoop.CanJoinFaction(factionKey, playableManager.GetPlayerFactionKey(playerId)))
 				return;
 		}
 
@@ -1848,21 +2106,42 @@ class PS_PlayableControllerComponent : ScriptComponent
 	{
 		Rpc(RPC_SetPlayerPlayable, playerId, playableId);
 	}
+	/**
+	 * @brief Назначение слота игроку по playerId
+	 * @issue BUG-48
+	 * @cause Неавторизованный клиент мог снимать со слота или переназначать других игроков
+	 * @solution Проверка: модификация чужого слота разрешена только администратору
+	 * @rpc Owner -> Server (Reliable)
+	 */
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	protected void RPC_SetPlayerPlayable(int playerId, RplId playableId)
 	{
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		if (!playableManager)
+			return;
+
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		if (!thisPlayerController)
+			return;
+
+		int callerPid = thisPlayerController.GetPlayerId();
+		bool isAdmin = SCR_Global.IsAdmin(callerPid);
+
+		if (playerId != callerPid && !isAdmin)
+		{
+			PrintFormat("[PS_AntiCheat] ADMIN_ATTEMPT: %1 action=SetPlayerPlayable target=%2 slot=%3",
+				PS_GameModeCoop.PS_AntiCheatPlayerIdentity(callerPid), playerId, playableId);
+			return;
+		}
 
 		// You can't change playable if pinned and not admin
-		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
-		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
-		if (playableManager.GetPlayerPin(playerId) && playerRole == EPlayerRole.NONE)
+		if (playableManager.GetPlayerPin(playerId) && !isAdmin)
 			return;
 
 		// don't check other staff if empty playable
 		if (playableId == RplId.Invalid()) {
-			if (playerId != thisPlayerController.GetPlayerId())
+			if (playerId != callerPid)
 				playableManager.NotifyKick(playerId);
 			playableManager.SetPlayerPlayable(playerId, playableId);
 			// FIX (STRAND): re-route voice to Global when a slot is released (deselect / kick).
@@ -1880,7 +2159,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		if (playableContainer)
 		{
 			FactionKey factionKey = playableContainer.GetFactionKey();
-			if (playerId >= 0 && !SCR_Global.IsAdmin(thisPlayerController.GetPlayerId()) && !gameModeCoop.CanJoinFaction(factionKey, playableManager.GetPlayerFactionKey(playerId)))
+			if (playerId >= 0 && !isAdmin && gameModeCoop && !gameModeCoop.CanJoinFaction(factionKey, playableManager.GetPlayerFactionKey(playerId)))
 				return;
 		}
 
@@ -1888,14 +2167,14 @@ class PS_PlayableControllerComponent : ScriptComponent
 
 		// Check is playable already selected or dead
 		int curretPlayerId = playableManager.GetPlayerByPlayable(playableId);
-		if (playableCharacter.GetDamageManager().IsDestroyed() || (curretPlayerId != -1 && curretPlayerId != playerId)) {
+		if (!playableCharacter || playableCharacter.GetDamageManager().IsDestroyed() || (curretPlayerId != -1 && curretPlayerId != playerId)) {
 			return;
 		}
 
 		playableManager.SetPlayerPlayable(playerId, playableId);
 
 		// Pin player if setted by admin
-		if (playerId != thisPlayerController.GetPlayerId())
+		if (playerId != callerPid)
 			playableManager.SetPlayerPin(playerId, true);
 	}
 
@@ -1904,9 +2183,25 @@ class PS_PlayableControllerComponent : ScriptComponent
 		RplId objectiveId = objective.GetRplId();
 		Rpc(RPC_SetObjectiveCompleteState, objectiveId, complete);
 	}
+	/**
+	 * @brief Ручное изменение статуса выполнения задачи в дебрифинге
+	 * @issue BUG-48
+	 * @cause Любой клиент мог вызывать завершение/сброс задач
+	 * @solution Проверка прав администратора
+	 * @rpc Owner -> Server (Reliable)
+	 */
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void RPC_SetObjectiveCompleteState(RplId objectiveId, bool complete)
 	{
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		if (!thisPlayerController || !SCR_Global.IsAdmin(thisPlayerController.GetPlayerId()))
+		{
+			if (thisPlayerController)
+				PrintFormat("[PS_AntiCheat] ADMIN_ATTEMPT: %1 action=SetObjectiveCompleteState objectiveId=%2 complete=%3",
+					PS_GameModeCoop.PS_AntiCheatPlayerIdentity(thisPlayerController.GetPlayerId()), objectiveId, complete);
+			return;
+		}
+
 		PS_Objective objective = PS_Objective.Cast(Replication.FindItem(objectiveId));
 		if (objective)
 			objective.SetCompleted(complete);

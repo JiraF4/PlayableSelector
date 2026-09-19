@@ -201,14 +201,21 @@ class PS_CoopLobby : MenuBase
 		m_GameModeHeader.TryUpdate();
 	};
 	
+	/**
+	 * @brief Отписка от инвокеров PlayableManager при закрытии лобби
+	 * @issue BUG-60
+	 * @cause Отсутствие отписки от GetOnPlayableRegistered() приводило к удержанию экземпляра меню в памяти
+	 * @solution Добавлена отписка от OnPlayableRegistered в OnMenuClose
+	 */
 	override void OnMenuClose()
 	{
-if (m_PlayableManager)
+		if (m_PlayableManager)
 		{
 			m_PlayableManager.GetOnFactionChange().Remove(UpdatePlayerFaction);
 			m_PlayableManager.GetOnStartTimerCounterChanged().Remove(OnStartTimerCounterChanged);
 			m_PlayableManager.GetOnPlayerConnected().Remove(OnPlayerConnected);
 			m_PlayableManager.GetOnPlayerDisconnected().Remove(OnPlayerDisconnected);
+			m_PlayableManager.GetOnPlayableRegistered().Remove(OnPlayableRegistered);
 		}
 	}
 

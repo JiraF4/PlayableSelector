@@ -480,25 +480,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		// /slots и алиасы (переход из PREGAME в SLOTSELECTION)
 		invoker = chatPanelManager.GetCommandInvoker("slots");
 		invoker.Insert(Slots_Callback);
-		invoker = chatPanelManager.GetCommandInvoker("slot");
-		invoker.Insert(Slots_Callback);
-		invoker = chatPanelManager.GetCommandInvoker("sl");
-		invoker.Insert(Slots_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("slotting");
 		invoker.Insert(Slots_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("слот");
 		invoker.Insert(Slots_Callback);
-		invoker = chatPanelManager.GetCommandInvoker("слоты");
-		invoker.Insert(Slots_Callback);
-		invoker = chatPanelManager.GetCommandInvoker("сл");
-		invoker.Insert(Slots_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("слотинг");
-		invoker.Insert(Slots_Callback);
-		invoker = chatPanelManager.GetCommandInvoker("ыдщеы");
-		invoker.Insert(Slots_Callback);
-		invoker = chatPanelManager.GetCommandInvoker("ыдще");
-		invoker.Insert(Slots_Callback);
-		invoker = chatPanelManager.GetCommandInvoker("ыд");
 		invoker.Insert(Slots_Callback);
 		// /brif и алиасы (переход из SLOTSELECTION в BRIEFING + таймер)
 		invoker = chatPanelManager.GetCommandInvoker("brif");
@@ -507,21 +493,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		invoker.Insert(Briefing_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("briefing");
 		invoker.Insert(Briefing_Callback);
-		invoker = chatPanelManager.GetCommandInvoker("br");
-		invoker.Insert(Briefing_Callback);
-		invoker = chatPanelManager.GetCommandInvoker("bf");
-		invoker.Insert(Briefing_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("бриф");
 		invoker.Insert(Briefing_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("брифинг");
-		invoker.Insert(Briefing_Callback);
-		invoker = chatPanelManager.GetCommandInvoker("бр");
-		invoker.Insert(Briefing_Callback);
-		invoker = chatPanelManager.GetCommandInvoker("икша");
-		invoker.Insert(Briefing_Callback);
-		invoker = chatPanelManager.GetCommandInvoker("икшуа");
-		invoker.Insert(Briefing_Callback);
-		invoker = chatPanelManager.GetCommandInvoker("ик");
 		invoker.Insert(Briefing_Callback);
 	}
 	
@@ -1253,6 +1227,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		// Restore reconnecting players' faction/slot AFTER vanilla SCR_ReconnectComponent has run
 		// (it applies on audit success, shortly after connect, and would otherwise leave the player
 		// factionless -> wrong-side markers). No-op for genuinely fresh joins (no cached GUID data).
+		playableManager.ClearPendingReconnectCancellation(playerId);
 		GetGame().GetCallqueue().CallLater(playableManager.RestorePlayerReconnectData, 2500, false, playerId);
 
 		// Briefing preload: a reconnecting / late-joining player arrives on a fresh connection, so (re)place

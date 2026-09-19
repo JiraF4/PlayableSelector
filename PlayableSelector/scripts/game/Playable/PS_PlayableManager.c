@@ -797,6 +797,17 @@ class PS_PlayableManager : ScriptComponent
 		Print(string.Format("[PS_ReconnectTrace] player %1 RECONNECT connected: immediate VoN channel='%2' (slot not restored yet; expect group/Command in ~2.5s)", playerId, channel), LogLevel.NORMAL);
 	}
 
+	/**
+	 * @brief Сброс флага отмены реконнекта при подключении с данным playerId
+	 * @issue BUG-56
+	 * @cause При повторном использовании playerId движком сохранённый флаг отмены блокировал восстановление слота
+	 * @solution Очистка playerId из m_mReconnectCancelled при подключении
+	 */
+	void ClearPendingReconnectCancellation(int playerId)
+	{
+		m_mReconnectCancelled.Remove(playerId);
+	}
+
 	void CancelPendingReconnectRestore(int playerId)
 	{
 		m_mReconnectCancelled[playerId] = true;
@@ -1338,6 +1349,19 @@ class PS_PlayableManager : ScriptComponent
 
 		SCR_GroupsManagerComponent groupsManagerComponent = SCR_GroupsManagerComponent.GetInstance();
 		return groupsManagerComponent.FindGroup(m_playablePlayerGroupId[PlayableId]);
+	}
+
+	/**
+	 * @brief Получить группу игрока по его PlayerID
+	 * @param playerId Идентификатор игрока
+	 * @return SCR_AIGroup или null, если игрок не привязан к группе
+	 */
+	SCR_AIGroup GetPlayerGroup(int playerId)
+	{
+		RplId playableId = GetPlayableByPlayer(playerId);
+		if (playableId == RplId.Invalid())
+			return null;
+		return GetPlayerGroupByPlayable(playableId);
 	}
 	// Get players group int callsign by playable id or -1 if no group found
 	// - Synced on clients
