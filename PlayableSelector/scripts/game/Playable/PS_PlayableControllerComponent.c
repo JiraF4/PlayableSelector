@@ -134,52 +134,6 @@ class PS_PlayableControllerComponent : ScriptComponent
 		playableManager.SetFactionReady(factionKey, readyValue);
 	}
 
-	// ------ GroupReady (squad ready during freeze time) ------
-	void SetGroupReady(int groupId, int readyValue)
-	{
-		Rpc(RPC_SetGroupReady, groupId, readyValue);
-	}
-	/**
-	 * @brief Голосование готовности отделения лидером группы или администратором во фризтайме
-	 * @issue BUG-52
-	 * @cause Лидер одной группы мог голосовать за чужие группы
-	 * @solution Проверка принадлежности groupId группе вызывающего лидера
-	 * @rpc Owner -> Server (Reliable)
-	 */
-	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
-	void RPC_SetGroupReady(int groupId, int readyValue)
-	{
-		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
-		if (!thisPlayerController)
-			return;
-
-		int callerPid = thisPlayerController.GetPlayerId();
-		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		if (!playableManager)
-			return;
-
-		if (!SCR_Global.IsAdmin(callerPid))
-		{
-			if (!playableManager.IsPlayerGroupLeader(callerPid))
-				return;
-
-			SCR_AIGroup callerGroup = playableManager.GetPlayerGroup(callerPid);
-			if (!callerGroup || callerGroup.GetGroupID() != groupId)
-			{
-				PrintFormat("[PS_AntiCheat] ADMIN_ATTEMPT: %1 action=SetGroupReady targetGroup=%2",
-					PS_GameModeCoop.PS_AntiCheatPlayerIdentity(callerPid), groupId);
-				return;
-			}
-		}
-
-		// Only during freeze time
-		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		if (!gameMode || gameMode.GetState() != SCR_EGameModeState.GAME || gameMode.IsFreezeTimeEnd())
-			return;
-
-		playableManager.SetGroupReady(groupId, readyValue);
-	}
-
 	// ------ MenuState ------
 	void SetMenuState(SCR_EGameModeState state)
 	{

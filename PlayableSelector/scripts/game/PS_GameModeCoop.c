@@ -73,8 +73,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 	[RplProp()]
 	protected float m_fCurrentFreezeTime = 1;
-	// One-shot guard for FreezeTimerEnd: every group leader's PS_SquadsReadyWidget independently RPCs the server
-	// when all squads are ready, so the end notification must fire only once per freeze period (reset in StartGame).
+	// One-shot guard for FreezeTimerEnd: multiple clients (e.g. every group leader via the optional SquadReady addon)
+	// can independently RPC the server to end freeze, so the end notification must fire only once per freeze period
+	// (reset in StartGame).
 	protected bool m_bFreezeEndTriggered;
 	// True while restrictedZonesTimer is actively counting down (Soft Freeze phase).
 	// Set to true at the start of Soft Freeze, false when it expires. Used by hardFreezeTimer to decide
@@ -384,7 +385,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	
 	void FreezeTimerEnd()
 	{
-		// Idempotent: every group leader's PS_SquadsReadyWidget independently detects "all squads ready" and RPCs
+		// Idempotent: several clients may independently detect "all squads ready" (optional SquadReady addon) and RPC
 		// this to the server (RplRcver.Server), so without the guard FreezeTimerEnd_Notify - and the 5s end-countdown
 		// restart - would fire once PER caller (the duplicate "freeze time end" notifications). Fire exactly once per
 		// freeze period; m_bFreezeEndTriggered is reset in StartGame when a new freeze begins.
@@ -2118,7 +2119,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (m_bReserveSlots)
 			ReserveSlots();
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		playableManager.ResetGroupReady();
 		// Delete admin-closed (-2) characters and locked vehicles IMMEDIATELY at the
 		// BRIEFING → GAME transition, before freeze time starts. Unassigned slots are left
 		// alive so players can still pick them during the freeze window.
@@ -2208,19 +2208,10 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			if (!m_bHardFreeze)
 				DestroyFreezeTimeCounter();
 
-			if (m_hSquadsReadyWidget)
-			{
-				m_hSquadsReadyWidget.Destroy();
-				m_hSquadsReadyWidget = null;
-			}
 			return;
 		}
 
 		EnsureFreezeTimeCounter();
-
-		// Create squads-ready widget on first freeze-time tick (client-side)
-		if (m_hSquadsReadyWidget == null && RplSession.Mode() != RplMode.Dedicated)
-			m_hSquadsReadyWidget = PS_SquadsReadyWidget.Create();
 
 		// Hard Freeze takes visual priority over the counter UI.
 		// Soft Freeze time is only applied once Hard Freeze has concluded.
@@ -2240,7 +2231,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		}
 	}
 	PS_FreezeTimeCounter m_hFreezeTimeCounter;
-	ref PS_SquadsReadyWidget m_hSquadsReadyWidget;
 
 	// ------------------------------------------ Hard Freeze ------------------------------------------
 	bool IsHardFreezeActive()
