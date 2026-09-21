@@ -5,13 +5,14 @@ class PS_KillInfo
 	string m_sVictimName;
 	string m_sKillerName;
 	string m_sVictimSquad;   // victim's group/squad name (resolved server-side at kill time)
-	string m_sAmmoType;
+	string m_sAmmoType;      // kept for backward compatibility
+	string m_sWeaponName;
+	string m_sMagazineName;
 	float m_fDistance;
 	int m_eLastHitZoneGroup;
 	bool m_bIsTeamKill;
 
-	// Plain-English hit zone (NOT a localization key): the row is built by concatenation, so an embedded
-	// "#..." key would be shown raw by the TextWidget (only a whole-string key is auto-translated).
+	// Plain-English hit zone (kept for backward compatibility)
 	static string HitZoneGroupToString(int group)
 	{
 		switch (group)
@@ -27,12 +28,88 @@ class PS_KillInfo
 		return "";
 	}
 
+	// Tactical Tarkov / Arena Breakout localized hit zone label with headshot badge
+	static string HitZoneGroupToLocalized(int group)
+	{
+		bool isRu = (WidgetManager.Translate("#PS-KillList_Head") == "Голова");
+		switch (group)
+		{
+			case ECharacterHitZoneGroup.HEAD:
+				if (isRu) return "Голова";
+				return "Head";
+			case ECharacterHitZoneGroup.UPPERTORSO:
+				if (isRu) return "Грудь";
+				return "Thorax";
+			case ECharacterHitZoneGroup.LOWERTORSO:
+				if (isRu) return "Живот";
+				return "Stomach";
+			case ECharacterHitZoneGroup.LEFTARM:
+				if (isRu) return "Левая рука";
+				return "Left Arm";
+			case ECharacterHitZoneGroup.RIGHTARM:
+				if (isRu) return "Правая рука";
+				return "Right Arm";
+			case ECharacterHitZoneGroup.LEFTLEG:
+				if (isRu) return "Левая нога";
+				return "Left Leg";
+			case ECharacterHitZoneGroup.RIGHTLEG:
+				if (isRu) return "Правая нога";
+				return "Right Leg";
+		}
+		return "";
+	}
+
+	string GetLocalizedHitZone()
+	{
+		return HitZoneGroupToLocalized(m_eLastHitZoneGroup);
+	}
+
 	static string DistanceToString(float distance)
 	{
 		if (distance < 0)
 			return "";
 		int meters = Math.Round(distance);
 		return meters.ToString() + "m";
+	}
+
+	string GetFormattedDistance()
+	{
+		if (m_fDistance < 0)
+			return "";
+		int meters = Math.Round(m_fDistance);
+		bool isRu = (WidgetManager.Translate("#PS-KillList_Head") == "Голова");
+		if (isRu)
+			return meters.ToString() + "м";
+		return meters.ToString() + "m";
+	}
+
+	string GetWeaponDisplayName()
+	{
+		string weapon = Clean(m_sWeaponName);
+		if (weapon == "")
+			weapon = Clean(m_sAmmoType);
+		if (weapon.StartsWith("#"))
+			weapon = WidgetManager.Translate(weapon);
+		return weapon;
+	}
+
+	string GetMagazineDisplayName()
+	{
+		string mag = Clean(m_sMagazineName);
+		if (mag == "" && m_sWeaponName != "")
+			mag = Clean(m_sAmmoType);
+		if (mag == "")
+			return "";
+		if (mag.StartsWith("#"))
+			mag = WidgetManager.Translate(mag);
+
+		// Clean up redundant inventory words
+		mag.Replace(" Пластиковый Магазин", "");
+		mag.Replace(" Магазин", "");
+		mag.Replace(" Magazine", "");
+		mag.Replace("Магазин ", "");
+		mag.Replace("Magazine ", "");
+		return mag;
 	}
 
 	// Empty fields are sent as "-" placeholders (so the pipe-split never drops a token); treat them as empty.

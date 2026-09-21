@@ -592,9 +592,9 @@ class PS_SpectatorMenu: MenuBase
 			float killCurX = killWs.DPIUnscale(killMouseX);
 			float killCurY = killWs.DPIUnscale(killMouseY);
 			float killCenterX = killWs.DPIUnscale(killWs.GetWidth() / 2.0);
-			// 640 = frame width/height (see KillListFrame slot); 25 = the Extender hover margin.
+			// 500 = frame width (see KillListFrame slot); 25 = the Extender hover margin.
 			bool killHovered = m_hKillListPinButton.IsToggled()
-				|| (killCurX >= killCenterX - 320 && killCurX <= killCenterX + 320
+				|| (killCurX >= killCenterX - 250 && killCurX <= killCenterX + 250
 					&& killCurY >= killListY - 25 && killCurY <= killListY + 640 + 25);
 			if (killHovered)
 			{

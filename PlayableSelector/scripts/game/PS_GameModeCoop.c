@@ -1319,7 +1319,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 	protected string BuildKillData(PS_KillInfo killInfo)
 	{
-		// 9 fields: victimId|killerId|victimName|killerName|victimSquad|ammo|distance|hitZoneGroup|isTeamKill
+		// 10 fields: victimId|killerId|victimName|killerName|victimSquad|weaponName|magazineName|distance|hitZoneGroup|isTeamKill
 		// The client parses this with Split("|", parts, true), which DROPS empty tokens, so empty string
 		// fields are sent as "-" (KillDataField) to keep the field count stable - otherwise indices shift and
 		// the whole kill is discarded. Numeric fields are never empty. PS_KillInfo treats "-" as empty.
@@ -1329,7 +1329,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		killData = killData + "|" + KillDataField(killInfo.m_sVictimName);
 		killData = killData + "|" + KillDataField(killInfo.m_sKillerName);
 		killData = killData + "|" + KillDataField(killInfo.m_sVictimSquad);
-		killData = killData + "|" + KillDataField(killInfo.m_sAmmoType);
+		killData = killData + "|" + KillDataField(killInfo.m_sWeaponName);
+		killData = killData + "|" + KillDataField(killInfo.m_sMagazineName);
 		killData = killData + "|" + killInfo.m_fDistance.ToString();
 		killData = killData + "|" + killInfo.m_eLastHitZoneGroup.ToString();
 		string tk;

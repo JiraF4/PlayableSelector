@@ -13,8 +13,8 @@ FrameWidgetClass {
     OffsetLeft 0
     PositionY 0
     OffsetTop 0
-    SizeX 640
-    OffsetRight -640
+    SizeX 500
+    OffsetRight -500
     SizeY 640
     OffsetBottom -640
    }
@@ -29,8 +29,8 @@ FrameWidgetClass {
     OffsetLeft 0
     PositionY 0
     OffsetTop 0
-    SizeX 640
-    OffsetRight -640
+    SizeX 500
+    OffsetRight -500
     SizeY 640
     OffsetBottom -640
    }
@@ -45,8 +45,8 @@ FrameWidgetClass {
     OffsetLeft 0
     PositionY 0
     OffsetTop 0
-    SizeX 640
-    OffsetRight -640
+    SizeX 500
+    OffsetRight -500
     SizeY 50
     OffsetBottom -50
    }
@@ -59,8 +59,8 @@ FrameWidgetClass {
       OffsetLeft 0
       PositionY 0
       OffsetTop 0
-      SizeX 640
-      OffsetRight -640
+      SizeX 500
+      OffsetRight -500
       SizeY 50
       OffsetBottom -50
      }
@@ -74,8 +74,8 @@ FrameWidgetClass {
       OffsetLeft 0
       PositionY 0
       OffsetTop 0
-      SizeX 640
-      OffsetRight -640
+      SizeX 500
+      OffsetRight -500
       SizeY 50
       OffsetBottom -50
      }
@@ -86,7 +86,7 @@ FrameWidgetClass {
         HorizontalAlign 0
         Padding 12 0 0 0
        }
-       Text "Kill List"
+       Text "#PS-KillList_Header"
        "Font Size" 19
        "Min Font Size" 19
        "Vertical Alignment" Center
@@ -103,8 +103,8 @@ FrameWidgetClass {
     OffsetLeft 10
     PositionY 56
     OffsetTop 56
-    SizeX 620
-    OffsetRight -630
+    SizeX 480
+    OffsetRight -490
     SizeY 574
     OffsetBottom -630
    }
@@ -117,41 +117,112 @@ FrameWidgetClass {
       VerticalLayoutWidgetClass "{C1A2B3D4E5F6A7E4}" {
        Name "YourKillsSection"
        Slot LayoutSlot "{C1A2B3D4E5F6A7E5}" {
-        Padding 0 8 0 0
+        Padding 0 4 0 4
        }
        {
-        ImageWidgetClass "{C1A2B3D4E5F6B001}" {
-         Name "YourKillsSeparator"
-         Slot LayoutSlot "{C1A2B3D4E5F6B002}" {
-          HorizontalAlign 3
-          Padding 0 0 0 6
-         }
-         Color 0.4 0.4 0.4 1
-         Size 600 2
-        }
-        HorizontalLayoutWidgetClass "{C1A2B3D4E5F6A7E6}" {
+        SizeLayoutWidgetClass "{C1A2B3D4E5F6A7E6}" {
          Name "YourKillsHeader"
          Slot LayoutSlot "{C1A2B3D4E5F6A7E7}" {
+          HorizontalAlign 3
+          Padding 0 0 0 4
          }
+         AllowWidthOverride 1
+         WidthOverride 480
+         AllowHeightOverride 1
+         HeightOverride 24
          {
-          TextWidgetClass "{C1A2B3D4E5F6A7E8}" {
-           Name "YourKillsLabel"
-           Slot LayoutSlot "{C1A2B3D4E5F6A7E9}" {
-            FillWeight 1
+          FrameWidgetClass "{C1A2B3D4E5F6B101}" {
+           Name "YourKillsHeaderFrame"
+           Slot AlignableSlot "{C1A2B3D4E5F6B102}" {
+            HorizontalAlign 3
+            VerticalAlign 3
            }
-           Text "Your Kills"
-           "Font Size" 13
-           "Min Font Size" 13
-          }
-          TextWidgetClass "{C1A2B3D4E5F6A7F0}" {
-           Name "YourKillsCount"
-           Slot LayoutSlot "{C1A2B3D4E5F6A7F1}" {
-            Padding 8 0 0 0
-            FillWeight 0
+           {
+            ImageWidgetClass "{C1A2B3D4E5F6B103}" {
+             Name "YourKillsHeaderBg"
+             Slot FrameWidgetSlot "{C1A2B3D4E5F6B104}" {
+              Anchor 0 0 0 0
+              PositionX 0
+              OffsetLeft 0
+              PositionY 0
+              OffsetTop 0
+              SizeX 480
+              OffsetRight -480
+              SizeY 24
+              OffsetBottom -24
+             }
+             Color 0 0 0 0.4
+            }
+            ImageWidgetClass "{C1A2B3D4E5F6B105}" {
+             Name "YourKillsHeaderAccent"
+             Slot FrameWidgetSlot "{C1A2B3D4E5F6B106}" {
+              Anchor 0 0 0 0
+              PositionX 0
+              OffsetLeft 0
+              PositionY 0
+              OffsetTop 0
+              SizeX 3
+              OffsetRight -3
+              SizeY 24
+              OffsetBottom -24
+             }
+             Color 0.85 0.65 0.15 1
+            }
+            TextWidgetClass "{C1A2B3D4E5F6A7E8}" {
+             Name "YourKillsLabel"
+             Slot FrameWidgetSlot "{C1A2B3D4E5F6B107}" {
+              Anchor 0 0 0 0
+              PositionX 12
+              OffsetLeft 12
+              PositionY 0
+              OffsetTop 0
+              SizeX 350
+              OffsetRight -362
+              SizeY 24
+              OffsetBottom -24
+             }
+             Color 0.85 0.88 0.92 1
+             Text "#PS-KillList_YourKills"
+             "Font Size" 12
+             "Min Font Size" 12
+             "Vertical Alignment" Center
+            }
+            ImageWidgetClass "{C1A2B3D4E5F6B108}" {
+             Name "YourKillsCountBadge"
+             Slot FrameWidgetSlot "{C1A2B3D4E5F6B109}" {
+              Anchor 0 0 0 0
+              PositionX 444
+              OffsetLeft 444
+              PositionY 3
+              OffsetTop 3
+              SizeX 28
+              OffsetRight -472
+              SizeY 18
+              OffsetBottom -21
+             }
+             Color 0.85 0.65 0.15 0.2
+            }
+            TextWidgetClass "{C1A2B3D4E5F6A7F0}" {
+             Name "YourKillsCount"
+             Slot FrameWidgetSlot "{C1A2B3D4E5F6B10A}" {
+              Anchor 0 0 0 0
+              PositionX 444
+              OffsetLeft 444
+              PositionY 3
+              OffsetTop 3
+              SizeX 28
+              OffsetRight -472
+              SizeY 18
+              OffsetBottom -21
+             }
+             Color 0.85 0.65 0.15 1
+             Text "0"
+             "Font Size" 11
+             "Min Font Size" 11
+             "Horizontal Alignment" Center
+             "Vertical Alignment" Center
+            }
            }
-           Text "0"
-           "Font Size" 13
-           "Min Font Size" 13
           }
          }
         }
@@ -165,41 +236,112 @@ FrameWidgetClass {
       VerticalLayoutWidgetClass "{C1A2B3D4E5F6A7F4}" {
        Name "TeamKillsSection"
        Slot LayoutSlot "{C1A2B3D4E5F6A7F5}" {
-        Padding 0 8 0 0
+        Padding 0 6 0 4
        }
        {
-        ImageWidgetClass "{C1A2B3D4E5F6B003}" {
-         Name "TeamKillsSeparator"
-         Slot LayoutSlot "{C1A2B3D4E5F6B004}" {
-          HorizontalAlign 3
-          Padding 0 0 0 6
-         }
-         Color 0.4 0.4 0.4 1
-         Size 600 2
-        }
-        HorizontalLayoutWidgetClass "{C1A2B3D4E5F6A8A6}" {
+        SizeLayoutWidgetClass "{C1A2B3D4E5F6A8A6}" {
          Name "TeamKillsHeader"
          Slot LayoutSlot "{C1A2B3D4E5F6A8A7}" {
+          HorizontalAlign 3
+          Padding 0 0 0 4
          }
+         AllowWidthOverride 1
+         WidthOverride 480
+         AllowHeightOverride 1
+         HeightOverride 24
          {
-          TextWidgetClass "{C1A2B3D4E5F6A8A8}" {
-           Name "TeamKillsLabel"
-           Slot LayoutSlot "{C1A2B3D4E5F6A8A9}" {
-            FillWeight 1
+          FrameWidgetClass "{C1A2B3D4E5F6B201}" {
+           Name "TeamKillsHeaderFrame"
+           Slot AlignableSlot "{C1A2B3D4E5F6B202}" {
+            HorizontalAlign 3
+            VerticalAlign 3
            }
-           Text "Team Kills"
-           "Font Size" 13
-           "Min Font Size" 13
-          }
-          TextWidgetClass "{C1A2B3D4E5F6A8B0}" {
-           Name "TeamKillsCount"
-           Slot LayoutSlot "{C1A2B3D4E5F6A8B1}" {
-            Padding 8 0 0 0
-            FillWeight 0
+           {
+            ImageWidgetClass "{C1A2B3D4E5F6B203}" {
+             Name "TeamKillsHeaderBg"
+             Slot FrameWidgetSlot "{C1A2B3D4E5F6B204}" {
+              Anchor 0 0 0 0
+              PositionX 0
+              OffsetLeft 0
+              PositionY 0
+              OffsetTop 0
+              SizeX 480
+              OffsetRight -480
+              SizeY 24
+              OffsetBottom -24
+             }
+             Color 0 0 0 0.4
+            }
+            ImageWidgetClass "{C1A2B3D4E5F6B205}" {
+             Name "TeamKillsHeaderAccent"
+             Slot FrameWidgetSlot "{C1A2B3D4E5F6B206}" {
+              Anchor 0 0 0 0
+              PositionX 0
+              OffsetLeft 0
+              PositionY 0
+              OffsetTop 0
+              SizeX 3
+              OffsetRight -3
+              SizeY 24
+              OffsetBottom -24
+             }
+             Color 0.9 0.25 0.25 1
+            }
+            TextWidgetClass "{C1A2B3D4E5F6A8A8}" {
+             Name "TeamKillsLabel"
+             Slot FrameWidgetSlot "{C1A2B3D4E5F6B207}" {
+              Anchor 0 0 0 0
+              PositionX 12
+              OffsetLeft 12
+              PositionY 0
+              OffsetTop 0
+              SizeX 350
+              OffsetRight -362
+              SizeY 24
+              OffsetBottom -24
+             }
+             Color 0.9 0.45 0.45 1
+             Text "#PS-KillList_TeamKills"
+             "Font Size" 12
+             "Min Font Size" 12
+             "Vertical Alignment" Center
+            }
+            ImageWidgetClass "{C1A2B3D4E5F6B208}" {
+             Name "TeamKillsCountBadge"
+             Slot FrameWidgetSlot "{C1A2B3D4E5F6B209}" {
+              Anchor 0 0 0 0
+              PositionX 444
+              OffsetLeft 444
+              PositionY 3
+              OffsetTop 3
+              SizeX 28
+              OffsetRight -472
+              SizeY 18
+              OffsetBottom -21
+             }
+             Color 0.9 0.25 0.25 0.2
+            }
+            TextWidgetClass "{C1A2B3D4E5F6A8B0}" {
+             Name "TeamKillsCount"
+             Slot FrameWidgetSlot "{C1A2B3D4E5F6B20A}" {
+              Anchor 0 0 0 0
+              PositionX 444
+              OffsetLeft 444
+              PositionY 3
+              OffsetTop 3
+              SizeX 28
+              OffsetRight -472
+              SizeY 18
+              OffsetBottom -21
+             }
+             Color 0.9 0.25 0.25 1
+             Text "0"
+             "Font Size" 11
+             "Min Font Size" 11
+             "Horizontal Alignment" Center
+             "Vertical Alignment" Center
+            }
            }
-           Text "0"
-           "Font Size" 13
-           "Min Font Size" 13
           }
          }
         }
@@ -213,31 +355,95 @@ FrameWidgetClass {
       VerticalLayoutWidgetClass "{C1A2B3D4E5F6A7F6}" {
        Name "KilledYouSection"
        Slot LayoutSlot "{C1A2B3D4E5F6A7F7}" {
-        Padding 0 8 0 0
+        Padding 0 6 0 4
        }
        {
-        ImageWidgetClass "{C1A2B3D4E5F6B005}" {
-         Name "KilledYouSeparator"
-         Slot LayoutSlot "{C1A2B3D4E5F6B006}" {
-          HorizontalAlign 3
-          Padding 0 0 0 6
-         }
-         Color 0.4 0.4 0.4 1
-         Size 600 2
-        }
-        HorizontalLayoutWidgetClass "{C1A2B3D4E5F6A7F8}" {
+        SizeLayoutWidgetClass "{C1A2B3D4E5F6A7F8}" {
          Name "KilledYouHeader"
          Slot LayoutSlot "{C1A2B3D4E5F6A7F9}" {
+          HorizontalAlign 3
+          Padding 0 0 0 4
          }
+         AllowWidthOverride 1
+         WidthOverride 480
+         AllowHeightOverride 1
+         HeightOverride 24
          {
-          TextWidgetClass "{C1A2B3D4E5F6A8A0}" {
-           Name "KilledYouLabel"
-           Slot LayoutSlot "{C1A2B3D4E5F6A8A1}" {
-            FillWeight 1
+          FrameWidgetClass "{C1A2B3D4E5F6B301}" {
+           Name "KilledYouHeaderFrame"
+           Slot AlignableSlot "{C1A2B3D4E5F6B302}" {
+            HorizontalAlign 3
+            VerticalAlign 3
            }
-           Text "Killed You"
-           "Font Size" 13
-           "Min Font Size" 13
+           {
+            ImageWidgetClass "{C1A2B3D4E5F6B303}" {
+             Name "KilledYouHeaderBg"
+             Slot FrameWidgetSlot "{C1A2B3D4E5F6B304}" {
+              Anchor 0 0 0 0
+              PositionX 0
+              OffsetLeft 0
+              PositionY 0
+              OffsetTop 0
+              SizeX 480
+              OffsetRight -480
+              SizeY 24
+              OffsetBottom -24
+             }
+             Color 0 0 0 0.4
+            }
+            ImageWidgetClass "{C1A2B3D4E5F6B305}" {
+             Name "KilledYouHeaderAccent"
+             Slot FrameWidgetSlot "{C1A2B3D4E5F6B306}" {
+              Anchor 0 0 0 0
+              PositionX 0
+              OffsetLeft 0
+              PositionY 0
+              OffsetTop 0
+              SizeX 3
+              OffsetRight -3
+              SizeY 24
+              OffsetBottom -24
+             }
+             Color 0.75 0.15 0.15 1
+            }
+            ImageWidgetClass "{C1A2B3D4E5F6B308}" {
+             Name "KilledYouSkull"
+             Slot FrameWidgetSlot "{C1A2B3D4E5F6B309}" {
+              Anchor 0 0 0 0
+              PositionX 10
+              OffsetLeft 10
+              PositionY 4
+              OffsetTop 4
+              SizeX 16
+              OffsetRight -26
+              SizeY 16
+              OffsetBottom -20
+             }
+             Color 0.85 0.2 0.2 1
+             Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
+             Image "death"
+             Size 16 16
+            }
+            TextWidgetClass "{C1A2B3D4E5F6A8A0}" {
+             Name "KilledYouLabel"
+             Slot FrameWidgetSlot "{C1A2B3D4E5F6B307}" {
+              Anchor 0 0 0 0
+              PositionX 32
+              OffsetLeft 32
+              PositionY 0
+              OffsetTop 0
+              SizeX 430
+              OffsetRight -462
+              SizeY 24
+              OffsetBottom -24
+             }
+             Color 0.9 0.4 0.4 1
+             Text "#PS-KillList_KilledYou"
+             "Font Size" 12
+             "Min Font Size" 12
+             "Vertical Alignment" Center
+            }
+           }
           }
          }
         }
@@ -256,12 +462,12 @@ FrameWidgetClass {
    Name "PinButton"
    Slot FrameWidgetSlot "{C1A2B3D4E5F6A7D2}" {
     Anchor 0 0 0 0
-    PositionX 596
-    OffsetLeft 596
+    PositionX 455
+    OffsetLeft 455
     PositionY 5
     OffsetTop 5
     SizeX 40
-    OffsetRight -636
+    OffsetRight -495
     SizeY 40
     OffsetBottom -45
    }

@@ -54,17 +54,32 @@ class PS_KillListManager : ScriptComponent
 		if (parts.Count() < 9)
 			return;
 
-		// Format (9 fields): victimId|killerId|victimName|killerName|victimSquad|ammo|distance|hitZoneGroup|isTeamKill
 		PS_KillInfo killInfo = new PS_KillInfo();
 		killInfo.m_iVictimPlayerId = parts[0].ToInt();
 		killInfo.m_iKillerPlayerId = parts[1].ToInt();
 		killInfo.m_sVictimName = parts[2];
 		killInfo.m_sKillerName = parts[3];
 		killInfo.m_sVictimSquad = parts[4];
-		killInfo.m_sAmmoType = parts[5];
-		killInfo.m_fDistance = parts[6].ToFloat();
-		killInfo.m_eLastHitZoneGroup = parts[7].ToInt();
-		killInfo.m_bIsTeamKill = (parts[8] == "1");
+
+		if (parts.Count() >= 10)
+		{
+			// 10 fields: victimId|killerId|victimName|killerName|victimSquad|weaponName|magazineName|distance|hitZoneGroup|isTeamKill
+			killInfo.m_sWeaponName = parts[5];
+			killInfo.m_sMagazineName = parts[6];
+			killInfo.m_sAmmoType = parts[6];
+			killInfo.m_fDistance = parts[7].ToFloat();
+			killInfo.m_eLastHitZoneGroup = parts[8].ToInt();
+			killInfo.m_bIsTeamKill = (parts[9] == "1");
+		}
+		else
+		{
+			// Legacy 9 fields: victimId|killerId|victimName|killerName|victimSquad|ammo|distance|hitZoneGroup|isTeamKill
+			killInfo.m_sAmmoType = parts[5];
+			killInfo.m_sMagazineName = parts[5];
+			killInfo.m_fDistance = parts[6].ToFloat();
+			killInfo.m_eLastHitZoneGroup = parts[7].ToInt();
+			killInfo.m_bIsTeamKill = (parts[8] == "1");
+		}
 
 		if (m_aKillHistory.Count() >= 200)
 			m_aKillHistory.Remove(0);
@@ -135,6 +150,44 @@ class PS_KillListManager : ScriptComponent
 		if (!killerEntity)
 			return;
 
+		ChimeraCharacter character = ChimeraCharacter.Cast(killerEntity);
+		if (!character)
+		{
+			SCR_EditableEntityComponent editable = SCR_EditableEntityComponent.Cast(killerEntity.FindComponent(SCR_EditableEntityComponent));
+			if (editable)
+			{
+				SCR_UIInfo info = editable.GetInfo();
+				if (info)
+					killInfo.m_sWeaponName = info.GetName();
+			}
+			return;
+		}
+
+		// If character is in a vehicle turret compartment
+		CompartmentAccessComponent compAccess = CompartmentAccessComponent.Cast(killerEntity.FindComponent(CompartmentAccessComponent));
+		if (compAccess)
+		{
+			BaseCompartmentSlot slot = compAccess.GetCompartment();
+			if (slot)
+			{
+				TurretCompartmentSlot turretSlot = TurretCompartmentSlot.Cast(slot);
+				if (turretSlot)
+				{
+					IEntity turretEntity = turretSlot.GetOwner();
+					if (turretEntity)
+					{
+						BaseWeaponManagerComponent turretWpnMgr = BaseWeaponManagerComponent.Cast(turretEntity.FindComponent(BaseWeaponManagerComponent));
+						if (turretWpnMgr)
+						{
+							BaseWeaponComponent turretWeapon = turretWpnMgr.GetCurrentWeapon();
+							if (turretWeapon && turretWeapon.GetUIInfo())
+								killInfo.m_sWeaponName = turretWeapon.GetUIInfo().GetName();
+						}
+					}
+				}
+			}
+		}
+
 		CharacterControllerComponent charCtrl = CharacterControllerComponent.Cast(killerEntity.FindComponent(CharacterControllerComponent));
 		if (!charCtrl)
 			return;
@@ -144,48 +197,55 @@ class PS_KillListManager : ScriptComponent
 			return;
 
 		BaseWeaponComponent currentWeapon = weaponMgr.GetCurrentWeapon();
-		if (!currentWeapon)
-			return;
-
-		UIInfo weaponUIInfo = currentWeapon.GetUIInfo();
-
-		BaseMuzzleComponent muzzle = currentWeapon.GetCurrentMuzzle();
-		if (muzzle)
+		if (currentWeapon)
 		{
-			BaseMagazineComponent mag = muzzle.GetMagazine();
-			if (mag)
+			UIInfo weaponUIInfo = currentWeapon.GetUIInfo();
+			if (weaponUIInfo && killInfo.m_sWeaponName == "")
+				killInfo.m_sWeaponName = weaponUIInfo.GetName();
+
+			BaseMuzzleComponent muzzle = currentWeapon.GetCurrentMuzzle();
+			if (muzzle)
 			{
-				// Prefer the magazine ITEM's display name (e.g. "7.62x39mm 30rnd Magazine") - it is a proper,
-				// localized item name. MagazineUIInfo.GetAmmoType() returns an ammo-type key ("#AR-AmmoType_...")
-				// that frequently has no translation entry in the spectator context and renders as the raw key.
-				IEntity magEntity = mag.GetOwner();
-				if (magEntity)
+				BaseMagazineComponent mag = muzzle.GetMagazine();
+				if (mag)
 				{
-					InventoryItemComponent magItem = InventoryItemComponent.Cast(magEntity.FindComponent(InventoryItemComponent));
-					if (magItem)
+					IEntity magEntity = mag.GetOwner();
+					if (magEntity)
 					{
-						ItemAttributeCollection attribs = magItem.GetAttributes();
-						if (attribs && attribs.GetUIInfo())
-							killInfo.m_sAmmoType = attribs.GetUIInfo().GetName();
+						InventoryItemComponent magItem = InventoryItemComponent.Cast(magEntity.FindComponent(InventoryItemComponent));
+						if (magItem)
+						{
+							ItemAttributeCollection attribs = magItem.GetAttributes();
+							if (attribs && attribs.GetUIInfo())
+								killInfo.m_sMagazineName = attribs.GetUIInfo().GetName();
+						}
+					}
+
+					if (killInfo.m_sMagazineName == "")
+					{
+						MagazineUIInfo magUIInfo = MagazineUIInfo.Cast(mag.GetUIInfo());
+						if (magUIInfo)
+							killInfo.m_sMagazineName = magUIInfo.GetAmmoType();
 					}
 				}
+			}
 
-				// Fallback: the caliber/type from the magazine's weapon-HUD UIInfo.
-				if (killInfo.m_sAmmoType == "")
-				{
-					MagazineUIInfo magUIInfo = MagazineUIInfo.Cast(mag.GetUIInfo());
-					if (magUIInfo)
-						killInfo.m_sAmmoType = magUIInfo.GetAmmoType();
-				}
+			if (killInfo.m_sMagazineName == "" && weaponUIInfo)
+			{
+				GrenadeUIInfo grenadeInfo = GrenadeUIInfo.Cast(weaponUIInfo);
+				if (grenadeInfo)
+					killInfo.m_sMagazineName = grenadeInfo.GetAmmoType();
 			}
 		}
 
-		if (killInfo.m_sAmmoType == "" && weaponUIInfo)
-		{
-			GrenadeUIInfo grenadeInfo = GrenadeUIInfo.Cast(weaponUIInfo);
-			if (grenadeInfo)
-				killInfo.m_sAmmoType = grenadeInfo.GetAmmoType();
-		}
+		if (killInfo.m_sWeaponName == "" && currentWeapon && currentWeapon.GetUIInfo())
+			killInfo.m_sWeaponName = currentWeapon.GetUIInfo().GetName();
+
+		// Synchronize backward-compatible m_sAmmoType
+		if (killInfo.m_sMagazineName != "")
+			killInfo.m_sAmmoType = killInfo.m_sMagazineName;
+		else if (killInfo.m_sWeaponName != "")
+			killInfo.m_sAmmoType = killInfo.m_sWeaponName;
 	}
 }
 

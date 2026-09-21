@@ -198,24 +198,187 @@ class PS_KillList : ScriptedWidgetComponent
 			PrintFormat("[PS_KillList] AddKillEntry SKIP createFailed name=%1", displayName);
 			return;
 		}
-		// Fill the (stretched) list width; the row's FillWeight text needs a non-zero parent width to show.
+		// Fill the (stretched) list width
 		LayoutSlot.SetHorizontalAlign(entryWidget, LayoutHorizontalAlign.Stretch);
-		// Plain TextWidget: real-server player names carry clan-tag rich-text markup (added by the Podval
-		// mods); PS_KillInfo.GetVictim/KillerDisplayName strips it to a plain nickname, so a plain TextWidget
-		// shows it cleanly - matching peer-tool behaviour. (A RichTextWidget would RENDER the tags bold/colored,
-		// which is not wanted here.)
-		TextWidget textWidget = TextWidget.Cast(entryWidget.FindAnyWidget("KillEntryText"));
-		if (textWidget)
+
+		// Tactical Card Widgets
+		ImageWidget accentBar = ImageWidget.Cast(entryWidget.FindAnyWidget("AccentBar"));
+		TextWidget indexText = TextWidget.Cast(entryWidget.FindAnyWidget("IndexText"));
+		ImageWidget deadIcon = ImageWidget.Cast(entryWidget.FindAnyWidget("DeadIcon"));
+		TextWidget playerNameText = TextWidget.Cast(entryWidget.FindAnyWidget("PlayerNameText"));
+		TextWidget distanceText = TextWidget.Cast(entryWidget.FindAnyWidget("DistanceText"));
+		ImageWidget hitZoneBg = ImageWidget.Cast(entryWidget.FindAnyWidget("HitZoneBg"));
+		TextWidget hitZoneText = TextWidget.Cast(entryWidget.FindAnyWidget("HitZoneText"));
+		TextWidget weaponNameText = TextWidget.Cast(entryWidget.FindAnyWidget("WeaponNameText"));
+		TextWidget bulletDivider = TextWidget.Cast(entryWidget.FindAnyWidget("BulletDivider"));
+		TextWidget magazineText = TextWidget.Cast(entryWidget.FindAnyWidget("MagazineText"));
+
+		// 1. Accent Bar & Colors
+		if (killInfo.m_bIsTeamKill)
 		{
-			textWidget.SetText(killInfo.FormatLine(displayName, number));
-			// Team kills stand out in red; everything else white.
-			if (killInfo.m_bIsTeamKill)
-				textWidget.SetColor(Color.FromRGBA(255, 90, 90, 255));
-			else
-				textWidget.SetColor(Color.White);
+			if (accentBar)
+				accentBar.SetColor(Color.FromRGBA(231, 76, 60, 255)); // Warning Red
+			if (indexText)
+				indexText.SetColor(Color.FromRGBA(231, 76, 60, 255));
 		}
-		PrintFormat("[PS_KillList] AddKillEntry OK name=%1 line=%2 textWidgetNull=%3 childrenNow=%4",
-			displayName, killInfo.FormatLine(displayName, number), !textWidget, widgetArray.Count() + 1);
+		else if (number <= 0) // "Killed you"
+		{
+			if (accentBar)
+				accentBar.SetColor(Color.FromRGBA(185, 28, 28, 255)); // Crimson Red
+			if (deadIcon)
+				deadIcon.SetColor(Color.FromRGBA(220, 38, 38, 255));
+		}
+		else // Normal Kill
+		{
+			if (accentBar)
+				accentBar.SetColor(Color.FromRGBA(212, 175, 55, 255)); // Gold / Amber
+			if (indexText)
+				indexText.SetColor(Color.FromRGBA(212, 175, 55, 255));
+		}
+
+		// 2. Index / Dead Icon
+		if (number > 0)
+		{
+			if (indexText)
+			{
+				indexText.SetVisible(true);
+				if (number < 10)
+					indexText.SetText("0" + number.ToString());
+				else
+					indexText.SetText(number.ToString());
+			}
+			if (deadIcon)
+				deadIcon.SetVisible(false);
+		}
+		else
+		{
+			if (indexText)
+				indexText.SetVisible(false);
+			if (deadIcon)
+				deadIcon.SetVisible(true);
+		}
+
+		// 3. Player Name
+		if (playerNameText)
+		{
+			if (killInfo.m_bIsTeamKill)
+				playerNameText.SetText(displayName + " [TK]");
+			else
+				playerNameText.SetText(displayName);
+		}
+
+		// 4. Distance
+		if (distanceText)
+		{
+			string distStr = killInfo.GetFormattedDistance();
+			if (distStr != "")
+				distanceText.SetText(distStr);
+			else
+				distanceText.SetText("");
+		}
+
+		// 5. HitZone
+		string hitZoneStr = killInfo.GetLocalizedHitZone();
+		if (hitZoneStr != "")
+		{
+			if (hitZoneText)
+			{
+				hitZoneText.SetText(hitZoneStr);
+				hitZoneText.SetVisible(true);
+			}
+			if (hitZoneBg)
+				hitZoneBg.SetVisible(true);
+
+			if (killInfo.m_eLastHitZoneGroup == ECharacterHitZoneGroup.HEAD)
+			{
+				if (hitZoneText)
+					hitZoneText.SetColor(Color.FromRGBA(255, 75, 75, 255)); // Bright red
+				if (hitZoneBg)
+					hitZoneBg.SetColor(Color.FromRGBA(120, 15, 15, 200)); // Dark red badge
+			}
+			else
+			{
+				if (hitZoneText)
+					hitZoneText.SetColor(Color.FromRGBA(205, 212, 215, 255));
+				if (hitZoneBg)
+					hitZoneBg.SetColor(Color.FromRGBA(16, 22, 25, 210)); // Matching dark interface palette
+			}
+		}
+		else
+		{
+			if (hitZoneText)
+				hitZoneText.SetVisible(false);
+			if (hitZoneBg)
+				hitZoneBg.SetVisible(false);
+		}
+
+		// 6. Weapon & Magazine
+		string weapon = killInfo.GetWeaponDisplayName();
+		string magazine = killInfo.GetMagazineDisplayName();
+
+		if (weapon != "")
+		{
+			if (weaponNameText)
+			{
+				weaponNameText.SetText(weapon);
+				weaponNameText.SetVisible(true);
+			}
+			if (magazine != "")
+			{
+				if (bulletDivider)
+					bulletDivider.SetVisible(true);
+				if (magazineText)
+				{
+					magazineText.SetText(magazine);
+					magazineText.SetVisible(true);
+				}
+			}
+			else
+			{
+				if (bulletDivider)
+					bulletDivider.SetVisible(false);
+				if (magazineText)
+					magazineText.SetVisible(false);
+			}
+		}
+		else if (magazine != "")
+		{
+			if (weaponNameText)
+			{
+				weaponNameText.SetText(magazine);
+				weaponNameText.SetVisible(true);
+			}
+			if (bulletDivider)
+				bulletDivider.SetVisible(false);
+			if (magazineText)
+				magazineText.SetVisible(false);
+		}
+		else
+		{
+			if (weaponNameText)
+			{
+				weaponNameText.SetText("—");
+				weaponNameText.SetVisible(true);
+			}
+			if (bulletDivider)
+				bulletDivider.SetVisible(false);
+			if (magazineText)
+				magazineText.SetVisible(false);
+		}
+
+		// Fallback for legacy / raw text widget if present
+		TextWidget legacyText = TextWidget.Cast(entryWidget.FindAnyWidget("KillEntryText"));
+		if (legacyText)
+		{
+			legacyText.SetText(killInfo.FormatLine(displayName, number));
+			if (killInfo.m_bIsTeamKill)
+				legacyText.SetColor(Color.FromRGBA(255, 90, 90, 255));
+			else
+				legacyText.SetColor(Color.White);
+		}
+
+		PrintFormat("[PS_KillList] AddKillEntry OK name=%1 weapon=%2 mag=%3 dist=%4 zone=%5 childrenNow=%6",
+			displayName, weapon, magazine, killInfo.GetFormattedDistance(), killInfo.GetLocalizedHitZone(), widgetArray.Count() + 1);
 
 		widgetArray.Insert(entryWidget);
 	}

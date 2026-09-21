@@ -351,12 +351,12 @@ FrameWidgetClass {
    Name "KillListFrame"
    Slot FrameWidgetSlot "{D1A2B3C4E5F6A7B1}" {
     Anchor 0.5 0 0.5 0
-    PositionX -320
-    OffsetLeft -320
+    PositionX -250
+    OffsetLeft -250
     PositionY 18
     OffsetTop 18
-    SizeX 640
-    OffsetRight 320
+    SizeX 500
+    OffsetRight 250
     SizeY 640
     OffsetBottom 658
    }
