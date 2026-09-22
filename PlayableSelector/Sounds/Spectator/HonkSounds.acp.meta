@@ -13,5 +13,7 @@ MetaFileClass {
   }
   AudioProjectResourceClass HEADLESS : PC {
   }
+  AudioProjectResourceClass Xbox : PC {
+  }
  }
 }
