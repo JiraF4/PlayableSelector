@@ -46,9 +46,9 @@ class PS_SlotsReserver : ScriptComponent
 				}
 			}
 		
-		DSSession dSSession = GetGame().GetBackendApi().GetDSSession();
-		if (dSSession)
-			m_iMaxPlayersCount = dSSession.PlayerLimit();
+		ServerInfo serverInfo = GetGame().GetServerInfo();
+		if (serverInfo)
+			m_iMaxPlayersCount = serverInfo.GetPlayerLimit();
 	}
 	
 	void AddGUIDs(array<string> GUIDS)
@@ -65,7 +65,7 @@ class PS_SlotsReserver : ScriptComponent
 		
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		
-		string GUID = GetGame().GetBackendApi().GetPlayerIdentityId(playerId);
+		string GUID = SCR_PlayerIdentityUtils.GetPlayerIdentityId(playerId);
 		if (m_aPlayerIdentities.Contains(GUID)) 
 			return;
 		

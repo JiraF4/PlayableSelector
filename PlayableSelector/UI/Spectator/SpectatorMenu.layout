@@ -347,7 +347,7 @@ FrameWidgetClass {
     }
    }
   }
-  FrameWidgetClass "{D1A2B3C4E5F6A7B0}" : "{C1A2B3D4E5F6A7B7}UI/Spectator/KillList.layout" {
+  FrameWidgetClass "{D1A2B3C4E5F6A7B0}" : "{5350963C5DEB4377}UI/Spectator/KillList.layout" {
    Name "KillListFrame"
    Slot FrameWidgetSlot "{D1A2B3C4E5F6A7B1}" {
     Anchor 0.5 0 0.5 0

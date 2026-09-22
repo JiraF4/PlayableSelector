@@ -235,7 +235,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (!pm)
 			return string.Format("player=%1", playerId);
 		string name = pm.GetPlayerName(playerId);
-		string uuid = GetGame().GetBackendApi().GetPlayerIdentityId(playerId);
+		string uuid = SCR_PlayerIdentityUtils.GetPlayerIdentityId(playerId);
 		string platformStr = SCR_Global.GetPlatformName(pm.GetPlatformKind(playerId));
 		EPlayerRole roles = pm.GetPlayerRoles(playerId);
 		string roleStr = "NONE";
@@ -2001,7 +2001,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		{
 			// Best-effort drop of orphaned (disconnected) entries so our tracking + the engine agree.
 			foreach (int orphan : m_aPreloadObservers)
-				RplComponent.RemoveMPObserver(orphan);
+				ObserversSystem.RemoveObserverMP(orphan);
 			m_aPreloadObservers.Clear();
 		}
 	}
@@ -2012,7 +2012,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	// signal. Server actions tagged [PS_Preload][SERVER]; client reference counts tagged [CLIENT].
 	void InsertPreloadObserver_S(int identity, int playerId, vector pos)
 	{
-		RplComponent.InsertMPObserver(identity, pos[0], pos[2]);
+		ObserversSystem.InsertObserverMP(identity, pos[0], pos[2]);
 		if (!m_aPreloadObservers.Contains(identity))
 			m_aPreloadObservers.Insert(identity);
 		Print(string.Format("[PS_Preload][SERVER] +observer player=%1 conn=%2 at (%3, %4) | active=%5 engineTotal=%6",
@@ -2021,7 +2021,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 	void RemovePreloadObserver_S(int identity, int playerId)
 	{
-		RplComponent.RemoveMPObserver(identity);
+		ObserversSystem.RemoveObserverMP(identity);
 		bool had = m_aPreloadObservers.Contains(identity);
 		m_aPreloadObservers.RemoveItem(identity);
 		if (had)
@@ -2035,7 +2035,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (!world)
 			return -1;
 		array<vector> observers = {};
-		return world.GetMPObservers(observers);
+		return ObserversSystem.GetObserversMP(observers);
 	}
 
 	// Client reference snapshot (CallLater'd from OnGameStateChanged): logs THIS machine's engine observer
@@ -2154,7 +2154,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			if (playerId <= 0)
 				continue;
 
-			string GUID = GetGame().GetBackendApi().GetPlayerIdentityId(playerId);
+			string GUID = SCR_PlayerIdentityUtils.GetPlayerIdentityId(playerId);
 			GUIDs.Insert(GUID);
 		}
 

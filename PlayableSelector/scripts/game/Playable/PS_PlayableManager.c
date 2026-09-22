@@ -316,10 +316,10 @@ class PS_PlayableManager : ScriptComponent
 	// Read max players count from server config
 	protected void ForceGetSessionMaxPlayersCount()
 	{
-		DSSession dSSession = GetGame().GetBackendApi().GetDSSession();
-		if (dSSession)
+		ServerInfo serverInfo = GetGame().GetServerInfo();
+		if (serverInfo)
 		{
-			m_iMaxPlayersCount = dSSession.PlayerLimit();
+			m_iMaxPlayersCount = serverInfo.GetPlayerLimit();
 			Replication.BumpMe();
 		}
 		else
@@ -737,7 +737,7 @@ class PS_PlayableManager : ScriptComponent
 	{
 		if (!Replication.IsServer())
 			return;
-		string guid = GetGame().GetBackendApi().GetPlayerIdentityId(playerId);
+		string guid = SCR_PlayerIdentityUtils.GetPlayerIdentityId(playerId);
 		if (guid == "")
 			return;
 		FactionKey faction = GetPlayerFactionKey(playerId);
@@ -758,7 +758,7 @@ class PS_PlayableManager : ScriptComponent
 	{
 		if (!Replication.IsServer())
 			return;
-		string guid = GetGame().GetBackendApi().GetPlayerIdentityId(playerId);
+		string guid = SCR_PlayerIdentityUtils.GetPlayerIdentityId(playerId);
 		if (guid == "")
 			return;
 		m_mReconnectPlayable.Remove(guid);
@@ -776,7 +776,7 @@ class PS_PlayableManager : ScriptComponent
 	{
 		if (!Replication.IsServer())
 			return;
-		string guid = GetGame().GetBackendApi().GetPlayerIdentityId(playerId);
+		string guid = SCR_PlayerIdentityUtils.GetPlayerIdentityId(playerId);
 		if (guid == "" || !m_mReconnectFaction.Contains(guid))
 			return; // genuinely fresh join, not a reconnect
 		m_mReconnectTraceTime.Set(playerId, GetGame().GetWorld().GetWorldTime());
@@ -815,7 +815,7 @@ class PS_PlayableManager : ScriptComponent
 			m_mReconnectCancelled.Remove(playerId);
 			return;
 		}
-		string guid = GetGame().GetBackendApi().GetPlayerIdentityId(playerId);
+		string guid = SCR_PlayerIdentityUtils.GetPlayerIdentityId(playerId);
 		if (guid == "" || !m_mReconnectFaction.Contains(guid))
 			return;
 

@@ -1,6 +1,6 @@
 class PS_KillList : ScriptedWidgetComponent
 {
-	protected ResourceName m_sKillEntryPrefab = "{C0A1B2D3E4F5A6B7}UI/Spectator/KillListEntry.layout";
+	protected ResourceName m_sKillEntryPrefab = "{FCAD3464FF75D530}UI/Spectator/KillListEntry.layout";
 
 	protected WorkspaceWidget m_WorkspaceWidget;
 	protected PS_PlayableManager m_PlayableManager;

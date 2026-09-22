@@ -271,7 +271,7 @@ class PS_MissionDataManager : ScriptComponent
 	
 	void OnPlayerAuditSuccess(int playerId)
 	{
-		string guid = GetGame().GetBackendApi().GetPlayerIdentityId(playerId);
+		string guid = SCR_PlayerIdentityUtils.GetPlayerIdentityId(playerId);
 		if (guid != "")
 		{
 			foreach (PS_MissionDataPlayer existingPlayer : m_Data.Players)

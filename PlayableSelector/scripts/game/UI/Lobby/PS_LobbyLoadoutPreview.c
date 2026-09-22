@@ -150,7 +150,7 @@ class PS_LobbyLoadoutPreview : SCR_WLibComponentBase
 	void CloseInventory()
 	{
 		m_PlayableVehicleContainerInventory = null;
-		m_iPlayableIdInventory = null;
+		m_iPlayableIdInventory = -1;
 		m_hLittleInventory.Clear();
 		m_hLittleInventory.GetRootWidget().SetVisible(false);
 	}

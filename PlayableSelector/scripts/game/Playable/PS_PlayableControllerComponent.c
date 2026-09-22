@@ -1312,7 +1312,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 			return;
 		}
 
-		string playerUUID = GetGame().GetBackendApi().GetPlayerIdentityId(playerId);
+		string playerUUID = SCR_PlayerIdentityUtils.GetPlayerIdentityId(playerId);
 		Rpc(RPC_GetArmaIdFromServer_Owner, playerUUID);
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Owner)]
@@ -1353,7 +1353,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 			return;
 		}
 
-		string playerGuid = GetGame().GetBackendApi().GetPlayerIdentityId(playerId);
+		string playerGuid = SCR_PlayerIdentityUtils.GetPlayerIdentityId(playerId);
 		Rpc(RPC_RequestPlayerGuid_Owner, playerGuid);
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Owner)]
