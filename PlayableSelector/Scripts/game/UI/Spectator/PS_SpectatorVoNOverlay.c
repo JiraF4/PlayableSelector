@@ -43,9 +43,9 @@ class PS_SpectatorVoNOverlay : ScriptedWidgetComponent
 		if (!GetGame().InPlayMode())
 			return;
 
-		m_wRowsLayout = VerticalLayoutWidget.Cast(w.FindAnyWidget("VoNRows"));
-		if (!m_wRowsLayout)
-			return;
+		// The component is attached directly to the VerticalLayout widget —
+		// cast 'w' itself rather than searching for a "VoNRows" child.
+		m_wRowsLayout = VerticalLayoutWidget.Cast(w);
 
 		PlayerController pc = GetGame().GetPlayerController();
 		if (pc)
