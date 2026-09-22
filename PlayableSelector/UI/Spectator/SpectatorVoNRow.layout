@@ -1,0 +1,73 @@
+SizeLayoutWidgetClass {
+ Name "VoNRow"
+ Slot LayoutSlot "{E0A1B2C3D4E5F601}" {
+  Padding 0 2 0 2
+ }
+ AllowWidthOverride 1
+ WidthOverride 280
+ AllowHeightOverride 1
+ HeightOverride 28
+ {
+  FrameWidgetClass "{E0A1B2C3D4E5F607}" {
+   Name "RowFrame"
+   Slot AlignableSlot "{E0A1B2C3D4E5F608}" {
+    HorizontalAlign 3
+    VerticalAlign 3
+   }
+   {
+    ImageWidgetClass "{E0A1B2C3D4E5F602}" {
+     Name "Background"
+     Slot FrameWidgetSlot "{E0A1B2C3D4E5F603}" {
+      Anchor 0 0 1 1
+      PositionX 0
+      OffsetLeft 0
+      PositionY 0
+      OffsetTop 0
+      SizeX 0
+      OffsetRight 0
+      SizeY 0
+      OffsetBottom 0
+     }
+     Color 0.007 0.012 0.014 0.75
+    }
+    ImageWidgetClass "{E0A1B2C3D4E5F609}" {
+     Name "MicIcon"
+     Slot FrameWidgetSlot "{E0A1B2C3D4E5F60A}" {
+      Anchor 0 0 0 0
+      PositionX 4
+      OffsetLeft 4
+      PositionY 3
+      OffsetTop 3
+      SizeX 22
+      OffsetRight -26
+      SizeY 22
+      OffsetBottom -25
+     }
+     Color 0.85 0.65 0.15 1
+     Texture "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset"
+     Image "VoNDirect"
+     Size 22 22
+    }
+    TextWidgetClass "{E0A1B2C3D4E5F604}" {
+     Name "PlayerName"
+     Slot FrameWidgetSlot "{E0A1B2C3D4E5F605}" {
+      Anchor 0 0 1 1
+      PositionX 30
+      OffsetLeft 30
+      PositionY 0
+      OffsetTop 0
+      SizeX -34
+      OffsetRight 4
+      SizeY 0
+      OffsetBottom 0
+     }
+     Color 1 1 1 1
+     Text "Player"
+     "Font Size" 15
+     "Min Font Size" 15
+     "Vertical Alignment" Center
+    }
+   }
+  }
+ }
+}

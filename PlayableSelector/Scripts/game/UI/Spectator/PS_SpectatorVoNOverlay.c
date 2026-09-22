@@ -8,16 +8,16 @@
  * @details Подписывается на движковый инвокер talking-состояния при
  *          HandlerAttached и отписывается при HandlerDeattached. При
  *          talking==true создаёт строку-виджет с ником говорящего; при
- *          talking==false удаляет её. Отображает только чужих — собственный
- *          ID фильтруется. Управляется видимостью через SetVisible()
- *          из PS_SpectatorMenu.Action_SwitchSpectatorUI.
+ *          talking==false удаляет её. Отображает говорящих игроков в
+ *          левом верхнем углу меню спектатора. Управляется видимостью через
+ *          SetVisible() из PS_SpectatorMenu.Action_SwitchSpectatorUI.
  */
 class PS_SpectatorVoNOverlay : ScriptedWidgetComponent
 {
 	/// Максимум одновременно видимых строк. При превышении вытесняется самая старая.
 	protected static const int MAX_ROWS = 5;
 
-	[Attribute("", UIWidgets.ResourceNamePicker, "Layout строки говорящего игрока", "layout")]
+	[Attribute("{E0A1B2C3D4E5F600}UI/Spectator/SpectatorVoNRow.layout", UIWidgets.ResourceNamePicker, "Layout строки говорящего игрока", "layout")]
 	protected ResourceName m_sRowPrefab;
 
 	protected VerticalLayoutWidget m_wRowsLayout;
@@ -29,22 +29,21 @@ class PS_SpectatorVoNOverlay : ScriptedWidgetComponent
 	 */
 	protected ref map<int, Widget> m_mRows = new map<int, Widget>();
 
-	/// ID локального игрока — его строка не показывается.
+	/// ID локального игрока для цветовой дифференциации.
 	protected int m_iLocalPlayerId = -1;
 
 	//------------------------------------------------------------------------------------------------
 	/**
 	 * @brief Инициализация: найти layout, подписаться на инвокер talking-состояния.
 	 * @integration PlayableSelector: SCR_VoNComponent.PS_GetOnTalkingChanged()
-	 * @fallback Если VerticalLayout "VoNRows" не найден в иерархии — компонент молчит.
 	 */
 	override void HandlerAttached(Widget w)
 	{
+		super.HandlerAttached(w);
+
 		if (!GetGame().InPlayMode())
 			return;
 
-		// The component is attached directly to the VerticalLayout widget —
-		// cast 'w' itself rather than searching for a "VoNRows" child.
 		m_wRowsLayout = VerticalLayoutWidget.Cast(w);
 
 		PlayerController pc = GetGame().GetPlayerController();
@@ -66,6 +65,7 @@ class PS_SpectatorVoNOverlay : ScriptedWidgetComponent
 	{
 		SCR_VoNComponent.PS_GetOnTalkingChanged().Remove(OnTalkingChanged);
 		ClearAllRows();
+		super.HandlerDeattached(w);
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -76,9 +76,12 @@ class PS_SpectatorVoNOverlay : ScriptedWidgetComponent
 	 */
 	protected void OnTalkingChanged(int playerId, bool talking)
 	{
-		// Не показывать собственный ник
-		if (playerId == m_iLocalPlayerId)
-			return;
+		if (m_iLocalPlayerId < 0)
+		{
+			PlayerController pc = GetGame().GetPlayerController();
+			if (pc)
+				m_iLocalPlayerId = pc.GetPlayerId();
+		}
 
 		if (talking)
 		{
@@ -108,10 +111,14 @@ class PS_SpectatorVoNOverlay : ScriptedWidgetComponent
 	 */
 	protected void CreateRow(int playerId)
 	{
-		if (!m_wRowsLayout || m_sRowPrefab.IsEmpty())
+		if (!m_wRowsLayout)
 			return;
 
-		Widget row = GetGame().GetWorkspace().CreateWidgets(m_sRowPrefab, m_wRowsLayout);
+		ResourceName prefab = m_sRowPrefab;
+		if (prefab.IsEmpty())
+			prefab = "{E0A1B2C3D4E5F600}UI/Spectator/SpectatorVoNRow.layout";
+
+		Widget row = GetGame().GetWorkspace().CreateWidgets(prefab, m_wRowsLayout);
 		if (!row)
 			return;
 
@@ -124,8 +131,25 @@ class PS_SpectatorVoNOverlay : ScriptedWidgetComponent
 			if (pm)
 				playerName = pm.GetPlayerName(playerId);
 			if (playerName.IsEmpty())
-				playerName = GetGame().GetPlayerManager().GetPlayerName(playerId);
+			{
+				PlayerManager playerMgr = GetGame().GetPlayerManager();
+				if (playerMgr)
+					playerName = playerMgr.GetPlayerName(playerId);
+			}
+			if (playerName.IsEmpty())
+				playerName = ("Player " + playerId.ToString());
+
 			nameWidget.SetText(playerName);
+		}
+
+		// Иконка микрофона: зелёная для локального игрока, золотая для других
+		ImageWidget micIcon = ImageWidget.Cast(row.FindAnyWidget("MicIcon"));
+		if (micIcon)
+		{
+			if (playerId == m_iLocalPlayerId)
+				micIcon.SetColor(Color.FromRGBA(80, 220, 80, 255));
+			else
+				micIcon.SetColor(Color.FromRGBA(220, 175, 40, 255));
 		}
 
 		m_mRows.Set(playerId, row);
