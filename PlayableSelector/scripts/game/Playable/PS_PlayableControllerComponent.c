@@ -1990,7 +1990,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 	}
 	/**
 	 * @brief Назначение игрока на слот персонажа по RplId слота
-	 * @issue BUG-48
+	 * @issue BUG-48, BUG-49
 	 * @cause Клиент мог передавать отрицательный playerId (-1, -2 для блокировки/сброса) или чужой ID без прав админа
 	 * @solution Разрешать установку отрицательных ID и чужих ID только администраторам
 	 * @rpc Owner -> Server (Reliable)
@@ -2025,6 +2025,8 @@ class PS_PlayableControllerComponent : ScriptComponent
 		// Check faction balance
 		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		PS_PlayableContainer playableContainer = playableManager.GetPlayableById(playableId);
+		if (playerId > 0 && !playableContainer)
+			return;
 		if (playableContainer)
 		{
 			FactionKey factionKey = playableContainer.GetFactionKey();
@@ -2048,8 +2050,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		if (!SCR_Global.IsAdmin(thisPlayerController.GetPlayerId()))
 		{
 			PrintFormat("[PS_AntiCheat] ADMIN_ATTEMPT: %1 action=SetPlayableVehicleLocked vehicleId=%2 lock=%3",
-				PS_GameModeCoop.PS_AntiCheatPlayerIdentity(thisPlayerController.GetPlayerId()),
-				vehicleId, lock);
+				PS_GameModeCoop.PS_AntiCheatPlayerIdentity(thisPlayerController.GetPlayerId()), vehicleId, lock);
 			return;
 		}
 		
@@ -2062,9 +2063,9 @@ class PS_PlayableControllerComponent : ScriptComponent
 	}
 	/**
 	 * @brief Назначение слота игроку по playerId
-	 * @issue BUG-48
-	 * @cause Неавторизованный клиент мог снимать со слота или переназначать других игроков
-	 * @solution Проверка: модификация чужого слота разрешена только администратору
+	 * @issue BUG-48, BUG-49
+	 * @cause Неавторизованный клиент мог переназначать других игроков. Невалидный RplId вызывал VME разыменования null playableContainer.
+	 * @solution Проверка авторства/администратора, строгая валидация существования playableContainer и playableComponent.
 	 * @rpc Owner -> Server (Reliable)
 	 */
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
@@ -2107,17 +2108,21 @@ class PS_PlayableControllerComponent : ScriptComponent
 			return;
 		}
 
+		PS_PlayableContainer playableContainer = playableManager.GetPlayableById(playableId);
+		if (!playableContainer)
+			return;
+
 		// Check faction balance
 		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		PS_PlayableContainer playableContainer = playableManager.GetPlayableById(playableId);
-		if (playableContainer)
-		{
-			FactionKey factionKey = playableContainer.GetFactionKey();
-			if (playerId >= 0 && !isAdmin && gameModeCoop && !gameModeCoop.CanJoinFaction(factionKey, playableManager.GetPlayerFactionKey(playerId)))
-				return;
-		}
+		FactionKey factionKey = playableContainer.GetFactionKey();
+		if (playerId >= 0 && !isAdmin && gameModeCoop && !gameModeCoop.CanJoinFaction(factionKey, playableManager.GetPlayerFactionKey(playerId)))
+			return;
 
-		SCR_ChimeraCharacter playableCharacter = SCR_ChimeraCharacter.Cast(playableContainer.GetPlayableComponent().GetOwner());
+		PS_PlayableComponent playableComponent = playableContainer.GetPlayableComponent();
+		if (!playableComponent || !playableComponent.GetOwner())
+			return;
+
+		SCR_ChimeraCharacter playableCharacter = SCR_ChimeraCharacter.Cast(playableComponent.GetOwner());
 
 		// Check is playable already selected or dead
 		int curretPlayerId = playableManager.GetPlayerByPlayable(playableId);

@@ -294,8 +294,11 @@ class PS_CoopLobby : MenuBase
 		rolesGroup.InsertVehicle(playableVehicleContainer);
 	}
 	
-	void AddPlayable(PS_PlayableContainer playable)
+	bool AddPlayable(PS_PlayableContainer playable)
 	{
+		if (!playable)
+			return false;
+
 		SCR_AIGroup playableGroup = m_PlayableManager.GetPlayerGroupByPlayable(playable.GetRplId());
 		PS_RolesGroup rolesGroup;
 		if (!m_mGroups.Contains(playableGroup))
@@ -310,7 +313,7 @@ class PS_CoopLobby : MenuBase
 			rolesGroupRoot.SetVisible(m_CurrentFaction == faction);
 		}
 		else rolesGroup = m_mGroups.Get(playableGroup);
-		rolesGroup.InsertPlayable(playable);
+		return rolesGroup.InsertPlayable(playable);
 	}
 	
 	void AddPlayer(int playerId)
@@ -398,6 +401,12 @@ class PS_CoopLobby : MenuBase
 	
 	void OnPlayableRegistered(RplId playableId, PS_PlayableContainer playable)
 	{
+		if (!playable)
+			return;
+
+		if (!AddPlayable(playable))
+			return;
+
 		SCR_Faction faction = playable.GetFaction();
 		if (!m_mFactions.Contains(faction))
 		{
@@ -405,7 +414,6 @@ class PS_CoopLobby : MenuBase
 		}
 		else
 			AddFactionCount(faction, 0, 1, 0);
-		AddPlayable(playable);
 	}
 	
 	void OnRolesGroupRemoved(PS_RolesGroup rolesGroup)

@@ -1375,7 +1375,7 @@ class PS_PlayableManager : ScriptComponent
 	protected void RPC_SetPlayablePlayerGroupId(RplId PlayableId, int groupId)
 	{
 		m_playablePlayerGroupId[PlayableId] = groupId;
-		UpdatePlayablesSorted(); // Group added resort list (TODO: check is it required)
+		UpdatePlayablesSortedDelayed(); // Coalesced via callqueue to avoid 128x insertion sort during registration burst
 		SCR_GroupsManagerComponent groupsManagerComponent = SCR_GroupsManagerComponent.GetInstance();
 		m_eOnPlayableChangeGroup.Invoke(PlayableId, GetPlayableById(PlayableId), groupsManagerComponent.FindGroup(groupId));
 

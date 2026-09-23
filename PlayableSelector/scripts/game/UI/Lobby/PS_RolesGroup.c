@@ -152,8 +152,11 @@ class PS_RolesGroup : SCR_ScriptedWidgetComponent
 	
 	// --------------------------------------------------------------------------------------------------------------------------------
 	// Add
-	void InsertVehicle(PS_PlayableVehicleContainer vehicle)
+	bool InsertVehicle(PS_PlayableVehicleContainer vehicle)
 	{
+		if (!vehicle || m_mVehicles.Contains(vehicle))
+			return false;
+
 		Widget vehicleSelectorRoot = m_wWorkspaceWidget.CreateWidgets(m_sVehicleSelectorPrefab, m_wVehiclesList);
 		PS_VehicleSelector vehicleSelector = PS_VehicleSelector.Cast(vehicleSelectorRoot.FindHandler(PS_VehicleSelector));
 		vehicleSelector.SetLobbyMenu(m_CoopLobby);
@@ -161,10 +164,14 @@ class PS_RolesGroup : SCR_ScriptedWidgetComponent
 		vehicleSelector.SetMembersCounter(AddMember(vehicle.GetIconPath()));
 		vehicleSelector.SetVehicle(vehicle);
 		m_mVehicles.Insert(vehicle, vehicleSelector);
+		return true;
 	}
 	
-	void InsertPlayable(PS_PlayableContainer playable)
+	bool InsertPlayable(PS_PlayableContainer playable)
 	{
+		if (!playable || m_mCharacters.Contains(playable))
+			return false;
+
 		Widget characterSelectorRoot = m_wWorkspaceWidget.CreateWidgets(m_sCharacterSelectorPrefab, m_wCharactersList);
 		PS_CharacterSelector characterSelector = PS_CharacterSelector.Cast(characterSelectorRoot.FindHandler(PS_CharacterSelector));
 		characterSelector.SetLobbyMenu(m_CoopLobby);
@@ -186,6 +193,7 @@ class PS_RolesGroup : SCR_ScriptedWidgetComponent
 		playable.GetOnPlayerChange().Insert(OnPlayablePlayerChange);
 		m_iCharactersCount++;
 		UpdateCustomName();
+		return true;
 	}
 	
 	PS_MembersCounter AddMember(ResourceName memberIcon)
