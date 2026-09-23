@@ -12,7 +12,7 @@ class PS_MissionDataManagerClass: ScriptComponentClass
  * @context Server
  * @entity PS_GameMode_Lobby.et / PS_GameModeCoop
  * @depends PlayableSelector
- * @listens PS_GameModeCoop.GetOnHandlePlayerKilled, GetOnGameStateChange, GetOnPlayerAuditSuccess
+ * @listens PS_GameModeCoop.GetOnHandlePlayerKilled, GetOnGameStateChange, GetOnPlayerConnected, GetOnPlayerAuditSuccess
  * @details Формирует итоговые структуры матча и выполняет локальное сохранение в JSON, а также асинхронный экспорт через REST API на веб-сайт статистики.
  */
 class PS_MissionDataManager : ScriptComponent
@@ -28,14 +28,13 @@ class PS_MissionDataManager : ScriptComponent
 	}
 	
 	ref map<int, bool> m_playerSaved = new map<int, bool>();
-	ref set<RplId> m_DeadEntities = new set<RplId>();
 	PS_PlayableManager m_PlayableManager;
 	PS_ObjectiveManager m_ObjectiveManager;
 	PS_GameModeCoop m_GameModeCoop;
 	FactionManager m_FactionManager;
 	PlayerManager m_PlayerManager;
 	ref PS_MissionDataConfig m_Data = new PS_MissionDataConfig();
-	int m_iInitTimer = 40;
+	int m_iInitTimer = 100;
 
 	// Strong reference: движок Enfusion удаляет асинхронный RestCallback, если на него нет сильной ссылки
 	protected ref RestCallback m_WebsiteCallback;
@@ -45,21 +44,30 @@ class PS_MissionDataManager : ScriptComponent
 		if (!Replication.IsServer())
 			return;
 		
+		Print("PS_MissionDataManager: Initialized on server", LogLevel.NORMAL);
 		GetGame().GetCallqueue().CallLater(LateInit, 0, false);
 		GetGame().GetCallqueue().CallLater(AwaitFullInit, 0, true);
 	}
 	
 	override void OnDelete(IEntity owner)
 	{
+		GetGame().GetCallqueue().Remove(AwaitFullInit);
+		GetGame().GetCallqueue().Remove(LateInit);
+		GetGame().GetCallqueue().Remove(FinalizeMissionExport);
+		m_WebsiteCallback = null;
+
 		if (m_GameModeCoop)
 		{
 			if (m_GameModeCoop.GetOnHandlePlayerKilled())
 				m_GameModeCoop.GetOnHandlePlayerKilled().Remove(OnPlayerKilled);
 			if (m_GameModeCoop.GetOnGameStateChange())
 				m_GameModeCoop.GetOnGameStateChange().Remove(OnGameStateChanged);
+			if (m_GameModeCoop.GetOnPlayerConnected())
+				m_GameModeCoop.GetOnPlayerConnected().Remove(OnPlayerConnected);
 			if (m_GameModeCoop.GetOnPlayerAuditSuccess())
 				m_GameModeCoop.GetOnPlayerAuditSuccess().Remove(OnPlayerAuditSuccess);
 		}
+		Print("PS_MissionDataManager: Deleted and unhooked", LogLevel.NORMAL);
 		super.OnDelete(owner);
 	}
 	
@@ -93,6 +101,7 @@ class PS_MissionDataManager : ScriptComponent
 		}
 		
 		m_Data.Vehicles.Insert(vehicleData);
+		Print(string.Format("PS_MissionDataManager: Registered vehicle '%1' (RplId: %2, faction: %3)", vehicleData.EditableName, vehicleId, vehicleData.VehicleFactionKey), LogLevel.NORMAL);
 	}
 	
 	void LateInit()
@@ -103,11 +112,40 @@ class PS_MissionDataManager : ScriptComponent
 		m_ObjectiveManager = PS_ObjectiveManager.GetInstance();
 		m_FactionManager = GetGame().GetFactionManager();
 		
-		m_GameModeCoop.GetOnHandlePlayerKilled().Insert(OnPlayerKilled);
-		m_GameModeCoop.GetOnGameStateChange().Insert(OnGameStateChanged);
-		m_GameModeCoop.GetOnPlayerAuditSuccess().Insert(OnPlayerAuditSuccess);
+		if (!m_GameModeCoop)
+		{
+			Print("PS_MissionDataManager: PS_GameModeCoop not found on owner!", LogLevel.WARNING);
+			return;
+		}
+
+		if (m_GameModeCoop.GetOnHandlePlayerKilled())
+			m_GameModeCoop.GetOnHandlePlayerKilled().Insert(OnPlayerKilled);
+		if (m_GameModeCoop.GetOnGameStateChange())
+			m_GameModeCoop.GetOnGameStateChange().Insert(OnGameStateChanged);
+		if (m_GameModeCoop.GetOnPlayerConnected())
+			m_GameModeCoop.GetOnPlayerConnected().Insert(OnPlayerConnected);
+		if (m_GameModeCoop.GetOnPlayerAuditSuccess())
+			m_GameModeCoop.GetOnPlayerAuditSuccess().Insert(OnPlayerAuditSuccess);
+
+		// Зарегистрировать всех уже присутствующих на сервере игроков (хост или ранее подключенные клиенты)
+		if (m_PlayerManager)
+		{
+			array<int> playerIds = {};
+			m_PlayerManager.GetPlayers(playerIds);
+			foreach (int pid : playerIds)
+			{
+				RegisterPlayer(pid);
+			}
+		}
+
 		if (RplSession.Mode() != RplMode.Dedicated) 
-			OnPlayerAuditSuccess(GetGame().GetPlayerController().GetPlayerId());
+		{
+			PlayerController pc = GetGame().GetPlayerController();
+			if (pc)
+				RegisterPlayer(pc.GetPlayerId());
+		}
+
+		Print("PS_MissionDataManager: LateInit completed, listening to game mode events", LogLevel.NORMAL);
 	}
 	
 	void OnPlayerKilled(int playerId, IEntity playerEntity, IEntity killerEntity, notnull Instigator killer)
@@ -122,6 +160,8 @@ class PS_MissionDataManager : ScriptComponent
 		if (playerEntity && killerEntity)
 			missionDataPlayerKill.Distance = Math.Round(vector.Distance(killerEntity.GetOrigin(), playerEntity.GetOrigin()));
 		m_Data.Kills.Insert(missionDataPlayerKill);
+
+		Print(string.Format("PS_MissionDataManager: Kill recorded - Victim: %1, Killer: %2, Distance: %3m", playerId, killerId, missionDataPlayerKill.Distance), LogLevel.NORMAL);
 	}
 	
 	void AwaitFullInit()
@@ -131,6 +171,7 @@ class PS_MissionDataManager : ScriptComponent
 		{
 			GetGame().GetCallqueue().Remove(AwaitFullInit);
 			InitData();
+			Print("PS_MissionDataManager: AwaitFullInit finished, mission data initialized", LogLevel.NORMAL);
 		}
 	}
 	
@@ -141,6 +182,9 @@ class PS_MissionDataManager : ScriptComponent
 		missionDataStateChangeEvent.Time = GetGame().GetWorld().GetWorldTime();
 		missionDataStateChangeEvent.SystemTime = System.GetUnixTime();
 		m_Data.StateEvents.Insert(missionDataStateChangeEvent);
+
+		Print(string.Format("PS_MissionDataManager: GameState changed to %1", typename.EnumToString(SCR_EGameModeState, state)), LogLevel.NORMAL);
+
 		if (state == SCR_EGameModeState.SLOTSELECTION)
 			CollectFactions();
 		else if (state == SCR_EGameModeState.GAME)
@@ -163,6 +207,7 @@ class PS_MissionDataManager : ScriptComponent
 	 */
 	void FinalizeMissionExport()
 	{
+		Print("PS_MissionDataManager: Starting FinalizeMissionExport...", LogLevel.NORMAL);
 		DefineScenarioType();
 		SaveObjectives();
 		if (m_Data.Factions.IsEmpty())
@@ -182,12 +227,17 @@ class PS_MissionDataManager : ScriptComponent
 	{
 		SCR_MissionHeader missionHeader = SCR_MissionHeader.Cast(GetGame().GetMissionHeader());
 		if (!missionHeader)
+		{
+			Print("PS_MissionDataManager: SCR_MissionHeader not found", LogLevel.WARNING);
 			return;
+		}
 		m_Data.WorldPath = missionHeader.GetWorldPath();
 		m_Data.MissionName = missionHeader.m_sName;
 		m_Data.MissionAuthor = missionHeader.m_sAuthor;
 		m_Data.MissionDescription = missionHeader.m_sDescription;
 		m_Data.ScenarioType = missionHeader.m_sGameMode;
+
+		Print(string.Format("PS_MissionDataManager: Scenario defined - Name: '%1', Author: '%2', Type: '%3'", m_Data.MissionName, m_Data.MissionAuthor, m_Data.ScenarioType), LogLevel.NORMAL);
 	}
 
 	/**
@@ -269,38 +319,89 @@ class PS_MissionDataManager : ScriptComponent
 		}
 	}
 	
+	void OnPlayerConnected(int playerId)
+	{
+		RegisterPlayer(playerId);
+	}
+
 	void OnPlayerAuditSuccess(int playerId)
 	{
+		RegisterPlayer(playerId);
+	}
+
+	/**
+	 * @brief Регистрация или обновление данных игрока в списке сессии.
+	 * @param playerId ID игрока в PlayerManager
+	 * @details Идемпотентный метод: регистрирует игрока при подключении (OnPlayerConnected),
+	 *          обновляет GUID при аутентификации BI Backend (OnPlayerAuditSuccess) и связывает
+	 *          данные при реконнекте. Гарантирует наличие игрока в m_Data.Players на любых типах серверов (включая LAN/офлайн).
+	 */
+	void RegisterPlayer(int playerId)
+	{
+		if (playerId <= 0)
+			return;
+
+		if (!m_PlayerManager)
+			m_PlayerManager = GetGame().GetPlayerManager();
+
+		string name = "";
+		if (m_PlayableManager)
+			name = m_PlayableManager.GetPlayerName(playerId);
+		if (name == "" && m_PlayerManager)
+			name = m_PlayerManager.GetPlayerName(playerId);
+
 		string guid = SCR_PlayerIdentityUtils.GetPlayerIdentityId(playerId);
+
+		// 1. Поиск уже существующей записи по playerId
+		foreach (PS_MissionDataPlayer existingPlayer : m_Data.Players)
+		{
+			if (existingPlayer.m_iPlayerId == playerId)
+			{
+				if (guid != "" && existingPlayer.GUID == "")
+				{
+					existingPlayer.GUID = guid;
+					Print(string.Format("PS_MissionDataManager: Player GUID updated (Id: %1, GUID: %2)", playerId, guid), LogLevel.NORMAL);
+				}
+				if (name != "" && !name.StartsWith("Player") && (existingPlayer.Name == "" || existingPlayer.Name.StartsWith("Player")))
+				{
+					existingPlayer.Name = name;
+					Print(string.Format("PS_MissionDataManager: Player name updated (Id: %1, Name: '%2')", playerId, name), LogLevel.NORMAL);
+				}
+				if (!m_playerSaved.Contains(playerId))
+					m_playerSaved.Insert(playerId, true);
+				return;
+			}
+		}
+
+		// 2. Поиск по GUID при реконнекте (когда игрок переподключился и получил новый playerId)
 		if (guid != "")
 		{
-			foreach (PS_MissionDataPlayer existingPlayer : m_Data.Players)
+			foreach (PS_MissionDataPlayer existingByGuid : m_Data.Players)
 			{
-				if (existingPlayer.GUID == guid)
+				if (existingByGuid.GUID == guid)
 				{
-					existingPlayer.m_iPlayerId = playerId;
-					string currentName = m_PlayerManager.GetPlayerName(playerId);
-					if (currentName != "" && !currentName.StartsWith("Player"))
-						existingPlayer.Name = currentName;
+					existingByGuid.m_iPlayerId = playerId;
+					if (name != "" && !name.StartsWith("Player"))
+						existingByGuid.Name = name;
 					if (!m_playerSaved.Contains(playerId))
 						m_playerSaved.Insert(playerId, true);
+					Print(string.Format("PS_MissionDataManager: Player reconnected/updated (Id: %1, Name: '%2', GUID: %3)", playerId, existingByGuid.Name, guid), LogLevel.NORMAL);
 					return;
 				}
 			}
 		}
 
-		if (m_playerSaved.Contains(playerId))
-			return;
-		
-		string name = m_PlayerManager.GetPlayerName(playerId);
-		
+		// 3. Создание новой записи игрока
 		PS_MissionDataPlayer player = new PS_MissionDataPlayer();
 		player.m_iPlayerId = playerId;
 		player.GUID = guid;
 		player.Name = name;
 		m_Data.Players.Insert(player);
-		
-		m_playerSaved.Insert(playerId, true);
+
+		if (!m_playerSaved.Contains(playerId))
+			m_playerSaved.Insert(playerId, true);
+
+		Print(string.Format("PS_MissionDataManager: Registered player (Id: %1, Name: '%2', GUID: %3)", playerId, name, guid), LogLevel.NORMAL);
 	}
 
 	// Save main mission data
@@ -504,7 +605,6 @@ class PS_MissionDataManager : ScriptComponent
 				}
 			}
 
-
 			// 4. Добавление слота в группу
 			PS_MissionDataPlayable missionDataPlayable = new PS_MissionDataPlayable();
 			missionDataPlayable.EntityId = playableId;
@@ -532,6 +632,17 @@ class PS_MissionDataManager : ScriptComponent
 		if (!m_PlayableManager)
 			return;
 
+		// Гарантируем регистрацию всех присутствующих на сервере игроков в m_Data.Players
+		if (m_PlayerManager)
+		{
+			array<int> connectedPlayerIds = {};
+			m_PlayerManager.GetPlayers(connectedPlayerIds);
+			foreach (int cPlayerId : connectedPlayerIds)
+			{
+				RegisterPlayer(cPlayerId);
+			}
+		}
+
 		array<PS_PlayableContainer> playables = m_PlayableManager.GetPlayablesSorted();
 		if (!playables)
 			return;
@@ -552,6 +663,9 @@ class PS_MissionDataManager : ScriptComponent
 
 			if (playerId <= 0)
 				continue;
+
+			// Гарантируем, что занявший слот игрок зарегистрирован в m_Data.Players
+			RegisterPlayer(playerId);
 
 			PS_MissionDataPlayerToEntity playerToEntity = new PS_MissionDataPlayerToEntity();
 			playerToEntity.m_iPlayerId = playerId;
@@ -583,6 +697,8 @@ class PS_MissionDataManager : ScriptComponent
 				processedPlayers.Insert(pid, true);
 			}
 		}
+
+		Print(string.Format("PS_MissionDataManager: Successfully saved %1 player-to-slot associations", m_Data.PlayersToPlayables.Count()), LogLevel.NORMAL);
 	}
 	
 	void SaveObjectives()
@@ -624,10 +740,15 @@ class PS_MissionDataManager : ScriptComponent
 			}
 			m_Data.FactionResults.Insert(missionDataFactionResult);
 		}
+
+		Print(string.Format("PS_MissionDataManager: Successfully saved objectives for %1 factions", m_Data.FactionResults.Count()), LogLevel.NORMAL);
 	}
 	
 	void WriteToFile()
 	{
+		if (m_Data.MissionName == "")
+			DefineScenarioType();
+
 		if (m_Data.SessionName == "")
 		{
 			string time = System.GetUnixTime().ToString();
