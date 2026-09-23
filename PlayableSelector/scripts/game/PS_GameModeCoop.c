@@ -35,6 +35,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	[Attribute("0", uiwidget: UIWidgets.CheckBox, "Remove default markers on squad leaders.", category: "Reforger Lobby")]
 	protected bool m_bRemoveSquadMarkers;
 
+	[Attribute("0", uiwidget: UIWidgets.CheckBox, "Disable squad leader and member 3D nametag icons.", category: "Reforger Lobby")]
+	protected bool m_bDisableSquadNametagIcons;
+
 	[Attribute("60000", UIWidgets.EditBox, "Time in milliseconds before restriction zones are removed.", category: "Reforger Lobby")]
 	int m_iFreezeTime;
 
@@ -2000,8 +2003,12 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (leaked > 0)
 		{
 			// Best-effort drop of orphaned (disconnected) entries so our tracking + the engine agree.
-			foreach (int orphan : m_aPreloadObservers)
-				ObserversSystem.RemoveObserverMP(orphan);
+			ObserversSystem observersSystem = GetObserversSystem();
+			if (observersSystem)
+			{
+				foreach (int orphan : m_aPreloadObservers)
+					observersSystem.RemoveObserverMP(orphan);
+			}
 			m_aPreloadObservers.Clear();
 		}
 	}
@@ -2012,7 +2019,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	// signal. Server actions tagged [PS_Preload][SERVER]; client reference counts tagged [CLIENT].
 	void InsertPreloadObserver_S(int identity, int playerId, vector pos)
 	{
-		ObserversSystem.InsertObserverMP(identity, pos[0], pos[2]);
+		ObserversSystem observersSystem = GetObserversSystem();
+		if (observersSystem)
+			observersSystem.InsertObserverMP(identity, pos[0], pos[2], null);
 		if (!m_aPreloadObservers.Contains(identity))
 			m_aPreloadObservers.Insert(identity);
 		Print(string.Format("[PS_Preload][SERVER] +observer player=%1 conn=%2 at (%3, %4) | active=%5 engineTotal=%6",
@@ -2021,7 +2030,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 	void RemovePreloadObserver_S(int identity, int playerId)
 	{
-		ObserversSystem.RemoveObserverMP(identity);
+		ObserversSystem observersSystem = GetObserversSystem();
+		if (observersSystem)
+			observersSystem.RemoveObserverMP(identity);
 		bool had = m_aPreloadObservers.Contains(identity);
 		m_aPreloadObservers.RemoveItem(identity);
 		if (had)
@@ -2029,13 +2040,22 @@ class PS_GameModeCoop : SCR_BaseGameMode
 				playerId, identity, m_aPreloadObservers.Count()), LogLevel.NORMAL);
 	}
 
+	protected ObserversSystem GetObserversSystem()
+	{
+		World world = GetGame().GetWorld();
+		if (!world)
+			return null;
+		return ObserversSystem.Cast(world.FindSystem(ObserversSystem));
+	}
+
 	int GetEngineMPObserverCount()
 	{
-		ChimeraWorld world = ChimeraWorld.CastFrom(GetGame().GetWorld());
-		if (!world)
+		ObserversSystem observersSystem = GetObserversSystem();
+		if (!observersSystem)
 			return -1;
 		array<vector> observers = {};
-		return ObserversSystem.GetObserversMP(observers);
+		observersSystem.GetObserversMP(observers);
+		return observers.Count();
 	}
 
 	// Client reference snapshot (CallLater'd from OnGameStateChanged): logs THIS machine's engine observer
@@ -2728,6 +2748,41 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		m_bRemoveSquadMarkers = disableLeaderSquadMarkers;
 	}
 
+	bool GetDisableSquadNametagIcons()
+	{
+		return m_bDisableSquadNametagIcons;
+	}
+	void SetDisableSquadNametagIcons(bool disableSquadNametagIcons)
+	{
+		RPC_SetDisableSquadNametagIcons(disableSquadNametagIcons);
+		Rpc(RPC_SetDisableSquadNametagIcons, disableSquadNametagIcons);
+	}
+	/**
+	 * @brief Сетевая синхронизация флага отключения 3D-иконок отделения в неймтегах
+	 * @rpc Server -> Broadcast (Reliable)
+	 * @param disableSquadNametagIcons Значение флага отключения
+	 */
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RPC_SetDisableSquadNametagIcons(bool disableSquadNametagIcons)
+	{
+		m_bDisableSquadNametagIcons = disableSquadNametagIcons;
+
+		if (System.IsConsoleApp())
+			return;
+
+		PlayerController pc = GetGame().GetPlayerController();
+		if (!pc)
+			return;
+
+		SCR_HUDManagerComponent hudMgr = SCR_HUDManagerComponent.Cast(pc.FindComponent(SCR_HUDManagerComponent));
+		if (!hudMgr)
+			return;
+
+		SCR_NameTagDisplay display = SCR_NameTagDisplay.Cast(hudMgr.FindInfoDisplay(SCR_NameTagDisplay));
+		if (display)
+			display.CleanupAllTags();
+	}
+
 	// Global flags set
 	void FactionLockSwitch()
 	{
@@ -2823,6 +2878,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		writer.WriteInt(m_iFreezeTime);
 		writer.WriteInt(m_iReconnectTime);
 		writer.WriteInt(m_iHardFreezeTime);
+		writer.WriteBool(m_bDisableSquadNametagIcons);
 
 		return true;
 	}
@@ -2833,6 +2889,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		reader.ReadInt(m_iFreezeTime);
 		reader.ReadInt(m_iReconnectTime);
 		reader.ReadInt(m_iHardFreezeTime);
+		reader.ReadBool(m_bDisableSquadNametagIcons);
 
 		return true;
 	}

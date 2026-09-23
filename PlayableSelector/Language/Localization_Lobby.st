@@ -493,6 +493,20 @@ StringTable {
    Author "zazul"
    LastChanged "SeskPC"
   }
+  CustomStringTableItem "{64BF91B6B2E109A3}" {
+   Id "PS-EditorAttribute_GameModeCoop_DisableSquadNametagIcons"
+   Target_en_us "Disable squad nametag icons"
+   Target_ru_ru "Отключить 3D-иконки отделения"
+   Modified 1790198000
+   Author "Antigravity"
+  }
+  CustomStringTableItem "{64BF91B6B2E109A4}" {
+   Id "PS-EditorAttribute_GameModeCoop_DisableSquadNametagIcons_Description"
+   Target_en_us "Squad leader (star) and squad member (diamond) icons will not appear above players' heads."
+   Target_ru_ru "Иконки командира отделения (звезда) и соотрядников (ромб) не будут отображаться над головами игроков."
+   Modified 1790198000
+   Author "Antigravity"
+  }
   CustomStringTableItem "{5EF9620B44BDD42D}" {
    Id "PS-EditorAttribute_GameModeCoop_FreezeTime"
    Target_en_us "Freeze time"
