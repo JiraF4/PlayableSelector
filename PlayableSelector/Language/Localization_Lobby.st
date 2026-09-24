@@ -909,6 +909,22 @@ StringTable {
    Author "SeskPC"
    LastChanged "SeskPC"
   }
+  CustomStringTableItem "{6461467E87654321}" {
+   Id "PS-HardFreeze_Ended"
+   Target_en_us "Hard freeze ended"
+   Target_ru_ru "Хард-фриз окончен"
+   Modified 1788476201
+   Author "RamboKZ"
+   LastChanged "RamboKZ"
+  }
+  CustomStringTableItem "{6461467E12345678}" {
+   Id "PS-HardFreeze_Started"
+   Target_en_us "Hard freeze started by admin"
+   Target_ru_ru "Хард-фриз включен администратором"
+   Modified 1788476200
+   Author "RamboKZ"
+   LastChanged "RamboKZ"
+  }
   CustomStringTableItem "{5EA73DBF40044FB3}" {
    Id "PS-Keybind_Comms_Playable_Selector"
    Target_en_us "Team switch"
