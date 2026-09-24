@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{EB54CDF302DF8E41}UI/Spectator/SpectatorLabelIcon_Documents.layout"
+ Configurations {
+  LayoutResourceClass PC {
+  }
+  LayoutResourceClass XBOX_ONE : PC {
+  }
+  LayoutResourceClass XBOX_SERIES : PC {
+  }
+  LayoutResourceClass PS4 : PC {
+  }
+  LayoutResourceClass HEADLESS : PC {
+  }
+ }
+}

@@ -47,8 +47,20 @@ class PS_SpectatorLabel : ScriptComponent
 		m_wLabelsFrame = labelsFrame;
 		
 		m_wRootLabel = GetGame().GetWorkspace().CreateWidgets(m_sSpectatorLabelLayout, m_wLabelsFrame);
+		if (!m_wRootLabel)
+		{
+			// Фолбэк на базовый лейаут спектатора, если кастомный лейаут не найден или поврежден
+			ResourceName fallbackLayout = "{8A4C0D6D625BB09D}UI/Spectator/SpectatorLabelIcon.layout";
+			if (m_sSpectatorLabelLayout != fallbackLayout)
+				m_wRootLabel = GetGame().GetWorkspace().CreateWidgets(fallbackLayout, m_wLabelsFrame);
+		}
+
+		if (!m_wRootLabel)
+			return;
+
 		m_hLabelIcon = PS_SpectatorLabelIcon.Cast(m_wRootLabel.FindHandler(PS_SpectatorLabelIcon));
-		m_hLabelIcon.SetEntity(GetOwner(), m_sBoneName);
+		if (m_hLabelIcon)
+			m_hLabelIcon.SetEntity(GetOwner(), m_sBoneName);
 	}
 	
 	PS_SpectatorLabelIcon GetLabelIcon()
@@ -59,9 +71,10 @@ class PS_SpectatorLabel : ScriptComponent
 	void UpdateLabel()
 	{
 		if (!m_wRootLabel) return;
-		if (m_MapEntity.IsOpen()) return;
+		if (m_MapEntity && m_MapEntity.IsOpen()) return;
 		
-		m_hLabelIcon.Update();
+		if (m_hLabelIcon)
+			m_hLabelIcon.Update();
 	}
 	
 	void RemoveLabel()
@@ -107,7 +120,9 @@ class PS_SpectatorLabel : ScriptComponent
 		
 		// Create and init marker
 		m_wRootMarker = GetGame().GetWorkspace().CreateWidgets(m_sMarkerPrefab, mapFrame);
+		if (!m_wRootMarker) return;
 		m_hManualMarkerComponent = PS_ManualMarkerComponent.Cast(m_wRootMarker.FindHandler(PS_ManualMarkerComponent));
+		if (!m_hManualMarkerComponent) return;
 		m_hManualMarkerComponent.SetImage(m_cMapMarkerConfig.m_sImageSet, m_cMapMarkerConfig.m_sQuadName);
 		m_hManualMarkerComponent.SetImageGlow(m_cMapMarkerConfig.m_sImageSetGlow, m_cMapMarkerConfig.m_sQuadName);
 		m_hManualMarkerComponent.SetDescription(m_cMapMarkerConfig.m_sDescription);
@@ -143,4 +158,4 @@ class PS_SpectatorLabel : ScriptComponent
 		RemoveLabel();
 		RemoveMarker();
 	}
-}
+}
