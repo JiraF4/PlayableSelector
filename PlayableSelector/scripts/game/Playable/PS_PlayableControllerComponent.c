@@ -801,12 +801,38 @@ class PS_PlayableControllerComponent : ScriptComponent
 		if (gameModeCoop.IsFreezeTimeEnd() && gameModeCoop.GetDisableBuildingModeAfterFreezeTime())
 			 return;
 		SCR_BaseGameMode.Cast(GetGame().GetGameMode()).GetOnPlayerSpawned().Invoke(playerId, entity);
-		Rpc(AndFuckingServerTo, playerId, Replication.FindItemId(entity))
+		Rpc(AndFuckingServerTo, playerId, Replication.FindItemId(entity));
 	}
+	/**
+	 * @brief Ретрансляция локального OnPlayerSpawned на сервер (подписчики, живущие только на сервере).
+	 * @rpc Owner -> Server (Reliable)
+	 * @param playerId Идентификатор заспавненного игрока
+	 * @param entityId RplId управляемой сущности персонажа
+	 * @cause RPC не проверял отправителя: модифицированный клиент мог инвокнуть OnPlayerSpawned
+	 *        на сервере с чужим playerId и произвольной реплицируемой сущностью.
+	 * @solution Компонент живёт на PlayerController конкретного игрока: на сервере playerId сверяется
+	 *        с PlayerController.GetPlayerId() владельца, а entity — с его управляемой сущностью.
+	 */
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void AndFuckingServerTo(int playerId, RplId entityId)
 	{
+		// Trust boundary: the only legitimate playerId/entity pair is this controller owner's own.
+		PlayerController ownerController = PlayerController.Cast(GetOwner());
+		if (!ownerController)
+			return;
+		if (playerId != ownerController.GetPlayerId())
+		{
+			Print(string.Format("[PS] AndFuckingServerTo: rejected, claimed playerId=%1, actual=%2",
+				playerId, ownerController.GetPlayerId()), LogLevel.WARNING);
+			return;
+		}
 		IEntity entity = IEntity.Cast(Replication.FindItem(entityId));
+		if (!entity || entity != ownerController.GetControlledEntity())
+		{
+			Print(string.Format("[PS] AndFuckingServerTo: rejected entity %1 for playerId=%2 (not controlled by sender)",
+				entity, playerId), LogLevel.WARNING);
+			return;
+		}
 		SCR_BaseGameMode.Cast(GetGame().GetGameMode()).GetOnPlayerSpawned().Invoke(playerId, entity);
 	}
 	

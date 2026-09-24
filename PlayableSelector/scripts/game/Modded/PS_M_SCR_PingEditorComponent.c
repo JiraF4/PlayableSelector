@@ -1,5 +1,11 @@
 modded class SCR_PingEditorComponent
 {
+	//! Макс. длина кастомного текста пинга (серверный кламп, см. PS_SendPingServer_CustomText)
+	protected const int PS_PING_TEXT_MAX_LENGTH = 100;
+
+	//! WorldTime (мс) последнего принятого сервером кастомного пинга этого игрока
+	protected float m_fLastPingServerTime;
+
 	override protected void ReceivePing(int reporterID, bool reporterInEditor, SCR_EditableEntityComponent reporterEntity, bool unlimitedOnly, vector position, RplId targetID)
 	{
 		super.ReceivePing(reporterID, reporterInEditor, reporterEntity, unlimitedOnly, position, targetID);
@@ -87,10 +93,39 @@ modded class SCR_PingEditorComponent
 		//~ Ping cooldown to prevent spamming
 		ActivateCooldown();
 	}
+	/**
+	 * @brief Серверный приём пинга с кастомным текстом
+	 * @rpc Owner -> Server (Reliable)
+	 * @param unlimitedOnly Флаг пинга только для неограниченного редактора
+	 * @param position Координаты пинга в мире
+	 * @param targetID Идентификатор сущности цели пинга
+	 * @param customText Пользовательский текст сообщения к пингу
+	 * @issue Аудит 2026-09: отсутствие серверного rate-limit на RPC
+	 * @cause Клиентский кулдаун (ActivateCooldown) обходится модифицированным клиентом:
+	 *        сервер принимал ping-флуд и customText произвольной длины, что спамило broadcast-уведомления.
+	 * @solution Компонент живёт на per-player SCR_EditorManagerEntity (см. Event_OnEditorManagerCreatedServer),
+	 *           поэтому достаточно per-instance таймштампа: отсекаем вызовы чаще m_fCooldownTime (допуск 10%)
+	 *           и клампим текст. GetManager().GetPlayerID() на сервере — истинный id отправителя.
+	 */
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void PS_SendPingServer_CustomText(bool unlimitedOnly, vector position, RplId targetID, string customText)
 	{
 		SCR_EditorManagerEntity manager = GetManager();
+		if (!manager)
+			return;
+
+		float now = GetGame().GetWorld().GetWorldTime();
+		float cooldownMs = m_fCooldownTime * 1000 * 0.9;
+		if (cooldownMs <= 0)
+			cooldownMs = 3000;
+
+		if (now - m_fLastPingServerTime < cooldownMs)
+			return;
+		m_fLastPingServerTime = now;
+
+		if (customText && customText.Length() > PS_PING_TEXT_MAX_LENGTH)
+			customText = customText.Substring(0, PS_PING_TEXT_MAX_LENGTH);
+
 		PS_CustomTextNotificationComponent.SendTextData(manager.GetPlayerID(), customText);
 		
 		SendPingServer(unlimitedOnly, position, targetID);
