@@ -20,8 +20,11 @@ class PS_SpectatorLabelCharacter : PS_SpectatorLabel
 		super.AddToList(owner);
 		
 		m_eChimeraCharacter = SCR_ChimeraCharacter.Cast(owner);
-		m_cPlayableComponent = PS_PlayableContainer.Cast(m_eChimeraCharacter.FindComponent(PS_PlayableContainer));
-		m_ControllerComponent = SCR_CharacterControllerComponent.Cast(m_eChimeraCharacter.FindComponent(SCR_CharacterControllerComponent));
+		if (m_eChimeraCharacter)
+		{
+			m_cPlayableComponent = PS_PlayableContainer.Cast(m_eChimeraCharacter.FindComponent(PS_PlayableContainer));
+			m_ControllerComponent = SCR_CharacterControllerComponent.Cast(m_eChimeraCharacter.FindComponent(SCR_CharacterControllerComponent));
+		}
 	}
 	
 	override bool UpdateMarker()
@@ -30,18 +33,21 @@ class PS_SpectatorLabelCharacter : PS_SpectatorLabel
 		
 		if (!m_bDead)
 		{
-			if (!m_bWounded && m_ControllerComponent.IsUnconscious()) {
-				m_hManualMarkerComponent.SetImage(m_rIconImageSet, "WoundedCharacter");
-				m_bWounded = true;
-			}
-			if (m_bWounded && !m_ControllerComponent.IsUnconscious()) {
-				m_hManualMarkerComponent.SetImage(m_rIconImageSet, "Character");
-				m_bWounded = false;
-			}
-			
-			if (m_ControllerComponent.IsDead()) {
-				m_hManualMarkerComponent.SetImage(m_rIconImageSet, "DeadCharacter");
-				m_bDead = true;
+			if (m_ControllerComponent)
+			{
+				if (!m_bWounded && m_ControllerComponent.IsUnconscious()) {
+					m_hManualMarkerComponent.SetImage(m_rIconImageSet, "WoundedCharacter");
+					m_bWounded = true;
+				}
+				if (m_bWounded && !m_ControllerComponent.IsUnconscious()) {
+					m_hManualMarkerComponent.SetImage(m_rIconImageSet, "Character");
+					m_bWounded = false;
+				}
+				
+				if (m_ControllerComponent.IsDead()) {
+					m_hManualMarkerComponent.SetImage(m_rIconImageSet, "DeadCharacter");
+					m_bDead = true;
+				}
 			}
 		}
 		else 

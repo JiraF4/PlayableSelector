@@ -130,34 +130,48 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 	{
 		super.SetEntity(entity, boneName);
 		m_eChimeraCharacter = SCR_ChimeraCharacter.Cast(entity);
+		if (!m_eChimeraCharacter)
+			return;
+
 		m_cPlayableComponent = PS_PlayableComponent.Cast(m_eChimeraCharacter.FindComponent(PS_PlayableComponent));
 		m_ControllerComponent = SCR_CharacterControllerComponent.Cast(m_eChimeraCharacter.FindComponent(SCR_CharacterControllerComponent));
 		m_EditableCharacterComponent = SCR_EditableCharacterComponent.Cast(m_eChimeraCharacter.FindComponent(SCR_EditableCharacterComponent));
 		
 		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		if (gameModeCoop.GetFriendliesSpectatorOnly())
+		if (gameModeCoop && gameModeCoop.GetFriendliesSpectatorOnly())
 		{
-			if (m_cPlayableComponent.GetFactionKey() != m_PlayableManager.GetPlayerFactionKeyRemembered(GetGame().GetPlayerController().GetPlayerId()))
+			if (m_cPlayableComponent && m_PlayableManager)
 			{
-				m_wRoot.SetVisible(false);
-				return;
+				if (m_cPlayableComponent.GetFactionKey() != m_PlayableManager.GetPlayerFactionKeyRemembered(GetGame().GetPlayerController().GetPlayerId()))
+				{
+					m_wRoot.SetVisible(false);
+					return;
+				}
 			}
 		}
 		
 		SCR_Faction faction = SCR_Faction.Cast(m_eChimeraCharacter.GetFaction());
 		if (faction)
 		{
-			m_wSpectatorLabelIcon.SetColor(faction.GetOutlineFactionColor());
-			m_wSpectatorLabelIconBackground.SetColor(faction.GetFactionColor());
-			m_wSpectatorLabelIconCircle.SetColor(faction.GetOutlineFactionColor());
-			m_wSpectatorLabelIconCircleSmall.SetColor(faction.GetFactionColor());
+			if (m_wSpectatorLabelIcon)
+				m_wSpectatorLabelIcon.SetColor(faction.GetOutlineFactionColor());
+			if (m_wSpectatorLabelIconBackground)
+				m_wSpectatorLabelIconBackground.SetColor(faction.GetFactionColor());
+			if (m_wSpectatorLabelIconCircle)
+				m_wSpectatorLabelIconCircle.SetColor(faction.GetOutlineFactionColor());
+			if (m_wSpectatorLabelIconCircleSmall)
+				m_wSpectatorLabelIconCircleSmall.SetColor(faction.GetFactionColor());
 			
 			m_cDeadColor = PS_ColorHelper.DesaturateColor(faction.GetFactionColor(), 0.75);
 			m_cDeadColor = PS_ColorHelper.ChangeLightColor(m_cDeadColor, 0.9);
 		}
 		
-		SCR_UIInfo uiInfo = m_EditableCharacterComponent.GetInfo();
-		uiInfo.SetIconTo(m_wSpectatorLabelIcon);
+		if (m_EditableCharacterComponent && m_wSpectatorLabelIcon)
+		{
+			SCR_UIInfo uiInfo = m_EditableCharacterComponent.GetInfo();
+			if (uiInfo)
+				uiInfo.SetIconTo(m_wSpectatorLabelIcon);
+		}
 	}
 	
 	override void UpdateLabel()
@@ -215,29 +229,47 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 		
 		if (!m_bDead)
 		{
-			if (!m_bWounded && m_ControllerComponent.IsUnconscious()) {
-				//m_wSpectatorLabelIcon.LoadImageFromSet(0, m_rIconImageSet, "Wounded");
-				m_wSpectatorLabelIconWounded.SetVisible(true);
-				m_bWounded = true;
-			}
-			if (m_bWounded && !m_ControllerComponent.IsUnconscious()) {
-				SCR_UIInfo uiInfo = m_EditableCharacterComponent.GetInfo();
-				uiInfo.SetIconTo(m_wSpectatorLabelIcon);
-				m_wSpectatorLabelIconWounded.SetVisible(false);
-				m_bWounded = false;
-			}
-			
-			if (m_ControllerComponent.IsDead()) {
-				//m_wSpectatorLabelIcon.LoadImageFromSet(0, m_rIconImageSet, "Dead");
-				m_wSpectatorLabelIcon.SetOpacity(0.9);
-				m_wSpectatorLabelBackground.SetOpacity(0.9);
-				m_wSpectatorLabelIconBackground.SetColor(m_cDeadColor);
-				m_wSpectatorLabelIconCircleSmall.SetColor(m_cDeadColor);
-				m_wSpectatorLabelIconBackground.SetOpacity(0.2);
-				m_wSpectatorLabelIconWounded.SetVisible(false);
-				//m_wSpectatorLabelIconCircleSmall.SetColor(Color.Gray);
-				m_wSpectatorLabelIconCircleSmall.SetOpacity(0.95);
-				m_bDead = true;
+			if (m_ControllerComponent)
+			{
+				if (!m_bWounded && m_ControllerComponent.IsUnconscious()) {
+					//m_wSpectatorLabelIcon.LoadImageFromSet(0, m_rIconImageSet, "Wounded");
+					if (m_wSpectatorLabelIconWounded)
+						m_wSpectatorLabelIconWounded.SetVisible(true);
+					m_bWounded = true;
+				}
+				if (m_bWounded && !m_ControllerComponent.IsUnconscious()) {
+					if (m_EditableCharacterComponent && m_wSpectatorLabelIcon)
+					{
+						SCR_UIInfo uiInfo = m_EditableCharacterComponent.GetInfo();
+						if (uiInfo)
+							uiInfo.SetIconTo(m_wSpectatorLabelIcon);
+					}
+					if (m_wSpectatorLabelIconWounded)
+						m_wSpectatorLabelIconWounded.SetVisible(false);
+					m_bWounded = false;
+				}
+				
+				if (m_ControllerComponent.IsDead()) {
+					//m_wSpectatorLabelIcon.LoadImageFromSet(0, m_rIconImageSet, "Dead");
+					if (m_wSpectatorLabelIcon)
+						m_wSpectatorLabelIcon.SetOpacity(0.9);
+					if (m_wSpectatorLabelBackground)
+						m_wSpectatorLabelBackground.SetOpacity(0.9);
+					if (m_wSpectatorLabelIconBackground)
+					{
+						m_wSpectatorLabelIconBackground.SetColor(m_cDeadColor);
+						m_wSpectatorLabelIconBackground.SetOpacity(0.2);
+					}
+					if (m_wSpectatorLabelIconCircleSmall)
+					{
+						m_wSpectatorLabelIconCircleSmall.SetColor(m_cDeadColor);
+						m_wSpectatorLabelIconCircleSmall.SetOpacity(0.95);
+					}
+					if (m_wSpectatorLabelIconWounded)
+						m_wSpectatorLabelIconWounded.SetVisible(false);
+					//m_wSpectatorLabelIconCircleSmall.SetColor(Color.Gray);
+					m_bDead = true;
+				}
 			}
 		}
 		else 
