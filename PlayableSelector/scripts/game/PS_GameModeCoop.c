@@ -84,6 +84,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	// Set to true at the start of Soft Freeze, false when it expires. Used by hardFreezeTimer to decide
 	// whether to resume the Soft Freeze after Hard Freeze ends.
 	protected bool m_bSoftFreezeActive;
+	// True when Hard Freeze was started at game start before Soft Freeze.
+	// Used to suppress end notifications and seamlessly transition into Soft Freeze.
+	protected bool m_bInitialHardFreeze;
 	[RplProp()]
 	protected float m_fGameStartTime = 0;
 	[RplProp()]
@@ -383,7 +386,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		GetGame().GetCallqueue().Remove(restrictedZonesTimer);
 		restrictedZonesTimer(m_fCurrentFreezeTime);
 		
-		FreezeTimerAdvance_Notify();
+		if (RplSession.Mode() != RplMode.Dedicated)
+			FreezeTimerAdvance_Notify();
+		Rpc(FreezeTimerAdvance_Notify);
 	}
 	
 	void FreezeTimerEnd()
@@ -399,7 +404,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		GetGame().GetCallqueue().Remove(restrictedZonesTimer);
 		restrictedZonesTimer(5000);
 		
-		FreezeTimerEnd_Notify();
+		if (RplSession.Mode() != RplMode.Dedicated)
+			FreezeTimerEnd_Notify();
+		Rpc(FreezeTimerEnd_Notify);
 	}
 
 	void EditorClosed()
@@ -681,7 +688,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	}
 
 	/**
-	 * @brief Серверная обработка админ-команды /hardfreeze.
+	 * @brief Серверная обработка админ-команды /hardfreeze (/hft /hfte).
 	 * @context Server
 	 * @param seconds Время паузы в секундах (0 = мгновенное снятие)
 	 */
@@ -692,26 +699,57 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 		if (seconds <= 0)
 		{
+			// Защита: если хард-фриз не активен, не снимать и не спамить уведомлением
+			if (!m_bHardFreeze)
+				return;
+
+			bool wasInitial = m_bInitialHardFreeze;
+			m_bInitialHardFreeze = false;
 			EndHardFreeze_S();
-			HardFreezeNotify("#PS-Freeze_time_force_end");
+
+			if (wasInitial)
+			{
+				// Досрочное снятие стартового Hard Freeze — бесшовный переход в Soft Freeze без лишних уведомлений
+				if (m_iFreezeTime > 0)
+					restrictedZonesTimer(m_iFreezeTime);
+				else
+				{
+					m_fCurrentFreezeTime = 0;
+					Replication.BumpMe();
+					removeRestrictedZones();
+					if (m_bDisableBuildingModeAfterFreezeTime)
+						DisableBuildingMode();
+					PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+					if (playableManager)
+						playableManager.RemoveRedundantUnits();
+				}
+			}
+			else
+			{
+				HardFreezeNotify("#PS-Freeze_time_force_end");
+				// Возобновить Soft Freeze, если он был приостановлен
+				if (m_bSoftFreezeActive && m_fCurrentFreezeTime > 0)
+					restrictedZonesTimer(m_fCurrentFreezeTime);
+			}
 		}
 		else
 		{
+			// Запуск Hard Freeze во время игры
+			if (m_bSoftFreezeActive)
+				GetGame().GetCallqueue().Remove(restrictedZonesTimer);
+
+			m_bInitialHardFreeze = false;
 			int durationMs = seconds * 1000;
 			StartHardFreeze_S(durationMs);
-			HardFreezeNotify("#PS-Freeze_time_advanced");
+			HardFreezeNotify("#PS-HardFreeze_Started");
 		}
 	}
 
 	void HardFreezeNotify(string message)
 	{
-		SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
-		if (chatPanelManager)
-		{
-			ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("smsg");
-			if (invoker)
-				invoker.Invoke(null, message);
-		}
+		if (RplSession.Mode() != RplMode.Dedicated)
+			RPC_BroadcastGlobalMessage(message);
+		Rpc(RPC_BroadcastGlobalMessage, message);
 	}
 
 	// ================================ /slots ================================
@@ -946,6 +984,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (!PS_PlayersHelper.IsAdminOrServer())
 			return;
 
+		if (!IsHardFreezeActive())
+			return;
+
 		int seconds = data.ToInt();
 		if (seconds == 0)
 			return;
@@ -961,6 +1002,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	void HardFreezeTimerEnd_Callback(SCR_ChatPanel panel, string data)
 	{
 		if (!PS_PlayersHelper.IsAdminOrServer())
+			return;
+
+		if (!IsHardFreezeActive())
 			return;
 
 		PlayerController playerController = GetGame().GetPlayerController();
@@ -987,9 +1031,32 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		int newRemaining = m_fHardFreezeRemaining + deltaMs;
 		if (newRemaining <= 0)
 		{
-			// Если время вышло — просто завершить хард-фриз
+			bool wasInitial = m_bInitialHardFreeze;
+			m_bInitialHardFreeze = false;
 			EndHardFreeze_S();
-			HardFreezeNotify("#PS-Freeze_time_force_end");
+
+			if (wasInitial)
+			{
+				if (m_iFreezeTime > 0)
+					restrictedZonesTimer(m_iFreezeTime);
+				else
+				{
+					m_fCurrentFreezeTime = 0;
+					Replication.BumpMe();
+					removeRestrictedZones();
+					if (m_bDisableBuildingModeAfterFreezeTime)
+						DisableBuildingMode();
+					PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+					if (playableManager)
+						playableManager.RemoveRedundantUnits();
+				}
+			}
+			else
+			{
+				HardFreezeNotify("#PS-Freeze_time_force_end");
+				if (m_bSoftFreezeActive && m_fCurrentFreezeTime > 0)
+					restrictedZonesTimer(m_fCurrentFreezeTime);
+			}
 			return;
 		}
 
@@ -1184,9 +1251,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		SCR_PlayersRestrictionZoneManagerComponent restrictionZoneManager = SCR_PlayersRestrictionZoneManagerComponent.Cast(gamemode.FindComponent(SCR_PlayersRestrictionZoneManagerComponent));
 		set<SCR_EditorRestrictionZoneEntity> zones = restrictionZoneManager.GetZones();
 
-		SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
-		ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("smsg");
-		invoker.Invoke(null, "#PS-Freeze_End");
+		HardFreezeNotify("#PS-Freeze_End");
 
 		array<int> playerIds = new array<int>();
 		GetGame().GetPlayerManager().GetPlayers(playerIds);
@@ -1887,8 +1952,12 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 		if (state != SCR_EGameModeState.GAME)
 		{
-			if (Replication.IsServer() && m_bHardFreeze)
-				EndHardFreeze_S();
+			if (Replication.IsServer())
+			{
+				m_bInitialHardFreeze = false;
+				if (m_bHardFreeze)
+					EndHardFreeze_S();
+			}
 			ApplyLocalControlsLock(false);
 		}
 
@@ -2147,13 +2216,34 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		m_bFreezeEndTriggered = false; // new freeze period - allow the one-shot end notification again
 		m_bSoftFreezeActive = false;   // reset Soft Freeze tracking for the new game cycle
 
-		// Start both Soft Freeze and Hard Freeze simultaneously at game start.
-		// Hard Freeze will mask/override the UI counter until it expires, after which the remaining
-		// Soft Freeze time is seamlessly revealed without increasing the total match freeze time.
-		s_bDamageBlocked = (m_iHardFreezeTime > 0) || (m_bFreezeTimeShootingForbiden && m_iFreezeTime > 0);
-		restrictedZonesTimer(m_iFreezeTime);
+		// Последовательный запуск фризтаймов: сначала Hard Freeze, по его завершении — Soft Freeze.
 		if (m_iHardFreezeTime > 0)
+		{
+			m_bInitialHardFreeze = true;
+			m_fCurrentFreezeTime = m_iFreezeTime;
+			Replication.BumpMe();
+			s_bDamageBlocked = true;
 			StartHardFreeze_S(m_iHardFreezeTime);
+		}
+		else
+		{
+			m_bInitialHardFreeze = false;
+			s_bDamageBlocked = (m_bFreezeTimeShootingForbiden && m_iFreezeTime > 0);
+			if (m_iFreezeTime > 0)
+				restrictedZonesTimer(m_iFreezeTime);
+			else
+			{
+				m_fCurrentFreezeTime = 0;
+				m_fGameStartTime = GetGame().GetWorld().GetWorldTime();
+				m_fGameStartElapsedTime = GetElapsedTime();
+				Replication.BumpMe();
+				removeRestrictedZones();
+				if (m_bDisableBuildingModeAfterFreezeTime)
+					DisableBuildingMode();
+				if (playableManager)
+					playableManager.RemoveRedundantUnits();
+			}
+		}
 
 		StartGameMode();
 	}
@@ -2624,7 +2714,36 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 		if (remainingMs <= 0)
 		{
+			bool wasInitial = m_bInitialHardFreeze;
+			m_bInitialHardFreeze = false;
 			EndHardFreeze_S();
+
+			if (wasInitial)
+			{
+				// Завершение стартового Hard Freeze — без уведомлений, переход в Soft Freeze
+				if (m_iFreezeTime > 0)
+					restrictedZonesTimer(m_iFreezeTime);
+				else
+				{
+					m_fCurrentFreezeTime = 0;
+					m_fGameStartTime = GetGame().GetWorld().GetWorldTime();
+					m_fGameStartElapsedTime = GetElapsedTime();
+					Replication.BumpMe();
+					removeRestrictedZones();
+					if (m_bDisableBuildingModeAfterFreezeTime)
+						DisableBuildingMode();
+					PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+					if (playableManager)
+						playableManager.RemoveRedundantUnits();
+				}
+			}
+			else
+			{
+				// Завершение Hard Freeze, запущенного во время игры
+				HardFreezeNotify("#PS-HardFreeze_Ended");
+				if (m_bSoftFreezeActive && m_fCurrentFreezeTime > 0)
+					restrictedZonesTimer(m_fCurrentFreezeTime);
+			}
 		}
 		else
 		{
