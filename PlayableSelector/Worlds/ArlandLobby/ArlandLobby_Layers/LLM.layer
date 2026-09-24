@@ -1,0 +1,114 @@
+GenericEntity : "{6472983511B0E21E}Prefabs/System/LMM_CriticalLoss.et" {
+ components {
+  LMM_CriticalLossComponent "{7000000000000013}" {
+   m_aLossLogics {
+    LMM_LossLogic "{6A6B7919B32F51E1}" {
+     m_iCriticalLossCount 1
+     m_sObjectiveNames {
+      "OBJECTIVE_US"
+     }
+     m_sFailedObjectiveNames {
+      "OBJECTIVE_USSR"
+     }
+     m_bUseMessage 1
+     m_sEventMessage "Победа обороны! ВС РФ понесла большие потери"
+    }
+    LMM_LossLogic "{6A6B791AA3AD776C}" {
+     m_iCriticalLossCount 1
+     m_sObjectiveNames {
+      "OBJECTIVE_US"
+     }
+     m_sFailedObjectiveNames {
+      "OBJECTIVE_USSR"
+     }
+     m_bUseMessage 1
+     m_sEventMessage "Победа атаки! ВС США понесла большие потери"
+    }
+   }
+  }
+ }
+ coords 1385.317 36.291 2376.707
+}
+GenericEntity : "{72C72D710CA86F99}Prefabs/System/LMM_FlagControl.et" {
+ components {
+  LMM_FlagControlComponent "{7000000000000015}" {
+   m_aFlagLogics {
+    LMM_FlagLogic "{6A6C08D08FA4ECBF}" {
+     m_sSuccessObjectiveNames {
+      "FLAG_CAPT"
+     }
+     m_sFailedObjectiveNames {
+      "FLAG_SAVE"
+     }
+     m_sNotificationMessage "Флаги захвачены"
+     m_aFlagControls {
+      LMM_FlagControl "{6A6C08D0C492DD59}" {
+       m_sFactionKey "USSR"
+       m_sFlagEntityName "FLAG_FLAG"
+      }
+     }
+    }
+   }
+  }
+ }
+ coords 1394.894 36.06 2344.318
+}
+GenericEntity : "{7EBA1743F108359C}Prefabs/System/LMM_DefeatGroup.et" {
+ components {
+  LMM_DefeatGroupComponent "{7000000000000017}" {
+   m_aDefeatGroupLogics {
+    LMM_DefeatGroupLogic "{6A6C08D1FA3789EE}" {
+     m_sAiGroupEntityNames {
+      "DEF_"
+     }
+     m_sSuccessObjectiveNames {
+      "DEF_KILL"
+     }
+     m_sFailedObjectiveNames {
+      "DEF_SAVE"
+     }
+     m_sMessage "Убили пидарасов!"
+    }
+   }
+  }
+ }
+ coords 1394.788 36.063 2340.383
+}
+GenericEntity : "{9F28BC43DFB0959E}Prefabs/System/LMM_Destruction.et" {
+ components {
+  LMM_DestructionComponent "{7000000000000016}" {
+   m_aDestructionLogics {
+    LMM_DestructionLogic "{6A6C08D03EB7B4E9}" {
+     m_sSuccessObjectiveNames {
+      "VEH_KILL"
+     }
+     m_sFailedObjectiveNames {
+      "VEH_SAVE"
+     }
+     m_aTargets {
+      LMM_DestructibleTarget "{6A6C08D026363031}" {
+       m_sEntityName "BTR1"
+      }
+      LMM_DestructibleTarget "{6A6C08D02D2F2875}" {
+       m_sEntityName "UAZ1"
+      }
+     }
+     m_sMessage "Жопавозки уничтожены!"
+    }
+   }
+  }
+ }
+ coords 1396.961 35.93 2356.455
+}
+GenericEntity : "{C60409D1C5A9B59D}Prefabs/System/LMM_RandomSpawn.et" {
+ components {
+  LMM_RandomSpawnComponent "{7000000000000020}" {
+   m_TargetEntity "DEF_HQ"
+   m_MarkerEntities {
+    "spawn1"
+    "spawn2"
+   }
+  }
+ }
+ coords 1394.969 36.1 2353.773
+}

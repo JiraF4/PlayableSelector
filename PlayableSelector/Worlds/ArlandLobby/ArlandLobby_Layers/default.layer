@@ -148,20 +148,6 @@ $grp Vehicle : "{C012BB3488BEA0C2}Prefabs/Vehicles/Wheeled/BTR70/BTR70.et" {
   coords 1405.874 36.013 2373.17
  }
 }
-GenericEntity : "{C7CDE1D7E0EEC5D8}Prefabs/Items/Stuff/SecretDocuments_Community.et" {
- coords 1374.884 41.687 2345.919
- angles 0 61.072 0
- {
-  PS_ManualMarker {
-   ID "64FEF7DCA0878017"
-   m_aVisibleForFactions {
-    "FIA"
-    "USSR"
-    "US"
-   }
-  }
- }
-}
 $grp SCR_AIGroup : "{D1B420D921CC6CD4}Prefabs/Groups/OPFOR/Group_USSR_PlatoonHQ_P.et" {
  DEF_ {
   coords 1337.05 43.372 2392.901
