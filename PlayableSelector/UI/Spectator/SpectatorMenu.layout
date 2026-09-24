@@ -624,15 +624,15 @@ FrameWidgetClass {
    "Z Order" 15
    "Ignore Cursor" 1
    Slot FrameWidgetSlot "{E0A1B2C3D4E5F611}" {
-    Anchor 0 0 0 0
-    PositionX 20
-    OffsetLeft 20
-    PositionY 80
-    OffsetTop 80
-    SizeX 300
-    OffsetRight -320
-    SizeY 250
-    OffsetBottom -330
+    Anchor 1 0 1 0
+    PositionX -300
+    OffsetLeft -300
+    PositionY 30
+    OffsetTop 30
+    SizeX 280
+    OffsetRight 20
+    SizeY 200
+    OffsetBottom -230
    }
    components {
     PS_SpectatorVoNOverlay "{E0A1B2C3D4E5F612}" {

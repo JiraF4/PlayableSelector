@@ -9,7 +9,7 @@
  *          HandlerAttached и отписывается при HandlerDeattached. При
  *          talking==true создаёт строку-виджет с ником говорящего; при
  *          talking==false удаляет её. Отображает говорящих игроков в
- *          левом верхнем углу меню спектатора. Управляется видимостью через
+ *          правом верхнем углу меню спектатора. Управляется видимостью через
  *          SetVisible() из PS_SpectatorMenu.Action_SwitchSpectatorUI.
  */
 class PS_SpectatorVoNOverlay : ScriptedWidgetComponent
