@@ -31,7 +31,7 @@ class PS_DisableSquadNametagIconsEditorAttribute : SCR_BaseEditorAttribute
 
 		PS_GameModeCoop coopMode = PS_GameModeCoop.Cast(item);
 		if (!coopMode)
-			return null;
+			return;
 
 		int value = var.GetBool();
 		coopMode.SetDisableSquadNametagIcons(value);
