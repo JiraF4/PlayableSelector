@@ -68,8 +68,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		return s_bDamageBlocked;
 	}
 	
-	[Attribute("0", UIWidgets.EditBox, "Time in milliseconds before characters are activated.", category: "Reforger Lobby (WIP)")]
+	[Attribute("0", UIWidgets.EditBox, "Legacy/WIP: Time in milliseconds before characters are activated (ignored).", category: "Reforger Lobby (WIP)")]
 	int m_iDisableTime;
+
+	// Baseline configured freeze time in milliseconds, preserved across rounds
+	protected int m_iFreezeTimeBaseline;
 
 	[Attribute("0", UIWidgets.CheckBox, "Disables text chat for alive players on game stage. Admins can always see text chat.", category: "Reforger Lobby")]
 	protected bool m_bDisableChat;
@@ -229,6 +232,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			RestoreDayAdvance_S();
 		}
 		ApplyLocalControlsLock(false);
+		s_bHardFreezeActive = false;
+		s_bDamageBlocked = false;
+		DestroyFreezeTimeCounter();
 		super.OnGameEnd();
 	}
 	
@@ -254,6 +260,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	override void OnGameStart()
 	{
 		super.OnGameStart();
+		m_iFreezeTimeBaseline = m_iFreezeTime;
 
 		// Server startup: log build info once so it appears in every session's server log.
 		if (Replication.IsServer())
@@ -378,13 +385,33 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			GetGame().GetCallqueue().CallLater(RegisterEditorClosed, 100, false);
 	}
 	
+	/**
+	 * @brief Атомарный перезапуск таймера мягкого фриза с гарантированным снятием предыдущего вызова.
+	 * @issue F-02
+	 */
+	void restartRestrictedZonesTimer(int freezeTime)
+	{
+		GetGame().GetCallqueue().Remove(restrictedZonesTimer);
+		restrictedZonesTimer(freezeTime);
+	}
+
+	/**
+	 * @brief Фиксация времени фактического старта игрового процесса для спектатора.
+	 * @issue F-11
+	 */
+	protected void MarkGameStart()
+	{
+		m_fGameStartTime = GetGame().GetWorld().GetWorldTime();
+		m_fGameStartElapsedTime = GetElapsedTime();
+		Replication.BumpMe();
+	}
+
 	void FreezeTimerAdvance(int time)
 	{
 		time = time * 1000;
 		m_iFreezeTime += time;
 		m_fCurrentFreezeTime += time;
-		GetGame().GetCallqueue().Remove(restrictedZonesTimer);
-		restrictedZonesTimer(m_fCurrentFreezeTime);
+		restartRestrictedZonesTimer(m_fCurrentFreezeTime);
 		
 		if (RplSession.Mode() != RplMode.Dedicated)
 			FreezeTimerAdvance_Notify();
@@ -401,8 +428,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			return;
 		m_bFreezeEndTriggered = true;
 
-		GetGame().GetCallqueue().Remove(restrictedZonesTimer);
-		restrictedZonesTimer(5000);
+		restartRestrictedZonesTimer(5000);
 		
 		if (RplSession.Mode() != RplMode.Dedicated)
 			FreezeTimerEnd_Notify();
@@ -576,7 +602,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (!playableController)
 			return;
 		
-		if (GetState() != SCR_EGameModeState.GAME || IsFreezeTimeEnd())
+		if (GetState() != SCR_EGameModeState.GAME || IsFreezeTimeEnd() || IsHardFreezeActive())
 			return;
 		
 		playableController.FreezeTimerAdvance(data.ToInt());
@@ -599,7 +625,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (!playableController)
 			return;
 		
-		if (GetState() != SCR_EGameModeState.GAME || IsFreezeTimeEnd())
+		if (GetState() != SCR_EGameModeState.GAME || IsFreezeTimeEnd() || IsHardFreezeActive())
 			return;
 		
 		// Broadcast admin lock: /fte ends freeze time, so block other admins from
@@ -711,11 +737,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			{
 				// Досрочное снятие стартового Hard Freeze — бесшовный переход в Soft Freeze без лишних уведомлений
 				if (m_iFreezeTime > 0)
-					restrictedZonesTimer(m_iFreezeTime);
+					restartRestrictedZonesTimer(m_iFreezeTime);
 				else
 				{
 					m_fCurrentFreezeTime = 0;
-					Replication.BumpMe();
+					MarkGameStart();
 					removeRestrictedZones();
 					if (m_bDisableBuildingModeAfterFreezeTime)
 						DisableBuildingMode();
@@ -726,14 +752,18 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			}
 			else
 			{
-				HardFreezeNotify("#PS-Freeze_time_force_end");
+				HardFreezeNotify("#PS-HardFreeze_Ended");
 				// Возобновить Soft Freeze, если он был приостановлен
 				if (m_bSoftFreezeActive && m_fCurrentFreezeTime > 0)
-					restrictedZonesTimer(m_fCurrentFreezeTime);
+					restartRestrictedZonesTimer(m_fCurrentFreezeTime);
 			}
 		}
 		else
 		{
+			// F-03 (Q1-A): Защита от повторного запуска Hard Freeze во время активного Hard Freeze
+			if (m_bHardFreeze)
+				return;
+
 			// Запуск Hard Freeze во время игры
 			if (m_bSoftFreezeActive)
 				GetGame().GetCallqueue().Remove(restrictedZonesTimer);
@@ -1038,11 +1068,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			if (wasInitial)
 			{
 				if (m_iFreezeTime > 0)
-					restrictedZonesTimer(m_iFreezeTime);
+					restartRestrictedZonesTimer(m_iFreezeTime);
 				else
 				{
 					m_fCurrentFreezeTime = 0;
-					Replication.BumpMe();
+					MarkGameStart();
 					removeRestrictedZones();
 					if (m_bDisableBuildingModeAfterFreezeTime)
 						DisableBuildingMode();
@@ -1053,9 +1083,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			}
 			else
 			{
-				HardFreezeNotify("#PS-Freeze_time_force_end");
+				HardFreezeNotify("#PS-HardFreeze_Ended");
 				if (m_bSoftFreezeActive && m_fCurrentFreezeTime > 0)
-					restrictedZonesTimer(m_fCurrentFreezeTime);
+					restartRestrictedZonesTimer(m_fCurrentFreezeTime);
 			}
 			return;
 		}
@@ -1201,13 +1231,17 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		Rpc(RPC_BroadcastAdvAdminLock, myId, now);
 		RPC_BroadcastAdvAdminLock(myId, now);
 
-		// Safety: during freeze time in GAME state, "/adv" acts as "/fte" (end freeze time)
-		// instead of advancing to DEBRIEFING. Prevents admins from accidentally ending the match
-		// when they only meant to end freeze time (common typo since both are short chat commands).
-		if (GetState() == SCR_EGameModeState.GAME && !IsFreezeTimeEnd())
+		// Safety: during hard freeze or freeze time in GAME state, "/adv" must not advance to DEBRIEFING.
+		// Prevents admins from accidentally ending the match when they only meant to end freeze time.
+		if (GetState() == SCR_EGameModeState.GAME)
 		{
-			playableController.FreezeTimerEnd();
-			return;
+			if (IsHardFreezeActive())
+				return;
+			if (!IsFreezeTimeEnd())
+			{
+				playableController.FreezeTimerEnd();
+				return;
+			}
 		}
 
 		playableController.AdvanceGameState(SCR_EGameModeState.NULL);
@@ -2216,6 +2250,14 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		m_bFreezeEndTriggered = false; // new freeze period - allow the one-shot end notification again
 		m_bSoftFreezeActive = false;   // reset Soft Freeze tracking for the new game cycle
 
+		// F-09 (Q3-B): Restore baseline freeze time for new game cycle and sync to clients
+		if (m_iFreezeTimeBaseline > 0)
+		{
+			m_iFreezeTime = m_iFreezeTimeBaseline;
+			RPC_SetFreezeTime(m_iFreezeTime);
+			Rpc(RPC_SetFreezeTime, m_iFreezeTime);
+		}
+
 		// Последовательный запуск фризтаймов: сначала Hard Freeze, по его завершении — Soft Freeze.
 		if (m_iHardFreezeTime > 0)
 		{
@@ -2234,9 +2276,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			else
 			{
 				m_fCurrentFreezeTime = 0;
-				m_fGameStartTime = GetGame().GetWorld().GetWorldTime();
-				m_fGameStartElapsedTime = GetElapsedTime();
-				Replication.BumpMe();
+				MarkGameStart();
 				removeRestrictedZones();
 				if (m_bDisableBuildingModeAfterFreezeTime)
 					DisableBuildingMode();
@@ -2275,27 +2315,20 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	// TODO: move it to component
 	void restrictedZonesTimer(int freezeTime)
 	{
-		m_bSoftFreezeActive = true;
-
-		// reduce time by second
-		int time = 1000;
-		if (freezeTime < time) time = freezeTime;
-		freezeTime -= time;
-
+		m_bSoftFreezeActive = (freezeTime > 0);
 		m_fCurrentFreezeTime = freezeTime;
 		Replication.BumpMe();
 
 		// Show timer on clients synced to server
-		if (RplSession.Mode() != RplMode.Dedicated) RPC_restrictedZonesTimer(freezeTime);
+		if (RplSession.Mode() != RplMode.Dedicated)
+			RPC_restrictedZonesTimer(freezeTime);
 		Rpc(RPC_restrictedZonesTimer, freezeTime);
 
 		// next second or end
 		if (freezeTime <= 0)
 		{
 			m_bSoftFreezeActive = false;
-			m_fGameStartTime = GetGame().GetWorld().GetWorldTime();
-			m_fGameStartElapsedTime = GetElapsedTime();
-			Replication.BumpMe();
+			MarkGameStart();
 			s_bDamageBlocked = m_bHardFreeze;
 			removeRestrictedZones();
 			if (m_bDisableBuildingModeAfterFreezeTime)
@@ -2308,7 +2341,12 @@ class PS_GameModeCoop : SCR_BaseGameMode
 				playableManager.RemoveRedundantUnits();
 		}
 		else
-			GetGame().GetCallqueue().CallLater(restrictedZonesTimer, time, false, freezeTime);
+		{
+			int time = 1000;
+			if (freezeTime < time)
+				time = freezeTime;
+			GetGame().GetCallqueue().CallLater(restrictedZonesTimer, time, false, freezeTime - time);
+		}
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void RPC_restrictedZonesTimer(int freezeTime)
@@ -2320,6 +2358,15 @@ class PS_GameModeCoop : SCR_BaseGameMode
 				DestroyFreezeTimeCounter();
 
 			return;
+		}
+
+		// F-07: Re-arm controller FRAME mask so input enforcement runs in round 2/after unfreeze
+		PlayerController playerController = GetGame().GetPlayerController();
+		if (playerController)
+		{
+			PS_PlayableControllerComponent pcc = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+			if (pcc)
+				pcc.EnsureEventMask();
 		}
 
 		EnsureFreezeTimeCounter();
@@ -2701,12 +2748,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (!m_bHardFreeze)
 			return;
 
-		int step = 1000;
-		if (remainingMs < step)
-			step = remainingMs;
-		remainingMs -= step;
-
 		m_fHardFreezeRemaining = remainingMs;
+		Replication.BumpMe();
 
 		if (RplSession.Mode() != RplMode.Dedicated)
 			RPC_HardFreezeTimer(remainingMs);
@@ -2722,13 +2765,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			{
 				// Завершение стартового Hard Freeze — без уведомлений, переход в Soft Freeze
 				if (m_iFreezeTime > 0)
-					restrictedZonesTimer(m_iFreezeTime);
+					restartRestrictedZonesTimer(m_iFreezeTime);
 				else
 				{
 					m_fCurrentFreezeTime = 0;
-					m_fGameStartTime = GetGame().GetWorld().GetWorldTime();
-					m_fGameStartElapsedTime = GetElapsedTime();
-					Replication.BumpMe();
+					MarkGameStart();
 					removeRestrictedZones();
 					if (m_bDisableBuildingModeAfterFreezeTime)
 						DisableBuildingMode();
@@ -2742,12 +2783,15 @@ class PS_GameModeCoop : SCR_BaseGameMode
 				// Завершение Hard Freeze, запущенного во время игры
 				HardFreezeNotify("#PS-HardFreeze_Ended");
 				if (m_bSoftFreezeActive && m_fCurrentFreezeTime > 0)
-					restrictedZonesTimer(m_fCurrentFreezeTime);
+					restartRestrictedZonesTimer(m_fCurrentFreezeTime);
 			}
 		}
 		else
 		{
-			GetGame().GetCallqueue().CallLater(hardFreezeTimer, step, false, remainingMs);
+			int step = 1000;
+			if (remainingMs < step)
+				step = remainingMs;
+			GetGame().GetCallqueue().CallLater(hardFreezeTimer, step, false, remainingMs - step);
 		}
 	}
 
@@ -2760,6 +2804,17 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	void RPC_HardFreezeTimer(int remainingMs)
 	{
 		m_fHardFreezeRemaining = remainingMs;
+		if (remainingMs > 0)
+		{
+			PlayerController playerController = GetGame().GetPlayerController();
+			if (playerController)
+			{
+				PS_PlayableControllerComponent pcc = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+				if (pcc)
+					pcc.EnsureEventMask();
+			}
+		}
+
 		if (m_hFreezeTimeCounter && m_bHardFreeze)
 			m_hFreezeTimeCounter.SetTime(remainingMs);
 	}
@@ -2768,11 +2823,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	bool IsFreezeTimeEnd()
 	{
 		return m_fCurrentFreezeTime <= 0;
-	}
-	
-	bool IsDisableTimeEnd()
-	{
-		return !m_bHardFreeze;
 	}
 	
 	bool IsFreezeTimeShootingForbiden()
@@ -2928,11 +2978,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	void RPC_SetFreezeTime(int freezeTime)
 	{
 		m_iFreezeTime = freezeTime;
-	}
-	
-	int GetDisableTime()
-	{
-		return m_iHardFreezeTime;
 	}
 	
 	float GetGameStartTime()

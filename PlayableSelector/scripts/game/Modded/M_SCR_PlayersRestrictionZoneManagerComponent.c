@@ -7,20 +7,9 @@ modded class SCR_PlayersRestrictionZoneManagerComponent
 	
 	override protected void KillPlayerOutOfZone(int playerID, IEntity playerEntity)
 	{
-		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		if (gameMode.GetElapsedTime() > (gameMode.m_iFreezeTime - 2000))
-			return;
-		
 		if (!playerEntity)
 			return;
 		
-		/*
-		PS_PlayableContainer playableComponent = PS_PlayableContainer.Cast(playerEntity.FindComponent(PS_PlayableContainer));
-		if (!playableComponent)
-			return;
-		*/
-		
-		//super.KillPlayerOutOfZone(playerID, playerEntity);
 		RestrictMovement(playerID, true);
 	}
 	
@@ -35,6 +24,7 @@ modded class SCR_PlayersRestrictionZoneManagerComponent
 	void ResetPlayerZoneData(int playerID)
 	{
 		SetPlayerZoneData(playerID, null, false, false, -1);
+		RestrictMovement(playerID, false);
 	}
 	
 	void RestrictMovement(int playerID, bool restrict)

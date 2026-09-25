@@ -273,9 +273,9 @@ class PS_PlayableControllerComponent : ScriptComponent
 	}
 	/**
 	 * @brief Продление таймера фризтайма администратором
-	 * @issue BUG-48
-	 * @cause Неавторизованный клиент мог менять время фризтайма
-	 * @solution Проверка прав администратора
+	 * @issue BUG-48, F-04
+	 * @cause Неавторизованный клиент мог менять время фризтайма; отсутствовала проверка состояния GAME и активности Hard Freeze
+	 * @solution Проверка прав администратора, состояния GAME, неактивности Hard Freeze и незавершенности фризтайма
 	 * @rpc Owner -> Server (Reliable)
 	 */
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
@@ -292,7 +292,11 @@ class PS_PlayableControllerComponent : ScriptComponent
 
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		if (gameMode)
+		{
+			if (gameMode.GetState() != SCR_EGameModeState.GAME || gameMode.IsHardFreezeActive() || gameMode.IsFreezeTimeEnd())
+				return;
 			gameMode.FreezeTimerAdvance(time);
+		}
 	}
 	void FreezeTimerEnd()
 	{
@@ -300,9 +304,9 @@ class PS_PlayableControllerComponent : ScriptComponent
 	}
 	/**
 	 * @brief Досрочное завершение фризтайма администратором
-	 * @issue BUG-48
-	 * @cause Неавторизованный клиент мог досрочно сбросить фризтайм
-	 * @solution Проверка прав администратора
+	 * @issue BUG-48, F-04, F-05
+	 * @cause Неавторизованный клиент мог досрочно сбросить фризтайм; вызов вне GAME или в Hard Freeze сжигал one-shot
+	 * @solution Проверка прав администратора, состояния GAME и неактивности Hard Freeze
 	 * @rpc Owner -> Server (Reliable)
 	 */
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
@@ -319,7 +323,11 @@ class PS_PlayableControllerComponent : ScriptComponent
 
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		if (gameMode)
+		{
+			if (gameMode.GetState() != SCR_EGameModeState.GAME || gameMode.IsHardFreezeActive())
+				return;
 			gameMode.FreezeTimerEnd();
+		}
 	}
 
 	// ------ HardFreeze ------
