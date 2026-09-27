@@ -14,6 +14,78 @@ StringTable {
    Author "SeskPC"
    LastChanged "SeskPC"
   }
+  CustomStringTableItem "{D47DD4E564DFB5E0}" {
+   Id "PS-Lobby_Slotting"
+   Target_en_us "Slotting"
+   Target_ru_ru "Слотинг"
+   Modified 1769500000
+   Author "ReforgerLobby"
+   LastChanged "ReforgerLobby"
+  }
+  CustomStringTableItem "{82575E2027B3499B}" {
+   Id "PS-Lobby_Briefing"
+   Target_en_us "Briefing"
+   Target_ru_ru "Брифинг"
+   Modified 1769500000
+   Author "ReforgerLobby"
+   LastChanged "ReforgerLobby"
+  }
+  CustomStringTableItem "{A169F8B84E0DEB76}" {
+   Id "PS-Lobby_GameStart"
+   Target_en_us "Game start"
+   Target_ru_ru "Старт в игру"
+   Modified 1769500000
+   Author "ReforgerLobby"
+   LastChanged "ReforgerLobby"
+  }
+  CustomStringTableItem "{734C358A663E018A}" {
+   Id "PS-Lobby_BriefingRemaining_5m"
+   Target_en_us "Briefing ends in: 5 min."
+   Target_ru_ru "До окончания брифинга осталось: 5 мин."
+   Modified 1769500000
+   Author "ReforgerLobby"
+   LastChanged "ReforgerLobby"
+  }
+  CustomStringTableItem "{FFE11D43D9DB03F0}" {
+   Id "PS-Lobby_BriefingRemaining_3m"
+   Target_en_us "Briefing ends in: 3 min."
+   Target_ru_ru "До окончания брифинга осталось: 3 мин."
+   Modified 1769500000
+   Author "ReforgerLobby"
+   LastChanged "ReforgerLobby"
+  }
+  CustomStringTableItem "{C6A56625F0BB3BBE}" {
+   Id "PS-Lobby_BriefingRemaining_2m"
+   Target_en_us "Briefing ends in: 2 min."
+   Target_ru_ru "До окончания брифинга осталось: 2 мин."
+   Modified 1769500000
+   Author "ReforgerLobby"
+   LastChanged "ReforgerLobby"
+  }
+  CustomStringTableItem "{70359D949AB430F9}" {
+   Id "PS-Lobby_BriefingRemaining_1m"
+   Target_en_us "Briefing ends in: 1 min."
+   Target_ru_ru "До окончания брифинга осталось: 1 мин."
+   Modified 1769500000
+   Author "ReforgerLobby"
+   LastChanged "ReforgerLobby"
+  }
+  CustomStringTableItem "{53D246A14609E7BF}" {
+   Id "PS-Lobby_BriefingRemaining_30s"
+   Target_en_us "Briefing ends in: 30 sec."
+   Target_ru_ru "До окончания брифинга осталось: 30 сек."
+   Modified 1769500000
+   Author "ReforgerLobby"
+   LastChanged "ReforgerLobby"
+  }
+  CustomStringTableItem "{3218EAF8A349E8E7}" {
+   Id "PS-Lobby_BriefingRemaining_10s"
+   Target_en_us "Briefing ends in: 10 sec."
+   Target_ru_ru "До окончания брифинга осталось: 10 сек."
+   Modified 1769500000
+   Author "ReforgerLobby"
+   LastChanged "ReforgerLobby"
+  }
   CustomStringTableItem "{5EC5311E4F6DC81D}" {
    Id "PS-Briefing_GroupVoiceChat"
    Target_en_us "Group сhat"

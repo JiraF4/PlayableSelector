@@ -823,8 +823,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (m_playableManager && !m_playableManager.IsSlotsFullyLoaded())
 			return;
 
-		Rpc(RPC_BroadcastGlobalMessage, "Слотинг");
-		RPC_BroadcastGlobalMessage("Слотинг");
+		Rpc(RPC_BroadcastGlobalMessage, "#PS-Lobby_Slotting");
+		RPC_BroadcastGlobalMessage("#PS-Lobby_Slotting");
 		GetGame().GetCallqueue().CallLater(SlotsAdvance_S, 3000, false);
 	}
 
@@ -872,8 +872,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (GetState() != SCR_EGameModeState.SLOTSELECTION)
 			return;
 
-		Rpc(RPC_BroadcastGlobalMessage, "Брифинг");
-		RPC_BroadcastGlobalMessage("Брифинг");
+		Rpc(RPC_BroadcastGlobalMessage, "#PS-Lobby_Briefing");
+		RPC_BroadcastGlobalMessage("#PS-Lobby_Briefing");
 		GetGame().GetCallqueue().CallLater(BriefingStart_S, 3000, false, minutes);
 	}
 
@@ -928,30 +928,30 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		switch (m_iBriefingRemainingSeconds)
 		{
 			case 300: // 5 мин
-				BroadcastChatMessage_S("До окончания брифинга осталось: 5 мин.");
+				BroadcastChatMessage_S("#PS-Lobby_BriefingRemaining_5m");
 				break;
 			case 180: // 3 мин
-				BroadcastChatMessage_S("До окончания брифинга осталось: 3 мин.");
+				BroadcastChatMessage_S("#PS-Lobby_BriefingRemaining_3m");
 				break;
 			case 120: // 2 мин
-				BroadcastChatMessage_S("До окончания брифинга осталось: 2 мин.");
+				BroadcastChatMessage_S("#PS-Lobby_BriefingRemaining_2m");
 				break;
 			case 60: // 1 мин
-				BroadcastChatMessage_S("До окончания брифинга осталось: 1 мин.");
+				BroadcastChatMessage_S("#PS-Lobby_BriefingRemaining_1m");
 				break;
 			case 30: // 30 сек
-				BroadcastChatMessage_S("До окончания брифинга осталось: 30 сек.");
+				BroadcastChatMessage_S("#PS-Lobby_BriefingRemaining_30s");
 				break;
 			case 10: // 10 сек
-				BroadcastChatMessage_S("До окончания брифинга осталось: 10 сек.");
+				BroadcastChatMessage_S("#PS-Lobby_BriefingRemaining_10s");
 				break;
 		}
 
 		if (m_iBriefingRemainingSeconds <= 0)
 		{
 			m_bBriefingTimerActive = false;
-			Rpc(RPC_BroadcastGlobalMessage, "Старт в игру");
-			RPC_BroadcastGlobalMessage("Старт в игру");
+			Rpc(RPC_BroadcastGlobalMessage, "#PS-Lobby_GameStart");
+			RPC_BroadcastGlobalMessage("#PS-Lobby_GameStart");
 			// Молчаливая пауза 3 сек перед переходом в GAME
 			GetGame().GetCallqueue().CallLater(BriefingFinishAdvance_S, 3000, false);
 			return;
@@ -1718,7 +1718,17 @@ class PS_GameModeCoop : SCR_BaseGameMode
 				return;
 
 			FactionAffiliationComponent factionAffiliationComponent = playableComponent.GetFactionAffiliationComponent();
+			if (!factionAffiliationComponent)
+			{
+				SwitchToInitialEntity(playerId);
+				return;
+			}
 			Faction faction = factionAffiliationComponent.GetDefaultAffiliatedFaction();
+			if (!faction)
+			{
+				SwitchToInitialEntity(playerId);
+				return;
+			}
 			FactionKey factionKey = faction.GetFactionKey();
 			PS_FactionRespawnCount factionRespawns = GetFactionRespawnCount(factionKey);
 			if (!factionRespawns || factionRespawns.m_iCount == 0)
@@ -1752,6 +1762,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		EntitySpawnParams params = new EntitySpawnParams();
 		Math3D.MatrixCopy(respawnData.m_aSpawnTransform, params.Transform);
 		IEntity entity = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
+		if (!entity)
+			return;
 		if (!m_playableManager)
 			return;
 		SCR_AIGroup aiGroup = m_playableManager.GetPlayerGroupByPlayable(respawnData.m_Id);
@@ -1763,6 +1775,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		playabelGroup.AddAIEntityToGroup(entity);
 
 		PS_PlayableComponent playableComponentNew = PS_PlayableComponent.Cast(entity.FindComponent(PS_PlayableComponent));
+		if (!playableComponentNew)
+		{
+			Print("[PS] Respawn: spawned entity has no PS_PlayableComponent - check respawn prefab config", LogLevel.WARNING);
+			return;
+		}
 		playableComponentNew.SetPlayable(true);
 
 		GetGame().GetCallqueue().Call(SwitchToSpawnedEntity, playerId, respawnData, entity, 4);

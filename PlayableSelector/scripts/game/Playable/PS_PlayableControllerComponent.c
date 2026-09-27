@@ -439,6 +439,8 @@ class PS_PlayableControllerComponent : ScriptComponent
 	void RPC_SpawnPrefab(vector position, string GUID)
 	{
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		if (!thisPlayerController)
+			return;
 		if (!SCR_Global.IsAdmin(thisPlayerController.GetPlayerId()))
 		{
 			PrintFormat("[PS_AntiCheat] ADMIN_ATTEMPT: %1 action=SpawnPrefab guid='%2' pos=(%3,%4,%5)",
@@ -469,6 +471,8 @@ class PS_PlayableControllerComponent : ScriptComponent
 	void RPC_SpawnAdministrator(vector position)
 	{
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		if (!thisPlayerController)
+			return;
 		if (!SCR_Global.IsAdmin(thisPlayerController.GetPlayerId()))
 		{
 			PrintFormat("[PS_AntiCheat] ADMIN_ATTEMPT: %1 action=SpawnAdministrator pos=(%2,%3,%4)",
@@ -504,6 +508,8 @@ class PS_PlayableControllerComponent : ScriptComponent
 	void RPC_RespawnPlayable(RplId playableId, bool useInitPosition)
 	{
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		if (!thisPlayerController)
+			return;
 		if (!SCR_Global.IsAdmin(thisPlayerController.GetPlayerId()))
 		{
 			PrintFormat("[PS_AntiCheat] ADMIN_ATTEMPT: %1 action=RespawnPlayable playableId=%2 useInitPos=%3",
@@ -525,6 +531,8 @@ class PS_PlayableControllerComponent : ScriptComponent
 			return;
 		
 		PS_PlayableComponent oldPlayableComponent = character.PS_GetPlayable();
+		if (!oldPlayableComponent)
+			return;
 		EntitySpawnParams params = new EntitySpawnParams();
 		if (useInitPosition)
 			oldPlayableComponent.GetSpawnTransform(params.Transform);
@@ -532,11 +540,19 @@ class PS_PlayableControllerComponent : ScriptComponent
 			character.GetWorldTransform(params.Transform);
 		
 		SCR_ChimeraCharacter newCharacter = SCR_ChimeraCharacter.Cast(GetGame().SpawnEntityPrefab(Resource.Load(prefab.GetPrefabName()), GetGame().GetWorld(), params));
+		if (!newCharacter)
+			return;
 		PS_PlayableComponent playableContainer = newCharacter.PS_GetPlayable();
+		if (!playableContainer)
+			return;
 
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		SCR_AIGroup aiGroup = playableManager.GetPlayerGroupByPlayable(oldPlayableComponent.GetRplId());
+		if (!aiGroup)
+			return;
 		SCR_AIGroup playabelGroup = aiGroup.m_BotsGroup;
+		if (!playabelGroup)
+			return;
 		playabelGroup.AddAIEntityToGroup(newCharacter);
 		playableManager.SetPlayablePlayerGroupId(playableContainer.GetRplId(), aiGroup.GetGroupID());
 
@@ -576,6 +592,8 @@ class PS_PlayableControllerComponent : ScriptComponent
 	void RPC_ForceRespawnPlayer(RplId respawnEntityRplId, bool initPosition)
 	{
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		if (!thisPlayerController)
+			return;
 		if (!SCR_Global.IsAdmin(thisPlayerController.GetPlayerId()))
 		{
 			PrintFormat("[PS_AntiCheat] ADMIN_ATTEMPT: %1 action=ForceRespawnPlayer entityRplId=%2 initPos=%3",
@@ -593,6 +611,8 @@ class PS_PlayableControllerComponent : ScriptComponent
 			return;
 
 		PS_PlayableComponent oldPlayableComponent = character.PS_GetPlayable();
+		if (!oldPlayableComponent)
+			return;
 		EntitySpawnParams params = new EntitySpawnParams();
 		if (initPosition)
 			oldPlayableComponent.GetSpawnTransform(params.Transform);
@@ -600,11 +620,19 @@ class PS_PlayableControllerComponent : ScriptComponent
 			character.GetWorldTransform(params.Transform);
 
 		SCR_ChimeraCharacter newCharacter = SCR_ChimeraCharacter.Cast(GetGame().SpawnEntityPrefab(Resource.Load(prefab.GetPrefabName()), GetGame().GetWorld(), params));
+		if (!newCharacter)
+			return;
 		PS_PlayableComponent playableContainer = newCharacter.PS_GetPlayable();
+		if (!playableContainer)
+			return;
 
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		SCR_AIGroup aiGroup = playableManager.GetPlayerGroupByPlayable(oldPlayableComponent.GetRplId());
+		if (!aiGroup)
+			return;
 		SCR_AIGroup playabelGroup = aiGroup.m_BotsGroup;
+		if (!playabelGroup)
+			return;
 		playabelGroup.AddAIEntityToGroup(newCharacter);
 		playableManager.SetPlayablePlayerGroupId(playableContainer.GetRplId(), aiGroup.GetGroupID());
 
@@ -1798,6 +1826,8 @@ class PS_PlayableControllerComponent : ScriptComponent
 		// only admins can force start
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		if (!thisPlayerController)
+			return;
 		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
 		if (!SCR_Global.IsAdmin(thisPlayerController.GetPlayerId()))
 		{
@@ -1942,6 +1972,8 @@ class PS_PlayableControllerComponent : ScriptComponent
 	{
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		if (!thisPlayerController)
+			return;
 		if (!SCR_Global.IsAdmin(thisPlayerController.GetPlayerId()))
 		{
 			PrintFormat("[PS_AntiCheat] ADMIN_ATTEMPT: %1 action=UnpinPlayer target=%2",
@@ -1963,6 +1995,8 @@ class PS_PlayableControllerComponent : ScriptComponent
 	{
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		if (!thisPlayerController)
+			return;
 		if (!SCR_Global.IsAdmin(thisPlayerController.GetPlayerId()))
 		{
 			PrintFormat("[PS_AntiCheat] ADMIN_ATTEMPT: %1 action=PinPlayer target=%2",
@@ -2081,6 +2115,8 @@ class PS_PlayableControllerComponent : ScriptComponent
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		if (!thisPlayerController)
+			return;
 		if (!SCR_Global.IsAdmin(thisPlayerController.GetPlayerId()))
 		{
 			PrintFormat("[PS_AntiCheat] ADMIN_ATTEMPT: %1 action=SetPlayableVehicleLocked vehicleId=%2 lock=%3",

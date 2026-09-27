@@ -409,6 +409,8 @@ class PS_PlayableManager : ScriptComponent
 	{
 		// Get updated player
 		SCR_PlayerController playerController = SCR_PlayerController.Cast(m_PlayerManager.GetPlayerController(playerId));
+		if (!playerController)
+			return;
 		PS_PlayableControllerComponent playableController = playerController.PS_GetPLayableComponent();
 
 		// Get playable container
@@ -451,6 +453,8 @@ class PS_PlayableManager : ScriptComponent
 		if (m_aPlayables.Contains(playableId)) // Already registered
 			return;
 		SCR_ChimeraCharacter playableCharacter = playableComponent.GetCharacter();
+		if (!playableCharacter)
+			return;
 		if (!playableCharacter.PS_GetChimeraAIControlComponent())
 			return;
 
@@ -703,6 +707,8 @@ class PS_PlayableManager : ScriptComponent
 	// - Execute ONLY on server
 	void SetPlayerFactionKey(int playerId, FactionKey factionKey)
 	{
+		if (!Replication.IsServer())
+			return;
 		// Replicate update
 		RPC_SetPlayerFactionKey(playerId, factionKey);
 		Rpc(RPC_SetPlayerFactionKey, playerId, factionKey);
@@ -901,6 +907,8 @@ class PS_PlayableManager : ScriptComponent
 	// - Execute ONLY on server
 	void SetPlayerState(int playerId, PS_EPlayableControllerState state)
 	{
+		if (!Replication.IsServer())
+			return;
 		RPC_SetPlayerState(playerId, state);
 		Rpc(RPC_SetPlayerState, playerId, state);
 		
@@ -1001,6 +1009,8 @@ class PS_PlayableManager : ScriptComponent
 	// - Execute ONLY on server
 	void SetFactionReady(FactionKey factionKey, int readyValue)
 	{
+		if (!Replication.IsServer())
+			return;
 		RPC_SetFactionReady(factionKey, readyValue);
 		Rpc(RPC_SetFactionReady, factionKey, readyValue);
 
@@ -1028,7 +1038,7 @@ class PS_PlayableManager : ScriptComponent
 		{
 			SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
 			ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("tmsg");
-			invoker.Invoke(null, "Factions ready");
+			invoker.Invoke(null, "#PS-Briefing_FactionsReady");
 
 			// Reuse the same countdown as the slot-selection "all ready" timer:
 			// 3 → 2 → 1 → 0 → AdvanceGameState(BRIEFING) → StartGame → GAME
@@ -1081,6 +1091,8 @@ class PS_PlayableManager : ScriptComponent
 	// - Execute ONLY on server
 	void SetPlayablePrefab(RplId playableId, ResourceName prefab)
 	{
+		if (!Replication.IsServer())
+			return;
 		Rpc(RPC_SetPlayablePrefab, playableId, prefab);
 		RPC_SetPlayablePrefab(playableId, prefab);
 	}
@@ -1167,11 +1179,17 @@ class PS_PlayableManager : ScriptComponent
 	// - Execute ONLY on server
 	void SetPlayablePlayer(RplId playableId, int playerId)
 	{
+		if (!Replication.IsServer())
+			return;
 		RPC_SetPlayablePlayer(playableId, playerId);
 		Rpc(RPC_SetPlayablePlayer, playableId, playerId);
 	}
-	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	protected void RPC_SetPlayablePlayer(RplId playableId, int playerId)
+	// Shared slot<->player link maintenance. Runs on EVERY machine (server + every
+	// broadcast-RPC client) because m_playablePlayers/m_playersPlayable are plain maps
+	// rebuilt locally from the broadcast, not [RplProp]; a server-only guard here would
+	// desync client slot lists. Both link RPCs route through this so the paired maps and
+	// the *Remembered maps (BUG-01) always update atomically and identically.
+	protected void ApplyPlayerPlayableLink(int playerId, RplId playableId)
 	{
 		// Reset previous player - playable -> player link
 		if (playerId > 0) {
@@ -1190,25 +1208,32 @@ class PS_PlayableManager : ScriptComponent
 			m_playersPlayable[playerId] = playableId;
 		int oldPlayerId = m_playablePlayers[playableId];
 		m_playablePlayers[playableId] = playerId;
+		// Clear the slot the displaced player used to point at (was missing in the
+		// player-keyed path -> stale m_playersPlayable entry / late-join desync)
 		if (oldPlayerId > 0 && oldPlayerId != playerId)
 			m_playersPlayable[oldPlayerId] = -1;
-		
+
 		// Remember last valid (BUG-01)
 		if (playableId != RplId.Invalid() && playerId > 0) {
 			m_playablePlayersRemembered[playableId] = playerId;
 			m_playersPlayableRemembered[playerId] = playableId;
 		}
-		
+
 		// Invoke if player valid
 		if (playerId > 0)
 		{
 			m_eOnPlayerPlayableChange.Invoke(playerId, playableId);
 		}
-		
+
 		// Invoke container event
 		PS_PlayableContainer playableContainer = m_aPlayables.Get(playableId);
 		if (playableContainer)
 			playableContainer.InvokeOnPlayerChanged(oldPlayerId, playerId);
+	}
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	protected void RPC_SetPlayablePlayer(RplId playableId, int playerId)
+	{
+		ApplyPlayerPlayableLink(playerId, playableId);
 	}
 
 	// Playable -> Player link
@@ -1236,6 +1261,8 @@ class PS_PlayableManager : ScriptComponent
 	// - Execute ONLY on server
 	void SetPlayerPlayable(int playerId, RplId playableId)
 	{
+		if (!Replication.IsServer())
+			return;
 		RPC_SetPlayerPlayable(playerId, playableId);
 		Rpc(RPC_SetPlayerPlayable, playerId, playableId);
 
@@ -1257,37 +1284,7 @@ class PS_PlayableManager : ScriptComponent
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	protected void RPC_SetPlayerPlayable(int playerId, RplId playableId)
 	{
-		// Reset previous playable - playable -> player link
-		RplId oldPlayable = GetPlayableByPlayer(playerId);
-		if (oldPlayable != RplId.Invalid()) {
-			m_playablePlayers[oldPlayable] = -1;
-			PS_PlayableContainer playableComponent = m_aPlayables.Get(oldPlayable);
-			if (playableComponent)
-				playableComponent.InvokeOnPlayerChanged(playerId, -1);
-		}
-
-		// Update both maps (only real players are indexed in m_playersPlayable)
-		if (playerId > 0)
-			m_playersPlayable[playerId] = playableId;
-		int oldPlayerId = m_playablePlayers[playableId];
-		m_playablePlayers[playableId] = playerId;
-
-		// Remember last valid (BUG-01)
-		if (playableId != RplId.Invalid() && playerId > 0) {
-			m_playablePlayersRemembered[playableId] = playerId;
-			m_playersPlayableRemembered[playerId] = playableId;
-		}
-
-		// Invoke if playable valid
-		if (playerId > 0)
-		{
-			m_eOnPlayerPlayableChange.Invoke(playerId, playableId);
-		}
-
-		// Invoke container event
-		PS_PlayableContainer playableComponent = m_aPlayables.Get(playableId);
-		if (playableComponent)
-			playableComponent.InvokeOnPlayerChanged(oldPlayerId, playerId);
+		ApplyPlayerPlayableLink(playerId, playableId);
 	}
 	
 	// ------------------------------ Current playable controller ----------------------------------
@@ -1368,6 +1365,8 @@ class PS_PlayableManager : ScriptComponent
 	// - Execute ONLY on server
 	void SetPlayablePlayerGroupId(RplId PlayableId, int groupId)
 	{
+		if (!Replication.IsServer())
+			return;
 		RPC_SetPlayablePlayerGroupId(PlayableId, groupId);
 		Rpc(RPC_SetPlayablePlayerGroupId, PlayableId, groupId);
 	}
@@ -1431,6 +1430,8 @@ class PS_PlayableManager : ScriptComponent
 	// - Execute ONLY on server
 	void SetPlayerPin(int playerId, bool pined)
 	{
+		if (!Replication.IsServer())
+			return;
 		RPC_SetPlayerPin(playerId, pined);
 		Rpc(RPC_SetPlayerPin, playerId, pined);
 	}
