@@ -235,9 +235,24 @@ class PS_PlayableControllerComponent : ScriptComponent
 	{
 		Rpc(RPC_LoadMission, missionName);
 	}
+	/**
+	 * @brief Серверная загрузка миссии по имени; тело отключено, работает только предохранительный guard
+	 * @rpc Owner -> Server (Reliable)
+	 */
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void RPC_LoadMission(string missionName)
 	{
+		// only admins can load a mission
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		if (!thisPlayerController || playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId()) == EPlayerRole.NONE)
+		{
+			if (thisPlayerController)
+				PrintFormat("[PS_AntiCheat] ADMIN_ATTEMPT: %1 action=LoadMission mission=%2",
+					PS_GameModeCoop.PS_AntiCheatPlayerIdentity(thisPlayerController.GetPlayerId()), missionName);
+			return;
+		}
+
 		// SCR_SaveManagerCore saveManager = GetGame().GetSaveManager();
 		// It's litteraly broken on dedicated.
 		// saveManager.RestartAndLoad(missionName);

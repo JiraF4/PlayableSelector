@@ -235,6 +235,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		s_bHardFreezeActive = false;
 		s_bDamageBlocked = false;
 		DestroyFreezeTimeCounter();
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		if (playableManager)
+			playableManager.Cleanup();
 		super.OnGameEnd();
 	}
 	

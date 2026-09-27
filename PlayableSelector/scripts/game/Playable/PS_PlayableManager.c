@@ -290,7 +290,7 @@ class PS_PlayableManager : ScriptComponent
 			// Fallback safety timeout in case map has no playables or streaming completes with 0 slots
 			m_CallQueue.CallLater(SetSlotsFullyLoaded, 15000, false);
 		}
-		if (RplSession.Mode() == RplMode.Dedicated)
+		if (Replication.IsServer())
 			ForceGetSessionMaxPlayersCount();
 	
 		// Register events
@@ -314,6 +314,9 @@ class PS_PlayableManager : ScriptComponent
 	}
 	// --------------------------------------------------------------------------------------------
 	// Read max players count from server config
+	// Потолок в 30 повторов: Callqueue переживает удаление сущностей, поэтому недоступный
+	// ServerInfo (singleplayer / Workbench) не должен перепланировать вызов бесконечно.
+	protected int m_iServerInfoRetries;
 	protected void ForceGetSessionMaxPlayersCount()
 	{
 		ServerInfo serverInfo = GetGame().GetServerInfo();
@@ -322,8 +325,62 @@ class PS_PlayableManager : ScriptComponent
 			m_iMaxPlayersCount = serverInfo.GetPlayerLimit();
 			Replication.BumpMe();
 		}
-		else
+		else if (m_iServerInfoRetries < 30)
+		{
+			m_iServerInfoRetries = m_iServerInfoRetries + 1;
 			m_CallQueue.Call(ForceGetSessionMaxPlayersCount); // Loading take some time, awaiting valid config
+		}
+	}
+
+	// --------------------------------------------------------------------------------------------
+	// Teardown — симметрия к PS_PlayableControllerComponent.OnDelete
+	protected bool m_bIsCleanedUp;
+
+	/**
+	 * @brief Снятие подписок на инвокеры GameMode, отмена отложенных задач и сброс singleton
+	 * @details Вызывается из OnGameEnd() и из OnDelete(). Идемпотентна: повторный вызов
+	 *          ничего не делает, поэтому таймеры и подписки снимаются ровно один раз.
+	 */
+	void Cleanup()
+	{
+		if (m_bIsCleanedUp)
+			return;
+		m_bIsCleanedUp = true;
+
+		if (m_GameModeCoop)
+		{
+			m_GameModeCoop.GetOnPlayerConnected().Remove(OnPlayerConnected);
+			m_GameModeCoop.GetOnPlayerDisconnected().Remove(OnPlayerDisconnected);
+			m_GameModeCoop.GetOnPlayerRoleChange().Remove(OnPlayerRoleChange);
+		}
+
+		if (m_CallQueue)
+		{
+			m_CallQueue.Remove(SetSlotsFullyLoaded);
+			m_CallQueue.Remove(LateInit);
+			m_CallQueue.Remove(ForceGetSessionMaxPlayersCount);
+			m_CallQueue.Remove(DelayedSwitchToInitialEntity);
+			m_CallQueue.Remove(ChangeGroup);
+			m_CallQueue.Remove(UpdateGroupCallsign);
+			m_CallQueue.Remove(RegisterGroupName);
+			m_CallQueue.Remove(UpdatePlayablesSorted);
+			m_CallQueue.Remove(UpdatePlayablesSortedDelayed);
+			m_CallQueue.Remove(OnPlayableRegisteredLateInvoke);
+			m_CallQueue.Remove(OnPlayableRegisteredLateInvoke2);
+			m_CallQueue.Remove(RegisterGroupVehicle);
+			m_CallQueue.Remove(StartTime);
+			m_CallQueue.Remove(RemoveRedundantUnits);
+			m_CallQueue.Remove(SCR_EntityHelper.DeleteEntityAndChildren);
+		}
+
+		if (s_Instance == this)
+			s_Instance = null;
+	}
+
+	override void OnDelete(IEntity owner)
+	{
+		Cleanup();
+		super.OnDelete(owner);
 	}
 
 	// --------------------------------------------------------------------------------------------
