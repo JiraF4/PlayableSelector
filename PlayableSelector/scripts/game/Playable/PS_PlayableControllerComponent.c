@@ -830,17 +830,6 @@ class PS_PlayableControllerComponent : ScriptComponent
 		PS_GameModeCoop gm = GetGameModeCoop();
 		if (gm && gm.IsHardFreezeActive())
 		{
-			ChimeraCharacter character = ChimeraCharacter.Cast(to);
-			if (character)
-			{
-				CharacterControllerComponent charCtrl = character.GetCharacterController();
-				if (charCtrl)
-				{
-					charCtrl.SetDisableViewControls(true);
-					charCtrl.SetDisableMovementControls(true);
-					charCtrl.SetDisableWeaponControls(true);
-				}
-			}
 			gm.ApplyLocalControlsLock(true);
 		}
 	}
@@ -912,10 +901,13 @@ class PS_PlayableControllerComponent : ScriptComponent
 		
 		if (gameMode.IsHardFreezeActive() || gameMode.IsFreezeTimeShootingForbiden())
 		{
-			actionManager.SetActionValue("CharacterFire", 0);
-			actionManager.SetActionValue("CharacterThrowGrenade", 0);
-			actionManager.SetActionValue("CharacterMelee", 0);
-			actionManager.SetActionValue("CharacterFireStatic", 0);
+			if (gameMode.IsFreezeTimeShootingForbiden())
+			{
+				actionManager.SetActionValue("CharacterFire", 0);
+				actionManager.SetActionValue("CharacterThrowGrenade", 0);
+				actionManager.SetActionValue("CharacterMelee", 0);
+				actionManager.SetActionValue("CharacterFireStatic", 0);
+			}
 			actionManager.SetActionValue("TurretFire", 0);
 			actionManager.SetActionValue("VehicleFire", 0);
 			actionManager.SetActionValue("VehicleHorn", 0);

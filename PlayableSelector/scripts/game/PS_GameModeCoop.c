@@ -53,6 +53,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	[RplProp()]
 	protected float m_fHardFreezeRemaining = 60000;
 
+	// Client-local tracking of the entity currently holding disable flags (BUG-84 release edge)
+	protected IEntity m_LockedEntity;
+
 	protected bool m_bDayAdvanceWasOn;
 
 	static bool s_bHardFreezeActive;
@@ -2506,7 +2509,12 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 	/**
 	 * @brief Переопределение управления локального клиента для защиты от сброса движком во время Hard Freeze.
+	 * @subsystem Freeze
 	 * @context Client
+	 * @workaround Ванильный SCR_BaseGameMode.SetLocalControls вызывается каждый кадр (SCR_BaseGameMode.c:2160-2162) и сбрасывает флаги ввода. Переопределение удерживает блокировку при m_bHardFreeze.
+	 * @issue BUG-84
+	 * @cause Ванильный метод не учитывает состояние Hard Freeze мода и перезаписывает флаги каждый кадр.
+	 * @solution Единый владелец SetLocalControls подавляет сброс движком и вызывает EnforceHardFreezeControls с release-edge.
 	 * @param enabled Флаг разрешения ввода
 	 */
 	override protected void SetLocalControls(bool enabled)
@@ -2520,8 +2528,34 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	}
 
 	/**
-	 * @brief Потоковое принудительное применение блокировки движения, оружия и обзора на персонаже.
+	 * @brief Вспомогательный метод установки флагов блокировки обзора, движения и оружия на персонаже.
 	 * @context Client
+	 * @param entity Целевая сущность персонажа
+	 * @param disable true для блокировки, false для разблокировки
+	 */
+	protected void SetCharacterControlsDisable(IEntity entity, bool disable)
+	{
+		ChimeraCharacter character = ChimeraCharacter.Cast(entity);
+		if (!character)
+			return;
+
+		CharacterControllerComponent charCtrl = character.GetCharacterController();
+		if (charCtrl)
+		{
+			charCtrl.SetDisableViewControls(disable);
+			charCtrl.SetDisableMovementControls(disable);
+			charCtrl.SetDisableWeaponControls(disable);
+		}
+	}
+
+	/**
+	 * @brief Потоковое принудительное применение блокировки движения, оружия и обзора на персонаже.
+	 * @subsystem Freeze
+	 * @context Client
+	 * @depends PlayableSelector
+	 * @issue BUG-84
+	 * @cause При смене контролируемой сущности во время Hard Freeze прежнее тело сохраняло отключенные флаги управления.
+	 * @solution Единый владелец флагов ввода с отслеживанием release-edge через m_LockedEntity.
 	 * @param locked Флаг блокировки
 	 */
 	void EnforceHardFreezeControls(bool locked)
@@ -2530,20 +2564,41 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (!pc)
 			return;
 
-		PS_PlayableControllerComponent pcc = PS_PlayableControllerComponent.Cast(pc.FindComponent(PS_PlayableControllerComponent));
-		if (pcc && pcc.IsObserver())
-			return;
-
 		IEntity controlled = pc.GetControlledEntity();
-		ChimeraCharacter character = ChimeraCharacter.Cast(controlled);
-		if (character)
+		PS_PlayableControllerComponent pcc = PS_PlayableControllerComponent.Cast(pc.FindComponent(PS_PlayableControllerComponent));
+		bool isObserver = (pcc && pcc.IsObserver());
+
+		if (locked)
 		{
-			CharacterControllerComponent charCtrl = character.GetCharacterController();
-			if (charCtrl)
+			// Release edge: если сущность изменилась, снимаем флаги со старой
+			if (m_LockedEntity && m_LockedEntity != controlled)
 			{
-				charCtrl.SetDisableViewControls(locked);
-				charCtrl.SetDisableMovementControls(locked);
-				charCtrl.SetDisableWeaponControls(locked);
+				SetCharacterControlsDisable(m_LockedEntity, false);
+				m_LockedEntity = null;
+			}
+
+			// Наблюдателей никогда не блокируем (старое тело уже очищено выше)
+			if (isObserver)
+				return;
+
+			if (controlled)
+			{
+				SetCharacterControlsDisable(controlled, true);
+				m_LockedEntity = controlled;
+			}
+		}
+		else
+		{
+			// Снятие блокировки: сбрасываем флаги с запомненной сущности и текущей контролируемой
+			if (m_LockedEntity)
+			{
+				SetCharacterControlsDisable(m_LockedEntity, false);
+				m_LockedEntity = null;
+			}
+
+			if (controlled && !isObserver)
+			{
+				SetCharacterControlsDisable(controlled, false);
 			}
 		}
 	}
