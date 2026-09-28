@@ -1183,8 +1183,8 @@ StringTable {
   }
   CustomStringTableItem "{A169F8B84E0DEB76}" {
    Id "PS-Lobby_GameStart"
-   Target_en_us "Game start"
-   Target_ru_ru "Старт в игру"
+   Target_en_us "Game start!"
+   Target_ru_ru "Старт в игру!"
    Modified 1769500000
    Author "ReforgerLobby"
    LastChanged "ReforgerLobby"

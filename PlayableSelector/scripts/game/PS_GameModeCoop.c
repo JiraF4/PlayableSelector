@@ -175,6 +175,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	// Managed entirely on the server via CallQueue (BriefingTick_S).
 	protected int m_iBriefingRemainingSeconds;
 	protected bool m_bBriefingTimerActive;
+	// One-shot gate: the "1 minute remaining" banner is emitted at most once per briefing,
+	// including a briefing of exactly one minute (the first tick already consumes second 60).
+	protected bool m_bBriefingOneMinuteWarned;
 
 	// ------------------------------------------ Events ------------------------------------------
 	
@@ -520,6 +523,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		// /slots и алиасы (переход из PREGAME в SLOTSELECTION)
 		invoker = chatPanelManager.GetCommandInvoker("slots");
 		invoker.Insert(Slots_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("slot");
+		invoker.Insert(Slots_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("slotting");
 		invoker.Insert(Slots_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("слот");
@@ -863,8 +868,10 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	}
 
 	/**
-	 * @brief Серверная обработка /brif: рассылает smsg «Брифинг» и через 3 сек переводит в BRIEFING.
+	 * @brief Серверная обработка /brif: через 3 сек переводит SLOTSELECTION в BRIEFING и запускает таймер.
 	 * @context Server
+	 * @details Единственное сообщение о старте брифинга рассылает BriefingStart_S → BriefingAnnounce_S
+	 *          (баннер с выданной длительностью); здесь ничего не транслируется.
 	 * @param minutes Длительность брифинга в минутах
 	 */
 	void AdminBriefingCommand_S(int minutes)
@@ -875,8 +882,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (GetState() != SCR_EGameModeState.SLOTSELECTION)
 			return;
 
-		Rpc(RPC_BroadcastGlobalMessage, "#PS-Lobby_Briefing");
-		RPC_BroadcastGlobalMessage("#PS-Lobby_Briefing");
 		GetGame().GetCallqueue().CallLater(BriefingStart_S, 3000, false, minutes);
 	}
 
@@ -891,14 +896,20 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 		m_iBriefingRemainingSeconds = minutes * 60;
 		m_bBriefingTimerActive = true;
+		m_bBriefingOneMinuteWarned = false;
 
-		// Через 5 сек после перехода — объявить продолжительность брифинга
-		GetGame().GetCallqueue().CallLater(BriefingAnnounce_S, 5000, false, minutes);
+		// Единственное уведомление о старте брифинга — баннер с выданной длительностью
+		BriefingAnnounce_S(minutes);
 		// Запустить секундный тикер
 		GetGame().GetCallqueue().Remove(BriefingTick_S);
 		GetGame().GetCallqueue().CallLater(BriefingTick_S, 1000, false);
 	}
 
+	/**
+	 * @brief Стартовое уведомление брифинга: баннер с выданной длительностью.
+	 * @context Server
+	 * @param minutes Длительность брифинга в минутах
+	 */
 	void BriefingAnnounce_S(int minutes)
 	{
 		if (!Replication.IsServer() || !m_bBriefingTimerActive)
@@ -909,8 +920,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	}
 
 	/**
-	 * @brief Секундный тикер таймера брифинга. Отправляет тихие lmsg-предупреждения игрокам
-	 *        и по истечении — smsg «Старт в игру» + 3-секундная пауза перед /adv.
+	 * @brief Секундный тикер таймера брифинга. Ровно одно предупреждение — баннер «осталась 1 мин»
+	 *        за 60 сек до конца; по истечении — smsg «Старт в игру!» + 3-секундная пауза перед /adv.
 	 * @context Server
 	 */
 	void BriefingTick_S()
@@ -927,27 +938,13 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 		m_iBriefingRemainingSeconds--;
 
-		// Контрольные точки тихих предупреждений в чат (lmsg, без smsg-баннера)
-		switch (m_iBriefingRemainingSeconds)
+		// Единственная контрольная точка: баннер за 1 минуту до конца брифинга.
+		// Однократно (m_bBriefingOneMinuteWarned) и по «<= 60», чтобы сработало и при /brif 1.
+		if (!m_bBriefingOneMinuteWarned && m_iBriefingRemainingSeconds <= 60)
 		{
-			case 300: // 5 мин
-				BroadcastChatMessage_S("#PS-Lobby_BriefingRemaining_5m");
-				break;
-			case 180: // 3 мин
-				BroadcastChatMessage_S("#PS-Lobby_BriefingRemaining_3m");
-				break;
-			case 120: // 2 мин
-				BroadcastChatMessage_S("#PS-Lobby_BriefingRemaining_2m");
-				break;
-			case 60: // 1 мин
-				BroadcastChatMessage_S("#PS-Lobby_BriefingRemaining_1m");
-				break;
-			case 30: // 30 сек
-				BroadcastChatMessage_S("#PS-Lobby_BriefingRemaining_30s");
-				break;
-			case 10: // 10 сек
-				BroadcastChatMessage_S("#PS-Lobby_BriefingRemaining_10s");
-				break;
+			m_bBriefingOneMinuteWarned = true;
+			Rpc(RPC_BroadcastGlobalMessage, "#PS-Lobby_BriefingRemaining_1m");
+			RPC_BroadcastGlobalMessage("#PS-Lobby_BriefingRemaining_1m");
 		}
 
 		if (m_iBriefingRemainingSeconds <= 0)
