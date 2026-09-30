@@ -86,6 +86,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	// can independently RPC the server to end freeze, so the end notification must fire only once per freeze period
 	// (reset in StartGame).
 	protected bool m_bFreezeEndTriggered;
+	// One-shot guard for removeRestrictedZones: ensures zones cleanup and end notifications execute at most once
+	// per freeze period, avoiding duplicate notifications and redundant entity deletions (reset in StartGame).
+	protected bool m_bRestrictedZonesRemoved;
 	// True while restrictedZonesTimer is actively counting down (Soft Freeze phase).
 	// Set to true at the start of Soft Freeze, false when it expires. Used by hardFreezeTimer to decide
 	// whether to resume the Soft Freeze after Hard Freeze ends.
@@ -182,6 +185,15 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	// including a briefing of exactly one minute (the first tick already consumes second 60).
 	protected bool m_bBriefingOneMinuteWarned;
 
+	// Guards for /slots and /brif transitions (prevents duplicate execution & banner spam)
+	protected bool m_bSlotsTransitionInitiated;
+	protected bool m_bBriefingTransitionInitiated;
+	protected bool m_bAdvanceActionsRegistered;
+
+	// Client-side chat command debounce to suppress duplicate invocations from alias matching
+	protected static float s_fLastSlotsCommandTime = -1;
+	protected static float s_fLastBriefingCommandTime = -1;
+
 	// ------------------------------------------ Events ------------------------------------------
 	
 	override void EOnInit(IEntity owner)
@@ -232,7 +244,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		GetGame().GetCallqueue().Remove(restrictedZonesTimer);
 		GetGame().GetCallqueue().Remove(BriefingTick_S);
 		GetGame().GetCallqueue().Remove(BriefingFinishAdvance_S);
+		GetGame().GetCallqueue().Remove(SlotsAdvance_S);
+		GetGame().GetCallqueue().Remove(BriefingStart_S);
 		m_bBriefingTimerActive = false;
+		m_bSlotsTransitionInitiated = false;
+		m_bBriefingTransitionInitiated = false;
 		if (Replication.IsServer())
 		{
 			RestoreDayAdvance_S();
@@ -422,9 +438,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		m_fCurrentFreezeTime += time;
 		restartRestrictedZonesTimer(m_fCurrentFreezeTime);
 		
-		if (RplSession.Mode() != RplMode.Dedicated)
-			FreezeTimerAdvance_Notify();
-		Rpc(FreezeTimerAdvance_Notify);
+		FreezeTimerAdvance_Notify();
 	}
 	
 	void FreezeTimerEnd()
@@ -439,9 +453,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 		restartRestrictedZonesTimer(5000);
 		
-		if (RplSession.Mode() != RplMode.Dedicated)
-			FreezeTimerEnd_Notify();
-		Rpc(FreezeTimerEnd_Notify);
+		FreezeTimerEnd_Notify();
 	}
 
 	void EditorClosed()
@@ -483,6 +495,10 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	
 	void AddAdvanceAction()
 	{
+		if (m_bAdvanceActionsRegistered)
+			return;
+		m_bAdvanceActionsRegistered = true;
+
 		SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
 		ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("adv");
 		invoker.Insert(AdvanceStage_Callback);
@@ -509,8 +525,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		invoker = chatPanelManager.GetCommandInvoker("fte");
 		invoker.Insert(FreezeTimerEnd_Callback);
 		// Hard freeze — оригинальный /hardfreeze + короткие алиасы
-		invoker = chatPanelManager.GetCommandInvoker("hardfreeze");
-		invoker.Insert(HardFreeze_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("hft");
 		invoker.Insert(HardFreeze_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("hfta");
@@ -523,27 +537,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		invoker.Insert(LoadAllMarkersToClipboard_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("rfix");
 		invoker.Insert(RFix_Callback);
-		// /slots и алиасы (переход из PREGAME в SLOTSELECTION)
-		invoker = chatPanelManager.GetCommandInvoker("slots");
-		invoker.Insert(Slots_Callback);
+		// /slot (переход из PREGAME в SLOTSELECTION)
 		invoker = chatPanelManager.GetCommandInvoker("slot");
 		invoker.Insert(Slots_Callback);
-		invoker = chatPanelManager.GetCommandInvoker("slotting");
-		invoker.Insert(Slots_Callback);
-		invoker = chatPanelManager.GetCommandInvoker("слот");
-		invoker.Insert(Slots_Callback);
-		invoker = chatPanelManager.GetCommandInvoker("слотинг");
-		invoker.Insert(Slots_Callback);
-		// /brif и алиасы (переход из SLOTSELECTION в BRIEFING + таймер)
+		// /brif (переход из SLOTSELECTION в BRIEFING + таймер)
 		invoker = chatPanelManager.GetCommandInvoker("brif");
-		invoker.Insert(Briefing_Callback);
-		invoker = chatPanelManager.GetCommandInvoker("brief");
-		invoker.Insert(Briefing_Callback);
-		invoker = chatPanelManager.GetCommandInvoker("briefing");
-		invoker.Insert(Briefing_Callback);
-		invoker = chatPanelManager.GetCommandInvoker("бриф");
-		invoker.Insert(Briefing_Callback);
-		invoker = chatPanelManager.GetCommandInvoker("брифинг");
 		invoker.Insert(Briefing_Callback);
 	}
 	
@@ -618,12 +616,21 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		
 		playableController.FreezeTimerAdvance(PS_PlayersHelper.ParseChatIntOr(data, 0)); // BUG-85: безопасный парс аргумента
 	}
+	/**
+	 * @brief Рассылка уведомления о сдвиге фризтайма
+	 * @issue BUG-90
+	 * @cause Спаренный вызов локального метода и Rpc(...) приводил к дублированию всплывающего баннера
+	 * @solution Одиночный вызов smsg инвокера по эталону 1.6.89
+	 */
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void FreezeTimerAdvance_Notify()
 	{
 		SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
+		if (!chatPanelManager)
+			return;
 		ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("smsg");
-		invoker.Invoke(null, "#PS-Freeze_time_advanced");
+		if (invoker)
+			invoker.Invoke(null, "#PS-Freeze_time_advanced");
 	}
 	
 	void FreezeTimerEnd_Callback(SCR_ChatPanel panel, string data)
@@ -648,12 +655,21 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		
 		playableController.FreezeTimerEnd();
 	}
+	/**
+	 * @brief Рассылка уведомления о принудительном завершении фризтайма
+	 * @issue BUG-90
+	 * @cause Спаренный вызов локального метода и Rpc(...) приводил к дублированию всплывающего баннера
+	 * @solution Одиночный вызов smsg инвокера по эталону 1.6.89
+	 */
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void FreezeTimerEnd_Notify()
 	{
 		SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
+		if (!chatPanelManager)
+			return;
 		ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("smsg");
-		invoker.Invoke(null, "#PS-Freeze_time_force_end");
+		if (invoker)
+			invoker.Invoke(null, "#PS-Freeze_time_force_end");
 	}
 
 	void HardFreeze_Callback(SCR_ChatPanel panel, string data)
@@ -786,13 +802,18 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 	void HardFreezeNotify(string message)
 	{
-		if (RplSession.Mode() != RplMode.Dedicated)
-			RPC_BroadcastGlobalMessage(message);
-		Rpc(RPC_BroadcastGlobalMessage, message);
+		RPC_BroadcastGlobalMessage(message);
 	}
 
 	// ================================ /slots ================================
 
+	/**
+	 * @brief Клиентский колбэк команды /slots и её алиасов.
+	 * @issue BUG-89
+	 * @cause Парсер чата сопоставляет родственные префиксы ('slots', 'slot', 'slotting')
+	 *        и трижды вызывал колбэк в один кадр.
+	 * @solution Клиентский debounce (1000 мс) блокирует повторные локальные вызовы до отправки RPC.
+	 */
 	void Slots_Callback(SCR_ChatPanel panel, string data)
 	{
 		if (!PS_PlayersHelper.IsAdminOrServer())
@@ -800,6 +821,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 		if (GetState() != SCR_EGameModeState.PREGAME)
 			return;
+
+		float now = GetGame().GetWorld().GetWorldTime();
+		if (s_fLastSlotsCommandTime > 0 && (now - s_fLastSlotsCommandTime) < 1000)
+			return;
+		s_fLastSlotsCommandTime = now;
 
 		if (!m_playableManager)
 			m_playableManager = PS_PlayableManager.GetInstance();
@@ -820,6 +846,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	/**
 	 * @brief Серверная обработка /slots: рассылает smsg «Слотинг» и через 3 сек переводит в SLOTSELECTION.
 	 * @context Server
+	 * @issue BUG-89
+	 * @solution Флаг m_bSlotsTransitionInitiated защищает 3-секундное окно ожидания от повторных вызовов;
+	 *           локальный показ баннера выполняется только вне выделенного сервера.
 	 */
 	void AdminSlotsCommand_S()
 	{
@@ -829,16 +858,21 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (GetState() != SCR_EGameModeState.PREGAME)
 			return;
 
+		if (m_bSlotsTransitionInitiated)
+			return;
+
 		if (m_playableManager && !m_playableManager.IsSlotsFullyLoaded())
 			return;
 
-		Rpc(RPC_BroadcastGlobalMessage, "#PS-Lobby_Slotting");
+		m_bSlotsTransitionInitiated = true;
+
 		RPC_BroadcastGlobalMessage("#PS-Lobby_Slotting");
 		GetGame().GetCallqueue().CallLater(SlotsAdvance_S, 3000, false);
 	}
 
 	void SlotsAdvance_S()
 	{
+		m_bSlotsTransitionInitiated = false;
 		if (!Replication.IsServer())
 			return;
 		if (GetState() != SCR_EGameModeState.PREGAME)
@@ -848,9 +882,10 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 	// ================================ /brif ================================
 
-	//! @issue BUG-85
-	//! @cause Безусловный data.ToInt() бросал VME "Wrong parameter value" на пустом/нечисловом аргументе, обрывая вызов до AdminBriefingCommand.
-	//! @solution Парс через PS_PlayersHelper.ParseChatIntOr с дефолтом 10; FR-008 (пустой/0/отрицательный /brif → 10 мин) стал достижим без VME.
+	//! @issue BUG-85, BUG-89
+	//! @cause BUG-85: Безусловный data.ToInt() бросал VME на пустом/нечисловом аргументе.
+	//!        BUG-89: Парсер чата по префиксам вызывал Briefing_Callback трижды на ввод команды.
+	//! @solution Безопасный парс через ParseChatIntOr + клиентский debounce (1000 мс).
 	void Briefing_Callback(SCR_ChatPanel panel, string data)
 	{
 		if (!PS_PlayersHelper.IsAdminOrServer())
@@ -858,6 +893,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 		if (GetState() != SCR_EGameModeState.SLOTSELECTION)
 			return;
+
+		float now = GetGame().GetWorld().GetWorldTime();
+		if (s_fLastBriefingCommandTime > 0 && (now - s_fLastBriefingCommandTime) < 1000)
+			return;
+		s_fLastBriefingCommandTime = now;
 
 		int minutes = PS_PlayersHelper.ParseChatIntOr(data, 10);
 		if (minutes <= 0)
@@ -874,8 +914,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	/**
 	 * @brief Серверная обработка /brif: через 3 сек переводит SLOTSELECTION в BRIEFING и запускает таймер.
 	 * @context Server
-	 * @details Единственное сообщение о старте брифинга рассылает BriefingStart_S → BriefingAnnounce_S
-	 *          (баннер с выданной длительностью); здесь ничего не транслируется.
+	 * @issue BUG-89
+	 * @solution Флаг m_bBriefingTransitionInitiated блокирует повторные запросы в 3-секундном окне.
 	 * @param minutes Длительность брифинга в минутах
 	 */
 	void AdminBriefingCommand_S(int minutes)
@@ -886,11 +926,17 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (GetState() != SCR_EGameModeState.SLOTSELECTION)
 			return;
 
+		if (m_bBriefingTransitionInitiated)
+			return;
+
+		m_bBriefingTransitionInitiated = true;
+
 		GetGame().GetCallqueue().CallLater(BriefingStart_S, 3000, false, minutes);
 	}
 
 	void BriefingStart_S(int minutes)
 	{
+		m_bBriefingTransitionInitiated = false;
 		if (!Replication.IsServer())
 			return;
 		if (GetState() != SCR_EGameModeState.SLOTSELECTION)
@@ -919,7 +965,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (!Replication.IsServer() || !m_bBriefingTimerActive)
 			return;
 		string msg = string.Format("Брифинг %1 мин", minutes);
-		Rpc(RPC_BroadcastGlobalMessage, msg);
 		RPC_BroadcastGlobalMessage(msg);
 	}
 
@@ -947,14 +992,12 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (!m_bBriefingOneMinuteWarned && m_iBriefingRemainingSeconds <= 60)
 		{
 			m_bBriefingOneMinuteWarned = true;
-			Rpc(RPC_BroadcastGlobalMessage, "#PS-Lobby_BriefingRemaining_1m");
 			RPC_BroadcastGlobalMessage("#PS-Lobby_BriefingRemaining_1m");
 		}
 
 		if (m_iBriefingRemainingSeconds <= 0)
 		{
 			m_bBriefingTimerActive = false;
-			Rpc(RPC_BroadcastGlobalMessage, "#PS-Lobby_GameStart");
 			RPC_BroadcastGlobalMessage("#PS-Lobby_GameStart");
 			// Молчаливая пауза 3 сек перед переходом в GAME
 			GetGame().GetCallqueue().CallLater(BriefingFinishAdvance_S, 3000, false);
@@ -977,12 +1020,12 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	// Рассылка глобального smsg-сообщения всем клиентам
 	void BroadcastChatMessage_S(string message)
 	{
-		Rpc(RPC_BroadcastChatMessage, message);
 		RPC_BroadcastChatMessage(message);
 	}
 
 	/**
 	 * @brief Рассылка глобального smsg-баннера всем игрокам.
+	 * @issue BUG-90
 	 * @rpc Server -> Broadcast (Reliable)
 	 */
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
@@ -1283,13 +1326,30 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		GameStateTransitions.RequestScenarioChangeTransition(data, "", "");
 	}
 
+	/**
+	 * @brief Удаление зон ограничения и сброс штрафных данных игроков.
+	 * @issue BUG-88
+	 * @cause Отсутствовал guard повторного вызова; уведомление #PS-Freeze_End отправлялось
+	 *        даже если фризтайм уже был досрочно завершен администратором (#PS-Freeze_time_force_end).
+	 * @solution Добавлен m_bRestrictedZonesRemoved guard и условная отправка уведомления только при естественном завершении.
+	 */
 	void removeRestrictedZones()
 	{
+		if (m_bRestrictedZonesRemoved)
+			return;
+		m_bRestrictedZonesRemoved = true;
+
 		BaseGameMode gamemode = GetGame().GetGameMode();
 		SCR_PlayersRestrictionZoneManagerComponent restrictionZoneManager = SCR_PlayersRestrictionZoneManagerComponent.Cast(gamemode.FindComponent(SCR_PlayersRestrictionZoneManagerComponent));
 		set<SCR_EditorRestrictionZoneEntity> zones = restrictionZoneManager.GetZones();
 
-		HardFreezeNotify("#PS-Freeze_End");
+		// BUG-88: Шлем уведомление о завершении только если фризтайм не был завершен досрочно
+		// (при досрочном завершении игроки уже получили уведомление #PS-Freeze_time_force_end).
+		if (!m_bFreezeEndTriggered)
+		{
+			HardFreezeNotify("#PS-Freeze_End");
+			m_bFreezeEndTriggered = true;
+		}
 
 		array<int> playerIds = new array<int>();
 		GetGame().GetPlayerManager().GetPlayers(playerIds);
@@ -2240,14 +2300,17 @@ class PS_GameModeCoop : SCR_BaseGameMode
 					m_playableManager = PS_PlayableManager.GetInstance();
 				if (m_playableManager && !m_playableManager.IsSlotsFullyLoaded())
 				{
+					m_bSlotsTransitionInitiated = false;
 					Print(string.Format("[PS_GameModeCoop] AdvanceGameState: transition PREGAME -> SLOTSELECTION blocked, %1", m_playableManager.GetSlotsLoadingMessage()), LogLevel.WARNING);
 					Rpc(RPC_SlotsLoadingNotice);
 					RPC_SlotsLoadingNotice();
 					return;
 				}
+				m_bSlotsTransitionInitiated = false;
 				SetGameModeState(SCR_EGameModeState.SLOTSELECTION);
 				break;
 			case SCR_EGameModeState.SLOTSELECTION:
+				m_bBriefingTransitionInitiated = false;
 				if (m_bShowCutscene)
 				{
 					SetGameModeState(SCR_EGameModeState.CUTSCENE);
@@ -2291,6 +2354,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		// alive so players can still pick them during the freeze window.
 		playableManager.RemoveRedundantUnits(true);
 		m_bFreezeEndTriggered = false; // new freeze period - allow the one-shot end notification again
+		m_bRestrictedZonesRemoved = false; // BUG-88: allow zones removal and notification for new round
 		m_bSoftFreezeActive = false;   // reset Soft Freeze tracking for the new game cycle
 
 		// F-09 (Q3-B): Restore baseline freeze time for new game cycle and sync to clients
