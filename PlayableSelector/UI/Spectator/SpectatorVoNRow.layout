@@ -48,7 +48,7 @@ SizeLayoutWidgetClass {
      Image "VoNDirect"
      Size 22 22
     }
-    TextWidgetClass "{E0A1B2C3D4E5F604}" {
+    RichTextWidgetClass "{E0A1B2C3D4E5F604}" {
      Name "PlayerName"
      Slot FrameWidgetSlot "{E0A1B2C3D4E5F605}" {
       Anchor 0 0 1 1

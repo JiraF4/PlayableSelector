@@ -122,8 +122,8 @@ class PS_SpectatorVoNOverlay : ScriptedWidgetComponent
 		if (!row)
 			return;
 
-		// Установить имя игрока в TextWidget "PlayerName"
-		TextWidget nameWidget = TextWidget.Cast(row.FindAnyWidget("PlayerName"));
+		// Установить имя игрока в RichTextWidget "PlayerName"
+		RichTextWidget nameWidget = RichTextWidget.Cast(row.FindAnyWidget("PlayerName"));
 		if (nameWidget)
 		{
 			string playerName;
