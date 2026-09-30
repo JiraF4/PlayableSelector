@@ -129,6 +129,11 @@ class PS_PlayableManager : ScriptComponent
 	{
 		return m_eFactionReadyChanged;
 	}
+	ref ScriptInvokerInt m_eOnMaxPlayersCountChanged = new ScriptInvokerInt();
+	ScriptInvokerInt GetOnMaxPlayersCountChanged()
+	{
+		return m_eOnMaxPlayersCountChanged;
+	}
 
 	//Global cache
 	protected PS_GameModeCoop m_GameModeCoop;
@@ -140,8 +145,20 @@ class PS_PlayableManager : ScriptComponent
 
 	protected static PS_PlayableManager s_Instance;
 
-	[RplProp()]
+	[RplProp(onRplName: "OnRpl_MaxPlayersCount")]
 	int m_iMaxPlayersCount = 1; // Max players count from server config
+
+	/**
+	 * @brief Колбэк репликации лимита игроков сервера.
+	 * @issue BUG-87
+	 * @cause Клиенты не получали уведомления об обновлении m_iMaxPlayersCount при репликации свойства.
+	 * @solution Вызов инвокера m_eOnMaxPlayersCountChanged для реактивного обновления UI.
+	 */
+	void OnRpl_MaxPlayersCount()
+	{
+		if (m_eOnMaxPlayersCountChanged)
+			m_eOnMaxPlayersCountChanged.Invoke(m_iMaxPlayersCount);
+	}
 
 	/**
 	 * @brief Флаг завершения фоновой загрузки и регистрации всех слотов миссии.
@@ -313,22 +330,45 @@ class PS_PlayableManager : ScriptComponent
 		s_CurrentPlayableController = m_CurrentPlayerController.PS_GetPLayableComponent();
 	}
 	// --------------------------------------------------------------------------------------------
-	// Read max players count from server config
-	// Потолок в 30 повторов: Callqueue переживает удаление сущностей, поэтому недоступный
-	// ServerInfo (singleplayer / Workbench) не должен перепланировать вызов бесконечно.
+	/**
+	 * @brief Запрос лимита игроков сервера из ServerInfo с повторными попытками и fallback на число слотов.
+	 * @issue BUG-87
+	 * @cause Покадровый опрос (Call) исчерпывал 30 попыток за 300-500 мс до инициализации ServerInfo на выделенном сервере, оставляя лимит равным дефолтному 1.
+	 * @solution Опрос через CallLater с интервалом 1000 мс (до 15 попыток) и fallback на m_aPlayables.Count(), если ServerInfo недоступен или вернул некорректный лимит <= 0.
+	 */
 	protected int m_iServerInfoRetries;
 	protected void ForceGetSessionMaxPlayersCount()
 	{
+		if (!Replication.IsServer())
+			return;
+
 		ServerInfo serverInfo = GetGame().GetServerInfo();
+		int playerLimit = 0;
 		if (serverInfo)
+			playerLimit = serverInfo.GetPlayerLimit();
+
+		if (playerLimit > 0)
 		{
-			m_iMaxPlayersCount = serverInfo.GetPlayerLimit();
+			m_iMaxPlayersCount = playerLimit;
 			Replication.BumpMe();
+			if (m_eOnMaxPlayersCountChanged)
+				m_eOnMaxPlayersCountChanged.Invoke(m_iMaxPlayersCount);
 		}
-		else if (m_iServerInfoRetries < 30)
+		else if (m_iServerInfoRetries < 15)
 		{
 			m_iServerInfoRetries = m_iServerInfoRetries + 1;
-			m_CallQueue.Call(ForceGetSessionMaxPlayersCount); // Loading take some time, awaiting valid config
+			m_CallQueue.CallLater(ForceGetSessionMaxPlayersCount, 1000, false);
+		}
+		else
+		{
+			// Fallback: use total playables count if serverInfo limit is not available
+			if (m_aPlayables.Count() > 0)
+				m_iMaxPlayersCount = m_aPlayables.Count();
+			else
+				m_iMaxPlayersCount = 1;
+			Replication.BumpMe();
+			if (m_eOnMaxPlayersCountChanged)
+				m_eOnMaxPlayersCountChanged.Invoke(m_iMaxPlayersCount);
 		}
 	}
 
@@ -795,7 +835,13 @@ class PS_PlayableManager : ScriptComponent
 	// affiliation from that entity - which is the factionless lobby/VoN body during preview/lobby/
 	// briefing - leaving the player with an empty faction and therefore the WRONG side's map markers.
 	// We cache the relevant state by GUID on disconnect and re-apply it on reconnect.
-	// - Execute ONLY on server
+	/**
+	 * @brief Кэширование данных слота, фракции, PIN и имени игрока по GUID при дисконнекте.
+	 * @issue BUG-86
+	 * @cause Игроки при реконнекте получают новый playerId, теряя привязку к слоту и фракции.
+	 * @solution Сохранение данных в карты по устойчивому GUID (SCR_PlayerIdentityUtils.GetPlayerIdentityId).
+	 * @context Server
+	 */
 	void StorePlayerReconnectData(int playerId)
 	{
 		if (!Replication.IsServer())
@@ -866,6 +912,13 @@ class PS_PlayableManager : ScriptComponent
 		m_mReconnectCancelled[playerId] = true;
 	}
 
+	/**
+	 * @brief Восстановление зарезервированного слота, фракции и прав управления после реконнекта игрока.
+	 * @issue BUG-86
+	 * @cause При дисконнекте контроллер мог удаляться раньше вызова OnPlayerDisconnected, что сбрасывало кэш слота. При восстановлении старый ID игрока мог конфликтовать со слотом.
+	 * @solution Очистка устаревшего disconnected playerId игрока, атомарное переназначение слота на новый playerId и передача управления через ApplyPlayable.
+	 * @context Server
+	 */
 	void RestorePlayerReconnectData(int playerId)
 	{
 		if (!Replication.IsServer())
@@ -901,7 +954,14 @@ class PS_PlayableManager : ScriptComponent
 			int holder = GetPlayerByPlayable(playable);
 			bool free = holder <= 0 || holder == playerId || !m_PlayerManager.IsPlayerConnected(holder);
 			if (free)
+			{
+				if (holder > 0 && holder != playerId)
+				{
+					// Clean up stale disconnected player state
+					SetPlayerState(holder, PS_EPlayableControllerState.NotReady);
+				}
 				SetPlayerPlayable(playerId, playable);
+			}
 		}
 
 		// Re-apply faction so markers match the player's side again
@@ -1241,45 +1301,82 @@ class PS_PlayableManager : ScriptComponent
 		RPC_SetPlayablePlayer(playableId, playerId);
 		Rpc(RPC_SetPlayablePlayer, playableId, playerId);
 	}
-	// Shared slot<->player link maintenance. Runs on EVERY machine (server + every
-	// broadcast-RPC client) because m_playablePlayers/m_playersPlayable are plain maps
-	// rebuilt locally from the broadcast, not [RplProp]; a server-only guard here would
-	// desync client slot lists. Both link RPCs route through this so the paired maps and
-	// the *Remembered maps (BUG-01) always update atomically and identically.
+	/**
+	 * @brief Атомарная синхронизация связей слот <-> игрок с гарантией инварианта 1-к-1.
+	 * @issue BUG-86
+	 * @cause При частой смене слотов старые слоты не очищались, приводя к дублированию одного игрока в нескольких слотах. При снятии слота передавался невалидный ID -1, который записывался в map<int, RplId> как 4294967295, а RplId.Invalid() вставлялся ключом в m_playablePlayers.
+	 * @solution Очистка всех предыдущих и дублирующих слотов игрока в m_playablePlayers, безопасная обработка RplId.Invalid() без записи в m_playablePlayers, замена -1 на RplId.Invalid() при вытеснении игрока.
+	 */
 	protected void ApplyPlayerPlayableLink(int playerId, RplId playableId)
 	{
-		// Reset previous player - playable -> player link
-		if (playerId > 0) {
+		// 1. Reset previous slot(s) for this player to strictly enforce 1-to-1 invariant
+		if (playerId > 0)
+		{
 			RplId oldPlayable = GetPlayableByPlayer(playerId);
-			if (oldPlayable != RplId.Invalid())
+			if (oldPlayable != RplId.Invalid() && oldPlayable != playableId)
 			{
-				m_playablePlayers[oldPlayable] = -1;
+				if (m_playablePlayers.Contains(oldPlayable) && m_playablePlayers[oldPlayable] == playerId)
+					m_playablePlayers[oldPlayable] = -1;
+				PS_PlayableContainer oldContainer = m_aPlayables.Get(oldPlayable);
+				if (oldContainer)
+					oldContainer.InvokeOnPlayerChanged(playerId, -1);
 			}
-			PS_PlayableContainer playableComponent = m_aPlayables.Get(oldPlayable);
-			if (playableComponent)
-				playableComponent.InvokeOnPlayerChanged(playerId, -1);
+
+			// Clean up any remaining slots holding this playerId (anti-duplication)
+			for (int i = 0; i < m_playablePlayers.Count(); i++)
+			{
+				RplId slotKey = m_playablePlayers.GetKey(i);
+				if (slotKey != playableId && slotKey != oldPlayable && m_playablePlayers.GetElement(i) == playerId)
+				{
+					m_playablePlayers[slotKey] = -1;
+					PS_PlayableContainer dupContainer = m_aPlayables.Get(slotKey);
+					if (dupContainer)
+						dupContainer.InvokeOnPlayerChanged(playerId, -1);
+				}
+			}
 		}
 
-		// Update both maps (only real players are indexed in m_playersPlayable)
+		// 2. Handling slot release (playableId == RplId.Invalid())
+		if (playableId == RplId.Invalid())
+		{
+			if (playerId > 0)
+			{
+				m_playersPlayable[playerId] = RplId.Invalid();
+				m_eOnPlayerPlayableChange.Invoke(playerId, RplId.Invalid());
+			}
+			return;
+		}
+
+		// 3. Handling valid slot assignment (playableId != RplId.Invalid())
+		int oldPlayerId = -1;
+		if (m_playablePlayers.Contains(playableId))
+			oldPlayerId = m_playablePlayers[playableId];
+
+		m_playablePlayers[playableId] = playerId;
+
 		if (playerId > 0)
 			m_playersPlayable[playerId] = playableId;
-		int oldPlayerId = m_playablePlayers[playableId];
-		m_playablePlayers[playableId] = playerId;
-		// Clear the slot the displaced player used to point at (was missing in the
-		// player-keyed path -> stale m_playersPlayable entry / late-join desync)
+
+		// Clear the slot the displaced player used to point at
 		if (oldPlayerId > 0 && oldPlayerId != playerId)
-			m_playersPlayable[oldPlayerId] = -1;
+			m_playersPlayable[oldPlayerId] = RplId.Invalid();
 
 		// Remember last valid (BUG-01)
-		if (playableId != RplId.Invalid() && playerId > 0) {
+		if (playerId > 0)
+		{
 			m_playablePlayersRemembered[playableId] = playerId;
 			m_playersPlayableRemembered[playerId] = playableId;
 		}
 
-		// Invoke if player valid
+		// Invoke player-level event
 		if (playerId > 0)
 		{
 			m_eOnPlayerPlayableChange.Invoke(playerId, playableId);
+		}
+		else if (oldPlayerId > 0)
+		{
+			// Player was removed/kicked from slot by admin or server (e.g. playerId == -1 or -2)
+			m_eOnPlayerPlayableChange.Invoke(oldPlayerId, RplId.Invalid());
 		}
 
 		// Invoke container event
@@ -1831,13 +1928,14 @@ class PS_PlayableManager : ScriptComponent
 	// --------------------------------------------------------------------------------------------
 	/**
 	 * @brief Сериализация снимка лобби для подключающихся клиентов (JIP).
-	 * @issue BUG-LockedSlotsJIP: закрытые админом слоты (-2) не отображались у JIP-игроков.
-	 * @cause m_playersPlayable (map<int, RplId>) имела коллизию ключа -2 при закрытии нескольких слотов.
-	 * @solution Прямая сериализация m_playablePlayers (map<RplId, int>) с сохранением всех закрытых (-2) и занятых слотов.
+	 * @issue BUG-LockedSlotsJIP, BUG-87
+	 * @cause m_iMaxPlayersCount не сериализовался в снимке JIP, из-за чего клиенты получали дефолтный лимит 1.
+	 * @solution Сериализация m_iMaxPlayersCount в RplSave и десериализация в RplLoad.
 	 */
 	override protected bool RplSave(ScriptBitWriter writer)
 	{
 		writer.WriteBool(m_bSlotsFullyLoaded);
+		writer.WriteInt(m_iMaxPlayersCount);
 
 		// Save maps
 		// Replicate m_playablePlayers (RplId -> playerId) directly so all locked slots (playerId == -2)
@@ -1894,13 +1992,16 @@ class PS_PlayableManager : ScriptComponent
 	// --------------------------------------------------------------------------------------------
 	/**
 	 * @brief Десериализация снимка лобби на клиенте при JIP.
-	 * @issue BUG-LockedSlotsJIP: закрытые слоты (-2) не отображались у JIP-игроков.
-	 * @cause Восстановление m_playablePlayers из m_playersPlayable теряло все закрытые слоты кроме одного из-за коллизии ключа -2.
-	 * @solution Прямое чтение m_playablePlayers и обратное построение m_playersPlayable только для реальных игроков (playerId > 0).
+	 * @issue BUG-LockedSlotsJIP, BUG-87
+	 * @cause Восстановление m_playablePlayers из m_playersPlayable теряло закрытые слоты; отсутствие чтения m_iMaxPlayersCount приводило к отображению 1 вместо лимита.
+	 * @solution Прямое чтение m_playablePlayers, чтение m_iMaxPlayersCount и вызов m_eOnMaxPlayersCountChanged.
 	 */
 	override protected bool RplLoad(ScriptBitReader reader)
 	{
 		reader.ReadBool(m_bSlotsFullyLoaded);
+		reader.ReadInt(m_iMaxPlayersCount);
+		if (m_eOnMaxPlayersCountChanged)
+			m_eOnMaxPlayersCountChanged.Invoke(m_iMaxPlayersCount);
 
 		// Load maps (must match RplSave order)
 		PS_ReplicationHelper.ReadMapIntInt(reader, m_playersStates);

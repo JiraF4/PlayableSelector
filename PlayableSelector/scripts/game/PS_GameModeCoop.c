@@ -1469,7 +1469,12 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		killListManager.RPC_KillEvent(killData);
 	}
 
-	// Update state for disconnected and start timer if need (DO NOT DELETE CONTROLED ENTITY)
+	/**
+	 * @brief Обработка отключения игрока с сохранением состояния слота, GUID-кэша и авторитета сущности.
+	 * @issue BUG-86
+	 * @cause Блокирующий guard `if (!playerController) return;` прерывал выполнение, если контроллер удалялся движком до вызова колбэка, лишая игрока кэша реконнекта и не запуская таймер освобождения слота.
+	 * @solution Безусловное сохранение кэша реконнекта по GUID, запуск таймера очистки слота и поиск контролируемой сущности через PS_PlayableManager при отсутствии контроллера.
+	 */
 	protected override void OnPlayerDisconnected(int playerId, KickCauseCode cause, int timeout)
 	{
 		// Anti-cheat: log every disconnect with identity + reason (server-only).
@@ -1478,34 +1483,51 @@ class PS_GameModeCoop : SCR_BaseGameMode
 				PS_AntiCheatPlayerIdentity(playerId), cause, timeout);
 
 		PlayerManager playerManager = GetGame().GetPlayerManager();
-		SCR_PlayerController playerController = SCR_PlayerController.Cast(playerManager.GetPlayerController(playerId));
-		if (!playerController)
-			return;
-		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		SCR_PlayerController playerController;
+		if (playerManager)
+			playerController = SCR_PlayerController.Cast(playerManager.GetPlayerController(playerId));
 
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		// Cancel any pending zombie RestorePlayerReconnectData for this playerId. If the player
-		// disconnects BEFORE the 2500ms reconnect-restore delay fires, the uncancelled CallLater
-		// would execute on the dead playerId — consuming the GUID cache and permanently assigning
-		// the slot to a ghost ID, locking the real player out on their next reconnect.
-		// Note: Callqueue.Remove() in Enfusion only accepts a function ref (no extra args), so
-		// we flag the playerId as cancelled and RestorePlayerReconnectData checks it on entry.
-		playableManager.CancelPendingReconnectRestore(playerId);
-		// Cache faction/slot by GUID now, while the playerId-keyed state still exists, so the player
-		// keeps their side (and map markers) when they reconnect under a new playerId.
-		playableManager.StorePlayerReconnectData(playerId);
-		playableManager.SetPlayerState(playerId, PS_EPlayableControllerState.Disconected);
-		if (m_iReconnectTime > 0) GetGame().GetCallqueue().CallLater(RemoveDisconnectedPlayer, m_iReconnectTime, false, playerId);
+		if (playableManager)
+		{
+			// Cancel any pending zombie RestorePlayerReconnectData for this playerId. If the player
+			// disconnects BEFORE the 2500ms reconnect-restore delay fires, the uncancelled CallLater
+			// would execute on the dead playerId — consuming the GUID cache and permanently assigning
+			// the slot to a ghost ID, locking the real player out on their next reconnect.
+			// Note: Callqueue.Remove() in Enfusion only accepts a function ref (no extra args), so
+			// we flag the playerId as cancelled and RestorePlayerReconnectData checks it on entry.
+			playableManager.CancelPendingReconnectRestore(playerId);
+			// Cache faction/slot by GUID now, while the playerId-keyed state still exists, so the player
+			// keeps their side (and map markers) when they reconnect under a new playerId.
+			playableManager.StorePlayerReconnectData(playerId);
+			playableManager.SetPlayerState(playerId, PS_EPlayableControllerState.Disconected);
+		}
+		if (m_iReconnectTime > 0)
+			GetGame().GetCallqueue().CallLater(RemoveDisconnectedPlayer, m_iReconnectTime, false, playerId);
 
 		// Body-less: delete this player's VoN proxy (a reconnecting player gets a fresh one).
 		PS_VoNRoomsManager vonRoomsManager = PS_VoNRoomsManager.GetInstance();
 		if (vonRoomsManager)
 			vonRoomsManager.RemoveProxy_S(playerId);
 
-		IEntity controlledEntity = playerController.GetControlledEntity();
+		IEntity controlledEntity;
+		if (playerController)
+			controlledEntity = playerController.GetControlledEntity();
+		if (!controlledEntity && playableManager)
+		{
+			RplId playableId = playableManager.GetPlayableByPlayer(playerId);
+			if (playableId != RplId.Invalid())
+			{
+				PS_PlayableContainer container = playableManager.GetPlayableById(playableId);
+				if (container && container.GetPlayableComponent())
+					controlledEntity = container.GetPlayableComponent().GetOwner();
+			}
+		}
+
 		if (controlledEntity) {
 			RplComponent rpl = RplComponent.Cast(controlledEntity.FindComponent(RplComponent));
-			rpl.GiveExt(RplIdentity.Local(), false);
+			if (rpl)
+				rpl.GiveExt(RplIdentity.Local(), false);
 		}
 
 		m_OnPlayerDisconnected.Invoke(playerId, cause, timeout);

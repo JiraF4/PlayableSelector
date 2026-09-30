@@ -177,6 +177,7 @@ class PS_CoopLobby : MenuBase
 		m_PlayableManager.GetOnStartTimerCounterChanged().Insert(OnStartTimerCounterChanged);
 		m_PlayableManager.GetOnPlayerConnected().Insert(OnPlayerConnected);
 		m_PlayableManager.GetOnPlayerDisconnected().Insert(OnPlayerDisconnected);
+		m_PlayableManager.GetOnMaxPlayersCountChanged().Insert(OnMaxPlayersCountChanged);
 		m_PlayersSearchBox.m_OnChanged.Insert(OnPlayersSearchChanged);
 		m_PlayersSearchBox.m_OnWriteModeEnter.Insert(OnPlayersSearchWriteModeEnter);
 		m_PlayersSearchBox.m_OnWriteModeLeave.Insert(OnPlayersSearchWriteModeLeave);
@@ -216,6 +217,7 @@ class PS_CoopLobby : MenuBase
 			m_PlayableManager.GetOnPlayerConnected().Remove(OnPlayerConnected);
 			m_PlayableManager.GetOnPlayerDisconnected().Remove(OnPlayerDisconnected);
 			m_PlayableManager.GetOnPlayableRegistered().Remove(OnPlayableRegistered);
+			m_PlayableManager.GetOnMaxPlayersCountChanged().Remove(OnMaxPlayersCountChanged);
 		}
 	}
 
@@ -226,7 +228,7 @@ class PS_CoopLobby : MenuBase
 		InitPlayables();
 		InitPlayers();
 		
-		m_wPlayersCounter.SetTextFormat("%1/%2", m_PlayerManager.GetPlayerCount(), m_PlayableManager.GetMaxPlayers());
+		UpdatePlayersCounter();
 	}
 	
 	void InitPlayables()
@@ -520,14 +522,32 @@ class PS_CoopLobby : MenuBase
 	}
 	
 	
+	/**
+	 * @brief Обновление виджета счётчика игроков в шапке лобби («Игроки N/M»).
+	 * @issue BUG-87
+	 * @cause Счётчик не реагировал на обновление лимита сессии и дублировал форматирование.
+	 * @solution Единый метод обновления счётчика игроков, реагирующий на инвокер m_eOnMaxPlayersCountChanged.
+	 */
+	void UpdatePlayersCounter()
+	{
+		if (!m_wPlayersCounter || !m_PlayerManager || !m_PlayableManager)
+			return;
+		m_wPlayersCounter.SetTextFormat("%1/%2", m_PlayerManager.GetPlayerCount(), m_PlayableManager.GetMaxPlayers());
+	}
+
+	void OnMaxPlayersCountChanged(int maxPlayers)
+	{
+		UpdatePlayersCounter();
+	}
+
 	void OnPlayerConnected(int playerId)
 	{
-		m_wPlayersCounter.SetTextFormat("%1/%2", m_PlayerManager.GetPlayerCount(), m_PlayableManager.GetMaxPlayers());
+		UpdatePlayersCounter();
 	}
 	
 	void OnPlayerDisconnected(int playerId)
 	{
-		m_wPlayersCounter.SetTextFormat("%1/%2", m_PlayerManager.GetPlayerCount(), m_PlayableManager.GetMaxPlayers());
+		UpdatePlayersCounter();
 	}
 	
 	void OnStartTimerCounterChanged(int timer)

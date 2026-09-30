@@ -2140,9 +2140,9 @@ class PS_PlayableControllerComponent : ScriptComponent
 	}
 	/**
 	 * @brief Назначение слота игроку по playerId
-	 * @issue BUG-48, BUG-49
+	 * @issue BUG-48, BUG-49, BUG-86
 	 * @cause Неавторизованный клиент мог переназначать других игроков. Невалидный RplId вызывал VME разыменования null playableContainer.
-	 * @solution Проверка авторства/администратора, строгая валидация существования playableContainer и playableComponent.
+	 * @solution Проверка авторства/администратора, строгая валидация существования playableContainer и поддержка невалидного RplId (!IsValid() / == RplId.Invalid()) при освобождении слота.
 	 * @rpc Owner -> Server (Reliable)
 	 */
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
@@ -2172,10 +2172,10 @@ class PS_PlayableControllerComponent : ScriptComponent
 			return;
 
 		// don't check other staff if empty playable
-		if (playableId == RplId.Invalid()) {
+		if (!playableId.IsValid() || playableId == RplId.Invalid()) {
 			if (playerId != callerPid)
 				playableManager.NotifyKick(playerId);
-			playableManager.SetPlayerPlayable(playerId, playableId);
+			playableManager.SetPlayerPlayable(playerId, RplId.Invalid());
 			// FIX (STRAND): re-route voice to Global when a slot is released (deselect / kick).
 			// Without this, the player stays on their old faction's VoN channel until the 5s
 			// reconcile tick catches them. This moves them to Global immediately.

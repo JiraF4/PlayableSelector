@@ -132,6 +132,7 @@ class PS_CharacterSelector : SCR_ButtonComponent
 			m_PlayableContainer.GetOnPlayerChange().Remove(UpdatePlayer);
 			m_PlayableContainer.GetOnDamageStateChanged().Remove(UpdateDammage);
 			m_PlayableContainer.GetOnUnregister().Remove(RemoveSelf);
+			m_PlayableContainer.GetOnPlayerDisconnected().Remove(OnDisconnected);
 			m_PlayableContainer.GetOnPlayerConnected().Remove(OnConnected);
 			m_PlayableContainer.GetOnPlayerStateChange().Remove(OnStateChange);
 			m_PlayableContainer.GetOnPlayerPinChange().Remove(UpdatePined);
@@ -180,7 +181,7 @@ class PS_CharacterSelector : SCR_ButtonComponent
 		m_PlayableContainer.GetOnPlayerChange().Insert(UpdatePlayer);
 		m_PlayableContainer.GetOnDamageStateChanged().Insert(UpdateDammage);
 		m_PlayableContainer.GetOnUnregister().Insert(RemoveSelf);
-		//m_PlayableContainer.GetOnPlayerDisconnected().Insert(OnDisconnected);
+		m_PlayableContainer.GetOnPlayerDisconnected().Insert(OnDisconnected);
 		m_PlayableContainer.GetOnPlayerConnected().Insert(OnConnected);
 		m_PlayableContainer.GetOnPlayerStateChange().Insert(OnStateChange);
 		m_PlayableContainer.GetOnPlayerPinChange().Insert(UpdatePined);
@@ -590,6 +591,12 @@ class PS_CharacterSelector : SCR_ButtonComponent
 		SCR_UISoundEntity.SoundEvent("SOUND_FE_BUTTON_FILTER_OFF");
 		m_PlayableControllerComponent.SetPlayablePlayer(contextActionDataPlayable.GetPlayableId(), -1);
 	}
+	/**
+	 * @brief Освобождение слота игрока администратором или контекстным действием.
+	 * @issue BUG-86
+	 * @cause Передача -1 в качестве RplId приводила к передаче 4294967295 на сервер вместо RplId.Invalid().
+	 * @solution Использование RplId.Invalid() при вызове SetPlayerPlayable.
+	 */
 	void OnActionFreeSlot(PS_ContextAction contextAction, PS_ContextActionDataPlayable contextActionDataPlayable)
 	{
 		if (m_iPlayerId <= 0)
@@ -601,7 +608,7 @@ class PS_CharacterSelector : SCR_ButtonComponent
 		m_PlayableControllerComponent.MoveToVoNRoom(m_iPlayerId, "", "#PS-VoNRoom_Global");
 		m_PlayableControllerComponent.ChangeFactionKey(m_iPlayerId, "");
 		m_PlayableControllerComponent.SetPlayerState(m_iPlayerId, PS_EPlayableControllerState.NotReady);
-		m_PlayableControllerComponent.SetPlayerPlayable(m_iPlayerId, -1);
+		m_PlayableControllerComponent.SetPlayerPlayable(m_iPlayerId, RplId.Invalid());
 		if (PS_PlayersHelper.IsAdminOrServer())
 			m_PlayableControllerComponent.UnpinPlayer(m_iPlayerId);
 	}
@@ -628,7 +635,7 @@ class PS_CharacterSelector : SCR_ButtonComponent
 				m_PlayableControllerComponent.MoveToVoNRoom(m_iPlayerId, "", "#PS-VoNRoom_Global");
 				m_PlayableControllerComponent.ChangeFactionKey(m_iPlayerId, "");
 				m_PlayableControllerComponent.SetPlayerState(m_iPlayerId, PS_EPlayableControllerState.NotReady);
-				m_PlayableControllerComponent.SetPlayerPlayable(m_iPlayerId, -1);
+				m_PlayableControllerComponent.SetPlayerPlayable(m_iPlayerId, RplId.Invalid());
 				if (PS_PlayersHelper.IsAdminOrServer())
 					m_PlayableControllerComponent.UnpinPlayer(m_iPlayerId);
 				break;
