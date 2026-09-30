@@ -616,7 +616,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (GetState() != SCR_EGameModeState.GAME || IsFreezeTimeEnd() || IsHardFreezeActive())
 			return;
 		
-		playableController.FreezeTimerAdvance(data.ToInt());
+		playableController.FreezeTimerAdvance(PS_PlayersHelper.ParseChatIntOr(data, 0)); // BUG-85: безопасный парс аргумента
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void FreezeTimerAdvance_Notify()
@@ -673,9 +673,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			return;
 		#endif
 
-		int sec = 30;
-		if (!data.IsEmpty())
-			sec = data.ToInt();
+		int sec = PS_PlayersHelper.ParseChatIntOr(data, 30); // BUG-85: безопасный парс, нечисловой ввод больше не роняет VME
 
 		playableController.HardFreezeAdminCommand(sec);
 	}
@@ -850,6 +848,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 	// ================================ /brif ================================
 
+	//! @issue BUG-85
+	//! @cause Безусловный data.ToInt() бросал VME "Wrong parameter value" на пустом/нечисловом аргументе, обрывая вызов до AdminBriefingCommand.
+	//! @solution Парс через PS_PlayersHelper.ParseChatIntOr с дефолтом 10; FR-008 (пустой/0/отрицательный /brif → 10 мин) стал достижим без VME.
 	void Briefing_Callback(SCR_ChatPanel panel, string data)
 	{
 		if (!PS_PlayersHelper.IsAdminOrServer())
@@ -858,7 +859,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (GetState() != SCR_EGameModeState.SLOTSELECTION)
 			return;
 
-		int minutes = data.ToInt();
+		int minutes = PS_PlayersHelper.ParseChatIntOr(data, 10);
 		if (minutes <= 0)
 			minutes = 10;
 
@@ -1020,7 +1021,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (!IsHardFreezeActive())
 			return;
 
-		int seconds = data.ToInt();
+		int seconds = PS_PlayersHelper.ParseChatIntOr(data, 0); // BUG-85: безопасный парс аргумента
 		if (seconds == 0)
 			return;
 
