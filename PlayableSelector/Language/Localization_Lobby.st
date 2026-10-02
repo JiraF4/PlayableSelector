@@ -1088,8 +1088,8 @@ StringTable {
   }
   CustomStringTableItem "{82575E2027B3499B}" {
    Id "PS-Lobby_Briefing"
-   Target_en_us "Briefing"
-   Target_ru_ru "Брифинг"
+   Target_en_us "Briefing!"
+   Target_ru_ru "Брифинг!"
    Modified 1769500000
    Author "ReforgerLobby"
    LastChanged "ReforgerLobby"

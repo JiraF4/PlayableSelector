@@ -1,31 +1,3 @@
-GenericEntity FLAG_FLAG : "{14B2D417839BF8A3}PrefabsEditable/Auto/Structures/Military/Flags/E_FlagPole_02_V1_USSR.et" {
- components {
-  SCR_FlagComponent "{5E3C95A1E1EE9681}" {
-   m_sDefaultMaterial "{6E9DA07CBCE6BE7F}Assets/Props/Fabric/Flags/Data/Flag_1_2_White.emat"
-   m_aFlagData {
-    PS_FlagData "{6A6C08D6B7ED45DF}" {
-     m_sFactionKey "US"
-     m_iCaptureCounter 1
-    }
-    PS_FlagData "{6A6C08D6BC7BACCF}" {
-     m_sFactionKey "USSR"
-     m_iCaptureCounter 1
-    }
-   }
-   m_sFactionKey "FIA"
-  }
-  BaseActionsManagerComponent "{6202D4E6F133BF4A}" {
-   additionalActions {
-    PS_FlagChangeAction "{6202D4E6A53D4B3C}" {
-     Duration 10
-     m_bUseAnimation 1
-     m_fAnimationFPS 60
-    }
-   }
-  }
- }
- coords 1367.604 36.599 2382.115
-}
 $grp PS_Objective : "{A4F0B4846EF850C4}Prefabs/Objective/Objective.et" {
  VEH_KILL {
   coords 1319.195 38.831 2315.616

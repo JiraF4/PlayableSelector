@@ -912,7 +912,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	}
 
 	/**
-	 * @brief Серверная обработка /brif: через 3 сек переводит SLOTSELECTION в BRIEFING и запускает таймер.
+	 * @brief Серверная обработка /brif: сразу рассылает smsg «Брифинг!» и через 3 сек переводит SLOTSELECTION в BRIEFING.
 	 * @context Server
 	 * @issue BUG-89
 	 * @solution Флаг m_bBriefingTransitionInitiated блокирует повторные запросы в 3-секундном окне.
@@ -931,6 +931,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 		m_bBriefingTransitionInitiated = true;
 
+		RPC_BroadcastGlobalMessage("#PS-Lobby_Briefing");
 		GetGame().GetCallqueue().CallLater(BriefingStart_S, 3000, false, minutes);
 	}
 
