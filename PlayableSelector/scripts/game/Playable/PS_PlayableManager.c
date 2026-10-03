@@ -64,14 +64,16 @@ class PS_PlayableManager : ScriptComponent
 	protected ref map<string, FactionKey> m_mReconnectFaction = new map<string, FactionKey>();
 	protected ref map<string, bool> m_mReconnectPin = new map<string, bool>();
 	protected ref map<string, string> m_mReconnectName = new map<string, string>();
+	protected ref map<int, UUID> m_mPlayerIdentityGuid = new map<int, UUID>();
+	protected ref map<int, int> m_mDisconnectGeneration = new map<int, int>();
+	protected ref map<string, int> m_mReconnectSourcePlayerId = new map<string, int>();
+	protected ref map<string, float> m_mReconnectExpiresAt = new map<string, float>();
+	protected ref map<string, int> m_mReconnectGeneration = new map<string, int>();
+	protected ref map<int, int> m_mPendingReconnectGeneration = new map<int, int>();
+	protected int m_iConnectionGeneration;
 	// Diagnostic only: connect-time world-time (ms) per RECONNECTING playerId, so the reconnect -> Global ->
 	// group/Command VoN transition can be logged with elapsed timing (TraceReconnectConnect + RestorePlayerReconnectData).
 	protected ref map<int, float> m_mReconnectTraceTime = new map<int, float>();
-	// Server-only: player IDs whose RestorePlayerReconnectData CallLater should be skipped.
-	// Enfusion's Callqueue.Remove() only accepts a function reference (no extra args), so we
-	// cannot cancel a specific CallLater(func, arg). Instead, OnPlayerDisconnected flags the
-	// playerId here and RestorePlayerReconnectData checks on entry.
-	protected ref map<int, bool> m_mReconnectCancelled = new map<int, bool>();
 
 	// Invokers
 	ref ScriptInvokerInt m_eOnPlayerConnected = new ScriptInvokerInt();
@@ -109,6 +111,10 @@ class PS_PlayableManager : ScriptComponent
 	{
 		return m_eOnPlayerStateChange;
 	}
+	/**
+	 * @brief Изменение назначения игрока, включая вытесненного владельца.
+	 * @event После согласованной мутации обеих maps; один вызов на реально изменённого участника.
+	 */
 	ref PS_ScriptInvokerPlayerPlayableChange m_eOnPlayerPlayableChange = new PS_ScriptInvokerPlayerPlayableChange();
 	PS_ScriptInvokerPlayerPlayableChange GetOnPlayerPlayableChange()
 	{
@@ -129,6 +135,10 @@ class PS_PlayableManager : ScriptComponent
 	{
 		return m_eFactionReadyChanged;
 	}
+	/**
+	 * @brief Изменение/получение текущей вместимости сессии.
+	 * @event Локально после изменения scalar на authority или получения property/JIP на клиенте.
+	 */
 	ref ScriptInvokerInt m_eOnMaxPlayersCountChanged = new ScriptInvokerInt();
 	ScriptInvokerInt GetOnMaxPlayersCountChanged()
 	{
@@ -146,10 +156,12 @@ class PS_PlayableManager : ScriptComponent
 	protected static PS_PlayableManager s_Instance;
 
 	[RplProp(onRplName: "OnRpl_MaxPlayersCount")]
-	int m_iMaxPlayersCount = 1; // Max players count from server config
+	int m_iMaxPlayersCount = 0; // Server limit, or current registered-slot fallback
+	protected bool m_bHasSessionPlayerLimit;
 
 	/**
 	 * @brief Колбэк репликации лимита игроков сервера.
+	 * @sync Server -> All
 	 * @issue BUG-87
 	 * @cause Клиенты не получали уведомления об обновлении m_iMaxPlayersCount при репликации свойства.
 	 * @solution Вызов инвокера m_eOnMaxPlayersCountChanged для реактивного обновления UI.
@@ -236,6 +248,7 @@ class PS_PlayableManager : ScriptComponent
 
 		if (Replication.IsServer())
 		{
+			QueueFallbackCapacityUpdate_S();
 			Replication.BumpMe();
 			Rpc(RPC_SetSlotsFullyLoaded);
 		}
@@ -334,12 +347,12 @@ class PS_PlayableManager : ScriptComponent
 	 * @brief Запрос лимита игроков сервера из ServerInfo с повторными попытками и fallback на число слотов.
 	 * @issue BUG-87
 	 * @cause Покадровый опрос (Call) исчерпывал 30 попыток за 300-500 мс до инициализации ServerInfo на выделенном сервере, оставляя лимит равным дефолтному 1.
-	 * @solution Опрос через CallLater с интервалом 1000 мс (до 15 попыток) и fallback на m_aPlayables.Count(), если ServerInfo недоступен или вернул некорректный лимит <= 0.
+	 * @solution Ограниченный опрос через 1000 мс; fallback следует событиям registry, confirmed limit сохраняет приоритет.
 	 */
 	protected int m_iServerInfoRetries;
 	protected void ForceGetSessionMaxPlayersCount()
 	{
-		if (!Replication.IsServer())
+		if (!Replication.IsServer() || m_bIsCleanedUp)
 			return;
 
 		ServerInfo serverInfo = GetGame().GetServerInfo();
@@ -349,26 +362,51 @@ class PS_PlayableManager : ScriptComponent
 
 		if (playerLimit > 0)
 		{
-			m_iMaxPlayersCount = playerLimit;
-			Replication.BumpMe();
-			if (m_eOnMaxPlayersCountChanged)
-				m_eOnMaxPlayersCountChanged.Invoke(m_iMaxPlayersCount);
-		}
-		else if (m_iServerInfoRetries < 15)
-		{
-			m_iServerInfoRetries = m_iServerInfoRetries + 1;
-			m_CallQueue.CallLater(ForceGetSessionMaxPlayersCount, 1000, false);
+			m_bHasSessionPlayerLimit = true;
+			SetMaxPlayersCount_S(playerLimit);
 		}
 		else
 		{
-			// Fallback: use total playables count if serverInfo limit is not available
-			if (m_aPlayables.Count() > 0)
-				m_iMaxPlayersCount = m_aPlayables.Count();
-			else
-				m_iMaxPlayersCount = 1;
-			Replication.BumpMe();
-			if (m_eOnMaxPlayersCountChanged)
-				m_eOnMaxPlayersCountChanged.Invoke(m_iMaxPlayersCount);
+			PublishFallbackCapacity_S();
+			if (m_iServerInfoRetries < 15)
+			{
+				m_iServerInfoRetries = m_iServerInfoRetries + 1;
+				m_CallQueue.CallLater(ForceGetSessionMaxPlayersCount, 1000, false);
+			}
+		}
+	}
+
+	/**
+	 * @brief Публикация вместимости только при реальном изменении.
+	 * @issue BUG-87
+	 * @cause Одноразовый fallback устаревал после поздней регистрации слотов.
+	 * @solution Event-driven Count и scalar guard исключают застрявший 1 и same-value BumpMe.
+	 */
+	protected void SetMaxPlayersCount_S(int maxPlayers)
+	{
+		if (!Replication.IsServer() || m_bIsCleanedUp || m_iMaxPlayersCount == maxPlayers)
+			return;
+		m_iMaxPlayersCount = maxPlayers;
+		Replication.BumpMe();
+		OnRpl_MaxPlayersCount();
+	}
+
+	protected void PublishFallbackCapacity_S()
+	{
+		if (Replication.IsServer() && !m_bIsCleanedUp && !m_bHasSessionPlayerLimit)
+			SetMaxPlayersCount_S(m_aPlayables.Count());
+	}
+
+	/**
+	 * @brief Один queued Count для пакета регистраций/удалений без постоянного опроса.
+	 * @workaround Call выполняется на следующем Tick; Remove bound-метода coalesces текущий пакет.
+	 */
+	protected void QueueFallbackCapacityUpdate_S()
+	{
+		if (Replication.IsServer() && !m_bIsCleanedUp && !m_bHasSessionPlayerLimit)
+		{
+			m_CallQueue.Remove(PublishFallbackCapacity_S);
+			m_CallQueue.Call(PublishFallbackCapacity_S);
 		}
 	}
 
@@ -411,7 +449,23 @@ class PS_PlayableManager : ScriptComponent
 			m_CallQueue.Remove(StartTime);
 			m_CallQueue.Remove(RemoveRedundantUnits);
 			m_CallQueue.Remove(SCR_EntityHelper.DeleteEntityAndChildren);
+			m_CallQueue.Remove(RestorePlayerReconnectData_S);
+			m_CallQueue.Remove(ExpireDisconnectedPlayer_S);
+			m_CallQueue.Remove(PublishFallbackCapacity_S);
 		}
+		m_mPlayerIdentityGuid.Clear();
+		m_mDisconnectGeneration.Clear();
+		m_mPendingReconnectGeneration.Clear();
+		m_mReconnectPlayable.Clear();
+		m_mReconnectFaction.Clear();
+		m_mReconnectPin.Clear();
+		m_mReconnectName.Clear();
+		m_mReconnectSourcePlayerId.Clear();
+		m_mReconnectExpiresAt.Clear();
+		m_mReconnectGeneration.Clear();
+		m_mReconnectTraceTime.Clear();
+		m_iConnectionGeneration = 0;
+		m_bHasSessionPlayerLimit = false;
 
 		if (s_Instance == this)
 			s_Instance = null;
@@ -647,10 +701,15 @@ class PS_PlayableManager : ScriptComponent
 		VoNRoomsManager.GetOrCreateRoomWithFaction(factionKey, "#PS-VoNRoom_Faction");
 	}
 	// Execute on both client and server
+	/**
+	 * @brief Регистрация публичного контейнера с queued обновлением fallback только на authority.
+	 * @rpc Server -> Broadcast (Reliable), также локально при JIP load
+	 */
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	protected void RPC_RegisterPlayable(PS_PlayableContainer container)
 	{
 		m_aPlayables[container.GetRplId()] = container;
+		QueueFallbackCapacityUpdate_S();
 		m_CallQueue.Remove(UpdatePlayablesSortedDelayed);
 		m_CallQueue.Remove(UpdatePlayablesSorted);
 		m_CallQueue.Call(UpdatePlayablesSortedDelayed); // List updated resort
@@ -669,9 +728,25 @@ class PS_PlayableManager : ScriptComponent
 	// Remove plyable from list global list replicated
 	void UnRegisterPlayable(RplId playableId)
 	{
+		if (Replication.IsServer())
+		{
+			RevokePlayableReservation_S(playableId);
+			int holder = GetPlayerByPlayable(playableId);
+			if (holder > 0 && GetPlayerState(holder) == PS_EPlayableControllerState.Disconected)
+			{
+				SetPlayerPlayable(holder, RplId.Invalid());
+				SetPlayerState(holder, PS_EPlayableControllerState.NotReady);
+				SetPlayerFactionKey(holder, "");
+				SetPlayerPin(holder, false);
+			}
+		}
 		RPC_UnRegisterPlayable(playableId);
 		Rpc(RPC_UnRegisterPlayable, playableId);
 	}
+	/**
+	 * @brief Удаление публичного контейнера; сервер заранее отзывает резерв отключённого владельца.
+	 * @rpc Server -> Broadcast (Reliable)
+	 */
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	protected void RPC_UnRegisterPlayable(RplId playableId)
 	{
@@ -679,6 +754,7 @@ class PS_PlayableManager : ScriptComponent
 			return;
 		PS_PlayableContainer playableContainer = m_aPlayables[playableId];
 		m_aPlayables.Remove(playableId);
+		QueueFallbackCapacityUpdate_S();
 
 		UpdatePlayablesSorted(); // List updated resort
 		m_eOnPlayableUnregistered.Invoke(playableId, playableContainer);
@@ -839,41 +915,170 @@ class PS_PlayableManager : ScriptComponent
 	 * @brief Кэширование данных слота, фракции, PIN и имени игрока по GUID при дисконнекте.
 	 * @issue BUG-86
 	 * @cause Игроки при реконнекте получают новый playerId, теряя привязку к слоту и фракции.
-	 * @solution Сохранение данных в карты по устойчивому GUID (SCR_PlayerIdentityUtils.GetPlayerIdentityId).
+	 * @solution Захват подтверждённого UUID до потери engine mapping; резерв хранит срок и поколение отключения.
 	 * @context Server
 	 */
-	void StorePlayerReconnectData(int playerId)
+	void StorePlayerReconnectData_S(int playerId, int reconnectTime)
 	{
-		if (!Replication.IsServer())
+		if (!Replication.IsServer() || m_bIsCleanedUp)
 			return;
-		string guid = SCR_PlayerIdentityUtils.GetPlayerIdentityId(playerId);
-		if (guid == "")
-			return;
-		FactionKey faction = GetPlayerFactionKey(playerId);
+		UUID guid;
+		m_mPlayerIdentityGuid.Find(playerId, guid);
+		m_mPlayerIdentityGuid.Remove(playerId);
+		m_mPendingReconnectGeneration.Remove(playerId);
+		m_mReconnectTraceTime.Remove(playerId);
+		int generation = ++m_iConnectionGeneration;
+		m_mDisconnectGeneration[playerId] = generation;
 		RplId playable = GetPlayableByPlayer(playerId);
-		if (faction == "" && playable == RplId.Invalid())
-			return; // nothing worth restoring (player never slotted/picked a faction)
-		m_mReconnectPlayable[guid] = playable;
-		m_mReconnectFaction[guid] = faction;
-		m_mReconnectPin[guid] = GetPlayerPin(playerId);
-		// Cache the player name (incl. PodvalPatches clan tag) so the reconnecting player's
-		// display name survives the playerId change without waiting for PodvalPatches to re-apply it.
-		string name = GetPlayerName(playerId);
-		if (name != "")
-			m_mReconnectName[guid] = name;
+		if (!playable.IsValid() || GetPlayerByPlayable(playable) != playerId || !GetPlayableById(playable))
+			return;
+		float expiresAt;
+		if (reconnectTime > 0)
+			expiresAt = GetGame().GetWorld().GetWorldTime() + reconnectTime;
+		if (!guid.IsNull())
+		{
+			RevokePlayerReservation_S(guid, true);
+			m_mReconnectPlayable[guid] = playable;
+			m_mReconnectFaction[guid] = GetPlayerFactionKey(playerId);
+			m_mReconnectPin[guid] = GetPlayerPin(playerId);
+			m_mReconnectName[guid] = GetPlayerName(playerId);
+			m_mReconnectSourcePlayerId[guid] = playerId;
+			m_mReconnectExpiresAt[guid] = expiresAt;
+			m_mReconnectGeneration[guid] = generation;
+		}
+		if (reconnectTime > 0)
+			m_CallQueue.CallLater(ExpireDisconnectedPlayer_S, reconnectTime, false, playerId, guid, playable, expiresAt, generation);
 	}
-	// - Execute ONLY on server
-	void ClearPlayerReconnectData(int playerId)
+
+	/**
+	 * @brief Инициализация контекста соединения до audit, включая повторное использование playerId.
+	 * @issue BUG-56, BUG-86
+	 * @cause Старый callback мог потребить резерв нового соединения с тем же transient ID.
+	 * @solution Монотонное поколение инвалидирует старые callbacks; UUID заполняется только после audit.
+	 */
+	void InitializePlayerConnection_S(int playerId)
+	{
+		if (!Replication.IsServer() || m_bIsCleanedUp)
+			return;
+		m_mPlayerIdentityGuid[playerId] = UUID.NULL_UUID;
+		m_mDisconnectGeneration[playerId] = ++m_iConnectionGeneration;
+		m_mPendingReconnectGeneration.Remove(playerId);
+		m_mReconnectTraceTime.Remove(playerId);
+		// A reused ID is a new connection, not proof that it owns the previous account's slot.
+		if (GetPlayerState(playerId) == PS_EPlayableControllerState.Disconected)
+		{
+			if (ApplyPlayerPlayableLink(playerId, RplId.Invalid()))
+				Rpc(RPC_SetPlayerPlayable, playerId, RplId.Invalid());
+			SetPlayerState(playerId, PS_EPlayableControllerState.NotReady);
+			SetPlayerFactionKey(playerId, "");
+			SetPlayerPin(playerId, false);
+		}
+	}
+
+	void CapturePlayerIdentity_S(int playerId)
+	{
+		if (!Replication.IsServer() || m_bIsCleanedUp || !m_mPlayerIdentityGuid.Contains(playerId) || !m_PlayerManager.IsPlayerConnected(playerId))
+			return;
+		UUID guid = SCR_PlayerIdentityUtils.GetPlayerIdentityId(playerId);
+		if (!guid.IsNull())
+			m_mPlayerIdentityGuid[playerId] = guid;
+	}
+
+	void RevokePlayerReservation_S(string guid, bool releaseSource = false)
 	{
 		if (!Replication.IsServer())
 			return;
-		string guid = SCR_PlayerIdentityUtils.GetPlayerIdentityId(playerId);
-		if (guid == "")
-			return;
+		RplId playableId = RplId.Invalid();
+		int sourcePlayerId;
+		int generation;
+		m_mReconnectPlayable.Find(guid, playableId);
+		m_mReconnectSourcePlayerId.Find(guid, sourcePlayerId);
+		m_mReconnectGeneration.Find(guid, generation);
 		m_mReconnectPlayable.Remove(guid);
 		m_mReconnectFaction.Remove(guid);
 		m_mReconnectPin.Remove(guid);
 		m_mReconnectName.Remove(guid);
+		m_mReconnectSourcePlayerId.Remove(guid);
+		m_mReconnectExpiresAt.Remove(guid);
+		m_mReconnectGeneration.Remove(guid);
+		// Revocation also releases an abandoned source link when the returning player picked another slot.
+		if (releaseSource && playableId.IsValid() && m_mDisconnectGeneration.Contains(sourcePlayerId)
+			&& m_mDisconnectGeneration[sourcePlayerId] == generation
+			&& GetPlayerState(sourcePlayerId) == PS_EPlayableControllerState.Disconected
+			&& GetPlayableByPlayer(sourcePlayerId) == playableId && GetPlayerByPlayable(playableId) == sourcePlayerId)
+		{
+			SetPlayerPlayable(sourcePlayerId, RplId.Invalid());
+			SetPlayerState(sourcePlayerId, PS_EPlayableControllerState.NotReady);
+			SetPlayerFactionKey(sourcePlayerId, "");
+			SetPlayerPin(sourcePlayerId, false);
+		}
+	}
+
+	void RevokePlayableReservation_S(RplId playableId)
+	{
+		if (!Replication.IsServer() || !playableId.IsValid())
+			return;
+		array<string> revoked = {};
+		foreach (string guid, RplId reservedPlayable : m_mReconnectPlayable)
+		{
+			if (reservedPlayable == playableId)
+				revoked.Insert(guid);
+		}
+		foreach (string guid : revoked)
+			RevokePlayerReservation_S(guid);
+	}
+
+	bool IsPlayableReservedForOther_S(RplId playableId, int playerId)
+	{
+		if (!Replication.IsServer())
+			return true;
+		UUID requesterGuid;
+		m_mPlayerIdentityGuid.Find(playerId, requesterGuid);
+		foreach (string guid, RplId reservedPlayable : m_mReconnectPlayable)
+		{
+			if (reservedPlayable != playableId)
+				continue;
+			float expiresAt = m_mReconnectExpiresAt[guid];
+			if (expiresAt > 0 && GetGame().GetWorld().GetWorldTime() >= expiresAt)
+				continue;
+			if (requesterGuid.IsNull() || requesterGuid != guid)
+				return true;
+		}
+		return false;
+	}
+
+	protected bool ReservationMatches_S(string guid, RplId playableId, int sourcePlayerId, float expiresAt, int generation)
+	{
+		return m_mReconnectGeneration.Contains(guid) && m_mReconnectGeneration[guid] == generation
+			&& m_mReconnectPlayable[guid] == playableId && m_mReconnectSourcePlayerId[guid] == sourcePlayerId
+			&& m_mReconnectExpiresAt[guid] == expiresAt;
+	}
+
+	/**
+	 * @brief Очистка только слота и резерва захваченного отключения, даже без audited UUID.
+	 * @issue BUG-86
+	 * @cause Timeout по одному playerId мог удалить новый резерв или зависеть от исчезнувшего GUID mapping.
+	 * @solution Сверка поколения, deadline и владельца до мутации; офлайн-голос не добавляется обратно.
+	 */
+	protected void ExpireDisconnectedPlayer_S(int playerId, UUID guid, RplId playableId, float expiresAt, int generation)
+	{
+		if (!Replication.IsServer() || m_bIsCleanedUp || GetGame().GetWorld().GetWorldTime() < expiresAt)
+			return;
+		if (!guid.IsNull())
+		{
+			if (!ReservationMatches_S(guid, playableId, playerId, expiresAt, generation))
+				return;
+			RevokePlayerReservation_S(guid, true);
+		}
+		if (!m_mDisconnectGeneration.Contains(playerId) || m_mDisconnectGeneration[playerId] != generation)
+			return;
+		if (GetPlayerState(playerId) != PS_EPlayableControllerState.Disconected
+			|| GetPlayableByPlayer(playerId) != playableId || GetPlayerByPlayable(playableId) != playerId)
+			return;
+		SetPlayerPlayable(playerId, RplId.Invalid());
+		SetPlayerState(playerId, PS_EPlayableControllerState.NotReady);
+		SetPlayerFactionKey(playerId, "");
+		SetPlayerPin(playerId, false);
 	}
 	// - Execute ONLY on server
 	// Diagnostic (server, once per reconnect): called from SpawnInitialEntity right after the connect-time
@@ -885,8 +1090,9 @@ class PS_PlayableManager : ScriptComponent
 	{
 		if (!Replication.IsServer())
 			return;
-		string guid = SCR_PlayerIdentityUtils.GetPlayerIdentityId(playerId);
-		if (guid == "" || !m_mReconnectFaction.Contains(guid))
+		UUID guid;
+		m_mPlayerIdentityGuid.Find(playerId, guid);
+		if (guid.IsNull() || !m_mReconnectFaction.Contains(guid))
 			return; // genuinely fresh join, not a reconnect
 		m_mReconnectTraceTime.Set(playerId, GetGame().GetWorld().GetWorldTime());
 		string channel = "";
@@ -897,79 +1103,80 @@ class PS_PlayableManager : ScriptComponent
 	}
 
 	/**
-	 * @brief Сброс флага отмены реконнекта при подключении с данным playerId
-	 * @issue BUG-56
-	 * @cause При повторном использовании playerId движком сохранённый флаг отмены блокировал восстановление слота
-	 * @solution Очистка playerId из m_mReconnectCancelled при подключении
+	 * @brief Отложенный restore только после audit dispatch с контекстом резерва и соединения.
+	 * @workaround Remove(fn) не фильтрует CallLater по аргументам; stale callback проверяет поколения.
 	 */
-	void ClearPendingReconnectCancellation(int playerId)
+	void SchedulePlayerReconnectRestore_S(int playerId)
 	{
-		m_mReconnectCancelled.Remove(playerId);
-	}
-
-	void CancelPendingReconnectRestore(int playerId)
-	{
-		m_mReconnectCancelled[playerId] = true;
+		if (!Replication.IsServer() || m_bIsCleanedUp || !m_PlayerManager.IsPlayerConnected(playerId))
+			return;
+		UUID guid;
+		m_mPlayerIdentityGuid.Find(playerId, guid);
+		if (guid.IsNull() || !m_mReconnectGeneration.Contains(guid))
+			return;
+		int generation = m_mReconnectGeneration[guid];
+		float expiresAt = m_mReconnectExpiresAt[guid];
+		if (expiresAt > 0 && GetGame().GetWorld().GetWorldTime() >= expiresAt)
+		{
+			ExpireDisconnectedPlayer_S(m_mReconnectSourcePlayerId[guid], guid, m_mReconnectPlayable[guid], expiresAt, generation);
+			return;
+		}
+		if (m_mPendingReconnectGeneration.Contains(playerId) && m_mPendingReconnectGeneration[playerId] == generation)
+			return;
+		m_mPendingReconnectGeneration[playerId] = generation;
+		TraceReconnectConnect(playerId);
+		m_CallQueue.CallLater(RestorePlayerReconnectData_S, 2500, false, playerId, guid, m_mReconnectPlayable[guid],
+			m_mReconnectSourcePlayerId[guid], expiresAt, generation, m_mDisconnectGeneration[playerId]);
 	}
 
 	/**
 	 * @brief Восстановление зарезервированного слота, фракции и прав управления после реконнекта игрока.
 	 * @issue BUG-86
 	 * @cause При дисконнекте контроллер мог удаляться раньше вызова OnPlayerDisconnected, что сбрасывало кэш слота. При восстановлении старый ID игрока мог конфликтовать со слотом.
-	 * @solution Очистка устаревшего disconnected playerId игрока, атомарное переназначение слота на новый playerId и передача управления через ApplyPlayable.
+	 * @solution Сверка UUID, срока и поколений, запрет lock/чужого holder; consume только после успешной перепривязки.
 	 * @context Server
 	 */
-	void RestorePlayerReconnectData(int playerId)
+	protected void RestorePlayerReconnectData_S(int playerId, UUID guid, RplId playable, int sourcePlayerId, float expiresAt, int generation, int connectionGeneration)
 	{
-		if (!Replication.IsServer())
+		if (!Replication.IsServer() || m_bIsCleanedUp || !m_PlayerManager.IsPlayerConnected(playerId))
 			return;
-		// Guard: if this playerId was flagged as cancelled (player disconnected before
-		// the 2500ms delay), skip execution so we do not consume the GUID cache for a
-		// ghost playerId that would lock the real player out on their next reconnect.
-		if (m_mReconnectCancelled.Contains(playerId))
+		if (!m_mDisconnectGeneration.Contains(playerId) || m_mDisconnectGeneration[playerId] != connectionGeneration
+			|| !m_mPlayerIdentityGuid.Contains(playerId) || m_mPlayerIdentityGuid[playerId] != guid)
+			return;
+		if (!m_mPendingReconnectGeneration.Contains(playerId) || m_mPendingReconnectGeneration[playerId] != generation)
+			return;
+		m_mPendingReconnectGeneration.Remove(playerId);
+		if (!ReservationMatches_S(guid, playable, sourcePlayerId, expiresAt, generation))
+			return;
+		RplId currentPlayable = GetPlayableByPlayer(playerId);
+		int holder = GetPlayerByPlayable(playable);
+		if ((expiresAt > 0 && GetGame().GetWorld().GetWorldTime() >= expiresAt)
+			|| !playable.IsValid() || !GetPlayableById(playable)
+			|| (currentPlayable.IsValid() && currentPlayable != playable)
+			|| (holder != -1 && holder != playerId && holder != sourcePlayerId))
 		{
-			m_mReconnectCancelled.Remove(playerId);
+			if (expiresAt > 0 && GetGame().GetWorld().GetWorldTime() >= expiresAt)
+				ExpireDisconnectedPlayer_S(sourcePlayerId, guid, playable, expiresAt, generation);
+			RevokePlayerReservation_S(guid, true);
 			return;
 		}
-		string guid = SCR_PlayerIdentityUtils.GetPlayerIdentityId(playerId);
-		if (guid == "" || !m_mReconnectFaction.Contains(guid))
-			return;
-
-		RplId playable = m_mReconnectPlayable[guid];
 		FactionKey faction = m_mReconnectFaction[guid];
 		bool pin = m_mReconnectPin[guid];
 		string reconnectName;
 		m_mReconnectName.Find(guid, reconnectName);
-
-		// Consume so a later fresh join by the same account does not pick up stale state
-		m_mReconnectPlayable.Remove(guid);
-		m_mReconnectFaction.Remove(guid);
-		m_mReconnectPin.Remove(guid);
-		m_mReconnectName.Remove(guid);
-
-		// Re-link the slot only if it is still theirs / free / held by a now-gone ghost id,
-		// never steal a slot a live player has taken in the meantime
-		if (playable != RplId.Invalid() && GetPlayableById(playable))
+		SetPlayerPlayable(playerId, playable);
+		if (GetPlayableByPlayer(playerId) != playable || GetPlayerByPlayable(playable) != playerId)
+			return;
+		RevokePlayerReservation_S(guid);
+		if (sourcePlayerId != playerId && m_mDisconnectGeneration.Contains(sourcePlayerId)
+			&& m_mDisconnectGeneration[sourcePlayerId] == generation)
 		{
-			int holder = GetPlayerByPlayable(playable);
-			bool free = holder <= 0 || holder == playerId || !m_PlayerManager.IsPlayerConnected(holder);
-			if (free)
-			{
-				if (holder > 0 && holder != playerId)
-				{
-					// Clean up stale disconnected player state
-					SetPlayerState(holder, PS_EPlayableControllerState.NotReady);
-				}
-				SetPlayerPlayable(playerId, playable);
-			}
+			SetPlayerState(sourcePlayerId, PS_EPlayableControllerState.NotReady);
+			SetPlayerFactionKey(sourcePlayerId, "");
+			SetPlayerPin(sourcePlayerId, false);
 		}
-
-		// Re-apply faction so markers match the player's side again
-		if (faction != "")
-			SetPlayerFactionKey(playerId, faction);
-
-		if (pin)
-			SetPlayerPin(playerId, true);
+		SetPlayerState(playerId, PS_EPlayableControllerState.NotReady);
+		SetPlayerPin(playerId, pin);
 
 		// Restore the cached player name (incl. PodvalPatches clan tag) under the new playerId
 		// so UI shows the correct name immediately, without waiting for PodvalPatches to re-apply it.
@@ -1296,94 +1503,89 @@ class PS_PlayableManager : ScriptComponent
 	// - Execute ONLY on server
 	void SetPlayablePlayer(RplId playableId, int playerId)
 	{
-		if (!Replication.IsServer())
+		if (!Replication.IsServer() || m_bIsCleanedUp)
 			return;
-		RPC_SetPlayablePlayer(playableId, playerId);
+		RplId previousPlayable = GetPlayableByPlayer(playerId);
+		if (playerId < 0)
+			RevokePlayableReservation_S(playableId);
+		if (!ApplyPlayerPlayableLink(playerId, playableId))
+			return;
+		RevokePlayableReservation_S(playableId);
+		RevokePlayableReservation_S(previousPlayable);
+		UUID guid;
+		m_mPlayerIdentityGuid.Find(playerId, guid);
+		if (!guid.IsNull())
+			RevokePlayerReservation_S(guid, true);
 		Rpc(RPC_SetPlayablePlayer, playableId, playerId);
 	}
 	/**
-	 * @brief Атомарная синхронизация связей слот <-> игрок с гарантией инварианта 1-к-1.
+	 * @brief Согласованная мутация связей слот <-> игрок до локальных уведомлений.
 	 * @issue BUG-86
-	 * @cause При частой смене слотов старые слоты не очищались, приводя к дублированию одного игрока в нескольких слотах. При снятии слота передавался невалидный ID -1, который записывался в map<int, RplId> как 4294967295, а RplId.Invalid() вставлялся ключом в m_playablePlayers.
-	 * @solution Очистка всех предыдущих и дублирующих слотов игрока в m_playablePlayers, безопасная обработка RplId.Invalid() без записи в m_playablePlayers, замена -1 на RplId.Invalid() при вытеснении игрока.
+	 * @cause Старые контейнеры уведомлялись до завершения maps, а вытесненный игрок не получал события при положительном новом владельце.
+	 * @solution Сначала очистить дубли и обе maps, затем уведомить каждого изменённого игрока/контейнер один раз; repeat без изменений — no-op.
 	 */
-	protected void ApplyPlayerPlayableLink(int playerId, RplId playableId)
+	protected bool ApplyPlayerPlayableLink(int playerId, RplId playableId)
 	{
-		// 1. Reset previous slot(s) for this player to strictly enforce 1-to-1 invariant
-		if (playerId > 0)
-		{
-			RplId oldPlayable = GetPlayableByPlayer(playerId);
-			if (oldPlayable != RplId.Invalid() && oldPlayable != playableId)
-			{
-				if (m_playablePlayers.Contains(oldPlayable) && m_playablePlayers[oldPlayable] == playerId)
-					m_playablePlayers[oldPlayable] = -1;
-				PS_PlayableContainer oldContainer = m_aPlayables.Get(oldPlayable);
-				if (oldContainer)
-					oldContainer.InvokeOnPlayerChanged(playerId, -1);
-			}
-
-			// Clean up any remaining slots holding this playerId (anti-duplication)
-			for (int i = 0; i < m_playablePlayers.Count(); i++)
-			{
-				RplId slotKey = m_playablePlayers.GetKey(i);
-				if (slotKey != playableId && slotKey != oldPlayable && m_playablePlayers.GetElement(i) == playerId)
-				{
-					m_playablePlayers[slotKey] = -1;
-					PS_PlayableContainer dupContainer = m_aPlayables.Get(slotKey);
-					if (dupContainer)
-						dupContainer.InvokeOnPlayerChanged(playerId, -1);
-				}
-			}
-		}
-
-		// 2. Handling slot release (playableId == RplId.Invalid())
-		if (playableId == RplId.Invalid())
-		{
-			if (playerId > 0)
-			{
-				m_playersPlayable[playerId] = RplId.Invalid();
-				m_eOnPlayerPlayableChange.Invoke(playerId, RplId.Invalid());
-			}
-			return;
-		}
-
-		// 3. Handling valid slot assignment (playableId != RplId.Invalid())
+		bool hasSlot = playableId.IsValid();
+		if ((!hasSlot && playableId != RplId.Invalid()) || (playerId <= 0 && (!hasSlot || (playerId != -1 && playerId != -2))))
+			return false;
+		RplId oldPlayable = GetPlayableByPlayer(playerId);
 		int oldPlayerId = -1;
-		if (m_playablePlayers.Contains(playableId))
-			oldPlayerId = m_playablePlayers[playableId];
+		if (hasSlot)
+			oldPlayerId = GetPlayerByPlayable(playableId);
+		array<RplId> clearedSlots = {};
+		array<int> clearedPlayers = {};
+		foreach (RplId slotKey, int holder : m_playablePlayers)
+		{
+			if (!slotKey.IsValid() || slotKey == playableId)
+				continue;
+			if ((playerId > 0 && holder == playerId) || (oldPlayerId > 0 && oldPlayerId != playerId && holder == oldPlayerId))
+			{
+				clearedSlots.Insert(slotKey);
+				clearedPlayers.Insert(holder);
+			}
+		}
+		bool targetChanged = hasSlot && oldPlayerId != playerId;
+		bool playerChanged = playerId > 0 && (oldPlayable != playableId || clearedSlots.Count() > 0 || targetChanged);
+		if (!targetChanged && !playerChanged && clearedSlots.IsEmpty())
+			return false;
 
-		m_playablePlayers[playableId] = playerId;
-
+		foreach (RplId slotKey : clearedSlots)
+			m_playablePlayers[slotKey] = -1;
+		if (hasSlot)
+			m_playablePlayers[playableId] = playerId;
 		if (playerId > 0)
 			m_playersPlayable[playerId] = playableId;
-
-		// Clear the slot the displaced player used to point at
 		if (oldPlayerId > 0 && oldPlayerId != playerId)
 			m_playersPlayable[oldPlayerId] = RplId.Invalid();
-
-		// Remember last valid (BUG-01)
-		if (playerId > 0)
+		if (playerId > 0 && hasSlot)
 		{
 			m_playablePlayersRemembered[playableId] = playerId;
 			m_playersPlayableRemembered[playerId] = playableId;
 		}
 
-		// Invoke player-level event
-		if (playerId > 0)
-		{
-			m_eOnPlayerPlayableChange.Invoke(playerId, playableId);
-		}
-		else if (oldPlayerId > 0)
-		{
-			// Player was removed/kicked from slot by admin or server (e.g. playerId == -1 or -2)
+		if (oldPlayerId > 0 && oldPlayerId != playerId)
 			m_eOnPlayerPlayableChange.Invoke(oldPlayerId, RplId.Invalid());
+		if (playerChanged)
+			m_eOnPlayerPlayableChange.Invoke(playerId, playableId);
+		for (int i = 0; i < clearedSlots.Count(); i++)
+		{
+			PS_PlayableContainer oldContainer = m_aPlayables.Get(clearedSlots[i]);
+			if (oldContainer)
+				oldContainer.InvokeOnPlayerChanged(clearedPlayers[i], -1);
 		}
-
-		// Invoke container event
-		PS_PlayableContainer playableContainer = m_aPlayables.Get(playableId);
-		if (playableContainer)
-			playableContainer.InvokeOnPlayerChanged(oldPlayerId, playerId);
+		if (targetChanged)
+		{
+			PS_PlayableContainer playableContainer = m_aPlayables.Get(playableId);
+			if (playableContainer)
+				playableContainer.InvokeOnPlayerChanged(oldPlayerId, playerId);
+		}
+		return true;
 	}
+	/**
+	 * @brief Применение публичного slot-keyed delta и вывод локальных событий из конечных maps.
+	 * @rpc Server -> Broadcast (Reliable)
+	 */
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	protected void RPC_SetPlayablePlayer(RplId playableId, int playerId)
 	{
@@ -1415,9 +1617,19 @@ class PS_PlayableManager : ScriptComponent
 	// - Execute ONLY on server
 	void SetPlayerPlayable(int playerId, RplId playableId)
 	{
-		if (!Replication.IsServer())
+		if (!Replication.IsServer() || m_bIsCleanedUp)
 			return;
-		RPC_SetPlayerPlayable(playerId, playableId);
+		RplId previousPlayable = GetPlayableByPlayer(playerId);
+		if (playableId == RplId.Invalid())
+			RevokePlayableReservation_S(previousPlayable);
+		if (!ApplyPlayerPlayableLink(playerId, playableId))
+			return;
+		RevokePlayableReservation_S(previousPlayable);
+		RevokePlayableReservation_S(playableId);
+		UUID guid;
+		m_mPlayerIdentityGuid.Find(playerId, guid);
+		if (!guid.IsNull())
+			RevokePlayerReservation_S(guid, true);
 		Rpc(RPC_SetPlayerPlayable, playerId, playableId);
 
 		// INVARIANT: a seated player's faction ALWAYS matches their slot. The faction key is otherwise set by
@@ -1435,6 +1647,10 @@ class PS_PlayableManager : ScriptComponent
 				SetPlayerFactionKey(playerId, slot.GetFactionKey());
 		}
 	}
+	/**
+	 * @brief Применение публичного player-keyed delta без второго broadcast для вытесненного игрока.
+	 * @rpc Server -> Broadcast (Reliable)
+	 */
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	protected void RPC_SetPlayerPlayable(int playerId, RplId playableId)
 	{

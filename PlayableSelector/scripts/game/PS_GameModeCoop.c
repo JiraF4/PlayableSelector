@@ -215,11 +215,23 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	// The lobby intentionally has no RespawnSystemComponent. The base methods
 	// call m_pRespawnSystemComponent without a null check, so retain their
 	// event dispatch but omit the unavailable respawn callbacks.
+	/**
+	 * @brief Захват server identity перед audit dispatch и восстановление после него.
+	 * @workaround Лобби не имеет RespawnSystemComponent; сохраняется безопасный dispatch без super.
+	 * @issue BUG-86
+	 * @cause OnConnected ещё не гарантирует audited UUID; задержка от connect могла восстановить ghost ID.
+	 * @solution Non-null UUID сохраняется после audit, restore получает контекст резерва и соединения.
+	 */
 	override void OnPlayerAuditSuccess(int iPlayerID)
 	{
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		if (playableManager && !m_bGameEnded)
+			playableManager.CapturePlayerIdentity_S(iPlayerID);
 		m_OnPlayerAuditSuccess.Invoke(iPlayerID);
 		foreach (SCR_BaseGameModeComponent component : m_aAdditionalGamemodeComponents)
 			component.OnPlayerAuditSuccess(iPlayerID);
+		if (playableManager && !m_bGameEnded)
+			playableManager.SchedulePlayerReconnectRestore_S(iPlayerID);
 	}
 
 	protected override void OnPlayerRegistered(int playerId)
@@ -246,6 +258,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		GetGame().GetCallqueue().Remove(BriefingFinishAdvance_S);
 		GetGame().GetCallqueue().Remove(SlotsAdvance_S);
 		GetGame().GetCallqueue().Remove(BriefingStart_S);
+		GetGame().GetCallqueue().Remove(PreloadObserverForPlayer_S);
 		m_bBriefingTimerActive = false;
 		m_bSlotsTransitionInitiated = false;
 		m_bBriefingTransitionInitiated = false;
@@ -259,7 +272,14 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		DestroyFreezeTimeCounter();
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		if (playableManager)
+		{
+			if (m_bPreloadHookSubscribed)
+			{
+				playableManager.GetOnPlayerPlayableChange().Remove(OnSlotChangePreload);
+				m_bPreloadHookSubscribed = false;
+			}
 			playableManager.Cleanup();
+		}
 		super.OnGameEnd();
 	}
 	
@@ -1382,6 +1402,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			PrintFormat("[PS_AntiCheat] CONNECT: %1", PS_AntiCheatPlayerIdentity(playerId));
 
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		playableManager.InitializePlayerConnection_S(playerId);
 		string name = GetGame().GetPlayerManager().GetPlayerName(playerId);
 		playableManager.SetPlayerName(playerId, name);
 
@@ -1392,15 +1413,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		GetGame().GetCallqueue().CallLater(SpawnInitialEntity, 100, false, playerId);
 		#endif
 
-		// Restore reconnecting players' faction/slot AFTER vanilla SCR_ReconnectComponent has run
-		// (it applies on audit success, shortly after connect, and would otherwise leave the player
-		// factionless -> wrong-side markers). No-op for genuinely fresh joins (no cached GUID data).
-		playableManager.ClearPendingReconnectCancellation(playerId);
-		GetGame().GetCallqueue().CallLater(playableManager.RestorePlayerReconnectData, 2500, false, playerId);
-
 		// Briefing preload: a reconnecting / late-joining player arrives on a fresh connection, so (re)place
-		// their preload observer at their slot AFTER the reconnect-restore above has re-applied it. Idempotent
-		// + self-guarded (no-op outside briefing / when off / when un-slotted).
+		// their preload observer at their current slot. The slot-change hook also covers delayed audit restore.
+		// Idempotent + self-guarded (no-op outside briefing / when off / when un-slotted).
 		if (Replication.IsServer() && m_bBriefingPreload)
 			GetGame().GetCallqueue().CallLater(PreloadObserverForPlayer_S, 3000, false, playerId);
 
@@ -1534,7 +1549,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	 * @brief Обработка отключения игрока с сохранением состояния слота, GUID-кэша и авторитета сущности.
 	 * @issue BUG-86
 	 * @cause Блокирующий guard `if (!playerController) return;` прерывал выполнение, если контроллер удалялся движком до вызова колбэка, лишая игрока кэша реконнекта и не запуская таймер освобождения слота.
-	 * @solution Безусловное сохранение кэша реконнекта по GUID, запуск таймера очистки слота и поиск контролируемой сущности через PS_PlayableManager при отсутствии контроллера.
+	 * @solution Сохранение audited UUID и контекста timeout независимо от контроллера; после окончания сессии новые резервы не создаются.
 	 */
 	protected override void OnPlayerDisconnected(int playerId, KickCauseCode cause, int timeout)
 	{
@@ -1549,22 +1564,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			playerController = SCR_PlayerController.Cast(playerManager.GetPlayerController(playerId));
 
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		if (playableManager)
+		if (playableManager && !m_bGameEnded)
 		{
-			// Cancel any pending zombie RestorePlayerReconnectData for this playerId. If the player
-			// disconnects BEFORE the 2500ms reconnect-restore delay fires, the uncancelled CallLater
-			// would execute on the dead playerId — consuming the GUID cache and permanently assigning
-			// the slot to a ghost ID, locking the real player out on their next reconnect.
-			// Note: Callqueue.Remove() in Enfusion only accepts a function ref (no extra args), so
-			// we flag the playerId as cancelled and RestorePlayerReconnectData checks it on entry.
-			playableManager.CancelPendingReconnectRestore(playerId);
-			// Cache faction/slot by GUID now, while the playerId-keyed state still exists, so the player
-			// keeps their side (and map markers) when they reconnect under a new playerId.
-			playableManager.StorePlayerReconnectData(playerId);
+			playableManager.StorePlayerReconnectData_S(playerId, m_iReconnectTime);
 			playableManager.SetPlayerState(playerId, PS_EPlayableControllerState.Disconected);
 		}
-		if (m_iReconnectTime > 0)
-			GetGame().GetCallqueue().CallLater(RemoveDisconnectedPlayer, m_iReconnectTime, false, playerId);
 
 		// Body-less: delete this player's VoN proxy (a reconnecting player gets a fresh one).
 		PS_VoNRoomsManager vonRoomsManager = PS_VoNRoomsManager.GetInstance();
@@ -1934,28 +1938,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		{
 			ctrl.EnterSpectatorOwner();
 		}
-	}
-
-	// If after m_iReconnectTime player still disconnected release playable
-	void RemoveDisconnectedPlayer(int playerId)
-	{
-		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		PS_EPlayableControllerState state = playableManager.GetPlayerState(playerId);
-		if (state != PS_EPlayableControllerState.Disconected)
-			return;
-		// Don't release a slot a reconnecting player has already re-claimed: their GUID reservation
-		// re-links the slot to a NEW playerId, while this stale id stays "Disconnected". Only release if
-		// this id still actually holds the slot.
-		RplId playable = playableManager.GetPlayableByPlayer(playerId);
-		if (playable != RplId.Invalid() && playableManager.GetPlayerByPlayable(playable) != playerId)
-			return;
-		playableManager.SetPlayerPlayable(playerId, RplId.Invalid());
-		// FIX (GHOST NAMES): do NOT MoveToRoom here. RemoveProxy_S already called
-		// RemovePlayerFromChannel which fully removed this disconnected player from
-		// m_mPlayersChannel on all machines. Calling MoveToRoom would re-add the entry
-		// via RPC_SetPlayerChannel, re-creating the stale entry that causes ghost names
-		// in the voice-chat UI for late-joining clients. On reconnect the player gets a
-		// NEW playerId and AssignPhaseVoiceChannel handles the fresh channel assignment.
 	}
 
 	// Move a player to the VoN channel for the current briefing/lobby slot state (group / command / global).

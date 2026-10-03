@@ -2063,11 +2063,96 @@ class PS_PlayableControllerComponent : ScriptComponent
 	{
 		Rpc(RPC_SetPlayablePlayer, playableId, playerId);
 	}
+
+	/**
+	 * @brief Единая проверка назначения до любых побочных изменений.
+	 * @issue BUG-48, BUG-49, BUG-86
+	 * @cause Slot-keyed запрос обходил проверки занятости, lock и погибшего персонажа второго пути.
+	 * @solution Оба RPC используют одну ordinary policy; admin replacement разрешён только slot-keyed путём.
+	 */
+	private bool CanAssignPlayable_S(int playerId, RplId playableId, int callerPid, bool isAdmin, bool allowReplacement)
+	{
+		if (!Replication.IsServer() || playerId <= 0 || !playableId.IsValid())
+			return false;
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		if (!playerManager || !playableManager || !playerManager.IsPlayerConnected(playerId))
+			return false;
+		if (!isAdmin && (playerId != callerPid || playableManager.GetPlayerPin(playerId)))
+			return false;
+		PS_PlayableContainer container = playableManager.GetPlayableById(playableId);
+		if (!container)
+			return false;
+		PS_PlayableComponent component = container.GetPlayableComponent();
+		if (!component || !component.GetOwner())
+			return false;
+		SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(component.GetOwner());
+		if (!character || !character.GetDamageManager() || character.GetDamageManager().IsDestroyed())
+			return false;
+		int holder = playableManager.GetPlayerByPlayable(playableId);
+		if (holder == -2 || (holder != -1 && holder != playerId && !(isAdmin && allowReplacement && holder > 0)))
+			return false;
+		if (!(isAdmin && allowReplacement) && playableManager.IsPlayableReservedForOther_S(playableId, playerId))
+			return false;
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if (!isAdmin && gameMode && !gameMode.CanJoinFaction(container.GetFactionKey(), playableManager.GetPlayerFactionKey(playerId)))
+			return false;
+		return true;
+	}
+
+	/**
+	 * @brief Полный self/admin/leader release; offline target не требует контроллера или живого тела.
+	 * @issue BUG-86
+	 * @cause Общий чужой-ID guard отклонял лидерский кик, а клиентские generic RPC не могли завершить его последствия.
+	 * @solution Отдельный допуск по текущей группе/фракции/PIN, затем revoke, link/state/faction и штатный voice route.
+	 */
+	private void ReleasePlayerPlayable_S(int playerId, int callerPid, bool isAdmin)
+	{
+		if (!Replication.IsServer() || playerId <= 0)
+			return;
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		RplId playableId = playableManager.GetPlayableByPlayer(playerId);
+		if (!playableId.IsValid() || playableManager.GetPlayerByPlayable(playableId) != playerId)
+			return;
+		if (!isAdmin)
+		{
+			if (playableManager.GetPlayerPin(playerId))
+				return;
+			if (playerId != callerPid)
+			{
+				RplId callerPlayable = playableManager.GetPlayableByPlayer(callerPid);
+				PS_PlayableContainer callerSlot = playableManager.GetPlayableById(callerPlayable);
+				PS_PlayableContainer targetSlot = playableManager.GetPlayableById(playableId);
+				SCR_AIGroup callerGroup = playableManager.GetPlayerGroupByPlayable(callerPlayable);
+				SCR_AIGroup targetGroup = playableManager.GetPlayerGroupByPlayable(playableId);
+				if (!callerSlot || !targetSlot || !callerGroup || callerGroup != targetGroup
+					|| !playableManager.IsPlayerGroupLeader(callerPid)
+					|| callerSlot.GetFactionKey() == "" || callerSlot.GetFactionKey() != targetSlot.GetFactionKey()
+					|| playableManager.GetPlayerFactionKey(callerPid) != callerSlot.GetFactionKey()
+					|| playableManager.GetPlayerFactionKey(callerPid) != playableManager.GetPlayerFactionKey(playerId))
+					return;
+			}
+		}
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		bool connected = playerManager && playerManager.IsPlayerConnected(playerId);
+		playableManager.RevokePlayableReservation_S(playableId);
+		playableManager.SetPlayerPlayable(playerId, RplId.Invalid());
+		playableManager.SetPlayerState(playerId, PS_EPlayableControllerState.NotReady);
+		playableManager.SetPlayerFactionKey(playerId, "");
+		if (isAdmin)
+			playableManager.SetPlayerPin(playerId, false);
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		// Offline proxies were already removed on disconnect; routing them would recreate ghost voice rows.
+		if (connected && gameMode)
+			gameMode.AssignPhaseVoiceChannel(playerId);
+		if (connected && playerId != callerPid)
+			playableManager.NotifyKick(playerId);
+	}
 	/**
 	 * @brief Назначение игрока на слот персонажа по RplId слота
 	 * @issue BUG-48, BUG-49
 	 * @cause Клиент мог передавать отрицательный playerId (-1, -2 для блокировки/сброса) или чужой ID без прав админа
-	 * @solution Разрешать установку отрицательных ID и чужих ID только администраторам
+	 * @solution Ordinary admission общая с player-keyed путём; -1/-2 только admin + существующий slot, replacement только admin + live/open slot.
 	 * @rpc Owner -> Server (Reliable)
 	 */
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
@@ -2075,7 +2160,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 	{
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		if (!playableManager)
+		if (!Replication.IsServer() || !playerManager || !playableManager)
 			return;
 
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
@@ -2083,6 +2168,8 @@ class PS_PlayableControllerComponent : ScriptComponent
 			return;
 
 		int callerPid = thisPlayerController.GetPlayerId();
+		if (!playerManager.IsPlayerConnected(callerPid))
+			return;
 		bool isAdmin = SCR_Global.IsAdmin(callerPid);
 
 		// Negative playerId (-1 deselect, -2 lock slot) or targeting another player requires admin
@@ -2093,22 +2180,18 @@ class PS_PlayableControllerComponent : ScriptComponent
 			return;
 		}
 
-		// You can't change playable if pinned and not admin
-		if (playableManager.GetPlayerPin(callerPid) && !isAdmin)
-			return;
-
-		// Check faction balance
-		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		PS_PlayableContainer playableContainer = playableManager.GetPlayableById(playableId);
-		if (playerId > 0 && !playableContainer)
-			return;
-		if (playableContainer)
+		if (playerId <= 0)
 		{
-			FactionKey factionKey = playableContainer.GetFactionKey();
-			if (playerId >= 0 && !isAdmin && gameModeCoop && !gameModeCoop.CanJoinFaction(factionKey, playableManager.GetPlayerFactionKey(playerId)))
+			if (!isAdmin || (playerId != -1 && playerId != -2) || !playableId.IsValid() || !playableManager.GetPlayableById(playableId))
 				return;
+			int holder = playableManager.GetPlayerByPlayable(playableId);
+			if (holder > 0)
+				ReleasePlayerPlayable_S(holder, callerPid, true);
+			playableManager.SetPlayablePlayer(playableId, playerId);
+			return;
 		}
-
+		if (!CanAssignPlayable_S(playerId, playableId, callerPid, isAdmin, true))
+			return;
 		playableManager.SetPlayablePlayer(playableId, playerId);
 	}
 
@@ -2142,7 +2225,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 	 * @brief Назначение слота игроку по playerId
 	 * @issue BUG-48, BUG-49, BUG-86
 	 * @cause Неавторизованный клиент мог переназначать других игроков. Невалидный RplId вызывал VME разыменования null playableContainer.
-	 * @solution Проверка авторства/администратора, строгая валидация существования playableContainer и поддержка невалидного RplId (!IsValid() / == RplId.Invalid()) при освобождении слота.
+	 * @solution Canonical Invalid обрабатывается отдельной self/admin/leader release policy до live checks; assignment использует общий helper.
 	 * @rpc Owner -> Server (Reliable)
 	 */
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
@@ -2150,7 +2233,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 	{
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		if (!playableManager)
+		if (!Replication.IsServer() || !playerManager || !playableManager)
 			return;
 
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
@@ -2158,7 +2241,14 @@ class PS_PlayableControllerComponent : ScriptComponent
 			return;
 
 		int callerPid = thisPlayerController.GetPlayerId();
+		if (!playerManager.IsPlayerConnected(callerPid))
+			return;
 		bool isAdmin = SCR_Global.IsAdmin(callerPid);
+		if (playableId == RplId.Invalid())
+		{
+			ReleasePlayerPlayable_S(playerId, callerPid, isAdmin);
+			return;
+		}
 
 		if (playerId != callerPid && !isAdmin)
 		{
@@ -2167,45 +2257,8 @@ class PS_PlayableControllerComponent : ScriptComponent
 			return;
 		}
 
-		// You can't change playable if pinned and not admin
-		if (playableManager.GetPlayerPin(playerId) && !isAdmin)
+		if (!CanAssignPlayable_S(playerId, playableId, callerPid, isAdmin, false))
 			return;
-
-		// don't check other staff if empty playable
-		if (!playableId.IsValid() || playableId == RplId.Invalid()) {
-			if (playerId != callerPid)
-				playableManager.NotifyKick(playerId);
-			playableManager.SetPlayerPlayable(playerId, RplId.Invalid());
-			// FIX (STRAND): re-route voice to Global when a slot is released (deselect / kick).
-			// Without this, the player stays on their old faction's VoN channel until the 5s
-			// reconcile tick catches them. This moves them to Global immediately.
-			PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-			if (gameMode)
-				gameMode.AssignPhaseVoiceChannel(playerId);
-			return;
-		}
-
-		PS_PlayableContainer playableContainer = playableManager.GetPlayableById(playableId);
-		if (!playableContainer)
-			return;
-
-		// Check faction balance
-		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		FactionKey factionKey = playableContainer.GetFactionKey();
-		if (playerId >= 0 && !isAdmin && gameModeCoop && !gameModeCoop.CanJoinFaction(factionKey, playableManager.GetPlayerFactionKey(playerId)))
-			return;
-
-		PS_PlayableComponent playableComponent = playableContainer.GetPlayableComponent();
-		if (!playableComponent || !playableComponent.GetOwner())
-			return;
-
-		SCR_ChimeraCharacter playableCharacter = SCR_ChimeraCharacter.Cast(playableComponent.GetOwner());
-
-		// Check is playable already selected or dead
-		int curretPlayerId = playableManager.GetPlayerByPlayable(playableId);
-		if (!playableCharacter || playableCharacter.GetDamageManager().IsDestroyed() || (curretPlayerId != -1 && curretPlayerId != playerId)) {
-			return;
-		}
 
 		playableManager.SetPlayerPlayable(playerId, playableId);
 
