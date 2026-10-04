@@ -25,6 +25,7 @@ class PS_SpectatorMenu: MenuBase
 	protected Widget m_wSidesRatio;
 	protected Widget m_wSidesRatioFrame;
 	protected Widget m_wKillListFrame;
+	protected Widget m_wVoNOverlay;
 	protected TextWidget m_wGameTimerText;
 	protected PS_VoiceChatList m_hVoiceChatList;
 	protected SCR_ButtonBaseComponent m_hVoiceChatListPinButton;
@@ -208,6 +209,7 @@ class PS_SpectatorMenu: MenuBase
 		m_wSidesRatioFrame = GetRootWidget().FindAnyWidget("SidesRatioFrame");
 		m_wSidesRatio = GetRootWidget().FindAnyWidget("SidesRatio");
 		m_wGameTimerText = TextWidget.Cast(GetRootWidget().FindAnyWidget("GameTimerText"));
+		m_wVoNOverlay = GetRootWidget().FindAnyWidget("SpectatorVoNOverlay");
 		
 		m_bNavigationSwitchSpectatorUI = SCR_InputButtonComponent.Cast(GetRootWidget().FindAnyWidget("NavigationSwitchSpectatorUI").FindHandler(SCR_InputButtonComponent));
 		m_bNavigationSwitchSpectatorUI.m_OnClicked.Insert(Action_SwitchSpectatorUI);
@@ -719,6 +721,7 @@ class PS_SpectatorMenu: MenuBase
 			m_wKillListFrame.SetVisible(false);
 			m_wIconsFrame.SetVisible(false);
 			m_wSidesRatioFrame.SetVisible(false);
+			if (m_wVoNOverlay) m_wVoNOverlay.SetVisible(false);
 		} else {
 			//m_wChat.SetVisible(true);
 			m_wVoiceChatList.SetVisible(true);
@@ -728,6 +731,7 @@ class PS_SpectatorMenu: MenuBase
 			m_wKillListFrame.SetVisible(true);
 			m_wIconsFrame.SetVisible(true);
 			m_wSidesRatioFrame.SetVisible(true);
+			if (m_wVoNOverlay) m_wVoNOverlay.SetVisible(true);
 		}
 	}
 	

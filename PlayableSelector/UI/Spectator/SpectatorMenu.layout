@@ -619,5 +619,26 @@ FrameWidgetClass {
     }
    }
   }
+  VerticalLayoutWidgetClass "{E0A1B2C3D4E5F610}" {
+   Name "SpectatorVoNOverlay"
+   "Z Order" 15
+   "Ignore Cursor" 1
+   Slot FrameWidgetSlot "{E0A1B2C3D4E5F611}" {
+    Anchor 1 0 1 0
+    PositionX -300
+    OffsetLeft -300
+    PositionY 30
+    OffsetTop 30
+    SizeX 280
+    OffsetRight 20
+    SizeY 200
+    OffsetBottom -230
+   }
+   components {
+    PS_SpectatorVoNOverlay "{E0A1B2C3D4E5F612}" {
+     m_sRowPrefab "{E0A1B2C3D4E5F600}UI/Spectator/SpectatorVoNRow.layout"
+    }
+   }
+  }
  }
 }
