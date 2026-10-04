@@ -59,6 +59,9 @@ class PS_KillListManager : ScriptComponent
 		killInfo.m_eLastHitZoneGroup = parts[7].ToInt();
 		killInfo.m_bIsTeamKill = (parts[8] == "1");
 
+		if (parts.Count() >= 10)
+			killInfo.m_sWeaponName = parts[9];
+
 		m_aKillHistory.Insert(killInfo);
 		PrintFormat("[PS_KillListManager] RPC_KillEvent victimId=%1 killerId=%2 isServer=%3 history=%4",
 			killInfo.m_iVictimPlayerId, killInfo.m_iKillerPlayerId, Replication.IsServer(), m_aKillHistory.Count());
@@ -126,6 +129,14 @@ class PS_KillListManager : ScriptComponent
 		if (!killerEntity)
 			return;
 
+		SCR_EditableVehicleComponent editableVehicle = SCR_EditableVehicleComponent.Cast(killerEntity.FindComponent(SCR_EditableVehicleComponent));
+		if (editableVehicle)
+		{
+			SCR_UIInfo vehicleInfo = editableVehicle.GetInfo();
+			if (vehicleInfo)
+				killInfo.m_sWeaponName = vehicleInfo.GetName();
+		}
+
 		CharacterControllerComponent charCtrl = CharacterControllerComponent.Cast(killerEntity.FindComponent(CharacterControllerComponent));
 		if (!charCtrl)
 			return;
@@ -139,6 +150,8 @@ class PS_KillListManager : ScriptComponent
 			return;
 
 		UIInfo weaponUIInfo = currentWeapon.GetUIInfo();
+		if (weaponUIInfo)
+			killInfo.m_sWeaponName = weaponUIInfo.GetName();
 
 		BaseMuzzleComponent muzzle = currentWeapon.GetCurrentMuzzle();
 		if (muzzle)

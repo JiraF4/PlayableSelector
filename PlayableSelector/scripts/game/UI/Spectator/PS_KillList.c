@@ -1,6 +1,6 @@
 class PS_KillList : ScriptedWidgetComponent
 {
-	protected ResourceName m_sKillEntryPrefab = "{C0A1B2D3E4F5A6B7}UI/Spectator/KillListEntry.layout";
+	protected ResourceName m_sKillEntryPrefab = "{FCAD3464FF75D530}UI/Spectator/KillListEntry.layout";
 
 	protected WorkspaceWidget m_WorkspaceWidget;
 	protected PS_PlayableManager m_PlayableManager;
@@ -181,24 +181,160 @@ class PS_KillList : ScriptedWidgetComponent
 			PrintFormat("[PS_KillList] AddKillEntry SKIP createFailed name=%1", displayName);
 			return;
 		}
-		// Fill the (stretched) list width; the row's FillWeight text needs a non-zero parent width to show.
+		// Stretch each card to the available list width.
 		LayoutSlot.SetHorizontalAlign(entryWidget, LayoutHorizontalAlign.Stretch);
-		// Plain TextWidget: real-server player names carry clan-tag rich-text markup (added by the Podval
-		// mods); PS_KillInfo.GetVictim/KillerDisplayName strips it to a plain nickname, so a plain TextWidget
-		// shows it cleanly - matching peer-tool behaviour. (A RichTextWidget would RENDER the tags bold/colored,
-		// which is not wanted here.)
-		TextWidget textWidget = TextWidget.Cast(entryWidget.FindAnyWidget("KillEntryText"));
-		if (textWidget)
+
+		ImageWidget accentBar = ImageWidget.Cast(entryWidget.FindAnyWidget("AccentBar"));
+		TextWidget indexText = TextWidget.Cast(entryWidget.FindAnyWidget("IndexText"));
+		ImageWidget deadIcon = ImageWidget.Cast(entryWidget.FindAnyWidget("DeadIcon"));
+		TextWidget playerNameText = TextWidget.Cast(entryWidget.FindAnyWidget("PlayerNameText"));
+		TextWidget distanceText = TextWidget.Cast(entryWidget.FindAnyWidget("DistanceText"));
+		ImageWidget hitZoneBg = ImageWidget.Cast(entryWidget.FindAnyWidget("HitZoneBg"));
+		TextWidget hitZoneText = TextWidget.Cast(entryWidget.FindAnyWidget("HitZoneText"));
+		TextWidget weaponNameText = TextWidget.Cast(entryWidget.FindAnyWidget("WeaponNameText"));
+		TextWidget bulletDivider = TextWidget.Cast(entryWidget.FindAnyWidget("BulletDivider"));
+		TextWidget magazineText = TextWidget.Cast(entryWidget.FindAnyWidget("MagazineText"));
+
+		if (killInfo.m_bIsTeamKill)
 		{
-			textWidget.SetText(killInfo.FormatLine(displayName, number));
-			// Team kills stand out in red; everything else white.
-			if (killInfo.m_bIsTeamKill)
-				textWidget.SetColor(Color.FromRGBA(255, 90, 90, 255));
-			else
-				textWidget.SetColor(Color.White);
+			if (accentBar)
+				accentBar.SetColor(Color.FromRGBA(231, 76, 60, 255));
+			if (indexText)
+				indexText.SetColor(Color.FromRGBA(231, 76, 60, 255));
 		}
-		PrintFormat("[PS_KillList] AddKillEntry OK name=%1 line=%2 textWidgetNull=%3 childrenNow=%4",
-			displayName, killInfo.FormatLine(displayName, number), !textWidget, widgetArray.Count() + 1);
+		else if (number <= 0)
+		{
+			if (accentBar)
+				accentBar.SetColor(Color.FromRGBA(185, 28, 28, 255));
+			if (deadIcon)
+				deadIcon.SetColor(Color.FromRGBA(220, 38, 38, 255));
+		}
+		else
+		{
+			if (accentBar)
+				accentBar.SetColor(Color.FromRGBA(212, 175, 55, 255));
+			if (indexText)
+				indexText.SetColor(Color.FromRGBA(212, 175, 55, 255));
+		}
+
+		if (number > 0)
+		{
+			if (indexText)
+			{
+				indexText.SetVisible(true);
+				if (number < 10)
+					indexText.SetText("0" + number.ToString());
+				else
+					indexText.SetText(number.ToString());
+			}
+			if (deadIcon)
+				deadIcon.SetVisible(false);
+		}
+		else
+		{
+			if (indexText)
+				indexText.SetVisible(false);
+			if (deadIcon)
+				deadIcon.SetVisible(true);
+		}
+
+		if (playerNameText)
+		{
+			if (killInfo.m_bIsTeamKill)
+				playerNameText.SetText(displayName + " [TK]");
+			else
+				playerNameText.SetText(displayName);
+		}
+
+		if (distanceText)
+			distanceText.SetText(killInfo.GetFormattedDistance());
+
+		string hitZone = killInfo.GetLocalizedHitZone();
+		if (hitZone != "")
+		{
+			if (hitZoneText)
+			{
+				hitZoneText.SetText(hitZone);
+				hitZoneText.SetVisible(true);
+			}
+			if (hitZoneBg)
+				hitZoneBg.SetVisible(true);
+
+			if (killInfo.m_eLastHitZoneGroup == ECharacterHitZoneGroup.HEAD)
+			{
+				if (hitZoneText)
+					hitZoneText.SetColor(Color.FromRGBA(255, 75, 75, 255));
+				if (hitZoneBg)
+					hitZoneBg.SetColor(Color.FromRGBA(120, 15, 15, 200));
+			}
+			else
+			{
+				if (hitZoneText)
+					hitZoneText.SetColor(Color.FromRGBA(205, 212, 215, 255));
+				if (hitZoneBg)
+					hitZoneBg.SetColor(Color.FromRGBA(16, 22, 25, 210));
+			}
+		}
+		else
+		{
+			if (hitZoneText)
+				hitZoneText.SetVisible(false);
+			if (hitZoneBg)
+				hitZoneBg.SetVisible(false);
+		}
+
+		string weapon = killInfo.GetWeaponDisplayName();
+		string magazine = killInfo.GetMagazineDisplayName();
+
+		if (weapon != "")
+		{
+			if (weaponNameText)
+			{
+				weaponNameText.SetText(weapon);
+				weaponNameText.SetVisible(true);
+			}
+			if (magazine != "")
+			{
+				if (bulletDivider)
+					bulletDivider.SetVisible(true);
+				if (magazineText)
+				{
+					magazineText.SetText(magazine);
+					magazineText.SetVisible(true);
+				}
+			}
+			else
+			{
+				if (bulletDivider)
+					bulletDivider.SetVisible(false);
+				if (magazineText)
+					magazineText.SetVisible(false);
+			}
+		}
+		else if (magazine != "")
+		{
+			if (weaponNameText)
+			{
+				weaponNameText.SetText(magazine);
+				weaponNameText.SetVisible(true);
+			}
+			if (bulletDivider)
+				bulletDivider.SetVisible(false);
+			if (magazineText)
+				magazineText.SetVisible(false);
+		}
+		else
+		{
+			if (weaponNameText)
+			{
+				weaponNameText.SetText("—");
+				weaponNameText.SetVisible(true);
+			}
+			if (bulletDivider)
+				bulletDivider.SetVisible(false);
+			if (magazineText)
+				magazineText.SetVisible(false);
+		}
 
 		widgetArray.Insert(entryWidget);
 	}

@@ -6,6 +6,7 @@ class PS_KillInfo
 	string m_sKillerName;
 	string m_sVictimSquad;   // victim's group/squad name (resolved server-side at kill time)
 	string m_sAmmoType;
+	string m_sWeaponName;
 	float m_fDistance;
 	int m_eLastHitZoneGroup;
 	bool m_bIsTeamKill;
@@ -33,6 +34,56 @@ class PS_KillInfo
 			return "";
 		int meters = Math.Round(distance);
 		return meters.ToString() + "m";
+	}
+
+	static string HitZoneGroupToLocalizationKey(int group)
+	{
+		switch (group)
+		{
+			case ECharacterHitZoneGroup.HEAD: return "#PS-KillList_Head";
+			case ECharacterHitZoneGroup.UPPERTORSO: return "#PS-KillList_UpperTorso";
+			case ECharacterHitZoneGroup.LOWERTORSO: return "#PS-KillList_LowerTorso";
+			case ECharacterHitZoneGroup.LEFTARM: return "#PS-KillList_LeftArm";
+			case ECharacterHitZoneGroup.RIGHTARM: return "#PS-KillList_RightArm";
+			case ECharacterHitZoneGroup.LEFTLEG: return "#PS-KillList_LeftLeg";
+			case ECharacterHitZoneGroup.RIGHTLEG: return "#PS-KillList_RightLeg";
+		}
+		return "";
+	}
+
+	string GetLocalizedHitZone()
+	{
+		string key = HitZoneGroupToLocalizationKey(m_eLastHitZoneGroup);
+		if (key == "")
+			return "";
+		return WidgetManager.Translate(key);
+	}
+
+	string GetFormattedDistance()
+	{
+		if (m_fDistance < 0)
+			return "";
+		int meters = Math.Round(m_fDistance);
+		bool isRu = (WidgetManager.Translate("#PS-KillList_Head") == "Голова");
+		if (isRu)
+			return meters.ToString() + "м";
+		return meters.ToString() + "m";
+	}
+
+	string GetWeaponDisplayName()
+	{
+		string weapon = Clean(m_sWeaponName);
+		if (weapon.StartsWith("#"))
+			weapon = WidgetManager.Translate(weapon);
+		return weapon;
+	}
+
+	string GetMagazineDisplayName()
+	{
+		string magazine = Clean(m_sAmmoType);
+		if (magazine.StartsWith("#"))
+			magazine = WidgetManager.Translate(magazine);
+		return magazine;
 	}
 
 	// Empty fields are sent as "-" placeholders (so the pipe-split never drops a token); treat them as empty.
