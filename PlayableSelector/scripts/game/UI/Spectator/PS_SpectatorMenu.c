@@ -27,6 +27,10 @@ class PS_SpectatorMenu: MenuBase
 	protected Widget m_wKillListFrame;
 	protected Widget m_wVoNOverlay;
 	protected TextWidget m_wGameTimerText;
+	// Флаг отображения таймера игры в спектаторе:
+	// true  - таймер виден всем игрокам в спектаторе
+	// false - таймер виден только администраторам и серверу
+	protected bool m_bShowTimerForAll = true;
 	protected PS_VoiceChatList m_hVoiceChatList;
 	protected SCR_ButtonBaseComponent m_hVoiceChatListPinButton;
 	protected PS_AlivePlayerList m_hAlivePlayerList;
@@ -468,7 +472,7 @@ class PS_SpectatorMenu: MenuBase
 		
 		if (m_wGameTimerText)
 		{
-			if (PS_PlayersHelper.IsAdminOrServer())
+			if (m_bShowTimerForAll || PS_PlayersHelper.IsAdminOrServer())
 			{
 				m_wGameTimerText.SetVisible(true);
 				
