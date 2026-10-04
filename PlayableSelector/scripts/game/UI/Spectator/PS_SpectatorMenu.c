@@ -580,11 +580,11 @@ class PS_SpectatorMenu: MenuBase
 		// Kill feed slide
 		if (m_wKillListFrame)
 		{
-			// Kill feed lives at top-middle and slides DOWN from above (anchored top-centre in the layout).
+			// Kill feed lives at top-middle and slides DOWN from underneath the top SidesRatio bar (height 18).
+			// Open position is Y = 18 so that it never overlaps the dynamic faction balance ratio bar.
+			// Retracted position is Y = -617 (bottom at Y = 23, leaving a 5px peek below SidesRatioFrame).
 			// Hover detection is POSITION-based (is the cursor inside the panel's CURRENT on-screen rect), not
-			// widget-based: the SidesRatio's runtime-created ratio lines (and other top-edge widgets) sit in
-			// front of the peek and stole the widget hit-test, flip-flopping the hover and making the panel
-			// wiggle. A rect test that grows with the panel as it opens cannot oscillate.
+			// widget-based, preventing hit-test conflicts with top-edge widgets.
 			float killListY = FrameSlot.GetPosY(m_wKillListFrame);
 			int killMouseX, killMouseY;
 			WidgetManager.GetMousePos(killMouseX, killMouseY);
@@ -599,14 +599,14 @@ class PS_SpectatorMenu: MenuBase
 			if (killHovered)
 			{
 				killListY += tDelta * 1200.0;
-				if (killListY > 0)
-					killListY = 0;
+				if (killListY > 18)
+					killListY = 18;
 			}
 			else
 			{
 				killListY -= tDelta * 1200.0;
-				if (killListY < -610)
-					killListY = -610;
+				if (killListY < -617)
+					killListY = -617;
 			}
 			FrameSlot.SetPosY(m_wKillListFrame, killListY);
 		}

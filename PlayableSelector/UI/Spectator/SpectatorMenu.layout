@@ -19,6 +19,7 @@ FrameWidgetClass {
   }
   FrameWidgetClass "{6604C04D879C5557}" {
    Name "SidesRatioFrame"
+   "Z Order" 2
    Slot FrameWidgetSlot "{60DB2B52C92E458A}" {
     Anchor 0 0 1 0
     PositionX 0
@@ -352,12 +353,12 @@ FrameWidgetClass {
     Anchor 0.5 0 0.5 0
     PositionX -320
     OffsetLeft -320
-    PositionY 0
-    OffsetTop 0
+    PositionY 18
+    OffsetTop 18
     SizeX 640
     OffsetRight 320
     SizeY 640
-    OffsetBottom 640
+    OffsetBottom 658
    }
    Clipping False
    "Ignore Cursor" 0
