@@ -26,10 +26,6 @@ void PS_ScriptInvokerFactionReadyChangeMethod(FactionKey factionKey, int readyVa
 typedef func PS_ScriptInvokerFactionReadyChangeMethod;
 typedef ScriptInvokerBase<PS_ScriptInvokerFactionReadyChangeMethod> PS_ScriptInvokerFactionReadyChangeGroup;
 
-void PS_ScriptInvokerGroupReadyChangeMethod(int groupId, int readyValue);
-typedef func PS_ScriptInvokerGroupReadyChangeMethod;
-typedef ScriptInvokerBase<PS_ScriptInvokerGroupReadyChangeMethod> PS_ScriptInvokerGroupReadyChange;
-
 [ComponentEditorProps(category: "GameScripted/GameMode/Components", description: "", color: "0 0 255 255", icon: HYBRID_COMPONENT_ICON)]
 class PS_PlayableManagerClass : ScriptComponentClass
 {
@@ -55,7 +51,6 @@ class PS_PlayableManager : ScriptComponent
 	ref map<RplId, int> m_playablePlayerGroupId = new map<RplId, int>(); // playable to player group
 	ref map<int, string> m_playersLastName = new map<int, string>(); // playerid to player name (persistant)
 	ref map<FactionKey, int> m_mFactionReady = new map<FactionKey, int>(); // faction ready state
-	ref map<int, int> m_mGroupReady = new map<int, int>(); // groupId → squad ready state (0/1)
 	ref map<RplId, string> m_mPlayablePrefabs = new map<RplId, string>();
 	// Role display info keyed by PREFAB (deduplicated - many playables share a role prefab), instead of
 	// shipping the same long icon path/name on all 128 containers.
@@ -133,11 +128,6 @@ class PS_PlayableManager : ScriptComponent
 	PS_ScriptInvokerFactionReadyChangeGroup GetOnFactionReadyChanged()
 	{
 		return m_eFactionReadyChanged;
-	}
-	ref PS_ScriptInvokerGroupReadyChange m_eGroupReadyChanged = new PS_ScriptInvokerGroupReadyChange();
-	PS_ScriptInvokerGroupReadyChange GetOnGroupReadyChanged()
-	{
-		return m_eGroupReadyChanged;
 	}
 
 	//Global cache
@@ -941,39 +931,6 @@ class PS_PlayableManager : ScriptComponent
 		m_eFactionReadyChanged.Invoke(factionKey, readyValue);
 	}
 
-	// -------------------------------- Squad (group) ready state ----------------------------------
-	// Get squad ready state by group ID
-	// - Synced on clients
-	int GetGroupReady(int groupId)
-	{
-		if (!m_mGroupReady.Contains(groupId))
-			return 0;
-		return m_mGroupReady[groupId];
-	}
-	// Set squad ready state
-	// - Execute ONLY on server
-	void SetGroupReady(int groupId, int readyValue)
-	{
-		// Skip redundant updates: a leader re-pressing (or holding) F9/F10 on an already-ready/not-ready squad
-		// would otherwise re-broadcast to EVERY client each press - needless reliable-RPC traffic during the
-		// freeze-time vote when many squads spam ready at once. Only broadcast on an actual state change.
-		if (GetGroupReady(groupId) == readyValue)
-			return;
-		RPC_SetGroupReady(groupId, readyValue);
-		Rpc(RPC_SetGroupReady, groupId, readyValue);
-	}
-	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	void RPC_SetGroupReady(int groupId, int readyValue)
-	{
-		m_mGroupReady[groupId] = readyValue;
-		m_eGroupReadyChanged.Invoke(groupId, readyValue);
-	}
-	// Reset all group ready states (called at freeze time start)
-	void ResetGroupReady()
-	{
-		m_mGroupReady.Clear();
-		Replication.BumpMe();
-	}
 	// Build a map of groupId → leaderPlayerId by iterating sorted playables.
 	// The first occupied playable in each group (sorted by callsign→rank→rplId) is the leader.
 	void GetGroupLeaders(out map<int, int> groupLeaders)
@@ -1692,7 +1649,6 @@ class PS_PlayableManager : ScriptComponent
 		PS_ReplicationHelper.WriteMapIntRplId(writer, m_playersPlayableRemembered);
 		PS_ReplicationHelper.WriteMapRplIdInt(writer, m_playablePlayersRemembered);
 		PS_ReplicationHelper.WriteMapFactionKeyInt(writer, m_mFactionReady);
-		PS_ReplicationHelper.WriteMapIntInt(writer, m_mGroupReady);
 		PS_ReplicationHelper.WriteMapRplIdString(writer, m_mPlayablePrefabs);
 
 		// Save per-prefab role info (deduplicated icon/quad/name)
@@ -1736,6 +1692,9 @@ class PS_PlayableManager : ScriptComponent
 	override protected bool RplLoad(ScriptBitReader reader)
 	{
 		// Load maps (must match RplSave order)
+		// This stream is strictly positional and carries no version field: the save and load orders must stay
+		// byte-identical, so removing or reordering a field here requires the same edit in RplSave above and
+		// invalidates mixed-build snapshots (old client vs new server or vice versa).
 		PS_ReplicationHelper.ReadMapIntInt(reader, m_playersStates);
 		PS_ReplicationHelper.ReadMapIntRplId(reader, m_playersPlayable);
 		PS_ReplicationHelper.ReadMapIntBool(reader, m_playersPin);
@@ -1746,7 +1705,6 @@ class PS_PlayableManager : ScriptComponent
 		PS_ReplicationHelper.ReadMapIntRplId(reader, m_playersPlayableRemembered);
 		PS_ReplicationHelper.ReadMapRplIdInt(reader, m_playablePlayersRemembered);
 		PS_ReplicationHelper.ReadMapFactionKeyInt(reader, m_mFactionReady);
-		PS_ReplicationHelper.ReadMapIntInt(reader, m_mGroupReady);
 		PS_ReplicationHelper.ReadMapRplIdString(reader, m_mPlayablePrefabs);
 
 		// Load per-prefab role info (deduplicated icon/quad/name)

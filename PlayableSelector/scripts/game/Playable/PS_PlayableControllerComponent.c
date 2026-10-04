@@ -63,30 +63,6 @@ class PS_PlayableControllerComponent : ScriptComponent
 		playableManager.SetFactionReady(factionKey, readyValue);
 	}
 
-	// ------ GroupReady (squad ready during freeze time) ------
-	void SetGroupReady(int groupId, int readyValue)
-	{
-		Rpc(RPC_SetGroupReady, groupId, readyValue);
-	}
-	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
-	void RPC_SetGroupReady(int groupId, int readyValue)
-	{
-		// Only group leaders may vote
-		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
-		if (!thisPlayerController)
-			return;
-		if (!playableManager.IsPlayerGroupLeader(thisPlayerController.GetPlayerId()))
-			return;
-
-		// Only during freeze time
-		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		if (!gameMode || gameMode.GetState() != SCR_EGameModeState.GAME || gameMode.IsFreezeTimeEnd())
-			return;
-
-		playableManager.SetGroupReady(groupId, readyValue);
-	}
-
 	// ------ MenuState ------
 	void SetMenuState(SCR_EGameModeState state)
 	{
