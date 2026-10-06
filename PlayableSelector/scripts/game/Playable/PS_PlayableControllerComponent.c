@@ -1560,26 +1560,47 @@ class PS_PlayableControllerComponent : ScriptComponent
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	protected void RPC_SetPlayablePlayer(RplId playableId, int playerId)
 	{
-		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-
-		// You can't change playable if pinned and not admin
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
-		EPlayerRole playerRole = playerManager.GetPlayerRoles(thisPlayerController.GetPlayerId());
-		if (playableManager.GetPlayerPin(playerId) && playerRole == EPlayerRole.NONE)
+		if (!playableManager || !thisPlayerController)
+			return;
+		int callerId = thisPlayerController.GetPlayerId();
+		if (!SCR_Global.IsAdmin(callerId) || (playerId != -2 && playerId != -1))
+		{
+			PrintFormat("[PS_AntiCheat] ADMIN_ATTEMPT: %1 action=SetPlayablePlayer playableId=%2 value=%3",
+				PS_GameModeCoop.PS_AntiCheatPlayerIdentity(callerId), playableId, playerId);
+			return;
+		}
+		if (!playableManager.GetPlayableById(playableId))
 			return;
 
-		// Check faction balance
-		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		PS_PlayableContainer playableContainer = playableManager.GetPlayableById(playableId);
-		if (playableContainer)
+		int holder = playableManager.GetPlayerByPlayable(playableId);
+		if (playerId == -1)
 		{
-			FactionKey factionKey = playableContainer.GetFactionKey();
-			if (playerId >= 0 && !SCR_Global.IsAdmin(thisPlayerController.GetPlayerId()) && !gameModeCoop.CanJoinFaction(factionKey, playableManager.GetPlayerFactionKey(playerId)))
-				return;
+			if (holder == -2)
+				playableManager.SetPlayablePlayer(playableId, -1);
+			return;
 		}
-
-		playableManager.SetPlayablePlayer(playableId, playerId);
+		if (holder == -2)
+			return;
+		if (holder > 0)
+		{
+			PlayerManager playerManager = GetGame().GetPlayerManager();
+			bool connected = playerManager.IsPlayerConnected(holder);
+			if (connected && holder != callerId)
+				playableManager.NotifyKick(holder);
+			if (connected)
+				playableManager.SetPlayerState(holder, PS_EPlayableControllerState.NotReady);
+			playableManager.SetPlayerPlayable(holder, RplId.Invalid());
+			playableManager.SetPlayerPin(holder, false);
+			if (connected)
+			{
+				PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+				if (gameMode)
+					gameMode.AssignPhaseVoiceChannel(holder);
+			}
+		}
+		playableManager.SetPlayablePlayer(playableId, -2);
 	}
 
 	void SetPlayableVehicleLocked(RplId vehicleId, bool lock)

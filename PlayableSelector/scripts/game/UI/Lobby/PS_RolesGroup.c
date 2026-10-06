@@ -274,9 +274,6 @@ class PS_RolesGroup : SCR_ScriptedWidgetComponent
 			{
 				if (playerId != -2)
 				{
-					PS_EPlayableControllerState state = m_PlayableManager.GetPlayerState(playerId);
-					if (state == PS_EPlayableControllerState.Ready)
-						m_PlayableControllerComponent.SetPlayerState(playerId, PS_EPlayableControllerState.NotReady);
 					m_PlayableControllerComponent.SetPlayablePlayer(playable.GetRplId(), -2);
 				}
 			}
@@ -290,15 +287,10 @@ class PS_RolesGroup : SCR_ScriptedWidgetComponent
 				vehicleSelector.LockVehicle(null, new PS_ContextActionDataPlayable(vehicle.GetRplId()));
 		}
 		
-		if (unlock) {
-			m_wLockImage.LoadImageFromSet(0, m_sImageSet, "server-unlocked");
-			m_iLockedCount = 0;
+		if (unlock)
 			SCR_UISoundEntity.SoundEvent("SOUND_FE_BUTTON_FILTER_OFF");
-		} else {
-			m_wLockImage.LoadImageFromSet(0, m_sImageSet, "server-locked");
-			m_iLockedCount = m_mCharacters.Count();
+		else
 			SCR_UISoundEntity.SoundEvent("SOUND_FE_BUTTON_FILTER_ON");
-		}
 	}
 	
 	// --------------------------------------------------------------------------------------------------------------------------------

@@ -716,12 +716,20 @@ class PS_PlayableManager : ScriptComponent
 		m_mReconnectPin.Remove(guid);
 		m_mReconnectName.Remove(guid);
 
+		// A closed GUID reservation cannot restore its slot, faction or pin.
+		bool closedReserve = playable != RplId.Invalid() && GetPlayableById(playable) && GetPlayerByPlayable(playable) == -2;
+		if (closedReserve)
+		{
+			faction = "";
+			pin = false;
+		}
+
 		// Re-link the slot only if it is still theirs / free / held by a now-gone ghost id,
 		// never steal a slot a live player has taken in the meantime
-		if (playable != RplId.Invalid() && GetPlayableById(playable))
+		if (!closedReserve && playable != RplId.Invalid() && GetPlayableById(playable))
 		{
 			int holder = GetPlayerByPlayable(playable);
-			bool free = holder <= 0 || holder == playerId || !m_PlayerManager.IsPlayerConnected(holder);
+			bool free = holder == -1 || holder == 0 || holder == playerId || (holder > 0 && !m_PlayerManager.IsPlayerConnected(holder));
 			if (free)
 				SetPlayerPlayable(playerId, playable);
 		}
@@ -1678,6 +1686,20 @@ class PS_PlayableManager : ScriptComponent
 			container.Save(writer);
 		}
 
+		// m_playersPlayable[-2] holds only one ID; count closed registered slots from the reverse map.
+		int lockedCount = 0;
+		foreach (RplId id, PS_PlayableContainer container : m_aPlayables)
+		{
+			if (GetPlayerByPlayable(id) == -2)
+				lockedCount++;
+		}
+		writer.WriteInt(lockedCount);
+		foreach (RplId id, PS_PlayableContainer container : m_aPlayables)
+		{
+			if (GetPlayerByPlayable(id) == -2)
+				writer.WriteInt(id);
+		}
+
 		// [PS_NetStat] JIP snapshot composition - logged on the SERVER each time a client joins, so it shows
 		// the real per-join lobby payload at live player counts (the prime lobby-kick suspect). The whole
 		// blob is sent to the joining client in one burst; watch this when lobby-stage kicks happen.
@@ -1722,11 +1744,6 @@ class PS_PlayableManager : ScriptComponent
 			m_mPrefabRoleName[prefab] = name;
 		}
 
-		// Reconstruct the reverse player<->playable map instead of replicating it
-		m_playablePlayers.Clear();
-		foreach (int playerId, RplId playableId : m_playersPlayable)
-			m_playablePlayers[playableId] = playerId;
-
 		// Load containers
 		int playablesCount;
 		reader.ReadInt(playablesCount);
@@ -1745,6 +1762,34 @@ class PS_PlayableManager : ScriptComponent
 			container.Load(reader);
 			RPC_RegisterGroupVehicle(container);
 		}
+
+		int lockedCount;
+		if (!reader.ReadInt(lockedCount) || lockedCount < 0 || lockedCount > playablesCount)
+		{
+			Print("[PS_PlayableManager] Invalid JIP locked slot count", LogLevel.WARNING);
+			return false;
+		}
+		array<RplId> lockedIds = {};
+		for (int i = 0; i < lockedCount; i++)
+		{
+			RplId id;
+			if (!reader.ReadInt(id) || !m_aPlayables.Contains(id) || lockedIds.Contains(id))
+			{
+				Print("[PS_PlayableManager] Invalid JIP locked slot ID", LogLevel.WARNING);
+				return false;
+			}
+			lockedIds.Insert(id);
+		}
+
+		// Reconstruct real owners first, then apply all validated closed slots.
+		m_playablePlayers.Clear();
+		foreach (int playerId, RplId playableId : m_playersPlayable)
+		{
+			if (playerId > 0 && m_aPlayables.Contains(playableId))
+				m_playablePlayers[playableId] = playerId;
+		}
+		foreach (RplId id : lockedIds)
+			m_playablePlayers[id] = -2;
 
 		m_bRplLoaded = true;
 

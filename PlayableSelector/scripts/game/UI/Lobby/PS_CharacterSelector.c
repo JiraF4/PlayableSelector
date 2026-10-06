@@ -566,8 +566,6 @@ class PS_CharacterSelector : SCR_ButtonComponent
 	void OnActionLock(PS_ContextAction contextAction, PS_ContextActionDataPlayable contextActionDataPlayable)
 	{
 		SCR_UISoundEntity.SoundEvent("SOUND_FE_BUTTON_FILTER_ON");
-		if (m_iPlayerId > 0)
-			OnActionFreeSlot(contextAction, contextActionDataPlayable);
 		m_PlayableControllerComponent.SetPlayablePlayer(contextActionDataPlayable.GetPlayableId(), -2);
 	}
 	void OnActionUnlock(PS_ContextAction contextAction, PS_ContextActionDataPlayable contextActionDataPlayable)
@@ -619,8 +617,6 @@ class PS_CharacterSelector : SCR_ButtonComponent
 				break;
 			case PS_ECharacterState.Empty:
 				SCR_UISoundEntity.SoundEvent("SOUND_FE_BUTTON_FILTER_ON");
-				if (m_iPlayerId > 0)
-					m_PlayableControllerComponent.SetPlayerState(m_iPlayerId, PS_EPlayableControllerState.NotReady);
 				m_PlayableControllerComponent.SetPlayablePlayer(m_iPlayableId, -2);
 			   break;
 			case PS_ECharacterState.Player:
