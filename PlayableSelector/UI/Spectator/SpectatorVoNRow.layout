@@ -43,28 +43,63 @@ SizeLayoutWidgetClass {
       SizeY 22
       OffsetBottom -25
      }
-     Color 0.85 0.65 0.15 1
+     Color 1 1 1 1
      Texture "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset"
-     Image "VoNDirect"
+     Image "VoNChannel"
      Size 22 22
+    }
+    ImageWidgetClass "{E0A1B2C3D4E5F613}" {
+     Name "FactionStripe"
+     Slot FrameWidgetSlot "{E0A1B2C3D4E5F614}" {
+      Anchor 0 0 0 1
+      PositionX 0
+      OffsetLeft 0
+      PositionY 0
+      OffsetTop 0
+      SizeX 4
+      OffsetRight -4
+      SizeY 0
+      OffsetBottom 0
+     }
+     Color 0.45 0.48 0.52 1
     }
     RichTextWidgetClass "{E0A1B2C3D4E5F604}" {
      Name "PlayerName"
      Slot FrameWidgetSlot "{E0A1B2C3D4E5F605}" {
       Anchor 0 0 1 1
-      PositionX 30
-      OffsetLeft 30
+      PositionX 31
+      OffsetLeft 31
       PositionY 0
       OffsetTop 0
-      SizeX -34
-      OffsetRight 4
+      SizeX -121
+      OffsetRight 90
       SizeY 0
       OffsetBottom 0
      }
      Color 1 1 1 1
      Text "Player"
      "Font Size" 15
-     "Min Font Size" 15
+     "Min Font Size" 12
+     "Vertical Alignment" Center
+    }
+    TextWidgetClass "{E0A1B2C3D4E5F615}" {
+     Name "GroupName"
+     Slot FrameWidgetSlot "{E0A1B2C3D4E5F616}" {
+      Anchor 0 0 1 1
+      PositionX 194
+      OffsetLeft 194
+      PositionY 0
+      OffsetTop 0
+      SizeX -200
+      OffsetRight 6
+      SizeY 0
+      OffsetBottom 0
+     }
+     Color 0.8 0.82 0.84 1
+     Text ""
+     "Font Size" 11
+     "Min Font Size" 8
+     "Horizontal Alignment" Right
      "Vertical Alignment" Center
     }
    }

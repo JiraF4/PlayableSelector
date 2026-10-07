@@ -7,7 +7,7 @@
  * @listens SCR_VoNComponent::s_OnPSTalkingChanged (через PS_GetOnTalkingChanged())
  * @details Подписывается на движковый инвокер talking-состояния при
  *          HandlerAttached и отписывается при HandlerDeattached. При
- *          talking==true создаёт строку-виджет с ником говорящего; при
+ *          talking==true создаёт строку с ником, фракцией и отделением; при
  *          talking==false удаляет её. Отображает говорящих игроков в
  *          правом верхнем углу меню спектатора. Управляется видимостью через
  *          SetVisible() из PS_SpectatorMenu.Action_SwitchSpectatorUI.
@@ -106,7 +106,7 @@ class PS_SpectatorVoNOverlay : ScriptedWidgetComponent
 
 	//------------------------------------------------------------------------------------------------
 	/**
-	 * @brief Создать строку с ником говорящего и добавить в layout.
+	 * @brief Создать строку говорящего и добавить её в layout.
 	 * @param playerId  ID игрока, чья строка создаётся.
 	 */
 	protected void CreateRow(int playerId)
@@ -124,10 +124,10 @@ class PS_SpectatorVoNOverlay : ScriptedWidgetComponent
 
 		// Установить имя игрока в RichTextWidget "PlayerName"
 		RichTextWidget nameWidget = RichTextWidget.Cast(row.FindAnyWidget("PlayerName"));
+		PS_PlayableManager pm = PS_PlayableManager.GetInstance();
 		if (nameWidget)
 		{
 			string playerName;
-			PS_PlayableManager pm = PS_PlayableManager.GetInstance();
 			if (pm)
 				playerName = pm.GetPlayerName(playerId);
 			if (playerName.IsEmpty())
@@ -142,14 +142,62 @@ class PS_SpectatorVoNOverlay : ScriptedWidgetComponent
 			nameWidget.SetText(playerName);
 		}
 
-		// Иконка микрофона: зелёная для локального игрока, золотая для других
+		// Полоса фракции: текущее назначение или сохранённая фракция после смерти.
+		ImageWidget factionStripe = ImageWidget.Cast(row.FindAnyWidget("FactionStripe"));
+		if (factionStripe)
+		{
+			FactionKey factionKey;
+			if (pm)
+			{
+				factionKey = pm.GetPlayerFactionKey(playerId);
+				if (factionKey.IsEmpty())
+					factionKey = pm.GetPlayerFactionKeyRemembered(playerId);
+			}
+
+			SCR_FactionManager factionManager = SCR_FactionManager.Cast(GetGame().GetFactionManager());
+			SCR_Faction faction;
+			if (factionManager && !factionKey.IsEmpty())
+				faction = SCR_Faction.Cast(factionManager.GetFactionByKey(factionKey));
+
+			if (faction)
+				factionStripe.SetColor(faction.GetFactionColor());
+			else
+				factionStripe.SetColor(Color.Gray);
+		}
+
+		// Отделение: текущий слот или последнее сохранённое назначение.
+		TextWidget groupWidget = TextWidget.Cast(row.FindAnyWidget("GroupName"));
+		if (groupWidget && pm)
+		{
+			RplId playableId = pm.GetPlayableByPlayer(playerId);
+			if (playableId == RplId.Invalid())
+				playableId = pm.GetPlayableByPlayerRemembered(playerId);
+
+			SCR_AIGroup group = pm.GetPlayerGroupByPlayable(playableId);
+			if (group)
+			{
+				string customName = PS_GroupHelper.GetGroupNameCustom(group);
+				string callsign = PS_GroupHelper.GetGroupName(group);
+				string groupName = customName;
+				if (!callsign.IsEmpty())
+				{
+					if (!groupName.IsEmpty())
+						groupName += " ";
+					groupName += callsign;
+				}
+
+				groupWidget.SetText(groupName);
+			}
+		}
+
+		// Цвет иконки отличает локального говорящего от остальных.
 		ImageWidget micIcon = ImageWidget.Cast(row.FindAnyWidget("MicIcon"));
 		if (micIcon)
 		{
 			if (playerId == m_iLocalPlayerId)
-				micIcon.SetColor(Color.FromRGBA(80, 220, 80, 255));
-			else
 				micIcon.SetColor(Color.FromRGBA(220, 175, 40, 255));
+			else
+				micIcon.SetColor(Color.FromRGBA(255, 255, 255, 255));
 		}
 
 		m_mRows.Set(playerId, row);
