@@ -13,7 +13,5 @@ MetaFileClass {
   }
   LayoutResourceClass PS5 : PC {
   }
-  LayoutResourceClass Xbox : PC {
-  }
  }
 }
