@@ -36,7 +36,12 @@ class PS_VoiceChatList : SCR_ScriptedWidgetComponent
 		// local
 		m_wRoomsList = VerticalLayoutWidget.Cast(w.FindAnyWidget("RoomsList"));
 
-		m_gVoNRoomsManager.m_eOnRoomChanged.Insert(MovePlayer);
+		if (m_gVoNRoomsManager)
+		{
+			m_gVoNRoomsManager.m_eOnRoomChanged.Insert(MovePlayer);
+			m_gVoNRoomsManager.m_eOnPlayerParkedChanged.Insert(OnPlayerParkedChanged);
+			m_gVoNRoomsManager.m_eOnVoNSnapshotReady.Insert(OnVoNSnapshotReady);
+		}
 
 		m_pPlayerController = GetGame().GetPlayerController();
 		m_iPlayerId = m_pPlayerController.GetPlayerId();
@@ -60,7 +65,11 @@ class PS_VoiceChatList : SCR_ScriptedWidgetComponent
 		GetGame().GetCallqueue().Remove(UpdateInfo);
 
 		if (m_gVoNRoomsManager)
+		{
 			m_gVoNRoomsManager.m_eOnRoomChanged.Remove(MovePlayer);
+			m_gVoNRoomsManager.m_eOnPlayerParkedChanged.Remove(OnPlayerParkedChanged);
+			m_gVoNRoomsManager.m_eOnVoNSnapshotReady.Remove(OnVoNSnapshotReady);
+		}
 	}
 
 	// -------------------- Update content functions --------------------
@@ -169,6 +178,16 @@ class PS_VoiceChatList : SCR_ScriptedWidgetComponent
 		}
 
 		UpdateInfo();
+	}
+
+	void OnPlayerParkedChanged(int playerId, bool parked)
+	{
+		Rebuild();
+	}
+
+	void OnVoNSnapshotReady()
+	{
+		Rebuild();
 	}
 
 	void UpdateInfo()

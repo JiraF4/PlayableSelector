@@ -721,6 +721,13 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (Replication.IsServer())
 			PrintFormat("[PS_AntiCheat] CONNECT: %1", PS_AntiCheatPlayerIdentity(playerId));
 
+		if (Replication.IsServer())
+		{
+			PS_VoNRoomsManager vonRoomsManager = PS_VoNRoomsManager.GetInstance();
+			if (vonRoomsManager)
+				vonRoomsManager.InitializePlayer_S(playerId);
+		}
+
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		string name = GetGame().GetPlayerManager().GetPlayerName(playerId);
 		playableManager.SetPlayerName(playerId, name);
@@ -877,6 +884,10 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			PrintFormat("[PS_AntiCheat] DISCONNECT: %1 cause=%2 timeout=%3",
 				PS_AntiCheatPlayerIdentity(playerId), cause, timeout);
 
+		PS_VoNRoomsManager vonRoomsManager = PS_VoNRoomsManager.GetInstance();
+		if (Replication.IsServer() && vonRoomsManager)
+			vonRoomsManager.RemoveProxy_S(playerId);
+
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		SCR_PlayerController playerController = SCR_PlayerController.Cast(playerManager.GetPlayerController(playerId));
 		if (!playerController)
@@ -898,10 +909,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (m_iReconnectTime > 0) GetGame().GetCallqueue().CallLater(RemoveDisconnectedPlayer, m_iReconnectTime, false, playerId);
 
 		// Body-less: delete this player's VoN proxy (a reconnecting player gets a fresh one).
-		PS_VoNRoomsManager vonRoomsManager = PS_VoNRoomsManager.GetInstance();
-		if (vonRoomsManager)
-			vonRoomsManager.RemoveProxy_S(playerId);
-
 		IEntity controlledEntity = playerController.GetControlledEntity();
 		if (controlledEntity) {
 			RplComponent rpl = RplComponent.Cast(controlledEntity.FindComponent(RplComponent));
@@ -1218,12 +1225,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (vonMgr)
 		{
 			vonMgr.MoveToRoom(playerId, "", "#PS-VoNRoom_Global");
-			// Re-tune every machine's copy of this player's VoN proxy once their death/slot state has
-			// replicated. The immediate ApplyRadioKey inside MoveToRoom can run on receivers before
-			// PS_IsMenuSpeaker(playerId) reads true there (the corpse's IsDead replicates separately), which
-			// would leave the proxy parked = nobody hears the spectator. RestoreRoom re-broadcasts the
-			// channel, re-applying the key on every machine when the state has settled.
-			GetGame().GetCallqueue().CallLater(vonMgr.RestoreRoom, 1500, false, playerId);
+			vonMgr.SetPlayerParked_S(playerId, false);
 		}
 
 		SCR_PlayerController pc = SCR_PlayerController.Cast(GetGame().GetPlayerManager().GetPlayerController(playerId));
@@ -1393,6 +1395,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		PS_VoNRoomsManager vonMgr = PS_VoNRoomsManager.GetInstance();
 		if (vonMgr)
 			vonMgr.SetVoNGamePhase(state == SCR_EGameModeState.GAME);
+		if (state == SCR_EGameModeState.GAME && Replication.IsServer() && vonMgr)
+		{
+			foreach (int playerId : playerIds)
+				vonMgr.QueuePlayerParkedRefresh_S(playerId);
+		}
 
 		switch (state)
 		{

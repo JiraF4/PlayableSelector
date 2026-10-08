@@ -15,6 +15,18 @@ class PS_PlayableControllerComponent : ScriptComponent
 	protected vector m_vObserverPosition = "0 0 0";
 	protected vector lastCameraTransform[4];
 	protected PS_GameModeCoop m_GameModeCoop; // lazy-cached world singleton (stable for this component's life)
+	protected bool m_bVoNSnapshotRequestSent;
+	protected bool m_bVoNSnapshotAssemblyActive;
+	protected int m_iVoNSnapshotRevision;
+	protected int m_iVoNSnapshotChunkCount;
+	protected int m_iVoNSnapshotChunksReceived;
+	protected int m_iVoNSnapshotChannelCount;
+	protected int m_iVoNSnapshotMembershipCount;
+	protected int m_iVoNSnapshotParkedCount;
+	protected ref array<string> m_aVoNSnapshotChannels = {};
+	protected ref array<int> m_aVoNSnapshotPlayerIds = {};
+	protected ref array<string> m_aVoNSnapshotPlayerChannels = {};
+	protected ref array<int> m_aVoNSnapshotParkedIds = {};
 
 	// Diagnostic: one-shot flags to avoid spamming [PS_SpecDiag] logs on the 500ms watchdog tick.
 	protected bool m_bSpecDiagSuppressLogged;		// suppress widget detail logged once, cleared on teardown
@@ -454,6 +466,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		SetEventMask(GetOwner(), EntityEvent.FRAME);
 		SCR_PlayerController playerController = SCR_PlayerController.Cast(PlayerController.Cast(GetOwner()));
 		playerController.m_OnControlledEntityChanged.Insert(OnControlledEntityChanged);
+		TryRequestVoNSnapshot();
 
 		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		if (!gameModeCoop)
@@ -464,6 +477,154 @@ class PS_PlayableControllerComponent : ScriptComponent
 			return;
 
 		onPlayerRoleChanged.Insert(OnPlayerRoleChange);
+	}
+
+	static void TryRequestVoNSnapshotForLocalPlayer()
+	{
+		PlayerController localController = GetGame().GetPlayerController();
+		if (!localController)
+			return;
+
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(localController.FindComponent(PS_PlayableControllerComponent));
+		if (playableController)
+			playableController.TryRequestVoNSnapshot();
+	}
+
+	protected void TryRequestVoNSnapshot()
+	{
+		if (m_bVoNSnapshotRequestSent)
+			return;
+
+		PlayerController localController = GetGame().GetPlayerController();
+		if (!localController || localController != GetOwner())
+			return;
+
+		PS_VoNRoomsManager vonManager = PS_VoNRoomsManager.GetInstance();
+		if (!vonManager || !vonManager.IsReplicated())
+			return;
+
+		m_bVoNSnapshotRequestSent = true;
+		Rpc(RpcAsk_RequestVoNSnapshot);
+	}
+
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void RpcAsk_RequestVoNSnapshot()
+	{
+		if (!Replication.IsServer())
+			return;
+
+		PlayerController ownerController = PlayerController.Cast(GetOwner());
+		PS_VoNRoomsManager vonManager = PS_VoNRoomsManager.GetInstance();
+		if (!ownerController || !vonManager)
+			return;
+
+		array<string> channels = {};
+		array<int> playerIds = {};
+		array<string> playerChannels = {};
+		array<int> parkedIds = {};
+		int revision;
+		vonManager.CopyVoNSnapshot(channels, playerIds, playerChannels, parkedIds, revision);
+
+		int largestCount = channels.Count();
+		if (playerIds.Count() > largestCount)
+			largestCount = playerIds.Count();
+		if (parkedIds.Count() > largestCount)
+			largestCount = parkedIds.Count();
+		int chunkCount = (largestCount + 15) / 16;
+		Rpc(RpcDo_BeginVoNSnapshot, revision, chunkCount, channels.Count(), playerIds.Count(), parkedIds.Count());
+
+		for (int chunkIndex = 0; chunkIndex < chunkCount; chunkIndex++)
+		{
+			int first = chunkIndex * 16;
+			array<string> channelChunk = {};
+			array<int> playerIdChunk = {};
+			array<string> playerChannelChunk = {};
+			array<int> parkedIdChunk = {};
+			for (int i = first; i < first + 16 && i < channels.Count(); i++)
+				channelChunk.Insert(channels[i]);
+			for (int i = first; i < first + 16 && i < playerIds.Count(); i++)
+			{
+				playerIdChunk.Insert(playerIds[i]);
+				playerChannelChunk.Insert(playerChannels[i]);
+			}
+			for (int i = first; i < first + 16 && i < parkedIds.Count(); i++)
+				parkedIdChunk.Insert(parkedIds[i]);
+			Rpc(RpcDo_VoNSnapshotChunk, revision, chunkIndex, channelChunk, playerIdChunk, playerChannelChunk, parkedIdChunk);
+		}
+	}
+
+	[RplRpc(RplChannel.Reliable, RplRcver.Owner)]
+	void RpcDo_BeginVoNSnapshot(int revision, int chunkCount, int channelCount, int membershipCount, int parkedCount)
+	{
+		int largestCount = channelCount;
+		if (membershipCount > largestCount)
+			largestCount = membershipCount;
+		if (parkedCount > largestCount)
+			largestCount = parkedCount;
+		int expectedChunkCount = (largestCount + 15) / 16;
+		if (chunkCount != expectedChunkCount || channelCount < 0 || membershipCount < 0 || parkedCount < 0)
+		{
+			m_bVoNSnapshotAssemblyActive = false;
+			Print("[PS_VoN] Invalid owner snapshot header", LogLevel.ERROR);
+			return;
+		}
+
+		m_iVoNSnapshotRevision = revision;
+		m_iVoNSnapshotChunkCount = chunkCount;
+		m_iVoNSnapshotChunksReceived = 0;
+		m_iVoNSnapshotChannelCount = channelCount;
+		m_iVoNSnapshotMembershipCount = membershipCount;
+		m_iVoNSnapshotParkedCount = parkedCount;
+		m_aVoNSnapshotChannels.Clear();
+		m_aVoNSnapshotPlayerIds.Clear();
+		m_aVoNSnapshotPlayerChannels.Clear();
+		m_aVoNSnapshotParkedIds.Clear();
+		m_bVoNSnapshotAssemblyActive = true;
+
+		if (chunkCount == 0)
+			CommitVoNSnapshotIfComplete();
+	}
+
+	[RplRpc(RplChannel.Reliable, RplRcver.Owner)]
+	void RpcDo_VoNSnapshotChunk(int revision, int chunkIndex, array<string> channels, array<int> playerIds, array<string> playerChannels, array<int> parkedIds)
+	{
+		if (!m_bVoNSnapshotAssemblyActive || revision != m_iVoNSnapshotRevision || chunkIndex != m_iVoNSnapshotChunksReceived || chunkIndex >= m_iVoNSnapshotChunkCount)
+			return;
+		if (channels.Count() > 16 || playerIds.Count() > 16 || playerChannels.Count() > 16 || parkedIds.Count() > 16 || playerIds.Count() != playerChannels.Count())
+		{
+			m_bVoNSnapshotAssemblyActive = false;
+			Print("[PS_VoN] Invalid owner snapshot chunk", LogLevel.ERROR);
+			return;
+		}
+
+		foreach (string channelKey : channels)
+			m_aVoNSnapshotChannels.Insert(channelKey);
+		foreach (int playerId : playerIds)
+			m_aVoNSnapshotPlayerIds.Insert(playerId);
+		foreach (string channelKey : playerChannels)
+			m_aVoNSnapshotPlayerChannels.Insert(channelKey);
+		foreach (int playerId : parkedIds)
+			m_aVoNSnapshotParkedIds.Insert(playerId);
+		m_iVoNSnapshotChunksReceived++;
+		CommitVoNSnapshotIfComplete();
+	}
+
+	protected void CommitVoNSnapshotIfComplete()
+	{
+		if (!m_bVoNSnapshotAssemblyActive || m_iVoNSnapshotChunksReceived != m_iVoNSnapshotChunkCount)
+			return;
+		if (m_aVoNSnapshotChannels.Count() != m_iVoNSnapshotChannelCount || m_aVoNSnapshotPlayerIds.Count() != m_iVoNSnapshotMembershipCount || m_aVoNSnapshotPlayerChannels.Count() != m_iVoNSnapshotMembershipCount || m_aVoNSnapshotParkedIds.Count() != m_iVoNSnapshotParkedCount)
+		{
+			m_bVoNSnapshotAssemblyActive = false;
+			Print("[PS_VoN] Incomplete owner snapshot", LogLevel.ERROR);
+			return;
+		}
+
+		PS_VoNRoomsManager vonManager = PS_VoNRoomsManager.GetInstance();
+		if (!vonManager)
+			return;
+		vonManager.CommitVoNSnapshot(m_iVoNSnapshotRevision, m_aVoNSnapshotChannels, m_aVoNSnapshotPlayerIds, m_aVoNSnapshotPlayerChannels, m_aVoNSnapshotParkedIds);
+		m_bVoNSnapshotAssemblyActive = false;
 	}
 
 	void OnPlayerRoleChange(int playerId, EPlayerRole roleFlags)

@@ -257,6 +257,10 @@ class PS_PlayableManager : ScriptComponent
 
 		IEntity entity;
 		if (playableId == RplId.Invalid()) { // no slot: lobby / spectator
+			PS_VoNRoomsManager vonRoomsManager = PS_VoNRoomsManager.GetInstance();
+			if (vonRoomsManager)
+				vonRoomsManager.SetPlayerParked_S(playerId, false);
+
 			// Body-less: control NOTHING. Lobby players never had a body; a just-died player keeps
 			// their corpse as the controlled entity. The client spectator camera (PS_SpectatorManager)
 			// and the VoN proxy (PS_MenuVoN) handle view + voice. The engine has no working
@@ -286,6 +290,9 @@ class PS_PlayableManager : ScriptComponent
 		// control with no delay. The spectator transitions stage their streaming separately via the
 		// deferred spectator observer, so no preload handshake is needed on this slot-apply path.
 		playerController.SetInitialMainEntity(entity);
+		PS_VoNRoomsManager playableVonManager = PS_VoNRoomsManager.GetInstance();
+		if (playableVonManager)
+			playableVonManager.QueuePlayerParkedRefresh_S(playerId);
 
 		// Set new player faction
 		SCR_ChimeraCharacter playableCharacter = SCR_ChimeraCharacter.Cast(entity);
@@ -1137,6 +1144,10 @@ class PS_PlayableManager : ScriptComponent
 			if (slot && slot.GetFactionKey() != "" && GetPlayerFactionKey(playerId) != slot.GetFactionKey())
 				SetPlayerFactionKey(playerId, slot.GetFactionKey());
 		}
+
+		PS_VoNRoomsManager vonRoomsManager = PS_VoNRoomsManager.GetInstance();
+		if (vonRoomsManager)
+			vonRoomsManager.QueuePlayerParkedRefresh_S(playerId);
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	protected void RPC_SetPlayerPlayable(int playerId, RplId playableId)

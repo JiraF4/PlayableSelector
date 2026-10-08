@@ -9,6 +9,16 @@ class PS_VoNRoomsManagerClass: ScriptComponentClass
 // struct: [FactionKey + "|"] + roomName
 typedef string VoNRoomKey;
 
+class PS_VoNDelta
+{
+	int m_iRevision;
+	int m_iType;
+	int m_iPlayerId;
+	string m_sChannelKey;
+	string m_sOldChannelKey;
+	bool m_bParked;
+}
+
 // Manage VoN "channels" (formerly position-based "rooms").
 //
 // Echo-style channel model: a channel is just a string key (which is also the radio encryption key
@@ -23,10 +33,21 @@ typedef string VoNRoomKey;
 
 class PS_VoNRoomsManager : ScriptComponent
 {
+	protected static const int VON_SCHEMA_VERSION = 1;
+	protected static const int VON_DELTA_CREATE_CHANNEL = 1;
+	protected static const int VON_DELTA_SET_CHANNEL = 2;
+	protected static const int VON_DELTA_REMOVE_PLAYER = 3;
+	protected static const int VON_DELTA_SET_PARKED = 4;
+
 	// Replicated channel state
 	ref array<string> m_aChannels = {};                                    // channel keys that exist (lazy)
 	protected ref map<string, bool> m_mChannelsSet = new map<string, bool>(); // fast existence lookup
 	ref map<int, string> m_mPlayersChannel = new map<int, string>();       // playerId -> channelKey
+	protected ref map<int, bool> m_mPlayerParked = new map<int, bool>();   // playerId -> menu proxy is parked
+	protected int m_iVoNRevision;
+	protected bool m_bVoNSnapshotCommitted;
+	protected bool m_bVoNSnapshotCommitting;
+	protected ref array<ref PS_VoNDelta> m_aBufferedVoNDeltas = {};
 
 	// Move speech bois to space (kept only as the parked-body anchor for SetVoNPosition compatibility)
 	static vector roomInitialPosition = "-1 1000000 1";
@@ -34,6 +55,9 @@ class PS_VoNRoomsManager : ScriptComponent
 	// Invokers
 	// (playerId, channelKey, oldChannelKey)
 	ref ScriptInvoker m_eOnRoomChanged = new ScriptInvoker();
+	// (playerId, parked)
+	ref ScriptInvoker m_eOnPlayerParkedChanged = new ScriptInvoker();
+	ref ScriptInvoker m_eOnVoNSnapshotReady = new ScriptInvoker();
 
 	// ---- Body-less VoN proxy (per-player tiny replicated entity carrying the radio + VoN) ----
 	[Attribute("", UIWidgets.ResourceNamePicker, "Per-player VoN proxy prefab (PS_VoNProxyComponent + SCR_VoNComponent + BaseRadioComponent, RplComponent streaming disabled)", "et")]
@@ -89,7 +113,10 @@ class PS_VoNRoomsManager : ScriptComponent
 		// The "" (global lobby) channel always exists
 		RegisterChannelLocal("");
 		if (Replication.IsServer())
+		{
 			m_bRplLoaded = true;
+			m_bVoNSnapshotCommitted = true;
+		}
 		// Start the per-machine VoN audit (no-op unless s_bVoNDebug). Runs on the server AND each client so we can
 		// compare, for every player, the INTENDED channel (m_mPlayersChannel = what the widget/UI shows) against
 		// the REAL radio tuning (encryption key + frequency actually on the proxy transceiver). See VoNAuditTick.
@@ -128,7 +155,7 @@ class PS_VoNRoomsManager : ScriptComponent
 	{
 		// Controls a living character / not a menu speaker -> isolated far spot
 		// Safe: living/parked proxy radios are muted by ApplyRadioKeyNow (PS_VoNRoomsManager.c:619-627)
-		if (!SCR_VoNComponent.PS_IsMenuSpeaker(playerId))
+		if (IsPlayerParked(playerId))
 			return Vector(PS_VONFIX_ISOLATED_XZ, PS_VONFIX_SKY_ALTITUDE, PS_VONFIX_ISOLATED_XZ);
 
 		string channelKey;
@@ -245,52 +272,267 @@ class PS_VoNRoomsManager : ScriptComponent
 		// applied on every machine in RPC_SetPlayerChannel -> ApplyRadioKey. No body radios.
 
 		// Finally move player to channel
-		RPC_SetPlayerChannel(playerId, channelKey);
-		Rpc(RPC_SetPlayerChannel, playerId, channelKey);
+		int revision = AdvanceVoNRevision_S();
+		RPC_SetPlayerChannel(revision, playerId, channelKey);
+		Rpc(RPC_SetPlayerChannel, revision, playerId, channelKey);
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	void RPC_SetPlayerChannel(int playerId, string channelKey)
+	void RPC_SetPlayerChannel(int revision, int playerId, string channelKey)
 	{
 		PS_NetStat.Hit("RPC_SetPlayerChannel");
-		string oldChannelKey = GetPlayerChannel(playerId);
-
-		RegisterChannelLocal(channelKey); // ensure the channel exists on every client
-		m_mPlayersChannel[playerId] = channelKey;
-		// FIX (DESYNC): record when this player's channel changed so VoNAuditTick can suppress
-		// false-positive DESYNC logs during the 1-frame deferred ApplyRadioKey window.
-		m_mChannelChangeTime[playerId] = GetGame().GetWorld().GetWorldTime();
-
-		// TEMP DIAGNOSTIC (cross-group voice leak): log the channel + this player's group id & callsign, so the
-		// client log shows whether two DIFFERENT groups (different groupId) resolve to the SAME channel key.
-		// Gated behind s_bVoNDebug (default OFF): it runs on EVERY machine on EVERY channel change (a burst during
-		// the briefing mass-assignment), so the lookups + PrintFormat cost nothing in production. Flip s_bVoNDebug
-		// to re-enable for live cross-group/faction verification.
-		if (s_bVoNDebug)
-		{
-			PS_PlayableManager pmDbg = PS_PlayableManager.GetInstance();
-			if (pmDbg)
-			{
-				RplId playableDbg = pmDbg.GetPlayableByPlayer(playerId);
-				SCR_AIGroup grpDbg = pmDbg.GetPlayerGroupByPlayable(playableDbg);
-				int gidDbg = -1;
-				if (grpDbg)
-					gidDbg = grpDbg.GetGroupID();
-				PrintFormat("[PS_VoNDBG] player=%1 channel='%2' groupId=%3 callsign=%4", playerId, channelKey, gidDbg, pmDbg.GetGroupCallsignByPlayable(playableDbg));
-			}
-		}
-
-		ApplyRadioKey(playerId); // re-tune this player's VoN proxy radio on this machine
-
-		SCR_VoNComponent.InvalidateEditorLocCache(-1);
-		m_eOnRoomChanged.Invoke(playerId, channelKey, oldChannelKey);
+		HandleVoNDelta(revision, VON_DELTA_SET_CHANNEL, playerId, channelKey, "", false);
 	}
 
 	// Re-apply a player's current channel (e.g. after they respawn into a new body)
 	void RestoreRoom(int playerId)
 	{
 		string channelKey = GetPlayerChannel(playerId);
-		RPC_SetPlayerChannel(playerId, channelKey);
-		Rpc(RPC_SetPlayerChannel, playerId, channelKey);
+		int revision = AdvanceVoNRevision_S();
+		RPC_SetPlayerChannel(revision, playerId, channelKey);
+		Rpc(RPC_SetPlayerChannel, revision, playerId, channelKey);
+	}
+
+	void InitializePlayer_S(int playerId)
+	{
+		if (!Replication.IsServer() || m_mPlayerParked.Contains(playerId))
+			return;
+
+		m_mPlayerParked.Set(playerId, false);
+	}
+
+	bool IsPlayerParked(int playerId)
+	{
+		bool parked;
+		return m_mPlayerParked.Find(playerId, parked) && parked;
+	}
+
+	void SetPlayerParked_S(int playerId, bool parked)
+	{
+		if (!Replication.IsServer())
+			return;
+
+		bool wasParked = IsPlayerParked(playerId);
+		if (wasParked == parked)
+		{
+			if (!m_mPlayerParked.Contains(playerId))
+				m_mPlayerParked.Set(playerId, false);
+			return;
+		}
+
+		int revision = AdvanceVoNRevision_S();
+		RpcDo_SetPlayerParked(revision, playerId, parked);
+		Rpc(RpcDo_SetPlayerParked, revision, playerId, parked);
+	}
+
+	void QueuePlayerParkedRefresh_S(int playerId)
+	{
+		if (Replication.IsServer())
+			GetGame().GetCallqueue().CallLater(RefreshPlayerParked_S, 0, false, playerId);
+	}
+
+	protected void RefreshPlayerParked_S(int playerId)
+	{
+		if (!Replication.IsServer())
+			return;
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		if (!playerManager || !playerManager.IsPlayerConnected(playerId))
+			return;
+
+		SetPlayerParked_S(playerId, !SCR_VoNComponent.PS_IsMenuSpeaker(playerId));
+	}
+
+	protected int AdvanceVoNRevision_S()
+	{
+		if (!Replication.IsServer())
+			return m_iVoNRevision;
+
+		m_iVoNRevision++;
+		return m_iVoNRevision;
+	}
+
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void RpcDo_SetPlayerParked(int revision, int playerId, bool parked)
+	{
+		HandleVoNDelta(revision, VON_DELTA_SET_PARKED, playerId, "", "", parked);
+	}
+
+	protected void HandleVoNDelta(int revision, int type, int playerId, string channelKey, string oldChannelKey, bool parked)
+	{
+		if (!Replication.IsServer() && !m_bVoNSnapshotCommitted)
+		{
+			PS_VoNDelta delta = new PS_VoNDelta();
+			delta.m_iRevision = revision;
+			delta.m_iType = type;
+			delta.m_iPlayerId = playerId;
+			delta.m_sChannelKey = channelKey;
+			delta.m_sOldChannelKey = oldChannelKey;
+			delta.m_bParked = parked;
+			m_aBufferedVoNDeltas.Insert(delta);
+			return;
+		}
+
+		if (!Replication.IsServer() && revision <= m_iVoNRevision)
+			return;
+
+		if (revision > m_iVoNRevision)
+			m_iVoNRevision = revision;
+
+		ApplyVoNDelta(type, playerId, channelKey, oldChannelKey, parked);
+	}
+
+	protected void ApplyVoNDelta(int type, int playerId, string channelKey, string oldChannelKey, bool parked)
+	{
+		switch (type)
+		{
+			case VON_DELTA_CREATE_CHANNEL:
+				RegisterChannelLocal(channelKey);
+				break;
+			case VON_DELTA_SET_CHANNEL:
+			{
+				string previousChannel = GetPlayerChannel(playerId);
+				RegisterChannelLocal(channelKey);
+				m_mPlayersChannel.Set(playerId, channelKey);
+				m_mChannelChangeTime.Set(playerId, GetGame().GetWorld().GetWorldTime());
+
+				if (s_bVoNDebug)
+				{
+					PS_PlayableManager pmDbg = PS_PlayableManager.GetInstance();
+					if (pmDbg)
+					{
+						RplId playableDbg = pmDbg.GetPlayableByPlayer(playerId);
+						SCR_AIGroup grpDbg = pmDbg.GetPlayerGroupByPlayable(playableDbg);
+						int gidDbg = -1;
+						if (grpDbg)
+							gidDbg = grpDbg.GetGroupID();
+						PrintFormat("[PS_VoNDBG] player=%1 channel='%2' groupId=%3 callsign=%4", playerId, channelKey, gidDbg, pmDbg.GetGroupCallsignByPlayable(playableDbg));
+					}
+				}
+
+				ApplyRadioKey(playerId);
+				SCR_VoNComponent.InvalidateEditorLocCache(playerId);
+				if (!m_bVoNSnapshotCommitting)
+					m_eOnRoomChanged.Invoke(playerId, channelKey, previousChannel);
+				break;
+			}
+			case VON_DELTA_REMOVE_PLAYER:
+			{
+				bool hadChannel = m_mPlayersChannel.Contains(playerId);
+				bool hadParked = m_mPlayerParked.Contains(playerId);
+				string previousChannel = GetPlayerChannel(playerId);
+				m_mPlayersChannel.Remove(playerId);
+				m_mPlayerParked.Remove(playerId);
+				m_mChannelChangeTime.Remove(playerId);
+				SCR_VoNComponent.InvalidateEditorLocCache(playerId);
+				if (hadChannel && !m_bVoNSnapshotCommitting)
+					m_eOnRoomChanged.Invoke(playerId, "", previousChannel);
+				if (hadParked && !m_bVoNSnapshotCommitting)
+					m_eOnPlayerParkedChanged.Invoke(playerId, false);
+				break;
+			}
+			case VON_DELTA_SET_PARKED:
+			{
+				bool wasParked = IsPlayerParked(playerId);
+				m_mPlayerParked.Set(playerId, parked);
+				SCR_VoNComponent.InvalidateEditorLocCache(playerId);
+				ApplyRadioKey(playerId);
+				PlayerController localController = GetGame().GetPlayerController();
+				if (localController && localController.GetPlayerId() == playerId)
+					PS_MenuVoN.Refresh();
+				if (wasParked != parked && !m_bVoNSnapshotCommitting)
+					m_eOnPlayerParkedChanged.Invoke(playerId, parked);
+				break;
+			}
+		}
+	}
+
+	void CopyVoNSnapshot(out notnull array<string> channels, out notnull array<int> playerIds, out notnull array<string> playerChannels, out notnull array<int> parkedIds, out int revision)
+	{
+		foreach (string channelKey : m_aChannels)
+			channels.Insert(channelKey);
+		foreach (int playerId, string channelKey : m_mPlayersChannel)
+		{
+			playerIds.Insert(playerId);
+			playerChannels.Insert(channelKey);
+		}
+		for (int i = 1; i < playerIds.Count(); i++)
+		{
+			int currentId = playerIds[i];
+			string currentChannel = playerChannels[i];
+			int j = i - 1;
+			while (j >= 0 && playerIds[j] > currentId)
+			{
+				playerIds[j + 1] = playerIds[j];
+				playerChannels[j + 1] = playerChannels[j];
+				j--;
+			}
+			playerIds[j + 1] = currentId;
+			playerChannels[j + 1] = currentChannel;
+		}
+		foreach (int parkedId, bool parked : m_mPlayerParked)
+		{
+			if (parked)
+				parkedIds.Insert(parkedId);
+		}
+		for (int i = 1; i < parkedIds.Count(); i++)
+		{
+			int currentId = parkedIds[i];
+			int j = i - 1;
+			while (j >= 0 && parkedIds[j] > currentId)
+			{
+				parkedIds[j + 1] = parkedIds[j];
+				j--;
+			}
+			parkedIds[j + 1] = currentId;
+		}
+		revision = m_iVoNRevision;
+	}
+
+	void CommitVoNSnapshot(int revision, notnull array<string> channels, notnull array<int> playerIds, notnull array<string> playerChannels, notnull array<int> parkedIds)
+	{
+		if (Replication.IsServer() || m_bVoNSnapshotCommitted || playerIds.Count() != playerChannels.Count())
+			return;
+
+		m_mChannelsSet.Clear();
+		m_aChannels.Clear();
+		m_mPlayersChannel.Clear();
+		m_mPlayerParked.Clear();
+		foreach (string channelKey : channels)
+			RegisterChannelLocal(channelKey);
+		for (int i = 0; i < playerIds.Count(); i++)
+			m_mPlayersChannel.Set(playerIds[i], playerChannels[i]);
+		foreach (int parkedId : parkedIds)
+			m_mPlayerParked.Set(parkedId, true);
+
+		m_iVoNRevision = revision;
+		m_bVoNSnapshotCommitting = true;
+		for (int i = 1; i < m_aBufferedVoNDeltas.Count(); i++)
+		{
+			PS_VoNDelta current = m_aBufferedVoNDeltas[i];
+			int j = i - 1;
+			while (j >= 0 && m_aBufferedVoNDeltas[j].m_iRevision > current.m_iRevision)
+			{
+				m_aBufferedVoNDeltas[j + 1] = m_aBufferedVoNDeltas[j];
+				j--;
+			}
+			m_aBufferedVoNDeltas[j + 1] = current;
+		}
+		foreach (PS_VoNDelta delta : m_aBufferedVoNDeltas)
+		{
+			if (delta.m_iRevision <= m_iVoNRevision)
+				continue;
+			m_iVoNRevision = delta.m_iRevision;
+			ApplyVoNDelta(delta.m_iType, delta.m_iPlayerId, delta.m_sChannelKey, delta.m_sOldChannelKey, delta.m_bParked);
+		}
+		m_aBufferedVoNDeltas.Clear();
+		m_bVoNSnapshotCommitted = true;
+		m_bVoNSnapshotCommitting = false;
+
+		SCR_VoNComponent.InvalidateEditorLocCache(-1);
+		foreach (int playerId : playerIds)
+			ApplyRadioKey(playerId);
+		foreach (int parkedId : parkedIds)
+			ApplyRadioKey(parkedId);
+		m_eOnVoNSnapshotReady.Invoke();
 	}
 
 	// ============================ Body-less VoN proxy ============================
@@ -685,7 +927,7 @@ class PS_VoNRoomsManager : ScriptComponent
 		// back the prefab default "PSVoN" - so isolation can NOT rely on the key. Parking previously left every
 		// off-net proxy on the SAME min frequency with a unique-but-inert key, so they all collapsed onto one
 		// frequency and could hear each other. A muted transceiver is silent regardless of key/freq.
-		if (!SCR_VoNComponent.PS_IsMenuSpeaker(playerId) || IsLocalEditorOpenFor(playerId))
+		if (IsPlayerParked(playerId) || IsLocalEditorOpenFor(playerId))
 		{
 			tsv.SetMuteState(true);
 			radio.SetEncryptionKey(EncodeParkedKey(playerId));
@@ -758,27 +1000,27 @@ class PS_VoNRoomsManager : ScriptComponent
 	}
 
 	// ------------------------- Player channel cleanup -------------------------
-	// Remove a player from the replicated channel map on ALL machines and fire the
-	// room-changed event so the voice-chat UI drops their widget. Called from RemoveProxy_S
-	// (disconnect) and the client-side stale-entry prune (VoNAuditTick).
+	// Remove a player's channel and parked state on all machines during disconnect.
 	void RemovePlayerFromChannel(int playerId)
 	{
-		if (!m_mPlayersChannel.Contains(playerId))
+		if (!Replication.IsServer())
 			return;
-		string oldChannelKey = m_mPlayersChannel[playerId];
-		RPC_RemovePlayerFromChannel(playerId, oldChannelKey);
-		Rpc(RPC_RemovePlayerFromChannel, playerId, oldChannelKey);
+
+		bool hadChannel = m_mPlayersChannel.Contains(playerId);
+		bool hadParked = m_mPlayerParked.Contains(playerId);
+		if (!hadChannel && !hadParked)
+			return;
+
+		string oldChannelKey = GetPlayerChannel(playerId);
+		int revision = AdvanceVoNRevision_S();
+		RPC_RemovePlayerFromChannel(revision, playerId, oldChannelKey);
+		Rpc(RPC_RemovePlayerFromChannel, revision, playerId, oldChannelKey);
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	void RPC_RemovePlayerFromChannel(int playerId, string oldChannelKey)
+	void RPC_RemovePlayerFromChannel(int revision, int playerId, string oldChannelKey)
 	{
 		PS_NetStat.Hit("RPC_RemovePlayerFromChannel");
-		if (!m_mPlayersChannel.Contains(playerId))
-			return;
-		m_mPlayersChannel.Remove(playerId);
-		m_mChannelChangeTime.Remove(playerId);
-		SCR_VoNComponent.InvalidateEditorLocCache(-1);
-		m_eOnRoomChanged.Invoke(playerId, "", oldChannelKey);
+		HandleVoNDelta(revision, VON_DELTA_REMOVE_PLAYER, playerId, "", oldChannelKey, false);
 	}
 
 	// ------------------------- Channel creation -------------------------
@@ -796,14 +1038,15 @@ class PS_VoNRoomsManager : ScriptComponent
 			return;
 		if (m_mChannelsSet.Contains(channelKey))
 			return;
-		RPC_CreateChannel(channelKey);
-		Rpc(RPC_CreateChannel, channelKey);
+		int revision = AdvanceVoNRevision_S();
+		RPC_CreateChannel(revision, channelKey);
+		Rpc(RPC_CreateChannel, revision, channelKey);
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	void RPC_CreateChannel(string channelKey)
+	void RPC_CreateChannel(int revision, string channelKey)
 	{
 		PS_NetStat.Hit("RPC_CreateChannel");
-		RegisterChannelLocal(channelKey);
+		HandleVoNDelta(revision, VON_DELTA_CREATE_CHANNEL, 0, channelKey, "", false);
 	}
 	protected void RegisterChannelLocal(string channelKey)
 	{
@@ -835,8 +1078,19 @@ class PS_VoNRoomsManager : ScriptComponent
 	{
 		foreach (int playerId, string playerChannel : m_mPlayersChannel)
 		{
-			if (playerChannel == channelKey)
+			if (playerChannel == channelKey && !IsPlayerParked(playerId))
 				players.Insert(playerId);
+		}
+		for (int i = 0; i < players.Count(); i++)
+		{
+			for (int j = i + 1; j < players.Count(); j++)
+			{
+				if (players[j] >= players[i])
+					continue;
+				int currentId = players[i];
+				players[i] = players[j];
+				players[j] = currentId;
+			}
 		}
 	}
 
@@ -877,48 +1131,26 @@ class PS_VoNRoomsManager : ScriptComponent
 	}
 
 	// ------------------------- JIP Replication -------------------------
-	// Only the channel list and player->channel map (no positions, no per-player auto rooms)
+	// The manager proxy carries only a schema marker; dynamic state uses the owner snapshot RPC.
 	override bool RplSave(ScriptBitWriter writer)
 	{
-		int channelsCount = m_aChannels.Count();
-		writer.WriteInt(channelsCount);
-		for (int i = 0; i < channelsCount; i++)
-			writer.WriteString(m_aChannels[i]);
-
-		int playersChannelCount = m_mPlayersChannel.Count();
-		writer.WriteInt(playersChannelCount);
-		for (int i = 0; i < playersChannelCount; i++)
-		{
-			writer.WriteInt(m_mPlayersChannel.GetKey(i));
-			writer.WriteString(m_mPlayersChannel.GetElement(i));
-		}
+		writer.WriteInt(VON_SCHEMA_VERSION);
 
 		return true;
 	}
 
 	override bool RplLoad(ScriptBitReader reader)
 	{
-		int channelsCount;
-		reader.ReadInt(channelsCount);
-		for (int i = 0; i < channelsCount; i++)
+		int schemaVersion;
+		reader.ReadInt(schemaVersion);
+		if (schemaVersion != VON_SCHEMA_VERSION)
 		{
-			string channelKey;
-			reader.ReadString(channelKey);
-			RegisterChannelLocal(channelKey);
-		}
-
-		int playersChannelCount;
-		reader.ReadInt(playersChannelCount);
-		for (int i = 0; i < playersChannelCount; i++)
-		{
-			int key;
-			string value;
-			reader.ReadInt(key);
-			reader.ReadString(value);
-			m_mPlayersChannel.Insert(key, value);
+			Print(string.Format("[PS_VoN] Unsupported replicated VoN schema %1", schemaVersion), LogLevel.ERROR);
+			return false;
 		}
 
 		m_bRplLoaded = true;
+		PS_PlayableControllerComponent.TryRequestVoNSnapshotForLocalPlayer();
 
 		return true;
 	}
