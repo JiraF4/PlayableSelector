@@ -134,7 +134,7 @@ class PS_VoNRoomsManager : ScriptComponent
 	}
 
 	// [PS_VoNDBG] per-channel-change diagnostic toggle. Default false for production.
-	static bool s_bVoNDebug = false;
+	static bool s_bVoNDebug = true;
 
 	protected static const float PS_VONFIX_SKY_ALTITUDE    = 10000;
 	protected static const float PS_VONFIX_CHANNEL_BASE    = 1000;
