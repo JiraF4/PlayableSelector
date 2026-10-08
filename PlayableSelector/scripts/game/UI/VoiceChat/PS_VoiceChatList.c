@@ -174,7 +174,8 @@ class PS_VoiceChatList : SCR_ScriptedWidgetComponent
 			CreateRoomIfNeed(channelKey);
 		else
 		{
-			m_wRooms[channelKey].AddPlayer(playerId);
+			if (!m_gVoNRoomsManager.IsPlayerParked(playerId))
+				m_wRooms[channelKey].AddPlayer(playerId);
 		}
 
 		UpdateInfo();

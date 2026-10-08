@@ -691,6 +691,12 @@ class PS_VoNRoomsManager : ScriptComponent
 	protected bool m_bRadioApplyScheduled = false;
 	void ApplyRadioKey(int playerId)
 	{
+		if (!Replication.IsServer() && !m_bVoNSnapshotCommitted)
+		{
+			ApplyRadioKeyNow(playerId);
+			return;
+		}
+
 		if (!m_aPendingRadioApplies.Contains(playerId))
 			m_aPendingRadioApplies.Insert(playerId);
 		// Schedule the coalesced apply EXACTLY ONCE. The old code did Remove()+CallLater() on every NEW playerId,
@@ -927,7 +933,7 @@ class PS_VoNRoomsManager : ScriptComponent
 		// back the prefab default "PSVoN" - so isolation can NOT rely on the key. Parking previously left every
 		// off-net proxy on the SAME min frequency with a unique-but-inert key, so they all collapsed onto one
 		// frequency and could hear each other. A muted transceiver is silent regardless of key/freq.
-		if (IsPlayerParked(playerId) || IsLocalEditorOpenFor(playerId))
+		if ((!Replication.IsServer() && !m_bVoNSnapshotCommitted) || IsPlayerParked(playerId) || IsLocalEditorOpenFor(playerId))
 		{
 			tsv.SetMuteState(true);
 			radio.SetEncryptionKey(EncodeParkedKey(playerId));
