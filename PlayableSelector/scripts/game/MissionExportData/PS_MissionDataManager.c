@@ -701,6 +701,13 @@ class PS_MissionDataManager : ScriptComponent
 		if (m_Data.MissionName == "")
 			DefineScenarioType();
 		
+		if (m_Data.Token == "")
+		{
+			StatSender_Config config = new StatSender_Config();
+			if (config.LoadFromFile("$profile:StatSender_Config.json"))
+				m_Data.Token = config.Token;
+		}
+		
 		string time = System.GetUnixTime().ToString();
 		m_Data.SessionName = string.Format("PS_MissionData_%1.json", time);
 		// SaveToFile fails silently on a fresh profile where the folder was never created.
