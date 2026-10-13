@@ -69,8 +69,13 @@ class PS_PolyZoneObjectiveTriggerCapture : PS_PolyZoneObjectiveTrigger
 	{
 		if (!Replication.IsServer())
 			return;
+
+		PS_FreezeManager freezeManager = PS_FreezeManager.GetInstance();
+		if (freezeManager && freezeManager.IsHardFreezeActive())
+			return;
 		
 		// Throttled send-on-change dispatch (BUG-73); the capture math below stays per-frame.
+
 		m_fReplicationAccum += timeSlice;
 		if (m_fReplicationAccum >= REPLICATION_INTERVAL)
 		{

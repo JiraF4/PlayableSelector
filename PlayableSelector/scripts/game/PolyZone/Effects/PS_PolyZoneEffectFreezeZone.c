@@ -15,16 +15,22 @@ class PS_PolyZoneEffectFreezeZone : PS_PolyZoneEffect
 			handler.RemoveByEffect(this);
 			return;	
 		}
+
+		PS_FreezeManager freezeManager = PS_FreezeManager.GetInstance();
+		if (freezeManager && freezeManager.IsHardFreezeActive())
+			return;
 		
 		m_fKillTime -= timeSlice;
 		if (m_fKillTime <= 0 && !m_bTriggerd)
 		{
+			m_bTriggerd = true;
 			DamageManagerComponent damageManager = DamageManagerComponent.Cast(ent.FindComponent(DamageManagerComponent));
 			if (!damageManager || damageManager.GetState() == EDamageState.DESTROYED)
 				return;
 			damageManager.SetHealthScaled(0);
 		}
 	}
+
 	
 	override void OnActivate(PS_PolyZoneEffectHandler handler, IEntity ent)
 	{

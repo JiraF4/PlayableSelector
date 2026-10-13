@@ -16,8 +16,17 @@ class PS_PolyZoneObjectivePresence : PS_PolyZoneObjectiveTrigger
 	{
 		if (m_bAfterGame)
 			return;
+
+		PS_FreezeManager freezeManager = PS_FreezeManager.GetInstance();
+		if (freezeManager && freezeManager.IsHardFreezeActive())
+		{
+			m_iCount = 0;
+			return;
+		}
+
 		if (m_iCount >= m_iNeedCount && m_bOneTime)
 			EnablePeriodicQueries(false);
+
 		foreach (PS_Objective objective : m_aObjectives)
 		{
 			if (!m_bOneTime || !objective.GetCompleted())

@@ -5,7 +5,33 @@ modded class SCR_MapMarkerSyncComponent
 		super.OnPostInit(owner);
 		m_iPlacedMarkerLimit = 100;
 	}
+
+	protected bool PS_CanEditSharedMarkers()
+	{
+		PS_FreezeManager freezeManager = PS_FreezeManager.GetInstance();
+		if (freezeManager && freezeManager.IsHardFreezeActive())
+			return false;
+
+		return true;
+	}
+
+	override protected void RPC_AskAddStaticMarker(SCR_MapMarkerBase markerData)
+	{
+		if (!PS_CanEditSharedMarkers())
+			return;
+
+		super.RPC_AskAddStaticMarker(markerData);
+	}
+
+	override protected void RPC_AskRemoveStaticMarker(int markerID)
+	{
+		if (!PS_CanEditSharedMarkers())
+			return;
+
+		super.RPC_AskRemoveStaticMarker(markerID);
+	}
 }
+
 
 class PS_MapMarkersBaseJson : JsonApiStruct
 {

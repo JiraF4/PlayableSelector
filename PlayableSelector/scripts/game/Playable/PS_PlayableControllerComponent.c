@@ -190,28 +190,78 @@ class PS_PlayableControllerComponent : ScriptComponent
 		gameMode.FactionLockSwitch();
 	}
 
-	// ------ FreezeTimer ------
+	// ------ FreezeTimer & HardFreeze ------
+	protected bool IsAdminCaller()
+	{
+		PlayerController pc = PlayerController.Cast(GetOwner());
+		if (!pc)
+			return false;
+		int playerId = pc.GetPlayerId();
+		if (playerId <= 0)
+			return false;
+		return PS_PlayersHelper.IsAdminOrServer(playerId);
+	}
+
+	void HardFreeze(int seconds)
+	{
+		Rpc(RpcAsk_HardFreeze, seconds);
+	}
+
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void RpcAsk_HardFreeze(int seconds)
+	{
+		if (!IsAdminCaller())
+			return;
+
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if (!gameMode || gameMode.GetState() != SCR_EGameModeState.GAME)
+			return;
+
+		seconds = Math.Clamp(seconds, 0, 86400);
+
+		PS_FreezeManager freezeManager = PS_FreezeManager.GetInstance();
+		if (freezeManager)
+			freezeManager.StartHardFreeze_S(seconds);
+	}
+
 	void FreezeTimerAdvance(int time)
 	{
 		Rpc(RPC_FreezeTimerAdvance, time);
 	}
+
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void RPC_FreezeTimerAdvance(int time)
 	{
+		if (!IsAdminCaller())
+			return;
+
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		if (gameMode)
-			gameMode.FreezeTimerAdvance(time);
+		if (!gameMode || gameMode.GetState() != SCR_EGameModeState.GAME || gameMode.IsFreezeTimeEnd())
+			return;
+
+		time = Math.Clamp(time, -86400, 86400);
+		if (time == 0)
+			return;
+
+		gameMode.FreezeTimerAdvance(time);
 	}
+
 	void FreezeTimerEnd()
 	{
 		Rpc(RPC_FreezeTimerEnd);
 	}
+
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void RPC_FreezeTimerEnd()
 	{
+		if (!IsAdminCaller())
+			return;
+
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		if (gameMode)
-			gameMode.FreezeTimerEnd();
+		if (!gameMode || gameMode.GetState() != SCR_EGameModeState.GAME || gameMode.IsFreezeTimeEnd())
+			return;
+
+		gameMode.FreezeTimerEnd();
 	}
 	
 	// ------ SpawnPrefab ------
@@ -724,15 +774,8 @@ class PS_PlayableControllerComponent : ScriptComponent
 		if (!actionManager)
 			return;
 		
-		actionManager.SetActionValue("CharacterFire", 0);
-		actionManager.SetActionValue("CharacterThrowGrenade", 0);
-		actionManager.SetActionValue("CharacterMelee", 0);
-		actionManager.SetActionValue("CharacterFireStatic", 0);
-		actionManager.SetActionValue("TurretFire", 0);
-		actionManager.SetActionValue("VehicleFire", 0);
-		actionManager.SetActionValue("VehicleHorn", 0);
-		
 		IEntity character = playerController.GetControlledEntity();
+
 		if (character)
 		{
 			Vehicle vehicle = Vehicle.Cast(character.GetRootParent());

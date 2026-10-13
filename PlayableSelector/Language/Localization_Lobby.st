@@ -791,6 +791,38 @@ StringTable {
    Author "zazul"
    LastChanged "zazul"
   }
+  CustomStringTableItem "{66A31A3A9D99C15A}" {
+   Id "PS-Freeze_Pause"
+   Target_en_us "Pause"
+   Target_ru_ru "Пауза"
+   Modified 1760400000
+   Author "ReforgerLobby"
+   LastChanged "ReforgerLobby"
+  }
+  CustomStringTableItem "{66A31A3A9D99C15B}" {
+   Id "PS-HardFreeze_Title"
+   Target_en_us "Game Paused"
+   Target_ru_ru "Пауза"
+   Modified 1760400000
+   Author "ReforgerLobby"
+   LastChanged "ReforgerLobby"
+  }
+  CustomStringTableItem "{66A31A3A9D99C15C}" {
+   Id "PS-HardFreeze_Help"
+   Target_en_us "/hf <seconds> (0 to resume game)"
+   Target_ru_ru "/hf <секунды> (0 для снятия паузы)"
+   Modified 1760400000
+   Author "ReforgerLobby"
+   LastChanged "ReforgerLobby"
+  }
+  CustomStringTableItem "{66A31A3A9D99C15D}" {
+   Id "PS-HardFreeze_InvalidArg"
+   Target_en_us "Invalid argument. Use: /hf <0..86400>"
+   Target_ru_ru "Неверный аргумент. Используйте: /hf <0..86400>"
+   Modified 1760400000
+   Author "ReforgerLobby"
+   LastChanged "ReforgerLobby"
+  }
   CustomStringTableItem "{5EB30CD4368261A7}" {
    Id "PS-GameMaster_PlayableGroup"
    Target_en_us "Playable Unit"
