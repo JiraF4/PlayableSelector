@@ -8,9 +8,6 @@ class PS_MapFocusHelper
 
 	static void Focus(string targetSpec, float zoomOverride = 0.0)
 	{
-		if (!GetGame() || !GetGame().GetMenuManager() || !PS_BriefingMapMenu.Cast(GetGame().GetMenuManager().GetTopMenu()))
-			return;
-
 		SCR_MapEntity mapEntity = SCR_MapEntity.GetMapInstance();
 		if (!mapEntity || !mapEntity.IsOpen())
 			return;

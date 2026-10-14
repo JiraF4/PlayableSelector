@@ -1,38 +1,34 @@
 class PS_RichTextRun
 {
 	string m_sText;
-	string m_sTarget;
-	bool m_bBold;
-	bool m_bHeader;
 	bool m_bBreak;
 	bool m_bRule;
 	bool m_bGap;
-	ref Color m_Color;
+	string m_sFocusName;
+	bool m_bBold;
+	int m_iColor;
+	int m_iFontSize;
 }
 
 class PS_RichTextWord
 {
-	string m_sText;
-	ref PS_RichTextRun m_Run;
-	int m_iLeadingSpaces;
+	Widget m_wText;
+	Widget m_wButton;
+	Widget m_wUnderline;
 	bool m_bBreak;
 	bool m_bRule;
 	bool m_bGap;
-	TextWidget m_wText;
-	ButtonWidget m_wButton;
-	ImageWidget m_wUnderline;
+	bool m_bLinkCont;
+	int m_iLeadingSpaces;
 }
 
-/**
- * @brief Invokes local map focus from a briefing link button.
- */
-class PS_RichTextLinkHandler : SCR_ButtonBaseComponent
+class PS_RichTextLinkHandler : ScriptedWidgetComponent
 {
-	protected string m_sTarget;
+	protected string m_sFocusName;
 
-	void Setup(string target)
+	void Setup(string focusName)
 	{
-		m_sTarget = target;
+		m_sFocusName = focusName;
 	}
 
 	override bool OnClick(Widget w, int x, int y, int button)
@@ -40,77 +36,563 @@ class PS_RichTextLinkHandler : SCR_ButtonBaseComponent
 		if (button != 0)
 			return false;
 
-		PS_MapFocusHelper.Focus(m_sTarget);
-		super.OnClick(w, x, y, button);
+		PS_MapFocusHelper.Focus(m_sFocusName);
 		return true;
 	}
 }
 
 /**
- * @brief Builds a wrapped widget flow for the briefing-only markup.
+ * @brief Minimal rich-text renderer with clickable links for briefing screens.
+ * Aligned with lite-lobby-ar tested engine pattern.
  */
 class PS_RichTextFlowRenderer
 {
-	protected ref array<ref PS_RichTextRun> m_aRuns = {};
-	protected ref array<ref PS_RichTextWord> m_aWords = {};
-	protected ref array<ref PS_RichTextLinkHandler> m_aHandlers = {};
-	protected SizeLayoutWidget m_wSize;
-	protected FrameWidget m_wFrame;
-	protected Widget m_wParent;
+	protected static const ResourceName FONT = "{3E7733BAC8C831F6}UI/Fonts/RobotoCondensed/RobotoCondensed_Regular.fnt";
+	protected static const int FONT_SIZE = 20;
+	protected static const int HEADER_FONT_SIZE = 23;
+	protected static const float SPACE = 6;
+	protected static const float FALLBACK_LINE_HEIGHT = 24;
+	protected static const float UNDERLINE_THICKNESS = 2;
+	protected static const float UNDERLINE_GAP = 3;
+
+	protected static const float DIVIDER_THICKNESS = 1;
+	protected static const float DIVIDER_ROW_HEIGHT = 28;
+	protected static const float DIVIDER_PAD = 14;
+	protected static const float GAP_HEIGHT = 8;
+
+	// ARGB, rendered through Color.FromSRGBA so widget colours match RichText's
+	// <color rgba> path; FromInt skips the sRGB curve and washes mid tones.
+	protected static const int COL_TEXT = 0xFFE6E6E6;
+	protected static const int COL_HEADER = 0xFFFFFFFF;
+	protected static const int COL_LINK = 0xFFE2A74F;
+	protected static const int COL_DIVIDER = 0x3CE2A74F;
+
+	// Keeps each pending instance alive until its deferred layout runs.
+	protected static ref array<ref PS_RichTextFlowRenderer> s_Pending = {};
+
+	protected static const int MAX_LAYOUT_TRIES = 30;
+
+	protected Widget m_wFrame;
 	protected float m_fMaxWidth;
-	protected int m_iPendingSpaces;
-	protected bool m_bBold;
-	protected bool m_bHeader;
-	protected string m_sTarget;
-	protected ref Color m_Color;
+	protected ref array<ref PS_RichTextWord> m_aWords = {};
+	protected int m_iLayoutTries;
+	protected float m_fLineHeight = FALLBACK_LINE_HEIGHT;
 
-	void Render(Widget container, string markup, float maxWidth)
+	static PS_RichTextFlowRenderer Render(notnull Widget container, string markup, float maxWidth)
 	{
-		Clear();
-		if (!container || !GetGame())
-			return;
-
-		m_wParent = container;
-		m_fMaxWidth = maxWidth;
-		WorkspaceWidget workspace = GetGame().GetWorkspace();
-		m_wSize = SizeLayoutWidget.Cast(workspace.CreateWidget(WidgetType.SizeLayoutWidgetTypeID, WidgetFlags.VISIBLE | WidgetFlags.INHERIT_CLIPPING, Color.White, 0, container));
-		if (!m_wSize)
-			return;
-
-		AlignableSlot.SetHorizontalAlign(m_wSize, LayoutHorizontalAlign.Stretch);
-		AlignableSlot.SetVerticalAlign(m_wSize, LayoutVerticalAlign.Top);
-		m_wSize.EnableWidthOverride(true);
-		m_wSize.EnableHeightOverride(true);
-		m_wSize.SetWidthOverride(Math.Max(1, maxWidth));
-		m_wSize.SetHeightOverride(1);
-		m_wFrame = FrameWidget.Cast(workspace.CreateWidget(WidgetType.FrameWidgetTypeID, WidgetFlags.VISIBLE | WidgetFlags.INHERIT_CLIPPING, Color.White, 0, m_wSize));
-		if (!m_wFrame)
-		{
-			Clear();
-			return;
-		}
-		AlignableSlot.SetHorizontalAlign(m_wFrame, LayoutHorizontalAlign.Stretch);
-		AlignableSlot.SetVerticalAlign(m_wFrame, LayoutVerticalAlign.Top);
-
-		Parse(markup);
-		BuildWords();
-		GetGame().GetCallqueue().CallLater(DoLayout, 0);
+		PS_RichTextFlowRenderer inst = new PS_RichTextFlowRenderer();
+		s_Pending.Insert(inst);
+		inst.Build(container, markup, maxWidth);
+		return inst;
 	}
 
 	void Clear()
 	{
+		s_Pending.RemoveItem(this);
 		if (GetGame())
 			GetGame().GetCallqueue().Remove(DoLayout);
-
-		if (m_wSize)
-			m_wSize.RemoveFromHierarchy();
-		m_wSize = null;
-		m_wFrame = null;
-		m_wParent = null;
-		m_aHandlers.Clear();
+		if (m_wFrame)
+		{
+			m_wFrame.RemoveFromHierarchy();
+			m_wFrame = null;
+		}
 		m_aWords.Clear();
-		m_aRuns.Clear();
-		m_iPendingSpaces = 0;
+	}
+
+	protected static Color SRGB(int argb)
+	{
+		int a = (argb >> 24) & 0xFF;
+		int r = (argb >> 16) & 0xFF;
+		int g = (argb >> 8) & 0xFF;
+		int b = argb & 0xFF;
+		return Color.FromSRGBA(r, g, b, a);
+	}
+
+	void Build(Widget container, string markup, float maxWidth)
+	{
+		WorkspaceWidget ws = GetGame().GetWorkspace();
+		if (!ws || !container)
+			return;
+
+		m_wFrame = ws.CreateWidget(WidgetType.FrameWidgetTypeID, WidgetFlags.VISIBLE | WidgetFlags.INHERIT_CLIPPING, Color.FromInt(0x00000000), 0, container);
+		m_fMaxWidth = maxWidth;
+		if (!m_wFrame)
+			return;
+
+		AlignableSlot.SetHorizontalAlign(m_wFrame, LayoutHorizontalAlign.Stretch);
+		AlignableSlot.SetVerticalAlign(m_wFrame, LayoutVerticalAlign.Top);
+
+		array<ref PS_RichTextRun> runs = {};
+		Parse(markup, runs);
+		CreateWords(ws, runs);
+
+		GetGame().GetCallqueue().CallLater(DoLayout, 0, false);
+	}
+
+	protected static int HexDigit(int ascii)
+	{
+		if (ascii >= 48 && ascii <= 57)
+			return ascii - 48;
+		if (ascii >= 65 && ascii <= 70)
+			return ascii - 55;
+		if (ascii >= 97 && ascii <= 102)
+			return ascii - 87;
+		return -1;
+	}
+
+	protected static int HexToByte(string hex)
+	{
+		int hi = HexDigit(hex.ToAscii(0));
+		int lo = HexDigit(hex.ToAscii(1));
+		if (hi < 0 || lo < 0)
+			return 255;
+		return hi * 16 + lo;
+	}
+
+	protected static int ParseColorSpec(string spec)
+	{
+		string s = spec.Trim();
+		if (s.StartsWith("#"))
+		{
+			s = s.Substring(1, s.Length() - 1);
+			if (s.Length() == 6)
+			{
+				int r = HexToByte(s.Substring(0, 2));
+				int g = HexToByte(s.Substring(2, 2));
+				int b = HexToByte(s.Substring(4, 2));
+				return (0xFF << 24) | (r << 16) | (g << 8) | b;
+			}
+			else if (s.Length() == 8)
+			{
+				int a = HexToByte(s.Substring(0, 2));
+				int r = HexToByte(s.Substring(2, 2));
+				int g = HexToByte(s.Substring(4, 2));
+				int b = HexToByte(s.Substring(6, 2));
+				return (a << 24) | (r << 16) | (g << 8) | b;
+			}
+		}
+
+		array<string> parts = {};
+		spec.Split(",", parts, true);
+		int r = 255, g = 255, b = 255, a = 255;
+		if (parts.Count() >= 3)
+		{
+			r = parts[0].ToInt();
+			g = parts[1].ToInt();
+			b = parts[2].ToInt();
+		}
+		if (parts.Count() >= 4)
+			a = parts[3].ToInt();
+		return (a << 24) | (r << 16) | (g << 8) | b;
+	}
+
+	protected void Parse(string markup, notnull array<ref PS_RichTextRun> runs)
+	{
+		bool bold = false;
+		bool header = false;
+		string focusName = "";
+		int color = COL_TEXT;
+		ref array<int> colorStack = {};
+
+		string s = markup;
+		while (s.Length() > 0)
+		{
+			int currentFontSize = FONT_SIZE;
+			if (header)
+				currentFontSize = HEADER_FONT_SIZE;
+
+			int currentColor = color;
+			if (header)
+				currentColor = COL_HEADER;
+			if (focusName != "")
+				currentColor = COL_LINK;
+
+			bool isBold = bold || header;
+
+			int lt = s.IndexOf("<");
+			if (lt < 0)
+			{
+				AddRunText(runs, s, focusName, isBold, currentFontSize, currentColor);
+				return;
+			}
+
+			if (lt > 0)
+			{
+				string textBefore = s.Substring(0, lt);
+				AddRunText(runs, textBefore, focusName, isBold, currentFontSize, currentColor);
+			}
+
+			string rest = s.Substring(lt, s.Length() - lt);
+			int gt = rest.IndexOf(">");
+			if (gt < 0)
+			{
+				AddRunText(runs, rest, focusName, isBold, currentFontSize, currentColor);
+				return;
+			}
+
+			string tag = rest.Substring(1, gt - 1).Trim();
+			string after = rest.Substring(gt + 1, rest.Length() - gt - 1);
+
+			if (tag == "br/" || tag == "br")
+			{
+				AppendBreak(runs);
+				s = after;
+			}
+			else if (tag == "hr/" || tag == "hr")
+			{
+				PS_RichTextRun rule = new PS_RichTextRun();
+				rule.m_bRule = true;
+				runs.Insert(rule);
+				s = ConsumeLeadingNewline(after);
+			}
+			else if (tag == "gap/" || tag == "gap")
+			{
+				PS_RichTextRun gap = new PS_RichTextRun();
+				gap.m_bGap = true;
+				runs.Insert(gap);
+				s = ConsumeLeadingNewline(after);
+			}
+			else if (tag == "h")
+			{
+				EnsureLineStart(runs);
+				header = true;
+				s = after;
+			}
+			else if (tag == "/h")
+			{
+				header = false;
+				AppendBreak(runs);
+				s = ConsumeLeadingNewline(after);
+			}
+			else if (tag == "b")
+			{
+				bold = true;
+				s = after;
+			}
+			else if (tag == "/b")
+			{
+				bold = false;
+				s = after;
+			}
+			else if (tag.StartsWith("link="))
+			{
+				focusName = tag.Substring(5, tag.Length() - 5);
+				s = after;
+			}
+			else if (tag == "/link")
+			{
+				focusName = "";
+				s = after;
+			}
+			else if (tag.StartsWith("color="))
+			{
+				colorStack.Insert(color);
+				color = ParseColorSpec(tag.Substring(6, tag.Length() - 6));
+				s = after;
+			}
+			else if (tag == "/color")
+			{
+				if (!colorStack.IsEmpty())
+				{
+					color = colorStack[colorStack.Count() - 1];
+					colorStack.Remove(colorStack.Count() - 1);
+				}
+				else
+				{
+					color = COL_TEXT;
+				}
+				s = after;
+			}
+			else
+			{
+				s = after;
+			}
+		}
+	}
+
+	protected void AddRunText(notnull array<ref PS_RichTextRun> runs, string text, string focus, bool bold, int fontSize, int color)
+	{
+		if (text == "")
+			return;
+		PS_RichTextRun run = new PS_RichTextRun();
+		run.m_sText = text;
+		run.m_sFocusName = focus;
+		run.m_bBold = bold;
+		run.m_iFontSize = fontSize;
+		run.m_iColor = color;
+		runs.Insert(run);
+	}
+
+	protected string ConsumeLeadingNewline(string s)
+	{
+		int len = s.Length();
+		int i = 0;
+		if (i < len && s.Get(i) == "\r")
+			i++;
+		if (i < len && s.Get(i) == "\n")
+			return s.Substring(i + 1, len - i - 1);
+		return s;
+	}
+
+	protected void EnsureLineStart(array<ref PS_RichTextRun> runs)
+	{
+		if (runs.IsEmpty())
+			return;
+		PS_RichTextRun last = runs[runs.Count() - 1];
+		if (last.m_bBreak || last.m_bRule)
+			return;
+		AppendBreak(runs);
+	}
+
+	protected void AppendBreak(array<ref PS_RichTextRun> runs)
+	{
+		PS_RichTextRun br = new PS_RichTextRun();
+		br.m_bBreak = true;
+		runs.Insert(br);
+	}
+
+	protected void CreateWords(WorkspaceWidget ws, notnull array<ref PS_RichTextRun> runs)
+	{
+		int pendingSpaces = 0;
+		foreach (PS_RichTextRun run : runs)
+		{
+			if (run.m_bBreak)
+			{
+				PS_RichTextWord br = new PS_RichTextWord();
+				br.m_bBreak = true;
+				m_aWords.Insert(br);
+				pendingSpaces = 0;
+				continue;
+			}
+
+			if (run.m_bRule)
+			{
+				PS_RichTextWord rw = new PS_RichTextWord();
+				rw.m_bRule = true;
+				rw.m_wText = ws.CreateWidget(WidgetType.ImageWidgetTypeID, WidgetFlags.VISIBLE | WidgetFlags.IGNORE_CURSOR | WidgetFlags.INHERIT_CLIPPING, SRGB(COL_DIVIDER), 0, m_wFrame);
+				m_aWords.Insert(rw);
+				pendingSpaces = 0;
+				continue;
+			}
+
+			if (run.m_bGap)
+			{
+				PS_RichTextWord gap = new PS_RichTextWord();
+				gap.m_bGap = true;
+				m_aWords.Insert(gap);
+				pendingSpaces = 0;
+				continue;
+			}
+
+			bool isLink = run.m_sFocusName != "";
+			bool firstWordOfRun = true;
+
+			string txt = run.m_sText;
+			int len = txt.Length();
+			int i = 0;
+			while (i < len)
+			{
+				while (i < len)
+				{
+					string c = txt.Get(i);
+					if (c == " ")
+						pendingSpaces++;
+					else if (c == "\n")
+					{
+						PS_RichTextWord nl = new PS_RichTextWord();
+						nl.m_bBreak = true;
+						m_aWords.Insert(nl);
+						pendingSpaces = 0;
+						firstWordOfRun = true;
+					}
+					else if (c != "\r")
+						break;
+					i++;
+				}
+				if (i >= len)
+					break;
+
+				int start = i;
+				while (i < len && txt.Get(i) != " " && txt.Get(i) != "\n" && txt.Get(i) != "\r")
+					i++;
+				string word = txt.Substring(start, i - start);
+
+				PS_RichTextWord lw = new PS_RichTextWord();
+				lw.m_iLeadingSpaces = pendingSpaces;
+				lw.m_bLinkCont = isLink && !firstWordOfRun;
+				firstWordOfRun = false;
+				pendingSpaces = 0;
+
+				Widget t = ws.CreateWidget(WidgetType.TextWidgetTypeID, WidgetFlags.VISIBLE | WidgetFlags.IGNORE_CURSOR | WidgetFlags.INHERIT_CLIPPING, SRGB(run.m_iColor), 0, m_wFrame);
+				TextWidget tw = TextWidget.Cast(t);
+				if (tw)
+				{
+					tw.SetFont(FONT);
+					tw.SetExactFontSize(run.m_iFontSize);
+					tw.SetBold(run.m_bBold);
+					tw.SetText(word);
+				}
+				FrameSlot.SetSizeToContent(t, true);
+				lw.m_wText = t;
+
+				if (isLink)
+				{
+					Widget ul = ws.CreateWidget(WidgetType.ImageWidgetTypeID, WidgetFlags.VISIBLE | WidgetFlags.IGNORE_CURSOR | WidgetFlags.INHERIT_CLIPPING, SRGB(COL_LINK), 1, m_wFrame);
+					lw.m_wUnderline = ul;
+
+					Widget btn = ws.CreateWidget(WidgetType.ButtonWidgetTypeID, WidgetFlags.VISIBLE | WidgetFlags.INHERIT_CLIPPING, Color.FromInt(0x00000000), 2, m_wFrame);
+					PS_RichTextLinkHandler h = new PS_RichTextLinkHandler();
+					h.Setup(run.m_sFocusName);
+					btn.AddHandler(h);
+					lw.m_wButton = btn;
+				}
+
+				m_aWords.Insert(lw);
+			}
+		}
+	}
+
+	protected bool WordsMeasurable()
+	{
+		foreach (PS_RichTextWord lw : m_aWords)
+		{
+			if (lw.m_bBreak || lw.m_bRule || lw.m_bGap || !lw.m_wText)
+				continue;
+			float sx = 0;
+			float sy = 0;
+			lw.m_wText.GetScreenSize(sx, sy);
+			return sx > 0;
+		}
+		return true;
+	}
+
+	protected void DoLayout()
+	{
+		WorkspaceWidget ws = GetGame().GetWorkspace();
+		if (!ws || !m_wFrame)
+		{
+			s_Pending.RemoveItem(this);
+			return;
+		}
+
+		if (!WordsMeasurable() && m_iLayoutTries < MAX_LAYOUT_TRIES)
+		{
+			m_iLayoutTries++;
+			GetGame().GetCallqueue().CallLater(DoLayout, 0, false);
+			return;
+		}
+
+		s_Pending.RemoveItem(this);
+
+		float x = 0;
+		float y = 0;
+		float curLineH = 0;
+
+		foreach (PS_RichTextWord lw : m_aWords)
+		{
+			if (lw.m_bBreak)
+			{
+				y += LineAdvance(curLineH);
+				curLineH = 0;
+				x = 0;
+				continue;
+			}
+
+			if (lw.m_bGap)
+			{
+				y += curLineH + GAP_HEIGHT;
+				curLineH = 0;
+				x = 0;
+				continue;
+			}
+
+			if (lw.m_bRule)
+			{
+				y += curLineH;
+				curLineH = 0;
+				x = 0;
+				if (lw.m_wText)
+				{
+					FrameSlot.SetAlignment(lw.m_wText, 0, 0);
+					FrameSlot.SetPos(lw.m_wText, 0, y + DIVIDER_PAD);
+					FrameSlot.SetSize(lw.m_wText, m_fMaxWidth, DIVIDER_THICKNESS);
+				}
+				y += DIVIDER_ROW_HEIGHT;
+				continue;
+			}
+
+			if (!lw.m_wText)
+				continue;
+
+			float sx = 0;
+			float sy = 0;
+			lw.m_wText.GetScreenSize(sx, sy);
+			if (sx <= 0)
+			{
+				TextWidget tw = TextWidget.Cast(lw.m_wText);
+				if (tw)
+					tw.GetTextSize(sx, sy);
+			}
+			float w = ws.DPIUnscale(sx);
+			float h = ws.DPIUnscale(sy);
+			if (h <= 0)
+				h = FALLBACK_LINE_HEIGHT;
+
+			if (sy > 0 && h <= FONT_SIZE + 6)
+				m_fLineHeight = h;
+
+			float adv = lw.m_iLeadingSpaces * SPACE;
+
+			bool wrapped = false;
+			if (x > 0 && x + adv + w > m_fMaxWidth)
+			{
+				y += LineAdvance(curLineH);
+				curLineH = 0;
+				x = 0;
+				wrapped = true;
+			}
+			else
+			{
+				x += adv;
+			}
+
+			FrameSlot.SetAlignment(lw.m_wText, 0, 0);
+			FrameSlot.SetPos(lw.m_wText, x, y);
+
+			if (lw.m_wUnderline)
+			{
+				float ulX = x;
+				float ulW = w;
+				if (lw.m_bLinkCont && !wrapped)
+				{
+					ulX = x - adv;
+					ulW = w + adv;
+				}
+				FrameSlot.SetAlignment(lw.m_wUnderline, 0, 0);
+				FrameSlot.SetPos(lw.m_wUnderline, ulX, y + h - UNDERLINE_GAP);
+				FrameSlot.SetSize(lw.m_wUnderline, ulW, UNDERLINE_THICKNESS);
+			}
+			if (lw.m_wButton)
+			{
+				FrameSlot.SetAlignment(lw.m_wButton, 0, 0);
+				FrameSlot.SetPos(lw.m_wButton, x, y);
+				FrameSlot.SetSize(lw.m_wButton, w, h);
+			}
+
+			if (h > curLineH)
+				curLineH = h;
+			x += w;
+		}
+
+		y += LineAdvance(curLineH);
+		FrameSlot.SetSize(m_wFrame, m_fMaxWidth, y);
+	}
+
+	protected float LineAdvance(float curLineH)
+	{
+		if (curLineH > 0)
+			return curLineH;
+		return m_fLineHeight;
 	}
 
 	static string StripUnknownTags(string markup)
@@ -157,417 +639,5 @@ class PS_RichTextFlowRenderer
 			name = name.Substring(0, name.Length() - 1);
 
 		return name == "b" || name == "i" || name == "color" || name == "font" || name == "outline" || name == "shadow" || name == "image" || name == "p" || name == "h" || name == "h1" || name == "h2" || name == "ucs" || name == "action" || name == "key" || name == "br";
-	}
-
-	protected void AddControl(bool isBreak, bool isRule, bool isGap)
-	{
-		PS_RichTextRun run = new PS_RichTextRun();
-		run.m_bBreak = isBreak;
-		run.m_bRule = isRule;
-		run.m_bGap = isGap;
-		m_aRuns.Insert(run);
-	}
-
-	protected void AddText(string value)
-	{
-		if (value.IsEmpty())
-			return;
-
-		PS_RichTextRun run = new PS_RichTextRun();
-		run.m_sText = value;
-		run.m_sTarget = m_sTarget;
-		run.m_bBold = m_bBold || m_bHeader;
-		run.m_bHeader = m_bHeader;
-		run.m_Color = m_Color;
-		m_aRuns.Insert(run);
-	}
-
-	protected void Parse(string markup)
-	{
-		m_bBold = false;
-		m_bHeader = false;
-		m_sTarget = "";
-		m_Color = Color.FromSRGBA(230, 230, 230, 255);
-		string buffer = "";
-
-		for (int i = 0; i < markup.Length(); i++)
-		{
-			string current = markup.Substring(i, 1);
-			if (current != "<")
-			{
-				buffer += current;
-				continue;
-			}
-
-			string rest = markup.Substring(i, markup.Length() - i);
-			int close = rest.IndexOf(">");
-			if (close < 0)
-			{
-				buffer += current;
-				continue;
-			}
-
-			AddText(buffer);
-			buffer = "";
-			string tag = rest.Substring(1, close - 1);
-			i += close;
-
-			if (tag == "h")
-			{
-				if (!m_aRuns.IsEmpty())
-				{
-					PS_RichTextRun previous = m_aRuns.Get(m_aRuns.Count() - 1);
-					if (!previous.m_bBreak && !previous.m_bRule && !previous.m_bGap)
-						AddControl(true, false, false);
-				}
-				m_bHeader = true;
-			}
-			else if (tag == "/h")
-			{
-				m_bHeader = false;
-				AddControl(true, false, false);
-			}
-			else if (tag == "b")
-				m_bBold = true;
-			else if (tag == "/b")
-				m_bBold = false;
-			else if (tag == "br" || tag == "br/")
-				AddControl(true, false, false);
-			else if (tag == "hr" || tag == "hr/")
-				AddControl(false, true, false);
-			else if (tag == "gap" || tag == "gap/")
-				AddControl(false, false, true);
-			else if (tag == "/link")
-				m_sTarget = "";
-			else if (tag.IndexOf("link=") == 0)
-				m_sTarget = tag.Substring(5, tag.Length() - 5);
-			else if (tag == "/color")
-				m_Color = Color.FromSRGBA(230, 230, 230, 255);
-			else if (tag.IndexOf("color=") == 0)
-				m_Color = ParseColor(tag.Substring(6, tag.Length() - 6));
-			// Unknown tags are intentionally omitted from the visible text.
-		}
-
-		AddText(buffer);
-	}
-
-	protected Color ParseColor(string colorSpec)
-	{
-		if (colorSpec.Length() == 7 || colorSpec.Length() == 9)
-		{
-			if (colorSpec.Substring(0, 1) == "#")
-			{
-				int red, green, blue, alpha = 255;
-				if (TryHexByte(colorSpec, 1, red) && TryHexByte(colorSpec, 3, green) && TryHexByte(colorSpec, 5, blue))
-				{
-					if (colorSpec.Length() == 7 || TryHexByte(colorSpec, 7, alpha))
-						return Color.FromSRGBA(red, green, blue, alpha);
-				}
-			}
-		}
-
-		ref array<string> values = {};
-		colorSpec.Split(",", values, true);
-		if (values.Count() == 3 || values.Count() == 4)
-		{
-			int red, green, blue, alpha = 255;
-			if (TryByte(values[0], red) && TryByte(values[1], green) && TryByte(values[2], blue))
-			{
-				if (values.Count() == 3 || TryByte(values[3], alpha))
-					return Color.FromSRGBA(red, green, blue, alpha);
-			}
-		}
-
-		return Color.FromSRGBA(230, 230, 230, 255);
-	}
-
-	protected bool TryByte(string value, out int result)
-	{
-		string number = value.Trim();
-		int parsed;
-		result = number.ToInt(parsed: parsed);
-		return parsed == number.Length() && parsed > 0 && result >= 0 && result <= 255;
-	}
-
-	protected bool TryHexByte(string value, int start, out int result)
-	{
-		int high = HexDigit(value.ToAscii(start));
-		int low = HexDigit(value.ToAscii(start + 1));
-		result = high * 16 + low;
-		return high >= 0 && low >= 0;
-	}
-
-	protected int HexDigit(int ascii)
-	{
-		if (ascii >= 48 && ascii <= 57)
-			return ascii - 48;
-		if (ascii >= 65 && ascii <= 70)
-			return ascii - 55;
-		if (ascii >= 97 && ascii <= 102)
-			return ascii - 87;
-		return -1;
-	}
-
-	protected void BuildWords()
-	{
-		foreach (PS_RichTextRun run : m_aRuns)
-		{
-			if (run.m_bBreak || run.m_bRule || run.m_bGap)
-			{
-				PS_RichTextWord control = new PS_RichTextWord();
-				control.m_bBreak = run.m_bBreak;
-				control.m_bRule = run.m_bRule;
-				control.m_bGap = run.m_bGap;
-				m_aWords.Insert(control);
-				m_iPendingSpaces = 0;
-				continue;
-			}
-
-			string wordText = "";
-			for (int i = 0; i < run.m_sText.Length(); i++)
-			{
-				string character = run.m_sText.Substring(i, 1);
-				if (character == " " || character == "\t" || character == "\n" || character == "\r")
-				{
-					if (!wordText.IsEmpty())
-					{
-						AddWord(wordText, run);
-						wordText = "";
-					}
-
-					if (character == "\n")
-					{
-						if (!m_aWords.IsEmpty())
-						{
-							PS_RichTextWord previous = m_aWords.Get(m_aWords.Count() - 1);
-							if (!previous.m_bBreak && !previous.m_bRule && !previous.m_bGap)
-							{
-								PS_RichTextWord lineBreak = new PS_RichTextWord();
-								lineBreak.m_bBreak = true;
-								m_aWords.Insert(lineBreak);
-							}
-						}
-						m_iPendingSpaces = 0;
-					}
-					else if (character == " " || character == "\t")
-						m_iPendingSpaces++;
-				}
-				else
-					wordText += character;
-			}
-
-			if (!wordText.IsEmpty())
-				AddWord(wordText, run);
-		}
-	}
-
-	protected void AddWord(string text, PS_RichTextRun run)
-	{
-		PS_RichTextWord word = CreateWord(text, run, m_iPendingSpaces);
-		m_iPendingSpaces = 0;
-		m_aWords.Insert(word);
-	}
-
-	protected PS_RichTextWord CreateWord(string text, PS_RichTextRun run, int leadingSpaces)
-	{
-		PS_RichTextWord word = new PS_RichTextWord();
-		word.m_sText = text;
-		word.m_Run = run;
-		word.m_iLeadingSpaces = leadingSpaces;
-		string displayText = text;
-		for (int i = 0; i < word.m_iLeadingSpaces; i++)
-			displayText = " " + displayText;
-
-		WorkspaceWidget workspace = GetGame().GetWorkspace();
-		word.m_wText = TextWidget.Cast(workspace.CreateWidget(WidgetType.TextWidgetTypeID, WidgetFlags.VISIBLE | WidgetFlags.INHERIT_CLIPPING | WidgetFlags.IGNORE_CURSOR, Color.White, 0, m_wFrame));
-		word.m_wText.SetText(displayText);
-		if (run.m_bHeader)
-			word.m_wText.SetExactFontSize(23);
-		else
-			word.m_wText.SetExactFontSize(20);
-		word.m_wText.SetBold(run.m_bBold);
-		if (run.m_sTarget.IsEmpty())
-			word.m_wText.SetColor(run.m_Color);
-		else
-			word.m_wText.SetColor(Color.FromSRGBA(237, 153, 61, 255));
-		FrameSlot.SetSizeToContent(word.m_wText, true);
-
-		if (!run.m_sTarget.IsEmpty())
-		{
-			word.m_wUnderline = ImageWidget.Cast(workspace.CreateWidget(WidgetType.ImageWidgetTypeID, WidgetFlags.VISIBLE | WidgetFlags.IGNORE_CURSOR | WidgetFlags.INHERIT_CLIPPING | WidgetFlags.STRETCH, Color.FromSRGBA(237, 153, 61, 255), 1, m_wFrame));
-			word.m_wButton = ButtonWidget.Cast(workspace.CreateWidget(WidgetType.ButtonWidgetTypeID, WidgetFlags.VISIBLE | WidgetFlags.INHERIT_CLIPPING, new Color(1, 1, 1, 0), 2, m_wFrame));
-			PS_RichTextLinkHandler handler = new PS_RichTextLinkHandler();
-			handler.Setup(run.m_sTarget);
-			word.m_wButton.AddHandler(handler);
-			m_aHandlers.Insert(handler);
-		}
-
-		return word;
-	}
-
-	protected void SplitWideWords(WorkspaceWidget workspace)
-	{
-		ref array<ref PS_RichTextWord> wrappedWords = {};
-		foreach (PS_RichTextWord word : m_aWords)
-		{
-			if (word.m_bBreak || word.m_bRule || word.m_bGap)
-			{
-				wrappedWords.Insert(word);
-				continue;
-			}
-
-			float width, height;
-			word.m_wText.GetScreenSize(width, height);
-			width = workspace.DPIUnscale(width);
-			if (width <= 0)
-			{
-				word.m_wText.GetTextSize(width, height);
-				width = workspace.DPIUnscale(width);
-			}
-			if (width <= m_fMaxWidth || word.m_sText.Length() < 2)
-			{
-				wrappedWords.Insert(word);
-				continue;
-			}
-
-			string remaining = word.m_sText;
-			string firstFragment = "";
-			bool isFirst = true;
-			while (!remaining.IsEmpty())
-			{
-				int fragmentLength = FindFittingPrefix(word.m_wText, remaining, workspace);
-				string fragment = remaining.Substring(0, fragmentLength);
-				if (isFirst)
-				{
-					firstFragment = fragment;
-					word.m_sText = fragment;
-					word.m_iLeadingSpaces = 0;
-					wrappedWords.Insert(word);
-					isFirst = false;
-				}
-				else
-					wrappedWords.Insert(CreateWord(fragment, word.m_Run, 0));
-
-				remaining = remaining.Substring(fragmentLength, remaining.Length() - fragmentLength);
-			}
-			word.m_wText.SetText(firstFragment);
-		}
-
-		m_aWords.Clear();
-		foreach (PS_RichTextWord wrappedWord : wrappedWords)
-			m_aWords.Insert(wrappedWord);
-	}
-
-	protected int FindFittingPrefix(TextWidget textWidget, string text, WorkspaceWidget workspace)
-	{
-		int low = 1;
-		int high = text.Length();
-		int best = 0;
-		while (low <= high)
-		{
-			int middle = (low + high) / 2;
-			textWidget.SetText(text.Substring(0, middle));
-			float width, height;
-			textWidget.GetTextSize(width, height);
-			width = workspace.DPIUnscale(width);
-			if (width <= m_fMaxWidth)
-			{
-				best = middle;
-				low = middle + 1;
-			}
-			else
-				high = middle - 1;
-		}
-
-		if (best < 1)
-			return 1;
-		return best;
-	}
-
-	// Widgets are measured on the next UI tick so font metrics and DPI are available.
-	protected void DoLayout()
-	{
-		if (!m_wSize || !m_wFrame || !m_wParent || !GetGame())
-			return;
-
-		WorkspaceWidget workspace = GetGame().GetWorkspace();
-		float screenWidth, screenHeight;
-		m_wParent.GetScreenSize(screenWidth, screenHeight);
-		if (screenWidth > 0)
-			m_fMaxWidth = workspace.DPIUnscale(screenWidth) - 16;
-		m_fMaxWidth = Math.Max(1, m_fMaxWidth);
-		m_wSize.SetWidthOverride(m_fMaxWidth);
-		SplitWideWords(workspace);
-
-		float x = 0;
-		float y = 0;
-		float lineHeight = 24;
-		foreach (PS_RichTextWord word : m_aWords)
-		{
-			if (word.m_bBreak)
-			{
-				x = 0;
-				y += lineHeight;
-				lineHeight = 24;
-				continue;
-			}
-
-			if (word.m_bRule || word.m_bGap)
-			{
-				if (x > 0)
-					y += lineHeight;
-				x = 0;
-				if (word.m_bRule)
-					y += 12;
-				else
-					y += 8;
-				lineHeight = 24;
-				if (word.m_bRule)
-				{
-					ImageWidget divider = ImageWidget.Cast(workspace.CreateWidget(WidgetType.ImageWidgetTypeID, WidgetFlags.VISIBLE | WidgetFlags.IGNORE_CURSOR | WidgetFlags.STRETCH, Color.FromSRGBA(140, 140, 140, 255), 0, m_wFrame));
-					FrameSlot.SetPos(divider, 0, y - 6);
-					FrameSlot.SetSize(divider, m_fMaxWidth, 1);
-				}
-				continue;
-			}
-
-			float width, height;
-			word.m_wText.GetScreenSize(width, height);
-			width = workspace.DPIUnscale(width);
-			height = workspace.DPIUnscale(height);
-			if (width <= 0 || height <= 0)
-			{
-				word.m_wText.GetTextSize(width, height);
-				width = workspace.DPIUnscale(width);
-				height = workspace.DPIUnscale(height);
-			}
-
-			if (x > 0 && x + width > m_fMaxWidth)
-			{
-				x = 0;
-				y += lineHeight;
-				lineHeight = 24;
-				if (word.m_iLeadingSpaces > 0)
-				{
-					word.m_wText.SetText(word.m_sText);
-					word.m_wText.GetTextSize(width, height);
-					width = workspace.DPIUnscale(width);
-					height = workspace.DPIUnscale(height);
-				}
-			}
-
-			FrameSlot.SetPos(word.m_wText, x, y);
-			if (word.m_wButton)
-			{
-				FrameSlot.SetPos(word.m_wButton, x, y);
-				FrameSlot.SetSize(word.m_wButton, width, height);
-				FrameSlot.SetPos(word.m_wUnderline, x, y + height - 2);
-				FrameSlot.SetSize(word.m_wUnderline, width, 1);
-			}
-			x += width;
-			lineHeight = Math.Max(lineHeight, height);
-		}
-
-		m_wSize.SetHeightOverride(y + lineHeight);
 	}
 }

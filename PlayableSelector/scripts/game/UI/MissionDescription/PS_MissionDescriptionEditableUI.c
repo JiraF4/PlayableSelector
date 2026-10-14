@@ -59,10 +59,11 @@ class PS_MissionDescriptionEditableUI : ScriptedWidgetComponent
 		if (!scroll)
 			return;
 
-		m_wRichTextEditable.SetVisible(false);
-		m_wRichTextEditable.SetText("");
-		m_RichTextRenderer = new PS_RichTextFlowRenderer();
-		m_RichTextRenderer.Render(scroll, description, 449);
+		m_wRichTextEditable.RemoveFromHierarchy();
+		m_wRichTextEditable = null;
+
+		scroll.SetFlags(WidgetFlags.CLIPCHILDREN);
+		m_RichTextRenderer = PS_RichTextFlowRenderer.Render(scroll, description, 430);
 	}
 	
 }
