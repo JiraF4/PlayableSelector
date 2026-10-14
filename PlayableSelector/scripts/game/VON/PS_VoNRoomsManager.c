@@ -108,6 +108,16 @@ class PS_VoNRoomsManager : ScriptComponent
 		return m_bRplLoaded;
 	}
 
+	bool IsVoNSnapshotCommitted()
+	{
+		return m_bVoNSnapshotCommitted;
+	}
+
+	bool IsChannelRegistered(string channelKey)
+	{
+		return m_mChannelsSet.Contains(channelKey);
+	}
+
 	override protected void OnPostInit(IEntity owner)
 	{
 		// The "" (global lobby) channel always exists
@@ -120,7 +130,8 @@ class PS_VoNRoomsManager : ScriptComponent
 		// Start the per-machine VoN audit (no-op unless s_bVoNDebug). Runs on the server AND each client so we can
 		// compare, for every player, the INTENDED channel (m_mPlayersChannel = what the widget/UI shows) against
 		// the REAL radio tuning (encryption key + frequency actually on the proxy transceiver). See VoNAuditTick.
-		GetGame().GetCallqueue().CallLater(VoNAuditTick, 5000, false);
+		// TEMPORARY (T058): Disabled for event-driven sync testing
+		// GetGame().GetCallqueue().CallLater(VoNAuditTick, 5000, false);
 	}
 
 	// more singletons for singletons god, make our spagetie kingdom great
@@ -487,10 +498,12 @@ class PS_VoNRoomsManager : ScriptComponent
 		revision = m_iVoNRevision;
 	}
 
-	void CommitVoNSnapshot(int revision, notnull array<string> channels, notnull array<int> playerIds, notnull array<string> playerChannels, notnull array<int> parkedIds)
+	bool CommitVoNSnapshot(int revision, notnull array<string> channels, notnull array<int> playerIds, notnull array<string> playerChannels, notnull array<int> parkedIds)
 	{
 		if (Replication.IsServer() || m_bVoNSnapshotCommitted || playerIds.Count() != playerChannels.Count())
-			return;
+			return false;
+
+		int bufferedCount = m_aBufferedVoNDeltas.Count();
 
 		m_mChannelsSet.Clear();
 		m_aChannels.Clear();
@@ -528,11 +541,13 @@ class PS_VoNRoomsManager : ScriptComponent
 		m_bVoNSnapshotCommitting = false;
 
 		SCR_VoNComponent.InvalidateEditorLocCache(-1);
-		foreach (int playerId : playerIds)
-			ApplyRadioKey(playerId);
-		foreach (int parkedId : parkedIds)
-			ApplyRadioKey(parkedId);
+		for (int i = 0; i < m_mPlayersChannel.Count(); i++)
+			ApplyRadioKey(m_mPlayersChannel.GetKey(i));
+		for (int i = 0; i < m_mPlayerParked.Count(); i++)
+			ApplyRadioKey(m_mPlayerParked.GetKey(i));
+		PrintFormat("[PS_VoNSync] committed snapshotRevision=%1 finalRevision=%2 channels=%3 members=%4 buffered=%5", revision, m_iVoNRevision, m_aChannels.Count(), m_mPlayersChannel.Count(), bufferedCount);
 		m_eOnVoNSnapshotReady.Invoke();
+		return true;
 	}
 
 	// ============================ Body-less VoN proxy ============================
@@ -737,6 +752,7 @@ class PS_VoNRoomsManager : ScriptComponent
 
 	void VoNAuditTick()
 	{
+		return; // TEMPORARY (T058): Disabled for event-driven sync testing
 		GetGame().GetCallqueue().CallLater(VoNAuditTick, 5000, false); // self-reschedule
 
 		string machine = "client";
@@ -933,13 +949,16 @@ class PS_VoNRoomsManager : ScriptComponent
 		// back the prefab default "PSVoN" - so isolation can NOT rely on the key. Parking previously left every
 		// off-net proxy on the SAME min frequency with a unique-but-inert key, so they all collapsed onto one
 		// frequency and could hear each other. A muted transceiver is silent regardless of key/freq.
-		if ((!Replication.IsServer() && !m_bVoNSnapshotCommitted) || IsPlayerParked(playerId) || IsLocalEditorOpenFor(playerId))
+		bool snapshotPending = !Replication.IsServer() && !m_bVoNSnapshotCommitted;
+		bool playerParked = IsPlayerParked(playerId);
+		bool editorOpen = IsLocalEditorOpenFor(playerId);
+		if (snapshotPending || playerParked || editorOpen)
 		{
 			tsv.SetMuteState(true);
 			radio.SetEncryptionKey(EncodeParkedKey(playerId));
 			tsv.SetFrequency(tsv.GetMinFrequency());
 			if (s_bVoNDebug)
-				PrintFormat("[PS_VoNApply] player=%1 PARKED+MUTED (not a menu speaker / editor open)", playerId);
+				PrintFormat("[PS_VoNApply] player=%1 MUTED snapshotPending=%2 parked=%3 editorOpen=%4", playerId, snapshotPending, playerParked, editorOpen);
 			return;
 		}
 
@@ -1156,6 +1175,7 @@ class PS_VoNRoomsManager : ScriptComponent
 		}
 
 		m_bRplLoaded = true;
+		PrintFormat("[PS_VoNSync] manager loaded schema=%1", schemaVersion);
 		PS_PlayableControllerComponent.TryRequestVoNSnapshotForLocalPlayer();
 
 		return true;

@@ -26,6 +26,14 @@ class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 		GetGame().GetCallqueue().CallLater(AddOnClick, 0);
 	}
 	
+	override void HandlerDeattached(Widget w)
+	{
+		if (GetGame() && GetGame().GetCallqueue())
+			GetGame().GetCallqueue().Remove(AddOnClick);
+		m_OnClicked.Remove(JoinRoomButtonClicked);
+		super.HandlerDeattached(w);
+	}
+
 	void SetRoomName(SCR_Faction faction, string roomName, string channelKey)
 	{
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
@@ -80,15 +88,17 @@ class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		PlayerController playerController = GetGame().GetPlayerController();
-		if (!playerController)
+		if (!playerController || !VoNRoomsManager || !playableManager || m_sChannelKey == "")
 			return;
 		int playerId = playerController.GetPlayerId();
+		if (playerId <= 0)
+			return;
 		
 		if (VoNRoomsManager.GetPlayerChannel(playerId) == m_sChannelKey) {
 			m_wJoinRoomImage.SetVisible(false);
 			return;
 		}
-		//m_wJoinRoomImage.SetVisible(true);
+		m_wJoinRoomImage.SetVisible(true);
 		
 		// Bad hardcoded staff here
 		if (m_sRoomName == "#PS-VoNRoom_Command")
@@ -120,9 +130,13 @@ class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		
 		PlayerController playerController = GetGame().GetPlayerController();
-		if (!playerController) return;
+		if (!playerController || !playableManager || m_sChannelKey == "") return;
 		int playerId = playerController.GetPlayerId();
+		if (playerId <= 0)
+			return;
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		if (!playableController)
+			return;
 		
 		if (m_sRoomName == "#PS-VoNRoom_Command")
 		{
@@ -144,6 +158,6 @@ class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 			}
 		}
 
-		playableController.MoveToVoNRoom(playerId, factionKey, m_sRoomName);
+		playableController.MoveToVoNRoomByKey(playerId, m_sChannelKey);
 	}
 }

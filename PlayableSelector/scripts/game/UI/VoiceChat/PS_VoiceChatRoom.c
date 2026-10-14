@@ -42,22 +42,23 @@ class PS_VoiceChatRoom : SCR_ScriptedWidgetComponent
 		}
 	}
 	
-	void SetChannelKey(string channelKey)
+	bool SetChannelKey(string channelKey)
 	{
+		array<string> outTokens = new array<string>();
+		channelKey.Split("|", outTokens, false);
+		if (outTokens.Count() != 2)
+			return false;
+		FactionKey factionKey = outTokens[0];
+		string roomName = outTokens[1];
+		if (roomName == "")
+			return false;
 		m_sChannelKey = channelKey;
-
-		string roomName = channelKey; // the channel key IS the room key
-		FactionKey factionKey = "";
-		if (roomName == "") roomName = "Room not registered on server";
-		else {
-			array<string> outTokens = new array<string>();
-			roomName.Split("|", outTokens, false);
-			factionKey = outTokens[0];
-			roomName = outTokens[1];
-		}
 		SCR_FactionManager factionManager = SCR_FactionManager.Cast(GetGame().GetFactionManager());
-		SCR_Faction faction = SCR_Faction.Cast(factionManager.GetFactionByKey(factionKey));
+		SCR_Faction faction;
+		if (factionManager)
+			faction = SCR_Faction.Cast(factionManager.GetFactionByKey(factionKey));
 		m_hRoomHandler.SetRoomName(faction, roomName, channelKey);
+		return true;
 	}
 	
 	void AddPlayer(int playerId)

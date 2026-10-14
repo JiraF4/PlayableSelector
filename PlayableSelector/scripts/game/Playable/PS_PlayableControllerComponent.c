@@ -16,6 +16,10 @@ class PS_PlayableControllerComponent : ScriptComponent
 	protected vector lastCameraTransform[4];
 	protected PS_GameModeCoop m_GameModeCoop; // lazy-cached world singleton (stable for this component's life)
 	protected bool m_bVoNSnapshotRequestSent;
+	protected bool m_bVoNSnapshotRequestQueued;
+	protected bool m_bVoNSnapshotComplete;
+	protected float m_fVoNSnapshotReadyDeadline;
+	protected string m_sVoNSnapshotBlockedReason;
 	protected bool m_bVoNSnapshotAssemblyActive;
 	protected int m_iVoNSnapshotRevision;
 	protected int m_iVoNSnapshotChunkCount;
@@ -516,7 +520,8 @@ class PS_PlayableControllerComponent : ScriptComponent
 		SetEventMask(GetOwner(), EntityEvent.FRAME);
 		SCR_PlayerController playerController = SCR_PlayerController.Cast(PlayerController.Cast(GetOwner()));
 		playerController.m_OnControlledEntityChanged.Insert(OnControlledEntityChanged);
-		TryRequestVoNSnapshot();
+		playerController.GetOnOwnershipChangedInvoker().Insert(OnVoNOwnershipChanged);
+		QueueVoNSnapshotRequest();
 
 		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
 		if (!gameModeCoop)
@@ -537,24 +542,110 @@ class PS_PlayableControllerComponent : ScriptComponent
 
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(localController.FindComponent(PS_PlayableControllerComponent));
 		if (playableController)
-			playableController.TryRequestVoNSnapshot();
+			playableController.QueueVoNSnapshotRequest();
+	}
+
+	//! Ownership can settle before the engine publishes its local controller pointer.
+	protected void OnVoNOwnershipChanged(bool changing, bool becameOwner)
+	{
+		if (changing)
+			return;
+		if (!becameOwner)
+		{
+			CancelVoNSnapshotCallbacks();
+			return;
+		}
+		Print("[PS_VoNSync] ownership ready");
+		QueueVoNSnapshotRequest();
+	}
+
+	protected void QueueVoNSnapshotRequest()
+	{
+		if (Replication.IsServer() || m_bVoNSnapshotRequestSent || m_bVoNSnapshotRequestQueued)
+			return;
+		RplComponent rpl = RplComponent.Cast(GetOwner().FindComponent(RplComponent));
+		if (!rpl || !rpl.IsOwner())
+			return;
+
+		m_fVoNSnapshotReadyDeadline = GetGame().GetWorld().GetWorldTime() + 10000;
+		m_sVoNSnapshotBlockedReason = "";
+		m_bVoNSnapshotRequestQueued = true;
+		GetGame().GetCallqueue().CallLater(TryRequestVoNSnapshot, 0, false);
 	}
 
 	protected void TryRequestVoNSnapshot()
 	{
-		if (m_bVoNSnapshotRequestSent)
+		m_bVoNSnapshotRequestQueued = false;
+		if (Replication.IsServer() || m_bVoNSnapshotRequestSent)
+			return;
+		RplComponent rpl = RplComponent.Cast(GetOwner().FindComponent(RplComponent));
+		if (!rpl || !rpl.IsOwner())
 			return;
 
 		PlayerController localController = GetGame().GetPlayerController();
-		if (!localController || localController != GetOwner())
+		if (!localController || localController != GetOwner() || localController.GetPlayerId() <= 0)
+		{
+			RetryVoNSnapshotReadiness("local controller");
 			return;
+		}
 
 		PS_VoNRoomsManager vonManager = PS_VoNRoomsManager.GetInstance();
 		if (!vonManager || !vonManager.IsReplicated())
+		{
+			RetryVoNSnapshotReadiness("manager RplLoad");
+			return;
+		}
+		if (vonManager.IsVoNSnapshotCommitted())
 			return;
 
 		m_bVoNSnapshotRequestSent = true;
+		PrintFormat("[PS_VoNSync] request sent player=%1", localController.GetPlayerId());
+		GetGame().GetCallqueue().CallLater(CheckVoNSnapshotTimeout, 10000, false);
 		Rpc(RpcAsk_RequestVoNSnapshot);
+	}
+
+	protected void RetryVoNSnapshotReadiness(string reason)
+	{
+		if (m_sVoNSnapshotBlockedReason != reason)
+		{
+			m_sVoNSnapshotBlockedReason = reason;
+			PrintFormat("[PS_VoNSync] readiness waiting for %1", reason);
+		}
+		if (GetGame().GetWorld().GetWorldTime() >= m_fVoNSnapshotReadyDeadline)
+		{
+			Print(string.Format("[PS_VoNSync] readiness timeout: %1", reason), LogLevel.ERROR);
+			return;
+		}
+		m_bVoNSnapshotRequestQueued = true;
+		GetGame().GetCallqueue().CallLater(TryRequestVoNSnapshot, 250, false);
+	}
+
+	protected void CheckVoNSnapshotTimeout()
+	{
+		if (!m_bVoNSnapshotComplete)
+			Print(string.Format("[PS_VoNSync] response timeout: assembling=%1 revision=%2 chunks=%3/%4", m_bVoNSnapshotAssemblyActive, m_iVoNSnapshotRevision, m_iVoNSnapshotChunksReceived, m_iVoNSnapshotChunkCount), LogLevel.ERROR);
+	}
+
+	protected void CancelVoNSnapshotCallbacks()
+	{
+		if (GetGame() && GetGame().GetCallqueue())
+		{
+			GetGame().GetCallqueue().Remove(TryRequestVoNSnapshot);
+			GetGame().GetCallqueue().Remove(CheckVoNSnapshotTimeout);
+		}
+		m_bVoNSnapshotRequestQueued = false;
+	}
+
+	override void OnDelete(IEntity owner)
+	{
+		CancelVoNSnapshotCallbacks();
+		SCR_PlayerController playerController = SCR_PlayerController.Cast(owner);
+		if (playerController)
+		{
+			playerController.GetOnOwnershipChangedInvoker().Remove(OnVoNOwnershipChanged);
+			playerController.m_OnControlledEntityChanged.Remove(OnControlledEntityChanged);
+		}
+		super.OnDelete(owner);
 	}
 
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
@@ -581,6 +672,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		if (parkedIds.Count() > largestCount)
 			largestCount = parkedIds.Count();
 		int chunkCount = (largestCount + 15) / 16;
+		PrintFormat("[PS_VoNSync] captured player=%1 revision=%2 channels=%3 members=%4 parked=%5 chunks=%6", ownerController.GetPlayerId(), revision, channels.Count(), playerIds.Count(), parkedIds.Count(), chunkCount);
 		Rpc(RpcDo_BeginVoNSnapshot, revision, chunkCount, channels.Count(), playerIds.Count(), parkedIds.Count());
 
 		for (int chunkIndex = 0; chunkIndex < chunkCount; chunkIndex++)
@@ -606,13 +698,16 @@ class PS_PlayableControllerComponent : ScriptComponent
 	[RplRpc(RplChannel.Reliable, RplRcver.Owner)]
 	void RpcDo_BeginVoNSnapshot(int revision, int chunkCount, int channelCount, int membershipCount, int parkedCount)
 	{
+		if (!m_bVoNSnapshotRequestSent || m_bVoNSnapshotComplete)
+			return;
+		PrintFormat("[PS_VoNSync] begin revision=%1 channels=%2 members=%3 parked=%4 chunks=%5", revision, channelCount, membershipCount, parkedCount, chunkCount);
 		int largestCount = channelCount;
 		if (membershipCount > largestCount)
 			largestCount = membershipCount;
 		if (parkedCount > largestCount)
 			largestCount = parkedCount;
 		int expectedChunkCount = (largestCount + 15) / 16;
-		if (chunkCount != expectedChunkCount || channelCount < 0 || membershipCount < 0 || parkedCount < 0)
+		if (revision < 0 || chunkCount != expectedChunkCount || channelCount < 0 || membershipCount < 0 || parkedCount < 0)
 		{
 			m_bVoNSnapshotAssemblyActive = false;
 			Print("[PS_VoN] Invalid owner snapshot header", LogLevel.ERROR);
@@ -639,7 +734,10 @@ class PS_PlayableControllerComponent : ScriptComponent
 	void RpcDo_VoNSnapshotChunk(int revision, int chunkIndex, array<string> channels, array<int> playerIds, array<string> playerChannels, array<int> parkedIds)
 	{
 		if (!m_bVoNSnapshotAssemblyActive || revision != m_iVoNSnapshotRevision || chunkIndex != m_iVoNSnapshotChunksReceived || chunkIndex >= m_iVoNSnapshotChunkCount)
+		{
+			Print(string.Format("[PS_VoNSync] rejected chunk: active=%1 revision=%2 expectedRevision=%3 index=%4 expectedIndex=%5 total=%6", m_bVoNSnapshotAssemblyActive, revision, m_iVoNSnapshotRevision, chunkIndex, m_iVoNSnapshotChunksReceived, m_iVoNSnapshotChunkCount), LogLevel.ERROR);
 			return;
+		}
 		if (channels.Count() > 16 || playerIds.Count() > 16 || playerChannels.Count() > 16 || parkedIds.Count() > 16 || playerIds.Count() != playerChannels.Count())
 		{
 			m_bVoNSnapshotAssemblyActive = false;
@@ -656,6 +754,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		foreach (int playerId : parkedIds)
 			m_aVoNSnapshotParkedIds.Insert(playerId);
 		m_iVoNSnapshotChunksReceived++;
+		PrintFormat("[PS_VoNSync] chunk revision=%1 received=%2/%3", revision, m_iVoNSnapshotChunksReceived, m_iVoNSnapshotChunkCount);
 		CommitVoNSnapshotIfComplete();
 	}
 
@@ -672,9 +771,16 @@ class PS_PlayableControllerComponent : ScriptComponent
 
 		PS_VoNRoomsManager vonManager = PS_VoNRoomsManager.GetInstance();
 		if (!vonManager)
+		{
+			Print("[PS_VoNSync] cannot commit: manager missing", LogLevel.ERROR);
 			return;
-		vonManager.CommitVoNSnapshot(m_iVoNSnapshotRevision, m_aVoNSnapshotChannels, m_aVoNSnapshotPlayerIds, m_aVoNSnapshotPlayerChannels, m_aVoNSnapshotParkedIds);
+		}
+		m_bVoNSnapshotComplete = vonManager.CommitVoNSnapshot(m_iVoNSnapshotRevision, m_aVoNSnapshotChannels, m_aVoNSnapshotPlayerIds, m_aVoNSnapshotPlayerChannels, m_aVoNSnapshotParkedIds);
 		m_bVoNSnapshotAssemblyActive = false;
+		if (m_bVoNSnapshotComplete)
+			GetGame().GetCallqueue().Remove(CheckVoNSnapshotTimeout);
+		else
+			Print("[PS_VoNSync] snapshot commit rejected", LogLevel.ERROR);
 	}
 
 	void OnPlayerRoleChange(int playerId, EPlayerRole roleFlags)
@@ -982,17 +1088,14 @@ class PS_PlayableControllerComponent : ScriptComponent
 	// ------------------ VoN controlls ------------------
 	void MoveToVoNRoomByKey(int playerId, string roomKey)
 	{
-		string factionKey = "";
-		string roomName = "#PS-VoNRoom_Global";
-
-		if (roomKey.Contains("|")) {
-			array<string> outTokens = {};
-			roomKey.Split("|", outTokens, false);
-			factionKey = outTokens[0];
-			roomName = outTokens[1];
-		}
-
-		Rpc(RPC_MoveVoNToRoom, playerId, factionKey, roomName);
+		int separator = roomKey.IndexOf("|");
+		if (separator < 0 || separator == roomKey.Length() - 1)
+			return;
+		string factionKey = roomKey.Substring(0, separator);
+		string roomName = roomKey.Substring(separator + 1, roomKey.Length() - separator - 1);
+		if (roomName.Contains("|"))
+			return;
+		MoveToVoNRoom(playerId, factionKey, roomName);
 	}
 	void MoveToVoNRoom(int playerId, FactionKey factionKey, string roomName)
 	{
@@ -1001,10 +1104,57 @@ class PS_PlayableControllerComponent : ScriptComponent
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void RPC_MoveVoNToRoom(int playerId, FactionKey factionKey, string roomName)
 	{
+		if (!Replication.IsServer())
+			return;
+		PlayerController requester = PlayerController.Cast(GetOwner());
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		PS_VoNRoomsManager vonManager = PS_VoNRoomsManager.GetInstance();
+		if (!requester || !playableManager || !vonManager || !GetGame().GetPlayerManager().IsPlayerConnected(playerId))
+			return;
 
-		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
-		VoNRoomsManager.MoveToRoom(playerId, factionKey, roomName);
+		int requesterId = requester.GetPlayerId();
+		if (playerId != requesterId && !SCR_Global.IsAdmin(requesterId))
+		{
+			string requesterChannel = vonManager.GetPlayerChannel(requesterId);
+			string targetChannel = vonManager.GetPlayerChannel(playerId);
+			bool leaderKick = playableManager.IsPlayerGroupLeader(requesterId)
+				&& !playableManager.IsPlayerGroupLeader(playerId)
+				&& requesterChannel != "" && requesterChannel == targetChannel
+				&& playableManager.GetSlotFactionForPlayer(requesterId) == playableManager.GetSlotFactionForPlayer(playerId);
+			if (!leaderKick)
+				return;
+		}
+
+		if (!ValidateVoNRoomRequest(playerId, factionKey, roomName, playableManager, vonManager))
+		{
+			PrintFormat("[PS_VoN] Rejected room join player=%1 room='%2'", playerId, roomName);
+			return;
+		}
+		vonManager.MoveToRoom(playerId, factionKey, roomName);
+	}
+
+	protected bool ValidateVoNRoomRequest(int playerId, FactionKey factionKey, string roomName, PS_PlayableManager playableManager, PS_VoNRoomsManager vonManager)
+	{
+		if (roomName == "#PS-VoNRoom_Global")
+			return factionKey == "";
+		if (roomName == "#PS-VoNRoom_Local" + playerId.ToString())
+			return factionKey == "";
+
+		string publicPrefix = "#PS-VoNRoom_Public";
+		if (roomName.StartsWith(publicPrefix))
+		{
+			string ownerIdText = roomName.Substring(publicPrefix.Length(), roomName.Length() - publicPrefix.Length());
+			int publicOwnerId = ownerIdText.ToInt();
+			return factionKey == "" && publicOwnerId > 0 && ownerIdText == publicOwnerId.ToString()
+				&& GetGame().GetPlayerManager().IsPlayerConnected(publicOwnerId);
+		}
+
+		FactionKey authoritativeFaction = playableManager.GetSlotFactionForPlayer(playerId);
+		if (authoritativeFaction == "" || (factionKey != "" && factionKey != authoritativeFaction))
+			return false;
+		if (roomName != "#PS-VoNRoom_Faction" && roomName != "#PS-VoNRoom_Command" && !roomName.StartsWith("#PS-VoNRoom_Group"))
+			return false;
+		return vonManager.IsChannelRegistered(vonManager.GetRoomWithFaction(authoritativeFaction, roomName));
 	}
 
 	// Body-less: dead path (lobby voice is on the VoN proxy now, see PS_MenuVoN). Kept for the
