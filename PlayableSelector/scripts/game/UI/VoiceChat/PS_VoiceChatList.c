@@ -19,8 +19,6 @@ class PS_VoiceChatList : SCR_ScriptedWidgetComponent
 	protected VerticalLayoutWidget m_wRoomsList;
 	protected ref map<string, PS_VoiceChatRoom> m_wRooms = new map<string, PS_VoiceChatRoom>;
 	protected FactionKey m_sCurrentFactionKey;
-	protected bool m_bFactionViewSelected;
-	protected bool m_bRebuildQueued;
 
 	// -------------------- Handler events --------------------
 	override void HandlerAttached(Widget w)
@@ -45,7 +43,13 @@ class PS_VoiceChatList : SCR_ScriptedWidgetComponent
 			m_gVoNRoomsManager.m_eOnVoNSnapshotReady.Insert(OnVoNSnapshotReady);
 		}
 
-		QueueRebuild();
+		m_pPlayerController = GetGame().GetPlayerController();
+		m_iPlayerId = m_pPlayerController.GetPlayerId();
+		m_sCurrentFactionKey = m_gPlayableManager.GetPlayerFactionKey(m_iPlayerId);
+		m_sPublicChannelKey = m_gVoNRoomsManager.GetRoomWithFaction("", "#PS-VoNRoom_Public" + m_iPlayerId.ToString());
+
+		if (m_gVoNRoomsManager)
+			Rebuild();
 
 		GetGame().GetCallqueue().CallLater(UpdateInfo, 100, true);
 	}
@@ -58,13 +62,7 @@ class PS_VoiceChatList : SCR_ScriptedWidgetComponent
 	override void HandlerDeattached(Widget w)
 	{
 		super.HandlerDeattached(w);
-		if (GetGame() && GetGame().GetCallqueue())
-		{
-			GetGame().GetCallqueue().Remove(UpdateInfo);
-			GetGame().GetCallqueue().Remove(Rebuild);
-		}
-		m_bRebuildQueued = false;
-		m_wRoomsList = null;
+		GetGame().GetCallqueue().Remove(UpdateInfo);
 
 		if (m_gVoNRoomsManager)
 		{
@@ -81,46 +79,8 @@ class PS_VoiceChatList : SCR_ScriptedWidgetComponent
 		m_wRooms.Clear();
 	}
 
-	// Coalesce assignment bursts; detaching cancels the pending callback.
-	protected void QueueRebuild()
-	{
-		if (m_bRebuildQueued || !m_wRoomsList)
-			return;
-
-		m_bRebuildQueued = true;
-		GetGame().GetCallqueue().CallLater(Rebuild, 0, false);
-	}
-
 	void Rebuild()
 	{
-		m_bRebuildQueued = false;
-		if (!m_wRoomsList)
-			return;
-
-		if (!m_gVoNRoomsManager)
-		{
-			m_gVoNRoomsManager = PS_VoNRoomsManager.GetInstance();
-			if (m_gVoNRoomsManager)
-			{
-				m_gVoNRoomsManager.m_eOnRoomChanged.Insert(MovePlayer);
-				m_gVoNRoomsManager.m_eOnPlayerParkedChanged.Insert(OnPlayerParkedChanged);
-				m_gVoNRoomsManager.m_eOnVoNSnapshotReady.Insert(OnVoNSnapshotReady);
-			}
-		}
-		if (!m_gPlayableManager)
-			m_gPlayableManager = PS_PlayableManager.GetInstance();
-		m_pPlayerController = GetGame().GetPlayerController();
-		if (!m_pPlayerController || !m_gPlayableManager || !m_gVoNRoomsManager)
-			return;
-
-		int playerId = m_pPlayerController.GetPlayerId();
-		if (playerId <= 0)
-			return;
-
-		m_iPlayerId = playerId;
-		if (!m_bFactionViewSelected)
-			m_sCurrentFactionKey = m_gPlayableManager.GetPlayerFactionKey(m_iPlayerId);
-		m_sPublicChannelKey = m_gVoNRoomsManager.GetRoomWithFaction("", "#PS-VoNRoom_Public" + m_iPlayerId.ToString());
 		Clear();
 
 		// Create initial list of visible channels
@@ -142,17 +102,11 @@ class PS_VoiceChatList : SCR_ScriptedWidgetComponent
 
 	void CreateRoom(string channelKey)
 	{
-		if (channelKey == "" || !m_gVoNRoomsManager || m_wRooms.Contains(channelKey))
+		if (m_wRooms.Contains(channelKey))
 			return;
 		Widget roomWidget = GetGame().GetWorkspace().CreateWidgets(m_sVoiceChatRoomPrefab);
-		if (!roomWidget)
-			return;
 		PS_VoiceChatRoom voiceChatRoom = PS_VoiceChatRoom.Cast(roomWidget.FindHandler(PS_VoiceChatRoom));
-		if (!voiceChatRoom || !voiceChatRoom.SetChannelKey(channelKey))
-		{
-			roomWidget.RemoveFromHierarchy();
-			return;
-		}
+		voiceChatRoom.SetChannelKey(channelKey);
 
 		array<int> playersInRoom = new array<int>();
 		m_gVoNRoomsManager.GetPlayersInRoom(playersInRoom, channelKey);
@@ -198,10 +152,9 @@ class PS_VoiceChatList : SCR_ScriptedWidgetComponent
 
 	void SwitchFaction(FactionKey factionKey)
 	{
-		m_bFactionViewSelected = true;
 		if (m_sCurrentFactionKey == factionKey) return;
 		m_sCurrentFactionKey = factionKey;
-		QueueRebuild();
+		Rebuild();
 	}
 
 	FactionKey GetFactionKey()
@@ -211,29 +164,35 @@ class PS_VoiceChatList : SCR_ScriptedWidgetComponent
 
 	void MovePlayer(int playerId, string channelKey, string oldChannelKey)
 	{
-		QueueRebuild();
+		// remove from old channel
+		if (m_wRooms.Contains(oldChannelKey))
+		{
+			m_wRooms[oldChannelKey].RemovePlayer(playerId);
+			RemoveRoomIfNeed(oldChannelKey);
+		}
+		if (!m_wRooms.Contains(channelKey))
+			CreateRoomIfNeed(channelKey);
+		else
+		{
+			if (!m_gVoNRoomsManager.IsPlayerParked(playerId))
+				m_wRooms[channelKey].AddPlayer(playerId);
+		}
+
+		UpdateInfo();
 	}
 
 	void OnPlayerParkedChanged(int playerId, bool parked)
 	{
-		QueueRebuild();
+		Rebuild();
 	}
 
 	void OnVoNSnapshotReady()
 	{
-		QueueRebuild();
+		Rebuild();
 	}
 
 	void UpdateInfo()
 	{
-		if (!m_wRoomsList)
-			return;
-		if (!m_gVoNRoomsManager || !m_gPlayableManager || m_iPlayerId <= 0)
-		{
-			QueueRebuild();
-			return;
-		}
-
 		foreach (string channelKey, PS_VoiceChatRoom voiceChatRoom : m_wRooms)
 		{
 			voiceChatRoom.UpdateInfo();
@@ -254,15 +213,11 @@ class PS_VoiceChatList : SCR_ScriptedWidgetComponent
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
-		PlayerController currentPlayerController = GetGame().GetPlayerController();
-		if (!gameMode || !playerManager || !playableManager || !VoNRoomsManager || !currentPlayerController)
-			return;
-		int currentPlayerId = currentPlayerController.GetPlayerId();
-		if (currentPlayerId <= 0)
-			return;
 		SCR_EGameModeState gameState = gameMode.GetState();
 
 		// current player
+		PlayerController currentPlayerController = GetGame().GetPlayerController();
+		int currentPlayerId = currentPlayerController.GetPlayerId();
 		EPlayerRole currentPlayerRole = playerManager.GetPlayerRoles(currentPlayerController.GetPlayerId());
 		FactionKey currentPlayerFactionKey = m_sCurrentFactionKey;
 
@@ -342,7 +297,7 @@ class PS_VoiceChatList : SCR_ScriptedWidgetComponent
 
 		// Current channel if something gone wrong
 		string currentRoom = VoNRoomsManager.GetPlayerChannel(currentPlayerId);
-		if (currentRoom != "" && !outRoomsArray.Contains(currentRoom))
+		if (!outRoomsArray.Contains(currentRoom))
 			outRoomsArray.Insert(currentRoom);
 	}
 
