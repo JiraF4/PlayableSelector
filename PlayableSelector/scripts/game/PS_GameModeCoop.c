@@ -554,8 +554,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (!playableController)
 			return;
 		
-		int playerId = playerController.GetPlayerId();
-		if (!PS_PlayersHelper.IsAdminOrServer(playerId))
+		if (!PS_PlayersHelper.IsAdminOrServer())
 			return;
 		
 		if (GetState() != SCR_EGameModeState.GAME)
@@ -1707,7 +1706,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
 		if (chatPanelManager)
 		{
-			ChatMessageInvoker invoker = chatPanelManager.GetChatMessageInvoker();
+			ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("smsg");
 			if (invoker)
 				invoker.Invoke(null, "#PS-Freeze_End");
 		}
@@ -1981,11 +1980,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	void RPC_SetFreezeTime(int freezeTime)
 	{
 		m_iFreezeTime = freezeTime;
-	}
-	
-	int GetDisableTime()
-	{
-		return m_iDisableTime;
 	}
 	
 	float GetGameStartTime()
