@@ -39,30 +39,43 @@ OverlayWidgetClass {
       SizeToContent 1
      }
      {
-      VerticalLayoutWidgetClass "{62BACE82160710FE}" {
-       Name "VerticalLayout0"
-       Slot OverlayWidgetSlot "{62BACE8216071025}" {
-        Padding 30 10 30 10
+      SizeLayoutWidgetClass "{66A4B8F12038DE42}" {
+       Name "SizeLayout0"
+       Slot OverlayWidgetSlot "{66A4B8F12038DE43}" {
        }
+       AllowWidthOverride 1
+       WidthOverride 240
+       AllowHeightOverride 1
+       HeightOverride 114
        {
-        TextWidgetClass "{62BACE8217DA068F}" {
-         Name "FreezeTimeText"
-         Slot LayoutSlot "{62BACE8217DA06A5}" {
-          Padding 0 0 0 6
+        VerticalLayoutWidgetClass "{62BACE82160710FE}" {
+         Name "VerticalLayout0"
+         Slot AlignableSlot "{62BACE8216071025}" {
+          HorizontalAlign 3
+          Padding 30 10 30 10
          }
-         Color 0.761 0.761 0.761 1
-         Text "#PS-Freeze_time"
-         "Min Font Size" 24
-        }
-        TextWidgetClass "{5F0EB4D5FBCA212F}" {
-         Name "FreezeTimeCounterText"
-         Slot LayoutSlot "{64C91A01C7D04FFA}" {
+         {
+          TextWidgetClass "{62BACE8217DA068F}" {
+           Name "FreezeTimeText"
+           Slot LayoutSlot "{62BACE8217DA06A5}" {
+            Padding 0 0 0 6
+           }
+           Color 0.761 0.761 0.761 1
+           Text "#PS-Freeze_time"
+           "Min Font Size" 24
+           "Horizontal Alignment" Center
+          }
+          TextWidgetClass "{5F0EB4D5FBCA212F}" {
+           Name "FreezeTimeCounterText"
+           Slot LayoutSlot "{64C91A01C7D04FFA}" {
+           }
+           Color 0.761 0.386 0.078 1
+           Text "00:00"
+           "Font Size" 48
+           "Min Font Size" 48
+           "Horizontal Alignment" Center
+          }
          }
-         Color 0.761 0.386 0.078 1
-         Text "00:00"
-         "Font Size" 48
-         "Min Font Size" 48
-         "Horizontal Alignment" Center
         }
        }
       }

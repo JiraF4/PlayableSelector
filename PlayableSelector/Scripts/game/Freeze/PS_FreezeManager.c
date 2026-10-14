@@ -37,6 +37,9 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 	protected float m_fHardFreezeRemaining;
 
 	[RplProp()]
+	protected float m_fHardFreezeDuration;
+
+	[RplProp()]
 	protected int m_iEffectiveFreezeTime;
 
 	[RplProp()]
@@ -84,6 +87,12 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 	float GetHardFreezeRemaining()
 	{
 		return m_fHardFreezeRemaining;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	float GetHardFreezeDuration()
+	{
+		return m_fHardFreezeDuration;
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -260,12 +269,14 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 		{
 			m_fHardFreezeRemaining += seconds;
 			m_fHardFreezeRemaining = Math.Clamp(m_fHardFreezeRemaining, 0, 86400);
+			m_fHardFreezeDuration += seconds;
 			Replication.BumpMe();
 			return;
 		}
 
 		m_bHardFreeze = true;
 		m_fHardFreezeRemaining = seconds;
+		m_fHardFreezeDuration = seconds;
 
 		if (m_VehicleHold)
 			m_VehicleHold.PinAll_S();
@@ -293,6 +304,7 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 		GetGame().GetCallqueue().Remove(UpdateHardFreezeTimer_S);
 		m_bHardFreeze = false;
 		m_fHardFreezeRemaining = 0;
+		m_fHardFreezeDuration = 0;
 
 		if (m_VehicleHold)
 			m_VehicleHold.Release_S();
@@ -466,7 +478,7 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 		if (System.IsConsoleApp())
 			return;
 
-		if (m_eFreezePhase == PS_EFreezePhase.FINISHED || m_eFreezePhase == PS_EFreezePhase.NOT_STARTED)
+		if (!m_bHardFreeze && (m_eFreezePhase == PS_EFreezePhase.FINISHED || m_eFreezePhase == PS_EFreezePhase.NOT_STARTED))
 		{
 			if (m_hFreezeTimeCounter)
 			{

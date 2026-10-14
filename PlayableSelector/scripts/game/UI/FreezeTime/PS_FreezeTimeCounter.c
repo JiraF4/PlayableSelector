@@ -1,6 +1,5 @@
 class PS_FreezeTimeCounter : SCR_ScriptedWidgetComponent
 {
-	protected Widget m_wRoot;
 	protected TextWidget m_wFreezeTimeCounterText;
 	protected TextWidget m_wFreezeTimeText;
 	protected float m_fFullFreezeTime;
@@ -9,11 +8,6 @@ class PS_FreezeTimeCounter : SCR_ScriptedWidgetComponent
 	protected ImageWidget m_wFill;
 	protected ImageWidget m_wEmpty;
 
-	Widget GetRootWidget()
-	{
-		return m_wRoot;
-	}
-	
 	override void HandlerAttached(Widget w)
 	{
 		super.HandlerAttached(w);
@@ -40,7 +34,7 @@ class PS_FreezeTimeCounter : SCR_ScriptedWidgetComponent
 		if (!freezeManager || !m_wRoot)
 			return;
 
-		if (freezeManager.IsFreezeTimeEnd())
+		if (!freezeManager.IsHardFreezeActive() && freezeManager.IsFreezeTimeEnd())
 		{
 			m_wRoot.RemoveFromHierarchy();
 			return;
@@ -49,7 +43,12 @@ class PS_FreezeTimeCounter : SCR_ScriptedWidgetComponent
 		if (freezeManager.IsHardFreezeActive())
 		{
 			if (m_wFreezeTimeText)
-				m_wFreezeTimeText.SetText("#PS-Freeze_Pause");
+			{
+				if (freezeManager.GetFreezePhase() == PS_EFreezePhase.STARTUP)
+					m_wFreezeTimeText.SetText("#PS-Load_time");
+				else
+					m_wFreezeTimeText.SetText("#PS-Freeze_Pause");
+			}
 			if (m_wFreezeTimeCounterText)
 				m_wFreezeTimeCounterText.SetColor(Color.Red);
 
@@ -64,8 +63,14 @@ class PS_FreezeTimeCounter : SCR_ScriptedWidgetComponent
 
 			if (m_wEmpty && m_wFill)
 			{
-				HorizontalLayoutSlot.SetFillWeight(m_wEmpty, 1.0);
-				HorizontalLayoutSlot.SetFillWeight(m_wFill, 0.0);
+				m_wEmpty.SetColor(Color.Red);
+				float dur = freezeManager.GetHardFreezeDuration();
+				float percent = 1.0;
+				if (dur > 0)
+					percent = Math.Clamp(remSec / dur, 0.0, 1.0);
+
+				HorizontalLayoutSlot.SetFillWeight(m_wEmpty, percent);
+				HorizontalLayoutSlot.SetFillWeight(m_wFill, 1.0 - percent);
 			}
 			return;
 		}
@@ -97,6 +102,7 @@ class PS_FreezeTimeCounter : SCR_ScriptedWidgetComponent
 
 			if (m_wEmpty && m_wFill)
 			{
+				m_wEmpty.SetColor(new Color(0.760998, 0.386007, 0.078004, 1.000000));
 				HorizontalLayoutSlot.SetFillWeight(m_wEmpty, percent);
 				HorizontalLayoutSlot.SetFillWeight(m_wFill, 1.0 - percent);
 			}

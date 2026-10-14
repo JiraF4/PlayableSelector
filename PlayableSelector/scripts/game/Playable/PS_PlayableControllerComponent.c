@@ -203,7 +203,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		int playerId = pc.GetPlayerId();
 		if (playerId <= 0)
 			return false;
-		return PS_PlayersHelper.IsAdminOrServer(playerId);
+		return SCR_Global.IsAdmin(playerId);
 	}
 
 	void HardFreeze(int seconds)
