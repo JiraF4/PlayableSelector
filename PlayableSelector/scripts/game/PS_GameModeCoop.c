@@ -204,6 +204,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	{
 		super.OnGameStart();
 
+		PS_InputLock.ResetStatic();
+
 		// Server startup: log build info once so it appears in every session's server log.
 		if (Replication.IsServer())
 		{
@@ -1889,59 +1891,19 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		}
 	}
 
-	protected IEntity m_ViewFrozenEntity;
-
 	override protected void SetLocalControls(bool enabled)
 	{
 		bool held = IsHardFreezeActive();
-		bool allow = enabled;
-		if (held)
-			allow = false;
+		if (PS_InputLock.IsLocked() || held)
+			enabled = false;
 
-		super.SetLocalControls(allow);
-		EnforceViewControls(held);
-	}
-
-	protected void EnforceViewControls(bool disabled)
-	{
-		IEntity target;
-		if (disabled)
-		{
-			PlayerController playerController = GetGame().GetPlayerController();
-			if (playerController)
-				target = playerController.GetControlledEntity();
-		}
-
-		if (m_ViewFrozenEntity && m_ViewFrozenEntity != target)
-		{
-			SetCharacterViewDisabled(m_ViewFrozenEntity, false);
-		}
-
-		m_ViewFrozenEntity = target;
-		if (target)
-		{
-			SetCharacterViewDisabled(target, true);
-		}
-	}
-
-	protected void SetCharacterViewDisabled(IEntity entity, bool disabled)
-	{
-		ChimeraCharacter character = ChimeraCharacter.Cast(entity);
-		if (!character)
-			return;
-
-		CharacterControllerComponent charController = character.GetCharacterController();
-		if (charController)
-			charController.SetDisableViewControls(disabled);
+		super.SetLocalControls(enabled);
+		PS_InputLock.EnforceView(held);
 	}
 
 	void ~PS_GameModeCoop()
 	{
-		if (m_ViewFrozenEntity)
-		{
-			SetCharacterViewDisabled(m_ViewFrozenEntity, false);
-			m_ViewFrozenEntity = null;
-		}
+		PS_InputLock.ResetStatic();
 	}
 	
 	bool IsFreezeTimeShootingForbiden()
