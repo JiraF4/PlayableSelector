@@ -116,12 +116,30 @@ class PS_CharacterSelector : SCR_ButtonComponent
 	
 	override void HandlerDeattached(Widget w)
 	{
+		UnbindPlayable_P();
+
 		if (m_PlayableControllerComponent)
 			m_PlayableControllerComponent.GetOnPlayerRoleChange().Remove(OnRoleChangeCurrent);
 		if (m_PlayableManager)
 		{
 			m_PlayableManager.GetOnPlayerPlayableChange().Remove(OnPlayerPlayableChange);
 		}
+	}
+
+	protected void UnbindPlayable_P()
+	{
+		if (!m_PlayableContainer)
+			return;
+
+		m_PlayableContainer.GetOnPlayerChange().Remove(UpdatePlayer);
+		m_PlayableContainer.GetOnDamageStateChanged().Remove(UpdateDammage);
+		m_PlayableContainer.GetOnUnregister().Remove(RemoveSelf);
+		m_PlayableContainer.GetOnPlayerConnected().Remove(OnConnected);
+		m_PlayableContainer.GetOnPlayerStateChange().Remove(OnStateChange);
+		m_PlayableContainer.GetOnPlayerPinChange().Remove(UpdatePined);
+		m_PlayableContainer.GetOnPlayerRoleChange().Remove(OnRoleChange);
+
+		m_PlayableContainer = null;
 	}
 	
 	// --------------------------------------------------------------------------------------------------------------------------------
@@ -138,6 +156,7 @@ class PS_CharacterSelector : SCR_ButtonComponent
 	
 	void SetPlayable(PS_PlayableContainer playableContainer)
 	{
+		UnbindPlayable_P();
 		m_PlayableContainer = playableContainer;
 		m_iPlayableId = playableContainer.GetRplId();
 		
