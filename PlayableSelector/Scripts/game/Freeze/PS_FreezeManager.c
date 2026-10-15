@@ -57,6 +57,7 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 	protected PS_GameModeCoop m_GameModeCoop;
 	protected PS_FreezeTimeCounter m_hFreezeTimeCounter;
 	protected bool m_bFreezeEndTriggered;
+	protected bool m_bDayAdvanceWasOn;
 	protected static PS_FreezeManager s_Instance;
 
 	//------------------------------------------------------------------------------------------------
@@ -144,6 +145,18 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 	}
 
 	//------------------------------------------------------------------------------------------------
+	bool IsFreezeEndTriggered()
+	{
+		return m_bFreezeEndTriggered;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	void ClearHUDReference()
+	{
+		m_hFreezeTimeCounter = null;
+	}
+
+	//------------------------------------------------------------------------------------------------
 	override void OnPostInit(IEntity owner)
 	{
 		super.OnPostInit(owner);
@@ -171,6 +184,8 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 			m_DamagePause.ResumeAll_S();
 			m_DamagePause.Clear_S();
 		}
+
+		RestoreDayAdvance_S();
 
 		if (m_hFreezeTimeCounter)
 		{
@@ -270,9 +285,12 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 			m_fHardFreezeRemaining += seconds;
 			m_fHardFreezeRemaining = Math.Clamp(m_fHardFreezeRemaining, 0, 86400);
 			m_fHardFreezeDuration += seconds;
+			UpdateHUD_C();
 			Replication.BumpMe();
 			return;
 		}
+
+		StopDayAdvance_S();
 
 		m_bHardFreeze = true;
 		m_fHardFreezeRemaining = seconds;
@@ -289,6 +307,7 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 		GetGame().GetCallqueue().CallLater(UpdateHardFreezeTimer_S, 1000, true);
 
 		m_OnHardFreezeChanged.Invoke(true);
+		UpdateHUD_C();
 		Replication.BumpMe();
 	}
 
@@ -311,6 +330,8 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 
 		if (m_DamagePause)
 			m_DamagePause.ResumeAll_S();
+
+		RestoreDayAdvance_S();
 
 		m_OnHardFreezeChanged.Invoke(false);
 
@@ -490,7 +511,7 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 			return;
 		}
 
-		if (!m_hFreezeTimeCounter)
+		if (!m_hFreezeTimeCounter || !m_hFreezeTimeCounter.GetRootWidget())
 		{
 			Widget widget = GetGame().GetWorkspace().CreateWidgets("{EC8A548C3F53BE4F}UI/layouts/FreezeTime/FreezeTimeCounter.layout");
 			if (widget)
@@ -506,10 +527,48 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 	}
 
 	protected void OnRpl_CurrentFreezeTime() {}
-	protected void OnRpl_HardFreezeRemaining() {}
+	protected void OnRpl_HardFreezeRemaining()
+	{
+		UpdateHUD_C();
+	}
 	protected void OnRpl_FreezePhase()
 	{
 		UpdateHUD_C();
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected void StopDayAdvance_S()
+	{
+		TimeAndWeatherManagerEntity timeManager = GetTimeManager();
+		if (!timeManager)
+			return;
+
+		m_bDayAdvanceWasOn = timeManager.GetIsDayAutoAdvanced();
+		if (m_bDayAdvanceWasOn)
+			timeManager.SetIsDayAutoAdvanced(false);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected void RestoreDayAdvance_S()
+	{
+		if (!m_bDayAdvanceWasOn)
+			return;
+
+		m_bDayAdvanceWasOn = false;
+
+		TimeAndWeatherManagerEntity timeManager = GetTimeManager();
+		if (timeManager)
+			timeManager.SetIsDayAutoAdvanced(true);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected TimeAndWeatherManagerEntity GetTimeManager()
+	{
+		ChimeraWorld world = ChimeraWorld.CastFrom(GetGame().GetWorld());
+		if (!world)
+			return null;
+
+		return world.GetTimeAndWeatherManager();
 	}
 }
 

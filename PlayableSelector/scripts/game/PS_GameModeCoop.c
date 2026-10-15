@@ -527,19 +527,15 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			return;
 		
 		PlayerController playerController = GetGame().GetPlayerController();
+		if (!playerController)
+			return;
+
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		if (!playableController)
 			return;
 		
 		if (GetState() != SCR_EGameModeState.GAME || IsFreezeTimeEnd())
 			return;
-		
-		// Broadcast admin lock: /fte ends freeze time, so block other admins from
-		// sending /adv (which would now advance to DEBRIEFING) for 5 seconds.
-		int myId = playerController.GetPlayerId();
-		float now = GetGame().GetWorld().GetWorldTime();
-		Rpc(RPC_BroadcastAdvAdminLock, myId, now);
-		RPC_BroadcastAdvAdminLock(myId, now);
 		
 		playableController.FreezeTimerEnd();
 	}
@@ -681,52 +677,18 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		playableController.LoadMission(data);
 	}
 
-	// Admin lock: tracks which admin last sent /adv and when, to prevent a second admin
-	// from advancing within 5s. Same admin can retry freely (they know they already advanced).
-	// Each client maintains its own copy via RPC_BroadcastAdvAdminLock (Broadcast RPC).
-	protected static int s_iLastAdvAdminPlayerId = 0;
-	protected static float s_fLastAdvAdminTime = 0;
-
 	void AdvanceStage_Callback(SCR_ChatPanel panel, string data)
 	{
+		if (!PS_PlayersHelper.IsAdminOrServer())
+			return;
+
 		PlayerController playerController = GetGame().GetPlayerController();
+		if (!playerController)
+			return;
+
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-
-		PlayerManager playerManager = GetGame().GetPlayerManager();
-		EPlayerRole playerRole = playerManager.GetPlayerRoles(playerController.GetPlayerId());
-		if (!PS_PlayersHelper.IsAdminOrServer()) return;
-		if (!playableController) return;
-
-		// Admin lock: if a DIFFERENT admin used /adv within the last 5 seconds, block this one.
-		// Same admin can retry freely — they already know they advanced.
-		int myId = playerController.GetPlayerId();
-		float now = GetGame().GetWorld().GetWorldTime();
-		if (s_iLastAdvAdminPlayerId != 0 && s_iLastAdvAdminPlayerId != myId && (now - s_fLastAdvAdminTime) < 5000)
-		{
-			Print(string.Format("[PS_GameModeCoop] /adv blocked: admin %1 already advanced %2ms ago", s_iLastAdvAdminPlayerId, now - s_fLastAdvAdminTime));
-			return;
-		}
-
-		// Broadcast the admin lock so all clients know this admin just used /adv.
-		Rpc(RPC_BroadcastAdvAdminLock, myId, now);
-		RPC_BroadcastAdvAdminLock(myId, now);
-
-		// Safety: during freeze time in GAME state, "/adv" acts as "/fte" (end freeze time)
-		// instead of advancing to DEBRIEFING. Prevents admins from accidentally ending the match
-		// when they only meant to end freeze time (common typo since both are short chat commands).
-		if (GetState() == SCR_EGameModeState.GAME && !IsFreezeTimeEnd())
-		{
-			playableController.FreezeTimerEnd();
-			return;
-		}
-
-		playableController.AdvanceGameState(SCR_EGameModeState.NULL);
-	}
-	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	void RPC_BroadcastAdvAdminLock(int adminPlayerId, float timestamp)
-	{
-		s_iLastAdvAdminPlayerId = adminPlayerId;
-		s_fLastAdvAdminTime = timestamp;
+		if (playableController)
+			playableController.AdvanceGameState(SCR_EGameModeState.NULL);
 	}
 
 	void PlayGameConfig_Callback(SCR_ChatPanel panel, string data)
@@ -744,10 +706,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		BaseGameMode gamemode = GetGame().GetGameMode();
 		SCR_PlayersRestrictionZoneManagerComponent restrictionZoneManager = SCR_PlayersRestrictionZoneManagerComponent.Cast(gamemode.FindComponent(SCR_PlayersRestrictionZoneManagerComponent));
 		set<SCR_EditorRestrictionZoneEntity> zones = restrictionZoneManager.GetZones();
-
-		SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
-		ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("smsg");
-		invoker.Invoke(null, "#PS-Freeze_End");
 
 		array<int> playerIds = new array<int>();
 		GetGame().GetPlayerManager().GetPlayers(playerIds);
@@ -935,37 +893,47 @@ class PS_GameModeCoop : SCR_BaseGameMode
 				PS_AntiCheatPlayerIdentity(playerId), cause, timeout);
 
 		PlayerManager playerManager = GetGame().GetPlayerManager();
-		SCR_PlayerController playerController = SCR_PlayerController.Cast(playerManager.GetPlayerController(playerId));
-		if (!playerController)
-			return;
-		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		SCR_PlayerController playerController;
+		if (playerManager)
+			playerController = SCR_PlayerController.Cast(playerManager.GetPlayerController(playerId));
 
+		// Reconnect state and VoN cleanup must survive an already-destroyed controller.
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		// Cancel any pending zombie RestorePlayerReconnectData for this playerId. If the player
-		// disconnects BEFORE the 2500ms reconnect-restore delay fires, the uncancelled CallLater
-		// would execute on the dead playerId — consuming the GUID cache and permanently assigning
-		// the slot to a ghost ID, locking the real player out on their next reconnect.
-		// Note: Callqueue.Remove() in Enfusion only accepts a function ref (no extra args), so
-		// we flag the playerId as cancelled and RestorePlayerReconnectData checks it on entry.
-		playableManager.CancelPendingReconnectRestore(playerId);
-		// Cache faction/slot by GUID now, while the playerId-keyed state still exists, so the player
-		// keeps their side (and map markers) when they reconnect under a new playerId.
-		playableManager.StorePlayerReconnectData(playerId);
-		playableManager.SetPlayerState(playerId, PS_EPlayableControllerState.Disconected);
-		if (m_iReconnectTime > 0) GetGame().GetCallqueue().CallLater(RemoveDisconnectedPlayer, m_iReconnectTime, false, playerId);
+		if (playableManager)
+		{
+			// Cancel any pending zombie RestorePlayerReconnectData for this playerId. If the player
+			// disconnects BEFORE the 2500ms reconnect-restore delay fires, the uncancelled CallLater
+			// would execute on the dead playerId — consuming the GUID cache and permanently assigning
+			// the slot to a ghost ID, locking the real player out on their next reconnect.
+			// Note: Callqueue.Remove() in Enfusion only accepts a function ref (no extra args), so
+			// we flag the playerId as cancelled and RestorePlayerReconnectData checks it on entry.
+			playableManager.CancelPendingReconnectRestore(playerId);
+			// Cache faction/slot by GUID now, while the playerId-keyed state still exists, so the player
+			// keeps their side (and map markers) when they reconnect under a new playerId.
+			playableManager.StorePlayerReconnectData(playerId);
+			playableManager.SetPlayerState(playerId, PS_EPlayableControllerState.Disconected);
+			if (m_iReconnectTime > 0) GetGame().GetCallqueue().CallLater(RemoveDisconnectedPlayer, m_iReconnectTime, false, playerId);
+		}
 
 		// Body-less: delete this player's VoN proxy (a reconnecting player gets a fresh one).
 		PS_VoNRoomsManager vonRoomsManager = PS_VoNRoomsManager.GetInstance();
 		if (vonRoomsManager)
 			vonRoomsManager.RemoveProxy_S(playerId);
 
-		IEntity controlledEntity = playerController.GetControlledEntity();
-		if (controlledEntity) {
-			RplComponent rpl = RplComponent.Cast(controlledEntity.FindComponent(RplComponent));
-			rpl.GiveExt(RplIdentity.Local(), false);
+		IEntity controlledEntity;
+		if (playerController)
+		{
+			controlledEntity = playerController.GetControlledEntity();
+			if (controlledEntity)
+			{
+				RplComponent rpl = RplComponent.Cast(controlledEntity.FindComponent(RplComponent));
+				if (rpl)
+					rpl.GiveExt(RplIdentity.Local(), false);
+			}
 		}
 
-		m_OnPlayerDisconnected.Invoke(playerId, cause, timeout);
+		if (m_OnPlayerDisconnected)
+			m_OnPlayerDisconnected.Invoke(playerId, cause, timeout);
 
 		// NOTE: vanilla would call m_pRespawnSystemComponent.OnPlayerDisconnected_S here, but this
 		// lobby disables the respawn system (it is a no-op stub). The stub's modded no-op override is
@@ -1614,6 +1582,89 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	// re-enter the same case (e.g. BRIEFING → StartGame twice). Use a wall-clock cooldown
 	// to drop the duplicate, matching the m_bFreezeEndTriggered pattern FreezeTimerEnd uses.
 	protected float m_fLastAdvanceTime = 0;
+	protected int m_iLastAdvAdminPlayerId = -1;
+	protected float m_fLastAdvAdminTime = -10000.0;
+	protected const float ADMIN_INTERLOCK_TIMEOUT_MS = 5000.0;
+
+	// Manual requests share a server-owned interlock; automatic transitions use AdvanceGameState.
+	void AdvanceGameState_S(int callerPlayerId, SCR_EGameModeState state)
+	{
+		if (!Replication.IsServer() || !GetGame().GetPlayerManager())
+			return;
+		if (callerPlayerId <= 0 || !SCR_Global.IsAdmin(callerPlayerId))
+			return;
+
+		SCR_EGameModeState currentState = GetState();
+		switch (currentState)
+		{
+			case SCR_EGameModeState.PREGAME:
+			case SCR_EGameModeState.SLOTSELECTION:
+			case SCR_EGameModeState.CUTSCENE:
+			case SCR_EGameModeState.BRIEFING:
+			case SCR_EGameModeState.GAME:
+			case SCR_EGameModeState.DEBRIEFING:
+				break;
+			default:
+				return;
+		}
+		if (state != SCR_EGameModeState.NULL && state != currentState)
+			return;
+		if (currentState == SCR_EGameModeState.SLOTSELECTION && m_bShowCutscene && !m_CutsceneManager)
+			return;
+
+		float now = GetGame().GetWorld().GetWorldTime();
+		if (now - m_fLastAdvanceTime < 100.0)
+			return;
+
+		if (m_iLastAdvAdminPlayerId > 0 && callerPlayerId != m_iLastAdvAdminPlayerId && now - m_fLastAdvAdminTime < ADMIN_INTERLOCK_TIMEOUT_MS)
+		{
+			PrintFormat("[PS_GameModeCoop] /adv blocked: admin %1 locked by admin %2 (%3ms ago)",
+				callerPlayerId, m_iLastAdvAdminPlayerId, now - m_fLastAdvAdminTime);
+			return;
+		}
+
+		if (currentState == SCR_EGameModeState.GAME && !IsFreezeTimeEnd())
+		{
+			TryAdminFreezeEnd_S(callerPlayerId);
+			return;
+		}
+
+		m_iLastAdvAdminPlayerId = callerPlayerId;
+		m_fLastAdvAdminTime = now;
+		AdvanceGameState(state);
+	}
+
+	void TryAdminFreezeEnd_S(int callerPlayerId)
+	{
+		if (!Replication.IsServer() || !GetGame().GetPlayerManager())
+			return;
+		if (callerPlayerId <= 0 || !SCR_Global.IsAdmin(callerPlayerId))
+			return;
+		if (GetState() != SCR_EGameModeState.GAME)
+			return;
+
+		PS_FreezeManager freezeManager = PS_FreezeManager.GetInstance();
+		if (freezeManager)
+		{
+			if (freezeManager.GetFreezePhase() != PS_EFreezePhase.ORDINARY)
+				return;
+		}
+		else if (!IsDisableTimeEnd() || IsFreezeTimeEnd())
+			return;
+
+		float now = GetGame().GetWorld().GetWorldTime();
+		if (m_iLastAdvAdminPlayerId > 0 && callerPlayerId != m_iLastAdvAdminPlayerId && now - m_fLastAdvAdminTime < ADMIN_INTERLOCK_TIMEOUT_MS)
+		{
+			PrintFormat("[PS_GameModeCoop] /fte blocked: admin %1 locked by admin %2 (%3ms ago)",
+				callerPlayerId, m_iLastAdvAdminPlayerId, now - m_fLastAdvAdminTime);
+			return;
+		}
+
+		m_iLastAdvAdminPlayerId = callerPlayerId;
+		m_fLastAdvAdminTime = now;
+		FreezeTimerEnd();
+	}
+
 	void AdvanceGameState(SCR_EGameModeState oldState)
 	{
 		if (!Replication.IsServer())
@@ -1696,12 +1747,18 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (playableManager)
 			playableManager.RemoveRedundantUnits();
 
-		SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
-		if (chatPanelManager)
+		PS_FreezeManager freezeManager = PS_FreezeManager.GetInstance();
+		bool forceEnded = (freezeManager && freezeManager.IsFreezeEndTriggered()) || m_bFreezeEndTriggered;
+
+		if (!forceEnded)
 		{
-			ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("smsg");
-			if (invoker)
-				invoker.Invoke(null, "#PS-Freeze_End");
+			SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
+			if (chatPanelManager)
+			{
+				ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("smsg");
+				if (invoker)
+					invoker.Invoke(null, "#PS-Freeze_End");
+			}
 		}
 	}
 
@@ -1841,13 +1898,59 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		}
 	}
 
+	protected IEntity m_ViewFrozenEntity;
+
 	override protected void SetLocalControls(bool enabled)
 	{
+		bool held = IsHardFreezeActive();
 		bool allow = enabled;
-		if (IsHardFreezeActive())
+		if (held)
 			allow = false;
 
 		super.SetLocalControls(allow);
+		EnforceViewControls(held);
+	}
+
+	protected void EnforceViewControls(bool disabled)
+	{
+		IEntity target;
+		if (disabled)
+		{
+			PlayerController playerController = GetGame().GetPlayerController();
+			if (playerController)
+				target = playerController.GetControlledEntity();
+		}
+
+		if (m_ViewFrozenEntity && m_ViewFrozenEntity != target)
+		{
+			SetCharacterViewDisabled(m_ViewFrozenEntity, false);
+		}
+
+		m_ViewFrozenEntity = target;
+		if (target)
+		{
+			SetCharacterViewDisabled(target, true);
+		}
+	}
+
+	protected void SetCharacterViewDisabled(IEntity entity, bool disabled)
+	{
+		ChimeraCharacter character = ChimeraCharacter.Cast(entity);
+		if (!character)
+			return;
+
+		CharacterControllerComponent charController = character.GetCharacterController();
+		if (charController)
+			charController.SetDisableViewControls(disabled);
+	}
+
+	void ~PS_GameModeCoop()
+	{
+		if (m_ViewFrozenEntity)
+		{
+			SetCharacterViewDisabled(m_ViewFrozenEntity, false);
+			m_ViewFrozenEntity = null;
+		}
 	}
 	
 	bool IsFreezeTimeShootingForbiden()

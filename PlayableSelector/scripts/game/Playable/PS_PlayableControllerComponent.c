@@ -42,6 +42,17 @@ class PS_PlayableControllerComponent : ScriptComponent
 	void RPC_SetOutFreezeTime(bool outFreezeTime)
 	{
 		m_bOutFreezeTime = outFreezeTime;
+		PlayerController pc = PlayerController.Cast(GetOwner());
+		if (pc)
+		{
+			ChimeraCharacter character = ChimeraCharacter.Cast(pc.GetControlledEntity());
+			if (character)
+			{
+				CharacterControllerComponent charController = character.GetCharacterController();
+				if (charController)
+					charController.SetDisableMovementControls(outFreezeTime);
+			}
+		}
 	}
 	
 	// Event
@@ -139,8 +150,27 @@ class PS_PlayableControllerComponent : ScriptComponent
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void RPC_AdvanceGameState(SCR_EGameModeState state)
 	{
+		PlayerController playerController = PlayerController.Cast(GetOwner());
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		if (!playerController || !playerManager)
+			return;
+
+		int callerPlayerId = playerController.GetPlayerId();
+		if (callerPlayerId <= 0)
+			return;
+
+		if (!IsAdminCaller())
+		{
+			PrintFormat("[PS_AntiCheat] ADMIN_ATTEMPT: %1 action=AdvanceGameState",
+				PS_GameModeCoop.PS_AntiCheatPlayerIdentity(callerPlayerId));
+			return;
+		}
+
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		gameMode.AdvanceGameState(state);
+		if (!gameMode)
+			return;
+
+		gameMode.AdvanceGameState_S(callerPlayerId, state);
 	}
 
 	void LoadMission(string missionName)
@@ -242,14 +272,27 @@ class PS_PlayableControllerComponent : ScriptComponent
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void RPC_FreezeTimerEnd()
 	{
-		if (!IsAdminCaller())
+		PlayerController playerController = PlayerController.Cast(GetOwner());
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		if (!playerController || !playerManager)
 			return;
+
+		int callerPlayerId = playerController.GetPlayerId();
+		if (callerPlayerId <= 0)
+			return;
+
+		if (!IsAdminCaller())
+		{
+			PrintFormat("[PS_AntiCheat] ADMIN_ATTEMPT: %1 action=FreezeTimerEnd",
+				PS_GameModeCoop.PS_AntiCheatPlayerIdentity(callerPlayerId));
+			return;
+		}
 
 		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		if (!gameMode || gameMode.GetState() != SCR_EGameModeState.GAME || gameMode.IsFreezeTimeEnd())
+		if (!gameMode)
 			return;
 
-		gameMode.FreezeTimerEnd();
+		gameMode.TryAdminFreezeEnd_S(callerPlayerId);
 	}
 	
 	// ------ SpawnPrefab ------
@@ -608,99 +651,20 @@ class PS_PlayableControllerComponent : ScriptComponent
 		if (PS_PlayersHelper.IsAdminOrServer())
 			return;
 		
-		PlayerController playerController = PlayerController.Cast(owner);
-		ActionManager actionManager = playerController.GetActionManager();
-		if (!actionManager)
-			return;
-		
-		IEntity character = playerController.GetControlledEntity();
-
-		if (character)
-		{
-			Vehicle vehicle = Vehicle.Cast(character.GetRootParent());
-			if (vehicle)
-			{
-				if (!vehicle.IsEnableMoveOnFreeze())
-				{
-					DisableVehicleMove(actionManager);
-					VehicleWheeledSimulation vehicleWheeledSimulation = VehicleWheeledSimulation.Cast(vehicle.FindComponent(VehicleWheeledSimulation));
-					if (vehicleWheeledSimulation)
-					{
-						if (vehicleWheeledSimulation.EngineIsOn())
-							vehicleWheeledSimulation.EngineStop();
-					}
-				}
-			}
-		}
-		
 		if (m_bOutFreezeTime)
 		{
-			actionManager.SetActionValue("CharacterForward", 0);
-			actionManager.SetActionValue("CharacterRight", 0);
-			actionManager.SetActionValue("CharacterTurnUp", 0);
-			actionManager.SetActionValue("CharacterTurnRight", 0);
-			actionManager.SetActionValue("CharacterTurnUp", 0);
-			actionManager.SetActionValue("CharacterTurnRight", 0);
-			actionManager.SetActionValue("GetOut", 0);
-			actionManager.SetActionValue("JumpOut", 0);
-			actionManager.SetActionValue("CharacterStand", 0);
-			actionManager.SetActionValue("CharacterCrouch", 0);
-			actionManager.SetActionValue("CharacterProne", 0);
-			actionManager.SetActionValue("CharacterStandCrouchToggle", 0);
-			actionManager.SetActionValue("CharacterStandProneToggle", 0);
-			actionManager.SetActionValue("CharacterRoll", 0);
-			actionManager.SetActionValue("CharacterJump", 0);
-			
-			DisableVehicleMove(actionManager);
-			
-			if (character)
+			PlayerController playerController = PlayerController.Cast(owner);
+			if (playerController)
 			{
-				Vehicle vehicle = Vehicle.Cast(character.GetRootParent());
-				if (vehicle)
+				ChimeraCharacter character = ChimeraCharacter.Cast(playerController.GetControlledEntity());
+				if (character)
 				{
-					BaseVehicleNodeComponent vehicleNodeComponent = BaseVehicleNodeComponent.Cast(vehicle.FindComponent(BaseVehicleNodeComponent));
-					if (vehicleNodeComponent)
-					{
-						SCR_HelicopterControllerComponent helicopterControllerComponent = SCR_HelicopterControllerComponent.Cast(vehicleNodeComponent.FindComponent(SCR_HelicopterControllerComponent));
-						if (!helicopterControllerComponent.GetAutohoverEnabled())
-						{
-							actionManager.SetActionValue("AutohoverToggle", 1);
-						}
-					}
+					CharacterControllerComponent charController = character.GetCharacterController();
+					if (charController)
+						charController.SetDisableMovementControls(true);
 				}
 			}
 		}
-	}
-	
-	void DisableVehicleMove(ActionManager actionManager)
-	{
-		actionManager.SetActionValue("VehicleEngineStop", 1);
-		actionManager.SetActionValue("VehicleEngineStart", 0);
-		actionManager.SetActionValue("AutohoverToggle", 0);
-		actionManager.SetActionValue("WheelBrake", 0);
-		actionManager.SetActionValue("WheelBrakePersistent", 1);
-		actionManager.SetActionValue("CyclicForward", 0);
-		actionManager.SetActionValue("CyclicBack", 0);
-		actionManager.SetActionValue("CyclicLeft", 0);
-		actionManager.SetActionValue("CyclicRight", 0);
-		actionManager.SetActionValue("AntiTorqueLeft", 0);
-		actionManager.SetActionValue("AntiTorqueRight", 0);
-		actionManager.SetActionValue("CollectiveIncrease", 0);
-		actionManager.SetActionValue("CollectiveDecrease", 0);
-		actionManager.SetActionValue("HelicopterEngineStop", 0);
-		actionManager.SetActionValue("HelicopterEngineStart", 0);
-		
-		actionManager.SetActionValue("CarThrust", 0);
-		actionManager.SetActionValue("CarBrake", 0);
-		actionManager.SetActionValue("CarSteering", 0);
-		actionManager.SetActionValue("CarTurbo", 0);
-		actionManager.SetActionValue("CarTurboToggle", 0);
-		actionManager.SetActionValue("CarShift", 0);
-		actionManager.SetActionValue("CarShiftReverse", 0);
-		actionManager.SetActionValue("CarHandBrake", 1);
-		actionManager.SetActionValue("CarHandBrakePersistent", 0);
-		actionManager.SetActionValue("CarLightsHiBeamToggle", 0);
-		actionManager.SetActionValue("CarHazardLights", 0);
 	}
 
 	// EOnFixedFrame removed - FIXEDFRAME was never masked (the POSTFIXEDFRAME SetEventMask is commented out),
@@ -840,10 +804,24 @@ class PS_PlayableControllerComponent : ScriptComponent
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void RPC_MoveVoNToRoom(int playerId, FactionKey factionKey, string roomName)
 	{
-		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		PlayerController playerController = PlayerController.Cast(GetOwner());
+		PS_VoNRoomsManager vonManager = PS_VoNRoomsManager.GetInstance();
+		if (!playerManager || !playerController || !vonManager)
+			return;
 
-		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
-		VoNRoomsManager.MoveToRoom(playerId, factionKey, roomName);
+		int callerPlayerId = playerController.GetPlayerId();
+		if (callerPlayerId <= 0 || playerId <= 0 || !playerManager.IsPlayerConnected(playerId))
+			return;
+
+		if (callerPlayerId != playerId && !SCR_Global.IsAdmin(callerPlayerId))
+		{
+			PrintFormat("[PS_AntiCheat] ADMIN_ATTEMPT: %1 action=MoveVoNToRoom target=%2",
+				PS_GameModeCoop.PS_AntiCheatPlayerIdentity(callerPlayerId), playerId);
+			return;
+		}
+
+		vonManager.MoveToRoom(playerId, factionKey, roomName);
 	}
 
 	// Body-less: dead path (lobby voice is on the VoN proxy now, see PS_MenuVoN). Kept for the
@@ -1730,8 +1708,30 @@ class PS_PlayableControllerComponent : ScriptComponent
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void RPC_SetObjectiveCompleteState(RplId objectiveId, bool complete)
 	{
+		PlayerController playerController = PlayerController.Cast(GetOwner());
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		if (!playerController || !playerManager)
+			return;
+
+		int callerPlayerId = playerController.GetPlayerId();
+		if (callerPlayerId <= 0)
+			return;
+
+		if (!IsAdminCaller())
+		{
+			PrintFormat("[PS_AntiCheat] ADMIN_ATTEMPT: %1 action=SetObjectiveCompleteState",
+				PS_GameModeCoop.PS_AntiCheatPlayerIdentity(callerPlayerId));
+			return;
+		}
+
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if (!gameMode)
+			return;
+
 		PS_Objective objective = PS_Objective.Cast(Replication.FindItem(objectiveId));
-		if (objective)
-			objective.SetCompleted(complete);
+		if (!objective)
+			return;
+
+		objective.SetCompleted(complete);
 	}
 }
