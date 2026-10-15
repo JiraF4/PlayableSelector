@@ -85,16 +85,25 @@ class PS_PolyZoneObjectiveTriggerCapture : PS_PolyZoneObjectiveTrigger
 		
 		int maxDiff = 0;
 		int maxCount = 0;
+		int secondCount = 0;
 		FactionKey maxFaction = "";
 		foreach (FactionKey factionKey, int count : m_mFactionCounters)
 		{
-			if (m_mFactionCounters[factionKey] > maxCount)
+			if (count <= 0)
+				continue;
+			if (count > maxCount)
 			{
-				maxDiff = m_mFactionCounters[factionKey] - maxCount;
-				maxCount = m_mFactionCounters[factionKey];
+				secondCount = maxCount;
+				maxCount = count;
 				maxFaction = factionKey;
 			}
+			else if (count > secondCount)
+				secondCount = count;
 		}
+		if (maxCount > secondCount)
+			maxDiff = maxCount - secondCount;
+		else
+			maxFaction = "";
 		
 		foreach (FactionKey factionKey, float timer : m_mFactionTimers)
 		{
