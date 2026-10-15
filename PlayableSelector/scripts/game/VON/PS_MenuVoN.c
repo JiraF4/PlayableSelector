@@ -17,6 +17,7 @@ class PS_MenuVoN
 	protected static ref PS_MenuVoN s_Instance;
 
 	protected SCR_VoNComponent m_VoNComp;
+	protected BaseTransceiver m_Transceiver;
 	protected bool m_bActive;
 	protected SCR_EditorManagerEntity m_EditorManager;
 	protected PlayerController m_ActivePc; // controller we activated for; differs after a reconnect -> re-acquire
@@ -196,9 +197,16 @@ class PS_MenuVoN
 			Print("[PS_VoN] MenuVoN: no transceiver on the VoN proxy radio - menu voice disabled", LogLevel.WARNING);
 			return;
 		}
-		proxyTransceiver.SetMuteState(true);
+		
 		m_VoNComp = vonComp;
+		m_Transceiver = radio.GetTransceiver(0);
+		//m_Transceiver.SetMuteState(true);
+
 		m_VoNComp.ConnectEditorToVoNSystem(pc.GetPlayerId());
+		// Armed on the radio for reception as well, not only while the talk key is held.
+		m_VoNComp.SetCommMethod(ECommMethod.SQUAD_RADIO);
+		m_VoNComp.SetTransmitRadio(m_Transceiver);
+
 		SCR_VoNComponent.InvalidateEditorLocCache(pc.GetPlayerId());
 		ArmDirect();
 
