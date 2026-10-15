@@ -1188,7 +1188,8 @@ class PS_PlayableControllerComponent : ScriptComponent
 			if (vonController && controlledEntity)
 			{
 				SCR_VoNComponent controlledVoN = vonController.GetVONComponent();
-				if (controlledVoN && controlledVoN.GetOwner() == controlledEntity)
+				SCR_VoNComponent bodyVoN = SCR_VoNComponent.Cast(controlledEntity.FindComponent(SCR_VoNComponent));
+				if (controlledVoN && controlledVoN == bodyVoN)
 					vonController.SetVONComponent(null);
 			}
 		}
