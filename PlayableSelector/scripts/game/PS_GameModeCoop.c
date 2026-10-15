@@ -518,7 +518,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	{
 		SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
 		ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("smsg");
-		invoker.Invoke(null, "#PS-Freeze_time_advanced");
+		invoker.Invoke(null, "#PS-Freeze_Time_Advanced");
 	}
 	
 	void FreezeTimerEnd_Callback(SCR_ChatPanel panel, string data)
@@ -581,7 +581,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	{
 		SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
 		ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("smsg");
-		invoker.Invoke(null, "#PS-Freeze_time_force_end");
+		invoker.Invoke(null, "#PS-Freeze_Time_ForceEnd");
 	}
 
 	void SpawnPosition_Callback(SCR_ChatPanel panel, string data)
@@ -1119,12 +1119,12 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 			// Route EVERY fresh connection through the same phase logic reconnect uses, so an un-slotted
 			// joiner lands in #PS-VoNRoom_Global (the shared factionless pool) instead of the raw "" channel
-			// RestoreRoom defaults to. "" and Global have DIFFERENT encryption keys, so a "" joiner could
+			// RestoreRoom defaults to. "" and Global map to DIFFERENT virtual positions, so a "" joiner could
 			// hear neither the Global crowd (briefing-unassigned, dead spectators) nor be heard by them.
 			// For reconnects this is refined ~2.5s later by RestorePlayerReconnectData (into the restored
 			// slot's faction channel, or kept Global if still un-slotted); for genuinely fresh joins that
 			// restore is a no-op, so this call is the only thing that moves them out of "". Server-only:
-			// it sets the faction key and moves rooms, both server-authoritative.
+			// it selects the room channel, which determines the direct-voice position.
 			if (Replication.IsServer())
 			{
 				AssignPhaseVoiceChannel(playerId);
@@ -1243,11 +1243,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (vonMgr)
 		{
 			vonMgr.MoveToRoom(playerId, "", "#PS-VoNRoom_Global");
-			// Re-tune every machine's copy of this player's VoN proxy once their death/slot state has
-			// replicated. The immediate ApplyRadioKey inside MoveToRoom can run on receivers before
-			// PS_IsMenuSpeaker(playerId) reads true there (the corpse's IsDead replicates separately), which
-			// would leave the proxy parked = nobody hears the spectator. RestoreRoom re-broadcasts the
-			// channel, re-applying the key on every machine when the state has settled.
+			// Re-broadcast after death state replicates so every machine recalculates the direct-voice position.
+			// This delayed update covers clients that still considered the corpse alive during MoveToRoom.
 			GetGame().GetCallqueue().CallLater(vonMgr.RestoreRoom, 1500, false, playerId);
 		}
 
@@ -1257,12 +1254,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		PS_PlayableControllerComponent ctrl = pc.PS_GetPLayableComponent();
 		if (ctrl)
 		{
-			// Issue 3: the spectator keeps controlling their corpse, whose radios are still on the in-game
-			// faction net - power them down so the dead player no longer hears living teammates' radio
-			// chatter (they keep the menu/spectator net via their VoN proxy). Re-applied once after the
-			// death/control state has settled, same reasoning as RestoreRoom above.
-			ctrl.DisableBodyVoNRadios();
-			GetGame().GetCallqueue().CallLater(ctrl.DisableBodyVoNRadios, 1500, false);
 			ctrl.EnterSpectatorOwner();
 		}
 	}

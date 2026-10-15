@@ -18,6 +18,7 @@ class PS_FreezeTimeCounter : SCR_ScriptedWidgetComponent
 		m_wEmpty = ImageWidget.Cast(w.FindAnyWidget("Fill"));
 		m_wFill = ImageWidget.Cast(w.FindAnyWidget("Empty"));
 
+		UpdateDisplay();
 		GetGame().GetCallqueue().CallLater(UpdateDisplay, 200, true);
 	}
 
@@ -26,6 +27,10 @@ class PS_FreezeTimeCounter : SCR_ScriptedWidgetComponent
 		super.HandlerDeattached(w);
 		GetGame().GetCallqueue().Remove(UpdateDisplay);
 		GetGame().GetCallqueue().Remove(Update);
+
+		PS_FreezeManager freezeManager = PS_FreezeManager.GetInstance();
+		if (freezeManager)
+			freezeManager.ClearHUDReference();
 	}
 	
 	protected void UpdateDisplay()
@@ -44,8 +49,8 @@ class PS_FreezeTimeCounter : SCR_ScriptedWidgetComponent
 		{
 			if (m_wFreezeTimeText)
 			{
-				if (freezeManager.GetFreezePhase() == PS_EFreezePhase.STARTUP)
-					m_wFreezeTimeText.SetText("#PS-Load_time");
+				if (freezeManager.IsStartupFreeze() || freezeManager.GetFreezePhase() == PS_EFreezePhase.STARTUP)
+					m_wFreezeTimeText.SetText("#PS-Load_Time");
 				else
 					m_wFreezeTimeText.SetText("#PS-Freeze_Pause");
 			}
@@ -150,7 +155,7 @@ class PS_FreezeTimeCounter : SCR_ScriptedWidgetComponent
 		else
 		{
 			if (m_wFreezeTimeText)
-				m_wFreezeTimeText.SetText("#PS-Load_time");
+				m_wFreezeTimeText.SetText("#PS-Load_Time");
 			if (m_wFreezeTimeCounterText)
 				m_wFreezeTimeCounterText.SetColor(Color.Red);
 			if (gameModeCoop)

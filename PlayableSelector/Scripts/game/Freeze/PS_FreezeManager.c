@@ -48,6 +48,9 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 	[RplProp(onRplName: "OnRpl_FreezePhase")]
 	protected PS_EFreezePhase m_eFreezePhase = PS_EFreezePhase.NOT_STARTED;
 
+	[RplProp(onRplName: "OnRpl_StartupFreeze")]
+	protected bool m_bStartupFreeze;
+
 	protected ref PS_OnHardFreezeChangedInvoker m_OnHardFreezeChanged = new PS_OnHardFreezeChangedInvoker();
 	protected ref PS_OnFreezeTimeAdjustedInvoker m_OnFreezeTimeAdjusted = new PS_OnFreezeTimeAdjustedInvoker();
 
@@ -82,6 +85,12 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 	bool IsHardFreezeActive()
 	{
 		return m_bHardFreeze;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	bool IsStartupFreeze()
+	{
+		return m_bStartupFreeze;
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -243,22 +252,29 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 
 		if (m_iEffectiveDisableTime > 0)
 		{
+			m_bStartupFreeze = true;
 			m_eFreezePhase = PS_EFreezePhase.STARTUP;
 			m_fCurrentFreezeTime = m_iEffectiveFreezeTime;
 			StartHardFreeze_S(m_iEffectiveDisableTime / 1000);
 		}
-		else if (m_iEffectiveFreezeTime > 0)
-		{
-			m_eFreezePhase = PS_EFreezePhase.ORDINARY;
-			m_fCurrentFreezeTime = m_iEffectiveFreezeTime;
-			GetGame().GetCallqueue().Remove(UpdateFreezeTimer_S);
-			GetGame().GetCallqueue().CallLater(UpdateFreezeTimer_S, 1000, true);
-		}
 		else
 		{
-			m_eFreezePhase = PS_EFreezePhase.FINISHED;
-			m_fCurrentFreezeTime = 0;
-			OnFreezeTimeEnded_S();
+			m_bStartupFreeze = false;
+			if (m_iEffectiveFreezeTime > 0)
+			{
+				m_eFreezePhase = PS_EFreezePhase.ORDINARY;
+				m_fCurrentFreezeTime = m_iEffectiveFreezeTime;
+				if (m_VehicleHold)
+					m_VehicleHold.StopAllVehicles_S();
+				GetGame().GetCallqueue().Remove(UpdateFreezeTimer_S);
+				GetGame().GetCallqueue().CallLater(UpdateFreezeTimer_S, 1000, true);
+			}
+			else
+			{
+				m_eFreezePhase = PS_EFreezePhase.FINISHED;
+				m_fCurrentFreezeTime = 0;
+				OnFreezeTimeEnded_S();
+			}
 		}
 
 		UpdateHUD_C();
@@ -307,6 +323,10 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 		GetGame().GetCallqueue().CallLater(UpdateHardFreezeTimer_S, 1000, true);
 
 		m_OnHardFreezeChanged.Invoke(true);
+
+		if (!m_bStartupFreeze)
+			SendHardFreezeNotification(true);
+
 		UpdateHUD_C();
 		Replication.BumpMe();
 	}
@@ -319,6 +339,9 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 
 		if (!m_bHardFreeze)
 			return;
+
+		bool wasMidGamePause = !m_bStartupFreeze;
+		m_bStartupFreeze = false;
 
 		GetGame().GetCallqueue().Remove(UpdateHardFreezeTimer_S);
 		m_bHardFreeze = false;
@@ -334,6 +357,9 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 		RestoreDayAdvance_S();
 
 		m_OnHardFreezeChanged.Invoke(false);
+
+		if (wasMidGamePause)
+			SendHardFreezeNotification(false);
 
 		if (m_eFreezePhase == PS_EFreezePhase.STARTUP)
 		{
@@ -535,6 +561,10 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 	{
 		UpdateHUD_C();
 	}
+	protected void OnRpl_StartupFreeze()
+	{
+		UpdateHUD_C();
+	}
 
 	//------------------------------------------------------------------------------------------------
 	protected void StopDayAdvance_S()
@@ -569,6 +599,37 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 			return null;
 
 		return world.GetTimeAndWeatherManager();
+	}
+
+	//------------------------------------------------------------------------------------------------
+	/**
+	 * @brief Рассылка широковещательного системного уведомления о начале/снятии административной паузы
+	 * @rpc Server -> Broadcast (Reliable)
+	 * @param bStarted true = пауза активирована, false = пауза снята
+	 */
+	protected void SendHardFreezeNotification(bool bStarted)
+	{
+		if (RplSession.Mode() == RplMode.None)
+			RPC_HardFreezeNotify(bStarted);
+		else
+			Rpc(RPC_HardFreezeNotify, bStarted);
+	}
+
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	protected void RPC_HardFreezeNotify(bool bStarted)
+	{
+		SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
+		if (!chatPanelManager)
+			return;
+
+		ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("smsg");
+		if (!invoker)
+			return;
+
+		if (bStarted)
+			invoker.Invoke(null, "#PS-HardFreeze_Started");
+		else
+			invoker.Invoke(null, "#PS-HardFreeze_Ended");
 	}
 }
 

@@ -784,7 +784,7 @@ StringTable {
    LastChanged "zazul"
   }
   CustomStringTableItem "{64A31A3A9D99C14A}" {
-   Id "PS-Freeze_time_advanced"
+   Id "PS-Freeze_Time_Advanced"
    Target_en_us "Freeze time advanced"
    Target_ru_ru "Фризтайм сдвинут"
    Modified 1688422260
@@ -792,7 +792,7 @@ StringTable {
    LastChanged "zazul"
   }
   CustomStringTableItem "{64A31A3AA5151141}" {
-   Id "PS-Freeze_time_force_end"
+   Id "PS-Freeze_Time_ForceEnd"
    Target_en_us "Freeze time ended by admin"
    Target_ru_ru "Фризтайм завершен администратором"
    Modified 1689324205
@@ -924,6 +924,22 @@ StringTable {
    Target_en_us "Game Paused"
    Target_ru_ru "Пауза"
    Modified 1760400000
+   Author "ReforgerLobby"
+   LastChanged "ReforgerLobby"
+  }
+  CustomStringTableItem "{66A31A3A9D99C15E}" {
+   Id "PS-HardFreeze_Started"
+   Target_en_us "Game paused by admin"
+   Target_ru_ru "Администратор поставил игру на паузу"
+   Modified 1760500000
+   Author "ReforgerLobby"
+   LastChanged "ReforgerLobby"
+  }
+  CustomStringTableItem "{66A31A3A9D99C15F}" {
+   Id "PS-HardFreeze_Ended"
+   Target_en_us "Pause ended. Game resumed"
+   Target_ru_ru "Пауза снята. Игра возобновлена"
+   Modified 1760500000
    Author "ReforgerLobby"
    LastChanged "ReforgerLobby"
   }
@@ -1081,7 +1097,7 @@ StringTable {
    LastChanged "RamboKZ"
   }
   CustomStringTableItem "{64C90089D268F288}" {
-   Id "PS-Load_time"
+   Id "PS-Load_Time"
    Target_en_us "Load time"
    Target_ru_ru "Прогрузка"
    Modified 1690900266
