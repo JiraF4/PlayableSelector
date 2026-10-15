@@ -6,8 +6,8 @@
 // everywhere-replicated entity). While the player is a menu speaker (no controlled
 // entity, or a corpse), the proxy's VoN component is connected to the engine VoN system
 // the same way the Game Master editor connects its own — ConnectEditorToVoNSystem(playerId)
-// — and the VONDirect key drives SetCapture directly. Room routing (frequency + key on the
-// proxy radio) is owned by PS_VoNRoomsManager.ApplyRadioKey.
+// — and the VONDirect key drives SetCapture directly. Room routing uses the proxy's virtual
+// position; its radio transceiver stays muted.
 //
 // Single ownership rule (Refresh): local player is a menu speaker AND the GM editor is
 // closed -> device active (connected + PTT listeners); otherwise inactive. Refresh() is
@@ -18,7 +18,6 @@ class PS_MenuVoN
 	protected static ref PS_MenuVoN s_Instance;
 
 	protected SCR_VoNComponent m_VoNComp;
-	protected BaseTransceiver m_Transceiver;
 	protected bool m_bActive;
 	protected bool m_bEditorSubscribed;
 	protected PlayerController m_ActivePc; // controller we activated for; differs after a reconnect -> re-acquire
@@ -92,11 +91,10 @@ class PS_MenuVoN
 		else
 			Deactivate();
 
-		// Keep the LOCAL proxy radio tuning in sync with speaker-ness (room while a menu
-		// speaker, parked while alive) - the server does the same for its authoritative copy.
+		// Room voice is routed through VON_DIRECT positions; keep the proxy radio muted.
 		PS_VoNRoomsManager vonMgr = PS_VoNRoomsManager.GetInstance();
 		if (vonMgr)
-			vonMgr.ApplyRadioKey(pc.GetPlayerId());
+			vonMgr.MuteProxyRadio(pc.GetPlayerId());
 	}
 
 	// Yield to the editor: an opened GM editor connects ITS VoN component for the same
@@ -192,8 +190,14 @@ class PS_MenuVoN
 			return;
 		}
 
+		BaseTransceiver proxyTransceiver = radio.GetTransceiver(0);
+		if (!proxyTransceiver)
+		{
+			Print("[PS_VoN] MenuVoN: no transceiver on the VoN proxy radio - menu voice disabled", LogLevel.WARNING);
+			return;
+		}
+		proxyTransceiver.SetMuteState(true);
 		m_VoNComp = vonComp;
-		m_Transceiver = radio.GetTransceiver(0);
 
 		// Register as a non-character sender. Without this the engine never even starts
 		// capture for the component (no OnCapture, no transmission) - there is no plain-radio
@@ -237,7 +241,6 @@ class PS_MenuVoN
 		}
 
 		m_VoNComp = null;
-		m_Transceiver = null;
 		m_bActive = false;
 		m_ActivePc = null;
 		// Let the VON controller revert to vanilla update-system registration now the menu device is off.
@@ -248,40 +251,6 @@ class PS_MenuVoN
 				vonController.PS_RefreshSystemState();
 		}
 		Print("[PS_VoN] MenuVoN: deactivated", LogLevel.NORMAL);
-	}
-
-	// =====================================================================
-	// RECEIVE RE-ARM (follow the channel)
-	// =====================================================================
-
-	// Re-point the LOCAL player's menu-voice RECEPTION at their proxy transceiver after a room change.
-	// Reception is armed once in Activate() (SetTransmitRadio) and otherwise stays on whatever room was active
-	// then - so after moving rooms a player keeps HEARING the old (often the Global connect) channel while their
-	// transmit correctly follows the new one. PS_VoNRoomsManager.ApplyRadioKeyNow calls this for the local
-	// player right after it re-tunes the transceiver, so listening follows the channel the same way talking does.
-	static void PS_ReapplyReceive(BaseTransceiver tsv)
-	{
-		if (s_Instance)
-			s_Instance.ReapplyReceiveInternal(tsv);
-	}
-	protected void ReapplyReceiveInternal(BaseTransceiver tsv)
-	{
-		if (!m_bActive || !m_VoNComp || !tsv)
-			return;
-		// Safety: only re-arm while still bound to the local player's CURRENT proxy. After a reconnect/respawn
-		// the binding can be stale (old, destroyed proxy); RefreshInternal's reconnect guard re-acquires that
-		// case, so skip here rather than touch a dead component.
-		PlayerController pc = GetGame().GetPlayerController();
-		if (!pc)
-			return;
-		IEntity proxy = PS_VoNProxyComponent.GetProxyEntity(pc.GetPlayerId());
-		if (!proxy)
-			return;
-		SCR_VoNComponent currentVonComp = SCR_VoNComponent.Cast(proxy.FindComponent(SCR_VoNComponent));
-		if (currentVonComp != m_VoNComp)
-			return;
-		m_Transceiver = tsv; // keep in sync with the proxy's freshly-tuned transceiver
-		ArmDirect();
 	}
 
 	// =====================================================================

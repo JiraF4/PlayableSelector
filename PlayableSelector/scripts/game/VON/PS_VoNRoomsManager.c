@@ -9,17 +9,9 @@ class PS_VoNRoomsManagerClass: ScriptComponentClass
 // struct: [FactionKey + "|"] + roomName
 typedef string VoNRoomKey;
 
-// Manage VoN "channels" (formerly position-based "rooms").
+// Manage VON_DIRECT rooms for menu speakers.
 //
-// Echo-style channel model: a channel is just a string key (which is also the radio encryption key
-// that separates who can hear whom). Channels are created LAZILY - only when a player actually joins
-// one - and player<->channel is a single replicated map. The old system pre-created a Local + Public
-// room for EVERY player on connect (110+ rooms at 55 players, each via a Reliable Broadcast RPC) and
-// also moved bodies to per-room sky positions; on a full server that reliable-channel traffic is a
-// direct contributor to "Replication Flooded/Stalled" kicks. This version drops both.
-//
-// The voice routing itself (radio encryption keys via PS_PlayableControllerComponent.SetVoNKey) is
-// unchanged - only channel identity (string key instead of int roomId + position) and replication.
+// A channel key identifies a shared virtual position. Menu speech uses VON_DIRECT; proxy radios stay muted.
 
 class PS_VoNRoomsManager : ScriptComponent
 {
@@ -36,36 +28,12 @@ class PS_VoNRoomsManager : ScriptComponent
 	ref ScriptInvoker m_eOnRoomChanged = new ScriptInvoker();
 
 	// ---- Body-less VoN proxy (per-player tiny replicated entity carrying the radio + VoN) ----
-	[Attribute("", UIWidgets.ResourceNamePicker, "Per-player VoN proxy prefab (PS_VoNProxyComponent + SCR_VoNComponent + BaseRadioComponent, RplComponent streaming disabled)", "et")]
+	[Attribute("", UIWidgets.ResourceNamePicker, "Per-player VoN proxy prefab (PS_VoNProxyComponent + SCR_VoNComponent + muted BaseRadioComponent, RplComponent streaming disabled)", "et")]
 	protected ResourceName m_sVoNProxyPrefab;
 	protected ref map<int, IEntity> m_mProxies_S = new map<int, IEntity>(); // server-side, for cleanup
 	protected ref map<int, int> m_mProxySlots_S = new map<int, int>();      // server-side, grid slot per player
-	protected ref array<int> m_aPendingRadioApplies = {};                   // deferred (1 frame) re-tune queue
-	protected ref map<int, float> m_mChannelChangeTime = new map<int, float>(); // FIX (DESYNC): per-player world-time when channel last changed, used to suppress false-positive DESYNC log during the 1-frame deferred ApplyRadioKey window + replication jitter
-	protected bool m_bIsGamePhase = false; // FIX (PERF): during GAME, skip parked (alive) proxies in audit — vanilla radios handle voice for them. Spectator (menu speaker) proxies are still audited since they're LIVE on Global and can drift.
-
-	// BaseRadioComponent.SetEncryptionKey() silently truncates keys to a very short
-	// length (observed: 5 chars max on 1.7.0.41). Keys longer than the limit are
-	// truncated, so "PSVoN_USSR_..." becomes just "PSVoN" — all proxies collapse to
-	// one key = cross-channel / cross-faction voice leak. The fix: use ultra-short
-	// keys derived from the channel index ("P0"-"P99" for channels, "Q" + playerId
-	// for parked), which always fit. Channel identity is in m_aChannels + frequency;
-	// the encryption key only needs to be unique per channel, not human-readable.
-
-	const static int PS_VON_KEY_MAX_LEN = 5;
-
-	static string EncodeVoNKey(int channelIndex)
-	{
-		// Channel key: "P" + zero-padded index. "P0"-"P999" fits in 5 chars for
-		// up to 1000 channels. Unique per channel, always short enough.
-		return "P" + channelIndex.ToString();
-	}
-	static string EncodeParkedKey(int playerId)
-	{
-		// Parked key: "Q" + playerId. Each parked player gets a unique key so
-		// they don't hear each other. "Q1"-"Q9999" fits in 5 chars.
-		return "Q" + playerId.ToString();
-	}
+	protected ref array<int> m_aPendingRadioMutes = {};                     // deferred (1 frame) mute queue
+	protected bool m_bIsGamePhase = false; // During GAME, skip menu-inactive proxies in the mute audit.
 
 	// FIX (TIMER LEAK): The self-rescheduling VoNAuditTick (every 5s) lives on the global
 	// callqueue. On server restart the component is destroyed with its GameMode entity, but
@@ -90,9 +58,7 @@ class PS_VoNRoomsManager : ScriptComponent
 		RegisterChannelLocal("");
 		if (Replication.IsServer())
 			m_bRplLoaded = true;
-		// Start the per-machine VoN audit (no-op unless s_bVoNDebug). Runs on the server AND each client so we can
-		// compare, for every player, the INTENDED channel (m_mPlayersChannel = what the widget/UI shows) against
-		// the REAL radio tuning (encryption key + frequency actually on the proxy transceiver). See VoNAuditTick.
+		// Re-assert mute on proxy radios on each machine.
 		GetGame().GetCallqueue().CallLater(VoNAuditTick, 5000, false);
 	}
 
@@ -127,7 +93,7 @@ class PS_VoNRoomsManager : ScriptComponent
 	vector GetRoomPosition(int playerId)
 	{
 		// Controls a living character / not a menu speaker -> isolated far spot
-		// Safe: living/parked proxy radios are muted by ApplyRadioKeyNow (PS_VoNRoomsManager.c:619-627)
+		// Safe: the proxy radio is muted on every machine.
 		if (!SCR_VoNComponent.PS_IsMenuSpeaker(playerId))
 			return Vector(PS_VONFIX_ISOLATED_XZ, PS_VONFIX_SKY_ALTITUDE, PS_VONFIX_ISOLATED_XZ);
 
@@ -240,9 +206,7 @@ class PS_VoNRoomsManager : ScriptComponent
 		if (channelKey == GetPlayerChannel(playerId))
 			return;
 
-		// Body-less: the encryption key + frequency live on the player's VoN proxy and are
-		// derived from the channel itself (factionKey|roomName already encodes faction/group),
-		// applied on every machine in RPC_SetPlayerChannel -> ApplyRadioKey. No body radios.
+		// The channel determines the proxy's virtual position for direct voice.
 
 		// Finally move player to channel
 		RPC_SetPlayerChannel(playerId, channelKey);
@@ -256,9 +220,6 @@ class PS_VoNRoomsManager : ScriptComponent
 
 		RegisterChannelLocal(channelKey); // ensure the channel exists on every client
 		m_mPlayersChannel[playerId] = channelKey;
-		// FIX (DESYNC): record when this player's channel changed so VoNAuditTick can suppress
-		// false-positive DESYNC logs during the 1-frame deferred ApplyRadioKey window.
-		m_mChannelChangeTime[playerId] = GetGame().GetWorld().GetWorldTime();
 
 		// TEMP DIAGNOSTIC (cross-group voice leak): log the channel + this player's group id & callsign, so the
 		// client log shows whether two DIFFERENT groups (different groupId) resolve to the SAME channel key.
@@ -279,7 +240,7 @@ class PS_VoNRoomsManager : ScriptComponent
 			}
 		}
 
-		ApplyRadioKey(playerId); // re-tune this player's VoN proxy radio on this machine
+		MuteProxyRadio(playerId);
 
 		SCR_VoNComponent.InvalidateEditorLocCache(-1);
 		m_eOnRoomChanged.Invoke(playerId, channelKey, oldChannelKey);
@@ -294,10 +255,8 @@ class PS_VoNRoomsManager : ScriptComponent
 	}
 
 	// ============================ Body-less VoN proxy ============================
-	// Per-player tiny replicated entity carrying the radio + SCR_VoNComponent, so menu
-	// speakers (no living character) transmit/receive without a controlled body. Ported
-	// from LiteLobby. The radio key+frequency are applied on EVERY machine from replicated
-	// channel state (proxies replicate to all), so routing works regardless of ownership.
+	// Per-player replicated VoN endpoint for menu speakers. Its radio component stays muted;
+	// VON_DIRECT routes speech through the proxy's virtual position for the selected room.
 
 	// Server: spawn this player's proxy, or RE-BIND an existing one on reconnect.
 	// Reconnect keeps the SAME playerId but gives a NEW connection (RplIdentity). The existing proxy is
@@ -305,7 +264,7 @@ class PS_VoNRoomsManager : ScriptComponent
 	// on it = nobody hears that player (the reported "can't hear Banan after his first reconnect" bug).
 	// We also can't rely on RemoveProxy_S running on disconnect: the live server's QuickTvT gamemode
 	// overrides OnPlayerDisconnected and does not run our cleanup, so the proxy persists. So instead of
-	// skipping when a proxy exists, re-bind it (re-Give + re-register + re-tune) to the new connection.
+	// skipping when a proxy exists, re-bind it (re-Give + re-register + re-mute) to the new connection.
 	void SpawnProxy_S(int playerId)
 	{
 		if (!Replication.IsServer())
@@ -330,9 +289,8 @@ class PS_VoNRoomsManager : ScriptComponent
 			if (proxyPrefab == "")
 				proxyPrefab = "{8DE2B66B89E14F88}Prefabs/VoN/PS_VoNProxy.et";
 
-			// Spread proxies 200m apart at 10km altitude: a radio also carries proximity speech
-			// around the sender, so co-located proxies would let every menu speaker hear every
-			// other regardless of channel. Encryption keys still seal cross-channel audio.
+			// Keep proxy entities spatially separated; room membership is routed by virtual position,
+			// not by radio frequency or encryption key.
 			int slot = AllocateProxySlot_S(playerId);
 			EntitySpawnParams params = new EntitySpawnParams();
 			Math3D.MatrixIdentity4(params.Transform);
@@ -381,7 +339,7 @@ class PS_VoNRoomsManager : ScriptComponent
 		else
 			Print(string.Format("[PS_VoN] VoN proxy spawned for player %1 at %2", playerId, proxy.GetOrigin().ToString()), LogLevel.NORMAL);
 
-		ApplyRadioKey(playerId); // key may have been assigned before the proxy existed
+		MuteProxyRadio(playerId); // mute the proxy radio after spawn or reconnect
 
 		// Guard check on server for 1.8 transceiver badge
 		IEntity proxyEntity;
@@ -405,7 +363,7 @@ class PS_VoNRoomsManager : ScriptComponent
 			SCR_EntityHelper.DeleteEntityAndChildren(proxy);
 		m_mProxies_S.Remove(playerId);
 		m_mProxySlots_S.Remove(playerId);
-		m_mChannelChangeTime.Remove(playerId); // FIX (DESYNC): clean up grace period entry
+
 		SCR_VoNComponent.InvalidateEditorLocCache(-1);
 
 		// FIX (GHOST NAMES): remove the player from the replicated channel map so late-joining
@@ -442,81 +400,43 @@ class PS_VoNRoomsManager : ScriptComponent
 		return slot;
 	}
 
-	// Re-tune a player's proxy radio. Runs on every machine (proxies replicate everywhere).
-	// Deferred one frame + coalesced: a single event can deliver two state updates for one
-	// player in the same frame, and the transceiver does not reliably apply two SetFrequency
-	// calls in one frame.
-	protected bool m_bRadioApplyScheduled = false;
-	void ApplyRadioKey(int playerId)
+	// Mute each replicated proxy radio on every machine. Same-frame updates are coalesced
+	// so the proxy is present before the transceiver state is applied.
+	protected bool m_bProxyRadioMuteScheduled = false;
+	void MuteProxyRadio(int playerId)
 	{
-		if (!m_aPendingRadioApplies.Contains(playerId))
-			m_aPendingRadioApplies.Insert(playerId);
-		// Schedule the coalesced apply EXACTLY ONCE. The old code did Remove()+CallLater() on every NEW playerId,
-		// which in a busy lobby (a new player changing channel almost every frame) kept cancelling and re-pushing
-		// the single pending apply to "next frame" - so proxy radios could stay un-keyed on the connect-time
-		// channel for a long time and players kept HEARING that stale shared channel (the busy-lobby voice leak).
-		// Scheduling once (and never rescheduling) guarantees it fires next frame and drains the whole pending set,
-		// no matter how much churn there is. Per-player coalescing is still handled by the Contains() check above
-		// and by ApplyRadioKeyNow reading the latest m_mPlayersChannel.
-		if (!m_bRadioApplyScheduled)
+		if (!m_aPendingRadioMutes.Contains(playerId))
+			m_aPendingRadioMutes.Insert(playerId);
+		if (!m_bProxyRadioMuteScheduled)
 		{
-			m_bRadioApplyScheduled = true;
-			GetGame().GetCallqueue().CallLater(ApplyPendingRadioApplies, 0, false);
+			m_bProxyRadioMuteScheduled = true;
+			GetGame().GetCallqueue().CallLater(MutePendingProxyRadios, 0, false);
 		}
 	}
-	protected void ApplyPendingRadioApplies()
+	protected void MutePendingProxyRadios()
 	{
-		m_bRadioApplyScheduled = false;
-		foreach (int playerId : m_aPendingRadioApplies)
-			ApplyRadioKeyNow(playerId);
-		m_aPendingRadioApplies.Clear();
+		m_bProxyRadioMuteScheduled = false;
+		foreach (int playerId : m_aPendingRadioMutes)
+			MuteProxyRadioNow(playerId);
+		m_aPendingRadioMutes.Clear();
 	}
-
-	// Periodic per-machine VoN audit (gated by s_bVoNDebug). For every player it compares the INTENDED channel
-	// (m_mPlayersChannel - what the widget / "visual" shows) against the REAL radio tuning (encryption key + freq
-	// actually on the proxy transceiver, read back via GetEncryptionKey/GetFrequency). A DESYNC line means the
-	// player's radio is NOT on the channel the UI shows => they transmit AND hear the wrong channel (the leak).
-	// Runs on the server AND each client: the SERVER log shows the authoritative routing, each CLIENT log shows
-	// that client's own proxies - including the LOCAL player's, i.e. their actual transmit/receive tuning.
-	// Set/clear the GAME-phase flag so the audit tick can skip parked (alive) proxies during GAME.
-	// Vanilla radios handle voice for alive players; their proxies are parked and cannot drift.
-	// Spectator (menu speaker) proxies are LIVE on Global and MUST still be audited.
-	// Runs on ALL machines (server + clients) since the audit runs everywhere.
+	// Set the GAME-phase flag so the audit can skip proxies not used for menu voice.
 	void SetVoNGamePhase(bool isGame)
 	{
 		m_bIsGamePhase = isGame;
 	}
 
+	// Re-mute menu proxies if engine initialization changes their transceiver state.
 	void VoNAuditTick()
 	{
-		GetGame().GetCallqueue().CallLater(VoNAuditTick, 5000, false); // self-reschedule
+		GetGame().GetCallqueue().CallLater(VoNAuditTick, 5000, false);
 
-		string machine = "client";
-		if (Replication.IsServer())
-			machine = "SERVER";
-		PlayerController localPc = GetGame().GetPlayerController();
-		int localId = -1;
-		if (localPc)
-			localId = localPc.GetPlayerId();
-
-		// SELF-HEAL + audit in ONE pass (runs ALWAYS, even with debug off). For each proxy compute what
-		// ApplyRadioKeyNow WOULD set (mute + frequency; the encryption key is inert so it is not compared) and read
-		// what the radio REALLY is. Re-apply ONLY a proxy that DRIFTED (e.g. a remote proxy left stale on a previous
-		// channel's frequency). This touches just genuinely-stale proxies, so the steady state (desync 0) costs only
-		// a few cheap getters per proxy and NO re-tune. The old code blindly re-applied EVERY proxy every 5s in every
-		// phase, which on a full server during GAME (alive proxies parked, never changing) was pure waste - this
-		// keeps VoN effectively idle in GAME, matching the reconcile loop that fully stops there.
-		// FIX (GHOST NAMES): prune stale player-channel entries on every machine. A disconnected
-		// player's RemoveProxy_S broadcasts RPC_RemovePlayerFromChannel, but a JIP client whose
-		// RplLoad snapshot was captured between the disconnect and the RPC delivery still holds the
-		// stale entry. This sweep catches those stragglers + any other leak path. GetPlayers() returns
-		// only currently-connected players; anything in m_mPlayersChannel not in that set is stale.
 		if (!Replication.IsServer())
 		{
 			array<int> connectedPlayers = {};
 			GetGame().GetPlayerManager().GetPlayers(connectedPlayers);
 			array<int> staleIds = {};
-			foreach (int pid, string ck : m_mPlayersChannel)
+			foreach (int pid, string channelKey : m_mPlayersChannel)
 			{
 				if (!connectedPlayers.Contains(pid))
 					staleIds.Insert(pid);
@@ -526,24 +446,16 @@ class PS_VoNRoomsManager : ScriptComponent
 				string staleKey = m_mPlayersChannel[staleId];
 				Print(string.Format("[PS_VoN] VoNAuditTick: pruning stale channel entry for disconnected player %1 (channel '%2')", staleId, staleKey), LogLevel.NORMAL);
 				m_mPlayersChannel.Remove(staleId);
-				m_mChannelChangeTime.Remove(staleId);
 				m_eOnRoomChanged.Invoke(staleId, "", staleKey);
 			}
 		}
 
 		int audited = 0;
-		int desync = 0;
-		int skipped = 0;
+		int remuted = 0;
 		foreach (int playerId, string channelKey : m_mPlayersChannel)
 		{
-			// During GAME, skip parked (alive) players — vanilla radios handle voice for them
-			// and their proxies are muted. Only audit menu speakers (spectators) whose proxies
-			// are LIVE on Global and can actually drift. Saves ~80% of proxy reads per tick.
 			if (m_bIsGamePhase && !SCR_VoNComponent.PS_IsMenuSpeaker(playerId) && !IsLocalEditorOpenFor(playerId))
-			{
-				skipped++;
 				continue;
-			}
 
 			IEntity proxy = PS_VoNProxyComponent.GetProxyEntity(playerId);
 			if (!proxy)
@@ -551,119 +463,24 @@ class PS_VoNRoomsManager : ScriptComponent
 			BaseRadioComponent radio = BaseRadioComponent.Cast(proxy.FindComponent(BaseRadioComponent));
 			if (!radio || radio.TransceiversCount() < 1)
 				continue;
-			BaseTransceiver tsv = radio.GetTransceiver(0);
-			if (!tsv)
+			BaseTransceiver transceiver = radio.GetTransceiver(0);
+			if (!transceiver)
 				continue;
 			audited++;
 
-			// A proxy is OFF the net when muted; both parked (alive / own editor) and a not-yet-registered channel
-			// are expected muted. Separation is by FREQUENCY + MUTE (the key is inert, so it is not compared).
-			bool shouldPark = !SCR_VoNComponent.PS_IsMenuSpeaker(playerId) || IsLocalEditorOpenFor(playerId);
-			int chIdx = m_aChannels.Find(channelKey);
-			bool expectedMuted = shouldPark || chIdx < 0;
-			int expectedFreq;
-			if (expectedMuted)
-				expectedFreq = tsv.GetMinFrequency();
-			else
-				expectedFreq = ChannelFrequencyFor(tsv, channelKey);
-
-			int actualFreq = tsv.GetFrequency();
-			bool actualMuted = tsv.IsMuted();
-
-			// Drift = wrong mute state, or (while live on the net) wrong frequency.
-			if (actualMuted != expectedMuted || (!expectedMuted && actualFreq != expectedFreq))
+			if (!transceiver.IsMuted())
 			{
-				desync++;
-				ApplyRadioKeyNow(playerId); // SELF-HEAL: re-tune ONLY this drifted proxy
-				// FIX (DESYNC): suppress the DESYNC log during a grace window after the channel
-				// changed. ApplyRadioKey is deferred 1 frame, and replication can jitter, so the
-				// radio may briefly differ from the intended state. The heal above runs regardless;
-				// only the LOG is suppressed to eliminate false-positive noise.
-				float changeTime;
-				bool inGrace = m_mChannelChangeTime.Find(playerId, changeTime)										&& (GetGame().GetWorld().GetWorldTime() - changeTime) < 1000; // 1s grace
-				if (s_bVoNDebug && !inGrace)
-				{
-					string localTag = "";
-					if (playerId == localId)
-						localTag = " LOCAL";
-					PrintFormat("[PS_VoNAudit][%1]%2 DESYNC player=%3: visual(channel)='%4' SHOULD muted=%5 freq=%6, but radio REALLY muted=%7 freq=%8 - healed",
-						machine, localTag, playerId, channelKey, expectedMuted, expectedFreq, actualMuted, actualFreq);
-				}
+				remuted++;
+				MuteProxyRadioNow(playerId);
+				if (s_bVoNDebug)
+					PrintFormat("[PS_VoNAudit] proxy radio was unmuted; muted again player=%1 channel='%2'", playerId, channelKey);
 			}
 		}
+
 		if (s_bVoNDebug && audited > 0)
-		{
-			if (skipped > 0)
-				PrintFormat("[PS_VoNAudit][%1] audited=%2 desync=%3 (skipped %4 parked proxies in GAME phase)", machine, audited, desync, skipped);
-			else
-				PrintFormat("[PS_VoNAudit][%1] audited=%2 desync=%3", machine, audited, desync);
-		}
-
-		if (!s_bVoNDebug)
-			return;
-
-		// During GAME, skip the VoNHear diagnostic for alive local players - their proxy is muted
-		// and the O(n²) comparison produces meaningless noise. Spectators (menu speakers) still get it.
-		if (m_bIsGamePhase && localId > 0 && !SCR_VoNComponent.PS_IsMenuSpeaker(localId))
-			return;
-
-		// Who does the LOCAL player actually share a radio net with (= who they can HEAR)? Independent of the
-		// channel map - it groups by the REAL FREQUENCY on each proxy transceiver (the encryption key is inert,
-		// so frequency + mute are what separate channels). Muted proxies are off the net and skipped. Anyone on
-		// the local frequency but in a DIFFERENT channel is a concrete cross-channel / cross-faction LEAK and is
-		// tagged + raised to WARNING so it stands out in the log.
-		if (localId > 0)
-		{
-			IEntity localProxy = PS_VoNProxyComponent.GetProxyEntity(localId);
-			BaseRadioComponent localRadio;
-			BaseTransceiver localTsv;
-			if (localProxy)
-			{
-				localRadio = BaseRadioComponent.Cast(localProxy.FindComponent(BaseRadioComponent));
-				if (localRadio && localRadio.TransceiversCount() > 0)
-					localTsv = localRadio.GetTransceiver(0);
-			}
-			if (localTsv)
-			{
-				int localFreq = localTsv.GetFrequency();
-				bool localMuted = localTsv.IsMuted();
-				string localChannel;
-				if (!m_mPlayersChannel.Find(localId, localChannel))
-					localChannel = "";
-				string sharers = "";
-				bool leak = false;
-				foreach (int pid, string ck : m_mPlayersChannel)
-				{
-					if (pid == localId)
-						continue;
-					IEntity p = PS_VoNProxyComponent.GetProxyEntity(pid);
-					if (!p)
-						continue;
-					BaseRadioComponent r = BaseRadioComponent.Cast(p.FindComponent(BaseRadioComponent));
-					if (!r || r.TransceiversCount() < 1)
-						continue;
-					BaseTransceiver rt = r.GetTransceiver(0);
-					if (!rt || rt.IsMuted())
-						continue; // off the net, can't be heard
-					if (rt.GetFrequency() != localFreq)
-						continue; // different frequency = different channel
-					string tag = "";
-					if (ck != localChannel)
-					{
-						tag = "<LEAK:diff-channel>";
-						leak = true;
-					}
-					sharers = sharers + pid.ToString() + "(" + ck + ")" + tag + " ";
-				}
-				LogLevel lvl = LogLevel.NORMAL;
-				if (leak)
-					lvl = LogLevel.WARNING;
-				Print(string.Format("[PS_VoNHear][%1] LOCAL player=%2 visual(channel)='%3' freq=%4 muted=%5 -> shares frequency with: [%6]",
-					machine, localId, localChannel, localFreq, localMuted, sharers), lvl);
-			}
-		}
+			PrintFormat("[PS_VoNAudit] checked=%1 remuted=%2", audited, remuted);
 	}
-	protected void ApplyRadioKeyNow(int playerId)
+	protected void MuteProxyRadioNow(int playerId)
 	{
 		IEntity proxy = PS_VoNProxyComponent.GetProxyEntity(playerId);
 		if (!proxy)
@@ -671,82 +488,10 @@ class PS_VoNRoomsManager : ScriptComponent
 		BaseRadioComponent radio = BaseRadioComponent.Cast(proxy.FindComponent(BaseRadioComponent));
 		if (!radio || radio.TransceiversCount() < 1)
 			return;
-		BaseTransceiver tsv = radio.GetTransceiver(0);
-		if (!tsv)
-			return;
-
-		string channelKey;
-		if (!m_mPlayersChannel.Find(playerId, channelKey))
-			channelKey = "";
-
-		// Take the proxy OFF the menu net by MUTING the transceiver when the player is NOT a menu speaker
-		// (alive in a playable) or their own GM editor is open. We MUTE (not just "park on a silent key")
-		// because the proxy radio's per-channel encryption key does NOT apply at runtime - every proxy reads
-		// back the prefab default "PSVoN" - so isolation can NOT rely on the key. Parking previously left every
-		// off-net proxy on the SAME min frequency with a unique-but-inert key, so they all collapsed onto one
-		// frequency and could hear each other. A muted transceiver is silent regardless of key/freq.
-		if (!SCR_VoNComponent.PS_IsMenuSpeaker(playerId) || IsLocalEditorOpenFor(playerId))
-		{
-			tsv.SetMuteState(true);
-			radio.SetEncryptionKey(EncodeParkedKey(playerId));
-			tsv.SetFrequency(tsv.GetMinFrequency());
-			if (s_bVoNDebug)
-				PrintFormat("[PS_VoNApply] player=%1 PARKED+MUTED (not a menu speaker / editor open)", playerId);
-			return;
-		}
-
-		// chIdx < 0 means this machine has not registered the channel yet - a transient replication-order window
-		// (the player->channel map can arrive before the channel list on a JIP client). The old code fell back to
-		// ChannelFrequencyFor -> minFreq, the SAME frequency parked proxies use, so an un-registered-channel proxy
-		// collapsed onto the parked sink and (key inert) could hear them. MUTE until the channel registers; the
-		// audit self-heal re-applies (unmutes + tunes) once the channel list catches up.
-		int chIdx = m_aChannels.Find(channelKey);
-		if (chIdx < 0)
-		{
-			tsv.SetMuteState(true);
-			if (s_bVoNDebug)
-				PrintFormat("[PS_VoNApply] player=%1 MUTED (channel '%2' not registered on this machine yet)", playerId, channelKey);
-			return;
-		}
-
-		int freq = ChannelFrequencyFor(tsv, channelKey);
-		tsv.SetMuteState(false);
-		radio.SetEncryptionKey(EncodeVoNKey(chIdx));
-		tsv.SetFrequency(freq);
-		if (s_bVoNDebug)
-			PrintFormat("[PS_VoNApply] player=%1 KEYED key='%2' freq=%3 chIdx=%4 channelKey='%5'", playerId, EncodeVoNKey(chIdx), freq, chIdx, channelKey);
-
-		// The LOCAL player's menu-voice RECEPTION is armed once in PS_MenuVoN.Activate and otherwise stays on the
-		// room active at that moment; re-point it at this freshly-tuned transceiver so listening follows the
-		// channel the same way transmitting does (fixes hearing the connect-time channel after moving rooms).
-		PlayerController localPc = GetGame().GetPlayerController();
-		if (localPc && localPc.GetPlayerId() == playerId)
-			PS_MenuVoN.PS_ReapplyReceive(tsv);
+		BaseTransceiver transceiver = radio.GetTransceiver(0);
+		if (transceiver)
+			transceiver.SetMuteState(true);
 	}
-
-	// Frequency from the channel's index in the replicated m_aChannels (consistent order on
-	// every machine), stepped by the transceiver resolution within its band.
-	protected int ChannelFrequencyFor(BaseTransceiver tsv, string channelKey)
-	{
-		int minFreq = tsv.GetMinFrequency();
-		int maxFreq = tsv.GetMaxFrequency();
-		int step = tsv.GetFrequencyResolution();
-		if (step <= 0)
-			step = 10;
-
-		int index = m_aChannels.Find(channelKey);
-		if (index < 0)
-			return minFreq;
-
-		int freq = minFreq + (index + 1) * step;
-		if (freq > maxFreq)
-		{
-			Print(string.Format("[PS_VoN] Out of frequency slots for channel '%1' (%2 channels) - widen the proxy radio band", channelKey, m_aChannels.Count()), LogLevel.WARNING);
-			freq = maxFreq;
-		}
-		return freq;
-	}
-
 	// True only on the machine of a player whose OWN Game Master editor is open.
 	protected bool IsLocalEditorOpenFor(int playerId)
 	{
@@ -776,7 +521,6 @@ class PS_VoNRoomsManager : ScriptComponent
 		if (!m_mPlayersChannel.Contains(playerId))
 			return;
 		m_mPlayersChannel.Remove(playerId);
-		m_mChannelChangeTime.Remove(playerId);
 		SCR_VoNComponent.InvalidateEditorLocCache(-1);
 		m_eOnRoomChanged.Invoke(playerId, "", oldChannelKey);
 	}

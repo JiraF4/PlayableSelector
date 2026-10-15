@@ -73,12 +73,12 @@ class PS_VoNProxyComponent : ScriptComponent
 
 		s_mByPlayerId.Set(m_iPlayerId, this);
 
-		// Tune this proxy's radio from the current replicated channel state. On clients
+		// Mute this proxy radio when its replicated entity becomes available on each machine.
 		// the proxy entity can stream in AFTER the channel data already arrived (JIP) -
-		// registration is the one reliable "this radio exists now" hook on every machine.
+		// registration is the reliable "proxy available now" hook on every machine.
 		PS_VoNRoomsManager vonMgr = PS_VoNRoomsManager.GetInstance();
 		if (vonMgr)
-			vonMgr.ApplyRadioKey(m_iPlayerId);
+			vonMgr.MuteProxyRadio(m_iPlayerId);
 	}
 
 	override void OnDelete(IEntity owner)

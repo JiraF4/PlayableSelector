@@ -836,60 +836,6 @@ class PS_PlayableControllerComponent : ScriptComponent
 			return null;
 		return PS_LobbyVoNComponent.Cast(entity.FindComponent(PS_LobbyVoNComponent));
 	}
-	// Collect the lobby VoN radios from the controlled entity, in order.
-	// Works whether the radios are carried as inventory gadgets (full character carrier)
-	// or attached as direct child entities (stripped carrier without the inventory system).
-	// The carrier prefab must keep the two radios in a stable order (radio 0 first, radio 1 second).
-	protected void GetVoNRadios(out array<BaseRadioComponent> radios)
-	{
-		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
-		if (!thisPlayerController)
-			return;
-		IEntity entity = thisPlayerController.GetControlledEntity();
-		if (!entity)
-			return;
-
-		// Inventory gadget path (рации, переносимые в инвентаре/снаряжении бойца)
-		SCR_GadgetManagerComponent gadgetManager = SCR_GadgetManagerComponent.Cast(entity.FindComponent(SCR_GadgetManagerComponent));
-		if (gadgetManager)
-		{
-			array<SCR_GadgetComponent> gadgets = gadgetManager.GetGadgetsByType(EGadgetType.RADIO);
-			foreach (SCR_GadgetComponent gadget : gadgets)
-			{
-				if (!gadget)
-					continue;
-				IEntity owner = gadget.GetOwner();
-				if (!owner)
-					continue;
-				BaseRadioComponent radio = BaseRadioComponent.Cast(owner.FindComponent(BaseRadioComponent));
-				if (radio && !radios.Contains(radio))
-					radios.Insert(radio);
-			}
-		}
-
-		// Direct child entity path (рации, закрепленные напрямую как дочерние сущности)
-		IEntity child = entity.GetChildren();
-		while (child)
-		{
-			BaseRadioComponent radio = BaseRadioComponent.Cast(child.FindComponent(BaseRadioComponent));
-			if (radio && !radios.Contains(radio))
-				radios.Insert(radio);
-			child = child.GetSibling();
-		}
-	}
-
-	RadioTransceiver GetVoNTransiver(int radioId)
-	{
-		array<BaseRadioComponent> radios = {};
-		GetVoNRadios(radios);
-		if (radioId < 0 || radioId >= radios.Count())
-			return null;
-		BaseRadioComponent radio = radios[radioId];
-		radio.SetPower(true);
-		RadioTransceiver transiver = RadioTransceiver.Cast(radio.GetTransceiver(0));
-		transiver.SetFrequency(radioId + 1);
-		return transiver;
-	}
 	// Body-less: lobby push-to-talk is now owned by PS_MenuVoN (it binds VONDirect while the local
 	// player is a menu speaker). These three remain only because some menus still bind them as input
 	// actions; they are deliberate no-ops now (there is no controlled body VoN to drive).
@@ -910,53 +856,6 @@ class PS_PlayableControllerComponent : ScriptComponent
 		von.SetCommMethod(ECommMethod.DIRECT);
 		von.SetCapture(false);
 	}
-	// Separate radio VoNs, CALL IT FROM SERVER
-	void SetVoNKey(string VoNKey, string VoNKeyLocal)
-	{
-		if (!GetVoN())
-			return;
-		array<BaseRadioComponent> radios = {};
-		GetVoNRadios(radios);
-		if (radios.Count() >= 2)
-		{
-			radios[0].SetEncryptionKey(VoNKey);
-			radios[1].SetEncryptionKey(VoNKeyLocal);
-		}
-	}
-	bool isVonInit()
-	{
-		array<BaseRadioComponent> radios = {};
-		GetVoNRadios(radios);
-		return radios.Count() >= 2;
-	}
-
-	// Spectator voice fix (issue 3): a dead player keeps CONTROLLING their corpse, whose carried radios
-	// stay powered on the in-game faction net - so the spectator still HEARS living teammates' radio
-	// chatter. Menu/spectator voice runs on the separate VoN proxy entity, so powering the corpse's
-	// radios down kills only that unwanted in-game reception. Server-authoritative: the off state
-	// replicates to the owner, so their client stops decoding the faction net. No respawns in this mode,
-	// so there is nothing to restore.
-	void DisableBodyVoNRadios()
-	{
-		array<BaseRadioComponent> radios = {};
-		GetVoNRadios(radios);
-		foreach (BaseRadioComponent radio : radios)
-		{
-			if (!radio)
-				continue;
-
-			radio.SetPower(false);
-
-			int count = radio.TransceiversCount();
-			for (int i = 0; i < count; i++)
-			{
-				BaseTransceiver tsv = radio.GetTransceiver(i);
-				if (tsv && tsv.IsMuted())
-					tsv.SetMuteState(false);
-			}
-		}
-	}
-	
 	void GetArmaIdFromServer(int playerId)
 	{
 		Rpc(RPC_GetArmaIdFromServer_Server, playerId);
@@ -1238,11 +1137,6 @@ class PS_PlayableControllerComponent : ScriptComponent
 		// Effects like LMSuppression can re-register on camera changes; this catches them.
 		SuppressSpectatorScreenEffects();
 
-		// Keep the corpse's carried radios powered off. The vanilla VoN system
-		// (SCR_VONEntryRadio) periodically re-powers radios via SetPower(IsUsable()),
-		// so a one-shot disable is not enough — the spectator would re-hear in-game
-		// radio chatter from alive teammates on the same faction net.
-		DisableBodyVoNRadios();
 	}
 
 	// ---- Screen effect suppression for spectator camera ----
@@ -1408,9 +1302,6 @@ class PS_PlayableControllerComponent : ScriptComponent
 	[RplRpc(RplChannel.Reliable, RplRcver.Owner)]
 	void RPC_EnterSpectator()
 	{
-		// Immediately power down radios on the controlled body
-		DisableBodyVoNRadios();
-
 		PlayerController pc = PlayerController.Cast(GetOwner());
 		if (pc)
 		{
