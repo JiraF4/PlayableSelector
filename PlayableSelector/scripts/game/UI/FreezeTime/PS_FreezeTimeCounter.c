@@ -90,7 +90,7 @@ class PS_FreezeTimeCounter : SCR_ScriptedWidgetComponent
 			}
 
 			if (m_wFreezeTimeText)
-				m_wFreezeTimeText.SetText("#PS-Freeze_time");
+				m_wFreezeTimeText.SetText("#PS-Freeze_Time");
 			if (m_wFreezeTimeCounterText)
 				m_wFreezeTimeCounterText.SetColor(new Color(0.760998, 0.386007, 0.078004, 1.000000));
 
@@ -148,7 +148,7 @@ class PS_FreezeTimeCounter : SCR_ScriptedWidgetComponent
 		if (gameModeCoop && gameModeCoop.IsDisableTimeEnd())
 		{
 			if (m_wFreezeTimeText)
-				m_wFreezeTimeText.SetText("#PS-Freeze_time");
+				m_wFreezeTimeText.SetText("#PS-Freeze_Time");
 			if (m_wFreezeTimeCounterText)
 				m_wFreezeTimeCounterText.SetColor(new Color(0.760998, 0.386007, 0.078004, 1.000000));
 		}

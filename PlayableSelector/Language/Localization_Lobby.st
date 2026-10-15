@@ -776,7 +776,7 @@ StringTable {
    LastChanged "ReforgerLobby"
   }
   CustomStringTableItem "{62BACE83CFDBF464}" {
-   Id "PS-Freeze_time"
+   Id "PS-Freeze_Time"
    Target_en_us "Preparing for battle"
    Target_ru_ru "Подготовка к бою"
    Modified 1656410513
@@ -903,6 +903,14 @@ StringTable {
    Author "SeskPC"
    LastChanged "SeskPC"
   }
+  CustomStringTableItem "{66A31A3A9D99C15F}" {
+   Id "PS-HardFreeze_Ended"
+   Target_en_us "Pause ended. Game resumed"
+   Target_ru_ru "Пауза снята. Игра возобновлена"
+   Modified 1760500000
+   Author "ReforgerLobby"
+   LastChanged "ReforgerLobby"
+  }
   CustomStringTableItem "{66A31A3A9D99C15C}" {
    Id "PS-HardFreeze_Help"
    Target_en_us "/hf <seconds> (0 to resume game)"
@@ -919,14 +927,6 @@ StringTable {
    Author "ReforgerLobby"
    LastChanged "ReforgerLobby"
   }
-  CustomStringTableItem "{66A31A3A9D99C15B}" {
-   Id "PS-HardFreeze_Title"
-   Target_en_us "Game Paused"
-   Target_ru_ru "Пауза"
-   Modified 1760400000
-   Author "ReforgerLobby"
-   LastChanged "ReforgerLobby"
-  }
   CustomStringTableItem "{66A31A3A9D99C15E}" {
    Id "PS-HardFreeze_Started"
    Target_en_us "Game paused by admin"
@@ -935,11 +935,11 @@ StringTable {
    Author "ReforgerLobby"
    LastChanged "ReforgerLobby"
   }
-  CustomStringTableItem "{66A31A3A9D99C15F}" {
-   Id "PS-HardFreeze_Ended"
-   Target_en_us "Pause ended. Game resumed"
-   Target_ru_ru "Пауза снята. Игра возобновлена"
-   Modified 1760500000
+  CustomStringTableItem "{66A31A3A9D99C15B}" {
+   Id "PS-HardFreeze_Title"
+   Target_en_us "Game Paused"
+   Target_ru_ru "Пауза"
+   Modified 1760400000
    Author "ReforgerLobby"
    LastChanged "ReforgerLobby"
   }

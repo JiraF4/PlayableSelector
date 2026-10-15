@@ -61,7 +61,7 @@ OverlayWidgetClass {
             Padding 0 0 0 6
            }
            Color 0.761 0.761 0.761 1
-           Text "#PS-Freeze_time"
+           Text "#PS-Freeze_Time"
            "Min Font Size" 24
            "Horizontal Alignment" Center
           }
