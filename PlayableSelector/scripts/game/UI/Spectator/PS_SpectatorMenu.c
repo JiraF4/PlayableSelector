@@ -425,8 +425,6 @@ class PS_SpectatorMenu: MenuBase
 			m_InputManager.AddActionListener("ShowScoreboard", EActionTrigger.DOWN, OnShowPlayerList);
 			m_InputManager.AddActionListener("MenuOpen", EActionTrigger.DOWN, OpenPauseMenu);
 			m_InputManager.AddActionListener("ChatToggle", EActionTrigger.DOWN, ChatToggle);
-			m_InputManager.AddActionListener("VONDirect", EActionTrigger.DOWN, Action_LobbyVoNOn);
-			m_InputManager.AddActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
 			m_InputManager.AddActionListener("SwitchSpectatorUI", EActionTrigger.DOWN, Action_SwitchSpectatorUI);
 			m_InputManager.AddActionListener("GadgetMap", EActionTrigger.DOWN, Action_ToggleMap);
 			m_InputManager.AddActionListener("ManualCameraTeleport", EActionTrigger.DOWN, Action_ManualCameraTeleport);
@@ -453,8 +451,6 @@ class PS_SpectatorMenu: MenuBase
 			m_InputManager.RemoveActionListener("ShowScoreboard", EActionTrigger.DOWN, OnShowPlayerList);
 			m_InputManager.RemoveActionListener("MenuOpen", EActionTrigger.DOWN, OpenPauseMenu);
 			m_InputManager.RemoveActionListener("ChatToggle", EActionTrigger.DOWN, ChatToggle);
-			m_InputManager.RemoveActionListener("VONDirect", EActionTrigger.DOWN, Action_LobbyVoNOn);
-			m_InputManager.RemoveActionListener("VONDirect", EActionTrigger.UP, Action_LobbyVoNOff);
 			m_InputManager.RemoveActionListener("SwitchSpectatorUI", EActionTrigger.DOWN, Action_SwitchSpectatorUI);
 			m_InputManager.RemoveActionListener("GadgetMap", EActionTrigger.DOWN, Action_ToggleMap);
 			m_InputManager.RemoveActionListener("ManualCameraTeleport", EActionTrigger.DOWN, Action_ManualCameraTeleport);
@@ -617,11 +613,7 @@ class PS_SpectatorMenu: MenuBase
 			FrameSlot.SetPosY(m_wKillListFrame, killListY);
 		}
 		
-		/* VoN Magic
-		PlayerController playerController = GetGame().GetPlayerController();
-		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-		playableController.VoNPosition = GetGame().GetCameraManager().CurrentCamera().GetOrigin() - vector.Up * 1.7;
-		*/
+
 		
 		//GetGame().Getm_InputManager().ActivateContext("SpectatorContext", 1);
 		
@@ -699,20 +691,7 @@ class PS_SpectatorMenu: MenuBase
 		editBoxWidget.SetText(msg);
 	}
 	
-	void Action_LobbyVoNOn()
-	{
-		PlayerController playerController = GetGame().GetPlayerController();
-		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-		playableController.LobbyVoNRadioEnable();
-	}
-	
-	void Action_LobbyVoNOff()
-	{
-		PlayerController playerController = GetGame().GetPlayerController();
-		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-		playableController.LobbyVoNDisable();
-	}
-	
+
 	void Action_SwitchSpectatorUI()
 	{
 		if (m_wVoiceChatList.IsVisible())

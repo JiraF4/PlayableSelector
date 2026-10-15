@@ -560,25 +560,7 @@ if (m_PlayableManager)
 		if (currentState == PS_EPlayableControllerState.Ready) m_PlayableControllerComponent.SetPlayerState(m_iPlayerId, PS_EPlayableControllerState.NotReady);
 	}
 	
-	// Direct
-	void Action_LobbyVoNOn()
-	{
-		m_PlayableControllerComponent.LobbyVoNEnable();
-	}
-	void Action_LobbyVoNOff()
-	{
-		m_PlayableControllerComponent.LobbyVoNDisable();
-	}
-	// Channel
-	void Action_LobbyVoNChannelOn()
-	{
-		m_PlayableControllerComponent.LobbyVoNRadioEnable();
-	}
-	void Action_LobbyVoNChannelOff()
-	{
-		m_PlayableControllerComponent.LobbyVoNDisable();
-	}
-	
+
 	void Action_ChatOpen()
 	{
 		// Delay is esential, if any character already controlled
