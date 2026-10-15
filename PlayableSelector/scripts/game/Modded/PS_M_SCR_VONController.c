@@ -1,127 +1,78 @@
-// PS_M_SCR_VONController - keep the VON push-to-talk input alive for body-less menu speakers,
-// prevent corpse mic capture and handle null safety.
+// PS_M_SCR_VONController - keep ownership transitions local and stop old capture before replacement.
 
 modded class SCR_VONController
 {
-	//------------------------------------------------------------------------------------------------
-	override protected void Init(IEntity owner)
+	override void SetVONComponent(SCR_VoNComponent VONComp)
 	{
-		super.Init(owner);
+		if (GetVONComponent() != VONComp)
+			CleanupVONBeforeComponentChange();
+
+		super.SetVONComponent(VONComp);
 	}
 
-	//------------------------------------------------------------------------------------------------
-	override protected void Cleanup()
+	protected void CleanupVONBeforeComponentChange()
 	{
-		super.Cleanup();
-	}
-
-	//------------------------------------------------------------------------------------------------
-	override protected void UpdateSystemState()
-	{
-		if (PS_MenuVoN.IsActive())
+		bool canReset = m_VONComp && m_DirectSpeechEntry && m_DirectSpeechEntry.IsUsable() && m_LongRangeEntry && m_LongRangeEntry.IsUsable();
+		if (canReset)
 		{
-			ConnectToHandleUpdateVONControllersSystem();
-			return;
+			ResetVON();
 		}
-		super.UpdateSystemState();
+		else
+		{
+			if (m_bIsToggledDirect)
+			{
+				if (m_VONComp && m_DirectSpeechEntry && m_DirectSpeechEntry.IsUsable())
+					SetVONProximityToggle(false);
+				else
+				{
+					m_bIsToggledDirect = false;
+					if (m_OnVONActiveToggled)
+						m_OnVONActiveToggled.Invoke(false, false);
+				}
+			}
+
+			if (m_bIsLongRangeToggled && m_LongRangeEntry && m_LongRangeEntry.IsUsable())
+				SetVONLongRange(false, false);
+		}
+
+		if (m_VONComp)
+		{
+			DeactivateVON();
+			m_VONComp.SetCapture(false);
+		}
+
+		if (m_bIsToggledDirect)
+		{
+			m_bIsToggledDirect = false;
+			if (m_OnVONActiveToggled)
+				m_OnVONActiveToggled.Invoke(false, false);
+		}
+
+		m_bIsLongRangeToggled = false;
+		m_bIsActive = false;
+		m_eVONType = EVONTransmitType.NONE;
+		m_sActiveHoldAction = string.Empty;
+		m_fToggleOffDelay = 0;
 	}
 
-	//------------------------------------------------------------------------------------------------
-	override void Update(float timeSlice)
-	{
-		super.Update(timeSlice);
-
-		if (!m_InputManager || !PS_MenuVoN.IsActive())
-			return;
-
-		// Re-assert the contexts vanilla stops activating once the controlled character is dead/unconscious.
-		m_InputManager.ActivateContext(VON_CONTEXT);
-		m_InputManager.ActivateContext(VON_MENU_OPENING_CONTEXT);
-	}
-
-	//------------------------------------------------------------------------------------------------
-	// Let PS_MenuVoN re-evaluate update-system registration when the menu device (de)activates.
-	void PS_RefreshSystemState()
-	{
-		UpdateSystemState();
-	}
-
-	//------------------------------------------------------------------------------------------------
 	override protected void OnControlledEntityChanged(IEntity from, IEntity to)
 	{
 		super.OnControlledEntityChanged(from, to);
+		PS_MenuVoN.Refresh();
 	}
 
-	//------------------------------------------------------------------------------------------------
-	/**
-	 * @brief Проверка, является ли локальный игрок мертвым персонажем или спикером меню/спектатора.
-	 * @return True если игрок мертв или в меню/спектаторе
-	 */
-	protected bool PS_IsDeadOrMenuSpeaker()
-	{
-		PlayerController pc = PlayerController.Cast(GetOwner());
-		if (!pc)
-			pc = GetGame().GetPlayerController();
-		if (!pc)
-			return false;
-
-		// Приоритет 1: Если под контролем живой персонаж - игрок 100% НЕ спикер меню!
-		IEntity entity = pc.GetControlledEntity();
-		ChimeraCharacter character = ChimeraCharacter.Cast(entity);
-		if (character)
-		{
-			CharacterControllerComponent charCtrl = character.GetCharacterController();
-			DamageManagerComponent dmg = character.GetDamageManager();
-			bool isDead = (charCtrl && charCtrl.IsDead()) || (dmg && dmg.IsDestroyed());
-			if (!isDead)
-			{
-				// Самоисцеление: если меню забыло деактивироваться, обновляем его
-				if (PS_MenuVoN.IsActive())
-					PS_MenuVoN.Refresh();
-				return false;
-			}
-			return true;
-		}
-
-		// Приоритет 2: Меню активно при отсутствии живого персонажа
-		if (PS_MenuVoN.IsActive())
-			return true;
-
-		if (SCR_VoNComponent.PS_IsMenuSpeaker(pc.GetPlayerId()))
-			return true;
-
-		return false;
-	}
-
-	//------------------------------------------------------------------------------------------------
 	override bool AssignVONComponent()
 	{
-		if (PS_IsDeadOrMenuSpeaker())
-		{
-			if (m_VONComp)
-			{
-				m_VONComp.SetCapture(false);
-				SetVONComponent(null);
-			}
+		if (PS_MenuVoN.ShouldOwnVoice())
 			return false;
-		}
 
-		bool result = super.AssignVONComponent();
-		return result;
+		return super.AssignVONComponent();
 	}
 
-	//------------------------------------------------------------------------------------------------
 	override protected void SetActiveTransmit(notnull SCR_VONEntry entry)
 	{
-		if (PS_IsDeadOrMenuSpeaker())
-		{
-			if (m_VONComp)
-			{
-				m_VONComp.SetCapture(false);
-				SetVONComponent(null);
-			}
+		if (PS_MenuVoN.ShouldOwnVoice())
 			return;
-		}
 
 		if (!GetVONComponent())
 			AssignVONComponent();
@@ -131,47 +82,19 @@ modded class SCR_VONController
 		super.SetActiveTransmit(entry);
 	}
 
-	//------------------------------------------------------------------------------------------------
 	override protected void SetVONProximityToggle(bool activate)
 	{
-		if (!m_DirectSpeechEntry || PS_IsDeadOrMenuSpeaker())
-		{
-			if (m_VONComp && PS_IsDeadOrMenuSpeaker())
-			{
-				m_VONComp.SetCapture(false);
-				SetVONComponent(null);
-			}
+		if (!m_DirectSpeechEntry)
 			return;
-		}
 
 		super.SetVONProximityToggle(activate);
 	}
 
-	//------------------------------------------------------------------------------------------------
 	override protected bool ActivateVON(notnull SCR_VONEntry entry, EVONTransmitType transmitType = EVONTransmitType.NONE)
 	{
-		if (PS_IsDeadOrMenuSpeaker())
-		{
-			if (m_VONComp)
-				m_VONComp.SetCapture(false);
+		if (PS_MenuVoN.ShouldOwnVoice())
 			return false;
-		}
 
 		return super.ActivateVON(entry, transmitType);
-	}
-
-	//------------------------------------------------------------------------------------------------
-	override protected void DeactivateVON(EVONTransmitType transmitType = EVONTransmitType.NONE)
-	{
-		if (PS_IsDeadOrMenuSpeaker())
-			return;
-
-		super.DeactivateVON(transmitType);
-	}
-
-	//------------------------------------------------------------------------------------------------
-	void PS_ResetVON()
-	{
-		ResetVON();
 	}
 }

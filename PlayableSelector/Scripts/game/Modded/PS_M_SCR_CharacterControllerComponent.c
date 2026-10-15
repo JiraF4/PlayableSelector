@@ -12,17 +12,6 @@ modded class SCR_CharacterControllerComponent
 			PlayerController pc = GetGame().GetPlayerController();
 			if (pc && pc.GetControlledEntity() == GetOwner())
 			{
-				SCR_VONController vonCtrl = SCR_VONController.Cast(pc.FindComponent(SCR_VONController));
-				if (vonCtrl)
-				{
-					VoNComponent vonComp = vonCtrl.GetVONComponent();
-					if (vonComp)
-					{
-						vonComp.SetCapture(false);
-						vonCtrl.SetVONComponent(null);
-					}
-					vonCtrl.PS_ResetVON();
-				}
 
 				PS_MenuVoN.Refresh();
 			}

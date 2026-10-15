@@ -8,8 +8,6 @@ class PS_PlayableControllerComponentClass : ScriptComponentClass
 class PS_PlayableControllerComponent : ScriptComponent
 {
 	protected IEntity m_Camera;
-	protected IEntity m_InitialEntity;
-	protected vector m_vVoNPosition = PS_VoNRoomsManager.roomInitialPosition;
 	protected SCR_EGameModeState m_eMenuState = SCR_EGameModeState.PREGAME;
 	protected bool m_bAfterInitialSwitch = false;
 	protected vector m_vObserverPosition = "0 0 0";
@@ -667,94 +665,6 @@ class PS_PlayableControllerComponent : ScriptComponent
 		}
 	}
 
-	// EOnFixedFrame removed - FIXEDFRAME was never masked (the POSTFIXEDFRAME SetEventMask is commented out),
-	// so it never fired, and it only called the now-unused body-parking UpdatePosition.
-	void UpdatePosition(bool force)
-	{
-		// Repeating call may still fire while the player controller is being torn down on disconnect
-		IEntity owner = GetOwner();
-		if (!owner)
-			return;
-		RplComponent rpl = RplComponent.Cast(owner.FindComponent(RplComponent));
-		if (!rpl || !rpl.IsOwner())
-			return;
-		PlayerController ownerPlayerController = PlayerController.Cast(owner);
-		if (!ownerPlayerController)
-			return;
-
-		// Lets fight with phisyc engine
-		if (m_InitialEntity)
-		{
-			// While spectating, the server parks the body above the player's own corpse so the
-			// battlefield stays streamed around it (NDS streams around the controlled entity).
-			// The no-physics component keeps it there - don't drag it to the lobby grid.
-			if (m_Camera)
-			{
-				// Who broke camera on map?
-				CameraBase specCameraBase = GetGame().GetCameraManager().CurrentCamera();
-				if (specCameraBase)
-					specCameraBase.ApplyTransform(GetGame().GetWorld().GetTimeSlice());
-			}
-			else
-			{
-				// In menus (preview/lobby/briefing) pin the body to a deterministic per-player spot.
-				// VoN "rooms" rely on each player's body being spatially separated so proximity voice
-				// never bleeds between players; forcing the position guarantees uniqueness regardless
-				// of replication timing.
-				int playerId = ownerPlayerController.GetPlayerId();
-				m_vVoNPosition = PS_GameModeCoop.GetInitialEntityPosition(playerId);
-				vector currentOrigin = m_InitialEntity.GetOrigin();
-
-				vector mat[4];
-				Math3D.MatrixIdentity4(mat);
-				mat[3] = m_vVoNPosition;
-
-				// Touch the transform only when it actually drifted: this entity is owned by the local
-				// client, every SetTransform dirties its replication state, so per-frame would flood.
-				if (force || vector.DistanceSq(currentOrigin, m_vVoNPosition) > 0.01)
-				{
-					GameEntity gameEntity = GameEntity.Cast(m_InitialEntity);
-					if (force)
-						gameEntity.Teleport(mat);
-					gameEntity.SetTransform(mat);
-
-					Physics physics = m_InitialEntity.GetPhysics();
-					if (physics)
-						physics.SetActive(ActiveState.INACTIVE);
-				}
-
-				MenuBase menu = GetGame().GetMenuManager().GetTopMenu();
-				if (menu && (menu.IsInherited(PS_PreviewMapMenu) || menu.IsInherited(PS_CoopLobby) || menu.IsInherited(PS_BriefingMapMenu)))
-				{
-					GetGame().GetCameraManager().CurrentCamera().SetWorldTransform(mat);
-				}
-
-				// Who broke camera on map?
-				CameraBase cameraBase = GetGame().GetCameraManager().CurrentCamera();
-				if (cameraBase)
-					cameraBase.ApplyTransform(GetGame().GetWorld().GetTimeSlice());
-			}
-		} else {
-			IEntity entity = ownerPlayerController.GetControlledEntity();
-			if (entity)
-			{
-				PS_LobbyVoNComponent von = PS_LobbyVoNComponent.Cast(entity.FindComponent(PS_LobbyVoNComponent));
-				if (von)
-					m_InitialEntity = entity;
-			}
-		}
-	}
-
-	// Save VoN boi for reuse
-	IEntity GetInitialEntity()
-	{
-		return m_InitialEntity;
-	}
-	void SetInitialEntity(IEntity initialEntity)
-	{
-		m_InitialEntity = initialEntity;
-	}
-
 	void ChangeFactionKey(int playerId, FactionKey factionKey)
 	{
 		Rpc(RPC_ChangeFactionKey, playerId, factionKey)
@@ -824,38 +734,6 @@ class PS_PlayableControllerComponent : ScriptComponent
 		vonManager.MoveToRoom(playerId, factionKey, roomName);
 	}
 
-	// Body-less: dead path (lobby voice is on the VoN proxy now, see PS_MenuVoN). Kept for the
-	// in-game character VoN callers; guarded so a body-less (null) controlled entity never derefs.
-	PS_LobbyVoNComponent GetVoN()
-	{
-		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
-		if (!thisPlayerController)
-			return null;
-		IEntity entity = thisPlayerController.GetControlledEntity();
-		if (!entity)
-			return null;
-		return PS_LobbyVoNComponent.Cast(entity.FindComponent(PS_LobbyVoNComponent));
-	}
-	// Body-less: lobby push-to-talk is now owned by PS_MenuVoN (it binds VONDirect while the local
-	// player is a menu speaker). These three remain only because some menus still bind them as input
-	// actions; they are deliberate no-ops now (there is no controlled body VoN to drive).
-	void LobbyVoNEnable()
-	{
-	}
-	void LobbyVoNRadioEnable()
-	{
-	}
-	void LobbyVoNDisable()
-	{
-	}
-	void LobbyVoNDisableDelayed()
-	{
-		PS_LobbyVoNComponent von = GetVoN();
-		if (!von)
-			return;
-		von.SetCommMethod(ECommMethod.DIRECT);
-		von.SetCapture(false);
-	}
 	void GetArmaIdFromServer(int playerId)
 	{
 		Rpc(RPC_GetArmaIdFromServer_Server, playerId);
@@ -1306,15 +1184,12 @@ class PS_PlayableControllerComponent : ScriptComponent
 		if (pc)
 		{
 			SCR_VONController vonController = SCR_VONController.Cast(pc.FindComponent(SCR_VONController));
-			if (vonController)
+			IEntity controlledEntity = pc.GetControlledEntity();
+			if (vonController && controlledEntity)
 			{
-				VoNComponent vonComp = vonController.GetVONComponent();
-				if (vonComp)
-				{
-					vonComp.SetCapture(false);
+				SCR_VoNComponent controlledVoN = vonController.GetVONComponent();
+				if (controlledVoN && controlledVoN.GetOwner() == controlledEntity)
 					vonController.SetVONComponent(null);
-				}
-				vonController.PS_ResetVON();
 			}
 		}
 

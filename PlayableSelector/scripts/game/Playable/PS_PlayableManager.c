@@ -276,11 +276,6 @@ class PS_PlayableManager : ScriptComponent
 			entity = applyPlayable.GetOwner();
 		}
 
-		// Delete initial entity if exists
-		IEntity initialEntity = playableController.GetInitialEntity();
-		if (initialEntity)
-			m_CallQueue.Call(SCR_EntityHelper.DeleteEntityAndChildren, initialEntity);
-
 		// Apply entity immediately. At game start / respawn the playables have been force-streamed all
 		// through the briefing, so the control switch is not a streaming burst and the player should take
 		// control with no delay. The spectator transitions stage their streaming separately via the

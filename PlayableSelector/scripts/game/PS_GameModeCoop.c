@@ -389,13 +389,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			return;
 		}
 
-		PS_LobbyVoNComponent von = PS_LobbyVoNComponent.Cast(entity.FindComponent(PS_LobbyVoNComponent));
-		if (von)
-		{
-			playableController.SwitchToMenu(SCR_EGameModeState.GAME);
-			return;
-		}
-
 		// FIX BUG-44 (ref: PodvalLobbyCrashFix/Scripts/Game/Modded/CrashFix_PS_GameModeCoop.c): мертвый игрок,
 		// закрывший GM-редактор, зависал в трупе — SwitchFromObserver выше уже снёс камеру/меню спектатора,
 		// а ванильный fallthrough возвращал управление в уничтоженное тело. Пересоздаём спектатор сразу,
@@ -1076,20 +1069,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (playerController.GetPlayerId() == 0) return;
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		playableController.SwitchToMenu(state);
-	}
-
-	// Parking position for initial (VoN) entities of players without a death position
-	// (lobby phase and JIP spectators), also their streaming relevance center.
-	// Planar XZ grid: network streaming relevance is 2D (x, z), so stacking players vertically
-	// puts them all into the same streaming cell and every client there streams the whole
-	// cluster of parked bodies at once. Keep every player on a unique XZ spot instead.
-	// Keep the height within sane world bounds: extreme heights (100km+) break position replication.
-	static vector GetInitialEntityPosition(int playerId)
-	{
-		return Vector(
-			1000 * Math.Mod(playerId, 10),
-			10000,
-			1000 * Math.Floor(playerId / 10));
 	}
 
 	void SpawnInitialEntity(int playerId)

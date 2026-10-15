@@ -49,10 +49,6 @@ class PS_VoNProxyComponent : ScriptComponent
 		return m_iPlayerId;
 	}
 
-	// =====================================================================
-	// ASSIGNMENT
-	// =====================================================================
-
 	// Server-only, right after spawn.
 	void SetPlayerId_S(int playerId)
 	{
