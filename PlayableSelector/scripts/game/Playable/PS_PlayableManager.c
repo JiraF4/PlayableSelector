@@ -261,7 +261,7 @@ class PS_PlayableManager : ScriptComponent
 			// their corpse as the controlled entity. The client spectator camera (PS_SpectatorManager)
 			// and the VoN proxy (PS_MenuVoN) handle view + voice. The engine has no working
 			// SetControlledEntity(null), so we simply do not assign a controlled entity here.
-			SCR_AIGroup currentGroup = groupsManagerComponent.GetPlayerGroup(playableId);
+			SCR_AIGroup currentGroup = groupsManagerComponent.GetPlayerGroup(playerId);
 			if (currentGroup)
 				currentGroup.RemovePlayer(playerId);
 			SetPlayerFactionKey(playerId, "");
