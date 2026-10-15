@@ -112,9 +112,56 @@ class PS_VehicleHold
 			m_iStoppedCars, m_iStoppedTracked, m_iStoppedAircraft, m_aPinned.Count()), LogLevel.NORMAL);
 	}
 
+	//! Server: stop engines and apply persistent brake for vehicles on game start
+	void StopAllVehicles_S()
+	{
+		BaseWorld world = GetGame().GetWorld();
+		if (!world)
+			return;
+
+		vector mins, maxs;
+		world.GetBoundBox(mins, maxs);
+		world.QueryEntitiesByAABB(mins, maxs, StopVehicleQuery_S, null, EQueryEntitiesFlags.DYNAMIC);
+	}
+
+	protected bool StopVehicleQuery_S(IEntity entity)
+	{
+		Vehicle vehicle = Vehicle.Cast(entity);
+		if (!vehicle || vehicle.IsEnableMoveOnFreeze())
+			return true;
+
+		CarControllerComponent car = CarControllerComponent.Cast(vehicle.FindComponent(CarControllerComponent));
+		TrackedControllerComponent tracked = TrackedControllerComponent.Cast(vehicle.FindComponent(TrackedControllerComponent));
+		HelicopterControllerComponent heli = HelicopterControllerComponent.Cast(vehicle.FindComponent(HelicopterControllerComponent));
+
+		if (car)
+		{
+			car.Shutdown();
+			car.StopEngine(false);
+			car.SetPersistentHandBrake(true);
+		}
+		else if (tracked)
+		{
+			tracked.Shutdown();
+			tracked.StopEngine(false);
+		}
+		else if (heli)
+		{
+			float agl = MeasureAltitudeAGL(entity);
+			if (agl <= AIRBORNE_AGL_M)
+			{
+				heli.SetPersistentWheelBrake(true);
+				heli.StopEngine(false);
+			}
+		}
+
+		return true;
+	}
+
 	protected bool HoldVehicle_S(IEntity entity)
 	{
-		if (!Vehicle.Cast(entity))
+		Vehicle vehicle = Vehicle.Cast(entity);
+		if (!vehicle || vehicle.IsEnableMoveOnFreeze())
 			return true;
 
 		HelicopterControllerComponent heli = HelicopterControllerComponent.Cast(entity.FindComponent(HelicopterControllerComponent));
