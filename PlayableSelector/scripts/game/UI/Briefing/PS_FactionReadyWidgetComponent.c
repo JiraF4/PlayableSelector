@@ -40,9 +40,8 @@ class PS_FactionReadyWidgetComponent : PS_HideableButton
 		
 		m_PlayableManager.m_eFactionReadyChanged.Insert(UpdateFaction);
 		m_PlayableManager.m_eOnPlayerPlayableChange.Insert(OnPlayerPlayableChanged);
-		// Keep the commander nickname current when the top slot's occupant joins/leaves: a held-slot reconnect is a
-		// connect (slot may not "change"), and a disconnect of the commander promotes the next connected slot. Both
-		// invokers fire on clients via Broadcast RPCs.
+		m_PlayableManager.GetOnFactionChange().Insert(OnPlayerFactionChanged_C);
+		// Held-slot reconnects may change connection state without changing the slot link.
 		m_PlayableManager.GetOnPlayerConnected().Insert(OnPlayerConnectedRefresh);
 		m_PlayableManager.GetOnPlayerDisconnected().Insert(OnPlayerDisconnectedRefresh);
 
@@ -78,9 +77,6 @@ class PS_FactionReadyWidgetComponent : PS_HideableButton
 			m_wBackgroundFaction.SetColor(Color.White);
 			m_wBackgroundFaction.SetVisible(true);
 			
-			// Faction commander nickname = the FIRST occupied+connected playable slot of this faction (the top
-			// slot). Kept current on slot/connect/disconnect changes via RefreshCommander. The old code set this
-			// once here to the first player in the PlayerManager LIST (not slot order) and never refreshed it.
 			UpdateCommanderName();
 		}
 		
@@ -95,6 +91,7 @@ class PS_FactionReadyWidgetComponent : PS_HideableButton
 	//------------------------------------------------------------------------------------------------
 	void UpdateButtonVisibility()
 	{
+		m_sCurrentFactionKey = m_PlayableManager.GetPlayerFactionKey(m_iCurrentPlayerId);
 		if (m_sFactionKey != m_sCurrentFactionKey)
 		{
 			m_wButton.SetVisible(false);
@@ -150,9 +147,7 @@ class PS_FactionReadyWidgetComponent : PS_HideableButton
 	}
 
 	//------------------------------------------------------------------------------------------------
-	// Set m_wFactionName to the faction COMMANDER = the first occupied+connected playable slot of this faction.
-	// GetFactionCommanders walks GetPlayablesSorted() and returns exactly that top slot, so this is always the
-	// "highest" playable, recomputed live (replaces the old once-in-Init "first player in the PlayerManager list").
+	// Resolve through the manager so an empty command slot also clears the displayed name.
 	void UpdateCommanderName()
 	{
 		if (!m_wFactionName)
@@ -206,6 +201,10 @@ class PS_FactionReadyWidgetComponent : PS_HideableButton
 	{
 		ScheduleRefresh();
 	}
+	void OnPlayerFactionChanged_C(int playerId, FactionKey factionKey, FactionKey factionKeyOld)
+	{
+		ScheduleRefresh();
+	}
 
 	//------------------------------------------------------------------------------------------------
 	static string StripMarkup(string value)
@@ -231,6 +230,7 @@ class PS_FactionReadyWidgetComponent : PS_HideableButton
 	//------------------------------------------------------------------------------------------------
 	void OnFactionClicked(SCR_ButtonBaseComponent button)
 	{
+		m_sCurrentFactionKey = m_PlayableManager.GetPlayerFactionKey(m_iCurrentPlayerId);
 		if (m_sFactionKey != m_sCurrentFactionKey)
 			return;
 		
@@ -276,6 +276,7 @@ class PS_FactionReadyWidgetComponent : PS_HideableButton
 		{
 			m_PlayableManager.m_eFactionReadyChanged.Remove(UpdateFaction);
 			m_PlayableManager.m_eOnPlayerPlayableChange.Remove(OnPlayerPlayableChanged);
+			m_PlayableManager.GetOnFactionChange().Remove(OnPlayerFactionChanged_C);
 			m_PlayableManager.GetOnPlayerConnected().Remove(OnPlayerConnectedRefresh);
 			m_PlayableManager.GetOnPlayerDisconnected().Remove(OnPlayerDisconnectedRefresh);
 		}

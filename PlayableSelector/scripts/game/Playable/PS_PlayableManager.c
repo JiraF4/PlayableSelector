@@ -580,6 +580,10 @@ class PS_PlayableManager : ScriptComponent
 	// - Execute ONLY on server
 	void SetPlayerFactionKey(int playerId, FactionKey factionKey)
 	{
+		FactionKey previousFaction = GetPlayerFactionKey(playerId);
+		if (previousFaction != "" && previousFaction != factionKey && previousFaction == GetSlotFactionForPlayer(playerId))
+			ResetCommanderReadyForSlotChange_S(GetPlayableByPlayer(playerId), -1);
+
 		// Replicate update
 		RPC_SetPlayerFactionKey(playerId, factionKey);
 		Rpc(RPC_SetPlayerFactionKey, playerId, factionKey);
@@ -873,8 +877,23 @@ class PS_PlayableManager : ScriptComponent
 	// - Execute ONLY on server
 	void SetFactionReady(FactionKey factionKey, int readyValue)
 	{
+		if (!Replication.IsServer() || factionKey == "" || (readyValue != 0 && readyValue != 1))
+			return;
+
 		RPC_SetFactionReady(factionKey, readyValue);
 		Rpc(RPC_SetFactionReady, factionKey, readyValue);
+		if (readyValue == 0)
+		{
+			if (m_bFactionsReadySended)
+			{
+				m_CallQueue.Remove(StartTime);
+				m_iStartTimerCounter = -1;
+				Replication.BumpMe();
+				OnStartTimerCounterChanged();
+			}
+			m_bFactionsReadySended = false;
+			return;
+		}
 
 		// All factions ready message already sended
 		if (m_bFactionsReadySended)
@@ -1031,6 +1050,12 @@ class PS_PlayableManager : ScriptComponent
 	// - Execute ONLY on server
 	void SetPlayablePlayer(RplId playableId, int playerId)
 	{
+		RplId previousPlayable = RplId.Invalid();
+		if (playerId > 0)
+			previousPlayable = GetPlayableByPlayer(playerId);
+		if (previousPlayable != playableId)
+			ResetCommanderReadyForSlotChange_S(previousPlayable, -1);
+		ResetCommanderReadyForSlotChange_S(playableId, playerId);
 		int previousPlayerId = GetPlayerByPlayable(playableId);
 		RPC_SetPlayablePlayer(playableId, playerId);
 		Rpc(RPC_SetPlayablePlayer, playableId, playerId);
@@ -1103,6 +1128,12 @@ class PS_PlayableManager : ScriptComponent
 	// - Execute ONLY on server
 	void SetPlayerPlayable(int playerId, RplId playableId)
 	{
+		RplId previousPlayable = RplId.Invalid();
+		if (playerId > 0)
+			previousPlayable = GetPlayableByPlayer(playerId);
+		if (previousPlayable != playableId)
+			ResetCommanderReadyForSlotChange_S(previousPlayable, -1);
+		ResetCommanderReadyForSlotChange_S(playableId, playerId);
 		int previousPlayerId = GetPlayerByPlayable(playableId);
 		RPC_SetPlayerPlayable(playerId, playableId);
 		Rpc(RPC_SetPlayerPlayable, playerId, playableId);
@@ -1363,6 +1394,7 @@ class PS_PlayableManager : ScriptComponent
 	// Manually replicate and invoke player disconnect event on all clients and server
 	protected void OnPlayerDisconnected(int playerId, KickCauseCode cause = KickCauseCode.NONE, int timeout = -1)
 	{
+		ResetCommanderReadyForSlotChange_S(GetPlayableByPlayer(playerId), -1);
 		Rpc(RPC_OnPlayerDisconnected, playerId, cause, timeout);
 		RPC_OnPlayerDisconnected(playerId, cause, timeout);
 	}
@@ -1577,28 +1609,67 @@ class PS_PlayableManager : ScriptComponent
 		return commanderIds.Contains(playerId);
 	}
 
-	// Returns the player in the top (first) slot for the given faction.
-	// Only one faction commander per faction — the first playable in the sorted list.
-	// Skips disconnected players so the ready button doesn't get stuck on a ghost slot.
+	// An absent or ambiguous 0-0-0 group has no commander. Occupancy never changes slot selection.
+	RplId GetFactionCommanderPlayable(FactionKey factionKey)
+	{
+		if (factionKey == "")
+			return RplId.Invalid();
+
+		RplId commanderPlayable = RplId.Invalid();
+		int commandGroupId = -1;
+		foreach (PS_PlayableContainer playable : GetPlayablesSorted())
+		{
+			if (!playable || playable.GetFactionKey() != factionKey)
+				continue;
+			SCR_AIGroup group = GetPlayerGroupByPlayable(playable.GetRplId());
+			if (!group)
+				continue;
+			SCR_CallsignGroupComponent callsign = SCR_CallsignGroupComponent.Cast(group.FindComponent(SCR_CallsignGroupComponent));
+			int company, platoon, squad;
+			if (!callsign || !callsign.GetCallsignIndexes(company, platoon, squad))
+				continue;
+			if (company != 0 || platoon != 0 || squad != 0)
+				continue;
+			if (commanderPlayable == RplId.Invalid())
+			{
+				commanderPlayable = playable.GetRplId();
+				commandGroupId = group.GetGroupID();
+			}
+			else if (group.GetGroupID() != commandGroupId)
+				return RplId.Invalid();
+		}
+		return commanderPlayable;
+	}
+
+	// Called before slot links change; disconnects may already read as disconnected here.
+	protected void ResetCommanderReadyForSlotChange_S(RplId playableId, int nextPlayerId)
+	{
+		if (!Replication.IsServer() || playableId == RplId.Invalid())
+			return;
+		int previousPlayerId = GetPlayerByPlayable(playableId);
+		if (previousPlayerId <= 0 || previousPlayerId == nextPlayerId)
+			return;
+		PS_PlayableContainer playable = GetPlayableById(playableId);
+		if (!playable)
+			return;
+		FactionKey factionKey = playable.GetFactionKey();
+		if (GetFactionReady(factionKey) == 1 && GetFactionCommanderPlayable(factionKey) == playableId)
+			SetFactionReady(factionKey, 0);
+	}
+
+	// Only the connected owner of the first command-group lobby slot can ready the faction.
 	void GetFactionCommanders(FactionKey factionKey, out array<int> commanderIds)
 	{
 		commanderIds.Clear();
-
-		array<PS_PlayableContainer> playables = GetPlayablesSorted();
-		foreach (PS_PlayableContainer playable : playables)
-		{
-			if (playable.GetFactionKey() != factionKey)
-				continue;
-
-			int playerId = GetPlayerByPlayable(playable.GetRplId());
-			if (playerId <= 0)
-				continue;
-			if (m_PlayerManager && !m_PlayerManager.IsPlayerConnected(playerId))
-				continue;
-
-			commanderIds.Insert(playerId);
+		RplId playableId = GetFactionCommanderPlayable(factionKey);
+		if (playableId == RplId.Invalid())
 			return;
-		}
+		int playerId = GetPlayerByPlayable(playableId);
+		if (playerId <= 0 || !m_PlayerManager || !m_PlayerManager.IsPlayerConnected(playerId))
+			return;
+		if (GetPlayerFactionKey(playerId) != factionKey)
+			return;
+		commanderIds.Insert(playerId);
 	}
 
 	// --------------------------------------------------------------------------------------------

@@ -68,7 +68,23 @@ class PS_PlayableControllerComponent : ScriptComponent
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
 	void RPC_SetFactionReady(FactionKey factionKey, int readyValue)
 	{
+		PlayerController playerController = PlayerController.Cast(GetOwner());
+		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		if (!Replication.IsServer() || !playerController || !playerManager || !playableManager)
+			return;
+
+		// The owned controller supplies identity; the requested faction and value are untrusted.
+		int callerPlayerId = playerController.GetPlayerId();
+		if (callerPlayerId <= 0 || !playerManager.IsPlayerConnected(callerPlayerId))
+			return;
+		if (readyValue != 0 && readyValue != 1)
+			return;
+		if (factionKey == "" || playableManager.GetPlayerFactionKey(callerPlayerId) != factionKey)
+			return;
+		if (!playableManager.IsPlayerFactionCommander(callerPlayerId))
+			return;
+
 		playableManager.SetFactionReady(factionKey, readyValue);
 	}
 
