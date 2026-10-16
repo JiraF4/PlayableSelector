@@ -22,14 +22,14 @@ class PS_VoNRoomsManager : ScriptComponent
 	protected ref array<int> m_aPendingRadioMutes = {};
 	protected bool m_bRplLoaded;
 
-	protected static const float PS_VONFIX_SKY_ALTITUDE = 10000;
-	protected static const float PS_VONFIX_CHANNEL_BASE = 1000;
-	protected static const float PS_VONFIX_CHANNEL_SPACING = 1000;
-	protected static const float PS_VONFIX_MEMBER_STEP = 0.4;
-	protected static const int PS_VONFIX_GRID_COLS = 12;
-	protected static const int PS_VONFIX_TOTAL_SLOTS = 144;
-	protected static const float PS_VONFIX_ISOLATED_XZ = -5000;
-	protected static const float PS_VONFIX_NO_CHANNEL_XZ = -6000;
+	protected static const float PS_VON_SKY_ALTITUDE = 10000;
+	protected static const float PS_VON_CHANNEL_BASE = 1000;
+	protected static const float PS_VON_CHANNEL_SPACING = 1000;
+	protected static const float PS_VON_MEMBER_STEP = 0.4;
+	protected static const int PS_VON_GRID_COLS = 12;
+	protected static const int PS_VON_TOTAL_SLOTS = 144;
+	protected static const float PS_VON_ISOLATED_XZ = -5000;
+	protected static const float PS_VON_NO_CHANNEL_XZ = -6000;
 
 	override protected void OnPostInit(IEntity owner)
 	{
@@ -71,15 +71,15 @@ class PS_VoNRoomsManager : ScriptComponent
 		// Controls a living character / not a menu speaker -> isolated far spot
 		// Safe: the proxy radio is muted on every machine.
 		if (IsPlayerParked(playerId))
-			return Vector(PS_VONFIX_ISOLATED_XZ, PS_VONFIX_SKY_ALTITUDE, PS_VONFIX_ISOLATED_XZ);
+			return Vector(PS_VON_ISOLATED_XZ, PS_VON_SKY_ALTITUDE, PS_VON_ISOLATED_XZ);
 
 		string channelKey;
 		if (!m_mPlayerChannels.Find(playerId, channelKey))
-			return Vector(PS_VONFIX_NO_CHANNEL_XZ - playerId * PS_VONFIX_CHANNEL_SPACING, PS_VONFIX_SKY_ALTITUDE, PS_VONFIX_NO_CHANNEL_XZ);
+			return Vector(PS_VON_NO_CHANNEL_XZ - playerId * PS_VON_CHANNEL_SPACING, PS_VON_SKY_ALTITUDE, PS_VON_NO_CHANNEL_XZ);
 
 		int index = m_aChannels.Find(channelKey);
 		if (index < 0)
-			return Vector(PS_VONFIX_NO_CHANNEL_XZ - playerId * PS_VONFIX_CHANNEL_SPACING, PS_VONFIX_SKY_ALTITUDE, PS_VONFIX_NO_CHANNEL_XZ);
+			return Vector(PS_VON_NO_CHANNEL_XZ - playerId * PS_VON_CHANNEL_SPACING, PS_VON_SKY_ALTITUDE, PS_VON_NO_CHANNEL_XZ);
 
 		// Deterministic collision-free slot allocation within the room (12x12 grid = 144 slots >= 128 players).
 		// Rank playerId against other players currently in the same channelKey.
@@ -93,20 +93,20 @@ class PS_VoNRoomsManager : ScriptComponent
 				slot++;
 		}
 
-		if (slot >= PS_VONFIX_TOTAL_SLOTS)
-			slot = PS_VONFIX_TOTAL_SLOTS - 1;
+		if (slot >= PS_VON_TOTAL_SLOTS)
+			slot = PS_VON_TOTAL_SLOTS - 1;
 
-		int gridX = slot % PS_VONFIX_GRID_COLS;
-		int gridZ = slot / PS_VONFIX_GRID_COLS;
+		int gridX = slot % PS_VON_GRID_COLS;
+		int gridZ = slot / PS_VON_GRID_COLS;
 
 		// Centered 12x12 grid: (12 - 1) / 2 = 5.5
 		vector memberOffset = Vector(
-			(gridX - 5.5) * PS_VONFIX_MEMBER_STEP,
+			(gridX - 5.5) * PS_VON_MEMBER_STEP,
 			0,
-			(gridZ - 5.5) * PS_VONFIX_MEMBER_STEP
+			(gridZ - 5.5) * PS_VON_MEMBER_STEP
 		);
 
-		return Vector(PS_VONFIX_CHANNEL_BASE + PS_VONFIX_CHANNEL_SPACING * index, PS_VONFIX_SKY_ALTITUDE, PS_VONFIX_CHANNEL_BASE) + memberOffset;
+		return Vector(PS_VON_CHANNEL_BASE + PS_VON_CHANNEL_SPACING * index, PS_VON_SKY_ALTITUDE, PS_VON_CHANNEL_BASE) + memberOffset;
 	}
 
 	static string GetLobbyChannelKey()
