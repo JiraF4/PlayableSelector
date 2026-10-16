@@ -722,6 +722,110 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		return null;
 	}
 
+	//------------------------------------------------------------------------------------------------
+	//! @workaround Enfusion Steam persona duplication when testing multiple local peers
+	//! Disambiguates duplicate player names on connect by appending index or '(Peer N)' tag.
+	protected string ResolveUniquePlayerName_S(int playerId, string baseName)
+	{
+		if (baseName.IsEmpty())
+			return baseName;
+
+		PlayerManager pm = GetGame().GetPlayerManager();
+		if (!pm)
+			return baseName;
+
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		if (!playableManager)
+			return baseName;
+
+		// Detect if this is local/peer testing (no backend GUID)
+		string guid = GetGame().GetBackendApi().GetPlayerIdentityId(playerId);
+		bool isPeer = guid.IsEmpty();
+		string tag = "Peer ";
+		if (!isPeer)
+			tag = "";
+
+		array<int> playerIds = new array<int>();
+		pm.GetPlayers(playerIds);
+
+		array<int> usedIndices = new array<int>();
+		bool firstNeedsRename = false;
+		int firstId = -1;
+		string prefix = baseName + " (" + tag;
+
+		foreach (int existingId : playerIds)
+		{
+			if (existingId == playerId)
+				continue;
+
+			string existingName = playableManager.GetPlayerName(existingId);
+			if (existingName.IsEmpty())
+				existingName = pm.GetPlayerName(existingId);
+
+			if (existingName == baseName)
+			{
+				usedIndices.Insert(1);
+				firstNeedsRename = true;
+				firstId = existingId;
+			}
+			else if (existingName.IndexOf(prefix) == 0)
+			{
+				int prefixLen = prefix.Length();
+				int closeParen = existingName.IndexOf(")");
+				if (closeParen > prefixLen)
+				{
+					int idx = existingName.Substring(prefixLen, closeParen - prefixLen).ToInt();
+					if (idx > 0)
+						usedIndices.Insert(idx);
+				}
+			}
+		}
+
+		if (usedIndices.IsEmpty())
+			return baseName;
+
+		if (firstNeedsRename && firstId > 0)
+		{
+			string newFirstName = string.Format("%1 (%21)", baseName, tag);
+			playableManager.SetPlayerName(firstId, newFirstName);
+		}
+
+		int assignedIdx = 1;
+		while (usedIndices.Contains(assignedIdx))
+		{
+			assignedIdx++;
+		}
+
+		string resolvedName = string.Format("%1 (%2%3)", baseName, tag, assignedIdx);
+		Print(string.Format("[PS_Lobby] Disambiguated duplicate player name: player %1 ('%2') -> '%3'", playerId, baseName, resolvedName), LogLevel.NORMAL);
+		return resolvedName;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected void RegisterPlayerName_S(int playerId)
+	{
+		if (!Replication.IsServer())
+			return;
+
+		PlayerManager pm = GetGame().GetPlayerManager();
+		if (!pm)
+			return;
+
+		string name = pm.GetPlayerName(playerId);
+		if (name.IsEmpty())
+		{
+			GetGame().GetCallqueue().CallLater(RegisterPlayerName_S, 200, false, playerId);
+			return;
+		}
+
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		if (!playableManager)
+			return;
+
+		name = ResolveUniquePlayerName_S(playerId, name);
+		playableManager.SetPlayerName(playerId, name);
+	}
+
 	protected override void OnPlayerConnected(int playerId)
 	{
 		// Anti-cheat: log every connection with full identity (server-only).
@@ -729,8 +833,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			PrintFormat("[PS_AntiCheat] CONNECT: %1", PS_AntiCheatPlayerIdentity(playerId));
 
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		string name = GetGame().GetPlayerManager().GetPlayerName(playerId);
-		playableManager.SetPlayerName(playerId, name);
+
+		if (Replication.IsServer())
+			RegisterPlayerName_S(playerId);
 
 		// TODO: remove CallLater
 		#ifdef WORKBENCH

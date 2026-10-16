@@ -73,7 +73,7 @@ class PS_SpectatorPlayableIcon : SCR_ScriptedWidgetComponent
 		int playerId = playableManager.GetPlayerByPlayable(m_cPlayableComponent.GetRplId());
 		if (playerId > 0)
 		{
-			string playerName = GetGame().GetPlayerManager().GetPlayerName(playerId);
+			string playerName = playableManager.GetPlayerName(playerId);
 			if (playerName != "")
 				m_wPlayableLabel.SetText(playerName);
 			

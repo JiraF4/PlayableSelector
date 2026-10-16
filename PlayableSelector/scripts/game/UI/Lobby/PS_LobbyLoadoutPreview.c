@@ -283,9 +283,9 @@ class PS_LobbyLoadoutPreview : SCR_WLibComponentBase
 		{
 			if (playerId > 0) 
 			{
-				PlayerManager playerManager = GetGame().GetPlayerManager();
+				string playerName = playableManager.GetPlayerName(playerId);
 				m_WStateOverlay.SetVisible(true);
-				m_wStateText.SetText(playerManager.GetPlayerName(playerId));
+				m_wStateText.SetText(playerName);
 				m_wStateBackgroundImage.SetColor(Color.FromInt(0xFF19322e));
 			}else{
 				m_WStateOverlay.SetVisible(false);
