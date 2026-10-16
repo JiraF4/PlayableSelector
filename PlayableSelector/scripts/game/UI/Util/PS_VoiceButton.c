@@ -12,6 +12,8 @@ class PS_VoiceButton : PS_HideableButton
 
 	// Vars
 	protected int m_iPlayerId;
+	protected bool m_bListenTalking = true;
+	protected bool m_bTalkingSubscribed;
 
 	override void HandlerAttached(Widget w)
 	{
@@ -26,7 +28,7 @@ class PS_VoiceButton : PS_HideableButton
 
 		// Body-less: talking state is tracked statically on the modded SCR_VoNComponent (fed by the
 		// per-player VoN proxies), not by a controlled body's PS_LobbyVoNComponent.
-		SCR_VoNComponent.PS_GetOnTalkingChanged().Insert(OnTalkingChanged);
+		SetTalkingListener(m_bListenTalking);
 		m_OnMuteStateChanged.Insert(UpdateMute);
 
 		UpdateState();
@@ -34,15 +36,32 @@ class PS_VoiceButton : PS_HideableButton
 
 	override void HandlerDeattached(Widget w)
 	{
-		SCR_VoNComponent.PS_GetOnTalkingChanged().Remove(OnTalkingChanged);
+		SetTalkingListener(false);
 		m_OnMuteStateChanged.Remove(UpdateMute);
+		if (m_wButtonHandler && m_wButtonHandler.m_OnClicked)
+			m_wButtonHandler.m_OnClicked.Remove(VoiceMuteSwitch);
+		super.HandlerDeattached(w);
 	}
 
-	void SetPlayer(int playerId)
+	// Panel rows receive talking changes through the panel's player-id lookup.
+	void SetPlayer(int playerId, bool listenTalking = true)
 	{
 		m_iPlayerId = playerId;
-
+		m_bListenTalking = listenTalking;
+		if (m_PlayerController)
+			SetTalkingListener(listenTalking);
 		UpdateState();
+	}
+
+	protected void SetTalkingListener(bool enabled)
+	{
+		if (enabled == m_bTalkingSubscribed)
+			return;
+		if (enabled)
+			SCR_VoNComponent.PS_GetOnTalkingChanged().Insert(OnTalkingChanged);
+		else
+			SCR_VoNComponent.PS_GetOnTalkingChanged().Remove(OnTalkingChanged);
+		m_bTalkingSubscribed = enabled;
 	}
 
 	void OnTalkingChanged(int playerId, bool talking)

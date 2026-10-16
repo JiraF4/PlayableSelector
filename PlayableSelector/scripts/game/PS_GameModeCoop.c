@@ -176,7 +176,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		// On server restart the GameMode entity is destroyed, but GetGame().GetCallqueue()
 		// survives — keeping the old instance alive and running stale callbacks.
 		GetGame().GetCallqueue().Remove(ForceFramerate);
-		GetGame().GetCallqueue().Remove(VoNReconcileTick);
 		GetGame().GetCallqueue().Remove(restrictedZonesTimer);
 		super.OnGameEnd();
 	}
@@ -273,8 +272,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		*/
 		if (Replication.IsServer())
 		{
-			PS_VoNRoomsManager.GetInstance().GetOrCreateRoomWithFaction("", "#PS-VoNRoom_Global");
-
 			m_fCurrentFreezeTime = m_iReconnectTime;
 			Replication.BumpMe();
 		}
@@ -753,9 +750,15 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (Replication.IsServer() && m_bBriefingPreload)
 			GetGame().GetCallqueue().CallLater(PreloadObserverForPlayer_S, 3000, false, playerId);
 
-		// Start the menu-phase VoN reconcile safety-net (no-op if already running or in GAME). See VoNReconcileTick.
 		if (Replication.IsServer())
-			StartVoNReconcile();
+		{
+			PS_VoNRoomsManager vonRoomsManager = PS_VoNRoomsManager.GetInstance();
+			if (vonRoomsManager)
+			{
+				vonRoomsManager.SetPlayerParked_S(playerId, false);
+				vonRoomsManager.SetPlayerChannel_S(playerId, PS_VoNRoomsManager.GetLobbyChannelKey());
+			}
+		}
 
 		m_OnPlayerConnected.Invoke(playerId);
 	}
@@ -782,6 +785,10 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	{
 		if (!Replication.IsServer())
 			return;
+
+		PS_VoNRoomsManager vonRoomsManager = PS_VoNRoomsManager.GetInstance();
+		if (vonRoomsManager && playerId > 0 && GetGame().GetPlayerManager().GetPlayerController(playerId))
+			vonRoomsManager.SetPlayerParked_S(playerId, false);
 
 		PS_PlayableManager pm = PS_PlayableManager.GetInstance();
 		int killerPlayerId = killer.GetInstigatorPlayerID();
@@ -1096,19 +1103,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (VoNRoomsManager)
 		{
 			VoNRoomsManager.SpawnProxy_S(playerId);
-			VoNRoomsManager.RestoreRoom(playerId);
-
-			// Route EVERY fresh connection through the same phase logic reconnect uses, so an un-slotted
-			// joiner lands in #PS-VoNRoom_Global (the shared factionless pool) instead of the raw "" channel
-			// RestoreRoom defaults to. "" and Global map to DIFFERENT virtual positions, so a "" joiner could
-			// hear neither the Global crowd (briefing-unassigned, dead spectators) nor be heard by them.
-			// For reconnects this is refined ~2.5s later by RestorePlayerReconnectData (into the restored
-			// slot's faction channel, or kept Global if still un-slotted); for genuinely fresh joins that
-			// restore is a no-op, so this call is the only thing that moves them out of "". Server-only:
-			// it selects the room channel, which determines the direct-voice position.
 			if (Replication.IsServer())
 			{
-				AssignPhaseVoiceChannel(playerId);
+				VoNRoomsManager.QueueSlotChannelUpdate_S(playerId);
 				// Diagnostic: if this connection is a reconnect, log the immediate (pre-slot-restore) channel and
 				// start the timer; RestorePlayerReconnectData logs the matching "slot restored after Xms" line.
 				PS_PlayableManager pm = PS_PlayableManager.GetInstance();
@@ -1223,10 +1220,8 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		PS_VoNRoomsManager vonMgr = PS_VoNRoomsManager.GetInstance();
 		if (vonMgr)
 		{
-			vonMgr.MoveToRoom(playerId, "", "#PS-VoNRoom_Global");
-			// Re-broadcast after death state replicates so every machine recalculates the direct-voice position.
-			// This delayed update covers clients that still considered the corpse alive during MoveToRoom.
-			GetGame().GetCallqueue().CallLater(vonMgr.RestoreRoom, 1500, false, playerId);
+			vonMgr.SetPlayerParked_S(playerId, false);
+			vonMgr.SetPlayerChannel_S(playerId, PS_VoNRoomsManager.GetLobbyChannelKey());
 		}
 
 		SCR_PlayerController pc = SCR_PlayerController.Cast(GetGame().GetPlayerManager().GetPlayerController(playerId));
@@ -1253,113 +1248,37 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (playable != RplId.Invalid() && playableManager.GetPlayerByPlayable(playable) != playerId)
 			return;
 		playableManager.SetPlayerPlayable(playerId, RplId.Invalid());
-		// FIX (GHOST NAMES): do NOT MoveToRoom here. RemoveProxy_S already called
-		// RemovePlayerFromChannel which fully removed this disconnected player from
-		// m_mPlayersChannel on all machines. Calling MoveToRoom would re-add the entry
-		// via RPC_SetPlayerChannel, re-creating the stale entry that causes ghost names
-		// in the voice-chat UI for late-joining clients. On reconnect the player gets a
-		// NEW playerId and AssignPhaseVoiceChannel handles the fresh channel assignment.
+		// Disconnected IDs stay absent from channel state; reconnect receives a new player ID.
 	}
 
-	// Move a player to the VoN channel for the current briefing/lobby slot state (group / command / global).
-	// Shared by the BRIEFING state-change loop AND reconnect: a reconnecting player gets a NEW playerId whose
-	// channel state is empty, so without re-applying this they default to the "" channel - out of their group,
-	// and any two such reconnects would share "" (cross-faction leak). Keyed by the SLOT faction (always set)
-	// + the unique group id (GetGroupVonRoomName), never the colliding callsign.
+	// Resolve the final slot state on authority after coalescing assignment events.
 	void AssignPhaseVoiceChannel(int playerId)
 	{
+		if (!Replication.IsServer() || !GetGame().GetPlayerManager().GetPlayerController(playerId))
+			return;
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		PS_VoNRoomsManager vonRoomsManager = PS_VoNRoomsManager.GetInstance();
 		if (!playableManager || !vonRoomsManager)
 			return;
 		RplId playableId = playableManager.GetPlayableByPlayer(playerId);
-		if (playableId == RplId.Invalid())
+		FactionKey slotFactionKey = playableManager.GetSlotFactionForPlayer(playerId);
+		if (playableId == RplId.Invalid() || slotFactionKey == "")
 		{
 			playableManager.SetPlayerFactionKey(playerId, "");
-			vonRoomsManager.MoveToRoom(playerId, "", "#PS-VoNRoom_Global");
+			vonRoomsManager.SetPlayerChannel_S(playerId, PS_VoNRoomsManager.GetLobbyChannelKey());
 			return;
 		}
-		FactionKey slotFactionKey = playableManager.GetSlotFactionForPlayer(playerId);
-		if (slotFactionKey != playableManager.GetPlayerFactionKey(playerId) && slotFactionKey != "")
+		if (slotFactionKey != playableManager.GetPlayerFactionKey(playerId))
 			playableManager.SetPlayerFactionKey(playerId, slotFactionKey);
-		// FIX (DRIFT / MoveToRoom guard): pass empty faction key and let MoveToRoom's guard read
-		// the AUTHORITATIVE slot faction at call time. During busy slot-selection (70+ players picking
-		// rapidly), the faction read above can go stale before MoveToRoom executes. By always passing
-		// "", the guard always re-reads from the slot, eliminating the ping-pong drift pattern.
-		// The factionless Global path above is unaffected ("" + "#PS-VoNRoom_Global" = no guard).
-		if (playableManager.IsPlayerGroupLeader(playerId) || m_bPublicCommandBriefing)
-			vonRoomsManager.MoveToRoom(playerId, "", "#PS-VoNRoom_Command");
+		if (GetState() == SCR_EGameModeState.BRIEFING && playableManager.IsPlayerGroupLeader(playerId))
+			vonRoomsManager.SetPlayerChannel_S(playerId, PS_VoNRoomsManager.GetCommandChannelKey(slotFactionKey));
 		else
-			vonRoomsManager.MoveToRoom(playerId, "", playableManager.GetGroupVonRoomName(playableId));
-	}
-
-	protected bool m_bVoNReconcileTickRunning = false;
-	// Server safety-net for the "widget fine, audio wrong" divergence, LOBBY / BRIEFING ONLY. The menu VoN channel
-	// is written only by discrete events (pick / briefing / reconnect / death / manual join / group+role change),
-	// so any change that slips past those could strand a player's audio on the wrong channel while the widget
-	// recomputes fresh. Every few seconds this re-keys ONLY players whose channel drifted onto a FOREIGN faction's
-	// room - it leaves same-faction manual room choices (join-other-squad) and the factionless Global/Local pools
-	// alone, so it fixes cross-faction leaks (incl. guard-race orphans and any forced enemy-channel join via the
-	// unvalidated move RPC) without breaking legitimate voice. The loop is driven by OnGameStateChanged: it runs in
-	// menu phases and is fully STOPPED during GAME (no pending timer at all - zero cost), where voice is parked /
-	// spectator-owned anyway.
-	void StartVoNReconcile()
-	{
-		if (!Replication.IsServer() || m_bVoNReconcileTickRunning)
-			return;
-		if (GetState() == SCR_EGameModeState.GAME)
-			return;
-		m_bVoNReconcileTickRunning = true;
-		GetGame().GetCallqueue().CallLater(VoNReconcileTick, 5000, false);
-	}
-	void StopVoNReconcile()
-	{
-		m_bVoNReconcileTickRunning = false;
-		GetGame().GetCallqueue().Remove(VoNReconcileTick); // drop the pending tick so nothing fires during GAME
-	}
-	void VoNReconcileTick()
-	{
-		if (!Replication.IsServer())
-			return;
-		if (GetState() == SCR_EGameModeState.GAME)
 		{
-			m_bVoNReconcileTickRunning = false;
-			return; // fully stop during GAME - do NOT reschedule (OnGameStateChanged(BRIEFING) restarts it)
+			string groupChannel = playableManager.GetGroupVonRoomName(playableId);
+			if (groupChannel == "")
+				groupChannel = PS_VoNRoomsManager.GetFactionChannelKey(slotFactionKey);
+			vonRoomsManager.SetPlayerChannel_S(playerId, groupChannel);
 		}
-
-		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-		PS_VoNRoomsManager vonRoomsManager = PS_VoNRoomsManager.GetInstance();
-		if (playableManager && vonRoomsManager)
-		{
-			array<int> players = {};
-			GetGame().GetPlayerManager().GetPlayers(players);
-			foreach (int playerId : players)
-			{
-				FactionKey authFaction = playableManager.GetSlotFactionForPlayer(playerId);
-				string channelKey = vonRoomsManager.GetPlayerChannel(playerId);
-				if (authFaction == "")
-				{
-					// Un-slotted / ungrouped: legitimately factionless, belongs in the shared Global pool. If a
-					// become-slotless transition (deselect / free / kick / disconnect) left them in a FACTION-scoped
-					// room (#PS-VoNRoom_Faction, or a leftover group/command room), pull them back to Global.
-					// IsForeignFactionChannel(...,"") is false for the factionless pools (Global / Local / Public /
-					// ""), so a manual Public join or Local "deafen" is preserved.
-					if (vonRoomsManager.IsForeignFactionChannel(channelKey, ""))
-					{
-						Print(string.Format("[PS_VoN] Reconcile: slotless player %1 stranded in faction room '%2' - re-keying to Global", playerId, channelKey), LogLevel.WARNING);
-						AssignPhaseVoiceChannel(playerId);
-					}
-					continue;
-				}
-				if (vonRoomsManager.IsForeignFactionChannel(channelKey, authFaction))
-				{
-					Print(string.Format("[PS_VoN] Reconcile: player %1 drifted to '%2' but faction is '%3' - re-keying to prevent cross-faction leak", playerId, channelKey, authFaction), LogLevel.WARNING);
-					AssignPhaseVoiceChannel(playerId);
-				}
-			}
-		}
-
-		GetGame().GetCallqueue().CallLater(VoNReconcileTick, 5000, false); // continue only while in a menu phase
 	}
 
 	override void OnGameStateChanged()
@@ -1373,23 +1292,13 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		SCR_EGameModeState state = GetState();
 		m_OnGameStateChange.Invoke(state);
 
-		// Run the VoN reconcile loop ONLY during menu phases (lobby / briefing); fully stop it in GAME so it
-		// costs nothing while the match runs. This (re)starts it each time we return to a menu phase too.
-		if (Replication.IsServer())
-		{
-			if (state == SCR_EGameModeState.GAME)
-				StopVoNReconcile();
-			else
-				StartVoNReconcile();
-		}
-
-		// Tell the VoN audit tick whether we're in GAME phase. During GAME, the audit skips
-		// parked (alive) proxies — vanilla radios handle voice for them and they cannot drift.
-		// Spectator (menu speaker) proxies are still audited since they're LIVE on Global.
-		// Runs on ALL machines (server + clients) since the audit runs everywhere.
 		PS_VoNRoomsManager vonMgr = PS_VoNRoomsManager.GetInstance();
-		if (vonMgr)
-			vonMgr.SetVoNGamePhase(state == SCR_EGameModeState.GAME);
+		if (Replication.IsServer() && vonMgr)
+		{
+			vonMgr.UpdateAllParked_S();
+			// Possession can settle after the state-change invokers complete.
+			GetGame().GetCallqueue().CallLater(vonMgr.UpdateAllParked_S, 0, false);
+		}
 
 		switch (state)
 		{

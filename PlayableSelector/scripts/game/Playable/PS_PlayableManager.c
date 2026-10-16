@@ -265,6 +265,9 @@ class PS_PlayableManager : ScriptComponent
 			if (currentGroup)
 				currentGroup.RemovePlayer(playerId);
 			SetPlayerFactionKey(playerId, "");
+			PS_VoNRoomsManager spectatorVon = PS_VoNRoomsManager.GetInstance();
+			if (spectatorVon)
+				spectatorVon.SetPlayerParked_S(playerId, false);
 			return;
 		} else {
 			PS_PlayableContainer applyContainer = GetPlayableById(playableId);
@@ -281,6 +284,9 @@ class PS_PlayableManager : ScriptComponent
 		// control with no delay. The spectator transitions stage their streaming separately via the
 		// deferred spectator observer, so no preload handshake is needed on this slot-apply path.
 		playerController.SetInitialMainEntity(entity);
+		PS_VoNRoomsManager vonRoomsManager = PS_VoNRoomsManager.GetInstance();
+		if (vonRoomsManager)
+			m_CallQueue.CallLater(vonRoomsManager.UpdateParked_S, 0, false, playerId);
 
 		// Set new player faction
 		SCR_ChimeraCharacter playableCharacter = SCR_ChimeraCharacter.Cast(entity);
@@ -399,10 +405,7 @@ class PS_PlayableManager : ScriptComponent
 	protected void UpdateGroupCallsign(RplId playableId, SCR_AIGroup playerGroup, SCR_AIGroup playableGroup)
 	{
 		if (!playableGroup || !playerGroup)
-		{
-			m_CallQueue.CallLater(RegisterGroupName, 0, false, playableId, playerGroup);
 			return;
-		}
 
 		// Assign manualy set callsigns
 		PS_GroupCallsignAssigner groupCallsignAssigner = PS_GroupCallsignAssigner.Cast(playableGroup.FindComponent(PS_GroupCallsignAssigner));
@@ -417,25 +420,8 @@ class PS_PlayableManager : ScriptComponent
 		SCR_CallsignGroupComponent callsignComponent = SCR_CallsignGroupComponent.Cast(playerGroup.FindComponent(SCR_CallsignGroupComponent));
 		if (callsignComponent)
 			callsignComponent.ReAssignGroupCallsign(company, platoon, squad);
+	}
 
-		m_CallQueue.CallLater(RegisterGroupName, 0, false, playableId, playerGroup) // Delay for callsign init
-	}
-	protected void RegisterGroupName(RplId playableId, SCR_AIGroup playerGroup)
-	{
-		if (!playerGroup)
-			return;
-		// Create VoN group channels. The GROUP channel is keyed by the UNIQUE GROUP ID (GroupVonRoomName),
-		// NOT the callsign number - callsign numbers can collide between groups (or be unassigned), which
-		// would collapse different groups onto one channel = cross-group voice leak. (Mirrors LiteLobby.)
-		PS_VoNRoomsManager VoNRoomsManager = PS_VoNRoomsManager.GetInstance();
-		Faction faction = playerGroup.GetFaction();
-		if (!faction)
-			return;
-		FactionKey factionKey = faction.GetFactionKey();
-		VoNRoomsManager.GetOrCreateRoomWithFaction(factionKey, GroupVonRoomName(playerGroup.GetGroupID()));
-		VoNRoomsManager.GetOrCreateRoomWithFaction(factionKey, "#PS-VoNRoom_Command");
-		VoNRoomsManager.GetOrCreateRoomWithFaction(factionKey, "#PS-VoNRoom_Faction");
-	}
 	// Execute on both client and server
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	protected void RPC_RegisterPlayable(PS_PlayableContainer container)
@@ -741,8 +727,7 @@ class PS_PlayableManager : ScriptComponent
 		if (reconnectName != "")
 			SetPlayerName(playerId, reconnectName);
 
-		// Diagnostic - once per reconnect restore (non-spammy). Pairs with the [PS_VoNDBG] channel line that
-		// follows from AssignPhaseVoiceChannel below, so reconnect slot/faction/channel can be traced together.
+		// Record reconnect state once after restoring slot and faction.
 		Print(string.Format("[PS_ReconnectDBG] player %1 reconnect-restored: faction='%2' hasSlot=%3 pin=%4",
 			playerId, faction, GetPlayableByPlayer(playerId) != RplId.Invalid(), pin), LogLevel.NORMAL);
 
@@ -755,14 +740,13 @@ class PS_PlayableManager : ScriptComponent
 		if (gameMode && gameMode.GetState() == SCR_EGameModeState.GAME && GetPlayableByPlayer(playerId) != RplId.Invalid())
 			ApplyPlayable(playerId);
 		else if (gameMode)
-			// Reconnect gets a NEW playerId with an empty VoN channel (RestoreRoom set it to ""); re-assign the
-			// proper briefing/lobby channel for the restored slot, or the player is stuck in "" - out of their
-			// group, and two such reconnects would share "" (cross-faction leak). GAME+slotted is handled by
-			// ApplyPlayable above (alive proxy stays parked, dead routes to spectator -> global).
-			gameMode.AssignPhaseVoiceChannel(playerId);
+		{
+			PS_VoNRoomsManager reconnectVon = PS_VoNRoomsManager.GetInstance();
+			if (reconnectVon)
+				reconnectVon.QueueSlotChannelUpdate_S(playerId);
+		}
 
-		// Diagnostic: pair with TraceReconnectConnect - log the POST-restore VoN channel + elapsed since connect,
-		// so the reconnect -> Global -> group/Command transition + timing is unmistakable in one place.
+		// The channel update is queued; this trace records the channel at slot restoration.
 		float traceT0;
 		if (m_mReconnectTraceTime.Find(playerId, traceT0))
 		{
@@ -770,7 +754,7 @@ class PS_PlayableManager : ScriptComponent
 			PS_VoNRoomsManager vonNow = PS_VoNRoomsManager.GetInstance();
 			if (vonNow)
 				channelNow = vonNow.GetPlayerChannel(playerId);
-			Print(string.Format("[PS_ReconnectTrace] player %1 RECONNECT slot restored after %2ms: VoN channel now='%3' hasSlot=%4 faction='%5'",
+			Print(string.Format("[PS_ReconnectTrace] player %1 RECONNECT slot restored after %2ms: VoN channel before queued update='%3' hasSlot=%4 faction='%5'",
 				playerId, GetGame().GetWorld().GetWorldTime() - traceT0, channelNow, GetPlayableByPlayer(playerId) != RplId.Invalid(), faction), LogLevel.NORMAL);
 			m_mReconnectTraceTime.Remove(playerId);
 		}
@@ -934,25 +918,21 @@ class PS_PlayableManager : ScriptComponent
 		m_eFactionReadyChanged.Invoke(factionKey, readyValue);
 	}
 
-	// Build a map of groupId → leaderPlayerId by iterating sorted playables.
-	// The first occupied playable in each group (sorted by callsign→rank→rplId) is the leader.
-	void GetGroupLeaders(out map<int, int> groupLeaders)
+	// The first lobby slot of each group owns leadership; an empty slot leaves the group leaderless.
+	// Keys include faction because group IDs may overlap across factions.
+	void GetGroupLeaders(out map<string, int> groupLeaders)
 	{
 		groupLeaders.Clear();
-		array<PS_PlayableContainer> playables = GetPlayablesSorted();
-		foreach (PS_PlayableContainer playable : playables)
+		ref map<string, bool> seenGroups = new map<string, bool>();
+		foreach (PS_PlayableContainer playable : GetPlayablesSorted())
 		{
+			string groupKey = GetGroupVonRoomName(playable.GetRplId());
+			if (groupKey == "" || seenGroups.Contains(groupKey))
+				continue;
+			seenGroups.Set(groupKey, true);
 			int playerId = GetPlayerByPlayable(playable.GetRplId());
-			if (playerId <= 0)
-				continue;
-			if (m_PlayerManager && !m_PlayerManager.IsPlayerConnected(playerId))
-				continue;
-			SCR_AIGroup group = GetPlayerGroupByPlayable(playable.GetRplId());
-			if (!group)
-				continue;
-			int groupId = group.GetGroupID();
-			if (!groupLeaders.Contains(groupId))
-				groupLeaders.Insert(groupId, playerId);
+			if (playerId > 0 && (!m_PlayerManager || m_PlayerManager.IsPlayerConnected(playerId)))
+				groupLeaders.Insert(groupKey, playerId);
 		}
 	}
 
@@ -1051,8 +1031,16 @@ class PS_PlayableManager : ScriptComponent
 	// - Execute ONLY on server
 	void SetPlayablePlayer(RplId playableId, int playerId)
 	{
+		int previousPlayerId = GetPlayerByPlayable(playableId);
 		RPC_SetPlayablePlayer(playableId, playerId);
 		Rpc(RPC_SetPlayablePlayer, playableId, playerId);
+		PS_VoNRoomsManager vonRoomsManager = PS_VoNRoomsManager.GetInstance();
+		if (vonRoomsManager)
+		{
+			vonRoomsManager.QueueSlotChannelUpdate_S(playerId);
+			if (previousPlayerId > 0 && previousPlayerId != playerId)
+				vonRoomsManager.QueueSlotChannelUpdate_S(previousPlayerId);
+		}
 	}
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	protected void RPC_SetPlayablePlayer(RplId playableId, int playerId)
@@ -1115,8 +1103,16 @@ class PS_PlayableManager : ScriptComponent
 	// - Execute ONLY on server
 	void SetPlayerPlayable(int playerId, RplId playableId)
 	{
+		int previousPlayerId = GetPlayerByPlayable(playableId);
 		RPC_SetPlayerPlayable(playerId, playableId);
 		Rpc(RPC_SetPlayerPlayable, playerId, playableId);
+		PS_VoNRoomsManager vonRoomsManager = PS_VoNRoomsManager.GetInstance();
+		if (vonRoomsManager)
+		{
+			vonRoomsManager.QueueSlotChannelUpdate_S(playerId);
+			if (previousPlayerId > 0 && previousPlayerId != playerId)
+				vonRoomsManager.QueueSlotChannelUpdate_S(previousPlayerId);
+		}
 
 		// INVARIANT: a seated player's faction ALWAYS matches their slot. The faction key is otherwise set by
 		// a SEPARATE path (RPC_ChangeFactionKey) whose faction-balance check can reject while the slot is still
@@ -1196,31 +1192,26 @@ class PS_PlayableManager : ScriptComponent
 		return group.GetCallsignNum();
 	}
 
-	// Unique per-group VoN room name, keyed by GROUP ID (not the callsign number). Callsign numbers are NOT
-	// unique per group - two groups can share a callsign (or it is 0/unassigned during init), so keying group
-	// voice channels by callsign collapses different groups onto ONE channel = the cross-group voice leak.
-	// Group ids are unique. (Mirrors LiteLobby's group-id channel keying.) The "#PS-VoNRoom_Group" prefix
-	// namespaces it and keeps it out of the digit=callsign display path; PS_VoiceRoomHeader maps it back to
-	// the group's callsign name for display.
-	static string GroupVonRoomName(int groupId)
+	static string GroupVonRoomName(int groupId, string factionKey)
 	{
-		if (groupId < 0)
+		if (groupId < 0 || factionKey == "")
 			return "";
-		return "#PS-VoNRoom_Group" + groupId.ToString();
+		return PS_VoNRoomsManager.GetGroupChannelKey(groupId, factionKey);
 	}
-	// VoN group room name for a playable (resolves its player group). "" if the playable has no group.
-	string GetGroupVonRoomName(RplId PlayableId)
+	string GetGroupVonRoomName(RplId playableId)
 	{
-		SCR_AIGroup group = GetPlayerGroupByPlayable(PlayableId);
-		if (!group)
+		SCR_AIGroup group = GetPlayerGroupByPlayable(playableId);
+		PS_PlayableContainer slot = GetPlayableById(playableId);
+		if (!group || !slot)
 			return "";
-		return GroupVonRoomName(group.GetGroupID());
+		return GroupVonRoomName(group.GetGroupID(), slot.GetFactionKey());
 	}
+
 	// Authoritative faction for a player derived from their SLOT only. Group faction is deliberately
 	// excluded because TvT setups can have groups with overlapping IDs across factions, making
 	// FindGroup(groupId) return a group from the wrong side. The slot's faction comes from the prefab
 	// and is always reliable. "" if un-slotted (the player is legitimately factionless and belongs in
-	// the Global pool). Used by the VoN reconcile safety-net and AssignPhaseVoiceChannel.
+	// Lobby). Used by AssignPhaseVoiceChannel.
 	FactionKey GetSlotFactionForPlayer(int playerId)
 	{
 		RplId playableId = GetPlayableByPlayer(playerId);
@@ -1244,19 +1235,11 @@ class PS_PlayableManager : ScriptComponent
 		SCR_GroupsManagerComponent groupsManagerComponent = SCR_GroupsManagerComponent.GetInstance();
 		m_eOnPlayableChangeGroup.Invoke(PlayableId, GetPlayableById(PlayableId), groupsManagerComponent.FindGroup(groupId));
 
-		// Voice follows the group: re-key this player's menu VoN to the new group/command channel so the AUDIO
-		// matches the (always-recomputed) widget. A group change used to leave voice stranded on the OLD group's
-		// channel because nothing re-routed it - the "widget fine, audio wrong" leak. Server + menu phases only
-		// (in GAME alive players are parked and the dead/spectator path owns Global).
 		if (Replication.IsServer())
 		{
-			PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-			if (gameMode && gameMode.GetState() != SCR_EGameModeState.GAME)
-			{
-				int groupChangePlayerId = GetPlayerByPlayable(PlayableId);
-				if (groupChangePlayerId > 0)
-					gameMode.AssignPhaseVoiceChannel(groupChangePlayerId);
-			}
+			PS_VoNRoomsManager vonRoomsManager = PS_VoNRoomsManager.GetInstance();
+			if (vonRoomsManager)
+				vonRoomsManager.QueueSlotChannelUpdate_S(GetPlayerByPlayable(PlayableId));
 		}
 	}
 
@@ -1401,16 +1384,6 @@ class PS_PlayableManager : ScriptComponent
 		PS_PlayableContainer playableContainer = GetPlayableById(playableId);
 		if (playableContainer)
 			playableContainer.GetOnPlayerRoleChange().Invoke(playerId, roleFlags);
-
-		// Leader status drives the Command (HQ) channel: re-key voice on a role change so a new leader is pulled
-		// into HQ and a demoted one drops back to their group channel, keeping AUDIO in sync with the widget.
-		// Nothing re-routed voice on role change before. Server + menu phases only.
-		if (Replication.IsServer())
-		{
-			PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-			if (gameMode && gameMode.GetState() != SCR_EGameModeState.GAME)
-				gameMode.AssignPhaseVoiceChannel(playerId);
-		}
 	}
 
 	// --------------------------------------------------------------------------------------------
@@ -1562,36 +1535,31 @@ class PS_PlayableManager : ScriptComponent
 	// --------------------------------------------------------------------------------------------
 	// ---------------------------------------- Util ----------------------------------------------
 	// --------------------------------------------------------------------------------------------
-	// Check is player control group leader playable
+	// Leadership belongs to the first slot in the lobby order, even when that slot is empty.
 	bool IsPlayerGroupLeader(int thisPlayerId)
 	{
-		if (thisPlayerId == -1)
+		if (thisPlayerId <= 0 || (m_PlayerManager && !m_PlayerManager.IsPlayerConnected(thisPlayerId)))
 			return false;
 
 		RplId thisPlayableId = GetPlayableByPlayer(thisPlayerId);
 		if (thisPlayableId == RplId.Invalid())
 			return false;
-
-		int thisGroupCallsign = GetGroupCallsignByPlayable(thisPlayableId);
-
-		array<PS_PlayableContainer> playables = GetPlayablesSorted();
-		foreach (PS_PlayableContainer playable : playables)
-		{
-			RplId playableId = playable.GetRplId();
-			int playerId = GetPlayerByPlayable(playable.GetRplId());
-			if (playerId <= 0)
-				continue;
-			if (playerId == thisPlayerId)
-				return true;
-			if (GetPlayerFactionKey(playerId) != GetPlayerFactionKey(thisPlayerId))
-				continue;
-			int groupCallsign = GetGroupCallsignByPlayable(playableId);
-			if (thisGroupCallsign != groupCallsign)
-				continue;
+		PS_PlayableContainer thisPlayable = GetPlayableById(thisPlayableId);
+		SCR_AIGroup thisGroup = GetPlayerGroupByPlayable(thisPlayableId);
+		if (!thisPlayable || !thisGroup || thisPlayable.GetFactionKey() == "")
 			return false;
+
+		foreach (PS_PlayableContainer playable : GetPlayablesSorted())
+		{
+			if (playable.GetFactionKey() != thisPlayable.GetFactionKey())
+				continue;
+			SCR_AIGroup group = GetPlayerGroupByPlayable(playable.GetRplId());
+			if (!group || group.GetGroupID() != thisGroup.GetGroupID())
+				continue;
+			return playable.GetRplId() == thisPlayableId;
 		}
 
-		return true;
+		return false;
 	}
 
 	bool IsPlayerFactionCommander(int playerId)

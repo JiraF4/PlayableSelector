@@ -83,16 +83,12 @@ class PS_WaitScreen: MenuBase
 			return;
 		}
 		
-		// Channels are deterministic string keys created lazily, so there is no per-player room to wait
-		// for anymore. The player's current channel key is read directly.
-		string roomKey = VoNRoomsManager.GetPlayerChannel(playerController.GetPlayerId());
-
 		m_bWaitEnded = true;
 		Close();
 		
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		playableController.SetPlayerState(playerController.GetPlayerId(), PS_EPlayableControllerState.NotReady);
-		playableController.MoveToVoNRoomByKey(playerController.GetPlayerId(), roomKey);
+		playableController.MoveToVoNRoomByKey(playerController.GetPlayerId(), PS_VoNRoomsManager.GetLobbyChannelKey());
 		playableController.SwitchToMenu(gameMode.GetState());
 		
 		GetGame().GetCallqueue().Remove(AwaitPlayerController);

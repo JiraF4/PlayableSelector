@@ -1,7 +1,7 @@
 FrameWidgetClass {
  Name "VoiceChatFrame"
  components {
-  PS_VoiceChatList "{5EB1176278105B6B}" {
+  PS_VoiceRoomsUI "{5EB1176278105B6B}" {
   }
  }
  {

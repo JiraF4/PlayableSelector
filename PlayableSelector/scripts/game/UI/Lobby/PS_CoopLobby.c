@@ -81,7 +81,7 @@ class PS_CoopLobby : MenuBase
 	protected SCR_InputButtonComponent m_NavigationStart;
 	protected SCR_InputButtonComponent m_NavigationChat;
 	protected SCR_InputButtonComponent m_NavigationClose;
-	protected PS_VoiceChatList m_VoiceChatList;
+	protected PS_VoiceRoomsUI m_VoiceChatList;
 	protected SCR_EditBoxComponent m_PlayersSearchBox;
 	protected SCR_ButtonBaseComponent m_RolesFoldButtonComponent;
 	
@@ -155,7 +155,7 @@ class PS_CoopLobby : MenuBase
 		m_LobbyLoadoutPreview = PS_LobbyLoadoutPreview.Cast(m_wMainLoadoutPreview.FindHandler(PS_LobbyLoadoutPreview));
 		m_PlayersList = PS_PlayersList.Cast(m_wPlayersBody.FindHandler(PS_PlayersList));
 		m_NavigationStart = SCR_InputButtonComponent.Cast(m_wNavigationStart.FindHandler(SCR_InputButtonComponent));
-		m_VoiceChatList = PS_VoiceChatList.Cast(m_wVoiceChatFrame.FindHandler(PS_VoiceChatList));
+		m_VoiceChatList = PS_VoiceRoomsUI.Cast(m_wVoiceChatFrame.FindHandler(PS_VoiceRoomsUI));
 		m_PlayersSearchBox = SCR_EditBoxComponent.Cast(m_wPlayersSearchBox.FindHandler(SCR_EditBoxComponent));
 		m_RolesFoldButtonComponent = SCR_ButtonBaseComponent.Cast(m_wRolesFoldButton.FindHandler(SCR_ButtonBaseComponent));
 		

@@ -31,7 +31,7 @@ class PS_SpectatorMenu: MenuBase
 	// true  - таймер виден всем игрокам в спектаторе
 	// false - таймер виден только администраторам и серверу
 	protected bool m_bShowTimerForAll = true;
-	protected PS_VoiceChatList m_hVoiceChatList;
+	protected PS_VoiceRoomsUI m_hVoiceChatList;
 	protected SCR_ButtonBaseComponent m_hVoiceChatListPinButton;
 	protected PS_AlivePlayerList m_hAlivePlayerList;
 	protected SCR_ButtonBaseComponent m_hAlivePlayerListPinButton;
@@ -190,7 +190,8 @@ class PS_SpectatorMenu: MenuBase
 		m_PlayableManager = PS_PlayableManager.GetInstance();
 		
 		m_wVoiceChatList = GetRootWidget().FindAnyWidget("VoiceChatFrame");
-		m_hVoiceChatList = PS_VoiceChatList.Cast(m_wVoiceChatList.FindHandler(PS_VoiceChatList));
+		m_hVoiceChatList = PS_VoiceRoomsUI.Cast(m_wVoiceChatList.FindHandler(PS_VoiceRoomsUI));
+		m_hVoiceChatList.SetSpectatorContext(true);
 		m_hVoiceChatListPinButton = SCR_ButtonBaseComponent.Cast(m_wVoiceChatList.FindAnyWidget("PinButton").FindHandler(SCR_ButtonBaseComponent));
 		
 		m_wAlivePlayerList = GetRootWidget().FindAnyWidget("AlivePlayersList");
@@ -399,7 +400,7 @@ class PS_SpectatorMenu: MenuBase
 	{
 		PlayerController playerController = GetGame().GetPlayerController();
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
-		playableController.MoveToVoNRoom(playerController.GetPlayerId(), "", "#PS-VoNRoom_Global");
+		playableController.MoveToVoNRoom(playerController.GetPlayerId(), PS_VoNRoomsManager.GetLobbyChannelKey());
 	}
 	
 	void InitChat()

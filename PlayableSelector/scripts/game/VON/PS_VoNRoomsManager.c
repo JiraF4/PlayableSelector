@@ -1,119 +1,95 @@
-//------------------------------------------------------------------------------------------------
 [ComponentEditorProps(category: "GameScripted/GameMode/Components", description: "", color: "0 0 255 255", icon: HYBRID_COMPONENT_ICON)]
-class PS_VoNRoomsManagerClass: ScriptComponentClass
+class PS_VoNRoomsManagerClass : ScriptComponentClass
 {
+}
 
-};
-
-// just string but funnier
-// struct: [FactionKey + "|"] + roomName
-typedef string VoNRoomKey;
-
-// Manage VON_DIRECT rooms for menu speakers.
-//
-// A channel key identifies a shared virtual position. Menu speech uses VON_DIRECT; proxy radios stay muted.
-
+// DIRECT voice uses channel positions; proxy radio transceivers stay muted.
 class PS_VoNRoomsManager : ScriptComponent
 {
-	// Replicated channel state
-	ref array<string> m_aChannels = {};                                    // channel keys that exist (lazy)
-	protected ref map<string, bool> m_mChannelsSet = new map<string, bool>(); // fast existence lookup
-	ref map<int, string> m_mPlayersChannel = new map<int, string>();       // playerId -> channelKey
+	ref array<string> m_aChannels = {};
+	protected ref map<string, bool> m_mChannelsSet = new map<string, bool>();
+	ref map<int, string> m_mPlayerChannels = new map<int, string>();
+	protected ref map<int, bool> m_mPlayerParked = new map<int, bool>();
+	// (playerId, channelKey, oldChannelKey), including removal with an empty key.
+	ref ScriptInvoker m_OnPlayerChannelChanged = new ScriptInvoker();
+	protected ref ScriptInvoker m_OnPlayerParkedChanged = new ScriptInvoker();
+	protected ref array<int> m_aPendingSlotMoves_S = {};
 
-	// Move speech bois to space (kept only as the parked-body anchor for SetVoNPosition compatibility)
-	static vector roomInitialPosition = "-1 1000000 1";
-
-	// Invokers
-	// (playerId, channelKey, oldChannelKey)
-	ref ScriptInvoker m_eOnRoomChanged = new ScriptInvoker();
-
-	// ---- Body-less VoN proxy (per-player tiny replicated entity carrying the radio + VoN) ----
 	[Attribute("", UIWidgets.ResourceNamePicker, "Per-player VoN proxy prefab (PS_VoNProxyComponent + SCR_VoNComponent + muted BaseRadioComponent, RplComponent streaming disabled)", "et")]
 	protected ResourceName m_sVoNProxyPrefab;
-	protected ref map<int, IEntity> m_mProxies_S = new map<int, IEntity>(); // server-side, for cleanup
-	protected ref map<int, int> m_mProxySlots_S = new map<int, int>();      // server-side, grid slot per player
-	protected ref array<int> m_aPendingRadioMutes = {};                     // deferred (1 frame) mute queue
-	protected bool m_bIsGamePhase = false; // During GAME, skip menu-inactive proxies in the mute audit.
+	protected ref map<int, IEntity> m_mProxies_S = new map<int, IEntity>();
+	protected ref map<int, int> m_mProxySlots_S = new map<int, int>();
+	protected ref array<int> m_aPendingRadioMutes = {};
+	protected bool m_bRplLoaded;
 
-	// FIX (TIMER LEAK): The self-rescheduling VoNAuditTick (every 5s) lives on the global
-	// callqueue. On server restart the component is destroyed with its GameMode entity, but
-	// the callqueue holds a strong reference — preventing GC and accumulating stale ticks.
-	// OnDelete fires deterministically when the entity is destroyed (unlike a destructor which
-	// would be delayed until GC, which can't run while the callqueue still holds the reference).
-	override void OnDelete(IEntity owner)
+	protected static const float PS_VONFIX_SKY_ALTITUDE = 10000;
+	protected static const float PS_VONFIX_CHANNEL_BASE = 1000;
+	protected static const float PS_VONFIX_CHANNEL_SPACING = 1000;
+	protected static const float PS_VONFIX_MEMBER_STEP = 0.4;
+	protected static const int PS_VONFIX_GRID_COLS = 12;
+	protected static const int PS_VONFIX_TOTAL_SLOTS = 144;
+	protected static const float PS_VONFIX_ISOLATED_XZ = -5000;
+	protected static const float PS_VONFIX_NO_CHANNEL_XZ = -6000;
+
+	override protected void OnPostInit(IEntity owner)
 	{
-		super.OnDelete(owner);
-		GetGame().GetCallqueue().Remove(VoNAuditTick);
+		RegisterChannelLocal(GetLobbyChannelKey(), 0);
+		m_bRplLoaded = Replication.IsServer();
 	}
 
-	bool m_bRplLoaded = false;
+	override void OnDelete(IEntity owner)
+	{
+		GetGame().GetCallqueue().Remove(ResolveSlotChannels_S);
+		GetGame().GetCallqueue().Remove(MutePendingProxyRadios);
+		GetGame().GetCallqueue().Remove(SpawnProxy_S);
+		GetGame().GetCallqueue().Remove(FireJIPEvents);
+		GetGame().GetCallqueue().Remove(UpdateParked_S);
+		GetGame().GetCallqueue().Remove(UpdateAllParked_S);
+		super.OnDelete(owner);
+	}
+
+	static PS_VoNRoomsManager GetInstance()
+	{
+		BaseGameMode gameMode = GetGame().GetGameMode();
+		if (!gameMode)
+			return null;
+		return PS_VoNRoomsManager.Cast(gameMode.FindComponent(PS_VoNRoomsManager));
+	}
+
 	bool IsReplicated()
 	{
 		return m_bRplLoaded;
 	}
 
-	override protected void OnPostInit(IEntity owner)
+	ScriptInvoker GetOnPlayerParkedChanged()
 	{
-		// The "" (global lobby) channel always exists
-		RegisterChannelLocal("");
-		if (Replication.IsServer())
-			m_bRplLoaded = true;
-		// Re-assert mute on proxy radios on each machine.
-		GetGame().GetCallqueue().CallLater(VoNAuditTick, 5000, false);
+		return m_OnPlayerParkedChanged;
 	}
 
-	// more singletons for singletons god, make our spagetie kingdom great
-	static PS_VoNRoomsManager GetInstance()
-	{
-		BaseGameMode gameMode = GetGame().GetGameMode();
-		if (gameMode)
-			return PS_VoNRoomsManager.Cast(gameMode.FindComponent(PS_VoNRoomsManager));
-		else
-			return null;
-	}
-
-	// [PS_VoNDBG] per-channel-change diagnostic toggle. Default false for production.
-	static bool s_bVoNDebug = false;
-
-	protected static const float PS_VONFIX_SKY_ALTITUDE    = 10000;
-	protected static const float PS_VONFIX_CHANNEL_BASE    = 1000;
-	protected static const float PS_VONFIX_CHANNEL_SPACING = 1000;
-	protected static const float PS_VONFIX_MEMBER_STEP     = 0.4;
-	protected static const int   PS_VONFIX_GRID_COLS       = 12;
-	protected static const int   PS_VONFIX_TOTAL_SLOTS     = 144;
-	protected static const float PS_VONFIX_ISOLATED_XZ     = -5000;
-	protected static const float PS_VONFIX_NO_CHANNEL_XZ   = -6000;
-
-	//------------------------------------------------------------------------------------------------
-	/**
-	 * @brief Расчет трехмерных виртуальных координат игрока в сетке голосовой комнаты на 128 игроков.
-	 * @param[in] playerId ID игрока
-	 * @return Вектор трехмерных мировых координат
-	 */
 	vector GetRoomPosition(int playerId)
 	{
 		// Controls a living character / not a menu speaker -> isolated far spot
 		// Safe: the proxy radio is muted on every machine.
-		if (!SCR_VoNComponent.PS_IsMenuSpeaker(playerId))
+		if (IsPlayerParked(playerId))
 			return Vector(PS_VONFIX_ISOLATED_XZ, PS_VONFIX_SKY_ALTITUDE, PS_VONFIX_ISOLATED_XZ);
 
 		string channelKey;
-		if (!m_mPlayersChannel.Find(playerId, channelKey))
-			return Vector(PS_VONFIX_NO_CHANNEL_XZ, PS_VONFIX_SKY_ALTITUDE, PS_VONFIX_NO_CHANNEL_XZ);
+		if (!m_mPlayerChannels.Find(playerId, channelKey))
+			return Vector(PS_VONFIX_NO_CHANNEL_XZ - playerId * PS_VONFIX_CHANNEL_SPACING, PS_VONFIX_SKY_ALTITUDE, PS_VONFIX_NO_CHANNEL_XZ);
 
 		int index = m_aChannels.Find(channelKey);
 		if (index < 0)
-			return Vector(PS_VONFIX_NO_CHANNEL_XZ, PS_VONFIX_SKY_ALTITUDE, PS_VONFIX_NO_CHANNEL_XZ);
+			return Vector(PS_VONFIX_NO_CHANNEL_XZ - playerId * PS_VONFIX_CHANNEL_SPACING, PS_VONFIX_SKY_ALTITUDE, PS_VONFIX_NO_CHANNEL_XZ);
 
 		// Deterministic collision-free slot allocation within the room (12x12 grid = 144 slots >= 128 players).
 		// Rank playerId against other players currently in the same channelKey.
-		// Both client and server replicate m_mPlayersChannel, so this guarantees 100% identical coordinates
+		// Both client and server replicate m_mPlayerChannels, so this guarantees 100% identical coordinates
 		// on all machines without any slot collisions even when server playerIds grow beyond 256.
 		int slot = 0;
-		for (int i = 0; i < m_mPlayersChannel.Count(); i++)
+		for (int i = 0; i < m_mPlayerChannels.Count(); i++)
 		{
-			int otherId = m_mPlayersChannel.GetKey(i);
-			if (otherId < playerId && m_mPlayersChannel.GetElement(i) == channelKey)
+			int otherId = m_mPlayerChannels.GetKey(i);
+			if (otherId < playerId && m_mPlayerChannels.GetElement(i) == channelKey)
 				slot++;
 		}
 
@@ -133,141 +109,279 @@ class PS_VoNRoomsManager : ScriptComponent
 		return Vector(PS_VONFIX_CHANNEL_BASE + PS_VONFIX_CHANNEL_SPACING * index, PS_VONFIX_SKY_ALTITUDE, PS_VONFIX_CHANNEL_BASE) + memberOffset;
 	}
 
-	// ------------------------- Channel keys -------------------------
-	// Channel key format preserved from the old room keys: factionKey + "|" + roomName ("" == global)
-	static string MakeChannelKey(FactionKey factionKey, string roomName)
+	static string GetLobbyChannelKey()
 	{
-		string channelKey = factionKey + "|" + roomName;
-		if (channelKey == "|")
-			channelKey = "";
-		return channelKey;
+		return "Lobby";
 	}
 
-	// True if channelKey is a FACTION-SCOPED room (Command / Faction / group) whose faction prefix differs from
-	// expectedFaction. The factionless pools (Global / Local / Public / "") never count. Used by the server VoN
-	// reconcile safety-net to detect ONLY a player whose audio drifted onto another faction's channel, while
-	// leaving legitimate same-faction manual room choices and the factionless pools untouched.
-	bool IsForeignFactionChannel(string channelKey, FactionKey expectedFaction)
+	static string GetFactionChannelKey(string factionKey)
 	{
-		int sep = channelKey.IndexOf("|");
+		return "Faction_" + factionKey;
+	}
+
+	static string GetGroupChannelKey(int groupId, string factionKey)
+	{
+		return string.Format("Group_%1_%2", groupId, factionKey);
+	}
+
+	static string GetCommandChannelKey(string factionKey)
+	{
+		return "Command_" + factionKey;
+	}
+
+	static string GetPublicChannelKey(int playerId)
+	{
+		return string.Format("Public_%1", playerId);
+	}
+
+	static string GetDeafenChannelKey(int playerId)
+	{
+		return string.Format("Deafen_%1", playerId);
+	}
+
+	static bool IsDeafenChannelKey(string channelKey)
+	{
+		return channelKey.StartsWith("Deafen_");
+	}
+
+	static bool IsPublicChannelKey(string channelKey)
+	{
+		return channelKey.StartsWith("Public_");
+	}
+
+	// Player id from a "Public_{id}" / "Deafen_{id}" key, -1 otherwise.
+	static int GetChannelKeyPlayerId(string channelKey)
+	{
+		int sep = channelKey.IndexOf("_");
 		if (sep < 0)
-			return false; // "" or malformed - treat as factionless
-		string faction = channelKey.Substring(0, sep);
-		string roomName = channelKey.Substring(sep + 1, channelKey.Length() - sep - 1);
-		if (roomName == ""
-			|| roomName.StartsWith("#PS-VoNRoom_Global")
-			|| roomName.StartsWith("#PS-VoNRoom_Local")
-			|| roomName.StartsWith("#PS-VoNRoom_Public"))
-			return false;
-		return faction != expectedFaction;
+			return -1;
+
+		string prefix = channelKey.Substring(0, sep);
+		if (prefix != "Public" && prefix != "Deafen")
+			return -1;
+
+		return channelKey.Substring(sep + 1, channelKey.Length() - sep - 1).ToInt();
 	}
 
-	// ------------------------- Channel changing -------------------------
-	// Move to channel by faction/room name, creating the channel if new. RUN ONLY ON SERVER
-	void MoveToRoom(int playerId, FactionKey factionKey, string roomName)
+	// Faction key from "Faction_{key}" / "Command_{key}", empty otherwise.
+	static string GetChannelKeyFactionKey(string channelKey)
+	{
+		if (channelKey.StartsWith("Faction_"))
+			return channelKey.Substring(8, channelKey.Length() - 8);
+
+		if (channelKey.StartsWith("Command_"))
+			return channelKey.Substring(8, channelKey.Length() - 8);
+
+		return "";
+	}
+
+	// Parse "Group_{groupId}_{factionKey}". Returns false for other keys.
+	static bool ParseGroupChannelKey(string channelKey, out int groupId, out string factionKey)
+	{
+		if (!channelKey.StartsWith("Group_"))
+			return false;
+
+		string rest = channelKey.Substring(6, channelKey.Length() - 6);
+		int sep = rest.IndexOf("_");
+		if (sep <= 0)
+			return false;
+
+		groupId = rest.Substring(0, sep).ToInt();
+		factionKey = rest.Substring(sep + 1, rest.Length() - sep - 1);
+		return true;
+	}
+
+	// Reject unknown and noncanonical keys even for administrative moves.
+	bool IsChannelKeyValid(string channelKey)
+	{
+		if (channelKey == GetLobbyChannelKey())
+			return true;
+		if (IsPublicChannelKey(channelKey) || IsDeafenChannelKey(channelKey))
+		{
+			int ownerId = GetChannelKeyPlayerId(channelKey);
+			if (ownerId <= 0 || !GetGame().GetPlayerManager().IsPlayerConnected(ownerId))
+				return false;
+			if (IsPublicChannelKey(channelKey))
+				return channelKey == GetPublicChannelKey(ownerId);
+			return channelKey == GetDeafenChannelKey(ownerId);
+		}
+		string factionKey = GetChannelKeyFactionKey(channelKey);
+		if (factionKey != "")
+			return GetGame().GetFactionManager().GetFactionByKey(factionKey) != null;
+
+		int groupId;
+		string groupFaction;
+		if (!ParseGroupChannelKey(channelKey, groupId, groupFaction) || groupId < 0 || groupFaction == "")
+			return false;
+		if (channelKey != GetGroupChannelKey(groupId, groupFaction))
+			return false;
+		PS_PlayableManager pm = PS_PlayableManager.GetInstance();
+		if (!pm)
+			return false;
+		foreach (PS_PlayableContainer slot : pm.GetPlayablesSorted())
+		{
+			if (slot.GetFactionKey() != groupFaction)
+				continue;
+			SCR_AIGroup group = pm.GetPlayerGroupByPlayable(slot.GetRplId());
+			if (group && group.GetGroupID() == groupId)
+				return true;
+		}
+		return false;
+	}
+
+	// Uses mirrored slot/phase data so the UI applies the server's access rule.
+	bool CanPlayerJoinChannel(int playerId, string channelKey)
+	{
+		if (playerId <= 0 || !IsChannelKeyValid(channelKey))
+			return false;
+		if (channelKey == GetLobbyChannelKey())
+			return true;
+		if (IsDeafenChannelKey(channelKey))
+			return GetChannelKeyPlayerId(channelKey) == playerId;
+		if (IsPublicChannelKey(channelKey))
+			return true;
+
+		PS_PlayableManager pm = PS_PlayableManager.GetInstance();
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if (!pm || !gameMode)
+			return false;
+		string playerFaction = pm.GetSlotFactionForPlayer(playerId);
+		if (playerFaction == "")
+			playerFaction = pm.GetPlayerFactionKey(playerId);
+		string factionKey = GetChannelKeyFactionKey(channelKey);
+		if (factionKey != "")
+		{
+			if (factionKey != playerFaction)
+				return false;
+			if (channelKey == GetCommandChannelKey(factionKey))
+				return gameMode.GetState() == SCR_EGameModeState.BRIEFING || gameMode.m_bPublicCommandBriefing || pm.IsPlayerGroupLeader(playerId);
+			return true;
+		}
+		int groupId;
+		string groupFaction;
+		return ParseGroupChannelKey(channelKey, groupId, groupFaction) && groupFaction == playerFaction;
+	}
+
+	bool CanPlayerVoiceKick(int callerId, int targetId, string channelKey)
+	{
+		if (callerId == targetId || !IsChannelKeyValid(channelKey))
+			return false;
+		PS_PlayableManager pm = PS_PlayableManager.GetInstance();
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if (!pm || !gameMode || !pm.IsPlayerGroupLeader(callerId))
+			return false;
+		string factionKey = pm.GetSlotFactionForPlayer(callerId);
+		string targetFaction = pm.GetSlotFactionForPlayer(targetId);
+		if (factionKey == "" || targetFaction != factionKey)
+			return false;
+		string source = GetPlayerChannel(callerId);
+		if (source == "" || source != GetPlayerChannel(targetId))
+			return false;
+		string ownGroup = pm.GetGroupVonRoomName(pm.GetPlayableByPlayer(callerId));
+		string targetGroup = pm.GetGroupVonRoomName(pm.GetPlayableByPlayer(targetId));
+		bool canKick = source == ownGroup && targetGroup != ownGroup;
+		if (source == GetCommandChannelKey(factionKey))
+			canKick = !pm.IsPlayerGroupLeader(targetId);
+		if (!canKick || channelKey == source)
+			return false;
+		if (channelKey == GetLobbyChannelKey() || channelKey == GetFactionChannelKey(targetFaction))
+			return true;
+		return gameMode.GetState() == SCR_EGameModeState.BRIEFING && targetGroup != "" && channelKey == targetGroup;
+	}
+
+	void SetPlayerChannel_S(int playerId, string channelKey)
+	{
+		if (!Replication.IsServer() || playerId <= 0 || !GetGame().GetPlayerManager().IsPlayerConnected(playerId) || !IsChannelKeyValid(channelKey))
+			return;
+		if (GetPlayerChannel(playerId) == channelKey)
+			return;
+		InitChannelIfNeeded(channelKey);
+		RpcDo_SetPlayerChannel(playerId, channelKey);
+		Rpc(RpcDo_SetPlayerChannel, playerId, channelKey);
+	}
+
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	protected void RpcDo_SetPlayerChannel(int playerId, string channelKey)
+	{
+		PS_NetStat.Hit("RpcDo_SetPlayerChannel");
+		string oldChannelKey = GetPlayerChannel(playerId);
+		m_mPlayerChannels.Set(playerId, channelKey);
+		m_OnPlayerChannelChanged.Invoke(playerId, channelKey, oldChannelKey);
+	}
+
+	void SetPlayerParked_S(int playerId, bool parked)
+	{
+		if (!Replication.IsServer() || !GetGame().GetPlayerManager().IsPlayerConnected(playerId))
+			return;
+		if (m_mPlayerParked.Contains(playerId) && IsPlayerParked(playerId) == parked)
+			return;
+		RpcDo_SetPlayerParked(playerId, parked);
+		Rpc(RpcDo_SetPlayerParked, playerId, parked);
+	}
+
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	protected void RpcDo_SetPlayerParked(int playerId, bool parked)
+	{
+		PS_NetStat.Hit("RpcDo_SetPlayerParked");
+		m_mPlayerParked.Set(playerId, parked);
+		PlayerController pc = GetGame().GetPlayerController();
+		if (pc && pc.GetPlayerId() == playerId)
+			PS_MenuVoN.Refresh();
+		m_OnPlayerParkedChanged.Invoke(playerId, parked);
+	}
+
+	bool IsPlayerParked(int playerId)
+	{
+		bool parked;
+		return m_mPlayerParked.Find(playerId, parked) && parked;
+	}
+
+	void UpdateParked_S(int playerId)
 	{
 		if (!Replication.IsServer())
 			return;
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		SetPlayerParked_S(playerId, gameMode && gameMode.GetState() == SCR_EGameModeState.GAME && !SCR_VoNComponent.PS_IsMenuSpeaker(playerId));
+	}
 
-		// SAFETY NET against the cross-faction VoN leak. A FACTION-SCOPED room (Command, Faction, or a
-		// group channel) built with the WRONG faction key assigns a player into another faction's channel.
-		// This also merges rooms across factions (e.g. both sides' HQ, or groups with the same id, into one
-		// channel). The guard catches both EMPTY factionKey (caller passed "" when the slot has a faction)
-		// and WRONG factionKey (stale/swapped). The authoritative source is always the SLOT's faction key
-		// (via GetSlotFactionForPlayer) — the group faction is deliberately excluded because TvT setups
-		// reuse group IDs across factions, making FindGroup return a group from the wrong side.
-		// The faction-LESS rooms (Global / Local / Public / "") legitimately use "". For anything else,
-		// force the faction to match the slot. This is the single choke point every room move funnels
-		// through (briefing loop, lobby UI, admin "move player", JIP/reconnect).
-		if (roomName != ""
-			&& !roomName.StartsWith("#PS-VoNRoom_Global")
-			&& !roomName.StartsWith("#PS-VoNRoom_Local")
-			&& !roomName.StartsWith("#PS-VoNRoom_Public"))
-		{
-			PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-			if (playableManager)
-			{				FactionKey authoritativeFaction = playableManager.GetSlotFactionForPlayer(playerId);
-				if (authoritativeFaction != "" && authoritativeFaction != factionKey)
-					{
-						// Only warn when the caller passed a WRONG faction (e.g. stale data from RPC_MoveVoNToRoom).
-						// An empty factionKey means "derive from slot" (the new AssignPhaseVoiceChannel pattern) -
-						// the correction is expected and silent.
-						if (factionKey != "")
-							Print(string.Format("[PS_VoN] MoveToRoom guard: player %1 had faction '%2' for room '%3' - corrected to '%4' to prevent cross-faction channel leak", playerId, factionKey, roomName, authoritativeFaction), LogLevel.WARNING);
-						factionKey = authoritativeFaction;
-					}
-			}
-		}
-
-		string channelKey = MakeChannelKey(factionKey, roomName);
-		InitChannelIfNeeded(channelKey);
-
-		// Skip if already in this channel
-		if (channelKey == GetPlayerChannel(playerId))
+	void UpdateAllParked_S()
+	{
+		if (!Replication.IsServer())
 			return;
-
-		// The channel determines the proxy's virtual position for direct voice.
-
-		// Finally move player to channel
-		RPC_SetPlayerChannel(playerId, channelKey);
-		Rpc(RPC_SetPlayerChannel, playerId, channelKey);
+		array<int> players = {};
+		GetGame().GetPlayerManager().GetPlayers(players);
+		foreach (int playerId : players)
+			UpdateParked_S(playerId);
 	}
-	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	void RPC_SetPlayerChannel(int playerId, string channelKey)
+
+	void QueueSlotChannelUpdate_S(int playerId)
 	{
-		PS_NetStat.Hit("RPC_SetPlayerChannel");
-		string oldChannelKey = GetPlayerChannel(playerId);
+		if (!Replication.IsServer() || playerId <= 0)
+			return;
+		if (m_aPendingSlotMoves_S.Contains(playerId))
+			return;
+		m_aPendingSlotMoves_S.Insert(playerId);
+		if (m_aPendingSlotMoves_S.Count() == 1)
+			GetGame().GetCallqueue().CallLater(ResolveSlotChannels_S, 0, false);
+	}
 
-		RegisterChannelLocal(channelKey); // ensure the channel exists on every client
-		m_mPlayersChannel[playerId] = channelKey;
-
-		// TEMP DIAGNOSTIC (cross-group voice leak): log the channel + this player's group id & callsign, so the
-		// client log shows whether two DIFFERENT groups (different groupId) resolve to the SAME channel key.
-		// Gated behind s_bVoNDebug (default OFF): it runs on EVERY machine on EVERY channel change (a burst during
-		// the briefing mass-assignment), so the lookups + PrintFormat cost nothing in production. Flip s_bVoNDebug
-		// to re-enable for live cross-group/faction verification.
-		if (s_bVoNDebug)
+	protected void ResolveSlotChannels_S()
+	{
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		foreach (int playerId : m_aPendingSlotMoves_S)
 		{
-			PS_PlayableManager pmDbg = PS_PlayableManager.GetInstance();
-			if (pmDbg)
-			{
-				RplId playableDbg = pmDbg.GetPlayableByPlayer(playerId);
-				SCR_AIGroup grpDbg = pmDbg.GetPlayerGroupByPlayable(playableDbg);
-				int gidDbg = -1;
-				if (grpDbg)
-					gidDbg = grpDbg.GetGroupID();
-				PrintFormat("[PS_VoNDBG] player=%1 channel='%2' groupId=%3 callsign=%4", playerId, channelKey, gidDbg, pmDbg.GetGroupCallsignByPlayable(playableDbg));
-			}
+			if (!GetGame().GetPlayerManager().IsPlayerConnected(playerId))
+				continue;
+			if (gameMode && gameMode.GetState() != SCR_EGameModeState.GAME)
+				gameMode.AssignPhaseVoiceChannel(playerId);
+			UpdateParked_S(playerId);
 		}
-
-		MuteProxyRadio(playerId);
-
-		SCR_VoNComponent.InvalidateEditorLocCache(-1);
-		m_eOnRoomChanged.Invoke(playerId, channelKey, oldChannelKey);
+		m_aPendingSlotMoves_S.Clear();
 	}
 
-	// Re-apply a player's current channel (e.g. after they respawn into a new body)
-	void RestoreRoom(int playerId)
-	{
-		string channelKey = GetPlayerChannel(playerId);
-		RPC_SetPlayerChannel(playerId, channelKey);
-		Rpc(RPC_SetPlayerChannel, playerId, channelKey);
-	}
-
-	// ============================ Body-less VoN proxy ============================
-	// Per-player replicated VoN endpoint for menu speakers. Its radio component stays muted;
-	// VON_DIRECT routes speech through the proxy's virtual position for the selected room.
-
-	// Server: spawn this player's proxy, or RE-BIND an existing one on reconnect.
-	// Reconnect keeps the SAME playerId but gives a NEW connection (RplIdentity). The existing proxy is
-	// still rpl.Give'n to the dead OLD connection, so the reconnected client can no longer drive capture
-	// on it = nobody hears that player (the reported "can't hear Banan after his first reconnect" bug).
-	// We also can't rely on RemoveProxy_S running on disconnect: the live server's QuickTvT gamemode
-	// overrides OnPlayerDisconnected and does not run our cleanup, so the proxy persists. So instead of
-	// skipping when a proxy exists, re-bind it (re-Give + re-register + re-mute) to the new connection.
 	void SpawnProxy_S(int playerId)
 	{
-		if (!Replication.IsServer())
+		if (!Replication.IsServer() || !GetGame().GetPlayerManager().IsPlayerConnected(playerId))
 			return;
 
 		PlayerController pc = GetGame().GetPlayerManager().GetPlayerController(playerId);
@@ -364,11 +478,10 @@ class PS_VoNRoomsManager : ScriptComponent
 		m_mProxies_S.Remove(playerId);
 		m_mProxySlots_S.Remove(playerId);
 
-		SCR_VoNComponent.InvalidateEditorLocCache(-1);
 
 		// FIX (GHOST NAMES): remove the player from the replicated channel map so late-joining
 		// clients (JIP) no longer receive stale entries in their RplLoad snapshot. Without this,
-		// m_mPlayersChannel accumulates entries for every player who ever connected, and the
+		// m_mPlayerChannels accumulates entries for every player who ever connected, and the
 		// voice-chat UI (GetPlayersInRoom) displays ghost names for long-disconnected players.
 		RemovePlayerFromChannel(playerId);
 	}
@@ -420,66 +533,6 @@ class PS_VoNRoomsManager : ScriptComponent
 			MuteProxyRadioNow(playerId);
 		m_aPendingRadioMutes.Clear();
 	}
-	// Set the GAME-phase flag so the audit can skip proxies not used for menu voice.
-	void SetVoNGamePhase(bool isGame)
-	{
-		m_bIsGamePhase = isGame;
-	}
-
-	// Re-mute menu proxies if engine initialization changes their transceiver state.
-	void VoNAuditTick()
-	{
-		GetGame().GetCallqueue().CallLater(VoNAuditTick, 5000, false);
-
-		if (!Replication.IsServer())
-		{
-			array<int> connectedPlayers = {};
-			GetGame().GetPlayerManager().GetPlayers(connectedPlayers);
-			array<int> staleIds = {};
-			foreach (int pid, string channelKey : m_mPlayersChannel)
-			{
-				if (!connectedPlayers.Contains(pid))
-					staleIds.Insert(pid);
-			}
-			foreach (int staleId : staleIds)
-			{
-				string staleKey = m_mPlayersChannel[staleId];
-				Print(string.Format("[PS_VoN] VoNAuditTick: pruning stale channel entry for disconnected player %1 (channel '%2')", staleId, staleKey), LogLevel.NORMAL);
-				m_mPlayersChannel.Remove(staleId);
-				m_eOnRoomChanged.Invoke(staleId, "", staleKey);
-			}
-		}
-
-		int audited = 0;
-		int remuted = 0;
-		foreach (int playerId, string channelKey : m_mPlayersChannel)
-		{
-			if (m_bIsGamePhase && !SCR_VoNComponent.PS_IsMenuSpeaker(playerId) && !IsLocalEditorOpenFor(playerId))
-				continue;
-
-			IEntity proxy = PS_VoNProxyComponent.GetProxyEntity(playerId);
-			if (!proxy)
-				continue;
-			BaseRadioComponent radio = BaseRadioComponent.Cast(proxy.FindComponent(BaseRadioComponent));
-			if (!radio || radio.TransceiversCount() < 1)
-				continue;
-			BaseTransceiver transceiver = radio.GetTransceiver(0);
-			if (!transceiver)
-				continue;
-			audited++;
-
-			if (!transceiver.IsMuted())
-			{
-				remuted++;
-				MuteProxyRadioNow(playerId);
-				if (s_bVoNDebug)
-					PrintFormat("[PS_VoNAudit] proxy radio was unmuted; muted again player=%1 channel='%2'", playerId, channelKey);
-			}
-		}
-
-		if (s_bVoNDebug && audited > 0)
-			PrintFormat("[PS_VoNAudit] checked=%1 remuted=%2", audited, remuted);
-	}
 	protected void MuteProxyRadioNow(int playerId)
 	{
 		IEntity proxy = PS_VoNProxyComponent.GetProxyEntity(playerId);
@@ -492,178 +545,159 @@ class PS_VoNRoomsManager : ScriptComponent
 		if (transceiver)
 			transceiver.SetMuteState(true);
 	}
-	// True only on the machine of a player whose OWN Game Master editor is open.
-	protected bool IsLocalEditorOpenFor(int playerId)
-	{
-		PlayerController pc = GetGame().GetPlayerController();
-		if (!pc || pc.GetPlayerId() != playerId)
-			return false;
-		SCR_EditorManagerEntity editorManager = SCR_EditorManagerEntity.GetInstance();
-		return editorManager && editorManager.IsOpened();
-	}
 
-	// ------------------------- Player channel cleanup -------------------------
-	// Remove a player from the replicated channel map on ALL machines and fire the
-	// room-changed event so the voice-chat UI drops their widget. Called from RemoveProxy_S
-	// (disconnect) and the client-side stale-entry prune (VoNAuditTick).
-	void RemovePlayerFromChannel(int playerId)
-	{
-		if (!m_mPlayersChannel.Contains(playerId))
-			return;
-		string oldChannelKey = m_mPlayersChannel[playerId];
-		RPC_RemovePlayerFromChannel(playerId, oldChannelKey);
-		Rpc(RPC_RemovePlayerFromChannel, playerId, oldChannelKey);
-	}
-	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	void RPC_RemovePlayerFromChannel(int playerId, string oldChannelKey)
-	{
-		PS_NetStat.Hit("RPC_RemovePlayerFromChannel");
-		if (!m_mPlayersChannel.Contains(playerId))
-			return;
-		m_mPlayersChannel.Remove(playerId);
-		SCR_VoNComponent.InvalidateEditorLocCache(-1);
-		m_eOnRoomChanged.Invoke(playerId, "", oldChannelKey);
-	}
-
-	// ------------------------- Channel creation -------------------------
-	// Get (and lazily create) the channel key for a faction/room name. RUN ONLY ON SERVER
-	string GetOrCreateRoomWithFaction(FactionKey factionKey, string roomName)
-	{
-		string channelKey = MakeChannelKey(factionKey, roomName);
-		InitChannelIfNeeded(channelKey);
-		return channelKey;
-	}
-	// Create the channel on all clients if it does not exist yet. RUN ONLY ON SERVER
-	void InitChannelIfNeeded(string channelKey)
+	void MigratePublicRoomToGlobal_S(int ownerPlayerId)
 	{
 		if (!Replication.IsServer())
 			return;
-		if (m_mChannelsSet.Contains(channelKey))
-			return;
-		RPC_CreateChannel(channelKey);
-		Rpc(RPC_CreateChannel, channelKey);
-	}
-	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	void RPC_CreateChannel(string channelKey)
-	{
-		PS_NetStat.Hit("RPC_CreateChannel");
-		RegisterChannelLocal(channelKey);
-	}
-	protected void RegisterChannelLocal(string channelKey)
-	{
-		if (m_mChannelsSet.Contains(channelKey))
-			return;
-		m_mChannelsSet[channelKey] = true;
-		m_aChannels.Insert(channelKey);
+		array<int> occupants = GetPlayersInChannel(GetPublicChannelKey(ownerPlayerId));
+		foreach (int playerId : occupants)
+		{
+			if (playerId != ownerPlayerId)
+				SetPlayerChannel_S(playerId, GetLobbyChannelKey());
+		}
 	}
 
-	// ------------------------- Get -------------------------
+	// Called only by server disconnect cleanup; all mirrors remove membership and parking.
+	void RemovePlayerFromChannel(int playerId)
+	{
+		if (!Replication.IsServer())
+			return;
+		MigratePublicRoomToGlobal_S(playerId);
+		RpcDo_RemovePlayerFromChannel(playerId);
+		Rpc(RpcDo_RemovePlayerFromChannel, playerId);
+		m_aPendingSlotMoves_S.RemoveItem(playerId);
+	}
+
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	protected void RpcDo_RemovePlayerFromChannel(int playerId)
+	{
+		string oldChannelKey = GetPlayerChannel(playerId);
+		m_mPlayerChannels.Remove(playerId);
+		m_mPlayerParked.Remove(playerId);
+		RemovePersonalChannelLocal(GetPublicChannelKey(playerId));
+		RemovePersonalChannelLocal(GetDeafenChannelKey(playerId));
+		m_OnPlayerChannelChanged.Invoke(playerId, "", oldChannelKey);
+	}
+
+	protected void RemovePersonalChannelLocal(string channelKey)
+	{
+		int index = m_aChannels.Find(channelKey);
+		if (index < 0)
+			return;
+		// Keep the server's indices stable: deleting a room must not move every other room.
+		m_aChannels[index] = "";
+		m_mChannelsSet.Remove(channelKey);
+	}
+
+	protected void InitChannelIfNeeded(string channelKey)
+	{
+		if (m_mChannelsSet.Contains(channelKey))
+			return;
+		int index = m_aChannels.Find("");
+		if (index < 0)
+			index = m_aChannels.Count();
+		RpcDo_CreateChannel(channelKey, index);
+		Rpc(RpcDo_CreateChannel, channelKey, index);
+	}
+
+	// The server supplies the position index; packet arrival order cannot choose it.
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	protected void RpcDo_CreateChannel(string channelKey, int index)
+	{
+		RegisterChannelLocal(channelKey, index);
+	}
+
+	protected void RegisterChannelLocal(string channelKey, int index)
+	{
+		if (m_aChannels.Count() <= index)
+			m_aChannels.Resize(index + 1);
+		m_aChannels[index] = channelKey;
+		m_mChannelsSet.Set(channelKey, true);
+	}
+
 	string GetPlayerChannel(int playerId)
 	{
-		if (!m_mPlayersChannel.Contains(playerId))
-			return "";
-		return m_mPlayersChannel[playerId];
-	}
-	// Channel key for a faction/room name (deterministic - does not create)
-	string GetRoomWithFaction(FactionKey factionKey, string roomName)
-	{
-		return MakeChannelKey(factionKey, roomName);
-	}
-	// The display name of a channel IS its key (kept for UI compatibility)
-	string GetRoomName(string channelKey)
-	{
+		string channelKey;
+		m_mPlayerChannels.Find(playerId, channelKey);
 		return channelKey;
 	}
 
-	void GetPlayersInRoom(out notnull array<int> players, string channelKey)
+	array<string> GetChannels()
 	{
-		foreach (int playerId, string playerChannel : m_mPlayersChannel)
+		return m_aChannels;
+	}
+
+	array<int> GetPlayersInChannel(string channelKey)
+	{
+		array<int> players = {};
+		foreach (int playerId, string playerChannel : m_mPlayerChannels)
 		{
 			if (playerChannel == channelKey)
 				players.Insert(playerId);
 		}
+		players.Sort();
+		return players;
 	}
 
-	void GetPlayersPublicChannels(out notnull array<string> channelKeys)
-	{
-		foreach (int playerId, string playerChannel : m_mPlayersChannel)
-		{
-			if (channelKeys.Contains(playerChannel))
-				continue;
-			if (IsPublicRoom(playerChannel))
-				channelKeys.Insert(playerChannel);
-		}
-	}
-
-	// ------------------------- Channel classification (by key) -------------------------
-	bool IsPublicRoom(string channelKey)
-	{
-		if (channelKey.Length() <= 13)
-			return false;
-		return channelKey.ContainsAt("Public", 13);
-	}
-
-	bool IsFactionRoom(string channelKey, FactionKey factionKey)
-	{
-		if (factionKey == "")
-			return channelKey.StartsWith("|");
-		return channelKey.StartsWith(factionKey + "|");
-	}
-
-	bool IsGlobalRoom(string channelKey)
-	{
-		return channelKey == "|#PS-VoNRoom_Global";
-	}
-
-	bool IsLocalRoom(string channelKey)
-	{
-		return channelKey.StartsWith("|#PS-VoNRoom_Local");
-	}
-
-	// ------------------------- JIP Replication -------------------------
-	// Only the channel list and player->channel map (no positions, no per-player auto rooms)
 	override bool RplSave(ScriptBitWriter writer)
 	{
-		int channelsCount = m_aChannels.Count();
-		writer.WriteInt(channelsCount);
-		for (int i = 0; i < channelsCount; i++)
-			writer.WriteString(m_aChannels[i]);
-
-		int playersChannelCount = m_mPlayersChannel.Count();
-		writer.WriteInt(playersChannelCount);
-		for (int i = 0; i < playersChannelCount; i++)
+		writer.WriteInt(m_aChannels.Count());
+		foreach (string channelKey : m_aChannels)
+			writer.WriteString(channelKey);
+		writer.WriteInt(m_mPlayerChannels.Count());
+		for (int i = 0; i < m_mPlayerChannels.Count(); i++)
 		{
-			writer.WriteInt(m_mPlayersChannel.GetKey(i));
-			writer.WriteString(m_mPlayersChannel.GetElement(i));
+			int playerId = m_mPlayerChannels.GetKey(i);
+			writer.WriteInt(playerId);
+			writer.WriteString(m_mPlayerChannels.GetElement(i));
+			writer.WriteBool(IsPlayerParked(playerId));
 		}
-
 		return true;
 	}
 
 	override bool RplLoad(ScriptBitReader reader)
 	{
-		int channelsCount;
-		reader.ReadInt(channelsCount);
-		for (int i = 0; i < channelsCount; i++)
+		m_aChannels.Clear();
+		m_mChannelsSet.Clear();
+		m_mPlayerChannels.Clear();
+		m_mPlayerParked.Clear();
+		int channelCount;
+		reader.ReadInt(channelCount);
+		for (int i = 0; i < channelCount; i++)
 		{
 			string channelKey;
 			reader.ReadString(channelKey);
-			RegisterChannelLocal(channelKey);
+			if (channelKey == "")
+				m_aChannels.Insert("");
+			else
+				RegisterChannelLocal(channelKey, i);
 		}
-
-		int playersChannelCount;
-		reader.ReadInt(playersChannelCount);
-		for (int i = 0; i < playersChannelCount; i++)
+		int playerCount;
+		reader.ReadInt(playerCount);
+		for (int i = 0; i < playerCount; i++)
 		{
-			int key;
-			string value;
-			reader.ReadInt(key);
-			reader.ReadString(value);
-			m_mPlayersChannel.Insert(key, value);
+			int playerId;
+			string playerChannel;
+			bool parked;
+			reader.ReadInt(playerId);
+			reader.ReadString(playerChannel);
+			reader.ReadBool(parked);
+			m_mPlayerChannels.Set(playerId, playerChannel);
+			m_mPlayerParked.Set(playerId, parked);
 		}
-
 		m_bRplLoaded = true;
-
+		GetGame().GetCallqueue().CallLater(FireJIPEvents, 0, false);
 		return true;
 	}
-};
+
+	protected void FireJIPEvents()
+	{
+		foreach (int playerId, string channelKey : m_mPlayerChannels)
+		{
+			m_OnPlayerChannelChanged.Invoke(playerId, channelKey, "");
+			m_OnPlayerParkedChanged.Invoke(playerId, IsPlayerParked(playerId));
+		}
+		PS_MenuVoN.Refresh();
+	}
+}

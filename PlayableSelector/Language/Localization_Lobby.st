@@ -1483,6 +1483,16 @@ StringTable {
    Author "SeskPC"
    LastChanged "SeskPC"
   }
+  CustomStringTableItem "{A90D3742C4B16002}" {
+   Id "PS-VoNRoom_Deafen"
+   Target_en_us "Deafen"
+   Target_fr_fr "Assourdir"
+   Target_es_es "Silenciar"
+   Target_pl_pl "Wycisz"
+   Target_ru_ru "Отключить звук"
+   Target_pt_br "Silenciar"
+   Target_uk_ua "Вимкнути звук"
+  }
   CustomStringTableItem "{5EB6E12BC05F7F27}" {
    Id "PS-VoNRoom_Faction"
    Target_en_us "Faction"
@@ -1537,13 +1547,13 @@ StringTable {
   }
   CustomStringTableItem "{5F0C9CB1EFDDDB2E}" {
    Id "PS-VoNRoom_Public"
-   Target_en_us "public channel"
-   Target_fr_fr "canal public"
-   Target_es_es "canal publico"
-   Target_pl_pl "kanał publiczny"
-   Target_ru_ru "публичный канал"
-   Target_pt_br "canal publico"
-   Target_uk_ua "публичний канал"
+   Target_en_us "Public channel: %1"
+   Target_fr_fr "Canal public : %1"
+   Target_es_es "Canal público: %1"
+   Target_pl_pl "Kanał publiczny: %1"
+   Target_ru_ru "Публичный канал: %1"
+   Target_pt_br "Canal público: %1"
+   Target_uk_ua "Публічний канал: %1"
    Modified 1642794511
    Author "SeskPC"
    LastChanged "SeskPC"

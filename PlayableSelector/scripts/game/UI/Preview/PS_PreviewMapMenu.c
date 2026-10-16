@@ -13,7 +13,7 @@ class PS_PreviewMapMenu: ChimeraMenuBase
 	protected SCR_ChatPanel m_ChatPanel;
 	
 	protected Widget m_wVoiceChatList;
-	protected PS_VoiceChatList m_hVoiceChatList;
+	protected PS_VoiceRoomsUI m_hVoiceChatList;
 	
 	protected Widget m_wGameModeHeader;
 	protected PS_GameModeHeader m_hGameModeHeader;
@@ -37,7 +37,7 @@ class PS_PreviewMapMenu: ChimeraMenuBase
 		GetGame().GetInputManager().AddActionListener("ChatToggle", EActionTrigger.DOWN, Action_OnChatToggleAction);
 		
 		m_wVoiceChatList = GetRootWidget().FindAnyWidget("VoiceChatFrame");
-		m_hVoiceChatList = PS_VoiceChatList.Cast(m_wVoiceChatList.FindHandler(PS_VoiceChatList));
+		m_hVoiceChatList = PS_VoiceRoomsUI.Cast(m_wVoiceChatList.FindHandler(PS_VoiceRoomsUI));
 		
 		m_wGameModeHeader = GetRootWidget().FindAnyWidget("GameModeHeader");
 		m_hGameModeHeader = PS_GameModeHeader.Cast(m_wGameModeHeader.FindHandler(PS_GameModeHeader));

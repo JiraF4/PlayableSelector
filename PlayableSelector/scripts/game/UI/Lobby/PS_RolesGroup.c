@@ -100,10 +100,9 @@ class PS_RolesGroup : SCR_ScriptedWidgetComponent
 		if (!aiGroup)
 			return;
 		m_iGroupCallsign = aiGroup.GetCallsignNum();
-		// VoN room keyed by UNIQUE group id (not the callsign num, which can collide across groups -> leak).
-		m_sGroupCallsign = PS_PlayableManager.GroupVonRoomName(aiGroup.GetGroupID());
 		SCR_Faction faction = SCR_Faction.Cast(aiGroup.GetFaction());
 		m_sFactionKey = faction.GetFactionKey();
+		m_sGroupCallsign = PS_VoNRoomsManager.GetGroupChannelKey(aiGroup.GetGroupID(), m_sFactionKey);
 		
 		 m_wRoot.SetZOrder(aiGroup.GetCallsignNum());
 		
@@ -299,7 +298,7 @@ class PS_RolesGroup : SCR_ScriptedWidgetComponent
 		m_bInnerButtonClicked = true;
 		SCR_EGameModeState gameState = m_GameModeCoop.GetState();
 		if (gameState == SCR_EGameModeState.SLOTSELECTION)
-			m_PlayableControllerComponent.MoveToVoNRoom(m_iCurrentPlayerId, m_sFactionKey, m_sGroupCallsign);
+			m_PlayableControllerComponent.MoveToVoNRoom(m_iCurrentPlayerId, m_sGroupCallsign);
 	}
 	
 	// --------------------------------------------------------------------------------------------------------------------------------

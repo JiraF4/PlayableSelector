@@ -21,33 +21,11 @@ modded class SCR_VoNComponent
 	// without any "ended" event — talking ends when no packet arrived for this long.
 	protected static const int PS_TALK_TIMEOUT_MS = 400;
 
-	// FIX (1.8) diagnostic throttle: world-time of the last [PS_VoNLoc] log (1/s max).
-	protected static float s_fLastLocLog = -1;
-
 	// playerId -> world time (ms) after which the player counts as silent.
 	protected static ref map<int, float> s_mPSTalkUntil = new map<int, float>();
 
 	// (int playerId, bool talking)
 	protected static ref ScriptInvoker s_OnPSTalkingChanged = new ScriptInvoker();
-
-	protected static ref map<int, vector> s_mCachedEditorLoc = new map<int, vector>();
-	protected static ref map<int, float> s_mCachedEditorLocExpiry = new map<int, float>();
-	protected static const int PS_VONFIX_LOC_CACHE_TTL_MS = 1000;
-	protected static const int PS_VONFIX_LOC_CACHE_MAX = 256;
-
-	static void InvalidateEditorLocCache(int playerId = -1)
-	{
-		if (playerId < 0)
-		{
-			s_mCachedEditorLoc.Clear();
-			s_mCachedEditorLocExpiry.Clear();
-		}
-		else
-		{
-			s_mCachedEditorLoc.Remove(playerId);
-			s_mCachedEditorLocExpiry.Remove(playerId);
-		}
-	}
 
 	static ScriptInvoker PS_GetOnTalkingChanged()
 	{
@@ -67,12 +45,15 @@ modded class SCR_VoNComponent
 	// MENU SPEAKER PREDICATE
 	// =====================================================================
 
-	// True when this player talks through the menu device instead of a character:
-	// no controlled entity at all (slot selection / briefing / JIP), or the controlled
-	// entity is a corpse (dead players keep their character as controlled entity while
-	// spectating). Derivable on server and every client from replicated state alone.
+	// Authority derives menu ownership from the body; clients follow its parked flag.
+	// DESTROYED is checked separately because the spectator transition can precede IsDead().
 	static bool PS_IsMenuSpeaker(int playerId)
 	{
+		// Clients use the authoritative flag even while the corpse/possession is still replicating.
+		PS_VoNRoomsManager vonManager = PS_VoNRoomsManager.GetInstance();
+		if (!Replication.IsServer() && vonManager && vonManager.IsReplicated())
+			return !vonManager.IsPlayerParked(playerId);
+
 		IEntity controlled = GetGame().GetPlayerManager().GetPlayerControlledEntity(playerId);
 		if (!controlled)
 			return true;
@@ -125,38 +106,6 @@ modded class SCR_VoNComponent
 	}
 
 	override protected event vector GetEditorWorldLocation(int playerId)
-	{
-		// Guard against null world during mission unload/shutdown
-		World world = GetGame().GetWorld();
-		if (!world)
-			return ComputeEditorWorldLocation(playerId);
-
-		float now = world.GetWorldTime();
-		float expiry;
-		vector loc;
-
-		if (s_mCachedEditorLocExpiry.Find(playerId, expiry) && expiry > now)
-		{
-			if (s_mCachedEditorLoc.Find(playerId, loc))
-				return loc;
-		}
-
-		// Cache expired or missing - compute location
-		loc = ComputeEditorWorldLocation(playerId);
-
-		// Prevent unbounded cache growth with gentle FIFO eviction (VON-108)
-		if (s_mCachedEditorLoc.Count() >= PS_VONFIX_LOC_CACHE_MAX)
-		{
-			int oldestKey = s_mCachedEditorLoc.GetKey(0);
-			InvalidateEditorLocCache(oldestKey);
-		}
-
-		s_mCachedEditorLocExpiry.Set(playerId, now + PS_VONFIX_LOC_CACHE_TTL_MS);
-		s_mCachedEditorLoc.Set(playerId, loc);
-		return loc;
-	}
-
-	protected vector ComputeEditorWorldLocation(int playerId)
 	{
 		// Real GM editor retains vanilla behavior
 		SCR_EditorManagerEntity gm = SCR_EditorManagerEntity.Cast(super.GetEditorEntity(playerId));
@@ -223,12 +172,6 @@ modded class SCR_VoNComponent
 
 		if (!wasTalking)
 		{
-			// FIX (1.8) diagnostic: a state change means the engine actually routed a
-			// transmission to/from this component. On the receiving side, "talking START"
-			// for a REMOTE player proves the audio reached this client (then any silence is
-			// playback placement); if it never logs, the server is not delivering at all.
-			if (PS_VoNRoomsManager.s_bVoNDebug)
-				PrintFormat("[PS_VoNHear] talking START player=%1", playerId);
 			s_OnPSTalkingChanged.Invoke(playerId, true);
 			GetGame().GetCallqueue().CallLater(PS_CheckTalkEnd, PS_TALK_TIMEOUT_MS, false, playerId);
 		}

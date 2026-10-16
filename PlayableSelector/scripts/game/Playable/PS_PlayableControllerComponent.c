@@ -517,7 +517,8 @@ class PS_PlayableControllerComponent : ScriptComponent
 			playabelGroup.AddAIEntityToGroup(character);
 		playableManager.SetPlayablePlayerGroupId(playableContainer.GetRplId(), aiGroup.GetGroupID());
 		int playerId = playableManager.GetPlayerByPlayableRemembered(oldPlayableId);
-		VoNRoomsManager.MoveToRoom(playerId, "", "");
+		if (VoNRoomsManager)
+			VoNRoomsManager.QueueSlotChannelUpdate_S(playerId);
 		if (playerId > -1)
 		{
 			GetGame().GetCallqueue().CallLater(RPC_ForceRespawnPlayerLate2, 500, false, playerId, playableContainer);
@@ -566,6 +567,12 @@ class PS_PlayableControllerComponent : ScriptComponent
 	private void OnControlledEntityChanged(IEntity from, IEntity to)
 	{
 		PlayerController thisPlayerController = PlayerController.Cast(GetOwner());
+		if (Replication.IsServer())
+		{
+			PS_VoNRoomsManager vonManager = PS_VoNRoomsManager.GetInstance();
+			if (vonManager)
+				GetGame().GetCallqueue().CallLater(vonManager.UpdateParked_S, 0, false, thisPlayerController.GetPlayerId());
+		}
 
 		RplComponent rpl = RplComponent.Cast(GetOwner().FindComponent(RplComponent));
 		if (!rpl.IsOwner())
@@ -693,45 +700,41 @@ class PS_PlayableControllerComponent : ScriptComponent
 	}
 
 	// ------------------ VoN controlls ------------------
-	void MoveToVoNRoomByKey(int playerId, string roomKey)
+	void MoveToVoNRoomByKey(int playerId, string channelKey)
 	{
-		string factionKey = "";
-		string roomName = "#PS-VoNRoom_Global";
-
-		if (roomKey.Contains("|")) {
-			array<string> outTokens = {};
-			roomKey.Split("|", outTokens, false);
-			factionKey = outTokens[0];
-			roomName = outTokens[1];
-		}
-
-		Rpc(RPC_MoveVoNToRoom, playerId, factionKey, roomName);
+		MoveToVoNRoom(playerId, channelKey);
 	}
-	void MoveToVoNRoom(int playerId, FactionKey factionKey, string roomName)
+
+	void MoveToVoNRoom(int playerId, string channelKey)
 	{
-		Rpc(RPC_MoveVoNToRoom, playerId, factionKey, roomName);
+		Rpc(RPC_MoveVoNToRoom, playerId, channelKey);
 	}
+
+	// Caller identity comes from this owned controller; the requested target is untrusted.
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
-	void RPC_MoveVoNToRoom(int playerId, FactionKey factionKey, string roomName)
+	void RPC_MoveVoNToRoom(int playerId, string channelKey)
 	{
 		PlayerManager playerManager = GetGame().GetPlayerManager();
 		PlayerController playerController = PlayerController.Cast(GetOwner());
 		PS_VoNRoomsManager vonManager = PS_VoNRoomsManager.GetInstance();
-		if (!playerManager || !playerController || !vonManager)
+		if (!Replication.IsServer() || !playerManager || !playerController || !vonManager)
 			return;
 
 		int callerPlayerId = playerController.GetPlayerId();
 		if (callerPlayerId <= 0 || playerId <= 0 || !playerManager.IsPlayerConnected(playerId))
 			return;
 
-		if (callerPlayerId != playerId && !SCR_Global.IsAdmin(callerPlayerId))
+		bool allowed;
+		if (callerPlayerId == playerId)
+			allowed = vonManager.CanPlayerJoinChannel(playerId, channelKey);
+		else
+			allowed = SCR_Global.IsAdmin(callerPlayerId) || vonManager.CanPlayerVoiceKick(callerPlayerId, playerId, channelKey);
+		if (!allowed)
 		{
-			PrintFormat("[PS_AntiCheat] ADMIN_ATTEMPT: %1 action=MoveVoNToRoom target=%2",
-				PS_GameModeCoop.PS_AntiCheatPlayerIdentity(callerPlayerId), playerId);
+			PrintFormat("[PS_VoN] Channel move denied: caller=%1 target=%2 channel='%3'", callerPlayerId, playerId, channelKey);
 			return;
 		}
-
-		vonManager.MoveToRoom(playerId, factionKey, roomName);
+		vonManager.SetPlayerChannel_S(playerId, channelKey);
 	}
 
 	void GetArmaIdFromServer(int playerId)
@@ -859,7 +862,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		// Spectators talk on the global VoN room (matches SendPlayerToSpectator_S and RoomSwitchToGlobal).
 		// This was "", "" (the empty-room channel), which briefly routed the spectator to a different
 		// channel than everyone else's global room.
-		MoveToVoNRoom(thisPlayerController.GetPlayerId(), "", "#PS-VoNRoom_Global");
+		MoveToVoNRoom(thisPlayerController.GetPlayerId(), PS_VoNRoomsManager.GetLobbyChannelKey());
 		Resource resource = Resource.Load("{6EAA30EF620F4A2E}Prefabs/Editor/Camera/ManualCameraSpectator.et");
 		m_Camera = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
 
@@ -1383,9 +1386,9 @@ class PS_PlayableControllerComponent : ScriptComponent
 			playableManager.SetPlayerPin(holder, false);
 			if (connected)
 			{
-				PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-				if (gameMode)
-					gameMode.AssignPhaseVoiceChannel(holder);
+				PS_VoNRoomsManager vonManager = PS_VoNRoomsManager.GetInstance();
+				if (vonManager)
+					vonManager.QueueSlotChannelUpdate_S(holder);
 			}
 		}
 		playableManager.SetPlayablePlayer(playableId, -2);
@@ -1433,12 +1436,9 @@ class PS_PlayableControllerComponent : ScriptComponent
 			if (playerId != thisPlayerController.GetPlayerId())
 				playableManager.NotifyKick(playerId);
 			playableManager.SetPlayerPlayable(playerId, playableId);
-			// FIX (STRAND): re-route voice to Global when a slot is released (deselect / kick).
-			// Without this, the player stays on their old faction's VoN channel until the 5s
-			// reconcile tick catches them. This moves them to Global immediately.
-			PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-			if (gameMode)
-				gameMode.AssignPhaseVoiceChannel(playerId);
+			PS_VoNRoomsManager vonManager = PS_VoNRoomsManager.GetInstance();
+			if (vonManager)
+				vonManager.QueueSlotChannelUpdate_S(playerId);
 			return;
 		}
 

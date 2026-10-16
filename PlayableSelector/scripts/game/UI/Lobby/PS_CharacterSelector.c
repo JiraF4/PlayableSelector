@@ -495,17 +495,14 @@ class PS_CharacterSelector : SCR_ButtonComponent
 			}
 			
 			SCR_UISoundEntity.SoundEvent("SOUND_HUD_GADGET_SELECT");
-			m_PlayableControllerComponent.MoveToVoNRoom(playerId, m_sFactionKey, m_sPlayableCallsign);
+			m_PlayableControllerComponent.MoveToVoNRoom(playerId, m_sPlayableCallsign);
 			m_PlayableControllerComponent.ChangeFactionKey(playerId, m_sFactionKey);
 			m_PlayableControllerComponent.SetPlayerState(playerId, PS_EPlayableControllerState.NotReady);	
 			m_PlayableControllerComponent.SetPlayerPlayable(playerId, m_iPlayableId);
 		} else {
 			SCR_UISoundEntity.SoundEvent("SOUND_HUD_GADGET_SELECT");
-			// Become slotless = leave the faction entirely -> return to the shared factionless Global pool,
-			// NOT the per-faction #PS-VoNRoom_Faction room (which keeps you hearing your old faction, and on an
-			// empty-faction race collapses to "|#PS-VoNRoom_Faction" across factions). Mirrors
-			// AssignPhaseVoiceChannel's slotless branch (no slot -> faction "", Global).
-			m_PlayableControllerComponent.MoveToVoNRoom(playerId, "", "#PS-VoNRoom_Global");
+			// Releasing the slot returns the player to Lobby.
+			m_PlayableControllerComponent.MoveToVoNRoom(playerId, PS_VoNRoomsManager.GetLobbyChannelKey());
 			m_PlayableControllerComponent.ChangeFactionKey(playerId, "");
 			m_PlayableControllerComponent.SetPlayerState(playerId, PS_EPlayableControllerState.NotReady);
 			m_PlayableControllerComponent.SetPlayerPlayable(playerId, RplId.Invalid());
@@ -598,9 +595,8 @@ class PS_CharacterSelector : SCR_ButtonComponent
 			return;
 		
 		SCR_UISoundEntity.SoundEvent("SOUND_LOBBY_KICK");
-		// Freeing a player from their slot makes them slotless -> send them to the factionless Global pool,
-		// not their old faction's #PS-VoNRoom_Faction room.
-		m_PlayableControllerComponent.MoveToVoNRoom(m_iPlayerId, "", "#PS-VoNRoom_Global");
+		// Releasing the slot returns the player to Lobby.
+		m_PlayableControllerComponent.MoveToVoNRoom(m_iPlayerId, PS_VoNRoomsManager.GetLobbyChannelKey());
 		m_PlayableControllerComponent.ChangeFactionKey(m_iPlayerId, "");
 		m_PlayableControllerComponent.SetPlayerState(m_iPlayerId, PS_EPlayableControllerState.NotReady);
 		m_PlayableControllerComponent.SetPlayerPlayable(m_iPlayerId, -1);
@@ -627,7 +623,7 @@ class PS_CharacterSelector : SCR_ButtonComponent
 			case PS_ECharacterState.Kick:
 				SCR_UISoundEntity.SoundEvent("SOUND_LOBBY_KICK");
 				// Kicking from a slot makes them slotless -> factionless Global pool, not the old faction room.
-				m_PlayableControllerComponent.MoveToVoNRoom(m_iPlayerId, "", "#PS-VoNRoom_Global");
+				m_PlayableControllerComponent.MoveToVoNRoom(m_iPlayerId, PS_VoNRoomsManager.GetLobbyChannelKey());
 				m_PlayableControllerComponent.ChangeFactionKey(m_iPlayerId, "");
 				m_PlayableControllerComponent.SetPlayerState(m_iPlayerId, PS_EPlayableControllerState.NotReady);
 				m_PlayableControllerComponent.SetPlayerPlayable(m_iPlayerId, -1);
@@ -642,11 +638,7 @@ class PS_CharacterSelector : SCR_ButtonComponent
 				break;
 			case PS_ECharacterState.Disconnected:
 				SCR_UISoundEntity.SoundEvent("SOUND_LOBBY_KICK");
-				// Clearing a disconnected player's slot makes them slotless/factionless -> Global pool.
-				// (Previously moved them to their old faction's #PS-VoNRoom_Faction, which left them - and any
-				// same-faction onlookers - hearing the wrong channel; an empty faction key here even collapsed
-				// "|#PS-VoNRoom_Faction" across factions.)
-				m_PlayableControllerComponent.MoveToVoNRoom(m_iPlayerId, "", "#PS-VoNRoom_Global");
+				m_PlayableControllerComponent.MoveToVoNRoom(m_iPlayerId, PS_VoNRoomsManager.GetLobbyChannelKey());
 				m_PlayableControllerComponent.ChangeFactionKey(m_iPlayerId, "");
 				m_PlayableControllerComponent.SetPlayerPlayable(m_iPlayerId, RplId.Invalid());
 				break;

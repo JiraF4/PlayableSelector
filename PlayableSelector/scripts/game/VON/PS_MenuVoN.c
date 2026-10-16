@@ -207,7 +207,6 @@ class PS_MenuVoN
 		m_VoNComp.SetCommMethod(ECommMethod.SQUAD_RADIO);
 		m_VoNComp.SetTransmitRadio(m_Transceiver);
 
-		SCR_VoNComponent.InvalidateEditorLocCache(pc.GetPlayerId());
 		ArmDirect();
 
 		InputManager inputManager = GetGame().GetInputManager();
@@ -222,10 +221,6 @@ class PS_MenuVoN
 	{
 		if (!m_bActive)
 			return;
-
-		PlayerController pc = GetGame().GetPlayerController();
-		if (pc)
-			SCR_VoNComponent.InvalidateEditorLocCache(pc.GetPlayerId());
 
 		InputManager inputManager = GetGame().GetInputManager();
 		inputManager.RemoveActionListener("VONDirect", EActionTrigger.DOWN, OnTalkDown);
