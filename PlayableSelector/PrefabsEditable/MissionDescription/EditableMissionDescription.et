@@ -8,10 +8,10 @@ PS_MissionDescription {
     Icon "{55D8040D6C1D0EEE}UI/Textures/Editor/EditableEntities/Slots/EditableEntity_Slot_FlatMedium.edds"
     m_Image "{55D8040D6C1D0EEE}UI/Textures/Editor/EditableEntities/Slots/EditableEntity_Slot_FlatMedium.edds"
     m_aAuthoredLabels {
-     7 13
+     ENTITYTYPE_SYSTEM FACTION_CIV
     }
     m_aAutoLabels {
-     1
+     ENTITYTYPE_OBJECT
     }
     m_EntityBudgetCost {
      SCR_EntityBudgetValue "{5DAA86857C5BBD42}" {
@@ -33,7 +33,8 @@ PS_MissionDescription {
    Streamable Disabled
   }
  }
+ coords 1397.217 35.956 2355.41
  m_sTitle "Description title"
- m_sDescriptionLayout "{41DAF7B7061DC0BC}UI/MissionDescription/DescriptionEditable.layout"
+ m_sDescriptionLayout "{B6DE04F7CF7A95DA}UI/MissionDescription/DescriptionEditableScrollable.layout"
  m_sTextData "Description text"
 }
