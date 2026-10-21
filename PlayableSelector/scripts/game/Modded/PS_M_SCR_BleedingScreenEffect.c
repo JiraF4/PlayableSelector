@@ -14,7 +14,6 @@ modded class SCR_BleedingScreenEffect
 		PlayerController pc = GetGame().GetPlayerController();
 		if (pc && SCR_VoNComponent.PS_IsMenuSpeaker(pc.GetPlayerId()))
 		{
-			Print("[PS_SpecDiag] SCR_BleedingScreenEffect.OnDamageEffectAdded: suppressed (spectating)");
 			ClearEffects();
 			return;
 		}
@@ -27,7 +26,6 @@ modded class SCR_BleedingScreenEffect
 		PlayerController pc = GetGame().GetPlayerController();
 		if (pc && SCR_VoNComponent.PS_IsMenuSpeaker(pc.GetPlayerId()))
 		{
-			Print("[PS_SpecDiag] SCR_BleedingScreenEffect.CreateEffectOverTime: suppressed (spectating)");
 			ClearEffects();
 			return;
 		}
@@ -40,7 +38,6 @@ modded class SCR_BleedingScreenEffect
 		PlayerController pc = GetGame().GetPlayerController();
 		if (pc && SCR_VoNComponent.PS_IsMenuSpeaker(pc.GetPlayerId()))
 		{
-			PrintFormat("[PS_SpecDiag] SCR_BleedingScreenEffect.BlackoutEffect: suppressed (spectating) strength=%1", effectStrength);
 			ClearEffects();
 			return;
 		}
@@ -54,7 +51,6 @@ modded class SCR_BleedingScreenEffect
 		if (pc && SCR_VoNComponent.PS_IsMenuSpeaker(pc.GetPlayerId()))
 		{
 			// Spectating: don't re-register damage effect invokers on the dead corpse.
-			Print("[PS_SpecDiag] SCR_BleedingScreenEffect.DisplayControlledEntityChanged: suppressed (spectating)");
 			ClearEffects();
 			return;
 		}

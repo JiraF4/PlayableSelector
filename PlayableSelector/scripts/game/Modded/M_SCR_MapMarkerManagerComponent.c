@@ -1,167 +1,159 @@
-// Remove squad markers
+//! Server-side faction gating for player-placed static markers, plus a one-shot client
+//! filter for the join-in-progress payload.
+//!
+//! Vanilla broadcasts every marker to every client and filters on arrival in
+//! OnAddSynchedMarker, where the guard "if (localFaction && !isMyFaction) remove" fails
+//! open on a null faction: spectators and players whose affiliation has not resolved keep
+//! every faction-restricted marker, including the enemy's. Filtering a broadcast client-side
+//! is also a leak by definition (Principle IV), so the routing is done here instead.
+//!
+//! One path bypasses this routing and is handled separately: the manager's RplLoad fills
+//! m_aStaticMarkers straight from the JIP payload with no faction test at all, and that
+//! payload is shared by every joining client, so it cannot be filtered per player on the
+//! server. It is filtered once, after loading, on the client.
+//!
+//! Dropping a marker client-side is safe here because the server re-sends on faction change
+//! (PS_OnPlayerFactionChanged_S), which also fixes vanilla's destructive one-way
+//! OnPlayerFactionChanged: the proxy used to delete the other factions' markers and never
+//! re-add them, so a lobby player switching playable in runtime lost the whole map.
 modded class SCR_MapMarkerManagerComponent
 {
-	// Faction-restricted marker visibility fix for factionless players (spectators, lobby/briefing late-joiners).
-	//
-	// Vanilla filters a faction-restricted STATIC marker in OnAddSynchedMarker (and during JIP RplLoad) exactly
-	// ONCE, on arrival, and it FAILS OPEN on a null faction: the guard is "if (localFaction && !isMyFaction)
-	// remove". A client whose SCR_FactionManager.SGetLocalPlayerFaction() is still null (spectator, or anyone
-	// whose SCR_PlayerFactionAffiliationComponent hasn't resolved yet) therefore passes the filter and KEEPS
-	// every faction-restricted static marker - including the enemy's.
-	//
-	// The destructive refilter below only fires once localFaction becomes non-null, so for a PERMANENT
-	// spectator (faction stays null for the whole mission) it never runs and they see enemy markers forever.
-	//
-	// Constraint that shapes the fix: vanilla never re-broadcasts static markers - OnPlayerFactionChanged only
-	// REMOVES markers, never re-adds them. So we must NOT destructively drop a marker during the null-faction
-	// window: a late-joiner who later picks faction X must still be able to see X's markers once X resolves.
-	// Solution: a REVERSIBLE widget hide, re-evaluated every frame after super.Update(). While the local
-	// faction is null (or doesn't match the marker's faction), the marker's widget is hidden; the instant the
-	// faction resolves to a match, it reappears - no re-add needed. This covers permanent spectators AND
-	// transient lobby/briefing late-joiners with zero regression, and only touches faction-RESTRICTED markers
-	// (factionFlags != 0); unrestricted markers (flags == 0) are left alone so global markers still show.
-	protected Faction m_PS_LastLocalFaction;
-	// Cached alongside m_PS_LastLocalFaction so the per-frame visibility pass doesn't re-resolve the faction
-	// manager + faction index every frame; both are recomputed ONLY when the local faction actually changes
-	// (incl. the null<->faction transitions on spectate / reconnect), so they never go stale.
-	protected FactionManager m_PS_FactionManager;
-	protected int m_PS_LastLocalFactionIndex = -1;
-
-	override void Update(float timeSlice)
+	//! Server only. Restricts a faction-scoped marker to the players entitled to see it and
+	//! routes the payload per player; an unrestricted marker keeps the vanilla broadcast.
+	override void OnAskAddStaticMarker(SCR_MapMarkerBase markerData)
 	{
-		if (!m_MapEntity)
+		if (!Replication.IsServer())
 		{
-			m_MapEntity = SCR_MapEntity.GetMapInstance();
-			m_MapEntity.GetOnMapPanEnd().Insert(OnMapPanEnd);
+			super.OnAskAddStaticMarker(markerData);
+			return;
 		}
 
-		Faction localFaction = SCR_FactionManager.SGetLocalPlayerFaction();
-		if (localFaction != m_PS_LastLocalFaction)
+		// Unrestricted (0) means "visible to everyone" and must reach every client, including
+		// the factionless ones. Server-side storage is already handled before this call by
+		// SCR_MapMarkerSyncComponent.RPC_AskAddStaticMarker, so the routing below applies to a
+		// dedicated server exactly as it does to a listen host.
+		if (!markerData || markerData.GetMarkerFactionFlags() == 0)
 		{
-			m_PS_LastLocalFaction = localFaction;
-			m_PS_LastLocalFactionIndex = -1;
-			if (localFaction)
-			{
-				if (!m_PS_FactionManager)
-					m_PS_FactionManager = GetGame().GetFactionManager();
-				if (m_PS_FactionManager)
-					m_PS_LastLocalFactionIndex = m_PS_FactionManager.GetFactionIndex(localFaction);
-				PS_RefilterStaticMarkersByLocalFaction(localFaction);
-			}
+			super.OnAskAddStaticMarker(markerData);
+			return;
 		}
 
-		super.Update(timeSlice);
-
-		// Re-evaluate reversible faction hiding every frame after super.Update(). Cheap: it only walks the
-		// (small) static + disabled arrays and touches the widget solely in the hide direction.
-		PS_ApplyFactionVisibility(m_PS_LastLocalFactionIndex);
-	}
-
-	// Hide faction-restricted static markers from viewers who shouldn't see them. Reversible by design: we
-	// ONLY ever force-hide, never force-show, so vanilla stays the sole owner of the show path.
-	//
-	// Why force-hide-only: super.Update() re-runs SetStaticMarkerDisabled on every marker each frame, and
-	// SetUpdateDisabled(false) unconditionally re-shows the widget for on-screen markers. A symmetric
-	// hide-AND-show with a tracking map would be defeated by that churn (we'd skip re-hiding once "tracked as
-	// hidden", leaving the enemy marker visible in steady state). By touching only the hide direction:
-	//  - off-screen markers stay hidden (vanilla hid them via SetUpdateDisabled),
-	//  - on-screen OWN markers show (vanilla shows them, we don't interfere),
-	//  - on-screen faction-restricted markers for a factionless/wrong-faction viewer get hidden by us every
-	//    frame, right after vanilla shows them.
-	// Restore is automatic and needs no re-broadcast: the instant the local faction resolves to a match, the
-	// "else" branch stops firing and vanilla's per-frame show takes over.
-	protected void PS_ApplyFactionVisibility(int localFactionIndex)
-	{
-		// localFactionIndex is the cached index (recomputed only on faction change in Update); -1 == factionless.
-		// Walk both the active and disabled arrays: a marker panned off-screen sits in m_aDisabledMarkers but
-		// its widget still exists and must stay hidden from a factionless/wrong-faction viewer.
-		int restrictedSeen = 0;
-		restrictedSeen += PS_ApplyFactionVisibilityToArray(m_aStaticMarkers, localFactionIndex);
-		restrictedSeen += PS_ApplyFactionVisibilityToArray(m_aDisabledMarkers, localFactionIndex);
-
-		// Spectator-path diagnostic: if the local player has no faction and there are faction-restricted
-		// markers around, note it once so the leak-suppression is observable in logs.
-		if (localFactionIndex == -1)
-			PS_LogNullFactionHideOnce(restrictedSeen);
-	}
-
-	// Returns the count of faction-restricted markers encountered (for the null-faction diagnostic).
-	protected int PS_ApplyFactionVisibilityToArray(notnull array<ref SCR_MapMarkerBase> markers, int localFactionIndex)
-	{
-		int restricted = 0;
-		foreach (SCR_MapMarkerBase marker : markers)
+		FactionManager factionManager = GetGame().GetFactionManager();
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		if (!factionManager || !playerManager)
 		{
-			if (!marker)
+			super.OnAskAddStaticMarker(markerData);
+			return;
+		}
+
+		array<int> playerIds = {};
+		playerManager.GetPlayers(playerIds);
+
+		foreach (int playerId : playerIds)
+		{
+			Faction faction = SCR_FactionManager.SGetPlayerFaction(playerId);
+			if (!faction || !markerData.IsFaction(factionManager.GetFactionIndex(faction)))
 				continue;
 
-			// Only faction-RESTRICTED markers are in scope. flags == 0 means "visible to everyone" and must be
-			// left untouched (it would be wrong to hide global markers from spectators).
-			if (marker.GetMarkerFactionFlags() == 0)
-				continue;
-			restricted++;
-
-			// Visible to the local player only if they have a faction AND it matches. localFactionIndex == -1
-			// covers both "no faction at all" (spectator / not-yet-picked) and any transient null - in both
-			// cases a faction-restricted marker must NOT show.
-			bool shouldBeVisible = (localFactionIndex != -1) && marker.IsFaction(localFactionIndex);
-			if (!shouldBeVisible)
-				marker.SetVisible(false); // force-hide only; vanilla re-shows once faction resolves to a match
+			PS_SendMarkerToPlayer_S(playerId, markerData);
 		}
-		return restricted;
 	}
 
-	// Drop static markers that are faction-restricted to a faction other than ours. Mirrors the removal path
-	// (OnRemoveSynchedMarker): RemoveItem + OnDelete.
-	protected void PS_RefilterStaticMarkersByLocalFaction(notnull Faction localFaction)
+	//! Server only. Vanilla registers this on SCR_FactionManager.GetOnPlayerFactionChanged_S
+	//! and uses it for dynamic-marker streaming rules only. Static markers are re-sent here so
+	//! a player who switches playable in runtime sees the new faction's markers instead of the
+	//! gutted list its proxy just deleted.
+	override void OnPlayerFactionChanged_S(int playerID, SCR_PlayerFactionAffiliationComponent playerComponent, Faction faction)
+	{
+		super.OnPlayerFactionChanged_S(playerID, playerComponent, faction);
+
+		if (!Replication.IsServer() || !faction)
+			return;
+
+		FactionManager factionManager = GetGame().GetFactionManager();
+		if (!factionManager)
+			return;
+
+		int factionIndex = factionManager.GetFactionIndex(faction);
+		if (factionIndex < 0)
+			return;
+
+		foreach (SCR_MapMarkerBase marker : m_aStaticMarkers)
+		{
+			if (marker && marker.GetMarkerFactionFlags() != 0 && marker.IsFaction(factionIndex))
+				PS_SendMarkerToPlayer_S(playerID, marker);
+		}
+
+		foreach (SCR_MapMarkerBase marker : m_aDisabledMarkers)
+		{
+			if (marker && marker.GetMarkerFactionFlags() != 0 && marker.IsFaction(factionIndex))
+				PS_SendMarkerToPlayer_S(playerID, marker);
+		}
+	}
+
+	protected void PS_SendMarkerToPlayer_S(int playerId, notnull SCR_MapMarkerBase marker)
+	{
+		PlayerController controller = GetGame().GetPlayerManager().GetPlayerController(playerId);
+		if (!controller)
+			return;
+
+		PS_PlayableControllerComponent clientBridge = PS_PlayableControllerComponent.Cast(controller.FindComponent(PS_PlayableControllerComponent));
+		if (!clientBridge)
+			return;
+
+		clientBridge.PS_SendStaticMarker_S(marker);
+	}
+
+	//! Proxy only. Vanilla RplLoad inserts every marker of the JIP payload without a faction
+	//! test; this drops the ones this client is not entitled to, once, right after the load.
+	override event protected bool RplLoad(ScriptBitReader reader)
+	{
+		bool loaded = super.RplLoad(reader);
+
+		// The server owns the full set and must not shed markers other factions will need.
+		if (!Replication.IsServer())
+			PS_DropUnentitledMarkers(m_aStaticMarkers);
+
+		return loaded;
+	}
+
+	protected void PS_DropUnentitledMarkers(notnull array<ref SCR_MapMarkerBase> markers)
 	{
 		FactionManager factionManager = GetGame().GetFactionManager();
 		if (!factionManager)
 			return;
-		int localIndex = factionManager.GetFactionIndex(localFaction);
-		int removed = 0;
-		int kept = 0;
-		int unrestricted = 0;
-		for (int i = m_aStaticMarkers.Count() - 1; i >= 0; i--)
+
+		// -1 stands for "no faction resolved yet", which is exactly the case vanilla lets through.
+		Faction localFaction = SCR_FactionManager.SGetLocalPlayerFaction();
+		int localIndex = -1;
+		if (localFaction)
+			localIndex = factionManager.GetFactionIndex(localFaction);
+
+		for (int i = markers.Count() - 1; i >= 0; i--)
 		{
-			SCR_MapMarkerBase marker = m_aStaticMarkers[i];
+			SCR_MapMarkerBase marker = markers[i];
 			if (!marker || marker.GetMarkerFactionFlags() == 0)
-			{
-				unrestricted++;
-				continue; // 0 = no faction restriction -> visible to everyone
-			}
-			if (marker.IsFaction(localIndex))
-			{
-				kept++;
-				continue; // belongs to our faction -> keep
-			}
-			m_aStaticMarkers.RemoveItem(marker);
+				continue;
+
+			if (localIndex >= 0 && marker.IsFaction(localIndex))
+				continue;
+
+			markers.Remove(i);
 			marker.OnDelete();
-			removed++;
 		}
-		// Diagnostic - fires only when the local faction first resolves or changes (not per-frame), so safe to
-		// keep. removed>0 means the vanilla fail-open had shown other-faction static markers before our faction
-		// was known (the JIP/reconnect leak), and we just cleaned them up.
-		string dbgKey = "?";
-		SCR_Faction dbgFaction = SCR_Faction.Cast(localFaction);
-		if (dbgFaction)
-			dbgKey = dbgFaction.GetFactionKey();
-		Print(string.Format("[PS_MarkerDBG] local faction '%1' resolved -> static markers re-filtered: removed=%2 (enemy/other), kept=%3 (own), unrestricted=%4",
-			dbgKey, removed, kept, unrestricted), LogLevel.NORMAL);
 	}
 
-	// One-shot diagnostic for the factionless path (spectator / pre-pick). Logged from Update() the first time
-	// we observe a null local faction alongside any faction-restricted marker, so the spectator leak is
-	// visible in logs without spamming every frame.
-	protected bool m_bPSLoggedNullFactionHide;
-	protected void PS_LogNullFactionHideOnce(int restrictedCount)
+	override void Update(float timeSlice)
 	{
-		if (m_bPSLoggedNullFactionHide || restrictedCount <= 0)
-			return;
-		m_bPSLoggedNullFactionHide = true;
-		Print(string.Format("[PS_MarkerDBG] local faction is null (spectator/not-yet-picked) -> hiding %1 faction-restricted static marker(s) via reversible widget hide", restrictedCount), LogLevel.NORMAL);
+		// Vanilla OnPostInit already resolves m_MapEntity once; re-subscribing to
+		// GetOnMapPanEnd() here duplicated the listener on every cache miss.
+		if (!m_MapEntity)
+			m_MapEntity = SCR_MapEntity.GetMapInstance();
+
+		super.Update(timeSlice);
 	}
 
-	override void OnMapPanEnd(float  x, float y)
+	override void OnMapPanEnd(float x, float y)
 	{
 		if (m_MapEntity)
 			super.OnMapPanEnd(x, y);

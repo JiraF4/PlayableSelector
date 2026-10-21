@@ -30,6 +30,30 @@ modded class SCR_MapMarkerSyncComponent
 
 		super.RPC_AskRemoveStaticMarker(markerID);
 	}
+
+	//! Never clears markers on disconnect. The vanilla loop advances only when the removal
+	//! RPC it fires runs synchronously; it is a Server-receiver RPC invoked from the server,
+	//! so `m_OwnedMarkers` can fail to shrink and the loop never terminates — the watchdog
+	//! then force-crashes the server with no callstack. Keeping the markers is also the
+	//! behaviour wanted here: lobby players time out and reconnect, and the markers
+	//! belonging to a departing player would otherwise never come back.
+	//!
+	//! Orphaned markers — FR-002, resolved by operator on 2026-10-21 ("accept the risk"):
+	//! they keep their stale ownerID, stay faction-gated by the server-side routing, and the
+	//! playerId-reuse collision (a new player inheriting the old ownerID) is accepted for the
+	//! lobby. `m_OwnedMarkers` dies with the departing controller, so orphans no longer count
+	//! toward any limit — the per-player limit (m_iPlacedMarkerLimit = 100) is the sole brake
+	//! on a live controller's placements. Removing an orphan still requires its stale ownerID
+	//! unless the mission header enables delete-by-anyone.
+	override void ClearOwnedMarkers()
+	{
+		PlayerController controller = SCR_PlayerController.Cast(GetOwner());
+		int playerId;
+		if (controller)
+			playerId = controller.GetPlayerId();
+
+		Print(string.Format("[PS_Markers] Keeping %1 marker(s) of disconnected player %2", m_OwnedMarkers.Count(), playerId), LogLevel.NORMAL);
+	}
 }
 
 
@@ -100,16 +124,18 @@ modded class SCR_MapMarkerBase
 		m_iRotation = mapMarkerBaseJson.m_iRotation;
 		m_sCustomText = mapMarkerBaseJson.m_sCustomText;
 	}
-	
-	
-	// 1.5 WTF?
+
+	// Replication codec. Do NOT remove, even though every body only forwards to super.
+	// SCR_MapMarkerBase declares Extract/Inject/Encode/Decode/SnapCompare/PropCompare as plain
+	// statics, not overrides, and the script code generator regenerates the codec for a modded
+	// class from the declarations found on that class. Deleting them fails the whole module with
+	// "Method `SCR_MapMarkerBase.Encode` is missing".
 	//------------------------------------------------------------------------------------------------
 	
 	override static void Encode(SSnapSerializerBase snapshot, ScriptCtx ctx, ScriptBitSerializer packet)
 	{
 		super.Encode(snapshot, ctx, packet);
 	}
-	
 	
 	override static bool Decode(ScriptBitSerializer packet, ScriptCtx ctx, SSnapSerializerBase snapshot)
 	{

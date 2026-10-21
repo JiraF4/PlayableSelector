@@ -1,8 +1,16 @@
 modded class SCR_PlayersRestrictionZoneManagerComponent
 {
-	ref set<SCR_EditorRestrictionZoneEntity> GetZones()
+	//! Copy, not the vanilla member. Vanilla's set is a ref container that
+	//! RemoveRestrictionZone() shrinks, and PS_GameModeCoop.removeRestrictedZones() walks the
+	//! result by index while deleting each zone entity - if that deletion unregisters the zone,
+	//! the live set loses entries mid-loop and zones are skipped.
+	set<SCR_EditorRestrictionZoneEntity> GetZones()
 	{
-		return m_aRestrictionZones;
+		set<SCR_EditorRestrictionZoneEntity> zones = new set<SCR_EditorRestrictionZoneEntity>();
+		foreach (SCR_EditorRestrictionZoneEntity zone : m_aRestrictionZones)
+			zones.Insert(zone);
+
+		return zones;
 	}
 	
 	override protected void KillPlayerOutOfZone(int playerID, IEntity playerEntity)

@@ -1517,4 +1517,25 @@ class PS_PlayableControllerComponent : ScriptComponent
 
 		objective.SetCompleted(complete);
 	}
+
+	//! Server to owner. Delivers one faction-scoped static map marker to this player only, so the
+	//! marker never reaches a client that is not entitled to it. The payload is the same
+	//! SCR_MapMarkerBase the vanilla broadcast RPC carries, hence the same replication codec.
+	void PS_SendStaticMarker_S(SCR_MapMarkerBase marker)
+	{
+		if (!Replication.IsServer() || !marker)
+			return;
+
+		Rpc(RPC_ReceiveStaticMarker_Owner, marker);
+	}
+
+	[RplRpc(RplChannel.Reliable, RplRcver.Owner)]
+	void RPC_ReceiveStaticMarker_Owner(SCR_MapMarkerBase marker)
+	{
+		SCR_MapMarkerManagerComponent markerManager = SCR_MapMarkerManagerComponent.GetInstance();
+		if (!markerManager || !marker)
+			return;
+
+		markerManager.OnAddSynchedMarker(marker);
+	}
 }

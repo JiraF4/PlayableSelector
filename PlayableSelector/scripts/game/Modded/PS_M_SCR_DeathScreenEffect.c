@@ -16,7 +16,6 @@ modded class SCR_DeathScreenEffect
 		PlayerController pc = GetGame().GetPlayerController();
 		if (pc && SCR_VoNComponent.PS_IsMenuSpeaker(pc.GetPlayerId()))
 		{
-			Print("[PS_SpecDiag] SCR_DeathScreenEffect.DeathEffect: suppressed (spectating)");
 			ClearEffects();
 			return;
 		}
@@ -29,7 +28,6 @@ modded class SCR_DeathScreenEffect
 		PlayerController pc = GetGame().GetPlayerController();
 		if (pc && SCR_VoNComponent.PS_IsMenuSpeaker(pc.GetPlayerId()))
 		{
-			Print("[PS_SpecDiag] SCR_DeathScreenEffect.InstaDeathEffect: suppressed (spectating)");
 			ClearEffects();
 			return;
 		}
@@ -44,7 +42,6 @@ modded class SCR_DeathScreenEffect
 		{
 			// Spectating: don't re-register damage invokers on the dead corpse.
 			// Clear any running animations so they don't persist into spectator view.
-			Print("[PS_SpecDiag] SCR_DeathScreenEffect.DisplayControlledEntityChanged: suppressed (spectating)");
 			ClearEffects();
 			return;
 		}
