@@ -911,19 +911,35 @@ StringTable {
    Author "ReforgerLobby"
    LastChanged "ReforgerLobby"
   }
+  CustomStringTableItem "{66A31A3A9D99C160}" {
+   Id "PS-HardFreeze_EndingSoon"
+   Target_en_us "Pause will end in 5 seconds"
+   Target_ru_ru "Пауза будет снята через 5 секунд"
+   Modified 1792800000
+   Author "ReforgerLobby"
+   LastChanged "ReforgerLobby"
+  }
   CustomStringTableItem "{66A31A3A9D99C15C}" {
    Id "PS-HardFreeze_Help"
-   Target_en_us "/hf <seconds> (0 to resume game)"
-   Target_ru_ru "/hf <секунды> (0 для снятия паузы)"
-   Modified 1760400000
+   Target_en_us "/hf <seconds> (-N to shorten, 0 to end) | /hfe to end pause"
+   Target_ru_ru "/hf <секунды> (-N — сократить, 0 — снять) | /hfe — снять паузу"
+   Modified 1792800000
    Author "ReforgerLobby"
    LastChanged "ReforgerLobby"
   }
   CustomStringTableItem "{66A31A3A9D99C15D}" {
    Id "PS-HardFreeze_InvalidArg"
-   Target_en_us "Invalid argument. Use: /hf <0..86400>"
-   Target_ru_ru "Неверный аргумент. Используйте: /hf <0..86400>"
-   Modified 1760400000
+   Target_en_us "Invalid argument. Use: /hf <0..86400> or /hf -<seconds> while paused"
+   Target_ru_ru "Неверный аргумент. Используйте: /hf <0..86400> или /hf -<секунды> во время паузы"
+   Modified 1792800000
+   Author "ReforgerLobby"
+   LastChanged "ReforgerLobby"
+  }
+  CustomStringTableItem "{66A31A3A9D99C161}" {
+   Id "PS-HardFreeze_NotActive"
+   Target_en_us "Pause is not active"
+   Target_ru_ru "Пауза не активна"
+   Modified 1792800000
    Author "ReforgerLobby"
    LastChanged "ReforgerLobby"
   }

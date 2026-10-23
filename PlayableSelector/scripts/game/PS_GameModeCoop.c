@@ -428,6 +428,12 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		invoker.Insert(HardFreeze_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("hardfreeze");
 		invoker.Insert(HardFreeze_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("hft");
+		invoker.Insert(HardFreeze_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("hfe");
+		invoker.Insert(HardFreezeEnd_Callback);
+		invoker = chatPanelManager.GetCommandInvoker("hfte");
+		invoker.Insert(HardFreezeEnd_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("cmc");
 		invoker.Insert(CopyAllMarkersToClipboard_Callback);
 		invoker = chatPanelManager.GetCommandInvoker("lmc");
@@ -558,7 +564,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		}
 
 		int seconds = data.ToInt();
-		if (seconds < 0 || (seconds == 0 && data != "0"))
+		if (seconds == 0 && data != "0")
 		{
 			SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
 			ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("smsg");
@@ -566,14 +572,82 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			return;
 		}
 
+		PS_FreezeManager freezeManager = PS_FreezeManager.GetInstance();
+		if (seconds < 0 && freezeManager && !freezeManager.IsHardFreezeActive())
+		{
+			SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
+			ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("smsg");
+			invoker.Invoke(null, "#PS-HardFreeze_NotActive");
+			return;
+		}
+
 		playableController.HardFreeze(seconds);
 	}
+
+	/**
+	 * @brief Обработка /hfe: досрочное снятие административной паузы с 5-секундным буфером
+	 */
+	void HardFreezeEnd_Callback(SCR_ChatPanel panel, string data)
+	{
+		PlayerController playerController = GetGame().GetPlayerController();
+		if (!playerController)
+			return;
+
+		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		if (!playableController)
+			return;
+
+		if (!PS_PlayersHelper.IsAdminOrServer())
+			return;
+
+		if (GetState() != SCR_EGameModeState.GAME)
+			return;
+
+		PS_FreezeManager freezeManager = PS_FreezeManager.GetInstance();
+		if (freezeManager && !freezeManager.IsHardFreezeActive())
+		{
+			SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
+			if (!chatPanelManager)
+				return;
+
+			ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("smsg");
+			if (invoker)
+				invoker.Invoke(null, "#PS-HardFreeze_NotActive");
+			return;
+		}
+
+		playableController.HardFreeze(0);
+	}
+
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void FreezeTimerEnd_Notify()
 	{
 		SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
+		if (!chatPanelManager)
+			return;
+
 		ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("smsg");
+		if (!invoker)
+			return;
+
 		invoker.Invoke(null, "#PS-Freeze_Time_ForceEnd");
+	}
+
+	/**
+	 * @brief Широковещательное уведомление о снятии административной паузы через 5 секунд
+	 */
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void HardFreezeEndingSoon_Notify()
+	{
+		SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
+		if (!chatPanelManager)
+			return;
+
+		ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("smsg");
+		if (!invoker)
+			return;
+
+		invoker.Invoke(null, "#PS-HardFreeze_EndingSoon");
 	}
 
 	void SpawnPosition_Callback(SCR_ChatPanel panel, string data)

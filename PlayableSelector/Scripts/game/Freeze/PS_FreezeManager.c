@@ -288,45 +288,70 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 		if (!Replication.IsServer())
 			return;
 
-		seconds = Math.Clamp(seconds, 0, 86400);
+		seconds = Math.Clamp(seconds, -86400, 86400);
 
-		if (seconds <= 0)
+		if (!m_bHardFreeze)
 		{
-			EndHardFreeze_S();
-			return;
-		}
+			if (seconds <= 0)
+				return;
 
-		if (m_bHardFreeze)
-		{
-			m_fHardFreezeRemaining += seconds;
-			m_fHardFreezeRemaining = Math.Clamp(m_fHardFreezeRemaining, 0, 86400);
-			m_fHardFreezeDuration += seconds;
+			StopDayAdvance_S();
+
+			m_bHardFreeze = true;
+			m_fHardFreezeRemaining = seconds;
+			m_fHardFreezeDuration = seconds;
+
+			if (m_VehicleHold)
+				m_VehicleHold.PinAll_S();
+
+			if (m_DamagePause)
+				m_DamagePause.PauseAll_S();
+
+			GetGame().GetCallqueue().Remove(UpdateFreezeTimer_S);
+			GetGame().GetCallqueue().Remove(UpdateHardFreezeTimer_S);
+			GetGame().GetCallqueue().CallLater(UpdateHardFreezeTimer_S, 1000, true);
+
+			m_OnHardFreezeChanged.Invoke(true);
+
+			if (!m_bStartupFreeze)
+				HardFreeze_Notify(true);
+
 			UpdateHUD_C();
 			Replication.BumpMe();
 			return;
 		}
 
-		StopDayAdvance_S();
+		if (m_fHardFreezeRemaining <= 5.0)
+		{
+			if (seconds == 0 || m_fHardFreezeRemaining + seconds <= 0.0)
+			{
+				EndHardFreeze_S();
+				return;
+			}
 
-		m_bHardFreeze = true;
-		m_fHardFreezeRemaining = seconds;
-		m_fHardFreezeDuration = seconds;
+			m_fHardFreezeRemaining += seconds;
+			m_fHardFreezeRemaining = Math.Clamp(m_fHardFreezeRemaining, 0.0, 86400.0);
+			if (seconds > 0)
+				m_fHardFreezeDuration = Math.Max(m_fHardFreezeDuration + seconds, m_fHardFreezeRemaining);
+			UpdateHUD_C();
+			Replication.BumpMe();
+			return;
+		}
 
-		if (m_VehicleHold)
-			m_VehicleHold.PinAll_S();
+		if (seconds == 0 || (seconds < 0 && m_fHardFreezeRemaining + seconds <= 5.0))
+		{
+			m_fHardFreezeRemaining = 5.0;
+			if (!m_bStartupFreeze && m_GameModeCoop)
+				m_GameModeCoop.HardFreezeEndingSoon_Notify();
+			UpdateHUD_C();
+			Replication.BumpMe();
+			return;
+		}
 
-		if (m_DamagePause)
-			m_DamagePause.PauseAll_S();
-
-		GetGame().GetCallqueue().Remove(UpdateFreezeTimer_S);
-		GetGame().GetCallqueue().Remove(UpdateHardFreezeTimer_S);
-		GetGame().GetCallqueue().CallLater(UpdateHardFreezeTimer_S, 1000, true);
-
-		m_OnHardFreezeChanged.Invoke(true);
-
-		if (!m_bStartupFreeze)
-			SendHardFreezeNotification(true);
-
+		m_fHardFreezeRemaining += seconds;
+		m_fHardFreezeRemaining = Math.Clamp(m_fHardFreezeRemaining, 0.0, 86400.0);
+		if (seconds > 0)
+			m_fHardFreezeDuration = Math.Max(m_fHardFreezeDuration + seconds, m_fHardFreezeRemaining);
 		UpdateHUD_C();
 		Replication.BumpMe();
 	}
@@ -359,7 +384,7 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 		m_OnHardFreezeChanged.Invoke(false);
 
 		if (wasMidGamePause)
-			SendHardFreezeNotification(false);
+			HardFreeze_Notify(false);
 
 		if (m_eFreezePhase == PS_EFreezePhase.STARTUP)
 		{
@@ -415,7 +440,34 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 			return;
 
 		float deltaMs = seconds * 1000;
-		m_fCurrentFreezeTime += deltaMs;
+		float targetFreezeTime = m_fCurrentFreezeTime + deltaMs;
+
+		if (seconds < 0 && targetFreezeTime <= 5000.0 && !m_bHardFreeze)
+		{
+			if (m_fCurrentFreezeTime > 5000.0)
+			{
+				FreezeTimerEnd_S();
+				return;
+			}
+
+			if (!m_bFreezeEndTriggered)
+			{
+				m_bFreezeEndTriggered = true;
+				if (m_GameModeCoop)
+					m_GameModeCoop.FreezeTimerEnd_Notify();
+			}
+
+			float remainingDeltaMs = -m_fCurrentFreezeTime;
+			m_fCurrentFreezeTime = 0;
+			m_OnFreezeTimeAdjusted.Invoke(remainingDeltaMs);
+			OnFreezeTimeEnded_S();
+			return;
+		}
+
+		m_fCurrentFreezeTime = targetFreezeTime;
+
+		if (m_fCurrentFreezeTime > 5000.0)
+			m_bFreezeEndTriggered = false;
 
 		if (m_GameModeCoop)
 			m_GameModeCoop.FreezeTimerAdvance_Notify();
@@ -603,20 +655,10 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 
 	//------------------------------------------------------------------------------------------------
 	/**
-	 * @brief Рассылка широковещательного системного уведомления о начале/снятии административной паузы
-	 * @rpc Server -> Broadcast (Reliable)
+	 * @brief Рассылка системного smsg-уведомления о начале/снятии административной паузы
 	 * @param bStarted true = пауза активирована, false = пауза снята
 	 */
-	protected void SendHardFreezeNotification(bool bStarted)
-	{
-		if (RplSession.Mode() == RplMode.None)
-			RPC_HardFreezeNotify(bStarted);
-		else
-			Rpc(RPC_HardFreezeNotify, bStarted);
-	}
-
-	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	protected void RPC_HardFreezeNotify(bool bStarted)
+	protected void HardFreeze_Notify(bool bStarted)
 	{
 		SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
 		if (!chatPanelManager)

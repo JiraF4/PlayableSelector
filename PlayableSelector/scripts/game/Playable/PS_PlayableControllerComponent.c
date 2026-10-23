@@ -249,11 +249,16 @@ class PS_PlayableControllerComponent : ScriptComponent
 		if (!gameMode || gameMode.GetState() != SCR_EGameModeState.GAME)
 			return;
 
-		seconds = Math.Clamp(seconds, 0, 86400);
+		seconds = Math.Clamp(seconds, -86400, 86400);
 
 		PS_FreezeManager freezeManager = PS_FreezeManager.GetInstance();
-		if (freezeManager)
-			freezeManager.StartHardFreeze_S(seconds);
+		if (!freezeManager)
+			return;
+
+		if (seconds < 0 && !freezeManager.IsHardFreezeActive())
+			return;
+
+		freezeManager.StartHardFreeze_S(seconds);
 	}
 
 	void FreezeTimerAdvance(int time)
