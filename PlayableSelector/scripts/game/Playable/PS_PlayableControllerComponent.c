@@ -1541,6 +1541,10 @@ class PS_PlayableControllerComponent : ScriptComponent
 		if (!markerManager || !marker)
 			return;
 
-		markerManager.OnAddSynchedMarker(marker);
+		int markerID = marker.GetMarkerID();
+		if (markerManager.GetStaticMarkerByID(markerID) || markerManager.GetDisabledMarkerByID(markerID))
+			return;
+
+		markerManager.PS_AddTrustedMarker(marker);
 	}
 }

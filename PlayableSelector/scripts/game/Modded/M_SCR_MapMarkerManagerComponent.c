@@ -104,6 +104,30 @@ modded class SCR_MapMarkerManagerComponent
 		clientBridge.PS_SendStaticMarker_S(marker);
 	}
 
+	//! Set while applying a marker the server addressed directly to this client: the client's
+	//! own faction affiliation replicates separately and may not have resolved yet.
+	protected bool m_bPSTrustedAdd;
+
+	void PS_AddTrustedMarker(SCR_MapMarkerBase marker)
+	{
+		m_bPSTrustedAdd = true;
+		OnAddSynchedMarker(marker);
+		m_bPSTrustedAdd = false;
+	}
+
+	//! Drops faction-scoped markers that reach a faction-less client via any unexpected path
+	//! (vanilla fail-open would show them). Trusted server-addressed additions bypass this gate.
+	override void OnAddSynchedMarker(SCR_MapMarkerBase marker)
+	{
+		if (!m_bPSTrustedAdd
+			&& RplSession.Mode() == RplMode.Client
+			&& marker.GetMarkerFactionFlags() != 0
+			&& !SCR_FactionManager.SGetLocalPlayerFaction())
+			return;
+
+		super.OnAddSynchedMarker(marker);
+	}
+
 	//! Proxy only. Vanilla RplLoad inserts every marker of the JIP payload without a faction
 	//! test; this drops the ones this client is not entitled to, once, right after the load.
 	override event protected bool RplLoad(ScriptBitReader reader)
@@ -112,7 +136,10 @@ modded class SCR_MapMarkerManagerComponent
 
 		// The server owns the full set and must not shed markers other factions will need.
 		if (!Replication.IsServer())
+		{
 			PS_DropUnentitledMarkers(m_aStaticMarkers);
+			PS_DropUnentitledMarkers(m_aDisabledMarkers);
+		}
 
 		return loaded;
 	}

@@ -12,6 +12,27 @@ modded class SCR_MapMarkerSyncComponent
 		if (freezeManager && freezeManager.IsHardFreezeActive())
 			return false;
 
+		SCR_PlayerController playerController = SCR_PlayerController.Cast(GetOwner());
+		if (!playerController)
+			return false;
+
+		int playerId = playerController.GetPlayerId();
+
+		if (!SCR_FactionManager.SGetPlayerFaction(playerId))
+			return false;
+
+		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
+		if (playableManager)
+		{
+			RplId playableId = playableManager.GetPlayableByPlayer(playerId);
+			if (playableId != RplId.Invalid())
+			{
+				PS_PlayableContainer playableContainer = playableManager.GetPlayableById(playableId);
+				if (playableContainer && playableContainer.GetDamageState() == EDamageState.DESTROYED)
+					return false;
+			}
+		}
+
 		return true;
 	}
 

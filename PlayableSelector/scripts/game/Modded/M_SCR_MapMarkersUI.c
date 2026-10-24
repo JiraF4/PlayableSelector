@@ -89,4 +89,38 @@ modded class SCR_MapMarkersUI
 		mapEntity.GetMapCursorWorldPosition(m_fQuickMarkerWorldX, m_fQuickMarkerWorldY); m_bHasQuickMarkerPos = true;
 		SCR_MapMarkerMenuEntry entry = new SCR_MapMarkerMenuEntry(); entry.SetMarkerType(SCR_EMapMarkerType.PLACED_CUSTOM); PS_OnEntryPerformed(entry);
 	}
+
+	override void OnMapClose(MapConfiguration config)
+	{
+		PS_DropMarkerWidgets();
+		super.OnMapClose(config);
+	}
+
+	//! Drops static marker root widgets when the map screen closes. In vanilla, closing the map
+	//! destroys the widget tree, but screens in this lobby (e.g. SpectatorMenu) only hide the map layer,
+	//! leaving widgets in the tree and stacking duplicates on each reopen.
+	protected void PS_DropMarkerWidgets()
+	{
+		if (!m_MarkerMgr)
+			return;
+
+		PS_DropWidgetsOf(m_MarkerMgr.GetStaticMarkers());
+		PS_DropWidgetsOf(m_MarkerMgr.GetDisabledMarkers());
+	}
+
+	protected void PS_DropWidgetsOf(array<SCR_MapMarkerBase> markers)
+	{
+		if (!markers)
+			return;
+
+		foreach (SCR_MapMarkerBase marker : markers)
+		{
+			if (!marker)
+				continue;
+
+			Widget root = marker.GetRootWidget();
+			if (root)
+				root.RemoveFromHierarchy();
+		}
+	}
 }
