@@ -14,6 +14,14 @@ void PS_OnFreezeTimeAdjustedMethod(float deltaMilliseconds);
 typedef func PS_OnFreezeTimeAdjustedMethod;
 typedef ScriptInvokerBase<PS_OnFreezeTimeAdjustedMethod> PS_OnFreezeTimeAdjustedInvoker;
 
+void PS_OnFreezePhaseChangedMethod(PS_EFreezePhase oldPhase, PS_EFreezePhase newPhase);
+typedef func PS_OnFreezePhaseChangedMethod;
+typedef ScriptInvokerBase<PS_OnFreezePhaseChangedMethod> PS_OnFreezePhaseChangedInvoker;
+
+void PS_OnFreezeEndedMethod();
+typedef func PS_OnFreezeEndedMethod;
+typedef ScriptInvokerBase<PS_OnFreezeEndedMethod> PS_OnFreezeEndedInvoker;
+
 [ComponentEditorProps(category: "GameScripted/GameMode/Components", description: "Управление фазами фриза и Hard Freeze")]
 class PS_FreezeManagerClass : SCR_BaseGameModeComponentClass
 {
@@ -26,6 +34,9 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 
 	[Attribute("-1", UIWidgets.EditBox, "Disable time (startup freeze) override in ms (-1 = use GameMode attribute, 0 = disable, >0 = override)", category: "Freeze Manager")]
 	protected int m_iDisableTimeOverride;
+
+	[Attribute("-1", UIWidgets.EditBox, "Shooting forbidden override (-1 = use GameMode attribute, 0 = allow shooting, 1 = forbid shooting)", category: "Freeze Manager")]
+	protected int m_iShootingForbiddenOverride;
 
 	[RplProp(onRplName: "OnRpl_CurrentFreezeTime")]
 	protected float m_fCurrentFreezeTime;
@@ -45,6 +56,9 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 	[RplProp()]
 	protected int m_iEffectiveDisableTime;
 
+	[RplProp()]
+	protected bool m_bEffectiveShootingForbidden;
+
 	[RplProp(onRplName: "OnRpl_FreezePhase")]
 	protected PS_EFreezePhase m_eFreezePhase = PS_EFreezePhase.NOT_STARTED;
 
@@ -53,12 +67,15 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 
 	protected ref PS_OnHardFreezeChangedInvoker m_OnHardFreezeChanged = new PS_OnHardFreezeChangedInvoker();
 	protected ref PS_OnFreezeTimeAdjustedInvoker m_OnFreezeTimeAdjusted = new PS_OnFreezeTimeAdjustedInvoker();
+	protected ref PS_OnFreezePhaseChangedInvoker m_OnFreezePhaseChanged = new PS_OnFreezePhaseChangedInvoker();
+	protected ref PS_OnFreezeEndedInvoker m_OnFreezeEnded = new PS_OnFreezeEndedInvoker();
 
 	protected ref PS_VehicleHold m_VehicleHold = new PS_VehicleHold();
 	protected ref PS_DamagePause m_DamagePause = new PS_DamagePause();
 
 	protected PS_GameModeCoop m_GameModeCoop;
 	protected PS_FreezeTimeCounter m_hFreezeTimeCounter;
+	protected PS_EFreezePhase m_eLastNotifiedFreezePhase = PS_EFreezePhase.NOT_STARTED;
 	protected bool m_bFreezeEndTriggered;
 	protected bool m_bDayAdvanceWasOn;
 	protected static PS_FreezeManager s_Instance;
@@ -79,6 +96,30 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 	PS_OnFreezeTimeAdjustedInvoker GetOnFreezeTimeAdjusted()
 	{
 		return m_OnFreezeTimeAdjusted;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	/**
+	 * @brief Вызывается на сервере и клиентах (через OnRpl_FreezePhase) только при фактической смене фазы (oldPhase != newPhase).
+	 */
+	PS_OnFreezePhaseChangedInvoker GetOnFreezePhaseChanged()
+	{
+		return m_OnFreezePhaseChanged;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	/**
+	 * @brief Вызывается однократно за период фриза на сервере и клиентах при переходе в PS_EFreezePhase.FINISHED.
+	 */
+	PS_OnFreezeEndedInvoker GetOnFreezeEnded()
+	{
+		return m_OnFreezeEnded;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	bool IsEffectiveShootingForbidden()
+	{
+		return m_bEffectiveShootingForbidden;
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -144,13 +185,7 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 	//------------------------------------------------------------------------------------------------
 	bool IsFreezeSafetyActive()
 	{
-		if (!m_GameModeCoop)
-			m_GameModeCoop = PS_GameModeCoop.Cast(GetOwner());
-
-		if (!m_GameModeCoop)
-			return false;
-
-		return m_GameModeCoop.IsFreezeTimeShootingForbiden() && m_eFreezePhase == PS_EFreezePhase.ORDINARY;
+		return m_bEffectiveShootingForbidden && m_eFreezePhase == PS_EFreezePhase.ORDINARY;
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -172,6 +207,9 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 
 		s_Instance = this;
 		m_GameModeCoop = PS_GameModeCoop.Cast(owner);
+
+		if (Replication.IsServer())
+			ResolveEffectiveShootingForbidden_S();
 
 		SetEventMask(owner, EntityEvent.FRAME);
 	}
@@ -222,6 +260,88 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 	}
 
 	//------------------------------------------------------------------------------------------------
+	protected void ResolveEffectiveShootingForbidden_S()
+	{
+		if (!Replication.IsServer())
+			return;
+
+		if (!m_GameModeCoop)
+			m_GameModeCoop = PS_GameModeCoop.Cast(GetOwner());
+
+		bool shootingForbidden = false;
+		if (m_iShootingForbiddenOverride > 0)
+			shootingForbidden = true;
+		else if (m_iShootingForbiddenOverride == 0)
+			shootingForbidden = false;
+		else if (m_GameModeCoop)
+			shootingForbidden = m_GameModeCoop.IsFreezeTimeShootingForbiden();
+
+		if (m_bEffectiveShootingForbidden != shootingForbidden)
+		{
+			m_bEffectiveShootingForbidden = shootingForbidden;
+			Replication.BumpMe();
+		}
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected void SetFreezePhase_S(PS_EFreezePhase newPhase)
+	{
+		if (!Replication.IsServer())
+			return;
+
+		if (newPhase == m_eFreezePhase)
+			return;
+
+		PS_EFreezePhase oldPhase = m_eFreezePhase;
+		m_eFreezePhase = newPhase;
+		m_eLastNotifiedFreezePhase = newPhase;
+
+		m_OnFreezePhaseChanged.Invoke(oldPhase, newPhase);
+		if (newPhase == PS_EFreezePhase.FINISHED)
+			m_OnFreezeEnded.Invoke();
+	}
+
+	//------------------------------------------------------------------------------------------------
+	/**
+	 * @brief Сбрасывает состояние зон у всех игроков и удаляет сущности SCR_EditorRestrictionZoneEntity. Вызывается только на сервере.
+	 */
+	void RemoveRestrictedZones_S()
+	{
+		if (!Replication.IsServer())
+			return;
+
+		BaseGameMode gameMode = GetGame().GetGameMode();
+		if (!gameMode)
+			return;
+
+		SCR_PlayersRestrictionZoneManagerComponent restrictionZoneManager = SCR_PlayersRestrictionZoneManagerComponent.Cast(gameMode.FindComponent(SCR_PlayersRestrictionZoneManagerComponent));
+		if (!restrictionZoneManager)
+			return;
+
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		if (playerManager)
+		{
+			array<int> playerIds = new array<int>();
+			playerManager.GetPlayers(playerIds);
+			foreach (int playerId : playerIds)
+			{
+				restrictionZoneManager.ResetPlayerZoneData(playerId);
+			}
+		}
+
+		set<SCR_EditorRestrictionZoneEntity> zones = restrictionZoneManager.GetZones();
+		if (!zones)
+			return;
+
+		for (int i = 0; i < zones.Count(); i++)
+		{
+			SCR_EditorRestrictionZoneEntity zone = zones.Get(i);
+			if (zone)
+				SCR_EntityHelper.DeleteEntityAndChildren(zone);
+		}
+	}
+
+	//------------------------------------------------------------------------------------------------
 	void StartFreeze_S()
 	{
 		if (!Replication.IsServer())
@@ -229,6 +349,8 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 
 		if (!m_GameModeCoop)
 			m_GameModeCoop = PS_GameModeCoop.Cast(GetOwner());
+
+		ResolveEffectiveShootingForbidden_S();
 
 		int freezeTime = 0;
 		if (m_iFreezeTimeOverride > 0)
@@ -253,7 +375,7 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 		if (m_iEffectiveDisableTime > 0)
 		{
 			m_bStartupFreeze = true;
-			m_eFreezePhase = PS_EFreezePhase.STARTUP;
+			SetFreezePhase_S(PS_EFreezePhase.STARTUP);
 			m_fCurrentFreezeTime = m_iEffectiveFreezeTime;
 			StartHardFreeze_S(m_iEffectiveDisableTime / 1000);
 		}
@@ -262,7 +384,7 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 			m_bStartupFreeze = false;
 			if (m_iEffectiveFreezeTime > 0)
 			{
-				m_eFreezePhase = PS_EFreezePhase.ORDINARY;
+				SetFreezePhase_S(PS_EFreezePhase.ORDINARY);
 				m_fCurrentFreezeTime = m_iEffectiveFreezeTime;
 				if (m_VehicleHold)
 					m_VehicleHold.StopAllVehicles_S();
@@ -271,7 +393,6 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 			}
 			else
 			{
-				m_eFreezePhase = PS_EFreezePhase.FINISHED;
 				m_fCurrentFreezeTime = 0;
 				OnFreezeTimeEnded_S();
 			}
@@ -341,8 +462,8 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 		if (seconds == 0 || (seconds < 0 && m_fHardFreezeRemaining + seconds <= 5.0))
 		{
 			m_fHardFreezeRemaining = 5.0;
-			if (!m_bStartupFreeze && m_GameModeCoop)
-				m_GameModeCoop.HardFreezeEndingSoon_Notify();
+			if (!m_bStartupFreeze)
+				SendSystemMessage_S("#PS-HardFreeze_EndingSoon");
 			UpdateHUD_C();
 			Replication.BumpMe();
 			return;
@@ -388,9 +509,9 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 
 		if (m_eFreezePhase == PS_EFreezePhase.STARTUP)
 		{
-			m_eFreezePhase = PS_EFreezePhase.ORDINARY;
 			if (m_fCurrentFreezeTime > 0)
 			{
+				SetFreezePhase_S(PS_EFreezePhase.ORDINARY);
 				GetGame().GetCallqueue().Remove(UpdateFreezeTimer_S);
 				GetGame().GetCallqueue().CallLater(UpdateFreezeTimer_S, 1000, true);
 			}
@@ -453,8 +574,7 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 			if (!m_bFreezeEndTriggered)
 			{
 				m_bFreezeEndTriggered = true;
-				if (m_GameModeCoop)
-					m_GameModeCoop.FreezeTimerEnd_Notify();
+				SendSystemMessage_S("#PS-Freeze_Time_ForceEnd");
 			}
 
 			float remainingDeltaMs = -m_fCurrentFreezeTime;
@@ -469,8 +589,7 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 		if (m_fCurrentFreezeTime > 5000.0)
 			m_bFreezeEndTriggered = false;
 
-		if (m_GameModeCoop)
-			m_GameModeCoop.FreezeTimerAdvance_Notify();
+		SendSystemMessage_S("#PS-Freeze_Time_Advanced");
 
 		m_OnFreezeTimeAdjusted.Invoke(deltaMs);
 
@@ -498,8 +617,7 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 		float oldFreezeTime = m_fCurrentFreezeTime;
 		m_fCurrentFreezeTime = 5000;
 
-		if (m_GameModeCoop)
-			m_GameModeCoop.FreezeTimerEnd_Notify();
+		SendSystemMessage_S("#PS-Freeze_Time_ForceEnd");
 
 		float deltaMs = 5000 - oldFreezeTime;
 		m_OnFreezeTimeAdjusted.Invoke(deltaMs);
@@ -549,13 +667,14 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 		if (m_eFreezePhase == PS_EFreezePhase.FINISHED)
 			return;
 
-		m_eFreezePhase = PS_EFreezePhase.FINISHED;
 		m_fCurrentFreezeTime = 0;
-
 		GetGame().GetCallqueue().Remove(UpdateFreezeTimer_S);
 
-		if (m_GameModeCoop)
-			m_GameModeCoop.OnFreezeTimeEnded_Internal();
+		RemoveRestrictedZones_S();
+		if (!m_bFreezeEndTriggered)
+			SendSystemMessage_S("#PS-Freeze_End");
+
+		SetFreezePhase_S(PS_EFreezePhase.FINISHED);
 
 		UpdateHUD_C();
 		Replication.BumpMe();
@@ -611,6 +730,16 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 	}
 	protected void OnRpl_FreezePhase()
 	{
+		PS_EFreezePhase oldPhase = m_eLastNotifiedFreezePhase;
+		m_eLastNotifiedFreezePhase = m_eFreezePhase;
+
+		if (oldPhase != m_eFreezePhase)
+		{
+			m_OnFreezePhaseChanged.Invoke(oldPhase, m_eFreezePhase);
+			if (m_eFreezePhase == PS_EFreezePhase.FINISHED)
+				m_OnFreezeEnded.Invoke();
+		}
+
 		UpdateHUD_C();
 	}
 	protected void OnRpl_StartupFreeze()
@@ -654,12 +783,11 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 	}
 
 	//------------------------------------------------------------------------------------------------
-	/**
-	 * @brief Рассылка системного smsg-уведомления о начале/снятии административной паузы
-	 * @param bStarted true = пауза активирована, false = пауза снята
-	 */
-	protected void HardFreeze_Notify(bool bStarted)
+	protected void SendSystemMessage_S(string messageKey)
 	{
+		if (!Replication.IsServer())
+			return;
+
 		SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
 		if (!chatPanelManager)
 			return;
@@ -668,10 +796,20 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 		if (!invoker)
 			return;
 
+		invoker.Invoke(null, messageKey);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	/**
+	 * @brief Рассылка системного smsg-уведомления о начале/снятии административной паузы
+	 * @param bStarted true = пауза активирована, false = пауза снята
+	 */
+	protected void HardFreeze_Notify(bool bStarted)
+	{
 		if (bStarted)
-			invoker.Invoke(null, "#PS-HardFreeze_Started");
+			SendSystemMessage_S("#PS-HardFreeze_Started");
 		else
-			invoker.Invoke(null, "#PS-HardFreeze_Ended");
+			SendSystemMessage_S("#PS-HardFreeze_Ended");
 	}
 }
 

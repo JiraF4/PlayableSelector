@@ -45,12 +45,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	protected bool m_bDisableChat;
 
 	[RplProp()]
-	protected float m_fCurrentFreezeTime = 1;
-	// One-shot guard for FreezeTimerEnd: several clients (e.g. every group leader via the optional SquadReady addon)
-	// can independently RPC the server to end freeze, so the end notification must fire only once per freeze period
-	// (reset in StartGame).
-	protected bool m_bFreezeEndTriggered;
-	[RplProp()]
 	protected float m_fGameStartTime = 0;
 	[RplProp()]
 	protected float m_fGameStartElapsedTime = 0;
@@ -176,7 +170,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		// On server restart the GameMode entity is destroyed, but GetGame().GetCallqueue()
 		// survives — keeping the old instance alive and running stale callbacks.
 		GetGame().GetCallqueue().Remove(ForceFramerate);
-		GetGame().GetCallqueue().Remove(restrictedZonesTimer);
+		PS_FreezeManager freezeManager = PS_FreezeManager.Cast(FindComponent(PS_FreezeManager));
+		if (freezeManager)
+			freezeManager.GetOnFreezeEnded().Remove(OnFreezeTimeEnded_Internal);
 		super.OnGameEnd();
 	}
 	
@@ -270,12 +266,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			saveManager.Load(loadSave);
 		}
 		*/
-		if (Replication.IsServer())
-		{
-			m_fCurrentFreezeTime = m_iReconnectTime;
-			Replication.BumpMe();
-		}
-
 		if (RplSession.Mode() != RplMode.Dedicated) {
 			GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.WaitScreen);
 			GetGame().GetInputManager().AddActionListener("OpenLobby", EActionTrigger.DOWN, Action_OpenLobby);
@@ -330,41 +320,14 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	{
 		PS_FreezeManager freezeManager = PS_FreezeManager.GetInstance();
 		if (freezeManager)
-		{
 			freezeManager.FreezeTimerAdvance_S(time);
-			return;
-		}
-
-		time = time * 1000;
-		m_iFreezeTime += time;
-		m_fCurrentFreezeTime += time;
-		GetGame().GetCallqueue().Remove(restrictedZonesTimer);
-		restrictedZonesTimer(m_fCurrentFreezeTime);
-		
-		FreezeTimerAdvance_Notify();
 	}
 	
 	void FreezeTimerEnd()
 	{
 		PS_FreezeManager freezeManager = PS_FreezeManager.GetInstance();
 		if (freezeManager)
-		{
 			freezeManager.FreezeTimerEnd_S();
-			return;
-		}
-
-		// Idempotent: several clients may independently detect "all squads ready" (optional SquadReady addon) and RPC
-		// this to the server (RplRcver.Server), so without the guard FreezeTimerEnd_Notify - and the 5s end-countdown
-		// restart - would fire once PER caller (the duplicate "freeze time end" notifications). Fire exactly once per
-		// freeze period; m_bFreezeEndTriggered is reset in StartGame when a new freeze begins.
-		if (m_bFreezeEndTriggered)
-			return;
-		m_bFreezeEndTriggered = true;
-
-		GetGame().GetCallqueue().Remove(restrictedZonesTimer);
-		restrictedZonesTimer(5000);
-		
-		FreezeTimerEnd_Notify();
 	}
 
 	void EditorClosed()
@@ -511,13 +474,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		
 		playableController.FreezeTimerAdvance(data.ToInt());
 	}
-	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	void FreezeTimerAdvance_Notify()
-	{
-		SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
-		ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("smsg");
-		invoker.Invoke(null, "#PS-Freeze_Time_Advanced");
-	}
 	
 	void FreezeTimerEnd_Callback(SCR_ChatPanel panel, string data)
 	{
@@ -617,37 +573,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		}
 
 		playableController.HardFreeze(0);
-	}
-
-	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	void FreezeTimerEnd_Notify()
-	{
-		SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
-		if (!chatPanelManager)
-			return;
-
-		ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("smsg");
-		if (!invoker)
-			return;
-
-		invoker.Invoke(null, "#PS-Freeze_Time_ForceEnd");
-	}
-
-	/**
-	 * @brief Широковещательное уведомление о снятии административной паузы через 5 секунд
-	 */
-	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	void HardFreezeEndingSoon_Notify()
-	{
-		SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
-		if (!chatPanelManager)
-			return;
-
-		ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("smsg");
-		if (!invoker)
-			return;
-
-		invoker.Invoke(null, "#PS-HardFreeze_EndingSoon");
 	}
 
 	void SpawnPosition_Callback(SCR_ChatPanel panel, string data)
@@ -769,22 +694,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 	void removeRestrictedZones()
 	{
-		BaseGameMode gamemode = GetGame().GetGameMode();
-		SCR_PlayersRestrictionZoneManagerComponent restrictionZoneManager = SCR_PlayersRestrictionZoneManagerComponent.Cast(gamemode.FindComponent(SCR_PlayersRestrictionZoneManagerComponent));
-		set<SCR_EditorRestrictionZoneEntity> zones = restrictionZoneManager.GetZones();
-
-		array<int> playerIds = new array<int>();
-		GetGame().GetPlayerManager().GetPlayers(playerIds);
-		foreach (int playerId : playerIds)
-		{
-			restrictionZoneManager.ResetPlayerZoneData(playerId);
-		}
-
-		for (int i = 0; i < zones.Count(); i++)
-		{
-			SCR_EditorRestrictionZoneEntity zone = zones.Get(i);
-			SCR_EntityHelper.DeleteEntityAndChildren(zone);
-		}
+		PS_FreezeManager freezeManager = PS_FreezeManager.GetInstance();
+		if (freezeManager)
+			freezeManager.RemoveRestrictedZones_S();
 	}
 
 	protected PS_FactionRespawnCount GetFactionRespawnCount(FactionKey factionKey)
@@ -1704,12 +1616,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			return;
 
 		PS_FreezeManager freezeManager = PS_FreezeManager.GetInstance();
-		if (freezeManager)
-		{
-			if (freezeManager.GetFreezePhase() != PS_EFreezePhase.ORDINARY)
-				return;
-		}
-		else if (!IsDisableTimeEnd() || IsFreezeTimeEnd())
+		if (!freezeManager || freezeManager.GetFreezePhase() != PS_EFreezePhase.ORDINARY)
 			return;
 
 		float now = GetGame().GetWorld().GetWorldTime();
@@ -1785,41 +1692,30 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		// alive so players can still pick them during the freeze window.
 		if (playableManager)
 			playableManager.RemoveRedundantUnits(true);
-		m_bFreezeEndTriggered = false; // new freeze period - allow the one-shot end notification again
 		StartGameMode();
 
 		PS_FreezeManager freezeManager = PS_FreezeManager.Cast(FindComponent(PS_FreezeManager));
-		if (freezeManager)
+		if (Replication.IsServer() && freezeManager)
+		{
+			freezeManager.GetOnFreezeEnded().Remove(OnFreezeTimeEnded_Internal);
+			freezeManager.GetOnFreezeEnded().Insert(OnFreezeTimeEnded_Internal);
 			freezeManager.StartFreeze_S();
-		else
-			restrictedZonesTimer(m_iFreezeTime);
+		}
 	}
 
 	void OnFreezeTimeEnded_Internal()
 	{
+		if (!Replication.IsServer())
+			return;
+
 		m_fGameStartTime = GetGame().GetWorld().GetWorldTime();
 		m_fGameStartElapsedTime = GetElapsedTime();
 		Replication.BumpMe();
-		removeRestrictedZones();
 		if (m_bDisableBuildingModeAfterFreezeTime)
 			DisableBuildingMode();
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		if (playableManager)
 			playableManager.RemoveRedundantUnits();
-
-		PS_FreezeManager freezeManager = PS_FreezeManager.GetInstance();
-		bool forceEnded = (freezeManager && freezeManager.IsFreezeEndTriggered()) || m_bFreezeEndTriggered;
-
-		if (!forceEnded)
-		{
-			SCR_ChatPanelManager chatPanelManager = SCR_ChatPanelManager.GetInstance();
-			if (chatPanelManager)
-			{
-				ChatCommandInvoker invoker = chatPanelManager.GetCommandInvoker("smsg");
-				if (invoker)
-					invoker.Invoke(null, "#PS-Freeze_End");
-			}
-		}
 	}
 
 	void ReserveSlots()
@@ -1846,60 +1742,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		slotsReserver.SetEnabled(true);
 	}
 
-	// TODO: move it to component
-	void restrictedZonesTimer(int freezeTime)
-	{
-		// reduce time by second
-		int time = 1000;
-		if (freezeTime < time) time = freezeTime;
-		freezeTime -= time;
-
-		m_fCurrentFreezeTime = freezeTime;
-		Replication.BumpMe();
-
-		// Show timer on clients synced to server
-		if (RplSession.Mode() != RplMode.Dedicated) RPC_restrictedZonesTimer(freezeTime);
-		Rpc(RPC_restrictedZonesTimer, freezeTime);
-
-		// next second or end
-		if (freezeTime <= 0)
-		{
-			m_fGameStartTime = GetGame().GetWorld().GetWorldTime();
-			m_fGameStartElapsedTime = GetElapsedTime();
-			Replication.BumpMe();
-			removeRestrictedZones();
-			if (m_bDisableBuildingModeAfterFreezeTime)
-				DisableBuildingMode();
-			// Remove unoccupied playables AFTER freeze time ends so players have the full
-			// freeze window to pick their slots before unused units are deleted.
-			// Admin-closed entities were already deleted at the BRIEFING → GAME transition (StartGame).
-			PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
-			if (playableManager)
-				playableManager.RemoveRedundantUnits();
-		}
-		else
-			GetGame().GetCallqueue().CallLater(restrictedZonesTimer, time, false, freezeTime);
-	}
-	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	void RPC_restrictedZonesTimer(int freezeTime)
-	{
-		if (freezeTime <= 0)
-		{
-			if (m_hFreezeTimeCounter)
-			{
-				m_hFreezeTimeCounter.GetRootWidget().RemoveFromHierarchy();
-			}
-			return;
-		}
-
-		if (m_hFreezeTimeCounter == null)
-		{
-			Widget widget = GetGame().GetWorkspace().CreateWidgets("{EC8A548C3F53BE4F}UI/layouts/FreezeTime/FreezeTimeCounter.layout");
-			m_hFreezeTimeCounter = PS_FreezeTimeCounter.Cast(widget.FindHandler(PS_FreezeTimeCounter));
-		}
-
-		m_hFreezeTimeCounter.SetTime(freezeTime);
-	}
 	void DisableBuildingMode()
 	{
 		SCR_EditorManagerCore editorManagerCore = SCR_EditorManagerCore.Cast(SCR_EditorManagerCore.GetInstance(SCR_EditorManagerCore));
@@ -1912,7 +1754,6 @@ class PS_GameModeCoop : SCR_BaseGameMode
 				editorManager.SetCanOpen(false, EEditorCanOpen.ALIVE);
 		}
 	}
-	PS_FreezeTimeCounter m_hFreezeTimeCounter;
 
 	// ------------------------------------------ Global flags ------------------------------------------
 	bool IsFreezeTimeEnd()
@@ -1921,7 +1762,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (freezeManager)
 			return freezeManager.IsFreezeTimeEnd();
 
-		return m_fCurrentFreezeTime <= 0;
+		return true;
 	}
 	
 	bool IsDisableTimeEnd()
@@ -1930,7 +1771,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (freezeManager)
 			return freezeManager.IsDisableTimeEnd();
 
-		return m_fCurrentFreezeTime <= (m_iFreezeTime - m_iDisableTime) && m_fCurrentFreezeTime != 1;
+		return true;
 	}
 
 	bool IsHardFreezeActive()

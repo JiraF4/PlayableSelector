@@ -668,7 +668,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 		PS_GameModeCoop gameMode = GetGameModeCoop();
 		if (!gameMode)
 			return; // game mode not resolved yet (early frame) - retry next frame
-		if ((gameMode.GetState() == SCR_EGameModeState.GAME && gameMode.IsFreezeTimeEnd()) || !gameMode.IsFreezeTimeShootingForbiden())
+		if (gameMode.GetState() == SCR_EGameModeState.GAME && gameMode.IsFreezeTimeEnd())
 		{
 			ClearEventMask(GetOwner(), EntityEvent.FRAME);
 			return;

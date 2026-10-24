@@ -1,7 +1,7 @@
 modded class SCR_PlayersRestrictionZoneManagerComponent
 {
 	//! Copy, not the vanilla member. Vanilla's set is a ref container that
-	//! RemoveRestrictionZone() shrinks, and PS_GameModeCoop.removeRestrictedZones() walks the
+	//! RemoveRestrictionZone() shrinks, and PS_FreezeManager.RemoveRestrictedZones_S() walks the
 	//! result by index while deleting each zone entity - if that deletion unregisters the zone,
 	//! the live set loses entries mid-loop and zones are skipped.
 	set<SCR_EditorRestrictionZoneEntity> GetZones()
@@ -15,17 +15,9 @@ modded class SCR_PlayersRestrictionZoneManagerComponent
 	
 	override protected void KillPlayerOutOfZone(int playerID, IEntity playerEntity)
 	{
-		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		if (!gameMode)
+		PS_FreezeManager freezeManager = PS_FreezeManager.GetInstance();
+		if (!freezeManager || freezeManager.IsFreezeTimeEnd() || freezeManager.IsHardFreezeActive() || freezeManager.GetCurrentFreezeTime() <= 2000.0)
 			return;
-
-		if (gameMode.IsFreezeTimeEnd() || gameMode.IsHardFreezeActive())
-			return;
-
-		int freezeDuration = gameMode.GetFreezeTime();
-		if (gameMode.GetElapsedTime() > (freezeDuration - 2000))
-			return;
-
 		
 		if (!playerEntity)
 			return;

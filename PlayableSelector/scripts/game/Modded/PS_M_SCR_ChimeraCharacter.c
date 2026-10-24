@@ -19,24 +19,9 @@ modded class SCR_ChimeraCharacter
 		m_aCharacters_PS.Insert(this);
 		
 		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		if (gameModeCoop && !gameModeCoop.IsFreezeTimeEnd())
-		{
-			//  GetGame().GetCallqueue().CallLater(FreezeTimeDisable, 0, true);
-		}
-		else
+		if (!gameModeCoop || gameModeCoop.IsFreezeTimeEnd())
 		{
 			Activate();
-		}
-	}
-	
-	void FreezeTimeDisable()
-	{
-		Deactivate();
-		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		if (gameModeCoop.IsDisableTimeEnd())
-		{
-			Activate();
-			GetGame().GetCallqueue().Remove(FreezeTimeDisable);
 		}
 	}
 	
