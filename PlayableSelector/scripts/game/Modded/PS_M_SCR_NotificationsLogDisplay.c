@@ -1,4 +1,4 @@
-// M_SCR_NotificationsLogDisplay — vanilla VME guard.
+// PS_M_SCR_NotificationsLogDisplay — vanilla VME guard.
 //
 // During Workbench "Reload Game" the entity tree is torn down and
 // SCR_NotificationsLogDisplay.m_slotHandler is already nullified when
