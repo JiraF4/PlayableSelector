@@ -35,9 +35,9 @@ PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_Game
   }
  }
  m_bRemoveRedundantUnits 1
- m_bFreezeTimeShootingForbiden 1
  m_iFreezeTime 120000
  m_iDisableTime 30000
+ m_bFreezeTimeShootingForbiden 1
 }
 $grp SCR_AIGroup : "{107554618BE6FF20}Prefabs/Groups/BLUFOR/Group_US_Team_Suppress_P.et" {
  {
@@ -47,7 +47,7 @@ $grp SCR_AIGroup : "{107554618BE6FF20}Prefabs/Groups/BLUFOR/Group_US_Team_Suppre
   coords 1403.969 60.434 2370.328
  }
  {
-  coords 1403.625 60.56 2369.921
+  coords 1396.43 36.225 2350.224
  }
 }
 $grp Vehicle : "{259EE7B78C51B624}Prefabs/Vehicles/Wheeled/UAZ469/UAZ469.et" {
@@ -107,6 +107,13 @@ PolylineShapeEntity : "{7019844BAD5C4DD8}Prefabs/PolyZone/PolyZone_Border.et" {
 SCR_AIGroup : "{704B4E4EC7C56B55}Prefabs/Groups/BLUFOR/Group_US_AmmoTeam_P.et" {
  coords 1615.499 41.336 2271.03
 }
+PTVT_ProtectedDocumentEntity : "{88C53A5ED0615696}Prefabs/Items/Misc/IntelligenceFolder_E_01/SecretDocuments.et" {
+ coords 1374.903 41.686 2346.873
+}
+GenericEntity : "{ADA72BDCEF79C40A}Prefabs/MP/CombatOps/Cain/COCain_Ammo_MortarBox.et" {
+ coords 1375.115 41.686 2346.06
+ angles 0 0 0
+}
 PolylineShapeEntity : "{BD11B8FAA469D169}Prefabs/PolyZone/PolyZone.et" {
  components {
   PS_PolyZone "{60E90266F25533F6}" {
@@ -148,8 +155,8 @@ $grp SCR_AIGroup : "{D1B420D921CC6CD4}Prefabs/Groups/OPFOR/Group_USSR_PlatoonHQ_
  DEF_ {
   coords 1337.05 43.372 2392.901
  }
- DEF_HQ {
-  coords 1492.135 38.723 2313.541
+ {
+  coords 1368.682 39 2233.269
  }
 }
 $grp Turret : "{D1FFE458E8AC4BDB}Prefabs/Weapons/Mortars/2B14/Mortar_2B14_hand.et" {

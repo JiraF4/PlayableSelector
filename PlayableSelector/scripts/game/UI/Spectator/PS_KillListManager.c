@@ -31,13 +31,25 @@ class PS_KillListManager : ScriptComponent
 
 	void FillKillInfoWeaponAndDistance(IEntity victimEntity, IEntity killerEntity, int killerPlayerId, PS_KillInfo killInfo)
 	{
-		FillHitZone(victimEntity, killerPlayerId, killInfo);
 		FillWeapon(killerEntity, killInfo);
+		FillHitZone(victimEntity, killerPlayerId, killInfo);
 
-		if (killerPlayerId > 0 && killerEntity)
+		if (killInfo.m_sWeaponName == "#PS-KillList_CauseRoadkill" || killInfo.m_sAmmoType == "#PS-KillList_CauseRoadkill")
+		{
+			killInfo.m_fDistance = 0;
+		}
+		else if (killInfo.m_sWeaponName == "#PS-KillList_CauseFall" || killInfo.m_sWeaponName == "#PS-KillList_CauseBleeding")
+		{
+			killInfo.m_fDistance = 0;
+		}
+		else if (killerPlayerId > 0 && killerEntity && victimEntity)
+		{
 			killInfo.m_fDistance = vector.Distance(killerEntity.GetOrigin(), victimEntity.GetOrigin());
+		}
 		else
+		{
 			killInfo.m_fDistance = -1;
+		}
 	}
 
 	void RPC_KillEvent(string killData)
@@ -47,7 +59,7 @@ class PS_KillListManager : ScriptComponent
 		if (parts.Count() < 9)
 			return;
 
-		// Format (9 fields): victimId|killerId|victimName|killerName|victimSquad|ammo|distance|hitZoneGroup|isTeamKill
+		// Format (16 fields): victimId|killerId|victimName|killerName|victimSquad|ammo|distance|hitZoneGroup|isTeamKill|weaponName|matchTimeSeconds|victimFactionKey|killerFactionKey|weaponIconPath|magazineCapacity|ammoCaliber
 		PS_KillInfo killInfo = new PS_KillInfo();
 		killInfo.m_iVictimPlayerId = parts[0].ToInt();
 		killInfo.m_iKillerPlayerId = parts[1].ToInt();
@@ -61,6 +73,18 @@ class PS_KillListManager : ScriptComponent
 
 		if (parts.Count() >= 10)
 			killInfo.m_sWeaponName = parts[9];
+		if (parts.Count() >= 11)
+			killInfo.m_iMatchTimeSeconds = parts[10].ToInt();
+		if (parts.Count() >= 12)
+			killInfo.m_sVictimFactionKey = parts[11];
+		if (parts.Count() >= 13)
+			killInfo.m_sKillerFactionKey = parts[12];
+		if (parts.Count() >= 14)
+			killInfo.m_sWeaponIconPath = parts[13];
+		if (parts.Count() >= 15)
+			killInfo.m_iMagazineCapacity = parts[14].ToInt();
+		if (parts.Count() >= 16)
+			killInfo.m_sAmmoCaliber = parts[15];
 
 		m_aKillHistory.Insert(killInfo);
 		PrintFormat("[PS_KillListManager] RPC_KillEvent victimId=%1 killerId=%2 isServer=%3 history=%4",
@@ -122,6 +146,56 @@ class PS_KillListManager : ScriptComponent
 			if (charHitZone)
 				killInfo.m_eLastHitZoneGroup = charHitZone.GetHitZoneGroup();
 		}
+
+		if (relevantEffect)
+		{
+			EDamageType fatalDmgType = relevantEffect.GetDamageType();
+			if (fatalDmgType == EDamageType.EXPLOSIVE || fatalDmgType == EDamageType.FRAGMENTATION)
+			{
+				// If weapon was already resolved from vehicle turret or launcher (e.g. RPG, BTR cannon, GP-25),
+				// preserve it. If not resolved yet, assign the localized Grenade cause.
+				if (killInfo.m_sWeaponName == "" || killInfo.m_sWeaponName == "-")
+				{
+					killInfo.m_sWeaponName = "#PS-KillList_CauseGrenade";
+					killInfo.m_sWeaponIconPath = "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset@Grenade";
+					killInfo.m_sAmmoType = "";
+					killInfo.m_iMagazineCapacity = -1;
+					killInfo.m_sAmmoCaliber = "";
+				}
+			}
+			else if (fatalDmgType == EDamageType.BLEEDING)
+			{
+				killInfo.m_sWeaponName = "#PS-KillList_CauseBleeding";
+				killInfo.m_sAmmoType = "";
+				killInfo.m_sWeaponIconPath = "-";
+				killInfo.m_iMagazineCapacity = -1;
+				killInfo.m_sAmmoCaliber = "";
+			}
+			else if (fatalDmgType == EDamageType.COLLISION)
+			{
+				bool isFall = (SCR_FallDamageEffect.Cast(relevantEffect) != null);
+				if (!isFall && (killerPlayerId <= 0 || killerPlayerId == killInfo.m_iVictimPlayerId))
+				{
+					if (killInfo.m_sWeaponName == "" || killInfo.m_sWeaponName == "-")
+						isFall = true;
+				}
+
+				if (isFall)
+				{
+					killInfo.m_sWeaponName = "#PS-KillList_CauseFall";
+					killInfo.m_sWeaponIconPath = "-";
+				}
+				else
+				{
+					if (killInfo.m_sWeaponName == "" || killInfo.m_sWeaponName == "-")
+						killInfo.m_sWeaponName = "#PS-KillList_CauseRoadkill";
+						killInfo.m_sWeaponIconPath = "-";
+				}
+				killInfo.m_sAmmoType = "";
+				killInfo.m_iMagazineCapacity = -1;
+				killInfo.m_sAmmoCaliber = "";
+			}
+		}
 	}
 
 	protected void FillWeapon(IEntity killerEntity, PS_KillInfo killInfo)
@@ -129,29 +203,84 @@ class PS_KillListManager : ScriptComponent
 		if (!killerEntity)
 			return;
 
-		SCR_EditableVehicleComponent editableVehicle = SCR_EditableVehicleComponent.Cast(killerEntity.FindComponent(SCR_EditableVehicleComponent));
-		if (editableVehicle)
-		{
-			SCR_UIInfo vehicleInfo = editableVehicle.GetInfo();
-			if (vehicleInfo)
-				killInfo.m_sWeaponName = vehicleInfo.GetName();
-		}
+		// 1. If killerEntity is a vehicle entity directly:
+		FillFromVehicle(killerEntity, killInfo);
 
 		CharacterControllerComponent charCtrl = CharacterControllerComponent.Cast(killerEntity.FindComponent(CharacterControllerComponent));
 		if (!charCtrl)
 			return;
 
-		BaseWeaponManagerComponent weaponMgr = charCtrl.GetWeaponManagerComponent();
-		if (!weaponMgr)
-			return;
+		// 2. If character is inside a vehicle compartment (e.g. BTR gunner / driver):
+		CompartmentAccessComponent compAccess = CompartmentAccessComponent.Cast(killerEntity.FindComponent(CompartmentAccessComponent));
+		if (compAccess && compAccess.IsInCompartment())
+		{
+			BaseCompartmentSlot compSlot = compAccess.GetCompartment();
+			if (compSlot)
+			{
+				TurretCompartmentSlot turretSlot = TurretCompartmentSlot.Cast(compSlot);
+				if (turretSlot)
+				{
+					TurretControllerComponent turretCtrl = TurretControllerComponent.Cast(turretSlot.GetController());
+					if (turretCtrl)
+					{
+						BaseWeaponManagerComponent turretWpnMgr = turretCtrl.GetWeaponManager();
+						if (turretWpnMgr)
+						{
+							BaseWeaponComponent turretWeapon = turretWpnMgr.GetCurrentWeapon();
+							if (!turretWeapon)
+							{
+								array<IEntity> turretWeaponEntities = {};
+								turretWpnMgr.GetWeaponsList(turretWeaponEntities);
+								if (!turretWeaponEntities.IsEmpty() && turretWeaponEntities[0])
+									turretWeapon = BaseWeaponComponent.Cast(turretWeaponEntities[0].FindComponent(BaseWeaponComponent));
+							}
+							if (turretWeapon)
+								FillWeaponFromComponent(turretWeapon, killInfo);
+						}
+					}
+				}
 
-		BaseWeaponComponent currentWeapon = weaponMgr.GetCurrentWeapon();
+				// Fallback to vehicle name / icon if turret weapon had no name:
+				if (killInfo.m_sWeaponName == "" || killInfo.m_sWeaponName == "-")
+				{
+					IEntity veh = compSlot.GetOwner();
+					if (veh)
+						FillFromVehicle(veh.GetRootParent(), killInfo);
+				}
+			}
+		}
+
+		// 3. Hand-held weapon (if not already resolved from vehicle turret):
+		if (killInfo.m_sWeaponName == "" || killInfo.m_sWeaponName == "-")
+		{
+			BaseWeaponManagerComponent weaponMgr = charCtrl.GetWeaponManagerComponent();
+			if (weaponMgr)
+			{
+				BaseWeaponComponent currentWeapon = weaponMgr.GetCurrentWeapon();
+				if (currentWeapon)
+					FillWeaponFromComponent(currentWeapon, killInfo);
+			}
+		}
+	}
+
+	protected void FillWeaponFromComponent(BaseWeaponComponent currentWeapon, PS_KillInfo killInfo)
+	{
 		if (!currentWeapon)
 			return;
 
+		IEntity weaponEntity = currentWeapon.GetOwner();
+		if (weaponEntity && weaponEntity.GetPrefabData())
+		{
+			killInfo.m_sWeaponIconPath = weaponEntity.GetPrefabData().GetPrefabName();
+		}
+
 		UIInfo weaponUIInfo = currentWeapon.GetUIInfo();
 		if (weaponUIInfo)
+		{
 			killInfo.m_sWeaponName = weaponUIInfo.GetName();
+			if (killInfo.m_sWeaponIconPath == "")
+				killInfo.m_sWeaponIconPath = weaponUIInfo.GetIconPath();
+		}
 
 		BaseMuzzleComponent muzzle = currentWeapon.GetCurrentMuzzle();
 		if (muzzle)
@@ -159,28 +288,48 @@ class PS_KillListManager : ScriptComponent
 			BaseMagazineComponent mag = muzzle.GetMagazine();
 			if (mag)
 			{
-				// Prefer the magazine ITEM's display name (e.g. "7.62x39mm 30rnd Magazine") - it is a proper,
-				// localized item name. MagazineUIInfo.GetAmmoType() returns an ammo-type key ("#AR-AmmoType_...")
-				// that frequently has no translation entry in the spectator context and renders as the raw key.
-				IEntity magEntity = mag.GetOwner();
-				if (magEntity)
+				killInfo.m_iMagazineCapacity = mag.GetMaxAmmoCount();
+
+				string ammoName = "";
+				int ammoFlags = 0;
+				string ammoTypeName = "";
+
+				MagazineUIInfo magUIInfo = MagazineUIInfo.Cast(mag.GetUIInfo());
+				if (magUIInfo)
 				{
-					InventoryItemComponent magItem = InventoryItemComponent.Cast(magEntity.FindComponent(InventoryItemComponent));
-					if (magItem)
+					killInfo.m_sAmmoCaliber = magUIInfo.GetAmmoCaliber();
+					ammoName = magUIInfo.GetAmmoType();
+					ammoFlags = magUIInfo.GetAmmoTypeFlags();
+				}
+
+				if (ammoName == "")
+				{
+					IEntity magEntity = mag.GetOwner();
+					if (magEntity)
 					{
-						ItemAttributeCollection attribs = magItem.GetAttributes();
-						if (attribs && attribs.GetUIInfo())
-							killInfo.m_sAmmoType = attribs.GetUIInfo().GetName();
+						InventoryItemComponent magItem = InventoryItemComponent.Cast(magEntity.FindComponent(InventoryItemComponent));
+						if (magItem)
+						{
+							ItemAttributeCollection attribs = magItem.GetAttributes();
+							if (attribs && attribs.GetUIInfo())
+								ammoName = attribs.GetUIInfo().GetName();
+						}
 					}
 				}
 
-				// Fallback: the caliber/type from the magazine's weapon-HUD UIInfo.
-				if (killInfo.m_sAmmoType == "")
+				if (ammoFlags != 0)
 				{
-					MagazineUIInfo magUIInfo = MagazineUIInfo.Cast(mag.GetUIInfo());
-					if (magUIInfo)
-						killInfo.m_sAmmoType = magUIInfo.GetAmmoType();
+					if (ammoFlags & EAmmoType.AP) ammoTypeName = "AP";
+					else if (ammoFlags & EAmmoType.HEAT) ammoTypeName = "HEAT";
+					else if (ammoFlags & EAmmoType.HE) ammoTypeName = "HE";
+					else if (ammoFlags & EAmmoType.FRAG) ammoTypeName = "FRAG";
+					else if (ammoFlags & EAmmoType.SNIPER) ammoTypeName = "SNIPER";
+					else if (ammoFlags & EAmmoType.FMJ) ammoTypeName = "FMJ";
+					else if (ammoFlags & EAmmoType.TRACER) ammoTypeName = "TRACER";
 				}
+
+				if (ammoName != "" || ammoFlags != 0)
+					killInfo.m_sAmmoType = ammoName + "#" + ammoFlags.ToString() + "#" + ammoTypeName;
 			}
 		}
 
@@ -188,7 +337,44 @@ class PS_KillListManager : ScriptComponent
 		{
 			GrenadeUIInfo grenadeInfo = GrenadeUIInfo.Cast(weaponUIInfo);
 			if (grenadeInfo)
-				killInfo.m_sAmmoType = grenadeInfo.GetAmmoType();
+			{
+				string gName = grenadeInfo.GetAmmoType();
+				int gFlags = grenadeInfo.GetAmmoTypeFlags();
+				string gTypeName = "";
+				if (gFlags != 0)
+				{
+					if (gFlags & EAmmoType.HE) gTypeName = "HE";
+					else if (gFlags & EAmmoType.FRAG) gTypeName = "FRAG";
+					else if (gFlags & EAmmoType.HEAT) gTypeName = "HEAT";
+					else if (gFlags & EAmmoType.SMOKE) gTypeName = "SMOKE";
+					else if (gFlags & EAmmoType.ILLUMINATION) gTypeName = "ILLUM";
+				}
+				killInfo.m_sAmmoType = gName + "#" + gFlags.ToString() + "#" + gTypeName;
+			}
+		}
+	}
+
+	protected void FillFromVehicle(IEntity vehicleEntity, PS_KillInfo killInfo)
+	{
+		if (!vehicleEntity)
+			return;
+
+		SCR_EditableVehicleComponent editableVehicle = SCR_EditableVehicleComponent.Cast(vehicleEntity.FindComponent(SCR_EditableVehicleComponent));
+		if (editableVehicle)
+		{
+			SCR_UIInfo vehicleInfo = editableVehicle.GetInfo();
+			if (vehicleInfo)
+			{
+				if (killInfo.m_sWeaponName == "" || killInfo.m_sWeaponName == "-")
+					killInfo.m_sWeaponName = vehicleInfo.GetName();
+				if (killInfo.m_sWeaponIconPath == "" || killInfo.m_sWeaponIconPath == "-")
+					killInfo.m_sWeaponIconPath = vehicleInfo.GetIconPath();
+			}
+		}
+
+		if (vehicleEntity.GetPrefabData() && (killInfo.m_sWeaponIconPath == "" || killInfo.m_sWeaponIconPath == "-"))
+		{
+			killInfo.m_sWeaponIconPath = vehicleEntity.GetPrefabData().GetPrefabName();
 		}
 	}
 }

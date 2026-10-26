@@ -27,6 +27,24 @@ class PS_KillList : ScriptedWidgetComponent
 	protected int m_iKilledYouCount;
 	protected int m_iTeamKillsCount;
 
+	protected ref SCR_AmmoTypeInfoConfig m_AmmoTypeConf;
+
+	protected void InitAmmoTypeConfig()
+	{
+		if (m_AmmoTypeConf)
+			return;
+
+		Resource holder = BaseContainerTools.LoadContainer("{8D3E102893955B15}Configs/Inventory/ItemHints/MagazineAmmoType.conf");
+		if (!holder || !holder.IsValid())
+			return;
+
+		BaseContainer container = holder.GetResource().ToBaseContainer();
+		if (!container)
+			return;
+
+		m_AmmoTypeConf = SCR_AmmoTypeInfoConfig.Cast(BaseContainerTools.CreateInstanceFromContainer(container));
+	}
+
 	override void HandlerAttached(Widget w)
 	{
 		if (!GetGame().InPlayMode())
@@ -147,24 +165,29 @@ class PS_KillList : ScriptedWidgetComponent
 			isLocalVictim && killInfo.m_iKillerPlayerId > 0,
 			killInfo.m_bIsTeamKill && isLocalKiller);
 
+		bool isSelfKill = (killInfo.m_iKillerPlayerId > 0 && killInfo.m_iKillerPlayerId == killInfo.m_iVictimPlayerId);
+
 		// Kills / Team Kills are numbered lists showing the VICTIM (squad + nickname); Killed by shows the
-		// KILLER nickname without a number.
-		if (isLocalKiller && !killInfo.m_bIsTeamKill)
+		// KILLER nickname without a number. Self-inflicted deaths (suicide, fall) do not count as kills.
+		if (isLocalKiller && !killInfo.m_bIsTeamKill && !isSelfKill)
 		{
 			m_iYourKillsCount++;
 			AddKillEntry(m_wYourKillsList, m_aYourKillsWidgets, killInfo, killInfo.GetVictimDisplayName(), m_iYourKillsCount);
 		}
 
-		if (killInfo.m_bIsTeamKill && isLocalKiller)
+		if (killInfo.m_bIsTeamKill && isLocalKiller && !isSelfKill)
 		{
 			m_iTeamKillsCount++;
 			AddKillEntry(m_wTeamKillsList, m_aTeamKillsWidgets, killInfo, killInfo.GetVictimDisplayName(), m_iTeamKillsCount);
 		}
 
-		if (isLocalVictim && killInfo.m_iKillerPlayerId > 0)
+		if (isLocalVictim && (killInfo.m_iKillerPlayerId > 0 || killInfo.m_sWeaponName == "#PS-KillList_CauseFall" || killInfo.m_sWeaponName == "#PS-KillList_CauseBleeding"))
 		{
 			m_iKilledYouCount++;
-			AddKillEntry(m_wKilledYouList, m_aKilledYouWidgets, killInfo, killInfo.GetKillerDisplayName(), 0);
+			string killerDisplay = killInfo.GetKillerDisplayName();
+			if (isSelfKill || killInfo.m_iKillerPlayerId <= 0)
+				killerDisplay = killInfo.GetVictimDisplayName();
+			AddKillEntry(m_wKilledYouList, m_aKilledYouWidgets, killInfo, killerDisplay, m_iKilledYouCount);
 		}
 	}
 
@@ -184,60 +207,82 @@ class PS_KillList : ScriptedWidgetComponent
 		// Stretch each card to the available list width.
 		LayoutSlot.SetHorizontalAlign(entryWidget, LayoutHorizontalAlign.Stretch);
 
+		bool isKilledYou = (listWidget == m_wKilledYouList);
+
 		ImageWidget accentBar = ImageWidget.Cast(entryWidget.FindAnyWidget("AccentBar"));
+		TextWidget timeText = TextWidget.Cast(entryWidget.FindAnyWidget("TimeText"));
+		Widget indexBadge = entryWidget.FindAnyWidget("IndexBadge");
+		Widget indexBg = entryWidget.FindAnyWidget("IndexBg");
+		Widget indexBorder = entryWidget.FindAnyWidget("IndexBorder");
 		TextWidget indexText = TextWidget.Cast(entryWidget.FindAnyWidget("IndexText"));
-		ImageWidget deadIcon = ImageWidget.Cast(entryWidget.FindAnyWidget("DeadIcon"));
+		ImageWidget headshotIcon = ImageWidget.Cast(entryWidget.FindAnyWidget("HeadshotIcon"));
+		Widget playerRow = entryWidget.FindAnyWidget("PlayerRow");
 		TextWidget playerNameText = TextWidget.Cast(entryWidget.FindAnyWidget("PlayerNameText"));
+		ImageWidget factionBg = ImageWidget.Cast(entryWidget.FindAnyWidget("FactionBg"));
+		TextWidget factionText = TextWidget.Cast(entryWidget.FindAnyWidget("FactionText"));
 		TextWidget distanceText = TextWidget.Cast(entryWidget.FindAnyWidget("DistanceText"));
-		ImageWidget hitZoneBg = ImageWidget.Cast(entryWidget.FindAnyWidget("HitZoneBg"));
+		TextWidget metaDivider = TextWidget.Cast(entryWidget.FindAnyWidget("MetaDivider"));
+		ImageWidget metaBg = ImageWidget.Cast(entryWidget.FindAnyWidget("MetaBg"));
 		TextWidget hitZoneText = TextWidget.Cast(entryWidget.FindAnyWidget("HitZoneText"));
+		ItemPreviewWidget weaponPreview = ItemPreviewWidget.Cast(entryWidget.FindAnyWidget("WeaponPreview"));
+		ImageWidget weaponIcon = ImageWidget.Cast(entryWidget.FindAnyWidget("WeaponIcon"));
+		Widget weaponIconSlot = entryWidget.FindAnyWidget("WeaponIconSlot");
 		TextWidget weaponNameText = TextWidget.Cast(entryWidget.FindAnyWidget("WeaponNameText"));
 		TextWidget bulletDivider = TextWidget.Cast(entryWidget.FindAnyWidget("BulletDivider"));
 		TextWidget magazineText = TextWidget.Cast(entryWidget.FindAnyWidget("MagazineText"));
+		TextWidget divider2 = TextWidget.Cast(entryWidget.FindAnyWidget("Divider2"));
+		TextWidget ammoDetailText = TextWidget.Cast(entryWidget.FindAnyWidget("AmmoDetailText"));
+		TextWidget divider3 = TextWidget.Cast(entryWidget.FindAnyWidget("Divider3"));
+		ImageWidget ammoTypeIcon = ImageWidget.Cast(entryWidget.FindAnyWidget("AmmoTypeIcon"));
+		TextWidget ammoTypeText = TextWidget.Cast(entryWidget.FindAnyWidget("AmmoTypeText"));
 
+		// 1. Timecode (clean MM:SS without brackets)
+		if (timeText)
+			timeText.SetText(killInfo.GetFormattedTimestamp());
+
+		// 2. Accent bar colors
 		if (killInfo.m_bIsTeamKill)
 		{
 			if (accentBar)
-				accentBar.SetColor(Color.FromRGBA(231, 76, 60, 255));
-			if (indexText)
-				indexText.SetColor(Color.FromRGBA(231, 76, 60, 255));
+				accentBar.SetColor(Color.FromRGBA(239, 68, 68, 255));
 		}
-		else if (number <= 0)
+		else if (isKilledYou)
 		{
 			if (accentBar)
-				accentBar.SetColor(Color.FromRGBA(185, 28, 28, 255));
-			if (deadIcon)
-				deadIcon.SetColor(Color.FromRGBA(220, 38, 38, 255));
+				accentBar.SetColor(Color.FromRGBA(239, 68, 68, 255));
 		}
 		else
 		{
 			if (accentBar)
-				accentBar.SetColor(Color.FromRGBA(212, 175, 55, 255));
-			if (indexText)
-				indexText.SetColor(Color.FromRGBA(212, 175, 55, 255));
+				accentBar.SetColor(Color.FromRGBA(234, 179, 8, 255));
 		}
 
-		if (number > 0)
+		// 3. Index badge (clean uniform 26px badge across all lists)
+		if (indexText)
 		{
-			if (indexText)
+			indexText.SetVisible(true);
+			if (number < 10)
+				indexText.SetText("0" + number.ToString());
+			else
+				indexText.SetText(number.ToString());
+
+			indexText.SetColor(Color.FromRGBA(225, 225, 225, 255));
+			FrameSlot.SetPosX(indexText, 0);
+			FrameSlot.SetSizeX(indexText, 26);
+			if (indexBadge)
+				FrameSlot.SetSizeX(indexBadge, 26);
+			if (indexBg)
+				FrameSlot.SetSizeX(indexBg, 26);
+			if (indexBorder)
+				FrameSlot.SetSizeX(indexBorder, 26);
+			if (playerRow)
 			{
-				indexText.SetVisible(true);
-				if (number < 10)
-					indexText.SetText("0" + number.ToString());
-				else
-					indexText.SetText(number.ToString());
+				FrameSlot.SetPosX(playerRow, 88);
+				FrameSlot.SetSizeX(playerRow, 246);
 			}
-			if (deadIcon)
-				deadIcon.SetVisible(false);
-		}
-		else
-		{
-			if (indexText)
-				indexText.SetVisible(false);
-			if (deadIcon)
-				deadIcon.SetVisible(true);
 		}
 
+		// 4. Nickname
 		if (playerNameText)
 		{
 			if (killInfo.m_bIsTeamKill)
@@ -246,94 +291,298 @@ class PS_KillList : ScriptedWidgetComponent
 				playerNameText.SetText(displayName);
 		}
 
-		if (distanceText)
-			distanceText.SetText(killInfo.GetFormattedDistance());
-
-		string hitZone = killInfo.GetLocalizedHitZone();
-		if (hitZone != "")
+		// 5. Faction badge & color (clean text without brackets)
+		string fKey;
+		string fName;
+		if (isKilledYou)
 		{
-			if (hitZoneText)
-			{
-				hitZoneText.SetText(hitZone);
-				hitZoneText.SetVisible(true);
-			}
-			if (hitZoneBg)
-				hitZoneBg.SetVisible(true);
+			fKey = killInfo.m_sKillerFactionKey;
+			fName = killInfo.GetKillerFactionDisplayName();
+		}
+		else
+		{
+			fKey = killInfo.m_sVictimFactionKey;
+			fName = killInfo.GetVictimFactionDisplayName();
+		}
 
-			if (killInfo.m_eLastHitZoneGroup == ECharacterHitZoneGroup.HEAD)
+		if (factionText)
+			factionText.SetText(fName);
+
+		if (factionBg)
+		{
+			Color fColor = Color.FromRGBA(30, 40, 50, 200);
+			FactionManager fMgr = GetGame().GetFactionManager();
+			if (fMgr && fKey != "" && fKey != "-")
 			{
-				if (hitZoneText)
-					hitZoneText.SetColor(Color.FromRGBA(255, 75, 75, 255));
-				if (hitZoneBg)
-					hitZoneBg.SetColor(Color.FromRGBA(120, 15, 15, 200));
+				Faction faction = fMgr.GetFactionByKey(fKey);
+				if (faction)
+					fColor = faction.GetFactionColor();
+			}
+			factionBg.SetColor(fColor);
+		}
+
+		// 6. Meta badge (Amber distance + White HitZone, dark neutral background)
+		string distStr = killInfo.GetFormattedDistance();
+		bool hasDistance = (distStr != "" && distStr != "—");
+		if (distanceText)
+		{
+			if (hasDistance)
+			{
+				distanceText.SetText(distStr);
+				//distanceText.SetColor(Color.FromRGBA(234, 198, 115, 255));
+				distanceText.SetVisible(true);
 			}
 			else
 			{
-				if (hitZoneText)
-					hitZoneText.SetColor(Color.FromRGBA(205, 212, 215, 255));
-				if (hitZoneBg)
-					hitZoneBg.SetColor(Color.FromRGBA(16, 22, 25, 210));
+				distanceText.SetVisible(false);
+			}
+		}
+
+		string hitZone = killInfo.GetLocalizedHitZone();
+		bool isHeadshot = (killInfo.m_eLastHitZoneGroup == ECharacterHitZoneGroup.HEAD);
+		if (headshotIcon)
+			headshotIcon.SetVisible(isHeadshot);
+
+		if (hitZone != "" || hasDistance)
+		{
+			if (hitZoneText)
+			{
+				if (hitZone != "")
+				{
+					hitZoneText.SetText(hitZone);
+					if (isHeadshot)
+						hitZoneText.SetColor(Color.FromRGBA(255, 120, 120, 255));
+					else
+						hitZoneText.SetColor(Color.FromRGBA(245, 245, 245, 255));
+					hitZoneText.SetVisible(true);
+				}
+				else
+				{
+					hitZoneText.SetVisible(false);
+				}
+			}
+			if (metaDivider)
+				metaDivider.SetVisible(hasDistance && hitZone != "");
+			if (metaBg)
+			{
+				metaBg.SetColor(Color.FromRGBA(14, 14, 14, 220));
+				metaBg.SetVisible(true);
 			}
 		}
 		else
 		{
 			if (hitZoneText)
 				hitZoneText.SetVisible(false);
-			if (hitZoneBg)
-				hitZoneBg.SetVisible(false);
+			if (metaDivider)
+				metaDivider.SetVisible(false);
+			if (headshotIcon)
+				headshotIcon.SetVisible(false);
+			if (metaBg)
+				metaBg.SetVisible(false);
 		}
 
+		// 7. Bottom row: 3D ItemPreview / 2D fallback icon, weapon name, magazine, caliber
 		string weapon = killInfo.GetWeaponDisplayName();
-		string magazine = killInfo.GetMagazineDisplayName();
+		bool hasWeapon = (weapon != "" && weapon != "—");
 
-		if (weapon != "")
+		bool previewShown = false;
+		if (killInfo.m_sWeaponIconPath != "" && killInfo.m_sWeaponIconPath != "-")
 		{
-			if (weaponNameText)
+			if (killInfo.m_sWeaponIconPath.EndsWith(".et"))
 			{
-				weaponNameText.SetText(weapon);
-				weaponNameText.SetVisible(true);
+				ChimeraWorld world = ChimeraWorld.CastFrom(GetGame().GetWorld());
+				if (world)
+				{
+					ItemPreviewManagerEntity previewManager = world.GetItemPreviewManager();
+					if (!previewManager)
+					{
+						Resource rsc = Resource.Load("{9F18C476AB860F3B}Prefabs/World/Game/ItemPreviewManager.et");
+						if (rsc && rsc.IsValid())
+							GetGame().SpawnEntityPrefabLocal(rsc, world);
+						previewManager = world.GetItemPreviewManager();
+					}
+					if (previewManager && weaponPreview)
+					{
+						previewManager.SetPreviewItemFromPrefab(weaponPreview, killInfo.m_sWeaponIconPath);
+						weaponPreview.SetResolutionScale(1, 1);
+						weaponPreview.SetVisible(true);
+						previewShown = true;
+					}
+				}
 			}
-			if (magazine != "")
+		}
+
+		if (weaponPreview && !previewShown)
+			weaponPreview.SetVisible(false);
+
+		if (weaponIcon)
+		{
+			if (previewShown)
 			{
-				if (bulletDivider)
-					bulletDivider.SetVisible(true);
+				weaponIcon.SetVisible(false);
+			}
+			else if (killInfo.m_sWeaponIconPath != "" && killInfo.m_sWeaponIconPath != "-")
+			{
+				if (killInfo.m_sWeaponIconPath.Contains("@"))
+				{
+					array<string> iconParts = {};
+					killInfo.m_sWeaponIconPath.Split("@", iconParts, false);
+					if (iconParts.Count() >= 2)
+						weaponIcon.LoadImageFromSet(0, iconParts[0], iconParts[1]);
+					else
+						weaponIcon.LoadImageTexture(0, iconParts[0]);
+				}
+				else
+				{
+					weaponIcon.LoadImageTexture(0, killInfo.m_sWeaponIconPath);
+				}
+				weaponIcon.SetColor(Color.FromRGBA(225, 225, 225, 240));
+				weaponIcon.SetVisible(true);
+			}
+			else if (hasWeapon && killInfo.m_sWeaponIconPath != "-")
+			{
+				weaponIcon.LoadImageFromSet(0, "{F3A9B47F55BE8D2B}UI/Textures/Icons/PS_Atlas_x64.imageset", "WeaponRifle");
+				weaponIcon.SetColor(Color.FromRGBA(225, 225, 225, 240));
+				weaponIcon.SetVisible(true);
+			}
+			else
+			{
+				weaponIcon.SetVisible(false);
+			}
+		}
+
+		if (weaponIconSlot)
+			weaponIconSlot.SetVisible(previewShown || (weaponIcon && weaponIcon.IsVisible()));
+
+		if (weaponNameText)
+		{
+			if (hasWeapon)
+				weaponNameText.SetText(weapon);
+			else
+				weaponNameText.SetText("—");
+			weaponNameText.SetVisible(true);
+		}
+
+		if (hasWeapon)
+		{
+			string magazine = killInfo.GetFormattedMagazine();
+			if (magazine == "")
+				magazine = killInfo.GetMagazineDisplayName();
+
+			if (magazine != "" && magazine != "-")
+			{
 				if (magazineText)
 				{
 					magazineText.SetText(magazine);
 					magazineText.SetVisible(true);
 				}
+				if (bulletDivider)
+					bulletDivider.SetVisible(true);
 			}
 			else
 			{
-				if (bulletDivider)
-					bulletDivider.SetVisible(false);
 				if (magazineText)
 					magazineText.SetVisible(false);
+				if (bulletDivider)
+					bulletDivider.SetVisible(false);
 			}
-		}
-		else if (magazine != "")
-		{
-			if (weaponNameText)
+
+			string caliber = killInfo.GetFormattedCaliber();
+			if (caliber != "" && caliber != "-")
 			{
-				weaponNameText.SetText(magazine);
-				weaponNameText.SetVisible(true);
+				if (ammoDetailText)
+				{
+					ammoDetailText.SetText(caliber);
+					ammoDetailText.SetVisible(true);
+				}
+				if (divider2)
+					divider2.SetVisible(magazineText && magazineText.IsVisible());
 			}
-			if (bulletDivider)
-				bulletDivider.SetVisible(false);
-			if (magazineText)
-				magazineText.SetVisible(false);
+			else
+			{
+				if (ammoDetailText)
+					ammoDetailText.SetVisible(false);
+				if (divider2)
+					divider2.SetVisible(false);
+			}
+
+			// Ammo type icon & text (AP, FMJ, HE, etc.)
+			int ammoFlags = killInfo.GetAmmoTypeFlags();
+			string ammoTypeName = killInfo.GetAmmoTypeName();
+			bool hasAmmoType = (ammoFlags != 0 || (ammoTypeName != "" && ammoTypeName != "-"));
+
+			if (hasAmmoType)
+			{
+				bool iconLoaded = false;
+				if (ammoFlags != 0)
+				{
+					InitAmmoTypeConfig();
+					if (m_AmmoTypeConf && m_AmmoTypeConf.m_aAmmoTypes)
+					{
+						foreach (SCR_AmmoTypeInfoConfigEntry entry : m_AmmoTypeConf.m_aAmmoTypes)
+						{
+							if (entry.m_eAmmoType & ammoFlags)
+							{
+								if (ammoTypeIcon)
+								{
+									ammoTypeIcon.LoadImageFromSet(0, m_AmmoTypeConf.m_sImagesetPath, entry.m_sQuadName);
+									ammoTypeIcon.SetColor(Color.FromRGBA(225, 225, 225, 240));
+									ammoTypeIcon.SetVisible(true);
+									iconLoaded = true;
+								}
+								if (ammoTypeName == "" && entry.m_sDescription != "")
+									ammoTypeName = WidgetManager.Translate(entry.m_sDescription);
+								break;
+							}
+						}
+					}
+				}
+
+				if (ammoTypeIcon && !iconLoaded)
+					ammoTypeIcon.SetVisible(false);
+
+				if (ammoTypeText)
+				{
+					if (ammoTypeName != "" && ammoTypeName != "-")
+					{
+						ammoTypeText.SetText(ammoTypeName);
+						ammoTypeText.SetVisible(true);
+					}
+					else
+					{
+						ammoTypeText.SetVisible(false);
+					}
+				}
+
+				if (divider3)
+					divider3.SetVisible(ammoDetailText && ammoDetailText.IsVisible() && (iconLoaded || (ammoTypeText && ammoTypeText.IsVisible())));
+			}
+			else
+			{
+				if (ammoTypeIcon)
+					ammoTypeIcon.SetVisible(false);
+				if (ammoTypeText)
+					ammoTypeText.SetVisible(false);
+				if (divider3)
+					divider3.SetVisible(false);
+			}
 		}
 		else
 		{
-			if (weaponNameText)
-			{
-				weaponNameText.SetText("—");
-				weaponNameText.SetVisible(true);
-			}
-			if (bulletDivider)
-				bulletDivider.SetVisible(false);
 			if (magazineText)
 				magazineText.SetVisible(false);
+			if (bulletDivider)
+				bulletDivider.SetVisible(false);
+			if (ammoDetailText)
+				ammoDetailText.SetVisible(false);
+			if (divider2)
+				divider2.SetVisible(false);
+			if (ammoTypeIcon)
+				ammoTypeIcon.SetVisible(false);
+			if (ammoTypeText)
+				ammoTypeText.SetVisible(false);
+			if (divider3)
+				divider3.SetVisible(false);
 		}
 
 		widgetArray.Insert(entryWidget);

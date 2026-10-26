@@ -362,29 +362,6 @@ FrameWidgetClass {
    }
    Clipping False
    "Ignore Cursor" 0
-   components {
-    PS_KillList "{C1A2B3D4E5F6A7B8}" {
-    }
-   }
-   {
-    ImageWidgetClass "{D1A2B3C4E5F6A7B2}" {
-     Name "Extender"
-     Slot FrameWidgetSlot "{D1A2B3C4E5F6A7B3}" {
-      Anchor 0 0 1 1
-      PositionX 0
-      OffsetLeft -25
-      PositionY 0
-      OffsetTop -25
-      SizeX 0
-      OffsetRight -25
-      SizeY 0
-      OffsetBottom -25
-     }
-     Opacity 0
-     Clipping False
-     "Ignore Cursor" 0
-    }
-   }
   }
   FrameWidgetClass "{6604C04D879C5EDA}" : "{18D3CF175C9AA974}UI/Spectator/AlivePlayersList.layout" {
    Name "AlivePlayersList"

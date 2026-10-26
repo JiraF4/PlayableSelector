@@ -190,22 +190,37 @@ class PS_SpectatorMenu: MenuBase
 		m_PlayableManager = PS_PlayableManager.GetInstance();
 		
 		m_wVoiceChatList = GetRootWidget().FindAnyWidget("VoiceChatFrame");
-		m_hVoiceChatList = PS_VoiceRoomsUI.Cast(m_wVoiceChatList.FindHandler(PS_VoiceRoomsUI));
-		m_hVoiceChatList.SetSpectatorContext(true);
-		m_hVoiceChatListPinButton = SCR_ButtonBaseComponent.Cast(m_wVoiceChatList.FindAnyWidget("PinButton").FindHandler(SCR_ButtonBaseComponent));
+		if (m_wVoiceChatList)
+		{
+			m_hVoiceChatList = PS_VoiceRoomsUI.Cast(m_wVoiceChatList.FindHandler(PS_VoiceRoomsUI));
+			if (m_hVoiceChatList)
+				m_hVoiceChatList.SetSpectatorContext(true);
+			Widget voicePin = m_wVoiceChatList.FindAnyWidget("PinButton");
+			if (voicePin)
+				m_hVoiceChatListPinButton = SCR_ButtonBaseComponent.Cast(voicePin.FindHandler(SCR_ButtonBaseComponent));
+		}
 		
 		m_wAlivePlayerList = GetRootWidget().FindAnyWidget("AlivePlayersList");
-		m_hAlivePlayerList = PS_AlivePlayerList.Cast(m_wAlivePlayerList.FindHandler(PS_AlivePlayerList));
-		m_hAlivePlayerListPinButton = SCR_ButtonBaseComponent.Cast(m_wAlivePlayerList.FindAnyWidget("PinButton").FindHandler(SCR_ButtonBaseComponent));
-		
-		m_hAlivePlayerList.SetSpectatorMenu(this);
+		if (m_wAlivePlayerList)
+		{
+			m_hAlivePlayerList = PS_AlivePlayerList.Cast(m_wAlivePlayerList.FindHandler(PS_AlivePlayerList));
+			Widget alivePin = m_wAlivePlayerList.FindAnyWidget("PinButton");
+			if (alivePin)
+				m_hAlivePlayerListPinButton = SCR_ButtonBaseComponent.Cast(alivePin.FindHandler(SCR_ButtonBaseComponent));
+			if (m_hAlivePlayerList)
+				m_hAlivePlayerList.SetSpectatorMenu(this);
+		}
 		
 		m_wKillListFrame = GetRootWidget().FindAnyWidget("KillListFrame");
-		m_hKillList = PS_KillList.Cast(m_wKillListFrame.FindHandler(PS_KillList));
-		m_hKillListPinButton = SCR_ButtonBaseComponent.Cast(m_wKillListFrame.FindAnyWidget("PinButton").FindHandler(SCR_ButtonBaseComponent));
-		
-		if (m_hKillList)
-			m_hKillList.OnSpectatorMenuOpen();
+		if (m_wKillListFrame)
+		{
+			m_hKillList = PS_KillList.Cast(m_wKillListFrame.FindHandler(PS_KillList));
+			Widget killPin = m_wKillListFrame.FindAnyWidget("PinButton");
+			if (killPin)
+				m_hKillListPinButton = SCR_ButtonBaseComponent.Cast(killPin.FindHandler(SCR_ButtonBaseComponent));
+			if (m_hKillList)
+				m_hKillList.OnSpectatorMenuOpen();
+		}
 		
 		m_wOverlayFooter = GetRootWidget().FindAnyWidget("OverlayFooter");
 		m_wEarlyAccessRoot = GetRootWidget().FindAnyWidget("EarlyAccessRoot");
@@ -546,7 +561,8 @@ class PS_SpectatorMenu: MenuBase
 		if (m_wAlivePlayerList)
 		{
 			float alivePlayerListX = FrameSlot.GetPosX(m_wAlivePlayerList);
-			if (cursorWidget == m_wAlivePlayerList || m_hAlivePlayerListPinButton.IsToggled())
+			bool alivePinned = m_hAlivePlayerListPinButton && m_hAlivePlayerListPinButton.IsToggled();
+			if (cursorWidget == m_wAlivePlayerList || alivePinned)
 			{
 				alivePlayerListX += tDelta * 1200.0;
 				if (alivePlayerListX > 0)
@@ -565,7 +581,8 @@ class PS_SpectatorMenu: MenuBase
 		if (m_wVoiceChatList)
 		{
 			float voiceChatListX = FrameSlot.GetPosX(m_wVoiceChatList);
-			if (cursorWidget == m_wVoiceChatList || m_hVoiceChatListPinButton.IsToggled())
+			bool voicePinned = m_hVoiceChatListPinButton && m_hVoiceChatListPinButton.IsToggled();
+			if (cursorWidget == m_wVoiceChatList || voicePinned)
 			{
 				voiceChatListX -= tDelta * 1200.0;
 				if (voiceChatListX < -320)
@@ -596,7 +613,8 @@ class PS_SpectatorMenu: MenuBase
 			float killCurY = killWs.DPIUnscale(killMouseY);
 			float killCenterX = killWs.DPIUnscale(killWs.GetWidth() / 2.0);
 			// Frame width is 500 and height is 640 (see KillListFrame slot); 25 = Extender hover margin.
-			bool killHovered = m_hKillListPinButton.IsToggled()
+			bool killPinned = m_hKillListPinButton && m_hKillListPinButton.IsToggled();
+			bool killHovered = killPinned
 				|| (killCurX >= killCenterX - 250 && killCurX <= killCenterX + 250
 					&& killCurY >= killListY - 25 && killCurY <= killListY + 640 + 25);
 			if (killHovered)

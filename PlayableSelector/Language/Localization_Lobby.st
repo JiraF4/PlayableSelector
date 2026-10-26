@@ -1026,8 +1026,8 @@ StringTable {
   }
   CustomStringTableItem "{67F8C10200000014}" {
    Id "PS-KillList_Head"
-   Target_en_us "Head"
-   Target_ru_ru "Голова"
+   Target_en_us "HEAD"
+    Target_ru_ru "ГОЛОВА"
    Modified 1788476152
    Author "RamboKZ"
    LastChanged "RamboKZ"
@@ -1050,40 +1050,40 @@ StringTable {
   }
   CustomStringTableItem "{67F8C10200000017}" {
    Id "PS-KillList_LeftArm"
-   Target_en_us "Left Arm"
-   Target_ru_ru "Левая рука"
+   Target_en_us "ARM"
+    Target_ru_ru "РУКА"
    Modified 1788476152
    Author "RamboKZ"
    LastChanged "RamboKZ"
   }
   CustomStringTableItem "{67F8C10200000019}" {
    Id "PS-KillList_LeftLeg"
-   Target_en_us "Left Leg"
-   Target_ru_ru "Левая нога"
+   Target_en_us "LEG"
+    Target_ru_ru "НОГА"
    Modified 1788476152
    Author "RamboKZ"
    LastChanged "RamboKZ"
   }
   CustomStringTableItem "{67F8C10200000016}" {
    Id "PS-KillList_LowerTorso"
-   Target_en_us "Lower Torso"
-   Target_ru_ru "Нижняя часть туловища"
+   Target_en_us "STOMACH"
+    Target_ru_ru "ЖИВОТ"
    Modified 1788476152
    Author "RamboKZ"
    LastChanged "RamboKZ"
   }
   CustomStringTableItem "{67F8C10200000018}" {
    Id "PS-KillList_RightArm"
-   Target_en_us "Right Arm"
-   Target_ru_ru "Правая рука"
+   Target_en_us "ARM"
+    Target_ru_ru "РУКА"
    Modified 1788476152
    Author "RamboKZ"
    LastChanged "RamboKZ"
   }
   CustomStringTableItem "{67F8C1020000001A}" {
    Id "PS-KillList_RightLeg"
-   Target_en_us "Right Leg"
-   Target_ru_ru "Правая нога"
+   Target_en_us "LEG"
+    Target_ru_ru "НОГА"
    Modified 1788476152
    Author "RamboKZ"
    LastChanged "RamboKZ"
@@ -1098,8 +1098,8 @@ StringTable {
   }
   CustomStringTableItem "{67F8C10200000015}" {
    Id "PS-KillList_UpperTorso"
-   Target_en_us "Upper Torso"
-   Target_ru_ru "Верхняя часть туловища"
+   Target_en_us "TORSO"
+    Target_ru_ru "ТОРС"
    Modified 1788476152
    Author "RamboKZ"
    LastChanged "RamboKZ"
@@ -1591,4 +1591,68 @@ StringTable {
    LastChanged "zazul"
   }
  }
+  CustomStringTableItem "{67F8C10200000040}" {
+   Id "PS-KillList_CauseBleeding"
+   Target_en_us "Bleeding"
+   Target_ru_ru "Кровопотеря"
+   Modified 1788476152
+   Author "RamboKZ"
+   LastChanged "RamboKZ"
+  }
+  CustomStringTableItem "{67F8C10200000041}" {
+   Id "PS-KillList_CauseFall"
+   Target_en_us "Fall"
+   Target_ru_ru "Падение с высоты"
+   Modified 1788476152
+   Author "RamboKZ"
+   LastChanged "RamboKZ"
+  }
+  CustomStringTableItem "{67F8C10200000042}" {
+   Id "PS-KillList_CauseGrenade"
+   Target_en_us "Fragmentation grenade"
+   Target_ru_ru "Осколочная граната"
+   Modified 1788476152
+   Author "RamboKZ"
+   LastChanged "RamboKZ"
+  }
+  CustomStringTableItem "{67F8C10200000043}" {
+   Id "PS-KillList_CauseRoadkill"
+   Target_en_us "Vehicle collision"
+   Target_ru_ru "Наезд транспортом"
+   Modified 1788476152
+   Author "RamboKZ"
+   LastChanged "RamboKZ"
+  }
+  CustomStringTableItem "{67F8C10200000044}" {
+   Id "PS-KillList_CauseUnderbarrel"
+   Target_en_us "Underbarrel round"
+   Target_ru_ru "Подствольный выстрел"
+   Modified 1788476152
+   Author "RamboKZ"
+   LastChanged "RamboKZ"
+  }
+  CustomStringTableItem "{67F8C10200000045}" {
+   Id "PS-KillList_Faction_FIA"
+   Target_en_us "FIA"
+   Target_ru_ru "FIA"
+   Modified 1788476152
+   Author "RamboKZ"
+   LastChanged "RamboKZ"
+  }
+  CustomStringTableItem "{67F8C10200000046}" {
+   Id "PS-KillList_Faction_US"
+   Target_en_us "US"
+   Target_ru_ru "США"
+   Modified 1788476152
+   Author "RamboKZ"
+   LastChanged "RamboKZ"
+  }
+  CustomStringTableItem "{67F8C10200000047}" {
+   Id "PS-KillList_Faction_USSR"
+   Target_en_us "USSR"
+   Target_ru_ru "ВС РФ"
+   Modified 1788476152
+   Author "RamboKZ"
+   LastChanged "RamboKZ"
+  }
 }

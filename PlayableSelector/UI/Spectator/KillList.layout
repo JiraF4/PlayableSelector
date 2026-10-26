@@ -5,6 +5,23 @@ FrameWidgetClass {
   }
  }
  {
+  ImageWidgetClass "{D1A2B3C4E5F6A7B2}" {
+   Name "Extender"
+   Slot FrameWidgetSlot "{D1A2B3C4E5F6A7B3}" {
+    Anchor 0 0 1 1
+    PositionX 0
+    OffsetLeft -25
+    PositionY 0
+    OffsetTop -25
+    SizeX 0
+    OffsetRight -25
+    SizeY 0
+    OffsetBottom -25
+   }
+   Opacity 0
+   Clipping False
+   "Ignore Cursor" 0
+  }
   BlurWidgetClass "{C1A2B3D4E5F6A7B9}" {
    Name "KillListBlure"
    Slot FrameWidgetSlot "{C1A2B3D4E5F6A7C0}" {
@@ -35,7 +52,7 @@ FrameWidgetClass {
     OffsetBottom -640
    }
    Opacity 0.9
-   Color 0.007 0.012 0.014 0.9
+   Color 0.01 0.01 0.01 0.92
   }
   FrameWidgetClass "{C1A2B3D4E5F6A7C3}" {
    Name "KillListHeaderFrame"
@@ -64,7 +81,7 @@ FrameWidgetClass {
       SizeY 50
       OffsetBottom -50
      }
-     Color 0.007 0.012 0.014 1
+     Color 0.01 0.01 0.01 1
     }
     OverlayWidgetClass "{C1A2B3D4E5F6A7C7}" {
      Name "KillListHeaderTextOverlay"
@@ -191,14 +208,14 @@ FrameWidgetClass {
              Name "YourKillsCountBadge"
              Slot FrameWidgetSlot "{C1A2B3D4E5F6B109}" {
               Anchor 0 0 0 0
-              PositionX 444
-              OffsetLeft 444
-              PositionY 3
-              OffsetTop 3
+              PositionX 442.011
+              OffsetLeft 442.011
+              PositionY 3.181
+              OffsetTop 3.181
               SizeX 28
-              OffsetRight -472
+              OffsetRight -470.011
               SizeY 18
-              OffsetBottom -21
+              OffsetBottom -21.181
              }
              Color 0.85 0.65 0.15 0.2
             }
@@ -206,12 +223,12 @@ FrameWidgetClass {
              Name "YourKillsCount"
              Slot FrameWidgetSlot "{C1A2B3D4E5F6B10A}" {
               Anchor 0 0 0 0
-              PositionX 444
-              OffsetLeft 444
+              PositionX 442.192
+              OffsetLeft 442.192
               PositionY 3
               OffsetTop 3
               SizeX 28
-              OffsetRight -472
+              OffsetRight -470.192
               SizeY 18
               OffsetBottom -21
              }
@@ -310,14 +327,14 @@ FrameWidgetClass {
              Name "TeamKillsCountBadge"
              Slot FrameWidgetSlot "{C1A2B3D4E5F6B209}" {
               Anchor 0 0 0 0
-              PositionX 444
-              OffsetLeft 444
-              PositionY 3
-              OffsetTop 3
+              PositionX 442.192
+              OffsetLeft 442.192
+              PositionY 2.638
+              OffsetTop 2.638
               SizeX 28
-              OffsetRight -472
+              OffsetRight -470.192
               SizeY 18
-              OffsetBottom -21
+              OffsetBottom -20.638
              }
              Color 0.9 0.25 0.25 0.2
             }
@@ -325,14 +342,14 @@ FrameWidgetClass {
              Name "TeamKillsCount"
              Slot FrameWidgetSlot "{C1A2B3D4E5F6B20A}" {
               Anchor 0 0 0 0
-              PositionX 444
-              OffsetLeft 444
-              PositionY 3
-              OffsetTop 3
+              PositionX 442.192
+              OffsetLeft 442.192
+              PositionY 2.638
+              OffsetTop 2.638
               SizeX 28
-              OffsetRight -472
+              OffsetRight -470.192
               SizeY 18
-              OffsetBottom -21
+              OffsetBottom -20.638
              }
              Color 0.9 0.25 0.25 1
              Text "0"

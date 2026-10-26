@@ -913,14 +913,58 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		if (killListManager)
 			killListManager.FillKillInfoWeaponAndDistance(playerEntity, killerEntity, killerPlayerId, killInfo);
 
+		killInfo.m_iMatchTimeSeconds = Math.Round(GetElapsedTime());
+
+		// Resolve victim faction: in-world entity first, then slot prefab, then player faction
+		FactionKey victimFaction = "";
+		if (playerEntity)
+		{
+			SCR_ChimeraCharacter vChar = SCR_ChimeraCharacter.Cast(playerEntity);
+			if (vChar && vChar.GetFaction())
+				victimFaction = vChar.GetFaction().GetFactionKey();
+			else
+			{
+				FactionAffiliationComponent fAffil = FactionAffiliationComponent.Cast(playerEntity.FindComponent(FactionAffiliationComponent));
+				if (fAffil && fAffil.GetAffiliatedFaction())
+					victimFaction = fAffil.GetAffiliatedFaction().GetFactionKey();
+			}
+		}
+		if (victimFaction == "" && playerId > 0 && pm)
+		{
+			victimFaction = pm.GetSlotFactionForPlayer(playerId);
+			if (victimFaction == "")
+				victimFaction = pm.GetPlayerFactionKey(playerId);
+			if (victimFaction == "")
+				victimFaction = pm.GetPlayerFactionKeyRemembered(playerId);
+		}
+		killInfo.m_sVictimFactionKey = victimFaction;
+
+		// Resolve killer faction: in-world entity (character or vehicle), then slot prefab, then player faction
+		FactionKey killerFaction = "";
+		if (killerEntity)
+		{
+			SCR_ChimeraCharacter kChar = SCR_ChimeraCharacter.Cast(killerEntity);
+			if (kChar && kChar.GetFaction())
+				killerFaction = kChar.GetFaction().GetFactionKey();
+			else
+			{
+				FactionAffiliationComponent fAffil = FactionAffiliationComponent.Cast(killerEntity.FindComponent(FactionAffiliationComponent));
+				if (fAffil && fAffil.GetAffiliatedFaction())
+					killerFaction = fAffil.GetAffiliatedFaction().GetFactionKey();
+			}
+		}
+		if (killerFaction == "" && killerPlayerId > 0 && pm)
+		{
+			killerFaction = pm.GetSlotFactionForPlayer(killerPlayerId);
+			if (killerFaction == "")
+				killerFaction = pm.GetPlayerFactionKey(killerPlayerId);
+			if (killerFaction == "")
+				killerFaction = pm.GetPlayerFactionKeyRemembered(killerPlayerId);
+		}
+		killInfo.m_sKillerFactionKey = killerFaction;
+
 		if (playerId > 0 && killerPlayerId > 0 && pm)
 		{
-			// Use the REMEMBERED faction: a just-killed victim is switched to the body-less spectator state in
-			// the SAME frame, which clears their live faction to "" (PS_PlayableManager slot-apply) BEFORE this
-			// 0ms-deferred broadcast runs. So GetPlayerFactionKey(victim) is empty here and same-faction kills
-			// were wrongly counted as regular kills. The remembered map keeps the last non-empty faction.
-			FactionKey victimFaction = pm.GetPlayerFactionKeyRemembered(playerId);
-			FactionKey killerFaction = pm.GetPlayerFactionKeyRemembered(killerPlayerId);
 			if (victimFaction != "" && victimFaction == killerFaction && playerId != killerPlayerId)
 				killInfo.m_bIsTeamKill = true;
 		}
@@ -933,10 +977,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 	protected string BuildKillData(PS_KillInfo killInfo)
 	{
-		// 10 fields: keep the legacy 9-field prefix and append weaponName for mixed-version parsing.
-		// The client parses this with Split("|", parts, true), which DROPS empty tokens, so empty string
-		// fields are sent as "-" (KillDataField) to keep the field count stable - otherwise indices shift and
-		// the whole kill is discarded. Numeric fields are never empty. PS_KillInfo treats "-" as empty.
+		// 16 fields: stable framing across all spectator kill list fields
 		string killData;
 		killData = killInfo.m_iVictimPlayerId.ToString();
 		killData = killData + "|" + killInfo.m_iKillerPlayerId.ToString();
@@ -953,6 +994,12 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			tk = "0";
 		killData = killData + "|" + tk;
 		killData = killData + "|" + KillDataField(killInfo.m_sWeaponName);
+		killData = killData + "|" + killInfo.m_iMatchTimeSeconds.ToString();
+		killData = killData + "|" + KillDataField(killInfo.m_sVictimFactionKey);
+		killData = killData + "|" + KillDataField(killInfo.m_sKillerFactionKey);
+		killData = killData + "|" + KillDataField(killInfo.m_sWeaponIconPath);
+		killData = killData + "|" + killInfo.m_iMagazineCapacity.ToString();
+		killData = killData + "|" + KillDataField(killInfo.m_sAmmoCaliber);
 		return killData;
 	}
 

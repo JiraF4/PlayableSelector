@@ -1,222 +1,565 @@
 SizeLayoutWidgetClass {
  Name "KillListEntry"
- Slot LayoutSlot "{C0A1B2D3E4F5A6C2}" {
-  Padding 0 2 0 2
+ Slot LayoutSlot "{36A7F9539FAE4EB4}" {
+  Padding 0 3 0 3
   HorizontalAlign 3
  }
  AllowWidthOverride 1
  WidthOverride 480
  AllowHeightOverride 1
- HeightOverride 46
+ HeightOverride 54
  {
-  FrameWidgetClass "{C0A1B2D3E4F5A6C3}" {
+  FrameWidgetClass "{2135257364B84122}" {
    Name "CardFrame"
-   Slot AlignableSlot "{C0A1B2D3E4F5A6C4}" {
+   Slot AlignableSlot "{0A3529FA567F4F59}" {
     HorizontalAlign 3
     VerticalAlign 3
    }
    {
-    ImageWidgetClass "{C0A1B2D3E4F5A6C5}" {
+    ImageWidgetClass "{AEC71622D8704787}" {
      Name "CardBackground"
-     Slot FrameWidgetSlot "{C0A1B2D3E4F5A6C6}" {
+     Slot FrameWidgetSlot "{B33CAED5360D4F56}" {
       Anchor 0 0 0 0
       PositionX 0
       OffsetLeft 0
-      PositionY 0
       OffsetTop 0
       SizeX 480
       OffsetRight -480
-      SizeY 46
-      OffsetBottom -46
+      SizeY 54
+      OffsetBottom -54
      }
-     Color 0 0 0 0.5
+     Color 0.015 0.015 0.015 0.88
     }
-    PanelWidgetClass "{C0A1B2D3E4F5A6C7}" {
+    PanelWidgetClass "{E88DD019C24A484D}" {
      Name "CardBorder"
-     Slot FrameWidgetSlot "{C0A1B2D3E4F5A6C8}" {
+     Slot FrameWidgetSlot "{A5A3FBFBF9314D89}" {
       Anchor 0 0 0 0
       PositionX 0
       OffsetLeft 0
-      PositionY 0
       OffsetTop 0
       SizeX 480
       OffsetRight -480
-      SizeY 46
-      OffsetBottom -46
+      SizeY 54
+      OffsetBottom -54
      }
-     Color 0.08 0.12 0.14 0.35
+     Color 0.12 0.12 0.12 0.4
      style pixel_outline
     }
-    ImageWidgetClass "{C0A1B2D3E4F5A6C9}" {
+    ImageWidgetClass "{A1B8A49EFA77448E}" {
      Name "AccentBar"
-     Slot FrameWidgetSlot "{C0A1B2D3E4F5A6CA}" {
+     Slot FrameWidgetSlot "{CBAA7036D6AE4800}" {
       Anchor 0 0 0 0
       PositionX 0
       OffsetLeft 0
-      PositionY 0
-      OffsetTop 0
+      PositionY 3
+      OffsetTop 3
       SizeX 4
       OffsetRight -4
-      SizeY 46
-      OffsetBottom -46
+      SizeY 48
+      OffsetBottom -51
      }
-     Color 0.85 0.65 0.15 1
+     Color 0.92 0.76 0.15 1
     }
-    TextWidgetClass "{C0A1B2D3E4F5A6CB}" {
-     Name "IndexText"
-     Slot FrameWidgetSlot "{C0A1B2D3E4F5A6CC}" {
+    FrameWidgetClass "{8BF5FB3FEAEC4227}" {
+     Name "TimeBadge"
+     Slot FrameWidgetSlot "{B69CD0F8A1134FAF}" {
       Anchor 0 0 0 0
       PositionX 10
       OffsetLeft 10
-      PositionY 4
-      OffsetTop 4
-      SizeX 24
-      OffsetRight -34
+      PositionY 6
+      OffsetTop 6
+      SizeX 42
+      OffsetRight -52
       SizeY 18
-      OffsetBottom -22
-     }
-     Color 0.85 0.65 0.15 1
-     Text "01"
-     "Font Size" 13
-     "Min Font Size" 13
-     "Vertical Alignment" Center
-    }
-    ImageWidgetClass "{C0A1B2D3E4F5A6CD}" {
-     Name "DeadIcon"
-     Slot FrameWidgetSlot "{C0A1B2D3E4F5A6CE}" {
-      Anchor 0 0 0 0
-      PositionX 12
-      OffsetLeft 12
-      PositionY 5
-      OffsetTop 5
-      SizeX 16
-      OffsetRight -28
-      SizeY 16
-      OffsetBottom -21
-     }
-     "Is Visible" 0
-     Color 0.86 0.15 0.15 1
-     Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
-     Image "death"
-     Size 16 16
-    }
-    TextWidgetClass "{C0A1B2D3E4F5A6CF}" {
-     Name "PlayerNameText"
-     Slot FrameWidgetSlot "{C0A1B2D3E4F5A6D0}" {
-      Anchor 0 0 0 0
-      PositionX 38
-      OffsetLeft 38
-      PositionY 4
-      OffsetTop 4
-      SizeX 270
-      OffsetRight -308
-      SizeY 18
-      OffsetBottom -22
-     }
-     Color 1 1 1 1
-     Text "Player"
-     "Font Size" 13
-     "Min Font Size" 13
-     "Vertical Alignment" Center
-    }
-    TextWidgetClass "{C0A1B2D3E4F5A6D1}" {
-     Name "DistanceText"
-     Slot FrameWidgetSlot "{C0A1B2D3E4F5A6D2}" {
-      Anchor 0 0 0 0
-      PositionX 316
-      OffsetLeft 316
-      PositionY 4
-      OffsetTop 4
-      SizeX 60
-      OffsetRight -376
-      SizeY 18
-      OffsetBottom -22
-     }
-     Color 0.38 0.68 0.88 1
-     Text "270м"
-     "Font Size" 12
-     "Min Font Size" 12
-     "Horizontal Alignment" Right
-     "Vertical Alignment" Center
-    }
-    ImageWidgetClass "{C0A1B2D3E4F5A6D3}" {
-     Name "HitZoneBg"
-     Slot FrameWidgetSlot "{C0A1B2D3E4F5A6D4}" {
-      Anchor 0 0 0 0
-      PositionX 384
-      OffsetLeft 384
-      PositionY 4
-      OffsetTop 4
-      SizeX 88
-      OffsetRight -472
-      SizeY 18
-      OffsetBottom -22
-     }
-     Color 0.06 0.085 0.095 0.85
-    }
-    TextWidgetClass "{C0A1B2D3E4F5A6D5}" {
-     Name "HitZoneText"
-     Slot FrameWidgetSlot "{C0A1B2D3E4F5A6D6}" {
-      Anchor 0 0 0 0
-      PositionX 384
-      OffsetLeft 384
-      PositionY 4
-      OffsetTop 4
-      SizeX 88
-      OffsetRight -472
-      SizeY 18
-      OffsetBottom -22
-     }
-     Color 0.82 0.85 0.88 1
-     Text "Голова"
-     "Font Size" 11
-     "Min Font Size" 11
-     "Horizontal Alignment" Center
-     "Vertical Alignment" Center
-    }
-    HorizontalLayoutWidgetClass "{C0A1B2D3E4F5A6D7}" {
-     Name "BottomRow"
-     Slot FrameWidgetSlot "{C0A1B2D3E4F5A6D8}" {
-      Anchor 0 0 0 0
-      PositionX 38
-      OffsetLeft 38
-      PositionY 24
-      OffsetTop 24
-      SizeX 434
-      OffsetRight -472
-      SizeY 18
-      OffsetBottom -42
+      OffsetBottom -24
      }
      {
-      TextWidgetClass "{C0A1B2D3E4F5A6D9}" {
+      ImageWidgetClass "{D18BA6ADA74C4D3E}" {
+       Name "TimeBg"
+       Slot FrameWidgetSlot "{03FBE8FE9AC346C5}" {
+        Anchor 0 0 0 0
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX 42
+        OffsetRight -42
+        SizeY 18
+        OffsetBottom -18
+       }
+       Color 0.03 0.03 0.03 0.85
+      }
+      PanelWidgetClass "{0DE0B06A9FF6465E}" {
+       Name "TimeBorder"
+       Slot FrameWidgetSlot "{7497935D66B3402B}" {
+        Anchor 0 0 0 0
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX 42
+        OffsetRight -42
+        SizeY 18
+        OffsetBottom -18
+       }
+       Color 0.12 0.12 0.12 0.4
+       style pixel_outline
+      }
+      TextWidgetClass "{8B733D497D0C4671}" {
+       Name "TimeText"
+       Slot FrameWidgetSlot "{55534563FEE54F69}" {
+        Anchor 0 0 0 0
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX 42
+        OffsetRight -42
+        SizeY 18
+        OffsetBottom -18
+       }
+       Color 0.85 0.85 0.85 1
+       Text "00:00"
+       "Font Size" 11
+       "Min Font Size" 11
+       "Horizontal Alignment" Center
+       "Vertical Alignment" Center
+      }
+     }
+    }
+    FrameWidgetClass "{9ACD0F694D974AD1}" {
+     Name "IndexBadge"
+     Slot FrameWidgetSlot "{CF62DC25F9D54A93}" {
+      Anchor 0 0 0 0
+      PositionX 56
+      OffsetLeft 56
+      PositionY 6
+      OffsetTop 6
+      SizeX 26
+      OffsetRight -82
+      SizeY 18
+      OffsetBottom -24
+     }
+     {
+      ImageWidgetClass "{FF32F32A254D48C1}" {
+       Name "IndexBg"
+       Slot FrameWidgetSlot "{C4480F3CC5A3436F}" {
+        Anchor 0 0 1 1
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX 0
+        OffsetRight 0
+        SizeY 0
+        OffsetBottom 0
+       }
+       Color 0.03 0.03 0.03 0.85
+      }
+      PanelWidgetClass "{FF32F32A254D48C2}" {
+       Name "IndexBorder"
+       Slot FrameWidgetSlot "{C4480F3CC5A34370}" {
+        Anchor 0 0 1 1
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX 0
+        OffsetRight 0
+        SizeY 0
+        OffsetBottom 0
+       }
+       Color 0.12 0.12 0.12 0.4
+       style pixel_outline
+      }
+      TextWidgetClass "{FF32F32A254D48C0}" {
+       Name "IndexText"
+       Slot FrameWidgetSlot "{C4480F3CC5A3436E}" {
+        Anchor 0 0 0 0
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX 26
+        OffsetRight -26
+        SizeY 18
+        OffsetBottom -18
+       }
+       Color 0.88 0.88 0.88 1
+       Text "01"
+       "Font Size" 11
+       "Min Font Size" 11
+       "Horizontal Alignment" Center
+       "Vertical Alignment" Center
+      }
+     }
+    }
+    HorizontalLayoutWidgetClass "{6A8E192B4F817D50}" {
+     Name "PlayerRow"
+     Slot FrameWidgetSlot "{6A8E192B4F817D51}" {
+      Anchor 0 0 0 0
+      PositionX 88
+      OffsetLeft 88
+      PositionY 6
+      OffsetTop 6
+      SizeX 246
+      OffsetRight -334
+      SizeY 18
+      OffsetBottom -24
+     }
+     {
+      TextWidgetClass "{81D88BFFDE354705}" {
+       Name "PlayerNameText"
+       Slot LayoutSlot "{60AD9E20C7FB4704}" {
+        Padding 0 0 6 0
+        VerticalAlign 3
+       }
+       Color 1 1 1 1
+       Text "Player"
+       "Font Size" 13
+       "Min Font Size" 13
+       "Vertical Alignment" Center
+      }
+      FrameWidgetClass "{1C134AA9D6334663}" {
+       Name "FactionBadge"
+       Slot LayoutSlot "{53B234E5BDF74213}" {
+        VerticalAlign 3
+       }
+       {
+        ImageWidgetClass "{A8B6B575E4AD48B9}" {
+         Name "FactionBg"
+         Slot FrameWidgetSlot "{38A7680313144643}" {
+          Anchor 0 0 0 0
+          PositionX 0
+          OffsetLeft 0
+          PositionY 0
+          OffsetTop 0
+          SizeX 50
+          OffsetRight -50
+          SizeY 18
+          OffsetBottom -18
+         }
+         Color 0.75 0.15 0.15 1
+        }
+        PanelWidgetClass "{0194E720DAFB4B0F}" {
+         Name "FactionBorder"
+         Slot FrameWidgetSlot "{C1C4F51E8DC74B9B}" {
+          Anchor 0 0 0 0
+          PositionX 0
+          OffsetLeft 0
+          PositionY 0
+          OffsetTop 0
+          SizeX 50
+          OffsetRight -50
+          SizeY 18
+          OffsetBottom -18
+         }
+         Color 0.12 0.12 0.12 0.35
+         style pixel_outline
+        }
+        TextWidgetClass "{16AC09B01B1F4668}" {
+         Name "FactionText"
+         Slot FrameWidgetSlot "{F96C0FCB9913460E}" {
+          Anchor 0 0 0 0
+          PositionX 0
+          OffsetLeft 0
+          PositionY 0
+          OffsetTop 0
+          SizeX 50
+          OffsetRight -50
+          SizeY 18
+          OffsetBottom -18
+         }
+         Color 1 1 1 1
+         Text "ВС РФ"
+         "Font Size" 10
+         "Min Font Size" 8
+         "Horizontal Alignment" Center
+         "Vertical Alignment" Center
+        }
+       }
+      }
+     }
+    }
+    FrameWidgetClass "{88F985AE8C0C417F}" {
+     Name "MetaBadge"
+     Slot FrameWidgetSlot "{5AB7D0C12976472E}" {
+      Anchor 0 0 0 0
+      PositionX 340
+      OffsetLeft 340
+      PositionY 6
+      OffsetTop 6
+      SizeX 132
+      OffsetRight -472
+      SizeY 18
+      OffsetBottom -24
+     }
+     {
+      ImageWidgetClass "{170E5086B4D844E3}" {
+       Name "MetaBg"
+       Slot FrameWidgetSlot "{8E861E31C01B4D8B}" {
+        Anchor 0 0 0 0
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX 132
+        OffsetRight -132
+        SizeY 18
+        OffsetBottom -18
+       }
+       Color 0.03 0.03 0.03 0.85
+      }
+      PanelWidgetClass "{22544D0F672447ED}" {
+       Name "MetaBorder"
+       Slot FrameWidgetSlot "{A5951FBA271D4820}" {
+        Anchor 0 0 0 0
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX 132
+        OffsetRight -132
+        SizeY 18
+        OffsetBottom -18
+       }
+       Color 0.12 0.12 0.12 0.4
+       style pixel_outline
+      }
+      HorizontalLayoutWidgetClass "{5232A4D5D9474AEA}" {
+       Name "MetaContent"
+       Slot FrameWidgetSlot "{9EABBD096AC643EE}" {
+        Anchor 0 0 0 0
+        PositionX 0
+        OffsetLeft 0
+        PositionY 0
+        OffsetTop 0
+        SizeX 132
+        OffsetRight -132
+        SizeY 18
+        OffsetBottom -18
+       }
+       {
+        TextWidgetClass "{B38C8FD140F346C2}" {
+         Name "DistanceText"
+         Slot LayoutSlot "{40D9720B6FD64984}" {
+          HorizontalAlign 2
+          VerticalAlign 3
+          Padding 6 0 2 0
+         }
+         Color 0.92 0.78 0.45 1
+         Text "0 м"
+         "Font Size" 11
+         "Min Font Size" 11
+         "Vertical Alignment" Center
+        }
+        TextWidgetClass "{389A9456536F496C}" {
+         Name "MetaDivider"
+         Slot LayoutSlot "{99F757F0A5104111}" {
+          HorizontalAlign 2
+          VerticalAlign 3
+          Padding 2 0 2 0
+         }
+         Color 0.45 0.45 0.45 1
+         Text " • "
+         "Font Size" 11
+         "Min Font Size" 11
+         "Vertical Alignment" Center
+        }
+        ImageWidgetClass "{78EE647056FF41C8}" {
+         Name "HeadshotIcon"
+         Slot LayoutSlot "{81E58F7039884D61}" {
+          HorizontalAlign 2
+          VerticalAlign 3
+          Padding 2 2 1 2
+         }
+         "Is Visible" 0
+         Color 0.88 0.22 0.22 1
+         Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
+         Image "death"
+         Size 13 13
+        }
+        TextWidgetClass "{1FAB0338F45F4628}" {
+         Name "HitZoneText"
+         Slot LayoutSlot "{81E58F7039884D60}" {
+          HorizontalAlign 2
+          VerticalAlign 3
+          Padding 2 0 6 0
+         }
+         Color 0.95 0.95 0.95 1
+         Text "ЖИВОТ"
+         "Font Size" 11
+         "Min Font Size" 11
+         "Vertical Alignment" Center
+        }
+       }
+      }
+     }
+    }
+    HorizontalLayoutWidgetClass "{26FAB71FDFD441BD}" {
+     Name "BottomRow"
+     Slot FrameWidgetSlot "{760883D390F04E04}" {
+      Anchor 0 0 0 0
+      PositionX 56
+      OffsetLeft 56
+      PositionY 28
+      OffsetTop 28
+      SizeX 420
+      OffsetRight -476
+      SizeY 22
+      OffsetBottom -50
+     }
+     {
+      SizeLayoutWidgetClass "{F1C2B3A4D5E60001}" {
+       Name "WeaponIconSlot"
+       Slot LayoutSlot "{F1C2B3A4D5E60002}" {
+        Padding 0 0 6 0
+        VerticalAlign 3
+       }
+       AllowWidthOverride 1
+       WidthOverride 58
+       AllowHeightOverride 1
+       HeightOverride 20
+       {
+        FrameWidgetClass "{F1C2B3A4D5E60003}" {
+         Name "WeaponIconFrame"
+         Slot AlignableSlot "{F1C2B3A4D5E60004}" {
+          HorizontalAlign 3
+          VerticalAlign 3
+         }
+         {
+          ItemPreviewWidgetClass "{F1C2B3A4D5E60005}" {
+           Name "WeaponPreview"
+           Slot FrameWidgetSlot "{F1C2B3A4D5E60006}" {
+            Anchor 0 0 1 1
+            PositionX 0
+            OffsetLeft 0
+            PositionY 0
+            OffsetTop 0
+            SizeX 0
+            OffsetRight 0
+            SizeY 0
+            OffsetBottom 0
+           }
+           "Is Visible" 0
+           "Use Engine Scale" 0
+           xscale 4
+           yscale 4
+           Format LDR
+           "Use clear color" 1
+           "Clear Color" 0 0 0 0
+           "Blend mode" Blend
+          }
+          ImageWidgetClass "{0D7ED622F48F4E86}" {
+           Name "WeaponIcon"
+           Slot FrameWidgetSlot "{F1C2B3A4D5E60007}" {
+            Anchor 0 0 1 1
+            PositionX 0
+            OffsetLeft 0
+            PositionY 0
+            OffsetTop 0
+            SizeX 0
+            OffsetRight 0
+            SizeY 0
+            OffsetBottom 0
+           }
+           "Is Visible" 0
+           Color 0.88 0.88 0.88 1
+          }
+         }
+        }
+       }
+      }
+      TextWidgetClass "{D2677591AAC84F94}" {
        Name "WeaponNameText"
-       Slot LayoutSlot "{C0A1B2D3E4F5A6DA}" {
+       Slot LayoutSlot "{C326799BE1044CE1}" {
+        VerticalAlign 3
        }
-       Color 0.82 0.74 0.52 1
-       Text "АК-74М"
+       Color 0.88 0.88 0.88 1
+       Text "AK-74"
        "Font Size" 11
-       "Min Font Size" 11
+       "Min Font Size" 9
        "Vertical Alignment" Center
       }
-      TextWidgetClass "{C0A1B2D3E4F5A6DB}" {
+      TextWidgetClass "{19ADAC18F9924176}" {
        Name "BulletDivider"
-       Slot LayoutSlot "{C0A1B2D3E4F5A6DC}" {
-        Padding 6 0 6 0
+       Slot LayoutSlot "{7D9E4C17FEC94A39}" {
+        Padding 4 0 4 0
+        VerticalAlign 3
        }
-       Color 0.45 0.48 0.52 1
-       Text "|"
+       Color 0.45 0.45 0.45 1
+       Text " • "
        "Font Size" 11
        "Min Font Size" 11
        "Vertical Alignment" Center
       }
-      TextWidgetClass "{C0A1B2D3E4F5A6DD}" {
+      TextWidgetClass "{7B5E8310ED99463D}" {
        Name "MagazineText"
-       Slot LayoutSlot "{C0A1B2D3E4F5A6DE}" {
+       Slot LayoutSlot "{CFE0FAB96578449B}" {
+        VerticalAlign 3
        }
-       Color 0.62 0.65 0.7 1
-       Text "30Птр 6Л23 (7N22)"
+       Color 0.68 0.68 0.68 1
+       Text "30 птр"
+       "Font Size" 11
+       "Min Font Size" 9
+       "Vertical Alignment" Center
+      }
+      TextWidgetClass "{395012E8836D44E4}" {
+       Name "Divider2"
+       Slot LayoutSlot "{8F69919C6F8E412F}" {
+        Padding 4 0 4 0
+        VerticalAlign 3
+       }
+       Color 0.45 0.45 0.45 1
+       Text " • "
        "Font Size" 11
        "Min Font Size" 11
+       "Vertical Alignment" Center
+      }
+      TextWidgetClass "{55705023F25C4994}" {
+       Name "AmmoDetailText"
+       Slot LayoutSlot "{7EA05567D5AB425B}" {
+        VerticalAlign 3
+       }
+       Color 0.68 0.68 0.68 1
+       Text "7N10/7T3"
+       "Font Size" 11
+       "Min Font Size" 9
+       "Vertical Alignment" Center
+      }
+      TextWidgetClass "{B1C2D3E4F5A60010}" {
+       Name "Divider3"
+       Slot LayoutSlot "{B1C2D3E4F5A60011}" {
+        Padding 4 0 4 0
+        VerticalAlign 3
+       }
+       "Is Visible" 0
+       Color 0.45 0.45 0.45 1
+       Text " • "
+       "Font Size" 11
+       "Min Font Size" 11
+       "Vertical Alignment" Center
+      }
+      ImageWidgetClass "{B1C2D3E4F5A60012}" {
+       Name "AmmoTypeIcon"
+       Slot LayoutSlot "{B1C2D3E4F5A60013}" {
+        Padding 0 0 4 0
+        VerticalAlign 3
+       }
+       "Is Visible" 0
+       Color 0.88 0.88 0.88 1
+       Size 14 14
+      }
+      TextWidgetClass "{B1C2D3E4F5A60014}" {
+       Name "AmmoTypeText"
+       Slot LayoutSlot "{B1C2D3E4F5A60015}" {
+        VerticalAlign 3
+       }
+       "Is Visible" 0
+       Color 0.78 0.78 0.78 1
+       Text "AP"
+       "Font Size" 11
+       "Min Font Size" 9
        "Vertical Alignment" Center
       }
      }

@@ -11,6 +11,13 @@ class PS_KillInfo
 	int m_eLastHitZoneGroup;
 	bool m_bIsTeamKill;
 
+	int m_iMatchTimeSeconds;
+	string m_sVictimFactionKey;
+	string m_sKillerFactionKey;
+	ResourceName m_sWeaponIconPath;
+	int m_iMagazineCapacity = -1;
+	string m_sAmmoCaliber;
+
 	// Plain-English hit zone (NOT a localization key): the row is built by concatenation, so an embedded
 	// "#..." key would be shown raw by the TextWidget (only a whole-string key is auto-translated).
 	static string HitZoneGroupToString(int group)
@@ -62,32 +69,153 @@ class PS_KillInfo
 	string GetFormattedDistance()
 	{
 		if (m_fDistance < 0)
-			return "";
+			return "—";
 		int meters = Math.Round(m_fDistance);
-		bool isRu = (WidgetManager.Translate("#PS-KillList_Head") == "Голова");
+		bool isRu = (WidgetManager.Translate("#PS-KillList_Head") == "ГОЛОВА" || WidgetManager.Translate("#PS-KillList_Head") == "Голова");
 		if (isRu)
-			return meters.ToString() + "м";
-		return meters.ToString() + "m";
+			return meters.ToString() + " м";
+		return meters.ToString() + " m";
+	}
+
+	string GetFormattedTimestamp()
+	{
+		int totalSeconds = m_iMatchTimeSeconds;
+		if (totalSeconds < 0)
+			totalSeconds = 0;
+		int minutes = totalSeconds / 60;
+		int seconds = totalSeconds % 60;
+		string sMinutes = minutes.ToString();
+		if (minutes < 10)
+			sMinutes = "0" + sMinutes;
+		string sSeconds = seconds.ToString();
+		if (seconds < 10)
+			sSeconds = "0" + sSeconds;
+		return sMinutes + ":" + sSeconds;
+	}
+
+	static string FactionKeyToDisplayName(string factionKey)
+	{
+		factionKey = Clean(factionKey);
+		if (factionKey == "")
+			return "—";
+
+		FactionManager fMgr = GetGame().GetFactionManager();
+		if (fMgr)
+		{
+			Faction faction = fMgr.GetFactionByKey(factionKey);
+			if (faction)
+			{
+				string name = faction.GetFactionName();
+				if (name != "")
+					return WidgetManager.Translate(name);
+			}
+		}
+		return "—";
+	}
+
+	string GetVictimFactionDisplayName()
+	{
+		return FactionKeyToDisplayName(m_sVictimFactionKey);
+	}
+
+	string GetKillerFactionDisplayName()
+	{
+		return FactionKeyToDisplayName(m_sKillerFactionKey);
 	}
 
 	string GetWeaponDisplayName()
 	{
 		string weapon = Clean(m_sWeaponName);
+		if (weapon == "")
+			return "—";
 		if (weapon.StartsWith("#"))
 			weapon = WidgetManager.Translate(weapon);
 		return weapon;
 	}
 
+	string GetAmmoName()
+	{
+		string ammo = Clean(m_sAmmoType);
+		if (ammo == "")
+			return "";
+		if (ammo.Contains("#"))
+		{
+			array<string> parts = {};
+			ammo.Split("#", parts, false);
+			if (parts.Count() > 0)
+			{
+				string name = parts[0];
+				if (name.StartsWith("#"))
+					name = WidgetManager.Translate(name);
+				return name;
+			}
+		}
+		if (ammo.StartsWith("#"))
+			ammo = WidgetManager.Translate(ammo);
+		return ammo;
+	}
+
+	int GetAmmoTypeFlags()
+	{
+		string ammo = Clean(m_sAmmoType);
+		if (ammo.Contains("#"))
+		{
+			array<string> parts = {};
+			ammo.Split("#", parts, false);
+			if (parts.Count() > 1)
+				return parts[1].ToInt();
+		}
+		return 0;
+	}
+
+	string GetAmmoTypeName()
+	{
+		string ammo = Clean(m_sAmmoType);
+		if (ammo.Contains("#"))
+		{
+			array<string> parts = {};
+			ammo.Split("#", parts, false);
+			if (parts.Count() > 2)
+				return parts[2];
+		}
+		return "";
+	}
+
 	string GetMagazineDisplayName()
 	{
-		string magazine = Clean(m_sAmmoType);
-		if (magazine.StartsWith("#"))
-			magazine = WidgetManager.Translate(magazine);
-		return magazine;
+		return GetAmmoName();
+	}
+
+	string GetFormattedMagazine()
+	{
+		if (m_iMagazineCapacity <= 0)
+			return "";
+		bool isRu = (WidgetManager.Translate("#PS-KillList_Head") == "ГОЛОВА" || WidgetManager.Translate("#PS-KillList_Head") == "Голова");
+		if (isRu)
+			return m_iMagazineCapacity.ToString() + " птр";
+		return m_iMagazineCapacity.ToString() + " rnds";
+	}
+
+	string GetFormattedCaliber()
+	{
+		string cal = Clean(m_sAmmoCaliber);
+		if (cal.StartsWith("#"))
+			cal = WidgetManager.Translate(cal);
+
+		string ammoName = GetAmmoName();
+		if (cal != "" && ammoName != "")
+		{
+			if (ammoName.Contains(cal))
+				return ammoName;
+			return cal + " (" + ammoName + ")";
+		}
+		if (cal != "")
+			return cal;
+		return ammoName;
 	}
 
 	// Empty fields are sent as "-" placeholders (so the pipe-split never drops a token); treat them as empty.
-	protected static string Clean(string value)
+	static string Clean(string value)
 	{
 		if (value == "-")
 			return "";
@@ -157,15 +285,9 @@ class PS_KillInfo
 		if (distance != "")
 			result += "  " + distance;
 
-		string ammo = Clean(m_sAmmoType);
+		string ammo = GetAmmoName();
 		if (ammo != "")
-		{
-			// Ammo comes through as a localization key (e.g. "#AR-AmmoType_AK_FMJ_Tracer"); resolve it so the
-			// row shows the real caliber instead of the raw key (concatenated text is not auto-translated).
-			if (ammo.StartsWith("#"))
-				ammo = WidgetManager.Translate(ammo);
 			result += "  [" + ammo + "]";
-		}
 
 		string hitZone = HitZoneGroupToString(m_eLastHitZoneGroup);
 		if (hitZone != "")
