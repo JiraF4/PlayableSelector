@@ -93,7 +93,7 @@ class PS_VehicleHold
 		return null;
 	}
 
-	//! Server: every vehicle in the world; airborne helicopters are pinned, the rest stopped.
+	//! Server: pin all vehicles in the world to freeze physics instantly.
 	void PinAll_S()
 	{
 		BaseWorld world = GetGame().GetWorld();
@@ -165,17 +165,14 @@ class PS_VehicleHold
 			return true;
 
 		HelicopterControllerComponent heli = HelicopterControllerComponent.Cast(entity.FindComponent(HelicopterControllerComponent));
-		if (heli)
-		{
-			float agl = MeasureAltitudeAGL(entity);
-			if (agl > AIRBORNE_AGL_M)
-			{
-				Pin_S(entity, heli, agl);
-				return true;
-			}
-		}
+		CarControllerComponent car = CarControllerComponent.Cast(vehicle.FindComponent(CarControllerComponent));
+		TrackedControllerComponent tracked = TrackedControllerComponent.Cast(vehicle.FindComponent(TrackedControllerComponent));
 
-		Stop_S(entity, heli);
+		float agl = 0;
+		if (heli)
+			agl = MeasureAltitudeAGL(entity);
+
+		Pin_S(entity, heli, car, tracked, agl);
 		return true;
 	}
 
@@ -215,14 +212,20 @@ class PS_VehicleHold
 		m_aStopped.Insert(stopped);
 	}
 
-	protected void Pin_S(notnull IEntity vehicle, notnull HelicopterControllerComponent heli, float agl)
+	protected void Pin_S(notnull IEntity vehicle, HelicopterControllerComponent heli, CarControllerComponent car, TrackedControllerComponent tracked, float agl)
 	{
 		if (Find(vehicle))
 			return;
 
+		if (!heli && !car && !tracked)
+			return;
+
 		Physics physics = vehicle.GetPhysics();
 		if (!physics)
+		{
+			Stop_S(vehicle, heli);
 			return;
+		}
 
 		PS_PinnedVehicle pinned = new PS_PinnedVehicle();
 		pinned.m_Entity = vehicle;
@@ -237,16 +240,41 @@ class PS_VehicleHold
 		physics.SetVelocity(vector.Zero);
 		physics.SetAngularVelocity(vector.Zero);
 
-		if (!heli.IsEngineOn())
+		if (heli)
 		{
-			ForceStartEngineParams params = new ForceStartEngineParams();
-			params.m_bAirborne = true;
-			s_bStartingHeldEngine = true;
-			heli.ForceStartEngine(params);
-			s_bStartingHeldEngine = false;
+			if (agl > AIRBORNE_AGL_M)
+			{
+				if (!heli.IsEngineOn())
+				{
+					ForceStartEngineParams params = new ForceStartEngineParams();
+					params.m_bAirborne = true;
+					s_bStartingHeldEngine = true;
+					heli.ForceStartEngine(params);
+					s_bStartingHeldEngine = false;
+				}
+				Print(string.Format("[PS_Lobby] Hold: pinned %1 at %2 m AGL", Describe(vehicle), Math.Round(agl)), LogLevel.NORMAL);
+			}
+			else
+			{
+				heli.SetPersistentWheelBrake(true);
+				heli.SetAutohoverEnabled(true);
+				heli.StopEngine(false);
+				m_iStoppedAircraft++;
+			}
 		}
-
-		Print(string.Format("[PS_Lobby] Hold: pinned %1 at %2 m AGL", Describe(vehicle), Math.Round(agl)), LogLevel.NORMAL);
+		else if (car)
+		{
+			car.Shutdown();
+			car.StopEngine(false);
+			car.SetPersistentHandBrake(true);
+			m_iStoppedCars++;
+		}
+		else if (tracked)
+		{
+			tracked.Shutdown();
+			tracked.StopEngine(false);
+			m_iStoppedTracked++;
+		}
 	}
 
 	protected void TakeOwnership_S(notnull IEntity vehicle)
@@ -290,7 +318,7 @@ class PS_VehicleHold
 		m_aStopped.Clear();
 	}
 
-	//! Server: release physics, autohover on, return aircraft to pilot
+	//! Server: release physics, autohover on, return vehicle ownership to driver
 	void Release_S()
 	{
 		ReleaseStopped_S();
@@ -313,8 +341,9 @@ class PS_VehicleHold
 			if (heli)
 			{
 				heli.SetAutohoverEnabled(true);
-				GiveToPilot_S(vehicle, heli);
 			}
+
+			GiveToDriver_S(vehicle);
 
 			if (pinned.m_fMaxDrift > DRIFT_LOG_M)
 				Print(string.Format("[PS_Lobby] Hold: %1 drifted %2 m while pinned", Describe(vehicle), pinned.m_fMaxDrift), LogLevel.WARNING);
@@ -331,18 +360,23 @@ class PS_VehicleHold
 		m_aPinned.Clear();
 	}
 
-	protected void GiveToPilot_S(notnull IEntity vehicle, notnull HelicopterControllerComponent heli)
+	protected void GiveToDriver_S(notnull IEntity vehicle)
 	{
-		PilotCompartmentSlot pilotSlot = heli.GetPilotCompartmentSlot();
-		if (!pilotSlot)
+		Vehicle veh = Vehicle.Cast(vehicle);
+		if (!veh)
 			return;
 
-		IEntity pilot = pilotSlot.GetOccupant();
-		if (!pilot)
+		PilotCompartmentSlot driverSlot = veh.GetPilotCompartmentSlot();
+		if (!driverSlot)
+			return;
+
+		IEntity driver = driverSlot.GetOccupant();
+		if (!driver)
 			return;
 
 		PlayerManager playerManager = GetGame().GetPlayerManager();
-		PlayerController playerController = playerManager.GetPlayerController(playerManager.GetPlayerIdFromControlledEntity(pilot));
+		int playerId = playerManager.GetPlayerIdFromControlledEntity(driver);
+		PlayerController playerController = playerManager.GetPlayerController(playerId);
 		RplComponent rpl = RplComponent.Cast(vehicle.FindComponent(RplComponent));
 		if (playerController && rpl)
 			rpl.GiveExt(playerController.GetRplIdentity(), false);
