@@ -9,6 +9,12 @@ modded class SCR_GadgetManagerComponent
 			return;
 		}
 
+		if (GetGadgetInputAction() == EGadgetType.MAP && PS_TrackerComponent.BlocksMapWhileHeld(GetHeldGadget()))
+		{
+			SCR_UISoundEntity.SoundEvent(SCR_SoundEvent.ERROR);
+			return;
+		}
+
 		super.OnGadgetInput(value, reason);
 	}
 };

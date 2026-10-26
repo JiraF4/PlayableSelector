@@ -1,0 +1,297 @@
+AudioClass {
+ signals {
+  SignalClass "9229" {
+   id 9229
+   name "Signal Reverb"
+   tl -48 210
+   res "{76CBB40EF7F227B6}Sounds/_SharedData/Signals/Reverb/Reverb_Base.sig"
+   inputsport {
+    1 35 112
+   }
+   outputsport {
+    39 105 107 106 110
+   }
+   inputvalues {
+    100 1 16000
+   }
+   inputvaluesmin {
+    0 0 0
+   }
+   inputvaluesmax {
+    100 1 16000
+   }
+  }
+ }
+ sounds {
+  SoundClass "5129" {
+   id 5129
+   name "PS_TRACKER_BEEP"
+   version 5
+   tl 112 -64
+   ins {
+    ConnectionsClass "con:64" {
+     id 64
+     links {
+      ConnectionClass "15378:65" {
+       id 15378
+       port 65
+      }
+     }
+    }
+   }
+   outState 8203
+   outStatePort 79879
+   type "One shot"
+  }
+ }
+ mixers {
+  MixerClass "8203" {
+   id 8203
+   name "OutputState 8"
+   version 4
+   tl 336 -32
+   res "{B764D803219C775E}Sounds/FinalMix.afm"
+   ins {
+    ConnectionsClass "con:79879" {
+     id 79879
+     links {
+      ConnectionClass "5129:65" {
+       id 5129
+       port 65
+      }
+     }
+    }
+    ConnectionsClass "con:300039" {
+     id 300039
+     links {
+      ConnectionClass "10269:65" {
+       id 10269
+       port 65
+      }
+     }
+    }
+    ConnectionsClass "con:301063" {
+     id 301063
+     links {
+      ConnectionClass "11293:65" {
+       id 11293
+       port 65
+      }
+     }
+    }
+    ConnectionsClass "con:302087" {
+     id 302087
+     links {
+      ConnectionClass "12317:65" {
+       id 12317
+       port 65
+      }
+     }
+    }
+   }
+   pi {
+    234889216 0
+   }
+   inputs {
+    "WPN_Handling" "WPN_Shots" "WPN_Explosions" "WNP_BulletHits" "CHAR" "ENV_AMB_2D" "VEH_Animations" "Impacts" "Dialog" "ENV_Doors" "VEH_Engine" "VEH_Tires" "VON" "SFX" "SFX_Reverb_OBSOLETE" "VON_Reverb_Small" "Dialog_Reverb" "Impacts_EXT" "ENV_AMB_3D" "WPN_SonicCracks" "CHAR_Gear" "PA" "SFX_Reverb_Exterior" "ENV_AMB_3D_Reverb_Exterior" "SFX_Direct" "SFX_Reverb_Small" "SFX_Reverb_Medium" "SFX_Reverb_Large" "WPN_Shots_Player" "Dialog_Reverb_Small" "Dialog_Reverb_Medium" "Dialog_Reverb_Large" "WPN_TravelingProjectile" "Dialog_Delay_Exterior" "SFX_Reverb_InCabin" "VON_Reverb_Medium" "VON_Reverb_Large"
+   }
+   visiblePorts {
+    79879 300039 301063 302087
+   }
+  }
+ }
+ shaders {
+  ShaderClass "15378" {
+   id 15378
+   name "Shader Direct"
+   version 5
+   tl -208 0
+   ins {
+    ConnectionsClass "con:0" {
+     id 0
+     links {
+      ConnectionClass "14364:65" {
+       id 14364
+       port 65
+      }
+     }
+    }
+    ConnectionsClass "con:1" {
+     id 1
+     links {
+      ConnectionClass "13331:65" {
+       id 13331
+       port 65
+      }
+     }
+    }
+    ConnectionsClass "con:64" {
+     id 64
+     links {
+      ConnectionClass "4100:65" {
+       id 4100
+       port 65
+      }
+     }
+    }
+   }
+   pi {
+    7 0
+   }
+  }
+ }
+ amplitudes {
+  AmplitudeClass "13331" : "{9F8145144171C64B}Sounds/_SharedData/Configs/Amplitude/_SharedData/Amplitude_-40LUFS_to_-35LUFS.conf" {
+   id 13331
+   version 5
+   tl -208 -304
+   ctl 0 -21
+   parent "{9F8145144171C64B}Sounds/_SharedData/Configs/Amplitude/_SharedData/Amplitude_-40LUFS_to_-35LUFS.conf"
+   outerRange 30
+   slopeFactor 2.206
+  }
+ }
+ banks_local {
+  BankLocalClass "4100" {
+   id 4100
+   name "PS Tracker Beep"
+   version 7
+   tl 128 -160
+   Volume -10
+   Samples {
+    AudioBankSampleClass Sample {
+     Filename "{69F1A2B3C4D50201}Sounds/Tracker/ps_tracker_beep.wav"
+    }
+   }
+  }
+ }
+ spatialities {
+  SpatialityClass "14364" {
+   id 14364
+   name "Spatiality"
+   version 5
+   tl -208 -384
+   spatialFactor 1
+  }
+ }
+ auxOuts {
+  AuxOutClass "10269" {
+   id 10269
+   name "AuxOut 10"
+   version 5
+   tl 320 176
+   ins {
+    ConnectionsClass "con:0" {
+     id 0
+     links {
+      ConnectionClass "5129:5" {
+       id 5129
+       port 5
+      }
+     }
+    }
+    ConnectionsClass "con:1" {
+     id 1
+     links {
+      ConnectionClass "9229:107" {
+       id 9229
+       port 107
+      }
+     }
+    }
+    ConnectionsClass "con:2" {
+     id 2
+     links {
+      ConnectionClass "9229:39" {
+       id 9229
+       port 39
+      }
+     }
+    }
+   }
+   pi {
+    7 0
+   }
+   OSPort 300039
+  }
+  AuxOutClass "11293" {
+   id 11293
+   name "AuxOut 10"
+   version 5
+   tl 320 304
+   ins {
+    ConnectionsClass "con:0" {
+     id 0
+     links {
+      ConnectionClass "5129:5" {
+       id 5129
+       port 5
+      }
+     }
+    }
+    ConnectionsClass "con:1" {
+     id 1
+     links {
+      ConnectionClass "9229:106" {
+       id 9229
+       port 106
+      }
+     }
+    }
+    ConnectionsClass "con:2" {
+     id 2
+     links {
+      ConnectionClass "9229:39" {
+       id 9229
+       port 39
+      }
+     }
+    }
+   }
+   pi {
+    7 0
+   }
+   OSPort 301063
+  }
+  AuxOutClass "12317" {
+   id 12317
+   name "AuxOut 10"
+   version 5
+   tl 320 432
+   ins {
+    ConnectionsClass "con:0" {
+     id 0
+     links {
+      ConnectionClass "5129:5" {
+       id 5129
+       port 5
+      }
+     }
+    }
+    ConnectionsClass "con:1" {
+     id 1
+     links {
+      ConnectionClass "9229:110" {
+       id 9229
+       port 110
+      }
+     }
+    }
+    ConnectionsClass "con:2" {
+     id 2
+     links {
+      ConnectionClass "9229:39" {
+       id 9229
+       port 39
+      }
+     }
+    }
+   }
+   pi {
+    7 0
+   }
+   OSPort 302087
+  }
+ }
+ version 2
+}
