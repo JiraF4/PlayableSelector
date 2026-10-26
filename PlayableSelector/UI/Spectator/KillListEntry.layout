@@ -1,8 +1,8 @@
 SizeLayoutWidgetClass {
  Name "KillListEntry"
  Slot LayoutSlot "{36A7F9539FAE4EB4}" {
-  Padding 0 3 0 3
   HorizontalAlign 3
+  Padding 0 3 0 3
  }
  AllowWidthOverride 1
  WidthOverride 480
@@ -211,14 +211,75 @@ SizeLayoutWidgetClass {
       TextWidgetClass "{81D88BFFDE354705}" {
        Name "PlayerNameText"
        Slot LayoutSlot "{60AD9E20C7FB4704}" {
-        Padding 0 0 6 0
         VerticalAlign 3
+        Padding 0 0 6 0
        }
        Color 1 1 1 1
        Text "Player"
        "Font Size" 13
        "Min Font Size" 13
        "Vertical Alignment" Center
+      }
+      FrameWidgetClass "{C1A2B3D4E5F6B400}" {
+       Name "TeamKillBadge"
+       Slot LayoutSlot "{C1A2B3D4E5F6B401}" {
+        VerticalAlign 3
+        Padding 0 0 6 0
+       }
+       "Is Visible" 0
+       {
+        ImageWidgetClass "{C1A2B3D4E5F6B402}" {
+         Name "TeamKillBg"
+         Slot FrameWidgetSlot "{C1A2B3D4E5F6B403}" {
+          Anchor 0 0 0 0
+          PositionX 0
+          OffsetLeft 0
+          PositionY 0
+          OffsetTop 0
+          SizeX 24
+          OffsetRight -24
+          SizeY 18
+          OffsetBottom -18
+         }
+         Color 0.85 0.2 0.2 0.85
+        }
+        PanelWidgetClass "{C1A2B3D4E5F6B404}" {
+         Name "TeamKillBorder"
+         Slot FrameWidgetSlot "{C1A2B3D4E5F6B405}" {
+          Anchor 0 0 0 0
+          PositionX 0
+          OffsetLeft 0
+          PositionY 0
+          OffsetTop 0
+          SizeX 24
+          OffsetRight -24
+          SizeY 18
+          OffsetBottom -18
+         }
+         Color 0.12 0.12 0.12 0.4
+         style pixel_outline
+        }
+        TextWidgetClass "{C1A2B3D4E5F6B406}" {
+         Name "TeamKillText"
+         Slot FrameWidgetSlot "{C1A2B3D4E5F6B407}" {
+          Anchor 0 0 0 0
+          PositionX 0
+          OffsetLeft 0
+          PositionY 0
+          OffsetTop 0
+          SizeX 24
+          OffsetRight -24
+          SizeY 18
+          OffsetBottom -18
+         }
+         Color 1 1 1 1
+         Text "TK"
+         "Font Size" 10
+         "Min Font Size" 8
+         "Horizontal Alignment" Center
+         "Vertical Alignment" Center
+        }
+       }
       }
       FrameWidgetClass "{1C134AA9D6334663}" {
        Name "FactionBadge"
@@ -413,8 +474,8 @@ SizeLayoutWidgetClass {
       SizeLayoutWidgetClass "{F1C2B3A4D5E60001}" {
        Name "WeaponIconSlot"
        Slot LayoutSlot "{F1C2B3A4D5E60002}" {
-        Padding 0 0 6 0
         VerticalAlign 3
+        Padding 0 0 6 0
        }
        AllowWidthOverride 1
        WidthOverride 58
@@ -484,8 +545,8 @@ SizeLayoutWidgetClass {
       TextWidgetClass "{19ADAC18F9924176}" {
        Name "BulletDivider"
        Slot LayoutSlot "{7D9E4C17FEC94A39}" {
-        Padding 4 0 4 0
         VerticalAlign 3
+        Padding 4 0 4 0
        }
        Color 0.45 0.45 0.45 1
        Text " • "
@@ -507,8 +568,8 @@ SizeLayoutWidgetClass {
       TextWidgetClass "{395012E8836D44E4}" {
        Name "Divider2"
        Slot LayoutSlot "{8F69919C6F8E412F}" {
-        Padding 4 0 4 0
         VerticalAlign 3
+        Padding 4 0 4 0
        }
        Color 0.45 0.45 0.45 1
        Text " • "
@@ -530,8 +591,8 @@ SizeLayoutWidgetClass {
       TextWidgetClass "{B1C2D3E4F5A60010}" {
        Name "Divider3"
        Slot LayoutSlot "{B1C2D3E4F5A60011}" {
-        Padding 4 0 4 0
         VerticalAlign 3
+        Padding 4 0 4 0
        }
        "Is Visible" 0
        Color 0.45 0.45 0.45 1
@@ -543,8 +604,8 @@ SizeLayoutWidgetClass {
       ImageWidgetClass "{B1C2D3E4F5A60012}" {
        Name "AmmoTypeIcon"
        Slot LayoutSlot "{B1C2D3E4F5A60013}" {
-        Padding 0 0 4 0
         VerticalAlign 3
+        Padding 0 0 4 0
        }
        "Is Visible" 0
        Color 0.88 0.88 0.88 1

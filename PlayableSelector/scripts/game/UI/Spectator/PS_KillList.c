@@ -92,6 +92,7 @@ class PS_KillList : ScriptedWidgetComponent
 		StretchToParentWidth(w.FindAnyWidget("YourKillsHeader"));
 		StretchToParentWidth(w.FindAnyWidget("TeamKillsHeader"));
 		StretchToParentWidth(w.FindAnyWidget("KilledYouHeader"));
+		StretchToParentWidth(w.FindAnyWidget("KillListBorder"));
 
 		// DIAGNOSTIC: did the component attach, are the child widgets found, is the manager wired? Logs only
 		// these once at attach so we can tell whether the (empty) feed is a wiring bug vs a routing filter.
@@ -282,10 +283,14 @@ class PS_KillList : ScriptedWidgetComponent
 			}
 		}
 
-		// 4. Nickname
+		// 4. Nickname & TeamKill badge
+		Widget teamKillBadge = entryWidget.FindAnyWidget("TeamKillBadge");
+		if (teamKillBadge)
+			teamKillBadge.SetVisible(killInfo.m_bIsTeamKill);
+
 		if (playerNameText)
 		{
-			if (killInfo.m_bIsTeamKill)
+			if (!teamKillBadge && killInfo.m_bIsTeamKill)
 				playerNameText.SetText(displayName + " [TK]");
 			else
 				playerNameText.SetText(displayName);
