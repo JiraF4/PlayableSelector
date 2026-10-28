@@ -584,7 +584,7 @@ FrameWidgetClass {
               SizeY 26
               OffsetBottom -26
              }
-             Color 0.12 0.12 0.12 0.4
+             Color 0.5 0.16 0.16 0.4
              style pixel_outline
             }
             ImageWidgetClass "{C1A2B3D4E5F6B305}" {
@@ -600,7 +600,7 @@ FrameWidgetClass {
               SizeY 22
               OffsetBottom -24
              }
-             Color 0.85 0.2 0.2 1
+             Color 0.92 0.16 0.16 1
             }
             ImageWidgetClass "{C1A2B3D4E5F6B308}" {
              Name "KilledYouSkull"
@@ -615,7 +615,7 @@ FrameWidgetClass {
               SizeY 16
               OffsetBottom -21
              }
-             Color 0.85 0.2 0.2 1
+             Color 0.92 0.16 0.16 1
              Texture "{D17288006833490F}UI/Textures/Icons/icons_wrapperUI-32.imageset"
              Image "death"
              Size 16 16
@@ -633,7 +633,7 @@ FrameWidgetClass {
               SizeY 26
               OffsetBottom -26
              }
-             Color 0.95 0.4 0.4 1
+             Color 0.95 0.32 0.32 1
              Text "#PS-KillList_KilledYou"
              "Font Size" 12
              "Min Font Size" 12
@@ -681,7 +681,7 @@ FrameWidgetClass {
                 SizeY 0
                 OffsetBottom 0
                }
-               Color 0.12 0.12 0.12 0.4
+               Color 0.5 0.16 0.16 0.4
                style pixel_outline
               }
               TextWidgetClass "{C1A2B3D4E5F6B526}" {
@@ -697,7 +697,7 @@ FrameWidgetClass {
                 SizeY 18
                 OffsetBottom -18
                }
-               Color 0.85 0.2 0.2 1
+               Color 0.92 0.16 0.16 1
                Text "0"
                "Font Size" 11
                "Min Font Size" 11

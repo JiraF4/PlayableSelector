@@ -2,7 +2,7 @@ SizeLayoutWidgetClass {
  Name "KillListEntry"
  Slot LayoutSlot "{36A7F9539FAE4EB4}" {
   HorizontalAlign 3
-  Padding 0 3 0 3
+  Padding 0 2 0 2
  }
  AllowWidthOverride 1
  WidthOverride 480
