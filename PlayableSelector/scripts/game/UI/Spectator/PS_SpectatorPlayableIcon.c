@@ -39,7 +39,13 @@ class PS_SpectatorPlayableIcon : SCR_ScriptedWidgetComponent
 		SCR_ChimeraCharacter chimeraCharacter = SCR_ChimeraCharacter.Cast(playableComponent.GetPlayableComponentTemp().GetOwner());
 		m_eChimeraCharacter = chimeraCharacter;
 		
-		w_iBodyBoneIndex = m_eChimeraCharacter.GetAnimation().GetBoneIndex("Spine3");
+		if (!m_eChimeraCharacter)
+			return;
+		
+		w_iBodyBoneIndex = 0;
+		Animation anim = m_eChimeraCharacter.GetAnimation();
+		if (anim)
+			w_iBodyBoneIndex = anim.GetBoneIndex("Spine3");
 		SCR_Faction faction = SCR_Faction.Cast(chimeraCharacter.GetFaction());
 		if (faction)
 		{
@@ -50,9 +56,17 @@ class PS_SpectatorPlayableIcon : SCR_ScriptedWidgetComponent
 	
 	void Update()
 	{
-		vector boneMat[4];
-		m_eChimeraCharacter.GetAnimation().GetBoneMatrix(w_iBodyBoneIndex, boneMat);
-		vector iconWorldPosition = m_eChimeraCharacter.GetOrigin() + boneMat[3];
+		if (!m_eChimeraCharacter)
+			return;
+		
+		vector iconWorldPosition = m_eChimeraCharacter.GetOrigin();
+		Animation anim = m_eChimeraCharacter.GetAnimation();
+		if (anim)
+		{
+			vector boneMat[4];
+			anim.GetBoneMatrix(w_iBodyBoneIndex, boneMat);
+			iconWorldPosition = iconWorldPosition + boneMat[3];
+		}
 		vector cameraPosition = GetGame().GetCameraManager().CurrentCamera().GetOrigin();
 		float distanceToPlayable = vector.Distance(cameraPosition, iconWorldPosition);
 		

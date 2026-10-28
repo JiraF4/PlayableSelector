@@ -58,6 +58,8 @@ class PS_ManualCameraSpectator : SCR_ManualCamera
 			return;
 
 		SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(m_CharacterEntity);
+		if (!character)
+			return;
 		SCR_CharacterCameraHandlerComponent characterCameraHandlerComponent = SCR_CharacterCameraHandlerComponent.Cast(character.FindComponent(SCR_CharacterCameraHandlerComponent));
 		characterCameraHandlerComponent.OnAlphatestChange(0);
 	}
@@ -120,17 +122,23 @@ class PS_ManualCameraSpectator : SCR_ManualCamera
 		}
 
 		SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(m_CharacterEntity);
+		if (!character)
+			return;
 		SCR_CharacterCameraHandlerComponent characterCameraHandlerComponent = SCR_CharacterCameraHandlerComponent.Cast(character.FindComponent(SCR_CharacterCameraHandlerComponent));
 		characterCameraHandlerComponent.OnAlphatestChange(255);
 
-		int boneHead = m_CharacterEntity.GetAnimation().GetBoneIndex("Head");
-		int boneEyeLeft = m_CharacterEntity.GetAnimation().GetBoneIndex("leftEye");
+		Animation anim = m_CharacterEntity.GetAnimation();
+		if (!anim)
+			return;
+
+		int boneHead = anim.GetBoneIndex("Head");
+		int boneEyeLeft = anim.GetBoneIndex("leftEye");
 		vector mat[4];
 		m_CharacterEntity.GetTransform(mat);
 		vector matHead[4];
-		m_CharacterEntity.GetAnimation().GetBoneMatrix(boneHead, matHead);
+		anim.GetBoneMatrix(boneHead, matHead);
 		vector matEyeLeft[4];
-		m_CharacterEntity.GetAnimation().GetBoneMatrix(boneEyeLeft, matEyeLeft);
+		anim.GetBoneMatrix(boneEyeLeft, matEyeLeft);
 		vector matRes[4];
 		Math3D.MatrixMultiply4(mat, matHead, matRes);
 		vector matResEye[4];

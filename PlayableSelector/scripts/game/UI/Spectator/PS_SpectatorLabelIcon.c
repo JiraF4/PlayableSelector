@@ -66,9 +66,12 @@ class PS_SpectatorLabelIcon : SCR_ScriptedWidgetComponent
 	void SetEntity(IEntity entity, string boneName)
 	{
 		m_eEntity = entity;
-		if (boneName != "")
+		if (entity && boneName != "")
 		{
-			w_iBoneIndex = entity.GetAnimation().GetBoneIndex(boneName);
+			// Animated model may be missing right after spawn or during removal; fall back to origin tracking.
+			Animation anim = entity.GetAnimation();
+			if (anim)
+				w_iBoneIndex = anim.GetBoneIndex(boneName);
 		}
 	}
 	
@@ -79,16 +82,23 @@ class PS_SpectatorLabelIcon : SCR_ScriptedWidgetComponent
 	
 	void Update()
 	{
+		if (!m_eEntity)
+			return;
+		
 		m_vWorldPosition = m_eEntity.GetOrigin();
 		if (w_iBoneIndex > 0)
 		{
-			vector mat[4];
-			m_eEntity.GetTransform(mat);
-			vector boneMat[4];
-			m_eEntity.GetAnimation().GetBoneMatrix(w_iBoneIndex, boneMat);
-			vector resMat[4];
-			Math3D.MatrixMultiply4(mat, boneMat, resMat);
-			m_vWorldPosition = resMat[3];
+			Animation anim = m_eEntity.GetAnimation();
+			if (anim)
+			{
+				vector mat[4];
+				m_eEntity.GetTransform(mat);
+				vector boneMat[4];
+				anim.GetBoneMatrix(w_iBoneIndex, boneMat);
+				vector resMat[4];
+				Math3D.MatrixMultiply4(mat, boneMat, resMat);
+				m_vWorldPosition = resMat[3];
+			}
 		}
 		vector screenPosition = GetGame().GetWorkspace().ProjWorldToScreen(m_vWorldPosition, GetGame().GetWorld());
 		
