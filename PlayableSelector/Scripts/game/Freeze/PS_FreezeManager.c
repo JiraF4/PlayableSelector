@@ -185,7 +185,9 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 	//------------------------------------------------------------------------------------------------
 	bool IsFreezeSafetyActive()
 	{
-		return m_bEffectiveShootingForbidden && m_eFreezePhase == PS_EFreezePhase.ORDINARY;
+		// Admins can enter their slot before StartFreeze_S leaves NOT_STARTED.
+		return m_bEffectiveShootingForbidden
+			&& (m_eFreezePhase == PS_EFreezePhase.NOT_STARTED || m_eFreezePhase == PS_EFreezePhase.ORDINARY);
 	}
 
 	//------------------------------------------------------------------------------------------------

@@ -9,6 +9,24 @@ modded class SCR_ToggleHandbrakeAction
 			return false;
 		}
 
+		if (freezeManager && !freezeManager.IsFreezeTimeEnd())
+		{
+			Vehicle vehicle = Vehicle.Cast(GetOwner().GetRootParent());
+			if (vehicle && !vehicle.IsEnableMoveOnFreeze())
+			{
+				SetCannotPerformReason("#PS-Freeze_Time");
+				return false;
+			}
+		}
+
 		return super.CanBePerformedScript(user);
+	}
+
+	override void PerformAction(IEntity pOwnerEntity, IEntity pUserEntity)
+	{
+		if (!CanBePerformedScript(pUserEntity))
+			return;
+
+		super.PerformAction(pOwnerEntity, pUserEntity);
 	}
 }
