@@ -352,7 +352,7 @@ class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 				ownerName = ownerId.ToString();
 			else
 				ownerName = StripMarkup(ownerName);
-			name = WidgetManager.Translate("#PS-VoNRoom_Public", ownerName);
+			name = ownerName + "'s #PS-VoNRoom_Public";
 		}
 		else if (channelKey == PS_VoNRoomsManager.GetCommandChannelKey(factionKey))
 			name = "#PS-VoNRoom_Command";

@@ -1563,13 +1563,13 @@ StringTable {
   }
   CustomStringTableItem "{5F0C9CB1EFDDDB2E}" {
    Id "PS-VoNRoom_Public"
-   Target_en_us "Public channel: %1"
-   Target_fr_fr "Canal public : %1"
-   Target_es_es "Canal público: %1"
-   Target_pl_pl "Kanał publiczny: %1"
-   Target_ru_ru "Публичный канал: %1"
-   Target_pt_br "Canal público: %1"
-   Target_uk_ua "Публічний канал: %1"
+   Target_en_us "public channel"
+   Target_fr_fr "canal public"
+   Target_es_es "canal publico"
+   Target_pl_pl "kanał publiczny"
+   Target_ru_ru "публичный канал"
+   Target_pt_br "canal publico"
+   Target_uk_ua "публичний канал"
    Modified 1642794511
    Author "SeskPC"
    LastChanged "SeskPC"
