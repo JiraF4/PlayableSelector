@@ -105,14 +105,16 @@ FrameWidgetClass {
      Name "ToolMenu"
      Slot FrameWidgetSlot "{59107CDEE98682C5}" {
       Anchor 0.5 0 0.5 0
-      PositionX -798.097
-      OffsetLeft -798.097
+      PositionX -950
+      OffsetLeft -950
       PositionY 94.795
       OffsetTop 94.795
       SizeX 100
-      OffsetRight 698.097
+      OffsetRight 850
       SizeY 29.999
       OffsetBottom -124.794
+      Alignment 0 0
+      SizeToContent 1
      }
      "Is Visible" 0
      {

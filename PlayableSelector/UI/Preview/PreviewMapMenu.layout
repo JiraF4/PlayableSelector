@@ -532,15 +532,15 @@ FrameWidgetClass {
   FrameWidgetClass "{6604C04D653ECB55}" {
    Name "ToolMenu"
    Slot FrameWidgetSlot "{59107CDEE98682C5}" {
-    PositionX 25
-    OffsetLeft 25
+    PositionX 10
+    OffsetLeft 10
     PositionY -100
     OffsetTop -100
     SizeX -100
     OffsetRight 75
     SizeY 30
     OffsetBottom 70
-    Alignment 0.5 0
+    Alignment 0 0
     SizeToContent 1
    }
    "Z Order" 1
