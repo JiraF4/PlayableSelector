@@ -7,7 +7,7 @@ SizeLayoutWidgetClass {
  AllowWidthOverride 1
  WidthOverride 480
  AllowHeightOverride 1
- HeightOverride 54
+ HeightOverride 50
  {
   FrameWidgetClass "{2135257364B84122}" {
    Name "CardFrame"
@@ -25,8 +25,8 @@ SizeLayoutWidgetClass {
       OffsetTop 0
       SizeX 480
       OffsetRight -480
-      SizeY 54
-      OffsetBottom -54
+      SizeY 50
+      OffsetBottom -50
      }
      Color 0.015 0.015 0.015 0.88
     }
@@ -39,8 +39,8 @@ SizeLayoutWidgetClass {
       OffsetTop 0
       SizeX 480
       OffsetRight -480
-      SizeY 54
-      OffsetBottom -54
+      SizeY 50
+      OffsetBottom -50
      }
      Color 0.12 0.12 0.12 0.4
      style pixel_outline
@@ -55,8 +55,8 @@ SizeLayoutWidgetClass {
       OffsetTop 3
       SizeX 4
       OffsetRight -4
-      SizeY 48
-      OffsetBottom -51
+      SizeY 47
+      OffsetBottom -50
      }
      Color 0.92 0.76 0.15 1
     }
