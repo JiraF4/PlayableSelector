@@ -18,31 +18,6 @@ class PS_KillInfo
 	int m_iMagazineCapacity = -1;
 	string m_sAmmoCaliber;
 
-	// Plain-English hit zone (NOT a localization key): the row is built by concatenation, so an embedded
-	// "#..." key would be shown raw by the TextWidget (only a whole-string key is auto-translated).
-	static string HitZoneGroupToString(int group)
-	{
-		switch (group)
-		{
-			case ECharacterHitZoneGroup.HEAD:         return "Head";
-			case ECharacterHitZoneGroup.UPPERTORSO:   return "Torso";
-			case ECharacterHitZoneGroup.LOWERTORSO:   return "Stomach";
-			case ECharacterHitZoneGroup.LEFTARM:      return "Left Arm";
-			case ECharacterHitZoneGroup.RIGHTARM:     return "Right Arm";
-			case ECharacterHitZoneGroup.LEFTLEG:      return "Left Leg";
-			case ECharacterHitZoneGroup.RIGHTLEG:     return "Right Leg";
-		}
-		return "";
-	}
-
-	static string DistanceToString(float distance)
-	{
-		if (distance < 0)
-			return "";
-		int meters = Math.Round(distance);
-		return meters.ToString() + "m";
-	}
-
 	static string HitZoneGroupToLocalizationKey(int group)
 	{
 		switch (group)
@@ -270,30 +245,6 @@ class PS_KillInfo
 		if (name == "")
 			name = "AI";
 		return StripMarkup(name);
-	}
-
-	// One row: "[N) ]<name>  <distance>  [<ammo>]  <hit zone>". Pass number<=0 to omit the numbering prefix
-	// (used for the single "Killed by" line). Only the name is guaranteed; the rest append when present.
-	string FormatLine(string displayName, int number = 0)
-	{
-		string result = "";
-		if (number > 0)
-			result += number.ToString() + ") ";
-		result += displayName;
-
-		string distance = DistanceToString(m_fDistance);
-		if (distance != "")
-			result += "  " + distance;
-
-		string ammo = GetAmmoName();
-		if (ammo != "")
-			result += "  [" + ammo + "]";
-
-		string hitZone = HitZoneGroupToString(m_eLastHitZoneGroup);
-		if (hitZone != "")
-			result += "  " + hitZone;
-
-		return result;
 	}
 
 	bool IsVictim(int playerId)
