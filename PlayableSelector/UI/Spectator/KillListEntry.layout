@@ -281,7 +281,7 @@ SizeLayoutWidgetClass {
         }
        }
       }
-      FrameWidgetClass "{1C134AA9D6334663}" {
+      OverlayWidgetClass "{1C134AA9D6334663}" {
        Name "FactionBadge"
        Slot LayoutSlot "{53B234E5BDF74213}" {
         VerticalAlign 3
@@ -289,47 +289,27 @@ SizeLayoutWidgetClass {
        {
         ImageWidgetClass "{A8B6B575E4AD48B9}" {
          Name "FactionBg"
-         Slot FrameWidgetSlot "{38A7680313144643}" {
-          Anchor 0 0 0 0
-          PositionX 0
-          OffsetLeft 0
-          PositionY 0
-          OffsetTop 0
-          SizeX 50
-          OffsetRight -50
-          SizeY 18
-          OffsetBottom -18
+         Slot OverlayWidgetSlot "{38A7680313144643}" {
+          HorizontalAlign 3
+          VerticalAlign 3
          }
          Color 0.75 0.15 0.15 1
         }
         PanelWidgetClass "{0194E720DAFB4B0F}" {
          Name "FactionBorder"
-         Slot FrameWidgetSlot "{C1C4F51E8DC74B9B}" {
-          Anchor 0 0 0 0
-          PositionX 0
-          OffsetLeft 0
-          PositionY 0
-          OffsetTop 0
-          SizeX 50
-          OffsetRight -50
-          SizeY 18
-          OffsetBottom -18
+         Slot OverlayWidgetSlot "{C1C4F51E8DC74B9B}" {
+          HorizontalAlign 3
+          VerticalAlign 3
          }
          Color 0.12 0.12 0.12 0.35
          style pixel_outline
         }
         TextWidgetClass "{16AC09B01B1F4668}" {
          Name "FactionText"
-         Slot FrameWidgetSlot "{F96C0FCB9913460E}" {
-          Anchor 0 0 0 0
-          PositionX 0
-          OffsetLeft 0
-          PositionY 0
-          OffsetTop 0
-          SizeX 50
-          OffsetRight -50
-          SizeY 18
-          OffsetBottom -18
+         Slot OverlayWidgetSlot "{F96C0FCB9913460E}" {
+          HorizontalAlign 3
+          VerticalAlign 3
+          Padding 5 1 5 1
          }
          Color 1 1 1 1
          Text "ВС РФ"
