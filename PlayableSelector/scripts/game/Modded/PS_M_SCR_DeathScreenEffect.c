@@ -11,6 +11,23 @@
 // (DisplayControlledEntityChanged fires with the dead corpse BEFORE the spectator camera opens).
 modded class SCR_DeathScreenEffect
 {
+	protected bool IsControlledEntityDead(IEntity entity)
+	{
+		ChimeraCharacter character = ChimeraCharacter.Cast(entity);
+		if (!character)
+			return true;
+
+		CharacterControllerComponent charController = character.GetCharacterController();
+		if (charController && charController.IsDead())
+			return true;
+
+		SCR_DamageManagerComponent damageManager = character.GetDamageManager();
+		if (damageManager && (damageManager.IsDestroyed() || damageManager.GetState() == EDamageState.DESTROYED))
+			return true;
+
+		return false;
+	}
+
 	override protected void DeathEffect()
 	{
 		PlayerController pc = GetGame().GetPlayerController();
@@ -37,10 +54,9 @@ modded class SCR_DeathScreenEffect
 
 	override void DisplayControlledEntityChanged(IEntity from, IEntity to)
 	{
-		PlayerController pc = GetGame().GetPlayerController();
-		if (pc && SCR_VoNComponent.PS_IsMenuSpeaker(pc.GetPlayerId()))
+		if (IsControlledEntityDead(to))
 		{
-			// Spectating: don't re-register damage invokers on the dead corpse.
+			// Spectating or no entity: don't re-register damage invokers on the dead corpse.
 			// Clear any running animations so they don't persist into spectator view.
 			ClearEffects();
 			return;
