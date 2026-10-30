@@ -131,7 +131,7 @@ class PS_FactionReadyWidgetComponent : PS_HideableButton
 			if (playerName == "")
 				continue;
 			
-			string strippedName = StripMarkup(playerName);
+			string strippedName = PS_PlayersHelper.StripMarkup(playerName);
 			nameLines.Insert(strippedName);
 		}
 		
@@ -167,7 +167,7 @@ class PS_FactionReadyWidgetComponent : PS_HideableButton
 		}
 		if (nick != "")
 		{
-			m_wFactionName.SetText(StripMarkup(nick));
+			m_wFactionName.SetText(PS_PlayersHelper.StripMarkup(nick));
 			m_wFactionName.SetColor(Color.White);
 			m_wFactionName.SetVisible(true);
 		}
@@ -206,27 +206,6 @@ class PS_FactionReadyWidgetComponent : PS_HideableButton
 		ScheduleRefresh();
 	}
 
-	//------------------------------------------------------------------------------------------------
-	static string StripMarkup(string value)
-	{
-		if (!value.Contains("<"))
-			return value;
-		string result = "";
-		bool inTag = false;
-		int len = value.Length();
-		for (int i = 0; i < len; i++)
-		{
-			string ch = value.Get(i);
-			if (ch == "<")
-				inTag = true;
-			else if (ch == ">")
-				inTag = false;
-			else if (!inTag)
-				result += ch;
-		}
-		return result;
-	}
-	
 	//------------------------------------------------------------------------------------------------
 	void OnFactionClicked(SCR_ButtonBaseComponent button)
 	{

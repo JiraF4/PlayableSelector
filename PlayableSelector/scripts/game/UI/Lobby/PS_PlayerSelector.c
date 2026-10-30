@@ -155,6 +155,17 @@ class PS_PlayerSelector : SCR_ButtonBaseComponent
 		m_wPlayerName.SetText(playerName);
 	}
 	
+	int GetPlayerId()
+	{
+		return m_iPlayerId;
+	}
+	
+	// Markup-stripped name only for ordering (SortPlayers); the displayed row keeps its markup (UpdatePlayerName).
+	string GetPlayerName()
+	{
+		return PS_PlayersHelper.StripMarkup(m_PlayableManager.GetPlayerName(m_iPlayerId));
+	}
+	
 	void UpdatePlayerFaction(int playerId, FactionKey factionKey, FactionKey factionKeyOld)
 	{
 		if (playerId != m_iPlayerId)
@@ -165,16 +176,6 @@ class PS_PlayerSelector : SCR_ButtonBaseComponent
 			m_wPlayerFactionColor.SetColor(Color.Gray);
 		else
 			m_wPlayerFactionColor.SetColor(faction.GetFactionColor());
-		
-		int index = -1;
-		if (playerId == m_iCurrentPlayerId)
-			index = -100;
-		else
-		{
-			if (faction)
-				index = m_FactionManager.GetFactionIndex(faction);
-		}
-		m_wRoot.SetZOrder(index);
 	}
 	
 	void UpdatePlayerPin(int playerId, bool pin)

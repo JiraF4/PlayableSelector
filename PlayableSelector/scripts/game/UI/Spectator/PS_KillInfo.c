@@ -197,29 +197,6 @@ class PS_KillInfo
 		return value;
 	}
 
-	// Strip rich-text markup tags so names show as PLAIN text. The Podval mods (PodvalLobby) rewrite player
-	// names to embed clan-tag markup, e.g. "<b><color rgba='226, 168, 79, 200'>[kak]</color></b>Vector";
-	// peer-tool test names have none. The kill list wants plain nicknames, so remove any <...> tags here.
-	protected static string StripMarkup(string value)
-	{
-		if (!value.Contains("<"))
-			return value;
-		string result = "";
-		bool inTag = false;
-		int len = value.Length();
-		for (int i = 0; i < len; i++)
-		{
-			string ch = value.Get(i);
-			if (ch == "<")
-				inTag = true;
-			else if (ch == ">")
-				inTag = false;
-			else if (!inTag)
-				result += ch;
-		}
-		return result;
-	}
-
 	// Victim label = "Squad Nickname" (squad omitted when unknown). Falls back to a live name lookup, then "AI".
 	string GetVictimDisplayName()
 	{
@@ -228,7 +205,7 @@ class PS_KillInfo
 			name = PS_PlayableManager.GetInstance().GetPlayerName(m_iVictimPlayerId);
 		if (name == "")
 			name = "AI";
-		name = StripMarkup(name);
+		name = PS_PlayersHelper.StripMarkup(name);
 
 		string squad = Clean(m_sVictimSquad);
 		if (squad != "")
@@ -244,7 +221,7 @@ class PS_KillInfo
 			name = PS_PlayableManager.GetInstance().GetPlayerName(m_iKillerPlayerId);
 		if (name == "")
 			name = "AI";
-		return StripMarkup(name);
+		return PS_PlayersHelper.StripMarkup(name);
 	}
 
 	bool IsVictim(int playerId)

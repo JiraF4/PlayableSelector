@@ -351,7 +351,7 @@ class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 			if (ownerName == "")
 				ownerName = ownerId.ToString();
 			else
-				ownerName = StripMarkup(ownerName);
+				ownerName = PS_PlayersHelper.StripMarkup(ownerName);
 			name = ownerName + "'s #PS-VoNRoom_Public";
 		}
 		else if (channelKey == PS_VoNRoomsManager.GetCommandChannelKey(factionKey))
@@ -370,26 +370,6 @@ class PS_VoiceRoomHeader : SCR_ButtonBaseComponent
 			m_wJoinRoomImage.LoadImageFromSet(0, m_sImageSetPS, "RoomEnter");
 		else
 			m_wJoinRoomImage.LoadImageFromSet(0, m_sImageSetPS, "Lock");
-	}
-
-	protected static string StripMarkup(string value)
-	{
-		if (!value.Contains("<"))
-			return value;
-		string result = "";
-		bool inTag = false;
-		int len = value.Length();
-		for (int i = 0; i < len; i++)
-		{
-			string ch = value.Get(i);
-			if (ch == "<")
-				inTag = true;
-			else if (ch == ">")
-				inTag = false;
-			else if (!inTag)
-				result += ch;
-		}
-		return result;
 	}
 
 	protected void OnHeaderClicked(SCR_ButtonBaseComponent button)

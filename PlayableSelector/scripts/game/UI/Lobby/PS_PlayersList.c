@@ -43,6 +43,20 @@ class PS_PlayersList : ScriptedWidgetComponent
 		
 		// Events
 		m_PlayableManager.GetOnPlayerConnected().Insert(AddPlayer);
+		// The same invoker also fires on a name (re)bind (RPC_SetPlayerName re-invokes it), so one
+		// subscription covers late joins and renames; the player id argument is unused by the sort itself.
+		m_PlayableManager.GetOnPlayerConnected().Insert(OnPlayersOrderDirty);
+	}
+	
+	override void HandlerDeattached(Widget w)
+	{
+		super.HandlerDeattached(w);
+		
+		if (m_PlayableManager)
+		{
+			m_PlayableManager.GetOnPlayerConnected().Remove(AddPlayer);
+			m_PlayableManager.GetOnPlayerConnected().Remove(OnPlayersOrderDirty);
+		}
 	}
 	
 	void SetLobbyMenu(PS_CoopLobby coopLobby)
@@ -73,6 +87,67 @@ class PS_PlayersList : ScriptedWidgetComponent
 		playerSelector.SetPlayer(playerId);
 		m_mPlayers.Insert(playerId, playerSelector);
 		playerSelector.SetSearchText(m_sSearchText);
+		
+		// A fresh row lands on the map in insertion order; sorting it right away keeps the list
+		// correct no matter how the invoker sequences AddPlayer against OnPlayersOrderDirty.
+		SortPlayers();
+	}
+	
+	// Rows are reordered in place through their Z order, the way the vanilla scoreboard does it,
+	// so a name change or a late join never recreates the list.
+	void SortPlayers()
+	{
+		array<PS_PlayerSelector> rows = {};
+		foreach (PS_PlayerSelector playerSelector : m_mPlayers)
+		{
+			rows.Insert(playerSelector);
+		}
+		
+		int n = rows.Count();
+		for (int i = 1; i < n; i++)
+		{
+			PS_PlayerSelector current = rows[i];
+			int j = i - 1;
+			while (j >= 0 && OrderedBefore(current, rows[j]))
+			{
+				rows[j + 1] = rows[j];
+				j--;
+			}
+			rows[j + 1] = current;
+		}
+		
+		for (int i = 0; i < n; i++)
+		{
+			Widget root = rows[i].GetRootWidget();
+			if (root)
+				root.SetZOrder(i);
+		}
+	}
+	
+	// Unit-tagged names first, then alphabetical ignoring case; identical names fall back to the
+	// player id so every client reaches the same order. The tag rule runs on the markup-stripped
+	// name, because "[" (ASCII 91) sorts after upper-case and before lower-case letters.
+	protected static bool OrderedBefore(PS_PlayerSelector a, PS_PlayerSelector b)
+	{
+		string nameA = a.GetPlayerName();
+		string nameB = b.GetPlayerName();
+		
+		bool unitA = PS_PlayersHelper.HasUnitTag(nameA);
+		bool unitB = PS_PlayersHelper.HasUnitTag(nameB);
+		if (unitA != unitB)
+			return unitA;
+		
+		int order = nameA.Compare(nameB, false);
+		if (order != 0)
+			return order < 0;
+		
+		return a.GetPlayerId() < b.GetPlayerId();
+	}
+	
+	// The invoker passes the player id of the connect/name event; the sort re-reads the whole map anyway.
+	protected void OnPlayersOrderDirty(int playerId)
+	{
+		SortPlayers();
 	}
 	
 	void SetSelectedPlayer(int playerId)
