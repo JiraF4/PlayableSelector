@@ -6,13 +6,29 @@
 // SuppressSpectatorScreenEffects() hiding between watchdog ticks.
 //
 // Prevent bleeding effects from starting and clear running animations when the local player
-// is a menu speaker (dead corpse / no controlled entity).
+// is spectating (dead corpse / no controlled entity).
 modded class SCR_BleedingScreenEffect
 {
+	protected bool IsControlledEntityDead(IEntity entity)
+	{
+		ChimeraCharacter character = ChimeraCharacter.Cast(entity);
+		if (!character)
+			return true;
+
+		CharacterControllerComponent charController = character.GetCharacterController();
+		if (charController && charController.IsDead())
+			return true;
+
+		SCR_DamageManagerComponent damageManager = character.GetDamageManager();
+		if (damageManager && (damageManager.IsDestroyed() || damageManager.GetState() == EDamageState.DESTROYED))
+			return true;
+
+		return false;
+	}
+
 	override protected void OnDamageEffectAdded(notnull SCR_DamageEffect dmgEffect)
 	{
-		PlayerController pc = GetGame().GetPlayerController();
-		if (pc && SCR_VoNComponent.PS_IsMenuSpeaker(pc.GetPlayerId()))
+		if (IsControlledEntityDead(m_CharacterEntity))
 		{
 			ClearEffects();
 			return;
@@ -23,8 +39,7 @@ modded class SCR_BleedingScreenEffect
 
 	override protected void CreateEffectOverTime(bool repeat)
 	{
-		PlayerController pc = GetGame().GetPlayerController();
-		if (pc && SCR_VoNComponent.PS_IsMenuSpeaker(pc.GetPlayerId()))
+		if (IsControlledEntityDead(m_CharacterEntity))
 		{
 			ClearEffects();
 			return;
@@ -35,8 +50,7 @@ modded class SCR_BleedingScreenEffect
 
 	override protected void BlackoutEffect(float effectStrength)
 	{
-		PlayerController pc = GetGame().GetPlayerController();
-		if (pc && SCR_VoNComponent.PS_IsMenuSpeaker(pc.GetPlayerId()))
+		if (IsControlledEntityDead(m_CharacterEntity))
 		{
 			ClearEffects();
 			return;
@@ -47,10 +61,9 @@ modded class SCR_BleedingScreenEffect
 
 	override void DisplayControlledEntityChanged(IEntity from, IEntity to)
 	{
-		PlayerController pc = GetGame().GetPlayerController();
-		if (pc && SCR_VoNComponent.PS_IsMenuSpeaker(pc.GetPlayerId()))
+		if (IsControlledEntityDead(to))
 		{
-			// Spectating: don't re-register damage effect invokers on the dead corpse.
+			// Spectating or no entity: don't register damage effect invokers on the dead corpse.
 			ClearEffects();
 			return;
 		}
