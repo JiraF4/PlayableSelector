@@ -40,7 +40,7 @@ PS_GameModeCoop PS_GameMode_Lobby1 : "{9C2001FE7A2F2281}Prefabs/MP/Modes/PS_Game
  m_bFreezeTimeShootingForbiden 1
 }
 $grp SCR_AIGroup : "{107554618BE6FF20}Prefabs/Groups/BLUFOR/Group_US_Team_Suppress_P.et" {
- {
+ US_PL_000 {
   coords 1406.566 35.981 2384.625
  }
  {
@@ -69,46 +69,14 @@ $grp SCR_AIGroup : "{25CA78D4E661F9B8}Prefabs/Groups/INDFOR/Group_FIA_AmmoTeam_P
   coords 1377.662 36.04 2388.349
  }
 }
+SCR_EditorRestrictionZoneEntity : "{6144B0BE2EAC6897}PrefabsEditable/RestrictionZone/E_EditorRestrictionZoneMedium.et" {
+ coords 1398.323 35.846 2362.057
+}
 Turret : "{66B35D82EB9B4E28}Prefabs/Weapons/Tripods/6T7/Deployable_Tripod_6T7_NSV_SPP.et" {
  coords 1398.232 35.925 2371.196
 }
-PolylineShapeEntity : "{7019844BAD5C4DD8}Prefabs/PolyZone/PolyZone_Border.et" {
- components {
-  PS_PolyZone "{60E90266F25533F6}" {
-   m_fPolygonBorderWidth 7
-   m_bReversed 0
-   m_aVisibleForFactions {
-    ""
-    "FIA"
-    "US"
-    "USSR"
-   }
-  }
- }
- coords 1352.058 36.639 2377.886
- Points {
-  ShapePoint "{6A4E13C17265CBF0}" {
-   Position -16.535 0.334 22.253
-  }
-  ShapePoint "{6A4E13C173BF232A}" {
-   Position -30.508 0.363 12.663
-  }
-  ShapePoint "{6A4E13C17180F705}" {
-   Position -14.334 0.27 -10.544
-  }
- }
- {
-  PS_PolyZoneTrigger {
-   ID "60FD050E1E83544C"
-   m_sGroupKey "DEF_"
-  }
- }
-}
 SCR_AIGroup : "{704B4E4EC7C56B55}Prefabs/Groups/BLUFOR/Group_US_AmmoTeam_P.et" {
  coords 1615.499 41.336 2271.03
-}
-PTVT_ProtectedDocumentEntity : "{88C53A5ED0615696}Prefabs/Items/Misc/IntelligenceFolder_E_01/SecretDocuments.et" {
- coords 1374.903 41.686 2346.873
 }
 GenericEntity : "{ADA72BDCEF79C40A}Prefabs/MP/CombatOps/Cain/COCain_Ammo_MortarBox.et" {
  coords 1375.115 41.686 2346.06
@@ -146,6 +114,8 @@ $grp Vehicle : "{C012BB3488BEA0C2}Prefabs/Vehicles/Wheeled/BTR70/BTR70.et" {
  BTR2 {
   coords 1402.762 35.906 2384.317
   angles 0 -79.493 0
+  m_sAttachmentGroupName "US_PL_000"
+  m_bEnableMoveOnFreeze 1
  }
  BTR3 {
   coords 1405.874 36.013 2373.17
@@ -168,6 +138,9 @@ $grp Turret : "{D1FFE458E8AC4BDB}Prefabs/Weapons/Mortars/2B14/Mortar_2B14_hand.e
   coords 1389.938 36.219 2365.683
   angles 0 106.857 0
  }
+}
+SCR_EditorRestrictionZoneEntity : "{EF72FA7CD87618D5}PrefabsEditable/RestrictionZone/E_EditorRestrictionZoneSmall.et" {
+ coords 1615.846 41.425 2267.008
 }
 Turret : "{F585627D662E34D7}Prefabs/Weapons/Tripods/6T7/Tripod_6T7.et" {
  coords 1396.401 35.868 2370.719

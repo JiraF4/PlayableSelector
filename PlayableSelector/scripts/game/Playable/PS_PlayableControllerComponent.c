@@ -18,10 +18,7 @@ class PS_PlayableControllerComponent : ScriptComponent
 	protected bool m_bSpecDiagSuppressLogged;		// suppress widget detail logged once, cleared on teardown
 	protected string m_sSpecDiagLastWatchdogSkip;	// last watchdog skip reason, only log on change
 
-	// Lazy-cached game mode. It is a world singleton created once per mission and never changes, so this avoids
-	// the repeated PS_GameModeCoop.Cast(GetGame().GetGameMode()) - notably in the per-frame EOnFrame freeze
-	// blocker. Reconnect-safe: this component is recreated per connection (fresh cache); lazy set-on-first-non-null
-	// avoids caching null if component init races game-mode creation.
+	// Cache the world singleton per connection; retry if component init precedes game-mode creation.
 	PS_GameModeCoop GetGameModeCoop()
 	{
 		if (!m_GameModeCoop)
@@ -29,28 +26,30 @@ class PS_PlayableControllerComponent : ScriptComponent
 		return m_GameModeCoop;
 	}
 
-	[RplProp()]
 	bool m_bOutFreezeTime;
-	
+
+	bool IsOutFreezeTime()
+	{
+		return m_bOutFreezeTime;
+	}
+
 	void SetOutFreezeTime(bool outFreezeTime)
 	{
+		if (!Replication.IsServer() || m_bOutFreezeTime == outFreezeTime)
+			return;
+
+		m_bOutFreezeTime = outFreezeTime;
 		Rpc(RPC_SetOutFreezeTime, outFreezeTime);
 	}
+
+	//! Server to owner; reapply through the game mode so UI and Hard Freeze keep their precedence.
 	[RplRpc(RplChannel.Reliable, RplRcver.Owner)]
 	void RPC_SetOutFreezeTime(bool outFreezeTime)
 	{
 		m_bOutFreezeTime = outFreezeTime;
-		PlayerController pc = PlayerController.Cast(GetOwner());
-		if (pc)
-		{
-			ChimeraCharacter character = ChimeraCharacter.Cast(pc.GetControlledEntity());
-			if (character)
-			{
-				CharacterControllerComponent charController = character.GetCharacterController();
-				if (charController)
-					charController.SetDisableMovementControls(outFreezeTime);
-			}
-		}
+		PS_GameModeCoop gameMode = GetGameModeCoop();
+		if (gameMode)
+			gameMode.UpdateLocalControls_C();
 	}
 	
 	// Event
@@ -561,10 +560,6 @@ class PS_PlayableControllerComponent : ScriptComponent
 		m_Camera = GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params);
 		*/
 		
-		// (Removed the per-frame UpdatePosition CallLater - it parked the old controlled BODY every frame;
-		// body-less there is no body, so it just burned a FindComponent per frame on the owner client doing
-		// nothing. SetEventMask FRAME stays for EOnFrame, the freeze-time fire blocker.)
-		SetEventMask(GetOwner(), EntityEvent.FRAME);
 		SCR_PlayerController playerController = SCR_PlayerController.Cast(PlayerController.Cast(GetOwner()));
 		playerController.m_OnControlledEntityChanged.Insert(OnControlledEntityChanged);
 
@@ -663,36 +658,6 @@ class PS_PlayableControllerComponent : ScriptComponent
 		SCR_BaseGameMode.Cast(GetGame().GetGameMode()).GetOnPlayerSpawned().Invoke(playerId, entity);
 	}
 	
-	override protected void EOnFrame(IEntity owner, float timeSlice)
-	{
-		PS_GameModeCoop gameMode = GetGameModeCoop();
-		if (!gameMode)
-			return; // game mode not resolved yet (early frame) - retry next frame
-		if (gameMode.GetState() == SCR_EGameModeState.GAME && gameMode.IsFreezeTimeEnd())
-		{
-			ClearEventMask(GetOwner(), EntityEvent.FRAME);
-			return;
-		}
-		
-		if (PS_PlayersHelper.IsAdminOrServer())
-			return;
-		
-		if (m_bOutFreezeTime)
-		{
-			PlayerController playerController = PlayerController.Cast(owner);
-			if (playerController)
-			{
-				ChimeraCharacter character = ChimeraCharacter.Cast(playerController.GetControlledEntity());
-				if (character)
-				{
-					CharacterControllerComponent charController = character.GetCharacterController();
-					if (charController)
-						charController.SetDisableMovementControls(true);
-				}
-			}
-		}
-	}
-
 	void ChangeFactionKey(int playerId, FactionKey factionKey)
 	{
 		Rpc(RPC_ChangeFactionKey, playerId, factionKey)

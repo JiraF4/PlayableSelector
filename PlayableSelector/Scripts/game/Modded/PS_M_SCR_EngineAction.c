@@ -1,6 +1,6 @@
 modded class SCR_EngineAction
 {
-	protected bool PS_IsEngineStartBlocked()
+	protected bool PS_IsEngineStartBlocked(IEntity user = null)
 	{
 		PS_FreezeManager freezeManager = PS_FreezeManager.GetInstance();
 		if (!freezeManager)
@@ -15,7 +15,7 @@ modded class SCR_EngineAction
 		if (!freezeManager.IsFreezeTimeEnd())
 		{
 			Vehicle vehicle = Vehicle.Cast(GetOwner().GetRootParent());
-			if (!vehicle || !vehicle.IsEnableMoveOnFreeze())
+			if (!vehicle || !vehicle.IsEnableMoveOnFreeze() || SCR_GetOutAction.PS_IsUserOutFreezeZone(user))
 			{
 				SetCannotPerformReason("#PS-Freeze_Time");
 				return true;
@@ -31,7 +31,7 @@ modded class SCR_EngineAction
 		if (m_bIsToggle)
 			starting = !GetState();
 
-		if (starting && PS_IsEngineStartBlocked())
+		if (starting && PS_IsEngineStartBlocked(user))
 			return false;
 
 		return super.CanBePerformedScript(user);
@@ -39,7 +39,7 @@ modded class SCR_EngineAction
 
 	override void OnActionStart(IEntity pUserEntity)
 	{
-		if (PS_IsEngineStartBlocked())
+		if (PS_IsEngineStartBlocked(pUserEntity))
 			return;
 
 		super.OnActionStart(pUserEntity);
@@ -47,7 +47,7 @@ modded class SCR_EngineAction
 
 	override void PerformContinuousAction(IEntity pOwnerEntity, IEntity pUserEntity, float timeSlice)
 	{
-		if (PS_IsEngineStartBlocked())
+		if (PS_IsEngineStartBlocked(pUserEntity))
 			return;
 
 		super.PerformContinuousAction(pOwnerEntity, pUserEntity, timeSlice);

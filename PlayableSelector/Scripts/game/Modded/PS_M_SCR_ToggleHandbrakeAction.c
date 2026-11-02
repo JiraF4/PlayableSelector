@@ -12,7 +12,7 @@ modded class SCR_ToggleHandbrakeAction
 		if (freezeManager && !freezeManager.IsFreezeTimeEnd())
 		{
 			Vehicle vehicle = Vehicle.Cast(GetOwner().GetRootParent());
-			if (vehicle && !vehicle.IsEnableMoveOnFreeze())
+			if (vehicle && (!vehicle.IsEnableMoveOnFreeze() || SCR_GetOutAction.PS_IsUserOutFreezeZone(user)))
 			{
 				SetCannotPerformReason("#PS-Freeze_Time");
 				return false;
