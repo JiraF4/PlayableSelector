@@ -548,7 +548,7 @@ class PS_KillList : ScriptedWidgetComponent
 
 				if (ammoTypeText)
 				{
-					if (ammoTypeName != "" && ammoTypeName != "-")
+					if (ammoTypeName != "" && ammoTypeName != "-" && (!ammoTypeName.ToInt() || ammoTypeName == "0"))
 					{
 						ammoTypeText.SetText(ammoTypeName);
 						ammoTypeText.SetVisible(true);

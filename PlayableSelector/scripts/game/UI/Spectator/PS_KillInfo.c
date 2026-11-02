@@ -1,5 +1,7 @@
 class PS_KillInfo
 {
+	static const string AMMO_DELIMITER = "~";
+
 	int m_iVictimPlayerId;
 	int m_iKillerPlayerId;
 	string m_sVictimName;
@@ -108,50 +110,126 @@ class PS_KillInfo
 		return weapon;
 	}
 
-	string GetAmmoName()
+	static void ParseAmmoPayload(string payload, out string ammoName, out int flags, out string typeName)
 	{
-		string ammo = Clean(m_sAmmoType);
-		if (ammo == "")
-			return "";
-		if (ammo.Contains("#"))
+		ammoName = "";
+		flags = 0;
+		typeName = "";
+
+		payload = Clean(payload);
+		if (payload == "")
+			return;
+
+		if (payload.Contains(AMMO_DELIMITER))
 		{
 			array<string> parts = {};
-			ammo.Split("#", parts, false);
+			payload.Split(AMMO_DELIMITER, parts, false);
 			if (parts.Count() > 0)
-			{
-				string name = parts[0];
-				if (name.StartsWith("#"))
-					name = WidgetManager.Translate(name);
-				return name;
-			}
+				ammoName = parts[0];
+			if (parts.Count() > 1)
+				flags = parts[1].ToInt();
+			if (parts.Count() > 2)
+				typeName = parts[2];
+			return;
 		}
-		if (ammo.StartsWith("#"))
-			ammo = WidgetManager.Translate(ammo);
-		return ammo;
+
+		// Backward-compatibility fallback for legacy '#' separator
+		if (payload.Contains("#"))
+		{
+			array<string> legacyParts = {};
+			payload.Split("#", legacyParts, true);
+			int count = legacyParts.Count();
+			if (count == 1)
+			{
+				ammoName = "#" + legacyParts[0];
+			}
+			else if (count >= 2)
+			{
+				if (count >= 3 && legacyParts[count - 2].ToInt() > 0)
+				{
+					typeName = legacyParts[count - 1];
+					flags = legacyParts[count - 2].ToInt();
+					ammoName = "#" + legacyParts[0];
+				}
+				else if (legacyParts[count - 1].ToInt() > 0)
+				{
+					flags = legacyParts[count - 1].ToInt();
+					ammoName = "#" + legacyParts[0];
+				}
+				else
+				{
+					ammoName = payload;
+				}
+			}
+			return;
+		}
+
+		ammoName = payload;
+	}
+
+	static bool IsTechnicalStringId(string val)
+	{
+		if (val == "")
+			return false;
+		if (val.StartsWith("AR-") || val.StartsWith("#AR-") || val.StartsWith("RHS-") || val.StartsWith("#RHS-"))
+			return true;
+		if (val.Contains("AmmoType_") || val.Contains("Magazine_") || val.Contains("Ammo_"))
+			return true;
+		if (val.Contains("/") || val.Contains("\\") || val.Contains(".conf") || val.Contains(".et"))
+			return true;
+		return false;
+	}
+
+	string GetAmmoName()
+	{
+		string rawName;
+		int flags;
+		string typeName;
+		ParseAmmoPayload(m_sAmmoType, rawName, flags, typeName);
+
+		rawName = Clean(rawName);
+		if (rawName == "")
+			return "";
+
+		string translated = rawName;
+		if (translated.StartsWith("#"))
+		{
+			translated = WidgetManager.Translate(translated);
+		}
+		else if (translated.StartsWith("AR-") || translated.StartsWith("RHS-"))
+		{
+			string withHash = WidgetManager.Translate("#" + translated);
+			if (withHash != "#" + translated)
+				translated = withHash;
+		}
+
+		if (IsTechnicalStringId(translated))
+			return "";
+
+		return translated;
 	}
 
 	int GetAmmoTypeFlags()
 	{
-		string ammo = Clean(m_sAmmoType);
-		if (ammo.Contains("#"))
-		{
-			array<string> parts = {};
-			ammo.Split("#", parts, false);
-			if (parts.Count() > 1)
-				return parts[1].ToInt();
-		}
-		return 0;
+		string rawName;
+		int flags;
+		string typeName;
+		ParseAmmoPayload(m_sAmmoType, rawName, flags, typeName);
+		return flags;
 	}
 
 	string GetAmmoTypeName()
 	{
-		string ammo = Clean(m_sAmmoType);
-		if (ammo.Contains("#"))
+		string rawName;
+		int flags;
+		string typeName;
+		ParseAmmoPayload(m_sAmmoType, rawName, flags, typeName);
+
+		if (typeName != "" && typeName != "-")
 		{
-			array<string> parts = {};
-			ammo.Split("#", parts, false);
-			if (parts.Count() > 2)
-				return parts[2];
+			if (!typeName.ToInt() || typeName == "0")
+				return typeName;
+			return "";
 		}
 		return "";
 	}
@@ -176,6 +254,9 @@ class PS_KillInfo
 		string cal = Clean(m_sAmmoCaliber);
 		if (cal.StartsWith("#"))
 			cal = WidgetManager.Translate(cal);
+
+		if (IsTechnicalStringId(cal))
+			cal = "";
 
 		string ammoName = GetAmmoName();
 		if (cal != "" && ammoName != "")

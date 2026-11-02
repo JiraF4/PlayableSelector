@@ -329,7 +329,11 @@ class PS_KillListManager : ScriptComponent
 				}
 
 				if (ammoName != "" || ammoFlags != 0)
-					killInfo.m_sAmmoType = ammoName + "#" + ammoFlags.ToString() + "#" + ammoTypeName;
+				{
+					ammoName.Replace(PS_KillInfo.AMMO_DELIMITER, " ");
+					ammoName.Replace("|", " ");
+					killInfo.m_sAmmoType = ammoName + PS_KillInfo.AMMO_DELIMITER + ammoFlags.ToString() + PS_KillInfo.AMMO_DELIMITER + ammoTypeName;
+				}
 			}
 		}
 
@@ -349,7 +353,9 @@ class PS_KillListManager : ScriptComponent
 					else if (gFlags & EAmmoType.SMOKE) gTypeName = "SMOKE";
 					else if (gFlags & EAmmoType.ILLUMINATION) gTypeName = "ILLUM";
 				}
-				killInfo.m_sAmmoType = gName + "#" + gFlags.ToString() + "#" + gTypeName;
+				gName.Replace(PS_KillInfo.AMMO_DELIMITER, " ");
+				gName.Replace("|", " ");
+				killInfo.m_sAmmoType = gName + PS_KillInfo.AMMO_DELIMITER + gFlags.ToString() + PS_KillInfo.AMMO_DELIMITER + gTypeName;
 			}
 		}
 	}
