@@ -39,6 +39,25 @@ class PS_PlayableControllerComponent : ScriptComponent
 			return;
 
 		m_bOutFreezeTime = outFreezeTime;
+
+		PlayerController pc = PlayerController.Cast(GetOwner());
+		PS_FreezeManager freezeManager = PS_FreezeManager.GetInstance();
+		if (pc && freezeManager)
+		{
+			IEntity controlled = pc.GetControlledEntity();
+			if (controlled)
+			{
+				Vehicle vehicle = Vehicle.Cast(controlled.GetRootParent());
+				if (vehicle)
+				{
+					if (outFreezeTime)
+						freezeManager.PinOutFreezeVehicle_S(vehicle);
+					else
+						freezeManager.ReleaseOutFreezeVehicle_S(vehicle);
+				}
+			}
+		}
+
 		Rpc(RPC_SetOutFreezeTime, outFreezeTime);
 	}
 

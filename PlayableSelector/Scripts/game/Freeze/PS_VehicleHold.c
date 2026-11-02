@@ -93,6 +93,11 @@ class PS_VehicleHold
 		return null;
 	}
 
+	bool HasPinnedVehicles()
+	{
+		return !m_aPinned.IsEmpty();
+	}
+
 	//! Server: pin all vehicles in the world to freeze physics instantly.
 	void PinAll_S()
 	{
@@ -161,7 +166,7 @@ class PS_VehicleHold
 	protected bool HoldVehicle_S(IEntity entity)
 	{
 		Vehicle vehicle = Vehicle.Cast(entity);
-		if (!vehicle || vehicle.IsEnableMoveOnFreeze())
+		if (!vehicle)
 			return true;
 
 		HelicopterControllerComponent heli = HelicopterControllerComponent.Cast(entity.FindComponent(HelicopterControllerComponent));
@@ -174,6 +179,33 @@ class PS_VehicleHold
 
 		Pin_S(entity, heli, car, tracked, agl);
 		return true;
+	}
+
+	void PinVehicle_S(notnull IEntity entity)
+	{
+		HoldVehicle_S(entity);
+	}
+
+	void ReleaseVehicle_S(notnull IEntity vehicle)
+	{
+		PS_PinnedVehicle pinned = Find(vehicle);
+		if (!pinned)
+			return;
+
+		Physics physics = vehicle.GetPhysics();
+		if (physics)
+		{
+			physics.SetLinearFactor(Vector(1, 1, 1));
+			physics.SetDamping(pinned.m_fLinearDamping, pinned.m_fAngularDamping);
+			physics.SetActive(ActiveState.ACTIVE);
+		}
+
+		HelicopterControllerComponent heli = HelicopterControllerComponent.Cast(vehicle.FindComponent(HelicopterControllerComponent));
+		if (heli)
+			heli.SetAutohoverEnabled(true);
+
+		GiveToDriver_S(vehicle);
+		m_aPinned.RemoveItemOrdered(pinned);
 	}
 
 	protected void Stop_S(notnull IEntity vehicle, HelicopterControllerComponent heli)
@@ -264,6 +296,7 @@ class PS_VehicleHold
 		}
 		else if (car)
 		{
+			car.CancelStart();
 			car.Shutdown();
 			car.StopEngine(false);
 			car.SetPersistentHandBrake(true);
@@ -271,6 +304,7 @@ class PS_VehicleHold
 		}
 		else if (tracked)
 		{
+			tracked.CancelStart();
 			tracked.Shutdown();
 			tracked.StopEngine(false);
 			m_iStoppedTracked++;

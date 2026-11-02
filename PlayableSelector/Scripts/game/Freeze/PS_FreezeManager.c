@@ -252,9 +252,89 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 	{
 		super.EOnFrame(owner, timeSlice);
 
-		if (m_bHardFreeze && Replication.IsServer() && m_VehicleHold)
+		if (Replication.IsServer() && m_VehicleHold && (m_bHardFreeze || m_VehicleHold.HasPinnedVehicles()))
 		{
 			m_VehicleHold.Tick_S();
+		}
+	}
+
+	//------------------------------------------------------------------------------------------------
+	void PinOutFreezeVehicle_S(IEntity vehicle)
+	{
+		if (!Replication.IsServer() || !vehicle || !m_VehicleHold)
+			return;
+
+		m_VehicleHold.PinVehicle_S(vehicle);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	void ReleaseOutFreezeVehicle_S(IEntity vehicle)
+	{
+		if (!Replication.IsServer() || !vehicle || !m_VehicleHold || m_bHardFreeze)
+			return;
+
+		if (IsVehicleOccupantOutFreeze_S(vehicle))
+			return;
+
+		m_VehicleHold.ReleaseVehicle_S(vehicle);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected bool IsVehicleOccupantOutFreeze_S(notnull IEntity vehicle)
+	{
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		if (!playerManager)
+			return false;
+
+		array<int> playerIds = {};
+		playerManager.GetPlayers(playerIds);
+		foreach (int playerId : playerIds)
+		{
+			IEntity controlled = playerManager.GetPlayerControlledEntity(playerId);
+			if (!controlled || controlled.GetRootParent() != vehicle)
+				continue;
+
+			PlayerController pc = playerManager.GetPlayerController(playerId);
+			if (!pc)
+				continue;
+
+			PS_PlayableControllerComponent playableCtrl = PS_PlayableControllerComponent.Cast(pc.FindComponent(PS_PlayableControllerComponent));
+			if (playableCtrl && playableCtrl.IsOutFreezeTime())
+				return true;
+		}
+
+		return false;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected void RepinOutFreezeVehicles_S()
+	{
+		if (!Replication.IsServer() || !m_VehicleHold)
+			return;
+
+		PlayerManager playerManager = GetGame().GetPlayerManager();
+		if (!playerManager)
+			return;
+
+		array<int> playerIds = {};
+		playerManager.GetPlayers(playerIds);
+		foreach (int playerId : playerIds)
+		{
+			PlayerController pc = playerManager.GetPlayerController(playerId);
+			if (!pc)
+				continue;
+
+			PS_PlayableControllerComponent playableCtrl = PS_PlayableControllerComponent.Cast(pc.FindComponent(PS_PlayableControllerComponent));
+			if (!playableCtrl || !playableCtrl.IsOutFreezeTime())
+				continue;
+
+			IEntity controlled = playerManager.GetPlayerControlledEntity(playerId);
+			if (!controlled)
+				continue;
+
+			Vehicle vehicle = Vehicle.Cast(controlled.GetRootParent());
+			if (vehicle)
+				m_VehicleHold.PinVehicle_S(vehicle);
 		}
 	}
 
@@ -511,6 +591,7 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 		{
 			if (m_fCurrentFreezeTime > 0)
 			{
+				RepinOutFreezeVehicles_S();
 				GetGame().GetCallqueue().Remove(UpdateFreezeTimer_S);
 				GetGame().GetCallqueue().CallLater(UpdateFreezeTimer_S, 1000, true);
 			}
@@ -658,6 +739,8 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 		GetGame().GetCallqueue().Remove(UpdateFreezeTimer_S);
 
 		RemoveRestrictedZones_S();
+		if (m_VehicleHold && !m_bHardFreeze)
+			m_VehicleHold.Release_S();
 		if (!m_bFreezeEndTriggered)
 			SendSystemMessage_S("#PS-Freeze_End");
 

@@ -106,7 +106,7 @@ modded class SCR_CharacterControllerComponent
 				m_bPSFireLocked = false;
 			}
 
-			if (PS_IsLocalOutFreezeTime())
+			if (PS_IsHardFreezeLocked() || PS_IsLocalOutFreezeTime())
 			{
 				am.SetActionValue("CharacterForward", 0);
 				am.SetActionValue("CharacterRight", 0);
@@ -157,7 +157,7 @@ modded class SCR_CharacterControllerComponent
 			}
 		}
 
-		if (PS_IsLocalOutFreezeTime())
+		if (PS_IsHardFreezeLocked() || PS_IsLocalOutFreezeTime())
 		{
 			SetRoll(0);
 			SetJump(0);
@@ -173,11 +173,11 @@ modded class SCR_CharacterControllerComponent
 
 	protected void PS_DisableVehicleMove(notnull Vehicle vehicle, notnull ActionManager am)
 	{
-		am.SetActionValue("VehicleEngineStop", 1);
+		am.SetActionValue("VehicleEngineStop", 0);
 		am.SetActionValue("VehicleEngineStart", 0);
 		am.SetActionValue("AutohoverToggle", 0);
 		am.SetActionValue("WheelBrake", 0);
-		am.SetActionValue("WheelBrakePersistent", 1);
+		am.SetActionValue("WheelBrakePersistent", 0);
 		am.SetActionValue("CyclicForward", 0);
 		am.SetActionValue("CyclicBack", 0);
 		am.SetActionValue("CyclicLeft", 0);
@@ -189,30 +189,37 @@ modded class SCR_CharacterControllerComponent
 		am.SetActionValue("HelicopterEngineStop", 0);
 		am.SetActionValue("HelicopterEngineStart", 0);
 		am.SetActionValue("CarThrust", 0);
-		am.SetActionValue("CarBrake", 1);
+		am.SetActionValue("CarBrake", 0);
 		am.SetActionValue("CarSteering", 0);
 		am.SetActionValue("CarTurbo", 0);
 		am.SetActionValue("CarTurboToggle", 0);
 		am.SetActionValue("CarShift", 0);
 		am.SetActionValue("CarShiftReverse", 0);
 		am.SetActionValue("CarHandBrake", 1);
-		am.SetActionValue("CarHandBrakePersistent", 1);
+		am.SetActionValue("CarHandBrakePersistent", 0);
 
 		CarControllerComponent car = CarControllerComponent.Cast(vehicle.FindComponent(CarControllerComponent));
 		if (car)
 		{
+			car.CancelStart();
 			if (car.IsEngineOn())
+			{
+				car.Shutdown();
 				car.StopEngine(false);
+			}
 			car.SetPersistentHandBrake(true);
 		}
 
 		TrackedControllerComponent tracked = TrackedControllerComponent.Cast(vehicle.FindComponent(TrackedControllerComponent));
-		if (tracked && tracked.IsEngineOn())
-			tracked.StopEngine(false);
-
-		VehicleWheeledSimulation wheeledSim = VehicleWheeledSimulation.Cast(vehicle.FindComponent(VehicleWheeledSimulation));
-		if (wheeledSim && wheeledSim.EngineIsOn())
-			wheeledSim.EngineStop();
+		if (tracked)
+		{
+			tracked.CancelStart();
+			if (tracked.IsEngineOn())
+			{
+				tracked.Shutdown();
+				tracked.StopEngine(false);
+			}
+		}
 
 		HelicopterControllerComponent heli = HelicopterControllerComponent.Cast(vehicle.FindComponent(HelicopterControllerComponent));
 		if (heli)

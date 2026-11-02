@@ -1906,14 +1906,25 @@ class PS_GameModeCoop : SCR_BaseGameMode
 			CarControllerComponent car = CarControllerComponent.Cast(vehicle.FindComponent(CarControllerComponent));
 			if (car)
 			{
+				car.CancelStart();
 				if (car.IsEngineOn())
+				{
+					car.Shutdown();
 					car.StopEngine(false);
+				}
 				car.SetPersistentHandBrake(true);
 			}
 
 			TrackedControllerComponent tracked = TrackedControllerComponent.Cast(vehicle.FindComponent(TrackedControllerComponent));
-			if (tracked && tracked.IsEngineOn())
-				tracked.StopEngine(false);
+			if (tracked)
+			{
+				tracked.CancelStart();
+				if (tracked.IsEngineOn())
+				{
+					tracked.Shutdown();
+					tracked.StopEngine(false);
+				}
+			}
 
 			HelicopterControllerComponent heli = HelicopterControllerComponent.Cast(vehicle.FindComponent(HelicopterControllerComponent));
 			if (heli)

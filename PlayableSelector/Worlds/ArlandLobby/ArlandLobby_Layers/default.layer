@@ -78,6 +78,10 @@ Turret : "{66B35D82EB9B4E28}Prefabs/Weapons/Tripods/6T7/Deployable_Tripod_6T7_NS
 SCR_AIGroup : "{704B4E4EC7C56B55}Prefabs/Groups/BLUFOR/Group_US_AmmoTeam_P.et" {
  coords 1615.499 41.336 2271.03
 }
+Vehicle UH1H1 : "{70BAEEFC2D3FEE64}Prefabs/Vehicles/Helicopters/UH1H/UH1H.et" {
+ coords 1394.086 36.043 2360.612
+ m_bEnableMoveOnFreeze 1
+}
 GenericEntity : "{ADA72BDCEF79C40A}Prefabs/MP/CombatOps/Cain/COCain_Ammo_MortarBox.et" {
  coords 1375.115 41.686 2346.06
  angles 0 0 0
