@@ -29,15 +29,6 @@ class PS_FreezeManagerClass : SCR_BaseGameModeComponentClass
 
 class PS_FreezeManager : SCR_BaseGameModeComponent
 {
-	[Attribute("-1", UIWidgets.EditBox, "Freeze time override in ms (-1 = use GameMode attribute, 0 = disable, >0 = override)", category: "Freeze Manager")]
-	protected int m_iFreezeTimeOverride;
-
-	[Attribute("-1", UIWidgets.EditBox, "Disable time (startup freeze) override in ms (-1 = use GameMode attribute, 0 = disable, >0 = override)", category: "Freeze Manager")]
-	protected int m_iDisableTimeOverride;
-
-	[Attribute("-1", UIWidgets.EditBox, "Shooting forbidden override (-1 = use GameMode attribute, 0 = allow shooting, 1 = forbid shooting)", category: "Freeze Manager")]
-	protected int m_iShootingForbiddenOverride;
-
 	[RplProp(onRplName: "OnRpl_CurrentFreezeTime")]
 	protected float m_fCurrentFreezeTime;
 
@@ -159,6 +150,12 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 	}
 
 	//------------------------------------------------------------------------------------------------
+	int GetEffectiveHardFreezeTime()
+	{
+		return m_iEffectiveDisableTime;
+	}
+
+	//------------------------------------------------------------------------------------------------
 	int GetEffectiveDisableTime()
 	{
 		return m_iEffectiveDisableTime;
@@ -271,11 +268,7 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 			m_GameModeCoop = PS_GameModeCoop.Cast(GetOwner());
 
 		bool shootingForbidden = false;
-		if (m_iShootingForbiddenOverride > 0)
-			shootingForbidden = true;
-		else if (m_iShootingForbiddenOverride == 0)
-			shootingForbidden = false;
-		else if (m_GameModeCoop)
+		if (m_GameModeCoop)
 			shootingForbidden = m_GameModeCoop.IsFreezeTimeShootingForbiden();
 
 		if (m_bEffectiveShootingForbidden != shootingForbidden)
@@ -355,20 +348,12 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 		ResolveEffectiveShootingForbidden_S();
 
 		int freezeTime = 0;
-		if (m_iFreezeTimeOverride > 0)
-			freezeTime = m_iFreezeTimeOverride;
-		else if (m_iFreezeTimeOverride == 0)
-			freezeTime = 0;
-		else if (m_GameModeCoop)
+		if (m_GameModeCoop)
 			freezeTime = m_GameModeCoop.GetFreezeTime();
 
 		int disableTime = 0;
-		if (m_iDisableTimeOverride > 0)
-			disableTime = m_iDisableTimeOverride;
-		else if (m_iDisableTimeOverride == 0)
-			disableTime = 0;
-		else if (m_GameModeCoop)
-			disableTime = m_GameModeCoop.GetDisableTime();
+		if (m_GameModeCoop)
+			disableTime = m_GameModeCoop.GetHardFreezeTime();
 
 		m_iEffectiveFreezeTime = freezeTime;
 		m_iEffectiveDisableTime = disableTime;

@@ -38,7 +38,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	[Attribute("60000", UIWidgets.EditBox, "Time in milliseconds before restriction zones are removed.", category: "Reforger Lobby")]
 	int m_iFreezeTime;
 	
-	[Attribute("0", UIWidgets.EditBox, "Time in milliseconds before characters are activated.", category: "Reforger Lobby (WIP)")]
+	[Attribute("30000", UIWidgets.EditBox, "Startup Hard Freeze duration in milliseconds (controls locked, vehicles pinned, damage paused). 0 to disable.", category: "Reforger Lobby")]
+	int m_iHardFreezeTime;
+
+	// Deprecated / Fallback for existing missions configured with m_iDisableTime
+	[Attribute("0", UIWidgets.EditBox, "", category: "")]
 	int m_iDisableTime;
 
 	[Attribute("0", UIWidgets.CheckBox, "Disables text chat for alive players on game stage. Admins can always see text chat.", category: "Reforger Lobby")]
@@ -1832,7 +1836,21 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 	int GetDisableTime()
 	{
-		return m_iDisableTime;
+		return GetHardFreezeTime();
+	}
+
+	int GetHardFreezeTime()
+	{
+		if (m_iHardFreezeTime > 0)
+			return m_iHardFreezeTime;
+		if (m_iDisableTime > 0)
+			return m_iDisableTime;
+		return m_iHardFreezeTime;
+	}
+
+	void SetHardFreezeTime(int hardFreezeTime)
+	{
+		m_iHardFreezeTime = hardFreezeTime;
 	}
 
 	override void EOnFrame(IEntity owner, float timeSlice)
@@ -1854,6 +1872,62 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 		super.SetLocalControls(enabled);
 		PS_InputLock.EnforceView(held);
+
+		if (!enabled)
+			return;
+
+		PS_FreezeManager freezeManager = PS_FreezeManager.GetInstance();
+		if (!freezeManager || freezeManager.GetFreezePhase() != PS_EFreezePhase.ORDINARY)
+			return;
+
+		PlayerController playerController = GetGame().GetPlayerController();
+		if (!playerController)
+			return;
+
+		PS_PlayableControllerComponent playableControllerComponent = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
+		if (!playableControllerComponent || !playableControllerComponent.IsOutFreezeTime())
+			return;
+
+		ChimeraCharacter character = ChimeraCharacter.Cast(playerController.GetControlledEntity());
+		if (!character)
+			return;
+
+		SCR_DamageManagerComponent damageManager = SCR_DamageManagerComponent.Cast(character.FindComponent(SCR_DamageManagerComponent));
+		if (!damageManager || damageManager.GetState() == EDamageState.DESTROYED)
+			return;
+
+		CharacterControllerComponent characterController = character.GetCharacterController();
+		if (characterController)
+			characterController.SetDisableMovementControls(true);
+
+		Vehicle vehicle = Vehicle.Cast(character.GetRootParent());
+		if (vehicle)
+		{
+			CarControllerComponent car = CarControllerComponent.Cast(vehicle.FindComponent(CarControllerComponent));
+			if (car)
+			{
+				if (car.IsEngineOn())
+					car.StopEngine(false);
+				car.SetPersistentHandBrake(true);
+			}
+
+			TrackedControllerComponent tracked = TrackedControllerComponent.Cast(vehicle.FindComponent(TrackedControllerComponent));
+			if (tracked && tracked.IsEngineOn())
+				tracked.StopEngine(false);
+
+			HelicopterControllerComponent heli = HelicopterControllerComponent.Cast(vehicle.FindComponent(HelicopterControllerComponent));
+			if (heli)
+			{
+				heli.SetPersistentWheelBrake(true);
+				if (!heli.GetAutohoverEnabled())
+					heli.SetAutohoverEnabled(true);
+			}
+		}
+	}
+
+	void UpdateLocalControls_C()
+	{
+		SetLocalControls(GetAllowControls());
 	}
 
 	void ~PS_GameModeCoop()
