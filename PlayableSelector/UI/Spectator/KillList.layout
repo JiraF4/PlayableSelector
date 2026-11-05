@@ -263,7 +263,7 @@ FrameWidgetClass {
               SizeY 26
               OffsetBottom -26
              }
-             Color 0.9 0.9 0.9 1
+             Color 0.92 0.76 0.15 1
              Text "#PS-KillList_YourKills"
              "Font Size" 12
              "Min Font Size" 12
@@ -273,12 +273,12 @@ FrameWidgetClass {
              Name "YourKillsCountBadge"
              Slot FrameWidgetSlot "{C1A2B3D4E5F6B507}" {
               Anchor 0 0 0 0
-              PositionX 444
-              OffsetLeft 444
+              PositionX 440
+              OffsetLeft 440
               PositionY 4
               OffsetTop 4
               SizeX 26
-              OffsetRight -470
+              OffsetRight -466
               SizeY 18
               OffsetBottom -22
              }
@@ -458,12 +458,12 @@ FrameWidgetClass {
              Name "TeamKillsCountBadge"
              Slot FrameWidgetSlot "{C1A2B3D4E5F6B515}" {
               Anchor 0 0 0 0
-              PositionX 444
-              OffsetLeft 444
+              PositionX 440
+              OffsetLeft 440
               PositionY 4
               OffsetTop 4
               SizeX 26
-              OffsetRight -470
+              OffsetRight -466
               SizeY 18
               OffsetBottom -22
              }
@@ -584,7 +584,7 @@ FrameWidgetClass {
               SizeY 26
               OffsetBottom -26
              }
-             Color 0.5 0.16 0.16 0.4
+             Color 0.12 0.12 0.12 0.4
              style pixel_outline
             }
             ImageWidgetClass "{C1A2B3D4E5F6B305}" {
@@ -633,7 +633,7 @@ FrameWidgetClass {
               SizeY 26
               OffsetBottom -26
              }
-             Color 0.95 0.32 0.32 1
+             Color 0.92 0.16 0.16 1
              Text "#PS-KillList_KilledYou"
              "Font Size" 12
              "Min Font Size" 12
@@ -643,12 +643,12 @@ FrameWidgetClass {
              Name "KilledYouCountBadge"
              Slot FrameWidgetSlot "{C1A2B3D4E5F6B521}" {
               Anchor 0 0 0 0
-              PositionX 444
-              OffsetLeft 444
+              PositionX 440
+              OffsetLeft 440
               PositionY 4
               OffsetTop 4
               SizeX 26
-              OffsetRight -470
+              OffsetRight -466
               SizeY 18
               OffsetBottom -22
              }
@@ -681,7 +681,7 @@ FrameWidgetClass {
                 SizeY 0
                 OffsetBottom 0
                }
-               Color 0.5 0.16 0.16 0.4
+               Color 0.12 0.12 0.12 0.4
                style pixel_outline
               }
               TextWidgetClass "{C1A2B3D4E5F6B526}" {

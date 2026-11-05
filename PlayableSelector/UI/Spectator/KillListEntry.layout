@@ -51,12 +51,12 @@ SizeLayoutWidgetClass {
       Anchor 0 0 0 0
       PositionX 0
       OffsetLeft 0
-      PositionY 3
-      OffsetTop 3
+      PositionY 2
+      OffsetTop 2
       SizeX 4
       OffsetRight -4
-      SizeY 47
-      OffsetBottom -50
+      SizeY 46
+      OffsetBottom -48
      }
      Color 0.92 0.76 0.15 1
     }
@@ -445,8 +445,8 @@ SizeLayoutWidgetClass {
       OffsetLeft 56
       PositionY 28
       OffsetTop 28
-      SizeX 420
-      OffsetRight -476
+      SizeX 426
+      OffsetRight -482
       SizeY 22
       OffsetBottom -50
      }
@@ -538,6 +538,7 @@ SizeLayoutWidgetClass {
        Name "MagazineText"
        Slot LayoutSlot "{CFE0FAB96578449B}" {
         VerticalAlign 3
+        Padding 0 0 2 0
        }
        Color 0.68 0.68 0.68 1
        Text "30 птр"
