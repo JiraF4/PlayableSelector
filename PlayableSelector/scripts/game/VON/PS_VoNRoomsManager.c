@@ -41,6 +41,7 @@ class PS_VoNRoomsManager : ScriptComponent
 	{
 		GetGame().GetCallqueue().Remove(ResolveSlotChannels_S);
 		GetGame().GetCallqueue().Remove(MutePendingProxyRadios);
+		GetGame().GetCallqueue().Remove(RepositionPendingProxies);
 		GetGame().GetCallqueue().Remove(SpawnProxy_S);
 		GetGame().GetCallqueue().Remove(FireJIPEvents);
 		GetGame().GetCallqueue().Remove(UpdateParked_S);
@@ -306,6 +307,8 @@ class PS_VoNRoomsManager : ScriptComponent
 		PS_NetStat.Hit("RpcDo_SetPlayerChannel");
 		string oldChannelKey = GetPlayerChannel(playerId);
 		m_mPlayerChannels.Set(playerId, channelKey);
+		// A member's slot index depends on who else is in the room, so one move can shift both rooms.
+		QueueAllProxyRepositions();
 		m_OnPlayerChannelChanged.Invoke(playerId, channelKey, oldChannelKey);
 	}
 
@@ -324,6 +327,7 @@ class PS_VoNRoomsManager : ScriptComponent
 	{
 		PS_NetStat.Hit("RpcDo_SetPlayerParked");
 		m_mPlayerParked.Set(playerId, parked);
+		QueueProxyReposition(playerId);
 		PlayerController pc = GetGame().GetPlayerController();
 		if (pc && pc.GetPlayerId() == playerId)
 			PS_MenuVoN.Refresh();
@@ -403,12 +407,14 @@ class PS_VoNRoomsManager : ScriptComponent
 			if (proxyPrefab == "")
 				proxyPrefab = "{8DE2B66B89E14F88}Prefabs/VoN/PS_VoNProxy.et";
 
-			// Keep proxy entities spatially separated; room membership is routed by virtual position,
-			// not by radio frequency or encryption key.
-			int slot = AllocateProxySlot_S(playerId);
+			// 1.9 routes VoN off the RadioManagerEntity spatial cache, which RadioSpatialSystem fills
+			// from live radio world positions - the virtual room position alone no longer reaches it.
+			// The proxy must physically sit where its room is, or same-channel players end up hundreds
+			// of metres apart and fall outside DIRECT voice range (empty delivery set = silence).
+			AllocateProxySlot_S(playerId);
 			EntitySpawnParams params = new EntitySpawnParams();
 			Math3D.MatrixIdentity4(params.Transform);
-			params.Transform[3] = Vector(200 * Math.Mod(slot, 16), 10000, 200 * Math.Floor(slot / 16));
+			params.Transform[3] = GetRoomPosition(playerId);
 
 			proxy = GetGame().SpawnEntityPrefab(Resource.Load(proxyPrefab), GetGame().GetWorld(), params);
 			if (!proxy)
@@ -454,6 +460,7 @@ class PS_VoNRoomsManager : ScriptComponent
 			Print(string.Format("[PS_VoN] VoN proxy spawned for player %1 at %2", playerId, proxy.GetOrigin().ToString()), LogLevel.NORMAL);
 
 		MuteProxyRadio(playerId); // mute the proxy radio after spawn or reconnect
+		QueueProxyReposition(playerId); // a reused proxy can still sit at a stale room
 
 		// Guard check on server for 1.8 transceiver badge
 		IEntity proxyEntity;
@@ -546,6 +553,48 @@ class PS_VoNRoomsManager : ScriptComponent
 			transceiver.SetMuteState(true);
 	}
 
+	// 1.9: RadioSpatialSystem refreshes the VoN routing cache from live radio world positions, so the
+	// proxy body has to track its virtual room on every machine - the server's cache is what routes.
+	// GetRoomPosition is deterministic over replicated state, so all machines converge without an RPC.
+	// Coalesced like the radio mutes: one pass per frame regardless of how many members moved.
+	protected ref array<int> m_aPendingRepositions = {};
+	protected bool m_bRepositionScheduled = false;
+
+	void QueueProxyReposition(int playerId)
+	{
+		if (!m_aPendingRepositions.Contains(playerId))
+			m_aPendingRepositions.Insert(playerId);
+
+		if (!m_bRepositionScheduled)
+		{
+			m_bRepositionScheduled = true;
+			GetGame().GetCallqueue().CallLater(RepositionPendingProxies, 0, false);
+		}
+	}
+
+	protected void QueueAllProxyRepositions()
+	{
+		foreach (int playerId, string channelKey : m_mPlayerChannels)
+			QueueProxyReposition(playerId);
+	}
+
+	protected void RepositionPendingProxies()
+	{
+		m_bRepositionScheduled = false;
+		foreach (int playerId : m_aPendingRepositions)
+			RepositionProxy(playerId);
+		m_aPendingRepositions.Clear();
+	}
+
+	protected void RepositionProxy(int playerId)
+	{
+		IEntity proxy = PS_VoNProxyComponent.GetProxyEntity(playerId);
+		if (!proxy)
+			return;
+
+		proxy.SetOrigin(GetRoomPosition(playerId));
+	}
+
 	void MigratePublicRoomToGlobal_S(int ownerPlayerId)
 	{
 		if (!Replication.IsServer())
@@ -577,6 +626,7 @@ class PS_VoNRoomsManager : ScriptComponent
 		m_mPlayerParked.Remove(playerId);
 		RemovePersonalChannelLocal(GetPublicChannelKey(playerId));
 		RemovePersonalChannelLocal(GetDeafenChannelKey(playerId));
+		QueueAllProxyRepositions();
 		m_OnPlayerChannelChanged.Invoke(playerId, "", oldChannelKey);
 	}
 
@@ -606,6 +656,7 @@ class PS_VoNRoomsManager : ScriptComponent
 	protected void RpcDo_CreateChannel(string channelKey, int index)
 	{
 		RegisterChannelLocal(channelKey, index);
+		QueueAllProxyRepositions();
 	}
 
 	protected void RegisterChannelLocal(string channelKey, int index)
@@ -698,6 +749,7 @@ class PS_VoNRoomsManager : ScriptComponent
 			m_OnPlayerChannelChanged.Invoke(playerId, channelKey, "");
 			m_OnPlayerParkedChanged.Invoke(playerId, IsPlayerParked(playerId));
 		}
+		QueueAllProxyRepositions();
 		PS_MenuVoN.Refresh();
 	}
 }

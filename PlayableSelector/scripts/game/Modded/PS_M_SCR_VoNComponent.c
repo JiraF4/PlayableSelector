@@ -142,6 +142,18 @@ modded class SCR_VoNComponent
 		return false;
 	}
 
+	// 1.9 resolves the editor sender through this single hook instead of calling GetEditorEntity and
+	// IsEntityActiveEditor itself. The vanilla default is declared without `event`, so declare the
+	// modded body as an event to keep the native binding on the proxy-aware path.
+	override protected event IEntity GetActiveEditorEntity(int playerID)
+	{
+		IEntity ent = GetEditorEntity(playerID);
+		if (!ent || !IsEntityActiveEditor(ent))
+			return null;
+
+		return ent;
+	}
+
 	// =====================================================================
 	// TALKING STATE — feed the voice UI
 	// =====================================================================
