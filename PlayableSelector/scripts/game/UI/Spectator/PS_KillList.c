@@ -245,17 +245,17 @@ class PS_KillList : ScriptedWidgetComponent
 		if (killInfo.m_bIsTeamKill)
 		{
 			if (accentBar)
-				accentBar.SetColor(Color.FromRGBA(239, 68, 68, 255));
+				accentBar.SetColor(Color.FromRGBA(235, 64, 64, 255));
 		}
 		else if (isKilledYou)
 		{
 			if (accentBar)
-				accentBar.SetColor(Color.FromRGBA(239, 68, 68, 255));
+				accentBar.SetColor(Color.FromRGBA(235, 41, 41, 255));
 		}
 		else
 		{
 			if (accentBar)
-				accentBar.SetColor(Color.FromRGBA(234, 179, 8, 255));
+				accentBar.SetColor(Color.FromRGBA(235, 194, 38, 255));
 		}
 
 		// 3. Index badge (clean uniform 26px badge across all lists)
@@ -356,7 +356,7 @@ class PS_KillList : ScriptedWidgetComponent
 				{
 					hitZoneText.SetText(hitZone);
 					if (isHeadshot)
-						hitZoneText.SetColor(Color.FromRGBA(255, 120, 120, 255));
+						hitZoneText.SetColor(Color.FromRGBA(225, 56, 56, 255));
 					else
 						hitZoneText.SetColor(Color.FromRGBA(245, 245, 245, 255));
 					hitZoneText.SetVisible(true);
@@ -370,7 +370,7 @@ class PS_KillList : ScriptedWidgetComponent
 				metaDivider.SetVisible(hasDistance && hitZone != "");
 			if (metaBg)
 			{
-				metaBg.SetColor(Color.FromRGBA(14, 14, 14, 220));
+				metaBg.SetColor(Color.FromRGBA(8, 8, 8, 217));
 				metaBg.SetVisible(true);
 			}
 		}

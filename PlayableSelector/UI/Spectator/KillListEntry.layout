@@ -241,7 +241,7 @@ SizeLayoutWidgetClass {
           SizeY 18
           OffsetBottom -18
          }
-         Color 0.85 0.2 0.2 0.85
+         Color 0.92 0.25 0.25 0.85
         }
         PanelWidgetClass "{C1A2B3D4E5F6B404}" {
          Name "TeamKillBorder"
@@ -301,7 +301,7 @@ SizeLayoutWidgetClass {
           HorizontalAlign 3
           VerticalAlign 3
          }
-         Color 0.12 0.12 0.12 0.35
+         Color 0.12 0.12 0.12 0.4
          style pixel_outline
         }
         TextWidgetClass "{16AC09B01B1F4668}" {
@@ -598,7 +598,7 @@ SizeLayoutWidgetClass {
         VerticalAlign 3
        }
        "Is Visible" 0
-       Color 0.78 0.78 0.78 1
+       Color 0.68 0.68 0.68 1
        Text "AP"
        "Font Size" 11
        "Min Font Size" 9

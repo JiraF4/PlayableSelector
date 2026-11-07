@@ -65,12 +65,12 @@ ButtonWidgetClass {
     ImageWidgetClass "{660496AD246053D2}" {
      Name "LeaderIcon"
      Slot FrameWidgetSlot "{5EB2906F65B847CB}" {
-      PositionX 224
-      OffsetLeft 224
+      PositionX 250
+      OffsetLeft 250
       PositionY 0
       OffsetTop 0
       SizeX 44
-      OffsetRight -268
+      OffsetRight -294
       SizeY 44
       OffsetBottom -44
      }
@@ -114,12 +114,12 @@ ButtonWidgetClass {
     RichTextWidgetClass "{660496ACF0DE2161}" {
      Name "PlayerName"
      Slot FrameWidgetSlot "{5D6D1B96C41F630E}" {
-      PositionX 52
-      OffsetLeft 52
+      PositionX 51
+      OffsetLeft 51
       PositionY 0
       OffsetTop 0
-      SizeX 164
-      OffsetRight -216
+      SizeX 194
+      OffsetRight -245
       SizeY 44
       OffsetBottom -44
      }
