@@ -89,6 +89,9 @@ class PS_GameModeCoop : SCR_BaseGameMode
 	[Attribute("0", UIWidgets.CheckBox, "", category: "Reforger Lobby")]
 	protected bool m_bDisableBuildingModeAfterFreezeTime;
 	
+	[Attribute("0", UIWidgets.CheckBox, "Allow AI groups to report spotted enemies as military markers on the map (vanilla 1.8 feature). Off by default: in a lobby mission those markers reveal player squads. A faction whose own settings forbid AI reports never reports, even when this is on.", category: "Reforger Lobby")]
+	protected bool m_bAllowAiSpotReports;
+	
 	[Attribute("-1", UIWidgets.Auto, "", category: "Reforger Lobby (WIP)")]
 	protected int m_iFactionsBalance;
 
@@ -2003,6 +2006,11 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		return m_bDisableArmaVision;
 	}
 	
+	bool AllowAiSpotReports()
+	{
+		return m_bAllowAiSpotReports;
+	}
+
 	bool GetDisableBuildingModeAfterFreezeTime()
 	{
 		return m_bDisableBuildingModeAfterFreezeTime;
