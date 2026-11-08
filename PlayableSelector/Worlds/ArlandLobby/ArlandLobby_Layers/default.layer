@@ -79,7 +79,8 @@ SCR_AIGroup : "{704B4E4EC7C56B55}Prefabs/Groups/BLUFOR/Group_US_AmmoTeam_P.et" {
  coords 1615.499 41.336 2271.03
 }
 Vehicle UH1H1 : "{70BAEEFC2D3FEE64}Prefabs/Vehicles/Helicopters/UH1H/UH1H.et" {
- coords 1394.086 36.043 2360.612
+ coords 1377.328 54.056 2242.824
+ angles 0 -34.135 0
  m_bEnableMoveOnFreeze 1
 }
 GenericEntity : "{ADA72BDCEF79C40A}Prefabs/MP/CombatOps/Cain/COCain_Ammo_MortarBox.et" {
@@ -133,7 +134,7 @@ $grp SCR_AIGroup : "{D1B420D921CC6CD4}Prefabs/Groups/OPFOR/Group_USSR_PlatoonHQ_
   coords 1368.682 39 2233.269
  }
 }
-$grp Turret : "{D1FFE458E8AC4BDB}Prefabs/Weapons/Mortars/2B14/Mortar_2B14_hand.et" {
+$grp Turret : "{D1FFE458E8AC4BDB}Prefabs/Weapons/Mortars/2B14/Mortar_2B14.et" {
  {
   coords 1402.003 35.969 2387.599
   angles 0 29.541 0
