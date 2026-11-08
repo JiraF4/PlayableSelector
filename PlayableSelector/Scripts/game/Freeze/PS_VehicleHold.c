@@ -32,6 +32,10 @@ class PS_VehicleHold
 	protected int m_iStoppedTracked;
 	protected int m_iStoppedAircraft;
 
+	/**
+	 * @brief Измеряет клиренс от нижней границы AABB техники (mins[1]) до опоры под центром,
+	 * стартуя луч из середины высоты корпуса с исключением всей иерархии дочерних сущностей.
+	 */
 	static float MeasureAltitudeAGL(notnull IEntity vehicle)
 	{
 		BaseWorld world = GetGame().GetWorld();
@@ -41,19 +45,25 @@ class PS_VehicleHold
 		vector mins, maxs;
 		vehicle.GetWorldBounds(mins, maxs);
 		vector origin = vehicle.GetOrigin();
-		vector start = Vector(origin[0], mins[1] - 0.5, origin[2]);
+		vector start = Vector(origin[0], (mins[1] + maxs[1]) * 0.5, origin[2]);
+
+		array<IEntity> excludeArray = { vehicle };
+		SCR_EntityHelper.GetHierarchyEntityList(vehicle, excludeArray);
 
 		TraceParam trace = new TraceParam();
 		trace.Start = start;
 		trace.End = Vector(start[0], start[1] - TRACE_DOWN_M, start[2]);
-		trace.Flags = TraceFlags.WORLD | TraceFlags.ENTS;
-		trace.Exclude = vehicle;
+		trace.Flags = TraceFlags.WORLD | TraceFlags.ENTS | TraceFlags.OCEAN;
+		trace.ExcludeArray = excludeArray;
 
 		float coef = world.TraceMove(trace, null);
+		float hitY;
 		if (coef < 1)
-			return TRACE_DOWN_M * coef;
+			hitY = start[1] - TRACE_DOWN_M * coef;
+		else
+			hitY = Math.Max(world.GetSurfaceY(start[0], start[2]), world.GetOceanBaseHeight());
 
-		return start[1] - world.GetSurfaceY(start[0], start[2]);
+		return Math.Max(0, mins[1] - hitY);
 	}
 
 	protected static void ReadPrefabDamping(IEntity entity, out float linear, out float angular)
