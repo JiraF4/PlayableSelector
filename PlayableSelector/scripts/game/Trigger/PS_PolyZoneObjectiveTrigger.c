@@ -14,6 +14,7 @@ class PS_PolyZoneObjectiveTrigger : PS_PolyZoneTrigger
 	bool m_bReverseObjective;
 	
 	protected bool m_bAfterGame;
+	protected bool m_bGameModeHooked;
 	
 	override void OnInit(IEntity owner)
 	{
@@ -22,11 +23,30 @@ class PS_PolyZoneObjectiveTrigger : PS_PolyZoneTrigger
 		if (!Replication.IsServer())
 			EnablePeriodicQueries(false);
 		
-		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-		gameModeCoop.GetOnGameStateChange().Insert(OnGameStateChange);
-		gameModeCoop.GetOnOnlyOneFactionAlive().Insert(OnOnlyOneFactionAlive);
+		HookGameMode();
 		
 		GetGame().GetCallqueue().Call(LinkObjectives);
+	}
+	
+	/**
+	 * @brief Subscribes the trigger to PS_GameModeCoop state events.
+	 * @note The game mode may be absent (editor/sandbox scene worlds) or not yet
+	 * registered while InitEntities runs OnInit; the subscription is retried once
+	 * from the deferred LinkObjectives() and skipped silently if the game mode
+	 * never appears, so the trigger keeps working without the hooks.
+	 */
+	protected void HookGameMode()
+	{
+		if (m_bGameModeHooked)
+			return;
+		
+		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if (!gameModeCoop)
+			return;
+		
+		m_bGameModeHooked = true;
+		gameModeCoop.GetOnGameStateChange().Insert(OnGameStateChange);
+		gameModeCoop.GetOnOnlyOneFactionAlive().Insert(OnOnlyOneFactionAlive);
 	}
 	
 	void OnOnlyOneFactionAlive(FactionKey aliveFaction)
@@ -46,13 +66,19 @@ class PS_PolyZoneObjectiveTrigger : PS_PolyZoneTrigger
 
 	void LinkObjectives()
 	{
-		IEntity child = GetParent().GetChildren();
-		while (child)
+		HookGameMode();
+		
+		IEntity parent = GetParent();
+		if (parent)
 		{
-			PS_Objective objective = PS_Objective.Cast(child);
-			if (objective)
-				m_aObjectives.Insert(objective);
-			child = child.GetSibling();
+			IEntity child = parent.GetChildren();
+			while (child)
+			{
+				PS_Objective objective = PS_Objective.Cast(child);
+				if (objective)
+					m_aObjectives.Insert(objective);
+				child = child.GetSibling();
+			}
 		}
 		foreach (string objectiveName : m_aObjectiveNames)
 		{
