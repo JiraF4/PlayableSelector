@@ -115,12 +115,19 @@ class PS_PlayableComponent : ScriptComponent
 
 	override void EOnInit(IEntity owner)
 	{
+		if (SCR_Global.IsEditMode(owner))
+			return;
+
 		m_FactionAffiliationComponent = FactionAffiliationComponent.Cast(owner.FindComponent(FactionAffiliationComponent));
 		m_EditableCharacterComponent = SCR_EditableCharacterComponent.Cast(owner.FindComponent(SCR_EditableCharacterComponent));
-		m_EditableUIInfo = m_EditableCharacterComponent.GetInfo();
+		if (m_EditableCharacterComponent)
+			m_EditableUIInfo = m_EditableCharacterComponent.GetInfo();
 		m_CharacterDamageManagerComponent = SCR_CharacterDamageManagerComponent.Cast(owner.FindComponent(SCR_CharacterDamageManagerComponent));
+		if (!m_CharacterDamageManagerComponent && m_Owner)
+			m_CharacterDamageManagerComponent = SCR_CharacterDamageManagerComponent.Cast(m_Owner.GetDamageManager());
 		m_AIControlComponent = AIControlComponent.Cast(owner.FindComponent(AIControlComponent));
-		m_AIAgent = m_AIControlComponent.GetAIAgent();
+		if (m_AIControlComponent)
+			m_AIAgent = m_AIControlComponent.GetAIAgent();
 		GetGame().GetCallqueue().Call(LateInit);
 	}
 
@@ -204,6 +211,9 @@ class PS_PlayableComponent : ScriptComponent
 			rpl.EnableStreaming(true);
 		}
 
+		if (Replication.IsServer() && m_CharacterDamageManagerComponent)
+			m_CharacterDamageManagerComponent.GetOnDamageStateChanged().Remove(OnDamageStateChange);
+
 		PS_PlayableManager playableManager = PS_PlayableManager.GetInstance();
 		if (!playableManager)
 			return;
@@ -233,7 +243,7 @@ class PS_PlayableComponent : ScriptComponent
 		GetGame().GetCallqueue().Remove(ForceActivateAI);
 		if (GetOwner().GetWorld() != GetGame().GetWorld())
 			return;
-		if (Replication.IsServer())
+		if (Replication.IsServer() && m_CharacterDamageManagerComponent)
 			m_CharacterDamageManagerComponent.GetOnDamageStateChanged().Insert(OnDamageStateChange);
 
 		if (!m_bIsPlayable)
@@ -341,7 +351,9 @@ class PS_PlayableComponent : ScriptComponent
 	}
 	EDamageState GetDamageState()
 	{
-		return m_CharacterDamageManagerComponent.GetState();
+		if (m_CharacterDamageManagerComponent)
+			return m_CharacterDamageManagerComponent.GetState();
+		return EDamageState.UNDAMAGED;
 	}
 
 	void PS_PlayableComponent(IEntityComponentSource src, IEntity ent, IEntity parent)
