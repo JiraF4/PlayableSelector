@@ -69,6 +69,8 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 	protected PS_EFreezePhase m_eLastNotifiedFreezePhase = PS_EFreezePhase.NOT_STARTED;
 	protected bool m_bFreezeEndTriggered;
 	protected bool m_bDayAdvanceWasOn;
+	protected GenericComponent m_ReplayRecorder;
+	protected bool m_bReplayRecorderChecked;
 	protected static PS_FreezeManager s_Instance;
 
 	//------------------------------------------------------------------------------------------------
@@ -372,8 +374,79 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 		m_eLastNotifiedFreezePhase = newPhase;
 
 		m_OnFreezePhaseChanged.Invoke(oldPhase, newPhase);
+		if (newPhase == PS_EFreezePhase.ORDINARY)
+			NotifyReplayHookFloat_S("HookFreeze_S", m_fCurrentFreezeTime * 0.001);
 		if (newPhase == PS_EFreezePhase.FINISHED)
+		{
+			if (oldPhase == PS_EFreezePhase.ORDINARY)
+				NotifyReplayHook_S("HookFreezeEnd_S");
 			m_OnFreezeEnded.Invoke();
+		}
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Разрешает RR_ReplayRecorderComponent без compile-time зависимости от ReforgerReplayV2.
+	protected GenericComponent GetReplayRecorder_S()
+	{
+		if (m_ReplayRecorder || m_bReplayRecorderChecked)
+			return m_ReplayRecorder;
+
+		m_bReplayRecorderChecked = true;
+		typename replayType = "RR_ReplayRecorderComponent".ToType();
+		if (!replayType)
+		{
+			Print("[PS_Freeze] RR_ReplayRecorderComponent type not found - ReforgerReplayV2 addon is not loaded", LogLevel.NORMAL);
+			return null;
+		}
+
+		IEntity owner = GetOwner();
+		if (owner)
+			m_ReplayRecorder = GenericComponent.Cast(owner.FindComponent(replayType));
+
+		if (!m_ReplayRecorder)
+		{
+			BaseGameMode gameMode = GetGame().GetGameMode();
+			if (gameMode && gameMode != owner)
+				m_ReplayRecorder = GenericComponent.Cast(gameMode.FindComponent(replayType));
+		}
+
+		if (!m_ReplayRecorder)
+			Print("[PS_Freeze] RR_ReplayRecorderComponent not found on owner or game mode - replay hooks will be skipped", LogLevel.WARNING);
+
+		return m_ReplayRecorder;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected void NotifyReplayHook_S(string methodName)
+	{
+		GenericComponent rec = GetReplayRecorder_S();
+		if (!rec)
+			return;
+
+		int unused;
+		GetGame().GetScriptModule().Call(rec, methodName, false, unused);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected void NotifyReplayHookFloat_S(string methodName, float value)
+	{
+		GenericComponent rec = GetReplayRecorder_S();
+		if (!rec)
+			return;
+
+		int unused;
+		GetGame().GetScriptModule().Call(rec, methodName, false, unused, value);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected void NotifyReplayHookInt_S(string methodName, int value)
+	{
+		GenericComponent rec = GetReplayRecorder_S();
+		if (!rec)
+			return;
+
+		int unused;
+		GetGame().GetScriptModule().Call(rec, methodName, false, unused, value);
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -451,8 +524,8 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 			m_bStartupFreeze = false;
 			if (m_iEffectiveFreezeTime > 0)
 			{
-				SetFreezePhase_S(PS_EFreezePhase.ORDINARY);
 				m_fCurrentFreezeTime = m_iEffectiveFreezeTime;
+				SetFreezePhase_S(PS_EFreezePhase.ORDINARY);
 				if (m_VehicleHold)
 					m_VehicleHold.StopAllVehicles_S();
 				GetGame().GetCallqueue().Remove(UpdateFreezeTimer_S);
@@ -500,6 +573,7 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 			GetGame().GetCallqueue().CallLater(UpdateHardFreezeTimer_S, 1000, true);
 
 			m_OnHardFreezeChanged.Invoke(true);
+			NotifyReplayHookInt_S("HookHardFreeze_S", seconds);
 
 			if (!m_bStartupFreeze)
 				HardFreeze_Notify(true);
@@ -521,6 +595,7 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 			m_fHardFreezeRemaining = Math.Clamp(m_fHardFreezeRemaining, 0.0, 86400.0);
 			if (seconds > 0)
 				m_fHardFreezeDuration = Math.Max(m_fHardFreezeDuration + seconds, m_fHardFreezeRemaining);
+			NotifyReplayHookInt_S("HookHardFreeze_S", Math.Round(m_fHardFreezeRemaining));
 			UpdateHUD_C();
 			Replication.BumpMe();
 			return;
@@ -531,6 +606,7 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 			m_fHardFreezeRemaining = 5.0;
 			if (!m_bStartupFreeze)
 				SendSystemMessage_S("#PS-HardFreeze_EndingSoon");
+			NotifyReplayHookInt_S("HookHardFreeze_S", 5);
 			UpdateHUD_C();
 			Replication.BumpMe();
 			return;
@@ -540,6 +616,7 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 		m_fHardFreezeRemaining = Math.Clamp(m_fHardFreezeRemaining, 0.0, 86400.0);
 		if (seconds > 0)
 			m_fHardFreezeDuration = Math.Max(m_fHardFreezeDuration + seconds, m_fHardFreezeRemaining);
+		NotifyReplayHookInt_S("HookHardFreeze_S", Math.Round(m_fHardFreezeRemaining));
 		UpdateHUD_C();
 		Replication.BumpMe();
 	}
@@ -570,6 +647,7 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 		RestoreDayAdvance_S();
 
 		m_OnHardFreezeChanged.Invoke(false);
+		NotifyReplayHook_S("HookHardFreezeEnd_S");
 
 		if (wasMidGamePause)
 			HardFreeze_Notify(false);
@@ -667,6 +745,10 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 			if (!m_bHardFreeze)
 				OnFreezeTimeEnded_S();
 		}
+		else if (!m_bHardFreeze && m_eFreezePhase == PS_EFreezePhase.ORDINARY)
+		{
+			NotifyReplayHookFloat_S("HookFreeze_S", m_fCurrentFreezeTime * 0.001);
+		}
 
 		Replication.BumpMe();
 	}
@@ -689,6 +771,8 @@ class PS_FreezeManager : SCR_BaseGameModeComponent
 
 		float deltaMs = 5000 - oldFreezeTime;
 		m_OnFreezeTimeAdjusted.Invoke(deltaMs);
+		if (!m_bHardFreeze && m_eFreezePhase == PS_EFreezePhase.ORDINARY)
+			NotifyReplayHookFloat_S("HookFreeze_S", 5.0);
 
 		Replication.BumpMe();
 	}
