@@ -72,11 +72,18 @@ class PS_PlayersList : ScriptedWidgetComponent
 		
 		foreach (int playerId : outPlayers)
 		{
-			AddPlayer(playerId);
+			AddPlayerInternal(playerId, false);
 		}
+
+		SortPlayers();
 	}
 	
 	void AddPlayer(int playerId)
+	{
+		AddPlayerInternal(playerId, true);
+	}
+
+	protected void AddPlayerInternal(int playerId, bool sort)
 	{
 		if (m_mPlayers.Contains(playerId))
 			return;
@@ -88,6 +95,9 @@ class PS_PlayersList : ScriptedWidgetComponent
 		m_mPlayers.Insert(playerId, playerSelector);
 		playerSelector.SetSearchText(m_sSearchText);
 		
+		if (!sort)
+			return;
+
 		// A fresh row lands on the map in insertion order; sorting it right away keeps the list
 		// correct no matter how the invoker sequences AddPlayer against OnPlayersOrderDirty.
 		SortPlayers();
@@ -129,13 +139,13 @@ class PS_PlayersList : ScriptedWidgetComponent
 	// name, because "[" (ASCII 91) sorts after upper-case and before lower-case letters.
 	protected static bool OrderedBefore(PS_PlayerSelector a, PS_PlayerSelector b)
 	{
-		string nameA = a.GetPlayerName();
-		string nameB = b.GetPlayerName();
-		
-		bool unitA = PS_PlayersHelper.HasUnitTag(nameA);
-		bool unitB = PS_PlayersHelper.HasUnitTag(nameB);
+		bool unitA = a.HasUnitTag();
+		bool unitB = b.HasUnitTag();
 		if (unitA != unitB)
 			return unitA;
+
+		string nameA = a.GetPlayerName();
+		string nameB = b.GetPlayerName();
 		
 		int order = nameA.Compare(nameB, false);
 		if (order != 0)
@@ -144,9 +154,13 @@ class PS_PlayersList : ScriptedWidgetComponent
 		return a.GetPlayerId() < b.GetPlayerId();
 	}
 	
-	// The invoker passes the player id of the connect/name event; the sort re-reads the whole map anyway.
+	// The invoker passes the player id of the connect/name event; refresh that row's cached
+	// sort key first in case a name (re)bind fired only on PS_PlayableManager.OnPlayerConnected.
 	protected void OnPlayersOrderDirty(int playerId)
 	{
+		PS_PlayerSelector row = m_mPlayers.Get(playerId);
+		if (row)
+			row.UpdatePlayerName(playerId);
 		SortPlayers();
 	}
 	

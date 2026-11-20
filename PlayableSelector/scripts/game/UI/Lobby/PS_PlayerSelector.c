@@ -45,6 +45,8 @@ class PS_PlayerSelector : SCR_ButtonBaseComponent
 	protected SCR_ButtonBaseComponent m_KickButton;
 	
 	protected bool m_bButtonClickSkip;
+	protected string m_sSortName;
+	protected bool m_bHasUnitTag;
 	
 	override void HandlerAttached(Widget w)
 	{
@@ -153,6 +155,8 @@ class PS_PlayerSelector : SCR_ButtonBaseComponent
 		
 		string playerName = m_PlayableManager.GetPlayerName(m_iPlayerId);
 		m_wPlayerName.SetText(playerName);
+		m_sSortName = PS_PlayersHelper.StripMarkup(playerName);
+		m_bHasUnitTag = PS_PlayersHelper.HasUnitTag(m_sSortName);
 	}
 	
 	int GetPlayerId()
@@ -160,10 +164,15 @@ class PS_PlayerSelector : SCR_ButtonBaseComponent
 		return m_iPlayerId;
 	}
 	
-	// Markup-stripped name only for ordering (SortPlayers); the displayed row keeps its markup (UpdatePlayerName).
+	// Cached markup-stripped name and unit-tag flag for SortPlayers(); updated on name bind.
 	string GetPlayerName()
 	{
-		return PS_PlayersHelper.StripMarkup(m_PlayableManager.GetPlayerName(m_iPlayerId));
+		return m_sSortName;
+	}
+
+	bool HasUnitTag()
+	{
+		return m_bHasUnitTag;
 	}
 	
 	void UpdatePlayerFaction(int playerId, FactionKey factionKey, FactionKey factionKeyOld)
