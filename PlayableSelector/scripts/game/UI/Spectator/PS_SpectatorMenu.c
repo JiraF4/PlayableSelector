@@ -442,6 +442,7 @@ class PS_SpectatorMenu: MenuBase
 			m_InputManager.AddActionListener("MenuOpen", EActionTrigger.DOWN, OpenPauseMenu);
 			m_InputManager.AddActionListener("ChatToggle", EActionTrigger.DOWN, ChatToggle);
 			m_InputManager.AddActionListener("SwitchSpectatorUI", EActionTrigger.DOWN, Action_SwitchSpectatorUI);
+			m_InputManager.AddActionListener("SwitchSpectatorCameraMode", EActionTrigger.DOWN, Action_SwitchCameraMode);
 			m_InputManager.AddActionListener("GadgetMap", EActionTrigger.DOWN, Action_ToggleMap);
 			m_InputManager.AddActionListener("ManualCameraTeleport", EActionTrigger.DOWN, Action_ManualCameraTeleport);
 			m_InputManager.AddActionListener("EditorLastNotificationTeleport", EActionTrigger.DOWN, Action_EditorLastNotificationTeleport);
@@ -468,6 +469,7 @@ class PS_SpectatorMenu: MenuBase
 			m_InputManager.RemoveActionListener("MenuOpen", EActionTrigger.DOWN, OpenPauseMenu);
 			m_InputManager.RemoveActionListener("ChatToggle", EActionTrigger.DOWN, ChatToggle);
 			m_InputManager.RemoveActionListener("SwitchSpectatorUI", EActionTrigger.DOWN, Action_SwitchSpectatorUI);
+			m_InputManager.RemoveActionListener("SwitchSpectatorCameraMode", EActionTrigger.DOWN, Action_SwitchCameraMode);
 			m_InputManager.RemoveActionListener("GadgetMap", EActionTrigger.DOWN, Action_ToggleMap);
 			m_InputManager.RemoveActionListener("ManualCameraTeleport", EActionTrigger.DOWN, Action_ManualCameraTeleport);
 			m_InputManager.RemoveActionListener("EditorLastNotificationTeleport", EActionTrigger.DOWN, Action_EditorLastNotificationTeleport);
@@ -735,6 +737,13 @@ class PS_SpectatorMenu: MenuBase
 			m_wSidesRatioFrame.SetVisible(true);
 			if (m_wVoNOverlay) m_wVoNOverlay.SetVisible(true);
 		}
+	}
+
+	void Action_SwitchCameraMode()
+	{
+		PS_ManualCameraSpectator camera = PS_ManualCameraSpectator.Cast(GetGame().GetCameraManager().CurrentCamera());
+		if (camera && camera.GetCharacterEntity())
+			camera.ToggleCameraMode();
 	}
 	
 	bool IsUIVisible()
