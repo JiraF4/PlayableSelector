@@ -92,7 +92,6 @@ class PS_KillList : ScriptedWidgetComponent
 		StretchToParentWidth(w.FindAnyWidget("YourKillsHeader"));
 		StretchToParentWidth(w.FindAnyWidget("TeamKillsHeader"));
 		StretchToParentWidth(w.FindAnyWidget("KilledYouHeader"));
-		StretchToParentWidth(w.FindAnyWidget("KillListBorder"));
 
 		// DIAGNOSTIC: did the component attach, are the child widgets found, is the manager wired? Logs only
 		// these once at attach so we can tell whether the (empty) feed is a wiring bug vs a routing filter.
