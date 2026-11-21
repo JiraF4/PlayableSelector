@@ -26,6 +26,10 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 	protected PS_EventHandlerComponent m_LabelEventHandler;
 	
 	protected float m_fClickIgnoreTime;
+	// TEMP_DIAG: temporary fields for spectator nickname investigation
+	protected int m_iDiagLastPlayerId = -999;
+	protected bool m_bDiagLoggedNoPlayable = false;
+	protected bool m_bDiagLoggedEmptyName = false;
 	
 	override void HandlerAttached(Widget w)
 	{
@@ -160,9 +164,52 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 		uiInfo.SetIconTo(m_wSpectatorLabelIcon);
 	}
 	
+	// TEMP_DIAG: log label state on hover/select to diagnose missing nicknames
+	protected void DiagLogState(string reason)
+	{
+		RplId rplId = RplId.Invalid();
+		if (m_cPlayableComponent)
+			rplId = m_cPlayableComponent.GetRplId();
+		float labelOp = -1;
+		bool labelVis = false;
+		if (m_wSpectatorLabel)
+		{
+			labelOp = m_wSpectatorLabel.GetOpacity();
+			labelVis = m_wSpectatorLabel.IsVisible();
+		}
+		string part1 = string.Format("[PS_SpecDiag][%1] ent=%2 hasPC=%3 rpl=%4 pid=%5 text='%6'",
+			reason, m_eChimeraCharacter, m_cPlayableComponent != null, rplId, m_iDiagLastPlayerId, m_sLastLabelText);
+		string part2 = string.Format("dist=%1 labelOp=%2 labelVis=%3 rootOp=%4 sel=%5 hover=%6 dead=%7",
+			m_fDistanceToIcon, labelOp, labelVis, m_wRoot.GetOpacity(), m_bSelected, m_bForceShowName, m_bDead);
+		Print(part1 + " " + part2, LogLevel.NORMAL);
+	}
+
+	override void SetSelected(bool selected)
+	{
+		bool changed = (selected != m_bSelected);
+		super.SetSelected(selected);
+		if (selected && changed)
+			DiagLogState("Select");
+	}
+
+	override bool OnMouseEnter(Widget w, int x, int y)
+	{
+		bool res = super.OnMouseEnter(w, x, y);
+		DiagLogState("Hover");
+		return res;
+	}
+
 	override void UpdateLabel()
 	{
-		if (m_cPlayableComponent)
+		if (!m_cPlayableComponent)
+		{
+			if (!m_bDiagLoggedNoPlayable)
+			{
+				m_bDiagLoggedNoPlayable = true;
+				DiagLogState("NoPlayable");
+			}
+		}
+		else
 		{
 			int playerId = m_PlayableManager.GetPlayerByPlayableRemembered(m_cPlayableComponent.GetRplId());
 			// Fallback: if the RplId was never registered (e.g. clone-and-teleport from unstuck mod),
@@ -184,6 +231,13 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 				{
 					newText = playerName;
 					hasText = true;
+					m_bDiagLoggedEmptyName = false;
+				}
+				else if (!m_bDiagLoggedEmptyName)
+				{
+					m_bDiagLoggedEmptyName = true;
+					m_iDiagLastPlayerId = playerId;
+					DiagLogState("EmptyName");
 				}
 				// name not ready yet: keep current text (matches the old "do nothing" branch)
 			} else {
@@ -195,6 +249,13 @@ class PS_SpectatorLabelIconCharacter : PS_SpectatorLabelIcon
 			{
 				m_wSpectatorLabelText.SetText(newText);
 				m_sLastLabelText = newText;
+				m_iDiagLastPlayerId = playerId;
+				DiagLogState("SetText");
+			}
+			else if (playerId != m_iDiagLastPlayerId)
+			{
+				m_iDiagLastPlayerId = playerId;
+				DiagLogState("PidChanged");
 			}
 		}
 
