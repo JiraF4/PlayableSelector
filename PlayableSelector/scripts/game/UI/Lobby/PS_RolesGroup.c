@@ -91,6 +91,16 @@ class PS_RolesGroup : SCR_ScriptedWidgetComponent
 		
 		m_RolesGroupButton.GetOnClick_PS().Insert(OnClicked);
 	}
+
+	override void HandlerDeattached(Widget w)
+	{
+		foreach (PS_PlayableContainer playable, PS_CharacterSelector selector : m_mCharacters)
+		{
+			if (playable)
+				playable.GetOnPlayerChange().Remove(OnPlayablePlayerChange);
+		}
+		super.HandlerDeattached(w);
+	}
 	
 	// --------------------------------------------------------------------------------------------------------------------------------
 	// Set

@@ -58,7 +58,9 @@ class PS_VehicleSelector : SCR_ButtonComponent
 	
 	override void HandlerDeattached(Widget w)
 	{
-		
+		if (m_PlayableVehicleContainer)
+			m_PlayableVehicleContainer.GetOnLockChange().Remove(OnLockChange);
+		super.HandlerDeattached(w);
 	}
 	
 	// --------------------------------------------------------------------------------------------------------------------------------

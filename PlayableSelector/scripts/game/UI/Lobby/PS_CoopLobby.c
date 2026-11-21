@@ -209,6 +209,7 @@ if (m_PlayableManager)
 			m_PlayableManager.GetOnStartTimerCounterChanged().Remove(OnStartTimerCounterChanged);
 			m_PlayableManager.GetOnPlayerConnected().Remove(OnPlayerConnected);
 			m_PlayableManager.GetOnPlayerDisconnected().Remove(OnPlayerDisconnected);
+			m_PlayableManager.GetOnPlayableRegistered().Remove(OnPlayableRegistered);
 		}
 	}
 

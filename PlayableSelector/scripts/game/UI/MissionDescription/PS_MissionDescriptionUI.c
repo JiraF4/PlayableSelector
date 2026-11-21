@@ -33,6 +33,18 @@ class PS_MissionDescriptionUI : ScriptedWidgetComponent
 		m_hNavigationSwitchMissionDescription.m_OnClicked.Insert(Action_SwitchMissionDescription);
 		GetGame().GetInputManager().AddActionListener("SwitchMissionDescription", EActionTrigger.DOWN, Action_SwitchMissionDescription);
 	}
+
+	override void HandlerDeattached(Widget w)
+	{
+		if (GetGame().InPlayMode())
+		{
+			GetGame().GetCallqueue().Remove(AddOnClick);
+			InputManager inputManager = GetGame().GetInputManager();
+			if (inputManager)
+				inputManager.RemoveActionListener("SwitchMissionDescription", EActionTrigger.DOWN, Action_SwitchMissionDescription);
+		}
+		super.HandlerDeattached(w);
+	}
 	
 	void AddOnClick()
 	{
