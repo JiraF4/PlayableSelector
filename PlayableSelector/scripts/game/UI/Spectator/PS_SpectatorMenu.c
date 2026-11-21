@@ -537,70 +537,70 @@ class PS_SpectatorMenu: MenuBase
 		
 		UpdateIcons();
 		
-		Widget cursorWidget = WidgetManager.GetWidgetUnderCursor();
-		while (cursorWidget)
-		{
-			
-			if (cursorWidget == m_wAlivePlayerList)
-			{
-				break;
-			}
-			
-			if (cursorWidget == m_wVoiceChatList)
-			{
-				break;
-			}
-			
-			if (cursorWidget == m_wKillListFrame)
-			{
-				break;
-			}
-			
-			cursorWidget = cursorWidget.GetParent();
-		}
-		
-		// Alive player list slide
-		if (m_wAlivePlayerList)
+		WorkspaceWidget slideWs = GetGame().GetWorkspace();
+		int slideMouseX, slideMouseY;
+		WidgetManager.GetMousePos(slideMouseX, slideMouseY);
+		float slideCurX = slideWs.DPIUnscale(slideMouseX);
+		float slideCurY = slideWs.DPIUnscale(slideMouseY);
+		float slideScreenW = slideWs.DPIUnscale(slideWs.GetWidth());
+		float slideCenterX = slideScreenW * 0.5;
+		float slideCenterY = slideWs.DPIUnscale(slideWs.GetHeight()) * 0.5;
+
+		// Alive player list slide (position-based hover detection to avoid hit-test flicker on list rebuild)
+		if (m_wAlivePlayerList && m_wAlivePlayerList.IsVisible())
 		{
 			float alivePlayerListX = FrameSlot.GetPosX(m_wAlivePlayerList);
+			float aliveTopY = slideCenterY - 320.0;
 			bool alivePinned = m_hAlivePlayerListPinButton && m_hAlivePlayerListPinButton.IsToggled();
-			if (cursorWidget == m_wAlivePlayerList || alivePinned)
+			bool aliveHovered = alivePinned
+				|| (slideCurX >= 0 && slideCurX <= alivePlayerListX + 320.0 + 15.0
+					&& slideCurY >= aliveTopY - 15.0 && slideCurY <= aliveTopY + 640.0 + 15.0);
+			float targetAliveX = alivePlayerListX;
+			if (aliveHovered)
 			{
-				alivePlayerListX += tDelta * 1200.0;
-				if (alivePlayerListX > 0)
-					alivePlayerListX = 0;
+				targetAliveX += tDelta * 1200.0;
+				if (targetAliveX > 0)
+					targetAliveX = 0;
 			}
 			else
 			{
-				alivePlayerListX -= tDelta * 1200.0;
-				if (alivePlayerListX < -315)
-					alivePlayerListX = -315;
+				targetAliveX -= tDelta * 1200.0;
+				if (targetAliveX < -315)
+					targetAliveX = -315;
 			}
-			FrameSlot.SetPosX(m_wAlivePlayerList, alivePlayerListX);
+			if (targetAliveX != alivePlayerListX)
+				FrameSlot.SetPosX(m_wAlivePlayerList, targetAliveX);
 		}
 		
-		// Voice chat list slide
-		if (m_wVoiceChatList)
+		// Voice chat list slide (position-based hover detection to avoid hit-test flicker on rebuild/overlap)
+		if (m_wVoiceChatList && m_wVoiceChatList.IsVisible())
 		{
 			float voiceChatListX = FrameSlot.GetPosX(m_wVoiceChatList);
+			float voiceLeftX = slideScreenW + voiceChatListX;
+			float voiceTopY = slideCenterY - 320.0;
 			bool voicePinned = m_hVoiceChatListPinButton && m_hVoiceChatListPinButton.IsToggled();
-			if (cursorWidget == m_wVoiceChatList || voicePinned)
+			bool voiceHovered = voicePinned
+				|| (slideCurX >= voiceLeftX - 25.0 && slideCurX <= slideScreenW
+					&& slideCurY >= voiceTopY - 25.0 && slideCurY <= voiceTopY + 640.0 + 25.0);
+			float targetVoiceX = voiceChatListX;
+			if (voiceHovered)
 			{
-				voiceChatListX -= tDelta * 1200.0;
-				if (voiceChatListX < -320)
-					voiceChatListX = -320;
+				targetVoiceX -= tDelta * 1200.0;
+				if (targetVoiceX < -320)
+					targetVoiceX = -320;
 			}
 			else
 			{
-				voiceChatListX += tDelta * 1200.0;
-				if (voiceChatListX > -5)
-					voiceChatListX = -5;
+				targetVoiceX += tDelta * 1200.0;
+				if (targetVoiceX > -5)
+					targetVoiceX = -5;
 			}
-			FrameSlot.SetPosX(m_wVoiceChatList, voiceChatListX);
+			if (targetVoiceX != voiceChatListX)
+				FrameSlot.SetPosX(m_wVoiceChatList, targetVoiceX);
 		}
 		
 		// Kill feed slide
-		if (m_wKillListFrame)
+		if (m_wKillListFrame && m_wKillListFrame.IsVisible())
 		{
 			// Kill feed lives at top-middle and slides DOWN from underneath the top SidesRatio bar (height 18).
 			// Open position is Y = 18 so that it never overlaps the dynamic faction balance ratio bar.
@@ -608,30 +608,26 @@ class PS_SpectatorMenu: MenuBase
 			// Hover detection is POSITION-based (is the cursor inside the panel's CURRENT on-screen rect), not
 			// widget-based, preventing hit-test conflicts with top-edge widgets.
 			float killListY = FrameSlot.GetPosY(m_wKillListFrame);
-			int killMouseX, killMouseY;
-			WidgetManager.GetMousePos(killMouseX, killMouseY);
-			WorkspaceWidget killWs = GetGame().GetWorkspace();
-			float killCurX = killWs.DPIUnscale(killMouseX);
-			float killCurY = killWs.DPIUnscale(killMouseY);
-			float killCenterX = killWs.DPIUnscale(killWs.GetWidth() / 2.0);
 			// Frame width is 500 and height is 640 (see KillListFrame slot); 25 = Extender hover margin.
 			bool killPinned = m_hKillListPinButton && m_hKillListPinButton.IsToggled();
 			bool killHovered = killPinned
-				|| (killCurX >= killCenterX - 250 && killCurX <= killCenterX + 250
-					&& killCurY >= killListY - 25 && killCurY <= killListY + 640 + 25);
+				|| (slideCurX >= slideCenterX - 250 && slideCurX <= slideCenterX + 250
+					&& slideCurY >= killListY - 25 && slideCurY <= killListY + 640 + 25);
+			float targetKillY = killListY;
 			if (killHovered)
 			{
-				killListY += tDelta * 1200.0;
-				if (killListY > 18)
-					killListY = 18;
+				targetKillY += tDelta * 1200.0;
+				if (targetKillY > 18)
+					targetKillY = 18;
 			}
 			else
 			{
-				killListY -= tDelta * 1200.0;
-				if (killListY < -617)
-					killListY = -617;
+				targetKillY -= tDelta * 1200.0;
+				if (targetKillY < -617)
+					targetKillY = -617;
 			}
-			FrameSlot.SetPosY(m_wKillListFrame, killListY);
+			if (targetKillY != killListY)
+				FrameSlot.SetPosY(m_wKillListFrame, targetKillY);
 		}
 		
 

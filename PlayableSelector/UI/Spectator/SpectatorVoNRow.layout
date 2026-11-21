@@ -1,5 +1,6 @@
 SizeLayoutWidgetClass {
  Name "VoNRow"
+ "Ignore Cursor" 1
  Slot LayoutSlot "{E0A1B2C3D4E5F601}" {
   Padding 0 2 0 2
  }
