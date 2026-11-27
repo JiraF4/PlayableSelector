@@ -83,6 +83,16 @@ class PS_DamagePause
 		if (defaultHitZone && !damageManager.IsDamageEffectPresentOnHitZones(SCR_PhysicalHitZonesRegenDamageEffect, {defaultHitZone}))
 			damageManager.RegenPhysicalHitZones();
 
+		// The stamina component stops tracking a canteen boost it sees paused, and only the
+		// effect's arrival starts the tracking again.
+		SCR_FlaskStaminaRegenBoostDamageEffect boost = SCR_FlaskStaminaRegenBoostDamageEffect.Cast(damageManager.FindDamageEffectOfType(SCR_FlaskStaminaRegenBoostDamageEffect));
+		if (boost && boost.IsActive())
+		{
+			SCR_CharacterStaminaComponent stamina = SCR_CharacterStaminaComponent.Cast(character.FindComponent(SCR_CharacterStaminaComponent));
+			if (stamina)
+				stamina.StartStaminaRegenerationBoostTracking(boost);
+		}
+
 		return true;
 	}
 }
