@@ -183,9 +183,15 @@ class PS_GameModeHeader : ScriptedWidgetComponent
 		if (!PS_PlayersHelper.IsAdminOrServer()) 
 			return;
 		
-		if (PS_GameModeCoop.Cast(GetGame().GetGameMode()).GetState() == SCR_EGameModeState.GAME) return;
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if (!gameMode)
+			return;
+
+		SCR_EGameModeState currentState = gameMode.GetState();
+		if (currentState == SCR_EGameModeState.GAME)
+			return;
 		
-		playableController.AdvanceGameState(SCR_EGameModeState.NULL);
+		playableController.AdvanceGameState(currentState);
 	}
 	void Action_PreviewOpen(SCR_ButtonBaseComponent button)
 	{

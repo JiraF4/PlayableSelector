@@ -686,7 +686,7 @@ class PS_GameModeCoop : SCR_BaseGameMode
 
 		PS_PlayableControllerComponent playableController = PS_PlayableControllerComponent.Cast(playerController.FindComponent(PS_PlayableControllerComponent));
 		if (playableController)
-			playableController.AdvanceGameState(SCR_EGameModeState.NULL);
+			playableController.AdvanceGameState(GetState());
 	}
 
 	void PlayGameConfig_Callback(SCR_ChatPanel panel, string data)
@@ -1435,6 +1435,12 @@ class PS_GameModeCoop : SCR_BaseGameMode
 		GetGame().GetPlayerManager().GetPlayers(playerIds);
 
 		SCR_EGameModeState state = GetState();
+		if (Replication.IsServer() && playableManager)
+		{
+			SCR_EGameModeState expectedTimerState = playableManager.GetStartTimerExpectedState();
+			if (expectedTimerState != SCR_EGameModeState.NULL && state != expectedTimerState)
+				playableManager.CancelStartTimer_S();
+		}
 		m_OnGameStateChange.Invoke(state);
 
 		PS_VoNRoomsManager vonMgr = PS_VoNRoomsManager.GetInstance();

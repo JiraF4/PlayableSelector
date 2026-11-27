@@ -103,6 +103,10 @@ class PS_PlayableControllerComponent : ScriptComponent
 		if (!playableManager.IsPlayerFactionCommander(callerPlayerId))
 			return;
 
+		PS_GameModeCoop gameMode = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if (!gameMode || gameMode.GetState() != SCR_EGameModeState.BRIEFING)
+			return;
+
 		playableManager.SetFactionReady(factionKey, readyValue);
 	}
 

@@ -146,18 +146,54 @@ class PS_PlayableManager : ScriptComponent
 	// TODO: Remove?
 	[RplProp(onRplName: "OnStartTimerCounterChanged")]
 	int m_iStartTimerCounter = -1;
+	protected SCR_EGameModeState m_eStartTimerExpectedState = SCR_EGameModeState.NULL;
+
+	SCR_EGameModeState GetStartTimerExpectedState()
+	{
+		return m_eStartTimerExpectedState;
+	}
+
+	/**
+	 * @issue BUG-130
+	 * @cause Таймер StartTime не отменялся при досрочной смене стадии и передавал GetState() в AdvanceGameState, переводя GAME в DEBRIEFING.
+	 * @solution Фиксируется ожидаемая фаза запуска отсчёта; смена стадии или расхождение фаз отменяет таймер и сбрасывает счётчик.
+	 */
+	void CancelStartTimer_S()
+	{
+		if (!Replication.IsServer())
+			return;
+
+		m_CallQueue.Remove(StartTime);
+		m_eStartTimerExpectedState = SCR_EGameModeState.NULL;
+		m_bFactionsReadySended = false;
+		if (m_iStartTimerCounter != -1)
+		{
+			m_iStartTimerCounter = -1;
+			Replication.BumpMe();
+			OnStartTimerCounterChanged();
+		}
+	}
+
 	void StartTime()
 	{
+		if (!Replication.IsServer())
+			return;
+
+		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if (!gameModeCoop || gameModeCoop.GetState() != m_eStartTimerExpectedState)
+		{
+			CancelStartTimer_S();
+			return;
+		}
+
 		m_iStartTimerCounter -= 1;
 		Replication.BumpMe();
 		OnStartTimerCounterChanged();
-		if (m_iStartTimerCounter == 0)
+		if (m_iStartTimerCounter <= 0)
 		{
-			PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
-			// Use the CURRENT state, not a hardcoded one — this timer is reused by both
-			// slot-selection "all ready" and briefing "faction ready" countdowns.
-			gameModeCoop.AdvanceGameState(gameModeCoop.GetState());
-			m_CallQueue.Remove(StartTime);
+			SCR_EGameModeState expectedState = m_eStartTimerExpectedState;
+			CancelStartTimer_S();
+			gameModeCoop.AdvanceGameState(expectedState);
 		}
 	}
 	void OnStartTimerCounterChanged()
@@ -797,18 +833,14 @@ class PS_PlayableManager : ScriptComponent
 				PS_EPlayableControllerState playerState = m_playersStates[otherPlayerId];
 				if (playerState != PS_EPlayableControllerState.Ready)
 				{
-					if (m_iStartTimerCounter != -1)
-					{
-						m_iStartTimerCounter = -1;
-						Replication.BumpMe();
-						OnStartTimerCounterChanged();
-					}
+					CancelStartTimer_S();
 					return;
 				}
 			}
 
 			if (adminExist)
 			{
+				m_eStartTimerExpectedState = gameModeState;
 				m_iStartTimerCounter = 3;
 				Replication.BumpMe();
 				OnStartTimerCounterChanged();
@@ -880,17 +912,16 @@ class PS_PlayableManager : ScriptComponent
 		if (!Replication.IsServer() || factionKey == "" || (readyValue != 0 && readyValue != 1))
 			return;
 
+		PS_GameModeCoop gameModeCoop = PS_GameModeCoop.Cast(GetGame().GetGameMode());
+		if (readyValue == 1 && (!gameModeCoop || gameModeCoop.GetState() != SCR_EGameModeState.BRIEFING))
+			return;
+
 		RPC_SetFactionReady(factionKey, readyValue);
 		Rpc(RPC_SetFactionReady, factionKey, readyValue);
 		if (readyValue == 0)
 		{
 			if (m_bFactionsReadySended)
-			{
-				m_CallQueue.Remove(StartTime);
-				m_iStartTimerCounter = -1;
-				Replication.BumpMe();
-				OnStartTimerCounterChanged();
-			}
+				CancelStartTimer_S();
 			m_bFactionsReadySended = false;
 			return;
 		}
@@ -923,6 +954,7 @@ class PS_PlayableManager : ScriptComponent
 
 			// Reuse the same countdown as the slot-selection "all ready" timer:
 			// 3 → 2 → 1 → 0 → AdvanceGameState(BRIEFING) → StartGame → GAME
+			m_eStartTimerExpectedState = gameModeCoop.GetState();
 			m_iStartTimerCounter = 3;
 			Replication.BumpMe();
 			OnStartTimerCounterChanged();
