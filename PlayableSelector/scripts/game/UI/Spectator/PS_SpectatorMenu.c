@@ -462,6 +462,7 @@ class PS_SpectatorMenu: MenuBase
 		s_SpectatorMenu = null;
 
 		m_mLastSpectateRequestTime.Clear();
+		SyncCameraWidgetVisibility(true);
 		
 		if (m_InputManager)
 		{
@@ -508,6 +509,7 @@ class PS_SpectatorMenu: MenuBase
 		}
 		
 		UpdateCursorTarget();
+		SyncCameraWidgetVisibility(IsUIVisible());
 		
 		if (m_GameMode.GetFriendliesSpectatorOnly())
 		{
@@ -711,28 +713,34 @@ class PS_SpectatorMenu: MenuBase
 
 	void Action_SwitchSpectatorUI()
 	{
-		if (m_wVoiceChatList.IsVisible())
-		{
-			//m_wChat.SetVisible(false);
-			m_wVoiceChatList.SetVisible(false);
-			m_wOverlayFooter.SetVisible(false);
-			m_wEarlyAccessRoot.SetVisible(false);
-			m_wAlivePlayerList.SetVisible(false);
-			m_wKillListFrame.SetVisible(false);
-			m_wIconsFrame.SetVisible(false);
-			m_wSidesRatioFrame.SetVisible(false);
-			if (m_wVoNOverlay) m_wVoNOverlay.SetVisible(false);
-		} else {
-			//m_wChat.SetVisible(true);
-			m_wVoiceChatList.SetVisible(true);
-			m_wOverlayFooter.SetVisible(true);
-			m_wEarlyAccessRoot.SetVisible(true);
-			m_wAlivePlayerList.SetVisible(true);
-			m_wKillListFrame.SetVisible(true);
-			m_wIconsFrame.SetVisible(true);
-			m_wSidesRatioFrame.SetVisible(true);
-			if (m_wVoNOverlay) m_wVoNOverlay.SetVisible(true);
-		}
+		bool visible = !m_wVoiceChatList.IsVisible();
+		//m_wChat.SetVisible(visible);
+		m_wVoiceChatList.SetVisible(visible);
+		m_wOverlayFooter.SetVisible(visible);
+		m_wEarlyAccessRoot.SetVisible(visible);
+		m_wAlivePlayerList.SetVisible(visible);
+		m_wKillListFrame.SetVisible(visible);
+		m_wIconsFrame.SetVisible(visible);
+		m_wSidesRatioFrame.SetVisible(visible);
+		if (m_wVoNOverlay) m_wVoNOverlay.SetVisible(visible);
+		SyncCameraWidgetVisibility(visible);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Keeps spectator camera overlays (e.g. speed multiplier) aligned with spectator HUD visibility.
+	protected void SyncCameraWidgetVisibility(bool visible)
+	{
+		CameraManager cameraManager = GetGame().GetCameraManager();
+		if (!cameraManager)
+			return;
+
+		PS_ManualCameraSpectator camera = PS_ManualCameraSpectator.Cast(cameraManager.CurrentCamera());
+		if (!camera)
+			return;
+
+		Widget cameraWidget = camera.GetWidget();
+		if (cameraWidget && cameraWidget.IsVisible() != visible)
+			cameraWidget.SetVisible(visible);
 	}
 
 	void Action_SwitchCameraMode()
